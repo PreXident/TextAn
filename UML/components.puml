@@ -1,0 +1,54 @@
+@startuml
+skinparam componentStyle uml2
+'the result looks better in horizontal orientation
+left to right direction
+
+'declarations
+actor User
+actor FileSystem
+
+package validator {
+    component Importer
+    component Exporter
+    component EntityManager
+    component AnalysisBroker
+    component DBConnector
+    component Controller
+}
+
+package editor {
+    component GraphVizualizer
+    component Editor
+    component UnDoManager
+}
+
+package webService {
+    component Server
+}
+
+package tagger {
+    component Tagger
+    component DBConnector as taggerDBConnector
+}
+
+'is grapher part of the webservice?
+package grapher {
+    component Grapher
+    component DBConnector as grapherDBConnector
+}
+
+database DB
+
+'relations
+User -- Editor
+Editor - Controller
+FileSystem - Importer
+FileSystem - Exporter
+DBConnector - DB
+EntityManager - DBConnector
+AnalysisBroker <-> Server : SOAP
+Server -- Tagger
+taggerDBConnector - DB
+Server -- Grapher
+grapherDBConnector - DB
+@enduml
