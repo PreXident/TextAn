@@ -37,18 +37,25 @@ package grapher {
     component DBConnector as grapherDBConnector
 }
 
-database DB
+package db {
+    component DBAdapter
+}
+
+database internalDB
+database externalDB
 
 'relations
 User -- Editor
 Editor - Controller
 FileSystem - Importer
 FileSystem - Exporter
-DBConnector - DB
+DBConnector - DBAdapter
 EntityManager - DBConnector
 AnalysisBroker <-> Server : SOAP
 Server -- Tagger
-taggerDBConnector - DB
+taggerDBConnector - DBAdapter
 Server -- Grapher
-grapherDBConnector - DB
+grapherDBConnector - DBAdapter
+DBAdapter - internalDB
+DBAdapter - externalDB
 @enduml
