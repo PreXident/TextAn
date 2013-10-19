@@ -1,35 +1,35 @@
-﻿Prohlédnout si stránku projektové komise, abychom jsme zistili jaké zkoušenosti měly ostatní skupiny: http://ksvi.mff.cuni.cz/~holan/SWP/zkus.htm
-Nejprve padl nápad zapsat si zadání ale vzhledem na ruzne problémy zatím je to odložen na příště.
+﻿Prohlédnout si stránku projektové komise, abychom zjistili jaké zkoušenosti měly ostatní skupiny: http://ksvi.mff.cuni.cz/~holan/SWP/zkus.htm
+Nejprve padl nápad zapsat si zadání, ale vzhledem k ruzným problémům je zatím odložen na příště.
 
 Návrhy:
--verzování databázi
--správy - editování je povolen
--uložit správy jako prvky v databázi - plaintext, nebo nějaké jednoduché xml-ko
-   -- editor textu - stačí nějaká knihovna, co je snadno rozšiřitelná (kvuli přidání rozhraní pro editaci vztahu) Návrh: Java 8 umí hezké formátovaní v komponentach
+-verzování databáze
+-zprávy - editování je povoleno
+-uložit zprávy jako prvky v databázi - plaintext, nebo nějaké jednoduché xml
+   -- editor textu - stačí nějaká knihovna, co je snadno rozšiřitelná (kvůli přidání rozhraní pro editaci vztahu) Návrh: Java 8 umí hezké formátovaní v komponentách
 -schéma pro ukladání entit
-    1 velká tabulka - 1 atribut pro typ pak další atributy -> snadné přetypování
-    nebo ruzne tabulky pro ruzne entity
+    1 velká tabulka - 1 atribut pro typ, pak další atributy -> snadné přetypování
+    nebo různé tabulky pro různé entity
 -webová služba
   1) pro označení textových entit
-  2) pro označení typu tento string odpovídá objekt z nášho světu (reference pomocou ID) 
+  2) pro označení typu tento string odpovídá objektu z našeho světa (reference pomocí ID) 
 
 
 Elementární operace:
- Je duležité jakými elementárními operacemi zpracujeme text.
- Příklad: blízky výskyt dvou objektu muže značít jejich spojení
-          jméno + bydliště -> muže značít vztah, že dotyčný tam bydlí
+ Je důležité jakými elementárními operacemi zpracujeme text.
+ Příklad: blízký výskyt dvou objektů může značit jejich spojení
+          jméno + bydliště -> může značit vztah, že dotyčný tam bydlí
           jméno + rodné číslo
-          Pozor na drobné problémy, jako rodné číslo nemusí být unikátní,ale zhodli jsme na tom, že kombinace jméno+rodné číslo považujeme za duveryhodné, při výskytu jenom rodného čísla máme přistupovat opatrně
+          Pozor na drobné problémy, jako rodné číslo nemusí být unikátní, ale shodli jsme na tom, že kombinace jméno+rodné číslo považujeme za důveryhodné, při výskytu jenom rodného čísla máme přistupovat opatrně
 
 
 
 Úkoly na příště:
--vymyslet pět policejních zpráv a pro nich zostavit nějaké strategie pro rozpoznávání entit a nějaký ten konsenzus poslat panovi Bojarovi
--pozerat si ruzne zadání a zkoušenosti z jiných projektových skupin
+-vymyslet pět policejních zpráv a pro jednu sestavit nějaké strategie pro rozpoznávání entit a nějaký ten konsenzus poslat panu Bojarovi; rozeslat do večera
+-prohlédnout si různá zadání a zkoušenosti z jiných projektových skupin
 -zatím odložen: zadání projektu
 
-Po schuzke vznikl uloziste na Google Drive s dokumentmi pro administraci a navrhy:
+Po schůzce vzniklo úložiště na Google Drive s dokumenty pro administraci a návrhy:
 https://drive.google.com/folderview?id=0BzyCoAtrGeRwaFVwZFJMTTVQTk0&usp=sharing
 
-Další schuzka: 22.10.2013 (úterý) 15:40 v LABu na MS
+Další schůzka: 22.10.2013 (úterý) 15:40 v LABu na MS
 Schuzka s panem Bojarem: 25.10.2013 (pátek) 10:30
