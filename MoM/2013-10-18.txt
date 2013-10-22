@@ -2,16 +2,34 @@
 Nejprve padl nápad zapsat si zadání, ale vzhledem k ruzným problémům je zatím odložen na příště.
 
 Návrhy:
--verzování databáze
--zprávy - editování je povoleno
--uložit zprávy jako prvky v databázi - plaintext, nebo nějaké jednoduché xml
-   -- editor textu - stačí nějaká knihovna, co je snadno rozšiřitelná (kvůli přidání rozhraní pro editaci vztahu) Návrh: Java 8 umí hezké formátovaní v komponentách
--schéma pro ukladání entit
-    1 velká tabulka - 1 atribut pro typ, pak další atributy -> snadné přetypování
-    nebo různé tabulky pro různé entity
--webová služba
-  1) pro označení textových entit
-  2) pro označení typu tento string odpovídá objektu z našeho světa (reference pomocí ID) 
+DB:
+  -verzování databáze
+  -transparentní vrstva pro komunikaci s DB (umožní napojení na jiné db)
+  -paralelní zpracovaní (co je treba zamykat, kontrola zmen v db provedena nekym jinym atd.)
+  -částečné záznamy
+  -schéma pro ukladání entit
+    -1 velká tabulka - 1 atribut pro typ, pak další atributy -> snadné přetypování,
+    -nebo různé tabulky pro různé entity
+  -uložit zprávy jako prvky v databázi - plaintext, nebo nějaké jednoduché xml
+    -zpravu povazovat za dalsi entitu
+  -vztahy
+    -omezena platnost vztahu (bydliste od, do)
+    -vzah je dalsi entita specialniho druhu
+    -orientace vztahu (utocnik-zbran)
+
+GUI:
+  -zprávy - editování je povoleno
+  -editor textu - stačí nějaká knihovna, co je snadno rozšiřitelná (kvůli přidání rozhraní pro editaci vztahu) 
+    -Návrh: Java 8 umí hezké formátovaní v komponentách
+
+webová služba:
+  -pro označení textových entit
+  -pro označení typu tento string odpovídá objektu z našeho světa (reference pomocí ID) 
+
+rozpoznavac entit:
+  -tagger a rozpoznavac pojmenovanych entit prevezmeme od Milana Straky
+  -rozpoznavani vztahu
+    -misto syntakticke analyzy staci slova pred/za slovesem
 
 
 Elementární operace:
