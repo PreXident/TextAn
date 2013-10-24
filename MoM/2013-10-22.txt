@@ -1,0 +1,40 @@
+Dnes bylo v plánu vyøešit následující vìci:
+1. Vyreseni navrhu db
+2. Vyresit scenar zpracovani nove zpravy (elementarni operace)
+3. Navrhnout funkcni a nefunkcni pozadavky
+4. Zvolit sefa projektu
+
+1. Databázi jsme nakonec postavili na Vaškovì (viz google drive) modelu s tìmito rozdíly:
+- Nepovinné propojení relací s výskyty v textu
+- Trvání relace bude entita a nebude to tím pádem u relace (možnost pøerušeného trvání)
+- Zurnalovani kazde tabulky (ke kazde tabulce jedna zurnalova)
+  - Historie dokumentù bude v režii žurnálování databáze
+- Oddeleni realnych objektu od jejich nazvu v textu
+  - entita = rovna se realny objekt (napr. osoba Josef Novak)
+  - alias = pojmenovani entity v textu (napr. J. Novak, Pepa Novak, pan Novak)
+  - vyskyt aliasu = pozice aliasu v dokumentu
+  
+
+Výsledný návrh viz google drive.
+
+
+2. Shodli jsme se na modelu “pipeliny”. Pro pridani nove zpravy bude pouzit wizard jako pri instalaci. Dokument (zprava) bude prochazet nekolika fazemi zpracovani, ve kterych bude omezeny pocet operaci, ktere lze s dokumentem provadet. Navrh fazi:
+
+vlozit zpravu
+editace zpravy
+->rozpoznani entit
+editace entit (offline, menit rozsah a typ entit - !zadna hromadna zmena pri oprave entity!)
+->identifikace objektu
+editace objektu (pridani noveho [v dalsim vyberu nahore, oddeleni od tech z db], presmerovani na jiny objekt) - zobrazovani grafu/seznamu/stromu pro objekty v db!
+->rozpoznani vztahu
+editace vztahu
+potvrzeni dokumentu
+->zmeny se propisi do db
+
+Zmìny z pipeliny se nebudou hned zapisovat do databáze, ale server si je bude pamatovat (a bude je pak upøednostòovat v nabídkách v aktuálním dokumentu. Server bude muset umìt slévat výsledky z databáze s aktuálními úpravami. Jak kvùli uèení tak kvùli úpravám databáze). Zmìny se zapíší až na konci po potvrzení.
+
+3. Je za domácí úkol
+
+4. PETR, ale nechce se mu (asi to ještì nehoøí, pak bude aukce ;) )
+
+Schuzka: 25.10.2013 (pátek) 11:00 v SU2 (pripadne v 423)
