@@ -1,0 +1,31 @@
+Navrh db
+- schodli jsme se na navrzenem modelu DB s par zmenami
+- zmeny:
+  - pridana tabulka na "ztotozneni"
+    - umoznuje stototnit 2 objekty tak, aby je bylo mozne pozdeji "odtotoznit"
+    - ztotoznene objekty reprezentuje jeden novy objekt 
+- navrhy (zatim zamotnute)
+  - "vztah" ja take objekt specialniho druhu
+     - + jednoduzsi db atd.
+     - - vzathy se pouzivaji v jine casti rozpoznavace, jiny semanticky vyznam atd.
+- logovani zmen vcetne uzivatelu, kteri je provedli co nejpodrobneji (potrebuje upresnit)
+
+GUI
+- scenar pridani noveho planu pomoci "pipeline" schvalen
+  - dodatecne pozadavky:
+    - pridavani nove zpravy muze trvat libovolne dlouho (ukladani v prubehu prace)
+    - u kazde zmeny musi byt jasne kdo ji provedl (pokud to lze zaridit)
+- layout navrhy
+  - uzivatel musi byt schopny snadno pracovat s nekolika vecmi najednou (napr kvuli ztotoznovani pobjektu)
+  - ruzne prohlizeni db (graf, vypisy..)
+  - dockovaci system znamy z ruznych IDE
+  - html..
+
+DU:
+  - sepsat predbezne zadani
+    - zadani by melo obsahovat vsechny scenare, ktere bude vysledny program umoznovat (ktere scenare jsou povinne / volitelne / nebudou udelany)
+    - rozdeleni prace na projektu (milestones)
+
+Dalsi schuzky:
+ - Utery 29.10.2013 15:40 v Labu na MS
+ - Patek 1.11.2013 14:00 mistnost 423
