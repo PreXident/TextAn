@@ -1,0 +1,12 @@
+root {
+	display: block;
+}
+
+.text-flow {
+	-fx-background-color: gray;
+	-fx-font-size: 50px
+}
+
+.selected {
+	-fx-effect: dropshadow(three-pass-box, green, 10, 10, 0, 0);
+}

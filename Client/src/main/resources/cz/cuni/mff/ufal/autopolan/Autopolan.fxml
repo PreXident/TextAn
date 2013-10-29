@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import java.net.URL ?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.collections.FXCollections?>
+
+<BorderPane fx:id="root" prefHeight="600" prefWidth="800" xmlns:fx="http://javafx.com/fxml"
+			fx:controller="cz.cuni.mff.ufal.autopolan.AutoPolAnController" styleClass="root" >
+	<stylesheets >
+		<URL value="@Autopolan.css" />
+	</stylesheets>
+	<top>
+		<VBox>
+			<MenuBar fx:id="menuBar" >
+				<menus>
+					<Menu text="File" >
+						<MenuItem text="Close" onAction="#close">
+							<accelerator>
+								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="X"/>
+							</accelerator>
+						</MenuItem>
+					</Menu>
+					<Menu text="Wizards" >
+						<MenuItem text="New Report" onAction="#newReport" />
+						<MenuItem text="New Report 2" onAction="#newReport2" />
+					</Menu>
+				</menus>
+			</MenuBar>
+		</VBox>
+	</top>
+	<center>
+		<AnchorPane fx:id="content" />
+	</center>
+	<bottom>
+	</bottom>
+</BorderPane>

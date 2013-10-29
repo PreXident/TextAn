@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import java.net.URL ?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.text.*?>
+
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
+			fx:controller="cz.cuni.mff.ufal.autopolan.NewReportController" styleClass="root" >
+	<stylesheets >
+		<URL value="@NewReport.css" />
+	</stylesheets>
+	<center>
+		<TextFlow id="textFlow" fx:id="textFlow" style="-fx-background-color: gray; -fx-font-size: 50px" />
+	</center>
+</BorderPane>
