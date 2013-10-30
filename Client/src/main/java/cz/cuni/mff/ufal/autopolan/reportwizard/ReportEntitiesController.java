@@ -1,5 +1,6 @@
-package cz.cuni.mff.ufal.autopolan;
+package cz.cuni.mff.ufal.autopolan.reportwizard;
 
+import cz.cuni.mff.ufal.autopolan.WindowController;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,19 +10,21 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import org.controlsfx.dialog.Dialogs;
 
 /**
- *
+ * Controls editing entities.
  */
-public class NewReportController implements Initializable {
+public class ReportEntitiesController extends WindowController {
 
-    static final String TEST_TEXT = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
+    static final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';', '!')));
 
-    static final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';')));
+    static final String SELECTED = "selected";
 
     static void addSelectedClass(Iterable<Node> list) {
         list.forEach(node -> node.getStyleClass().add("selected"));
@@ -32,35 +35,58 @@ public class NewReportController implements Initializable {
     }
 
     @FXML
-    private TextFlow textFlow;
+    BorderPane root;
+
+    @FXML
+    ScrollPane scrollPane;
+
+    @FXML
+    TextFlow textFlow;
 
     int startTextIndex = -1;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    @FXML
+    private void cancel() {
+        window.close();
+    }
+
+    @FXML
+    private void next() {
+        Dialogs.create()
+                .owner(root)
+                .title("Hotovo!")
+                .message("Zpráva úspěšně vytvořena")
+                .lightweight()
+                .showInformation();
+        window.close();
+    }
+
+    public void setReport(final String report) {
         final List<String> words = new ArrayList<>();
         int start = 0;
-        for(int i = 0; i < TEST_TEXT.length(); ++i) {
-            if (separators.contains(TEST_TEXT.charAt(i))) {
+        for(int i = 0; i < report.length(); ++i) {
+            if (separators.contains(report.charAt(i))) {
                 if (start < i) {
-                    words.add(TEST_TEXT.substring(start, i));
+                    words.add(report.substring(start, i));
                 }
-                words.add(TEST_TEXT.substring(i, i + 1));
+                words.add(report.substring(i, i + 1));
                 start = i + 1;
             }
         }
-        //words.stream().forEach(word -> System.out.println(word));
-        //System.out.println(words.stream().reduce((s1, s2) -> {return s1 + s2;}).orElse("nic!"));
+        if (start < report.length()) {
+            words.add(report.substring(start, report.length()));
+        }
 
         final List<Node> texts = textFlow.getChildren();
+        texts.clear();
         for (String word: words) {
             final Text text = new Text(word);
             text.setOnMousePressed(e -> {
-                if (!text.getStyleClass().contains("selected")) {
+                if (!text.getStyleClass().contains(SELECTED)) {
                     System.out.println("pressed");
                     removeSelectedClass(texts);
                     startTextIndex = texts.indexOf(text);
-                    text.getStyleClass().add("selected");
+                    text.getStyleClass().add(SELECTED);
                     //text.setMouseTransparent(true);
                 }
             });
@@ -86,5 +112,10 @@ public class NewReportController implements Initializable {
             });
             texts.add(text);
         }
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
     }
 }

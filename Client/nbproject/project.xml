@@ -111,7 +111,7 @@
             </compilation-unit>
             <compilation-unit>
                 <package-root>src/main/java</package-root>
-                <classpath mode="compile">${jar.javafx};lib/jfxtras-labs-8.0-r1-20131027.115451-7.jar</classpath>
+                <classpath mode="compile">${jar.javafx};${jar.jfxtras};${jar.controlsfx}</classpath>
                 <source-level>1.8</source-level>
             </compilation-unit>
             <compilation-unit>

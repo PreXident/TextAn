@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.autopolan;
 
+import cz.cuni.mff.ufal.autopolan.reportwizard.ReportWizard;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,9 +27,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import jfxtras.labs.scene.control.window.CloseIcon;
 import jfxtras.labs.scene.control.window.MinimizeIcon;
+import jfxtras.labs.scene.control.window.Window;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  * Controller for the AutoPolAn application.
@@ -36,12 +38,7 @@ import jfxtras.labs.scene.control.window.MinimizeIcon;
 public class AutoPolAnController implements Initializable {
 
     /** Original title. */
-    static final String TITLE = "AutoPolAn";
-
-    Properties settings = null;
-
-    /** Property binded to stage titleProperty. */
-    StringProperty titleProperty = new SimpleStringProperty(TITLE);
+    static protected final String TITLE = "AutoPolAn";
 
     @FXML
     private BorderPane root;
@@ -49,8 +46,11 @@ public class AutoPolAnController implements Initializable {
     @FXML
     private AnchorPane content;
 
-    jfxtras.labs.scene.control.window.Window w;
-    TextFlow t;
+    /** Properties with application settings. */
+    protected Properties settings = null;
+
+    /** Property binded to stage titleProperty. */
+    StringProperty titleProperty = new SimpleStringProperty(TITLE);
 
     @FXML
     private void close() {
@@ -58,99 +58,9 @@ public class AutoPolAnController implements Initializable {
     }
 
     @FXML
-    private void newReport() throws IOException {
-        final Stage stage = new Stage();
-        //create javafx controls
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource("NewReport.fxml"));
-        final Parent root = (Parent) loader.load();
-        final Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-        stage.toFront();
-    }
-
-    @FXML
-    private void newReport2() throws IOException {
-        w = new jfxtras.labs.scene.control.window.Window("New Report");
-        w.setPrefSize(500, 500);
-        w.getRightIcons().add(new MinimizeIcon(w));
-        w.getRightIcons().add(new CloseIcon(w));
-        Group g = new Group();
-        t = new TextFlow() {
-            final String TEST_TEXT = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
-
-            final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';')));
-
-            void addSelectedClass(Iterable<Node> list) {
-                list.forEach(node -> node.getStyleClass().add("selected"));
-            }
-
-            void removeSelectedClass(Iterable<Node> list) {
-                list.forEach(node -> node.getStyleClass().remove("selected"));
-            }
-
-            int startTextIndex = -1;
-
-            {
-                final List<String> words = new ArrayList<>();
-                int start = 0;
-                for(int i = 0; i < TEST_TEXT.length(); ++i) {
-                    if (separators.contains(TEST_TEXT.charAt(i))) {
-                        if (start < i) {
-                            words.add(TEST_TEXT.substring(start, i));
-                        }
-                        words.add(TEST_TEXT.substring(i, i + 1));
-                        start = i + 1;
-                    }
-                }
-                //words.stream().forEach(word -> System.out.println(word));
-                //System.out.println(words.stream().reduce((s1, s2) -> {return s1 + s2;}).orElse("nic!"));
-
-                final List<Node> texts = getChildren();
-                for (String word: words) {
-                    final Text text = new Text(word);
-                    text.setOnMousePressed(e -> {
-                        if (!text.getStyleClass().contains("selected")) {
-                            System.out.println("pressed");
-                            removeSelectedClass(texts);
-                            startTextIndex = texts.indexOf(text);
-                            text.getStyleClass().add("selected");
-                            //text.setMouseTransparent(true);
-                        }
-                    });
-                    text.setOnDragDetected(e -> {
-                        text.startFullDrag();
-                    });
-                    text.setOnMouseDragEntered(e -> {
-                        if (startTextIndex != -1) {
-                            System.out.println("dragged");
-                            removeSelectedClass(texts);
-                            final int myIndex = texts.indexOf(text);
-                            final int min = Math.min(startTextIndex, myIndex);
-                            final int max = Math.max(startTextIndex, myIndex);
-                            addSelectedClass(texts.subList(min, max + 1));
-                        }
-                    });
-                    text.setOnMouseReleased(e -> {
-                        if (startTextIndex != -1) {
-                            System.out.println("release");
-                            startTextIndex = -1;
-                            //text.setMouseTransparent(false);
-                        }
-                    });
-                    texts.add(text);
-                }
-            }
-        };
-        t.getStyleClass().add("text-flow");
-        //
-        ScrollPane s = new ScrollPane();
-        t.prefWidthProperty().bind(s.widthProperty());
-        s.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        s.setContent(t);
-        w.getContentPane().getChildren().add(s);
-        g.getChildren().add(w);
-        content.getChildren().add(g);
+    private void reportWizard() {
+        final ReportWizard wizard = new ReportWizard(settings);
+        content.getChildren().add(wizard);
     }
 
     @Override
@@ -178,15 +88,17 @@ public class AutoPolAnController implements Initializable {
      * Returns window of the root.
      * @return window of the root
      */
-    private Window getWindow() {
-//        return root.getScene().getWindow();
-        return null;
+    private javafx.stage.Window getWindow() {
+        return root.getScene().getWindow();
     }
 
     /**
      * Called when application is stopped to store settings etc.
      */
     public void stop() {
-
+        content.getChildren().stream()
+                .filter(n -> n instanceof Window)
+                .map(n -> (Window) n)
+                .forEach(w -> w.close());
     }
 }

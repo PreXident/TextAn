@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import java.net.URL ?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.text.*?>
+
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
+			fx:controller="cz.cuni.mff.ufal.autopolan.reportwizard.ReportLoadController" styleClass="root" >
+	<stylesheets >
+		<URL value="@01_ReportLoad.css" />
+	</stylesheets>
+	<top>
+		<Label text="Zvolte zdroj nové zprávy:"/>
+	</top>
+	<center>
+		<VBox styleClass="groupBox" >
+			<fx:define>
+				<ToggleGroup fx:id="loadToggleGroup"/>
+			</fx:define>
+			<RadioButton text="Databáze" toggleGroup="$loadToggleGroup" selected="true" />
+			<RadioButton text="Textový soubor" toggleGroup="$loadToggleGroup"/>
+			<RadioButton fx:id="emptyMessageRadioButton" text="Prázdná zpráva" toggleGroup="$loadToggleGroup"/>
+			<RadioButton text="Rozpracovaná zpráva" toggleGroup="$loadToggleGroup"/>
+		</VBox>
+	</center>
+	<bottom>
+		<HBox alignment="CENTER_RIGHT" >
+			<Button text="Zrušit" onAction="#cancel"/>
+			<Button text="Pokračovat" onAction="#next"/>
+		</HBox>
+	</bottom>
+</BorderPane>

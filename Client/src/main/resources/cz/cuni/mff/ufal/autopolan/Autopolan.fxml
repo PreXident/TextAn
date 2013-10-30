@@ -28,15 +28,14 @@
 						</MenuItem>
 					</Menu>
 					<Menu text="Wizards" >
-						<MenuItem text="New Report" onAction="#newReport" />
-						<MenuItem text="New Report 2" onAction="#newReport2" />
+						<MenuItem text="Report" onAction="#reportWizard" />
 					</Menu>
 				</menus>
 			</MenuBar>
 		</VBox>
 	</top>
 	<center>
-		<AnchorPane fx:id="content" />
+		<AnchorPane fx:id="content"/>
 	</center>
 	<bottom>
 	</bottom>

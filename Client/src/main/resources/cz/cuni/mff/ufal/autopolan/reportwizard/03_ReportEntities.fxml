@@ -13,11 +13,19 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
-			fx:controller="cz.cuni.mff.ufal.autopolan.NewReportController" styleClass="root" >
+			fx:controller="cz.cuni.mff.ufal.autopolan.reportwizard.ReportEntitiesController" styleClass="root" >
 	<stylesheets >
-		<URL value="@NewReport.css" />
+		<URL value="@03_ReportEntities.css" />
 	</stylesheets>
 	<center>
-		<TextFlow id="textFlow" fx:id="textFlow" style="-fx-background-color: gray; -fx-font-size: 50px" />
+		<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
+			<TextFlow fx:id="textFlow" styleClass="text-flow" />
+		</ScrollPane>
 	</center>
+	<bottom>
+		<HBox alignment="CENTER_RIGHT" >
+			<Button text="Zrušit" onAction="#cancel"/>
+			<Button text="Pokračovat" onAction="#next"/>
+		</HBox>
+	</bottom>
 </BorderPane>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import java.net.URL ?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.text.*?>
+
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
+			fx:controller="cz.cuni.mff.ufal.autopolan.reportwizard.ReportEditController" styleClass="root" >
+	<stylesheets >
+		<URL value="@02_ReportEdit.css" />
+	</stylesheets>
+	<center>
+		<!--<ScrollPane fx:id="scrollPane" >-->
+			<TextArea fx:id="textArea" wrapText="true"  />
+		<!--</ScrollPane>-->
+	</center>
+	<bottom>
+		<HBox alignment="CENTER_RIGHT" >
+			<Button text="Zrušit" onAction="#cancel"/>
+			<Button text="Pokračovat" onAction="#next"/>
+		</HBox>
+	</bottom>
+</BorderPane>
