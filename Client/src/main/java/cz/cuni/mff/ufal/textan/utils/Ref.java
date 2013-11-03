@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.autopolan.utils;
+package cz.cuni.mff.ufal.textan.utils;
 
 import javafx.beans.value.WritableValue;
 

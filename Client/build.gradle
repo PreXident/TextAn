@@ -1,0 +1,20 @@
+apply from: 'javafx.plugin'
+apply plugin: 'java'
+
+defaultTasks 'run'
+
+repositories {
+	mavenCentral() //controlsfx
+	maven {
+		url "https://oss.sonatype.org/content/repositories/snapshots" //jfxtras
+	}
+}
+
+dependencies {
+	compile group: 'org.controlsfx', name: 'controlsfx', version: '8.0.2'
+	compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT'
+}
+
+javafx {
+	mainClass = 'cz.cuni.mff.ufal.textan.TextAn'
+}

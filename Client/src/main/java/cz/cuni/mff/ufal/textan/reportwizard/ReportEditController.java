@@ -1,15 +1,11 @@
-package cz.cuni.mff.ufal.autopolan.reportwizard;
+package cz.cuni.mff.ufal.textan.reportwizard;
 
-import cz.cuni.mff.ufal.autopolan.WindowController;
-import java.io.IOException;
+import cz.cuni.mff.ufal.textan.WindowController;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import org.controlsfx.dialog.Dialogs;
 
 /**
  * Controls editing the report.

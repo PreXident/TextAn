@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.autopolan.utils;
+package cz.cuni.mff.ufal.textan.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

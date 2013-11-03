@@ -13,7 +13,7 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
-			fx:controller="cz.cuni.mff.ufal.autopolan.reportwizard.ReportLoadController" styleClass="root" >
+			fx:controller="cz.cuni.mff.ufal.textan.reportwizard.ReportLoadController" styleClass="root" >
 	<stylesheets >
 		<URL value="@01_ReportLoad.css" />
 	</stylesheets>

@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.autopolan.reportwizard;
+package cz.cuni.mff.ufal.textan.reportwizard;
 
 import java.io.IOException;
 import java.util.Arrays;

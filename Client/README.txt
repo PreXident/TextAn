@@ -1,0 +1,1 @@
+Use gradle to build, run and deploy (jfxJar, jfxDeploy).

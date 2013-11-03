@@ -12,9 +12,9 @@
 <?import javafx.collections.FXCollections?>
 
 <BorderPane fx:id="root" prefHeight="600" prefWidth="800" xmlns:fx="http://javafx.com/fxml"
-			fx:controller="cz.cuni.mff.ufal.autopolan.AutoPolAnController" styleClass="root" >
+			fx:controller="cz.cuni.mff.ufal.textan.TextAnController" styleClass="root" >
 	<stylesheets >
-		<URL value="@Autopolan.css" />
+		<URL value="@TextAn.css" />
 	</stylesheets>
 	<top>
 		<VBox>
@@ -37,6 +37,4 @@
 	<center>
 		<AnchorPane fx:id="content"/>
 	</center>
-	<bottom>
-	</bottom>
 </BorderPane>

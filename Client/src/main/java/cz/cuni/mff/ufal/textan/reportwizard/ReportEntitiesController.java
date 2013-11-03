@@ -1,6 +1,6 @@
-package cz.cuni.mff.ufal.autopolan.reportwizard;
+package cz.cuni.mff.ufal.textan.reportwizard;
 
-import cz.cuni.mff.ufal.autopolan.WindowController;
+import cz.cuni.mff.ufal.textan.WindowController;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;

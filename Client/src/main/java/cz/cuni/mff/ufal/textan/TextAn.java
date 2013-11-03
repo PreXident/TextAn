@@ -1,6 +1,6 @@
-package cz.cuni.mff.ufal.autopolan;
+package cz.cuni.mff.ufal.textan;
 
-import cz.cuni.mff.ufal.autopolan.utils.UnclosableStream;
+import cz.cuni.mff.ufal.textan.utils.UnclosableStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,15 +15,15 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * AutoPolAn application.
+ * TextAn application.
  */
-public class AutoPolAn extends Application {
+public class TextAn extends Application {
 
     /** Path to default property file. The file should be inside the jar. */
-    private static final String DEFAULT_JAR_PROPERTIES = "autopolan.defprops";
+    private static final String DEFAULT_JAR_PROPERTIES = "TextAn.defprops";
 
     /** Default path to property file. */
-    private static final String DEFAULT_PROPERTIES = "autopolan.properties";
+    private static final String DEFAULT_PROPERTIES = "TextAn.properties";
 
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
@@ -44,7 +44,7 @@ public class AutoPolAn extends Application {
     String propertyFile;
 
     /** Application controller. */
-    AutoPolAnController controller;
+    TextAnController controller;
 
     @Override
     public void start(final Stage stage) throws Exception {
@@ -56,7 +56,7 @@ public class AutoPolAn extends Application {
         final List<String> args = getParameters().getRaw();
         if (helpNeeded(args)) {
             //TODO
-            System.out.printf("USAGE: java -jar autopolan.jar [property_file]\n");
+            System.out.printf("USAGE: java -jar TextAn.jar [property_file]\n");
             System.out.printf("If property_file argument is not provided, default property file \"%s\" will be used\n", DEFAULT_PROPERTIES);
             System.out.printf("If property_file argument is '-', standard input will be read\n");
             System.exit(0);
@@ -84,12 +84,12 @@ public class AutoPolAn extends Application {
         }
 
         //create javafx controls
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource("Autopolan.fxml"));
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("TextAn.fxml"));
         final Parent root = (Parent) loader.load();
         controller = loader.getController();
         controller.setSettings(settings);
         final Scene scene = new Scene(root);
-        scene.getStylesheets().addAll(AutoPolAn.class.getResource("/org/controlsfx/dialog/dialogs.css").toExternalForm()); //without this the first dialog in too small window could mess up its content
+        scene.getStylesheets().addAll(TextAn.class.getResource("/org/controlsfx/dialog/dialogs.css").toExternalForm()); //without this the first dialog in too small window could mess up its content
         stage.setScene(scene);
         stage.titleProperty().bind(controller.titleProperty());
         stage.show();

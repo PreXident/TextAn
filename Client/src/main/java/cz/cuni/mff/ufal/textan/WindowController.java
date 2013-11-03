@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.autopolan;
+package cz.cuni.mff.ufal.textan;
 
 import java.io.IOException;
 import java.util.ArrayList;
