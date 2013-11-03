@@ -1,4 +1,4 @@
-AutoPolAn
+TextAn
 =========
 
-MFF automaticky policejni analytik
+MFF automaticky (policejni) analytik
