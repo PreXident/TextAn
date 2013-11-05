@@ -10,3 +10,8 @@ build/
 private/
 .gradle/
 .nb-gradle/
+
+#InteliJ IDEA
+.idea/
+out/
+*.iml
