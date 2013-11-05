@@ -1,0 +1,16 @@
+Pridat sloupecek anchor do tabulky RelationOccurrence
+Pridat boolean sloupec k Objektum s informaci, jestli je objekt ztotozneny
+Opravdu pridat sloupce from a to do JoinedObjects
+Pridat sloupec pro datum zpracovani a datum pridani
+Dalsi revize zadani -> finalni alfa verze
+Debata o milnicich
+Zpravy oanotovane v xml
+Aplikacni server?
+
+ukoly:
+kuba - uima
+petr - bojarovi zadani, architektury serveru
+adam - gui
+vence - webservice/komunikace
+
+dalsi schuzka v patek v 11 hodin
