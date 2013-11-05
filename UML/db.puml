@@ -8,6 +8,7 @@ hide stereotypes
 table(Object) {
 	primary_key(id_object)
 	foreign_key(id_object_type)
+	alreadyJoined: Boolean
 	data
 }
 
@@ -37,10 +38,14 @@ table(JoinedObjects) {
 	primary_key(id_new_object)
 	foreign_key(id_old_object1)
 	foreign_key(id_old_object2)
+	from: Date
+	to: Date
 }
 
 table(Document) {
 	primary_key(id_document)
+	added: Date
+	processed: Date
 	text
 }
 
@@ -48,6 +53,7 @@ table(RelationOccurrence) {
 	primary_key(id_relation_occurrence)
 	foreign_key(id_relation)
 	foreign_key(id_documet)
+	anchor: String
 	position
 }
 
@@ -92,14 +98,6 @@ end note
 note bottom of IsInRelation
 	Teoreticky mohou existovat vztahy
 	objektu se sebou samym
-end note
-
-note bottom of JoinedObjects
-	Mozna by jeste mohla
-	byt doplnena o casove
-	udaje  "from" a "to"
-	aby slo pripadne i
-	odtotoznovat
 end note
 
 note as N1
