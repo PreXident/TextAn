@@ -1,5 +1,6 @@
 apply from: 'javafx.plugin'
 apply plugin: 'java'
+compileJava.options.encoding = 'UTF-8'
 
 defaultTasks 'run'
 
