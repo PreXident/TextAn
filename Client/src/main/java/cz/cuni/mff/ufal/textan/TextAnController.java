@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
@@ -51,8 +50,8 @@ public class TextAnController implements Initializable {
         System.out.printf("Initializing...\n");
         content.addEventFilter(MouseEvent.ANY, (MouseEvent t) -> {
             if (t.getSceneX()< 0 || t.getSceneY() < 0
-                    || t.getSceneX() > content.getWidth()
-                    || t.getSceneY() > content.getHeight()) {
+                    || t.getSceneX() > getWindow().getWidth()
+                    || t.getSceneY() > getWindow().getHeight()) {
                 t.consume();
             }
         });
