@@ -33,8 +33,6 @@ public class ReportEditController extends WindowController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//        textArea.prefWidthProperty().bind(scrollPane.widthProperty());
-//        textArea.prefHeightProperty().bind(scrollPane.heightProperty());
         textArea.setText(TEST_TEXT);
     }
 }

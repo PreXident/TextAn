@@ -1,12 +1,10 @@
-root {
-	display: block;
+.root {
+	-fx-padding: 10
 }
 
 .text-flow {
-	-fx-background-color: gray;
-	-fx-font-size: 50px
 }
 
 .selected {
-	-fx-effect: dropshadow(three-pass-box, green, 10, 10, 0, 0);
+	-fx-effect: dropshadow(three-pass-box, lightblue, 4, 4, 0, 0);
 }

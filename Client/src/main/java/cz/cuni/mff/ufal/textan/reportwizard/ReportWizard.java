@@ -6,7 +6,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
@@ -50,6 +52,58 @@ public class ReportWizard extends Window {
     public ReportWizard(final Properties settings) {
         super(TITLE);
         addEventFilter(MouseEvent.MOUSE_PRESSED, e -> this.toFront());
+        layoutXProperty().addListener(
+            (ObservableValue<? extends Number> ov, Number oldVal, Number newVal) -> {
+                if (newVal.doubleValue() < 0) {
+                    layoutXProperty().set(0);
+                } else {
+                    final Parent p = getParent();
+                    if (p != null ) {
+                        final Bounds b = p.getLayoutBounds();
+                        if (b.getWidth() < newVal.doubleValue() + getWidth()) {
+                            layoutXProperty().set(b.getWidth() - getWidth());
+                        }
+                    }
+                }
+            }
+        );
+        layoutYProperty().addListener(
+            (ObservableValue<? extends Number> ov, Number oldVal, Number newVal) -> {
+                if (newVal.doubleValue() < 0) {
+                    layoutYProperty().set(0);
+                } else {
+                    final Parent p = getParent();
+                    if (p != null ) {
+                        final Bounds b = p.getLayoutBounds();
+                        if (b.getHeight() < newVal.doubleValue() + getHeight()) {
+                            layoutYProperty().set(b.getHeight()- getHeight());
+                        }
+                    }
+                }
+            }
+        );
+        prefWidthProperty().addListener(
+            (ObservableValue<? extends Number> ov, Number oldVal, Number newVal) -> {
+                final Parent p = getParent();
+                if (p != null ) {
+                    final Bounds b = p.getLayoutBounds();
+                    if (b.getWidth() < getLayoutX() + newVal.doubleValue()) {
+                        setPrefWidth(b.getWidth() - getLayoutX());
+                    }
+                }
+            }
+        );
+        prefHeightProperty().addListener(
+            (ObservableValue<? extends Number> ov, Number oldVal, Number newVal) -> {
+                final Parent p = getParent();
+                if (p != null ) {
+                    final Bounds b = p.getLayoutBounds();
+                    if (b.getHeight() < getLayoutY() + newVal.doubleValue()) {
+                        setPrefHeight(b.getHeight() - getLayoutY());
+                    }
+                }
+            }
+        );
         this.settings = settings;
         //TODO init from settings
         setPrefSize(300, 200);

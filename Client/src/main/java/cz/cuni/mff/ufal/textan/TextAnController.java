@@ -7,8 +7,10 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import jfxtras.labs.scene.control.window.Window;
@@ -47,6 +49,13 @@ public class TextAnController implements Initializable {
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
         System.out.printf("Initializing...\n");
+        content.addEventFilter(MouseEvent.ANY, (MouseEvent t) -> {
+            if (t.getSceneX()< 0 || t.getSceneY() < 0
+                    || t.getSceneX() > content.getWidth()
+                    || t.getSceneY() > content.getHeight()) {
+                t.consume();
+            }
+        });
     }
 
     /**
