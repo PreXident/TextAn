@@ -1,0 +1,23 @@
+0) vyzkouset ruzna rozpoznavani entit a porovnat
+1) nekdo na komponentu pro matchovani entit a objektu v db:
+  - dostane entitu a vrati seznam objektu z db, ktere by se mohli k ni hodit spolu a ohodnocenim a toto se potom bude ukazovat uzivateli
+  - plus pokud jen jeden kandidat s velkou pravdepodobnosti, pak rovnou ztotoznit
+  - bud pravidlove nebo statisticky (podle rucniho ohodnoceni) - nejlepe se rozhodnout na zaklade dat
+  - jake metody strojoveho uceni v jave (ranking (?rovnou usporadava) VS klasifikace (?postupne pro kazdy objekt: ano, ztotoznit na 80%))
+  - klasifikator: vowpal wabbit
+2) clustering
+  - pro ztotoznovani, ale asi stejne jen pravidlove (bude to asi vyjimecne)
+  - ale treba pokud bude treba rozsirit zadani
+  - asi ale malo trenovacich dat
+  - pokud prirazovani strojovym uceni, pak cast kodu lze znovuvyuzit i zde
+3) webservice
+  - SOAP
+  - jak budou vypadat zpravy
+4) login v klientovi, klidne i na fleku vymyslet heslo, jen kvuli logovani zmen a nechtenym zmenam
+
+mozna novy clen Tam Duc Hoang, B.Sc. - tamhd1990@gmail.com
+- testovani, webservice, pojmenovane entity pro vietnamstinu, dokumentace pokud bude v anglictine, jazykova nezavislost, neco lingvistickyho
+
+ztotoznit a priradit do slovnicku a projit v zadani
+
+pristi schuzka zase v patek, zatim od dvou, ale mozna odlozeno na ctyri
