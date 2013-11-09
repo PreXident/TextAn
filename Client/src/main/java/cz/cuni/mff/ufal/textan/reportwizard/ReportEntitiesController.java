@@ -47,18 +47,18 @@ public class ReportEntitiesController extends WindowController {
 
     @FXML
     private void cancel() {
-        window.close();
+        closeContainer();
     }
 
     @FXML
     private void next() {
         Dialogs.create()
-                .owner(root)
+                .owner(getDialogOwner(root))
                 .title("Hotovo!")
                 .message("Zpráva úspěšně vytvořena")
                 .lightweight()
                 .showInformation();
-        window.close();
+        closeContainer();
     }
 
     public void setReport(final String report) {

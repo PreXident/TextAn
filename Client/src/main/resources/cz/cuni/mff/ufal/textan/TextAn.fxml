@@ -30,6 +30,9 @@
 					<Menu text="Wizards" >
 						<MenuItem text="Report" onAction="#reportWizard" />
 					</Menu>
+					<Menu text="Nastavení" >
+						<CheckMenuItem fx:id="menuItemIndependentWindows" text="Samostatná okna" onAction="#independentWindows" />
+					</Menu>
 				</menus>
 			</MenuBar>
 		</VBox>

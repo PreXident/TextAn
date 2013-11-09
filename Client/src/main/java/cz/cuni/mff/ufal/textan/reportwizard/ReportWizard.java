@@ -1,15 +1,10 @@
 package cz.cuni.mff.ufal.textan.reportwizard;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import jfxtras.labs.scene.control.window.Window;
@@ -23,27 +18,11 @@ public class ReportWizard extends Window {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Report Wizard";
 
-    static final String TEST_TEXT = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
-
-    static final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';')));
-
-    static final String SELECTED = "selected";
-
-    static protected void addSelectedClass(Iterable<Node> list) {
-        list.forEach(node -> node.getStyleClass().add(SELECTED));
-    }
-
-    static protected void removeSelectedClass(Iterable<Node> list) {
-        list.forEach(node -> node.getStyleClass().remove(SELECTED));
-    }
-
     /**
      * Settings of the application.
      * Handle with care, they're shared!
      */
     protected Properties settings;
-
-    int startTextIndex = -1;
 
     /**
      * Only constructor.

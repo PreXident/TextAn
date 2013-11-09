@@ -21,7 +21,7 @@ public class ReportLoadController extends WindowController {
 
     @FXML
     private void cancel() {
-        window.close();
+        closeContainer();
     }
 
     @FXML
@@ -29,7 +29,7 @@ public class ReportLoadController extends WindowController {
         if (!emptyMessageRadioButton.isSelected()) {
             callWithContentBackup(() -> {
                 Dialogs.create()
-                        .owner(root)
+                        .owner(getDialogOwner(root))
                         .title("Zatím neimplementováno!")
                         .message("Zvolili jste možnost, která nebyla doposud implementována")
                         .lightweight()

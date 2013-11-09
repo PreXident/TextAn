@@ -92,6 +92,7 @@ public class TextAn extends Application {
         scene.getStylesheets().addAll(TextAn.class.getResource("/org/controlsfx/dialog/dialogs.css").toExternalForm()); //without this the first dialog in too small window could mess up its content
         stage.setScene(scene);
         stage.titleProperty().bind(controller.titleProperty());
+        stage.setOnCloseRequest(e -> stop());
         stage.show();
         stage.toFront();
     }

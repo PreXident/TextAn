@@ -22,7 +22,7 @@ public class ReportEditController extends WindowController {
 
     @FXML
     private void cancel() {
-        window.close();
+        closeContainer();
     }
 
     @FXML
