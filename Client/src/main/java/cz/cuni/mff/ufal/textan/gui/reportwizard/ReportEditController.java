@@ -1,6 +1,6 @@
-package cz.cuni.mff.ufal.textan.reportwizard;
+package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import cz.cuni.mff.ufal.textan.WindowController;
+import cz.cuni.mff.ufal.textan.gui.WindowController;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;

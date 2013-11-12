@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan;
+package cz.cuni.mff.ufal.textan.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;

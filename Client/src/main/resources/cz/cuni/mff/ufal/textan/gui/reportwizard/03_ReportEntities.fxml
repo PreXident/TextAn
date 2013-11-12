@@ -13,14 +13,14 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
-			fx:controller="cz.cuni.mff.ufal.textan.reportwizard.ReportEditController" styleClass="root" >
+			fx:controller="cz.cuni.mff.ufal.textan.gui.reportwizard.ReportEntitiesController" styleClass="root" >
 	<stylesheets >
-		<URL value="@02_ReportEdit.css" />
+		<URL value="@03_ReportEntities.css" />
 	</stylesheets>
 	<center>
-		<!--<ScrollPane fx:id="scrollPane" >-->
-			<TextArea fx:id="textArea" wrapText="true"  />
-		<!--</ScrollPane>-->
+		<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
+			<TextFlow fx:id="textFlow" styleClass="text-flow" />
+		</ScrollPane>
 	</center>
 	<bottom>
 		<HBox alignment="CENTER_RIGHT" >

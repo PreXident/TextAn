@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.reportwizard;
+package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import java.io.IOException;
 import java.util.Properties;

@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan;
+package cz.cuni.mff.ufal.textan.gui;
 
 import cz.cuni.mff.ufal.textan.utils.UnclosableStream;
 import java.io.FileInputStream;

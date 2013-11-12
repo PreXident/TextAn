@@ -17,5 +17,5 @@ dependencies {
 }
 
 javafx {
-	mainClass = 'cz.cuni.mff.ufal.textan.TextAn'
+	mainClass = 'cz.cuni.mff.ufal.textan.gui.TextAn'
 }

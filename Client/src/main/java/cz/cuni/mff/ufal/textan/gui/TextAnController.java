@@ -1,7 +1,7 @@
-package cz.cuni.mff.ufal.textan;
+package cz.cuni.mff.ufal.textan.gui;
 
-import cz.cuni.mff.ufal.textan.reportwizard.ReportWizard;
-import cz.cuni.mff.ufal.textan.reportwizard.ReportWizardStage;
+import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizard;
+import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
