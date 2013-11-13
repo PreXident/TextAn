@@ -1,3 +1,4 @@
+Absent: Kuba (broken car), Vence (missed bus)
 Meeting and intruduction with Tam.
 Organization stuff (contacts, github, google disk)
 Presenting our work so far (GUI).
