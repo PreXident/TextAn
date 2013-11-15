@@ -1,0 +1,9 @@
+Meeting with Tam
+English will be our project's language!
+Next version of specification prepated and sent
+Proposed logo: http://janjinda.com/95275/829198/personal/doggys-game
+Server side architecture: standalone VS embedded webserver (and Tomcat Vs Jetty)
+Considered Technologies: Spring, CXF, Hibernate
+Tam probably will work on machine learning and NER
+
+Next meeting: tuesday 15:40
