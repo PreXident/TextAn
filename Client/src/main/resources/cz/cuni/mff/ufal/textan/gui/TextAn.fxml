@@ -32,12 +32,20 @@
 					</Menu>
 					<Menu text="Nastavení" >
 						<CheckMenuItem fx:id="menuItemIndependentWindows" text="Samostatná okna" onAction="#independentWindows" />
+						<CustomMenuItem hideOnClick="false" text="Login">
+							<content>
+								<HBox alignment="CENTER_LEFT" spacing="10"  >
+									<Label text="Login:" styleClass="login-label"/>
+									<TextField fx:id="loginTextField"/>
+								</HBox>
+							</content>
+						</CustomMenuItem>
 					</Menu>
 				</menus>
 			</MenuBar>
 		</VBox>
 	</top>
 	<center>
-		<AnchorPane fx:id="content"/>
+		<Pane fx:id="content"/>
 	</center>
 </BorderPane>

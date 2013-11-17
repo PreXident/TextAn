@@ -9,10 +9,12 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Properties;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  * TextAn application.
@@ -80,6 +82,23 @@ public class TextAn extends Application {
             } catch(Exception e) {
                 System.err.printf(String.format("Error with default property file \"%s\"\n", DEFAULT_PROPERTIES));
                 e.printStackTrace();
+            }
+        }
+
+        //ask for login if needed
+        if (settings.getProperty("username", "").equals("")) {
+            final String login = Dialogs.create()
+                    .masthead("Zadejte uživatelské jméno")
+                    .message("Login:")
+                    .showTextInput(System.getProperty("user.name", ""));
+            if (login == null) {
+                Dialogs.create()
+                        .masthead("Neplatné přihlášení!")
+                        .message("Pro pokračování je nutné zadat přihlašovací jméno.")
+                        .showError();
+                Platform.exit();
+            } else {
+                settings.setProperty("username", login);
             }
         }
 

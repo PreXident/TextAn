@@ -10,12 +10,14 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.window.Window;
 
@@ -34,10 +36,13 @@ public class TextAnController implements Initializable {
     private BorderPane root;
 
     @FXML
-    private AnchorPane content;
+    private Pane content;
 
     @FXML
     private CheckMenuItem menuItemIndependentWindows;
+
+    @FXML
+    private TextField loginTextField;
 
     /** Properties with application settings. */
     protected Properties settings = null;
@@ -90,6 +95,12 @@ public class TextAnController implements Initializable {
         this.settings = settings;
         menuItemIndependentWindows.setSelected(
                 settings.getProperty(INDEPENDENT_WINDOW, "false").equals("true"));
+        loginTextField.setText(settings.getProperty("username", System.getProperty("user.name")));
+        loginTextField.textProperty().addListener(
+            (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
+                settings.setProperty("username", newVal);
+            }
+        );
     }
 
     /**

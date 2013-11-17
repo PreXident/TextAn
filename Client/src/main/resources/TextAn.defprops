@@ -1,0 +1,16 @@
+#use native windows instead of inner jfxtras windows
+windows.independent=false
+#width of main application window
+window.width=800
+#height of main application window
+window.height=600
+#width of report wizard
+report.wizard.width=300
+#height of report wizard
+report.wizard.height=200
+#x position of report wizard
+report.wizard.x=0
+#y position of report wizard
+report.wizard.y=0
+#maximized report wizard
+report.wizard.maximized=false
