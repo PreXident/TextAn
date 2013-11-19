@@ -4,6 +4,8 @@ compileJava.options.encoding = 'UTF-8'
 
 defaultTasks 'run'
 
+sourceCompatibility=1.8
+
 repositories {
 	mavenCentral() //controlsfx
 	maven {
