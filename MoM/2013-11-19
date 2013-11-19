@@ -1,0 +1,14 @@
+all here!
+- client is more clever again
+- jetty will be our embedded server if CXF inner server capabilities are not use
+- pre-alfa version of server is completed!
+- classsification for object assigning is being tested; ranking is planned on this week
+- Spring is still being cosidered - HWK: look up a tutorial and play it with (recommended video tutorial on JavaBrain)
+http://javabrains.koushik.org/p/spring-framework.html
+http://javabrains.koushik.org/p/hibernate.html
+- Tam and Kuba should discuss classification and ranking frameworks
+- Venca should look into messages betweet client and server
+- Adam, Peter and Venca some reading about CXF
+- using security? as it is already in the frameworks
+
+next meeting probably at 4PM on Friday
