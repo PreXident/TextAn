@@ -16,6 +16,7 @@ repositories {
 dependencies {
 	compile group: 'org.controlsfx', name: 'controlsfx', version: '8.0.2'
 	compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT'
+	compile project(':Commons')
 }
 
 javafx {

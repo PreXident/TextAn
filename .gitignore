@@ -10,6 +10,7 @@ build/
 private/
 .gradle/
 .nb-gradle/
+.nb-gradle-properties
 
 #InteliJ IDEA
 .idea/
@@ -21,3 +22,6 @@ out/
 .classpath
 .project
 .settings/
+
+#directory symlinks
+Client/Commons

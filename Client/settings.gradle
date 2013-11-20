@@ -1,2 +1,4 @@
 //set project name to get correctly named jars
 rootProject.name = 'TextAn'
+include ':Commons'
+//project(':Commons').projectDir = new File('../Commons') //netbeans cannot handle this, hence symlink
