@@ -88,11 +88,13 @@ public class TextAn extends Application {
         //ask for login if needed
         if (settings.getProperty("username", "").equals("")) {
             final String login = Dialogs.create()
+                    .title(TextAnController.TITLE)
                     .masthead("Zadejte uživatelské jméno")
                     .message("Login:")
                     .showTextInput(System.getProperty("user.name", ""));
             if (login == null) {
                 Dialogs.create()
+                        .title(TextAnController.TITLE)
                         .masthead("Neplatné přihlášení!")
                         .message("Pro pokračování je nutné zadat přihlašovací jméno.")
                         .showError();
