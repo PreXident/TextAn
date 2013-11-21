@@ -17,6 +17,7 @@ private/
 out/
 *.iml
 *.iws
+*.ipr
 
 # Eclipse
 .classpath
