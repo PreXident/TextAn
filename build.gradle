@@ -1,6 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 
+defaultTasks 'Client:run'
+
 idea {
   project {
     jdkName = '1.8' 
@@ -10,5 +12,6 @@ idea {
 
 subprojects {
   apply plugin: 'java'
+  apply plugin: 'idea'
 }
 

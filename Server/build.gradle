@@ -1,7 +1,10 @@
 apply plugin: 'java'
+apply plugin: 'application'
 
-sourceCompatibility = '1.7'
+sourceCompatibility = '1.8'
 defaultTasks 'run'
+
+mainClassName = 'cz.cuni.mff.ufal.textan.server.AppEntry'
 
 repositories {
     mavenCentral()
@@ -22,5 +25,10 @@ dependencies {
     compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: '2.7.7'
     compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: '2.7.7'
 
+    compile project(':Commons')
+
     testCompile group: 'junit', name: 'junit', version: '4.+'
 }
+
+
+
