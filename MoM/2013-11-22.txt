@@ -1,0 +1,35 @@
+All here!
+- Gradle server project is set up
+- Spring could be used as CXF probably uses it anyway
+- Kuba: create JavaML testing project
+
+- NER will be available before the project start
+	- someone to program cpp domain specific features for NER
+- everyone is a tester of others - self organized project
+- current state of project:
+	- Venca (database):
+		- hibernate - probably can be used
+		- only server accesses the database
+		- kind of messages between client and webserver
+		- sql scripts
+	- Tam (NER):
+		- additions to NER
+		- cpp to java connection - if not provided by Milan Straka
+		- documents from client to server and other way
+	- Kuba (machine learning):
+		- JavaML could be used (both ranking and classification)
+		- weka alternative, but more for teaching purposes, good algorithms must be found
+		- special layer of abstraction to be able to switch to different library later
+		- create JavaML testing project
+	- Adam (client):
+		- other java html editors
+		- explore cxf
+		- connect to server and test connectivity
+	- Peter (machine learning, webserver, webservices):
+		- explore spring, java cxf
+		- all machine learning on server
+		- probably ranking will be used as it fits our problem
+		- hello world server
+
+Next meeting on Tuesday at 15:40
+Next meeting with Ondrej in two weeks or when NER ready or committee response
