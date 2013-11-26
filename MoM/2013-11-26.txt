@@ -1,0 +1,11 @@
+- JavaML can be used, but it is not tested to work with large datasets (no forum complaints though)
+- server needs more tweaking, push it into a new branch
+- dialogs not fully drawn in separate windows
+- calling c from java - problems, not so easy (a lot of compilation necessary)
+- setup db sql scripts
+- implement testing feature function
+- uml diagrams for client and continue working on it
+- basic communication prepared
+
+
+Next meeting Tuesday 15:40
