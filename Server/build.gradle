@@ -13,8 +13,11 @@ repositories {
 dependencies {
     //web servers
     //embedded jetty last stable version
-    compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.0.7.v20131107'
-    compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: '9.0.7.v20131107'
+    //compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.0.7.v20131107'
+    //compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: '9.0.7.v20131107'
+    compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '8.1.14.v20131031'
+    compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: '8.1.14.v20131031'
+	compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '8.1.14.v20131031'
 
     //embedded tomcat last stable version
     //compile group: 'org.apache.tomcat', name: 'tomcat-catalina', version: '7.0.47'
@@ -25,7 +28,13 @@ dependencies {
     compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: '2.7.7'
     compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: '2.7.7'
 
+    //spring
+    compile group: 'org.springframework', name:'spring-context', version: '3.2.5.RELEASE'
+	runtime group: 'org.springframework', name:'spring-web', version: '3.2.5.RELEASE'
+
     compile project(':Commons')
+
+    runtime group: 'org.apache.cxf', name: 'cxf-rt-transports-http-jetty', version: '2.7.6'
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
 }

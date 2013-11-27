@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+	<import resource="classpath:cz/cuni/mff/ufal/textan/server/beans-cxf.xml" />
+
+<!--	<bean id="propertyConfigurer"
+		  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="file:conf/server.properties" />
+	</bean>-->
+
+	<bean id="server"
+		  class="org.eclipse.jetty.server.Server"
+		  init-method="start"
+		  destroy-method="stop">
+		<property name="connectors">
+			<list>
+				<bean id="connector" class="org.eclipse.jetty.server.nio.SelectChannelConnector">
+					<property name="host" value="localhost"/>
+					<property name="port" value="9002"/>
+				</bean>
+			</list>
+		</property>
+		<property name="handler">
+			<list>
+				<ref bean="context-cxf"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean name="context-cxf" class="org.eclipse.jetty.servlet.ServletContextHandler">
+		<property name="contextPath" value="/" />
+		<property name="handler">
+			<bean class="org.eclipse.jetty.servlet.ServletHandler">
+				<property name="servlets">
+					<list>
+						<bean class="org.eclipse.jetty.servlet.ServletHolder">
+							<property name="name" value="cxf-servlet-holder" />
+							<property name="servlet">
+								<bean class="org.apache.cxf.transport.servlet.CXFServlet">
+									<constructor-arg>
+										<null/>
+									</constructor-arg>
+								</bean>
+							</property>
+						</bean>
+					</list>
+				</property>
+				<property name="servletMappings">
+					<list>
+						<bean class="org.eclipse.jetty.servlet.ServletMapping">
+							<property name="servletName" value="cxf-servlet-holder" />
+							<property name="pathSpec" value="/*" />
+						</bean>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+</beans>
