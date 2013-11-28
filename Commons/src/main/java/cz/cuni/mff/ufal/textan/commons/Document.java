@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.commons;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * User: Petr Fanta
@@ -28,6 +29,7 @@ public class Document {
      * Gets text of document.
      * @return text The text of document.
      */
+    @XmlTransient
     public String getText() {
         return text;
     }
