@@ -26,3 +26,4 @@ out/
 
 #directory symlinks
 Client/Commons
+Server/Commons

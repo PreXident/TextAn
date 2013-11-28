@@ -1,11 +1,13 @@
 package cz.cuni.mff.ufal.textan.gui;
 
+import cz.cuni.mff.ufal.textan.commons.IHelloWorld;
 import cz.cuni.mff.ufal.textan.utils.UnclosableStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 import javafx.application.Application;
@@ -14,6 +16,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+import javax.xml.ws.soap.SOAPBinding;
 import org.controlsfx.dialog.Dialogs;
 
 /**
@@ -50,6 +55,18 @@ public class TextAn extends Application {
 
     @Override
     public void start(final Stage stage) throws Exception {
+
+        Service service = Service.create(new URL("http://localhost:9003/HelloWorld?wsdl"), new QName("http://server.textan.ufal.mff.cuni.cz/", "HelloWorld"));
+        // Endpoint Address
+        String endpointAddress = "http://localhost:9003/HelloWorld";
+
+        // Add a port to the Service
+        service.addPort(new QName("http://server.hw.demo/", "HelloWorldPort"), SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
+
+        IHelloWorld hw = service.getPort(IHelloWorld.class);
+        System.out.println(hw.helloWithName("World"));
+
+
         System.out.printf("Starting...\n");
         //load default properties
         settings = new Properties(loadDefaultJarProperties());

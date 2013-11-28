@@ -9,7 +9,6 @@ import org.springframework.web.context.ContextLoaderListener;
 //import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-
 /**
  * User: Petr Fanta
  * Date: 19.11.13
