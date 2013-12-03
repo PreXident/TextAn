@@ -1,0 +1,19 @@
+- Tam successfully made jni working
+- Peter made the server pre-alfa prototype and Adam modified the client to communicate with it
+- Jakub tried to write own classifier, partial success
+- Venca committed a few db scripts
+
+- machine learning - Tam and Kuba write interfaces of machine learning and NER and API so other components could use them
+	- mock object to simulate the component
+	- machine learner - direct communication with db or data provided by server? probably server provided
+	- can JavaML handle large data? does it load all data into memory?
+- try hibernate and connect to db from a application; maybe readme for dummies how to setup the db
+	- or ask mff to provide some db
+- decide the server side solution - maybe war inside the jar loaded to embedded jetty?
+- start modelling webservices (and data objects from server to client)
+- the logo is being prepared
+
+If the NER is not ready on Friday or nothing important happens (send email on Thursday in case), the meeting will be on Tuesday on 15:40 as usual.
+
+link with solution for 32/64b libs
+http://stackoverflow.com/questions/5379589/java-switching-between-dll-depends-on-system-architecture-32-64
