@@ -5,3 +5,5 @@
 		REFERENCES ObjectType (id_object_type),
 	data nvarchar
 )
+
+-- TODO add column alreadyJoined? Why?
