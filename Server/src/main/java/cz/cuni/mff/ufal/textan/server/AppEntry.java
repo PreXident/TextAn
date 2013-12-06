@@ -19,7 +19,7 @@ public class AppEntry {
 
     public static void main(String[] args) throws Exception {
 
-        Server server = new Server(8080);
+        Server server = new Server(9100);
 
         final ServletHolder servletHolder = new ServletHolder(new CXFServlet());
         final ServletContextHandler context = new ServletContextHandler();

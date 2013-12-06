@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui;
 
-import cz.cuni.mff.ufal.textan.commons.IHelloWorld;
+import cz.cuni.mff.ufal.textan.commons.Document;
+import cz.cuni.mff.ufal.textan.commons.ISimpleWebService;
 import cz.cuni.mff.ufal.textan.utils.UnclosableStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -56,15 +57,18 @@ public class TextAn extends Application {
     @Override
     public void start(final Stage stage) throws Exception {
 
-        Service service = Service.create(new URL("http://localhost:9003/HelloWorld?wsdl"), new QName("http://server.textan.ufal.mff.cuni.cz/", "HelloWorld"));
+        Service service = Service.create(new URL("http://localhost:9100/soap/simple?wsdl"), new QName("http://server.textan.ufal.mff.cuni.cz/", "SimpleWebService"));
         // Endpoint Address
-        String endpointAddress = "http://localhost:9003/HelloWorld";
+        String endpointAddress = "http://localhost:9100/soap/simple";
 
         // Add a port to the Service
-        service.addPort(new QName("http://server.hw.demo/", "HelloWorldPort"), SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
+        service.addPort(new QName("http://server.textan.ufal.mff.cuni.cz/SimpleWebService", "SimpleWebServicePort"), SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
 
-        IHelloWorld hw = service.getPort(IHelloWorld.class);
-        System.out.println(hw.helloWithName("World"));
+        ISimpleWebService hw = service.getPort(ISimpleWebService.class);
+        System.out.println(hw.hello("World"));
+
+        Document doc = hw.toDocument("Testing document");
+        System.out.println(doc.getText());
 
 
         System.out.printf("Starting...\n");
