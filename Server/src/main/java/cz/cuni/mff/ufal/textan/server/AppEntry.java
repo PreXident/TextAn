@@ -31,7 +31,9 @@ public class AppEntry {
         context.setInitParameter("contextClass", AnnotationConfigWebApplicationContext.class.getName());
         context.setInitParameter("contextConfigLocation", AppConfig.class.getName());
 
+        System.out.println("Set Handler.");
         server.setHandler(context);
+        System.out.println("Start server.");
         server.start();
 
         System.out.println("Server running...");
