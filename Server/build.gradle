@@ -19,7 +19,7 @@ dependencies {
 
     //spring
     compile (group: 'org.springframework', name: 'spring-context', version: '3.2.5.RELEASE') {
-        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'commons-logging', module: 'commons-logging' // we want to use SLF4J for logging
     }
     compile group: 'org.springframework', name: 'spring-web', version: '3.2.5.RELEASE'
 
@@ -28,10 +28,9 @@ dependencies {
     compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: '2.7.7'
 
     //logging
-    //logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.5'
-    runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.5'
-    compile group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.5'
+    runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.5' //TODO: Change to log4j or something like that
+    runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.5' //wrapper for spring
 
     compile project(':Commons')
 

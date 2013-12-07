@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.server;
 import cz.cuni.mff.ufal.textan.commons.Document;
 import cz.cuni.mff.ufal.textan.commons.ISimpleWebService;
 
+import javax.annotation.Resource;
 import javax.jws.WebService;
 
 /**
@@ -12,6 +13,17 @@ import javax.jws.WebService;
  */
 @WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons.ISimpleWebService", serviceName = "SimpleWebService")
 public class SimpleWebService implements ISimpleWebService {
+
+    public Object getAnalyzer() {
+        return analyzer;
+    }
+
+    @Resource
+    public void setAnalyzer(Object analyzer) {
+        this.analyzer = analyzer;
+    }
+
+    private Object analyzer;
 
     private static int counter = 0;
 
