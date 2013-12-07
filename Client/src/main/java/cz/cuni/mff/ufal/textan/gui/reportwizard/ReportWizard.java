@@ -46,9 +46,8 @@ public class ReportWizard extends Window {
     /**
      * Change listener for parent size changes.
      */
-    protected ChangeListener<Number> sizeListener = new ChangeListener<Number>() {
-        @Override
-        public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+    protected ChangeListener<Number> sizeListener =
+        (ObservableValue<? extends Number> ov, Number oldVal, Number newVal) -> {
             final Parent parent = getParent();
             if (parent instanceof Region || !maximized.get()) {
                 adjustX(getLayoutX());
@@ -56,8 +55,7 @@ public class ReportWizard extends Window {
                 adjustHeight(getPrefHeight());
                 adjustWidth(getPrefWidth());
             }
-        }
-    };
+        };
 
     /**
      * Only constructor.
@@ -81,6 +79,7 @@ public class ReportWizard extends Window {
                     if (maximized.get()) {
                         adjustMaximized();
                     }
+                    sizeListener.changed(null, null, null); //adjust to new parent
                 }
             }
         );
@@ -89,7 +88,7 @@ public class ReportWizard extends Window {
                 adjustMaximized();
             }
         );
-        //TODO init from settings
+        //init from settings
         maximized.set(settings.getProperty("report.wizard.maximized", "false").equals("true"));
         setPrefWidth(Double.parseDouble(settings.getProperty("report.wizard.width", "300")));
         setPrefHeight(Double.parseDouble(settings.getProperty("report.wizard.height", "200")));
@@ -130,7 +129,6 @@ public class ReportWizard extends Window {
             e.printStackTrace();
             Dialogs.create()
                     .title("Problém při načítání wizardu!")
-                    .lightweight()
                     .showException(e);
         }
     }

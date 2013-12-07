@@ -13,7 +13,7 @@ import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
 /**
- *
+ * Abstract ancestore for windows controllers.
  */
 public abstract class WindowController implements Initializable {
 
@@ -77,6 +77,15 @@ public abstract class WindowController implements Initializable {
     }
 
     /**
+     * Creates new Dialogs. Result is lightweight if in {@link Window}.
+     * @return newly created Dialogs, lightweight if in Window
+     */
+    protected Dialogs createDialog() {
+        final Dialogs result = Dialogs.create();
+        return window != null ? result.lightweight() : result;
+    }
+
+    /**
      * Loads the next frame of the wizard.
      * @param <T> type of controller of the next frame
      * @param fxml file containing the next frame
@@ -99,9 +108,8 @@ public abstract class WindowController implements Initializable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            Dialogs.create()
+            createDialog()
                     .title("Problém při načítání další stránky!")
-                    .lightweight()
                     .showException(e);
         }
         return controller;

@@ -28,11 +28,10 @@ public class ReportLoadController extends WindowController {
     private void next() {
         if (!emptyMessageRadioButton.isSelected()) {
             callWithContentBackup(() -> {
-                Dialogs.create()
+                createDialog()
                         .owner(getDialogOwner(root))
                         .title("Zatím neimplementováno!")
                         .message("Zvolili jste možnost, která nebyla doposud implementována")
-                        .lightweight()
                         .showError();
             });
         } else {

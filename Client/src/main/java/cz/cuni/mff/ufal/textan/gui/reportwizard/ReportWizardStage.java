@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.io.IOException;
 import java.util.Properties;
 import javafx.fxml.FXMLLoader;
@@ -29,11 +30,12 @@ public class ReportWizardStage extends Stage {
      */
     public ReportWizardStage(final Properties settings) {
         setTitle(TITLE);
-        addEventFilter(MouseEvent.MOUSE_PRESSED, e -> this.toFront());
         this.settings = settings;
-        //TODO init from settings
-        setWidth(300);
-        setHeight(200);
+        setOnCloseRequest(e -> close());
+        //init from settings
+        Utils.prepareStage(this, "report.wizard", settings);
+        //add listeners
+        addEventFilter(MouseEvent.MOUSE_PRESSED, e -> this.toFront());
         //
         try {
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("01_ReportLoad.fxml"));
@@ -46,7 +48,6 @@ public class ReportWizardStage extends Stage {
             e.printStackTrace();
             Dialogs.create()
                     .title("Problém při načítání wizardu!")
-                    .lightweight()
                     .showException(e);
         }
     }

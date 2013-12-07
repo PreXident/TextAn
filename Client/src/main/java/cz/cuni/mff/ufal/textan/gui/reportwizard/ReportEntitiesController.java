@@ -52,11 +52,10 @@ public class ReportEntitiesController extends WindowController {
 
     @FXML
     private void next() {
-        Dialogs.create()
+        createDialog()
                 .owner(getDialogOwner(root))
                 .title("Hotovo!")
                 .message("Zpráva úspěšně vytvořena")
-                .lightweight()
                 .showInformation();
         closeContainer();
     }

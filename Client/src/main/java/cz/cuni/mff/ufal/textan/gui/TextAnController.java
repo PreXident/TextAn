@@ -71,6 +71,11 @@ public class TextAnController implements Initializable {
         } else {
             final ReportWizardStage stage = new ReportWizardStage(settings);
             children.add(stage);
+            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(stage);
+                }
+            });
             stage.show();
         }
     }
@@ -127,7 +132,8 @@ public class TextAnController implements Initializable {
                 .filter(n -> n instanceof Window)
                 .map(n -> (Window) n)
                 .forEach(w -> w.close());
-        for (Stage stage : children) {
+        //copy needed as closing removes stages from children
+        for (Stage stage : new ArrayList<>(children)) {
             stage.close();
         }
     }
