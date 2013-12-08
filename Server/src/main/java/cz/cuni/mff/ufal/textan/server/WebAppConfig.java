@@ -12,14 +12,25 @@ import org.springframework.context.annotation.Configuration;
  * Time: 18:04
  */
 
+/**
+ * Spring configuration for CXFServlet
+ */
 @Configuration
 public class WebAppConfig {
 
+    /**
+     * Creates spring bean with bus for CXF initialization
+     * @return Return Spring bus
+     */
     @Bean( destroyMethod = "shutdown" )
     public SpringBus cxf() {
         return new SpringBus();
     }
 
+    /**
+     * Creates endpoint for SimpleWebService
+     * @return Returns endpoint
+     */
     @Bean
     public Server jaxWsServer() {
         JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
@@ -28,6 +39,10 @@ public class WebAppConfig {
         return factory.create();
     }
 
+    /**
+     * Creates Spring bean with webservice class
+     * @return Returns bean for SimpleWebService
+     */
     @Bean
     public SimpleWebService simpleWebService() {
         return new SimpleWebService();

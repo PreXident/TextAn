@@ -11,7 +11,6 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-
 /**
  * User: Petr Fanta
  * Date: 19.11.13

@@ -11,26 +11,12 @@ import javax.jws.WebService;
  * Date: 19.11.13
  * Time: 22:45
  */
+
+/**
+ * Testing web service
+ */
 @WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons.ISimpleWebService", serviceName = "SimpleWebService")
 public class SimpleWebService implements ISimpleWebService {
-
-    public Object getAnalyzer() {
-        return analyzer;
-    }
-
-    @Resource
-    public void setAnalyzer(Object analyzer) {
-        this.analyzer = analyzer;
-    }
-
-    private Object analyzer;
-
-    private static int counter = 0;
-
-    public SimpleWebService() {
-        System.out.println("Instance SimpleWebService c.: " + counter);
-        counter++;
-    }
 
     @Override
     public String helloWorld(){
