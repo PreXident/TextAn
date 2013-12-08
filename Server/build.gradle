@@ -15,20 +15,28 @@ dependencies {
     //embedded jetty last stable version
     compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.0.7.v20131107'
     compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: '9.0.7.v20131107'
+    compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.0.7.v20131107'
 
-    //embedded tomcat last stable version
-    //compile group: 'org.apache.tomcat', name: 'tomcat-catalina', version: '7.0.47'
-    //compile group: 'org.apache.tomcat', name: 'tomcat-util', version: '7.0.47'
-    //compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '7.0.47'
+    //spring
+    compile (group: 'org.springframework', name: 'spring-context', version: '3.2.5.RELEASE') {
+        exclude group: 'commons-logging', module: 'commons-logging' // we want to use SLF4J for logging
+    }
+    compile group: 'org.springframework', name: 'spring-web', version: '3.2.5.RELEASE'
 
     //web services
     compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: '2.7.7'
     compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: '2.7.7'
 
+    //logging
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.5'
+    runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.5' //TODO: Change to log4j or something like that
+    runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.5' //wrapper for spring
+
     compile project(':Commons')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
 }
+
 
 
 

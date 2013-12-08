@@ -1,11 +1,14 @@
 package cz.cuni.mff.ufal.textan.gui;
 
+import cz.cuni.mff.ufal.textan.commons.Document;
+import cz.cuni.mff.ufal.textan.commons.ISimpleWebService;
 import cz.cuni.mff.ufal.textan.utils.UnclosableStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 import javafx.application.Application;
@@ -14,6 +17,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+import javax.xml.ws.soap.SOAPBinding;
 import org.controlsfx.dialog.Dialogs;
 
 /**
@@ -50,6 +56,21 @@ public class TextAn extends Application {
 
     @Override
     public void start(final Stage stage) throws Exception {
+
+        Service service = Service.create(new URL("http://localhost:9100/soap/simple?wsdl"), new QName("http://server.textan.ufal.mff.cuni.cz/", "SimpleWebService"));
+        // Endpoint Address
+        String endpointAddress = "http://localhost:9100/soap/simple";
+
+        // Add a port to the Service
+        service.addPort(new QName("http://server.textan.ufal.mff.cuni.cz/SimpleWebService", "SimpleWebServicePort"), SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
+
+        ISimpleWebService hw = service.getPort(ISimpleWebService.class);
+        System.out.println(hw.hello("World"));
+
+        Document doc = hw.toDocument("Testing document");
+        System.out.println(doc.getText());
+
+
         System.out.printf("Starting...\n");
         //load default properties
         settings = new Properties(loadDefaultJarProperties());
