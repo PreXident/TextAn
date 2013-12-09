@@ -1,12 +1,11 @@
 package cz.cuni.mff.ufal.textan.server;
 
-import cz.cuni.mff.ufal.textan.commons.Document;
-import cz.cuni.mff.ufal.textan.commons.ISimpleWebService;
+import cz.cuni.mff.ufal.textan.commons.models.Document;
+import cz.cuni.mff.ufal.textan.commons.ws.ISimpleWebService;
 
-import javax.annotation.Resource;
 import javax.jws.WebService;
 
-/**
+/*
  * User: Petr Fanta
  * Date: 19.11.13
  * Time: 22:45
@@ -15,7 +14,7 @@ import javax.jws.WebService;
 /**
  * Testing web service
  */
-@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons.ISimpleWebService", serviceName = "SimpleWebService")
+@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.ISimpleWebService", serviceName = "SimpleWebService")
 public class SimpleWebService implements ISimpleWebService {
 
     @Override

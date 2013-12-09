@@ -6,7 +6,7 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
+/*
  * User: Petr Fanta
  * Date: 28.11.13
  * Time: 18:04
