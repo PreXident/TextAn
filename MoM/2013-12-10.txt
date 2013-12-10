@@ -1,0 +1,20 @@
+Server architecture in alfa!
+Tagger ready!
+NER before Christmas, hopefully.
+Tagger won't compile on Windows, only Unix for now.
+The java binding works! Even though it was not supposed to be ready in the beta.
+
+It is possible to run our test db here in MS - writing an email with reason is enough.
+
+GUI is the most important part as it can effect the committee a lot during the presentation.
+
+Database clarification:
+- alreadyJoined - flag indicating whether the object has beed joined with another one into new one
+- Object needs to have new field with timestamp of creation date
+
+HWKS:
+- try hibernate, see previous MoM
+- spring data - layer above hibernate
+- machine learning see previous MoM
+- webservices more detailed
+- client need to progress finally!
