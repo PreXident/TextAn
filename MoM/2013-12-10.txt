@@ -10,11 +10,13 @@ GUI is the most important part as it can effect the committee a lot during the p
 
 Database clarification:
 - alreadyJoined - flag indicating whether the object has beed joined with another one into new one
-- Object needs to have new field with timestamp of creation date
+- Object needs to have a new field with timestamp of creation date
 
 HWKS:
 - try hibernate, see previous MoM
 - spring data - layer above hibernate
 - machine learning see previous MoM
 - webservices more detailed
-- client need to progress finally!
+- client needs to progress finally!
+
+The next meeting was not specified, so default value next Tuesday in use :-)
