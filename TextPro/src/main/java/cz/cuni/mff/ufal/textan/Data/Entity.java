@@ -1,0 +1,64 @@
+// *************** INTERFACE*******************
+package cz.cuni.mff.ufal.textan.Data;
+/*
+ * All characteristics of an Entity
+ */
+
+public class Entity{
+
+    public Entity(String text, int offset, int position, int type) {
+        this.text = text;
+        this.offset = offset;
+        this.position = position;
+        this.type = type;
+    }
+    
+    /*
+     * The words in ducument
+     */
+    String text;
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+ 
+   
+    /*
+     * Length of the entity
+     */
+    int offset;
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }    
+    
+    /*
+     * position of the entity
+     */
+    int position;
+
+    public int getPosition() {
+        return position;
+    }
+    public void setPosition(int position) {
+        this.position = position;
+    }
+    
+    /*
+     * type of the entity
+     */
+    int type;
+    public int getType() {
+        return type;
+    }
+    public void setType(int type) {
+        this.type = type;
+    }    
+}
