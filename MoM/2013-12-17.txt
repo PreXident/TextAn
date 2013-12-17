@@ -1,0 +1,29 @@
+Kuba is missing and without proper excuse!
+Server is not working in the main branch, only in server-testing - restart helps, its crazy!
+
+Data-layer:
+ - packages:
+   - cz.cuni.mff.ufal.textan.data //main data package
+   - cz.cuni.mff.ufal.textan.data.tables //tables models
+   - cz.cuni.mff.ufal.textan.data.views //models for joined tables
+   - cz.cuni.mff.ufal.textan.data.repositories //
+ - 
+ 
+ 
+
+Homeworks:
+ - Venca:
+   - look at http://projects.spring.io/spring-data/, http://javabrains.koushik.org/p/spring-framework.html, http://projects.spring.io/spring-framework/
+   - start work on data layer (repositories, table data models...for now)
+   
+ - Petr:
+   - create data-layer sub project 
+   - try to run server... and repair it
+   - create webservices interfaces (DataProvider, DocumentProcessor)
+   
+ - Tam:
+   - send email to Jakub about what they will do next
+   
+ - Adam:
+   - look on ext. design patterns for GUI
+Next meeting 3.1.2014 at 16:00.
