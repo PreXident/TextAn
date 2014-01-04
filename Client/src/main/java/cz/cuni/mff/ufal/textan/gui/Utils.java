@@ -33,4 +33,7 @@ public class Utils {
         stage.xProperty().addListener(sizeListener);
         stage.yProperty().addListener(sizeListener);
     }
+
+    /** Utility class, no instantiation. */
+    private Utils() { }
 }

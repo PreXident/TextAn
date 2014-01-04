@@ -78,7 +78,7 @@ public class TextAn extends Application {
         //parse arguments from command line, ie. load property file
         final List<String> args = getParameters().getRaw();
         if (helpNeeded(args)) {
-            //TODO
+            //TODO usage printing
             System.out.printf("USAGE: java -jar TextAn.jar [property_file]\n");
             System.out.printf("If property_file argument is not provided, default property file \"%s\" will be used\n", DEFAULT_PROPERTIES);
             System.out.printf("If property_file argument is '-', standard input will be read\n");
@@ -107,7 +107,7 @@ public class TextAn extends Application {
         }
 
         //ask for login if needed
-        if (settings.getProperty("username", "").equals("")) {
+        if (settings.getProperty("username", "").isEmpty()) {
             final String login = Dialogs.create()
                     .title(TextAnController.TITLE)
                     .masthead("Zadejte uživatelské jméno")
@@ -152,7 +152,7 @@ public class TextAn extends Application {
         }
         if (args.size() == 1) {
             final String param = args.get(0);
-            return param.equals("--help") || param.equals("-h") || param.equals("/?");
+            return param.equals("--help") || param.equals("-h") || param.equals("/?") || param.equals("/H");
         }
         return false;
     }

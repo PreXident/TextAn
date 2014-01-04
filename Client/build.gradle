@@ -19,10 +19,18 @@ dependencies {
 	compile project(':Commons')
 }
 
+cssToBin {
+	enabled = false
+}
+
 javafx {
 	mainClass = 'cz.cuni.mff.ufal.textan.gui.TextAn'
 }
 
 run {
+	workingDir = 'build'
+}
+
+debug {
 	workingDir = 'build'
 }

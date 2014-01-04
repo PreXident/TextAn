@@ -1,7 +1,10 @@
 package cz.cuni.mff.ufal.textan.gui;
 
-import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizard;
+import cz.cuni.mff.ufal.textan.core.Client;
+import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
+import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
+import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +56,11 @@ public class TextAnController implements Initializable {
     /** List of children stages. */
     protected List<Stage> children = new ArrayList<>();
 
+    /** Core client for the application.
+     * It is created when settings are provided.
+     */
+    protected Client client = null;
+
     @FXML
     private void close() {
         Platform.exit();
@@ -65,9 +73,12 @@ public class TextAnController implements Initializable {
 
     @FXML
     private void reportWizard() {
+        final ProcessReportPipeline pipeline = client.createNewReportPipeline();
+        StateChangedListener listener;
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-            final ReportWizard wizard = new ReportWizard(settings);
+            final ReportWizardWindow wizard = new ReportWizardWindow(settings);
             content.getChildren().add(wizard);
+            listener = new StateChangedListener(settings, pipeline, wizard);
         } else {
             final ReportWizardStage stage = new ReportWizardStage(settings);
             children.add(stage);
@@ -76,8 +87,10 @@ public class TextAnController implements Initializable {
                     children.remove(stage);
                 }
             });
+            listener = new StateChangedListener(settings, pipeline, stage);
             stage.show();
         }
+        pipeline.addStateChangedListener(listener);
     }
 
     @Override
@@ -106,6 +119,7 @@ public class TextAnController implements Initializable {
                 settings.setProperty("username", newVal);
             }
         );
+        client = new Client(settings);
     }
 
     /**

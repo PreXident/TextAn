@@ -8,9 +8,14 @@ import jfxtras.labs.scene.control.window.WindowIcon;
  */
 public class MaximizeIcon extends WindowIcon {
 
+    /** CSS style for the icons. */
     public static final String DEFAULT_STYLE_CLASS = "window-minimize-icon";
 
-    public MaximizeIcon(final ReportWizard w) {
+    /**
+     * Only constructor.
+     * @param w ReportWizardWindow to be minimized on action
+     */
+    public MaximizeIcon(final ReportWizardWindow w) {
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
         setOnAction((ActionEvent t) -> { w.toggleMaximize(); });
     }

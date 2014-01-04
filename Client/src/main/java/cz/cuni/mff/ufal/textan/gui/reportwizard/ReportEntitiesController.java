@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import cz.cuni.mff.ufal.textan.gui.WindowController;
+import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,23 +15,32 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import org.controlsfx.dialog.Dialogs;
 
 /**
  * Controls editing entities.
  */
-public class ReportEntitiesController extends WindowController {
+public class ReportEntitiesController extends ReportWizardController {
 
+    /** Separators delimiting words. */
     static final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';', '!')));
 
+    /** Style class for selected words. */
     static final String SELECTED = "selected";
 
+    /**
+     * Adds {@link #SELECTED} style class to all items in the list.
+     * @param list items to which add the style class
+     */
     static void addSelectedClass(Iterable<Node> list) {
-        list.forEach(node -> node.getStyleClass().add("selected"));
+        list.forEach(node -> node.getStyleClass().add(SELECTED));
     }
 
+    /**
+     * Removes {@link #SELECTED} style class from all items in the list.
+     * @param list items from which remove the style class
+     */
     static void removeSelectedClass(Iterable<Node> list) {
-        list.forEach(node -> node.getStyleClass().remove("selected"));
+        list.forEach(node -> node.getStyleClass().remove(SELECTED));
     }
 
     @FXML
@@ -43,6 +52,10 @@ public class ReportEntitiesController extends WindowController {
     @FXML
     TextFlow textFlow;
 
+    /**
+     * Index of the first dragged {@link Text} node.
+     * If no dragging is taking place, it is -1;
+     */
     int startTextIndex = -1;
 
     @FXML
@@ -52,15 +65,24 @@ public class ReportEntitiesController extends WindowController {
 
     @FXML
     private void next() {
-        createDialog()
-                .owner(getDialogOwner(root))
-                .title("Hotovo!")
-                .message("Zpráva úspěšně vytvořena")
-                .showInformation();
+        callWithContentBackup(() ->
+            createDialog()
+                    .owner(getDialogOwner(root))
+                    .title("Hotovo!")
+                    .message("Zpráva úspěšně vytvořena")
+                    .showInformation());
         closeContainer();
     }
 
-    public void setReport(final String report) {
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
+    }
+
+    @Override
+    public void setPipeline(final ProcessReportPipeline pipeline) {
+        super.setPipeline(pipeline);
+        final String report = this.pipeline.getReportText();
         final List<String> words = new ArrayList<>();
         int start = 0;
         for(int i = 0; i < report.length(); ++i) {
@@ -111,10 +133,5 @@ public class ReportEntitiesController extends WindowController {
             });
             texts.add(text);
         }
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
     }
 }

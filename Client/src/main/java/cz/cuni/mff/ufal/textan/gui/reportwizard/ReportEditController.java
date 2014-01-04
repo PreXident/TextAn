@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import cz.cuni.mff.ufal.textan.gui.WindowController;
+import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -10,9 +10,7 @@ import javafx.scene.control.TextArea;
 /**
  * Controls editing the report.
  */
-public class ReportEditController extends WindowController {
-
-    static final String TEST_TEXT = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
+public class ReportEditController extends ReportWizardController {
 
     @FXML
     TextArea textArea;
@@ -27,12 +25,17 @@ public class ReportEditController extends WindowController {
 
     @FXML
     private void next() {
-        final ReportEntitiesController controller = nextFrame("03_ReportEntities.fxml");
-        controller.setReport(textArea.getText());
+        pipeline.setReportText(textArea.getText());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        textArea.setText(TEST_TEXT);
+        
+    }
+
+    @Override
+    public void setPipeline(final ProcessReportPipeline pipeline) {
+        super.setPipeline(pipeline);
+        textArea.setText(pipeline.getReportText());
     }
 }

@@ -1,34 +1,34 @@
 package cz.cuni.mff.ufal.textan.gui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
 /**
- * Abstract ancestore for windows controllers.
+ * Abstract ancestor for window controllers.
  */
 public abstract class WindowController implements Initializable {
 
-    /** Properties containing application settings. */
+    /**
+     * Properties containing application settings.
+     * Handle with care, they are shared!
+     */
     protected Properties settings = null;
 
-    /** Window displaying the view. It can be null if in Stage. */
+    /** Window displaying the view. It can be null if in {@link Stage}. */
     protected Window window = null;
 
-    /** Stage displaying the view. It can be null if in Window. */
+    /** Stage displaying the view. It can be null if in {@link Window}. */
     protected Stage stage = null;
 
     /**
-     * Returns suitable owner of a lightweight dialog. Eg. {@link #stage} if it is not
-     * null, parameter root otherwise.
+     * Returns suitable owner of a lightweight dialog.
+     * Eg. {@link #stage} if it is not null, parameter root otherwise.
      * @param root return value if stage is null
      * @return suitable owner of a lightweight dialog
      */
@@ -36,14 +36,26 @@ public abstract class WindowController implements Initializable {
         return stage == null ? root : stage;
     }
 
+    /**
+     * Set settings.
+     * @param settings new settings
+     */
     public void setSettings(final Properties settings) {
         this.settings = settings;
     }
 
+    /**
+     * Sets the window to be controlled.
+     * @param window Window to be controlled
+     */
     public void setWindow(final Window window) {
         this.window = window;
     }
 
+    /**
+     * Sets the stage to be controlled.
+     * @param stage Stage to be controlled
+     */
     public void setStage(final Stage stage) {
         this.stage = stage;
     }
@@ -60,7 +72,7 @@ public abstract class WindowController implements Initializable {
     }
 
     /**
-     * Calls the runnable; if in window it is done with content backup
+     * Calls the runnable; if in {@link Window} it is done with content backup
      * and restore. It is intended for displaying lightweight dialogs that mess
      * up the controls a bit in windows.
      * @param r code to run
@@ -83,35 +95,5 @@ public abstract class WindowController implements Initializable {
     protected Dialogs createDialog() {
         final Dialogs result = Dialogs.create();
         return window != null ? result.lightweight() : result;
-    }
-
-    /**
-     * Loads the next frame of the wizard.
-     * @param <T> type of controller of the next frame
-     * @param fxml file containing the next frame
-     * @return controller of the next frame
-     */
-    protected <T extends WindowController> T nextFrame(final String fxml) {
-        T controller = null;
-        try {
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-            final Parent loadedRoot = (Parent) loader.load();
-            controller = loader.getController();
-            controller.setSettings(settings);
-            if (window != null) {
-                window.getContentPane().getChildren().clear();
-                controller.setWindow(window);
-                window.getContentPane().getChildren().add(loadedRoot);
-            } else /* if (stage != null) */ {
-                controller.setStage(stage);
-                stage.getScene().setRoot(loadedRoot);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            createDialog()
-                    .title("Problém při načítání další stránky!")
-                    .showException(e);
-        }
-        return controller;
     }
 }

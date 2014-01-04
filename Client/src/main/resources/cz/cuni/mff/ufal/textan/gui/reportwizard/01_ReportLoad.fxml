@@ -25,10 +25,10 @@
 			<fx:define>
 				<ToggleGroup fx:id="loadToggleGroup"/>
 			</fx:define>
-			<RadioButton text="Databáze" toggleGroup="$loadToggleGroup" selected="true" />
-			<RadioButton text="Textový soubor" toggleGroup="$loadToggleGroup"/>
+			<RadioButton fx:id="databaseRadioButton" text="Databáze" toggleGroup="$loadToggleGroup" selected="true" />
+			<RadioButton fx:id="fileRadioButton" text="Textový soubor" toggleGroup="$loadToggleGroup"/>
 			<RadioButton fx:id="emptyMessageRadioButton" text="Prázdná zpráva" toggleGroup="$loadToggleGroup"/>
-			<RadioButton text="Rozpracovaná zpráva" toggleGroup="$loadToggleGroup"/>
+			<RadioButton fx:id="loadRadioButton" text="Rozpracovaná zpráva" toggleGroup="$loadToggleGroup"/>
 		</VBox>
 	</center>
 	<bottom>
