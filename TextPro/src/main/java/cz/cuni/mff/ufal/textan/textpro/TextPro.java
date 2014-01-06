@@ -12,6 +12,11 @@ import cz.cuni.mff.ufal.textan.Data.Entity;
 
 public interface TextPro {
 
+    /**
+     *
+     */
+    
+    public void init(List<String> objectlist);
     //  Output a list of entity after processing
     public List<Entity> recognizedEntity(String document);
     

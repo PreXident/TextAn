@@ -8,7 +8,17 @@ import java.util.ArrayList;
 
 public class namedEntityRecognizer implements TextPro{
     
+    // List of object (corresponding to the object list in database)
+    List<String> objectList;
+    
+    // Initialize the value
+    @Override
+    public void init(List<String> objectlist){
+        this.objectList = objectlist;
+    }
+    
     //  Output a list of entity after processing
+    @Override
     public List<Entity> recognizedEntity(String document){
         List<Entity> results = new ArrayList<Entity>();
         // Do something here
