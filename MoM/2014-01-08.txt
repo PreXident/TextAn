@@ -1,0 +1,17 @@
+All here, including Honza Horinek.
+
+Project overview (what we have done so far).
+Beta NER is ready, but no documentation so far.
+- Monday and Tuesday could be meeting
+
+HWK:
+- for every webservice there should be a test client that shows webservice's features
+- give a proper name to "object matcher"
+- ?document author priority in machine learning
+- user documentation must contain guide about inserting incomplete information
+End of January tasks:
+- integrate NER and tagger
+- editing and viewing db records from GUI (prototype, even textual with list of nodes and edges)
+
+Meeting with Milan Straka probably on Tuesday 9:00.
+Next meeting 
