@@ -79,10 +79,12 @@ public abstract class WindowController implements Initializable {
      */
     protected void callWithContentBackup(final Runnable r) {
         if (window != null) {
+            window.setResizableWindow(false);
             final List<Node> backup = new ArrayList<>(window.getContentPane().getChildren());
             r.run();
             window.getContentPane().getChildren().clear();
             window.getContentPane().getChildren().addAll(backup);
+            window.setResizableWindow(true);
         } else {
             r.run();
         }

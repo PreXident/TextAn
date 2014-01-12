@@ -17,6 +17,6 @@ public class MaximizeIcon extends WindowIcon {
      */
     public MaximizeIcon(final ReportWizardWindow w) {
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
-        setOnAction((ActionEvent t) -> { w.toggleMaximize(); });
+        setOnAction((ActionEvent t) -> { if (w.isResizableWindow()) w.toggleMaximize(); });
     }
 }
