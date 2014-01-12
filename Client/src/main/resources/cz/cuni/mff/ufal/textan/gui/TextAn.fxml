@@ -30,6 +30,7 @@
 					</Menu>
 					<Menu text="Wizards" >
 						<MenuItem text="Report" onAction="#reportWizard" />
+						<MenuItem text="Graph" onAction="#graph" />
 					</Menu>
 					<Menu text="Nastavení" >
 						<CheckMenuItem fx:id="menuItemIndependentWindows" text="Samostatná okna" onAction="#independentWindows" />
