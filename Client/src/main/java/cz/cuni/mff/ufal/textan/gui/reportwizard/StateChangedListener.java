@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Properties;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.stage.Stage;
 import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
@@ -23,26 +22,26 @@ public class StateChangedListener implements IStateChangedListener {
 
     private final Window window;
 
-    private final Stage stage;
+    private final ReportWizardStage stage;
 
     private final Properties settings;
 
     private final ProcessReportPipeline pipeline;
-    
+
     {
         fxmlMapping.put(StateType.LOAD, "01_ReportLoad.fxml");
         fxmlMapping.put(StateType.EDIT_REPORT, "02_ReportEdit.fxml");
         fxmlMapping.put(StateType.EDIT_ENTITIES, "03_ReportEntities.fxml");
     }
 
-    private StateChangedListener(final Properties settings, final ProcessReportPipeline pipeline, final Stage stage, final Window window) {
+    private StateChangedListener(final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage, final Window window) {
         this.settings = settings;
         this.pipeline = pipeline;
         this.stage = stage;
         this.window = window;
     }
 
-    public StateChangedListener(final Properties settings, final ProcessReportPipeline pipeline, final Stage stage) {
+    public StateChangedListener(final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage) {
         this(settings, pipeline, stage, null);
     }
 
@@ -65,7 +64,8 @@ public class StateChangedListener implements IStateChangedListener {
                 window.getContentPane().getChildren().add(loadedRoot);
             } else /* if (stage != null) */ {
                 controller.setStage(stage);
-                stage.getScene().setRoot(loadedRoot);
+                stage.getReportWizardWindow().getContentPane().getChildren().clear();
+                stage.getReportWizardWindow().getContentPane().getChildren().add(loadedRoot);
             }
         } catch (IOException e) {
             e.printStackTrace();

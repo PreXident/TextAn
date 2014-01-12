@@ -2,8 +2,8 @@ package cz.cuni.mff.ufal.textan.gui;
 
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
-import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
+import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
 import java.net.URL;
 import java.util.ArrayList;

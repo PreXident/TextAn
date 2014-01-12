@@ -1,18 +1,15 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import java.io.IOException;
 import java.util.Properties;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import jfxtras.labs.scene.control.window.Window;
-import org.controlsfx.dialog.Dialogs;
 
 /**
  * Wizard for handling reports.
@@ -118,19 +115,7 @@ public class ReportWizardWindow extends Window {
             }
         );
         //
-        try {
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("01_ReportLoad.fxml"));
-            final Parent root = (Parent) loader.load();
-            final ReportLoadController controller = loader.getController();
-            controller.setSettings(settings);
-            controller.setWindow(this);
-            getContentPane().getChildren().add(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Dialogs.create()
-                    .title("Problém při načítání wizardu!")
-                    .showException(e);
-        }
+        setTitleBarStyleClass("my-window-titlebar");
     }
 
     /**
