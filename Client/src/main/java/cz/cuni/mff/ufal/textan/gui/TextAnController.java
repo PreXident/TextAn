@@ -9,8 +9,6 @@ import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseMultigraph;
-import edu.uci.ics.jung.graph.util.EdgeType;
-import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
@@ -40,7 +38,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 import jfxtras.labs.scene.control.window.Window;
 import org.apache.commons.collections15.Transformer;
@@ -97,7 +94,7 @@ public class TextAnController implements Initializable {
         //
         // Graph<V, E> where V is the type of the vertices
         // and E is the type of the edges
-        Graph<Integer, String> g = new SparseMultigraph<Integer, String>();
+        Graph<Integer, String> g = new SparseMultigraph<>();
         // Add some vertices. From above we defined these to be type Integer.
         g.addVertex((Integer)1);
         g.addVertex((Integer)2);
@@ -111,11 +108,11 @@ public class TextAnController implements Initializable {
         System.out.println("The graph g = " + g.toString());
         //
         // The Layout<V, E> is parameterized by the vertex and edge types
-        Layout<Integer, String> layout = new CircleLayout(g);
+        Layout<Integer, String> layout = new CircleLayout<Integer, String>(g);
         layout.setSize(new Dimension(300,300)); // sets the initial size of the space
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
         //BasicVisualizationServer<Integer,String> vv = new BasicVisualizationServer<>(layout);
-        VisualizationViewer<Integer,String> vv = new VisualizationViewer<Integer,String>(layout);
+        VisualizationViewer<Integer,String> vv = new VisualizationViewer<>(layout);
 
         vv.setPreferredSize(new Dimension(350,350)); //Sets the viewing area size
         //
@@ -138,12 +135,12 @@ public class TextAnController implements Initializable {
             };
         vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
         vv.getRenderContext().setEdgeStrokeTransformer(edgeStrokeTransformer);
-        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
-        vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
+        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<>());
+        vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<>());
         vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
         //
         // Create a graph mouse and add it to the visualization component
-        DefaultModalGraphMouse gm = new DefaultModalGraphMouse();
+        DefaultModalGraphMouse<Integer,String> gm = new DefaultModalGraphMouse<>();
         gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
         vv.setGraphMouse(gm);
         //
