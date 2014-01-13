@@ -119,6 +119,14 @@ public class ReportWizardWindow extends Window {
     }
 
     /**
+     * Returns whether the window is maximized.
+     * @return true if the window is maximized, false otherwise
+     */
+    public boolean isMaximized() {
+        return maximized.get();
+    }
+
+    /**
      * Adjusts height to newVal if possible.
      * @param newVal new height
      */
