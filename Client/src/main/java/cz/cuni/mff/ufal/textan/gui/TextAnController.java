@@ -33,6 +33,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -86,11 +87,7 @@ public class TextAnController implements Initializable {
 
     @FXML
     private void graph() {
-        final Stage s = new Stage();
-        s.setWidth(350);
-        s.setHeight(350);
         final SwingNode sn = new SwingNode();
-        s.setScene(new Scene(new Pane(sn)));
         //
         // Graph<V, E> where V is the type of the vertices
         // and E is the type of the edges
@@ -145,11 +142,24 @@ public class TextAnController implements Initializable {
         vv.setGraphMouse(gm);
         //
         try {
-        SwingUtilities.invokeAndWait(() -> {
-            sn.setContent(vv);
-        });
+            SwingUtilities.invokeAndWait(() -> {
+                sn.setContent(vv);
+            });
         } catch (Exception e) { }
-        s.show();
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final Window w = new Window("GRAPH TEST");
+            ScrollPane sc = new ScrollPane();
+            sc.setContent(sn);
+            w.getContentPane().getChildren().add(sc);
+            content.getChildren().add(w);
+        } else {
+            final Stage s = new Stage();
+            s.setTitle("GRAPH TEST");
+            s.setWidth(350);
+            s.setHeight(350);
+            s.setScene(new Scene(new Pane(sn)));
+            s.show();
+        }
     }
 
     @FXML
