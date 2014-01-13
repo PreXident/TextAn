@@ -15,3 +15,11 @@
     -fx-background-color: linear-gradient(#595959, #474747 37%, #343434);
     -fx-background-radius: 5 5 0 0;
 }
+
+.window-minimize-icon:hover {
+	-fx-border-color: rgb(255, 255, 255);
+}
+
+.window-minimize-icon {
+	-fx-border-color: rgb(148, 148, 148);
+}
