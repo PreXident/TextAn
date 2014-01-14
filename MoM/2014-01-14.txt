@@ -1,0 +1,25 @@
+Meeting with Ondrej and Milan Straka, Venca missing.
+
+System overview by Milan Straka:
+- entity spans - cannot overlap
+- tokens marked - BILOU - Begin (only when needed - OIIIBII), Inside, Last, Out, Unit (size one)
+- B and U accompanied by the type
+- best sequence is chosen (dynamic programming)
+- features to get the distribution of possibilities
+  - two kinds - whole sentense feature, only once
+    - word feature - multistaged (1 or 2, more seem not necessary); gets result from the previous words
+- guesseteer - list of files of words, hard geusseteer is sure that "this is a gun"
+- two repos - code (nametag.git) and data
+  - retraining the recognizer, not retraining the tagger
+  - will be uploaded to github
+- interfaces:
+  - documentation only for library users (no documentation on feature creation)
+  - examples in repo
+  - a lot of parameters
+
+  - we are fine with entity spans, we do not need part of speech
+  
+HWK
+- try example reports and send Ondrej the results
+
+Next meeting on Wednesday 22nd at 10:00 in the lab.
