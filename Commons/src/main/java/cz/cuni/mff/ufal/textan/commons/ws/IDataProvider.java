@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.commons.ws;
 
-import cz.cuni.mff.ufal.textan.commons.models.ObjectType;
+import cz.cuni.mff.ufal.textan.commons.models.*;
 import cz.cuni.mff.ufal.textan.commons.models.Object;
 
 import javax.jws.WebMethod;
@@ -30,7 +30,7 @@ public interface IDataProvider {
     public Object getObject(@WebParam(name = "objectId") int objectId);
 
     /**
-     * Returns all objects which are currently defined in the system
+     * Returns all objects which are currently defined in the system.
      * @return an array of {@link cz.cuni.mff.ufal.textan.commons.models.Object}
      */
     @WebMethod
@@ -44,8 +44,86 @@ public interface IDataProvider {
     @WebMethod
     public Object[] getObjectsByType(@WebParam(name = "objectType") ObjectType objectType);
 
-    /*
+    /**
+     * Returns all types of relation which are currently defined in the system.
+     * @return an array of {@link cz.cuni.mff.ufal.textan.commons.models.RelationType}
+     */
     @WebMethod
-    public ... getRelatedObjects(@WebParam(name = "objectId") int objectId);
-    */
+    public RelationType[] getRelationTypes();
+
+    /**
+     * Returns all relations which are currently defined in the system.
+     * @return an array of {@link cz.cuni.mff.ufal.textan.commons.models.Relation}
+     */
+    @WebMethod
+    public Relation[] getRelations();
+
+    /**
+     * Returns all relations of given type which are currently defined in the system.
+     * @param relationType type of relations
+     * @return an array of {@link cz.cuni.mff.ufal.textan.commons.models.Relation} of given type
+     */
+    @WebMethod
+    public Relation[] getRelationsByType(@WebParam(name = "relationType") RelationType relationType);
+
+    /**
+     * Builds graph from objects and relations between them.
+     * (It's recommended to use overloaded method which use object's ID)
+     * @param center the object which will be used as a center node of graph
+     * @param distance maximum length of a path from the center node to each other node in a graph
+     * @return {@link cz.cuni.mff.ufal.textan.commons.models.Graph}
+     */
+    @WebMethod(operationName = "getGraphUsingObject") //operation name is only fix for method overloading in web services
+    public Graph getGraph(@WebParam(name = "center") Object center, int distance);
+
+    /**
+     * Builds graph from objects and relations between them.
+     * @param centerId id of the object which will be used as a center node of graph
+     * @param distance maximum length of a path from the center node to each other node in a graph
+     * @return {@link cz.cuni.mff.ufal.textan.commons.models.Graph}
+     */
+    @WebMethod
+    public Graph getGraph(@WebParam(name = "center") int centerId, int distance);
+
+    /**
+     * Returns objects related with a given object (as a graph).
+     * (It's recommended to use overloaded method which use object's ID)
+     * @param object
+     * @return {@link cz.cuni.mff.ufal.textan.commons.models.Graph}
+     */
+    @WebMethod(operationName = "getRelatedObjectsUsingObject") //operation name is only fix for method overloading in web services
+    public Graph getRelatedObjects(@WebParam(name = "object") Object object);
+
+    /**
+     * Returns objects related with a given object (as a graph).
+     * (It's recommended to use overloaded method which use object's ID)
+     * @param objectId
+     * @return {@link cz.cuni.mff.ufal.textan.commons.models.Graph}
+     */
+    @WebMethod
+    public Graph getRelatedObjects(@WebParam(name = "objectId") int objectId);
+
+    /**
+     * Returns a path between two objects in graph.
+     * @param from start node of the path
+     * @param to end node of the path
+     * @return returns instance of {@link cz.cuni.mff.ufal.textan.commons.models.Graph} if path exist, otherwise returns null
+     */
+    @WebMethod
+    public Graph getPath(@WebParam(name = "from") Object from, @WebParam(name = "to") Object to);
+
+    /**
+     * Returns a path between two objects in graph.
+     * @param fromId start node of the path
+     * @param toId end node of the path
+     * @return returns instance of {@link cz.cuni.mff.ufal.textan.commons.models.Graph} if path exist, otherwise returns null
+     */
+    @WebMethod
+    public Graph getPath(@WebParam(name = "from") int fromId, @WebParam(name = "to") int toId);
+
+
+    //TODO: repair overloading which is not supported in web service (unfortunately)
+    //TODO: complete documentation
+    //TODO: may be delete overloaded methods which use Objects
+    //TODO: handle special cases (path not found etc.)
 }

@@ -49,7 +49,7 @@ public interface IDocumentProcessor {
     @WebMethod
     public Entity[] getEntities(int documentId);
 
-    //TODO: method which returns posible objects for one entity? many entities?
+    //TODO: method which returns possible objects for one entity? many entities?
 
     /**
      * Saves processed document, object and relations in the system and marks the document as processed.
