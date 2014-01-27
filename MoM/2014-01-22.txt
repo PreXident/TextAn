@@ -10,4 +10,4 @@ Only Peter and Adam present - shame on you guys!
 - IDocumentProcessor should work as atomically as possible. Save method should throw an exception on conflict. Another method can be used to reveal the conflicts or saveIgnoreConflicts (or boolean parameter of save) can be called.
 - Explore the possibility of using issue tracker on github
 
-Next meeting on Wednesday at 10:00 in the lab?
+Next meeting on Wednesday (Jan 29) at 11:00 in the lab
