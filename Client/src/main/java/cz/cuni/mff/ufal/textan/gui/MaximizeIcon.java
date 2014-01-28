@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.gui.reportwizard;
+package cz.cuni.mff.ufal.textan.gui;
 
 import javafx.event.ActionEvent;
 import jfxtras.labs.scene.control.window.WindowIcon;
@@ -15,7 +15,7 @@ public class MaximizeIcon extends WindowIcon {
      * Only constructor.
      * @param w ReportWizardWindow to be minimized on action
      */
-    public MaximizeIcon(final ReportWizardWindow w) {
+    public MaximizeIcon(final InnerWindow w) {
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
         setOnAction((ActionEvent t) -> { if (w.isResizableWindow() || w.isMaximized()) w.toggleMaximize(); });
     }

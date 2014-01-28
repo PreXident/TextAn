@@ -7,6 +7,7 @@ import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseMultigraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -91,7 +92,7 @@ public class TextAnController implements Initializable {
         //
         // Graph<V, E> where V is the type of the vertices
         // and E is the type of the edges
-        Graph<Integer, String> g = new SparseMultigraph<>();
+        Graph<Integer, String> g = new DirectedSparseMultigraph<>();
         // Add some vertices. From above we defined these to be type Integer.
         g.addVertex((Integer)1);
         g.addVertex((Integer)2);
@@ -105,7 +106,7 @@ public class TextAnController implements Initializable {
         System.out.println("The graph g = " + g.toString());
         //
         // The Layout<V, E> is parameterized by the vertex and edge types
-        Layout<Integer, String> layout = new CircleLayout<Integer, String>(g);
+        Layout<Integer, String> layout = new CircleLayout<>(g);
         layout.setSize(new Dimension(300,300)); // sets the initial size of the space
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
         //BasicVisualizationServer<Integer,String> vv = new BasicVisualizationServer<>(layout);
@@ -129,7 +130,7 @@ public class TextAnController implements Initializable {
             public Stroke transform(String s) {
                 return edgeStroke;
             }
-            };
+        };
         vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
         vv.getRenderContext().setEdgeStrokeTransformer(edgeStrokeTransformer);
         vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<>());

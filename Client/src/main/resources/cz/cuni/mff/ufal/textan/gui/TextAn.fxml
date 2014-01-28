@@ -15,7 +15,7 @@
 			fx:controller="cz.cuni.mff.ufal.textan.gui.TextAnController" styleClass="root" >
 	<stylesheets >
 		<URL value="@TextAn.css" />
-		<URL value="@reportwizard/window.css" />
+		<URL value="@window.css" />
 	</stylesheets>
 	<top>
 		<VBox>
