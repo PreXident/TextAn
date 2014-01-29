@@ -1,7 +1,10 @@
 package cz.cuni.mff.ufal.textan.gui;
 
 import cz.cuni.mff.ufal.textan.core.Client;
+import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
+import cz.cuni.mff.ufal.textan.gui.graph.GraphStage;
+import cz.cuni.mff.ufal.textan.gui.graph.GraphWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
@@ -88,78 +91,19 @@ public class TextAnController implements Initializable {
 
     @FXML
     private void graph() {
-        final SwingNode sn = new SwingNode();
-        //
-        // Graph<V, E> where V is the type of the vertices
-        // and E is the type of the edges
-        Graph<Integer, String> g = new DirectedSparseMultigraph<>();
-        // Add some vertices. From above we defined these to be type Integer.
-        g.addVertex((Integer)1);
-        g.addVertex((Integer)2);
-        g.addVertex((Integer)3);
-        // Add some edges. From above we defined these to be of type String
-        // Note that the default is for undirected edges.
-        g.addEdge("Edge-A", 1, 2); // Note that Java 1.5 auto-boxes primitives
-        g.addEdge("Edge-B", 2, 3);
-        // Let's see what we have. Note the nice output from the
-        // SparseMultigraph<V,E> toString() method
-        System.out.println("The graph g = " + g.toString());
-        //
-        // The Layout<V, E> is parameterized by the vertex and edge types
-        Layout<Integer, String> layout = new CircleLayout<>(g);
-        layout.setSize(new Dimension(300,300)); // sets the initial size of the space
-        // The BasicVisualizationServer<V,E> is parameterized by the edge types
-        //BasicVisualizationServer<Integer,String> vv = new BasicVisualizationServer<>(layout);
-        VisualizationViewer<Integer,String> vv = new VisualizationViewer<>(layout);
-
-        vv.setPreferredSize(new Dimension(350,350)); //Sets the viewing area size
-        //
-        // Setup up a new vertex to paint transformer...
-        Transformer<Integer,Paint> vertexPaint = new Transformer<Integer,Paint>() {
-            @Override
-            public Paint transform(Integer i) {
-                return Color.GREEN;
-                }
-        };
-        // Set up a new stroke Transformer for the edges
-        float dash[] = {10.0f};
-        final Stroke edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
-                BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
-        Transformer<String, Stroke> edgeStrokeTransformer = new Transformer<String, Stroke>() {
-            @Override
-            public Stroke transform(String s) {
-                return edgeStroke;
-            }
-        };
-        vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-        vv.getRenderContext().setEdgeStrokeTransformer(edgeStrokeTransformer);
-        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<>());
-        vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<>());
-        vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
-        //
-        // Create a graph mouse and add it to the visualization component
-        DefaultModalGraphMouse<Integer,String> gm = new DefaultModalGraphMouse<>();
-        gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
-        vv.setGraphMouse(gm);
-        //
-        try {
-            SwingUtilities.invokeAndWait(() -> {
-                sn.setContent(vv);
-            });
-        } catch (Exception e) { }
+        final Grapher grapher = client.createGrapher();
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-            final Window w = new Window("GRAPH TEST");
-            ScrollPane sc = new ScrollPane();
-            sc.setContent(sn);
-            w.getContentPane().getChildren().add(sc);
-            content.getChildren().add(w);
+            final GraphWindow graphWindow = new GraphWindow(settings, grapher);
+            content.getChildren().add(graphWindow);
         } else {
-            final Stage s = new Stage();
-            s.setTitle("GRAPH TEST");
-            s.setWidth(350);
-            s.setHeight(350);
-            s.setScene(new Scene(new Pane(sn)));
-            s.show();
+            final GraphStage stage = new GraphStage(settings, grapher);
+            children.add(stage);
+            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(stage);
+                }
+            });
+            stage.show();
         }
     }
 

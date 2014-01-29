@@ -64,8 +64,8 @@ public class StateChangedListener implements IStateChangedListener {
                 window.getContentPane().getChildren().add(loadedRoot);
             } else /* if (stage != null) */ {
                 controller.setStage(stage);
-                stage.getReportWizardWindow().getContentPane().getChildren().clear();
-                stage.getReportWizardWindow().getContentPane().getChildren().add(loadedRoot);
+                stage.getInnerWindow().getContentPane().getChildren().clear();
+                stage.getInnerWindow().getContentPane().getChildren().add(loadedRoot);
             }
         } catch (IOException e) {
             e.printStackTrace();

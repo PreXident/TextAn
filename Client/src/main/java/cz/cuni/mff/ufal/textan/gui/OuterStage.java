@@ -126,7 +126,7 @@ public class OuterStage extends Stage {
      * Returns {@link #innerWindow}.
      * @return innerWindow
      */
-    public Window getReportWizardWindow() {
+    public Window getInnerWindow() {
         return innerWindow;
     }
 }

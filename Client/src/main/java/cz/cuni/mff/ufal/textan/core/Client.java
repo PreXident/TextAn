@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.core;
 
+import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import java.util.Properties;
 
@@ -18,6 +19,14 @@ public class Client {
      */
     public Client(final Properties settings) {
         this.settings = settings;
+    }
+
+    /**
+     * Creates new grapher for providing graph information.
+     * @return new grapher for providing graph information
+     */
+    public Grapher createGrapher() {
+        return new Grapher(this);
     }
 
     /**
