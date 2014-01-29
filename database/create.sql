@@ -1,3 +1,6 @@
+CREATE DATABASE textanal;
+USE textanal;
+
 
 CREATE TABLE Document (
 	id_document int PRIMARY KEY AUTO_INCREMENT, 
