@@ -1,0 +1,15 @@
+
+1. Download and install XAMPP from: http://www.apachefriends.org/
+    (You need mysql checked during install)
+
+2. Run XAMPP control and start Apache and MySQL
+
+3. Run your favorite web browser (not IE for no fucking reason) and type address: http://localhost/phpmyadmin/
+
+4. Click at Import (top menu). Then click "Choose file" button and choose database/create.sql and click GO button.
+
+5. That's it. At the left is new database called textanal and it's ready to use. When you click on it, you should see +-10 tables. 
+   If there will be some sql scripts to fill the DB with some data, just repeat step 4 with that other script instead of create.sql
+   
+    
+
