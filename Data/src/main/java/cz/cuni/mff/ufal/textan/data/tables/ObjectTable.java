@@ -20,7 +20,7 @@ public class ObjectTable {
     
     @Id
     @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
+    @GenericGenerator(name="increment", strategy = "increment")   
     long getID() {
         return this.id;
     }

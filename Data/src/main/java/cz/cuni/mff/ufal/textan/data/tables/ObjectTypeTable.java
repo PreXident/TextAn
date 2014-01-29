@@ -18,24 +18,27 @@ import org.hibernate.annotations.GenericGenerator;
  * @author Václav Pernička
  */
 
-@Entity
-@Table( name = "ObjectType" )
 public class ObjectTypeTable {
  
     private long id;
     private String name;
 
-
-    @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
-    long getID() {
-        return this.id;
+    public ObjectTypeTable(String name) {
+        this.name = name;
     }
 
-    @Column(name = "name")
+    public long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     
+ 
 }

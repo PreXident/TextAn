@@ -1,23 +1,23 @@
 
 CREATE TABLE Document (
-	id_document int PRIMARY KEY, 
+	id_document int PRIMARY KEY AUTO_INCREMENT, 
 	added date,
 	processed date NULL,
 	text text NOT NULL
 );
 
 CREATE TABLE RelationType(
-  id_relation_type INT PRIMARY KEY ,
+  id_relation_type INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR (20) UNIQUE
 );
 
 CREATE TABLE ObjectType (
-	id_object_type int PRIMARY KEY, 
+	id_object_type int PRIMARY KEY AUTO_INCREMENT, 
 	name varchar (20) UNIQUE
 );
 
 CREATE TABLE Object (
-	id_object int PRIMARY KEY, 
+	id_object int PRIMARY KEY AUTO_INCREMENT, 
 	id_object_type int NOT NULL,
 	data varchar (50),
   CONSTRAINT FK_OBJECT_TO_TYPE FOREIGN KEY (id_object_type)
@@ -25,7 +25,7 @@ CREATE TABLE Object (
 );
 
 CREATE TABLE Alias (
-	id_alias int PRIMARY KEY, 
+	id_alias int PRIMARY KEY AUTO_INCREMENT, 
 	id_object int NOT NULL,
 	alias varchar(50) NOT NULL,
   CONSTRAINT FK_ALIAS_ID_OBJECT
@@ -35,7 +35,7 @@ CREATE TABLE Alias (
 
 
 CREATE TABLE AliasOccurrence (
-	id_alias_occurence int PRIMARY KEY,
+	id_alias_occurence int PRIMARY KEY AUTO_INCREMENT,
 	id_alias int NOT NULL, 
 	id_document int NOT NULL, 
 	position int NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE AliasOccurrence (
 
 CREATE TABLE Relation
 (
-        id_relation int PRIMARY KEY,
+        id_relation int PRIMARY KEY AUTO_INCREMENT,
         id_relation_type int NOT NULL,
         CONSTRAINT FK_RELATION_RELTYPE FOREIGN KEY (id_relation_type)
                 REFERENCES RelationType (id_relation_type)
@@ -57,7 +57,7 @@ CREATE TABLE Relation
 
 CREATE TABLE IsInRelation
 (
-        id_is_in_relation int PRIMARY KEY,
+        id_is_in_relation int PRIMARY KEY AUTO_INCREMENT,
         id_relation int NOT NULL,
         CONSTRAINT FK_ISINRELATION_RELATION
           FOREIGN KEY (id_relation)
@@ -71,7 +71,7 @@ CREATE TABLE IsInRelation
 
 CREATE TABLE JoinedObjects
 (
-        id_new_object int PRIMARY KEY,
+        id_new_object int PRIMARY KEY AUTO_INCREMENT,
         id_old_object1 int NOT NULL,
         CONSTRAINT FK_JOINEDOBJECTS_OLDOBJ1
           FOREIGN KEY (id_old_object1)
@@ -90,7 +90,7 @@ CREATE TABLE JoinedObjects
 CREATE TABLE RelationOccurrence
 (
 
-        id_relation_occurence int PRIMARY KEY,
+        id_relation_occurence int PRIMARY KEY AUTO_INCREMENT,
         id_relation int NOT NULL,
         CONSTRAINT FK_RELOCCURENCE_RELATION
           FOREIGN KEY (id_relation)
