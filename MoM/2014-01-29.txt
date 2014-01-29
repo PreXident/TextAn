@@ -1,0 +1,10 @@
+Venca is missing
+
+Exceptions in webservices possible, but Java implementation not ideal, further investigation needed.
+Webservice interfaces done (only exceptions missing), needs to be pushed to git
+Graph visualization still in progress. Linux problem with visualising the marked entities!
+
+One document is one input for machine learning.
+Classifier prototype ready.
+
+Next meeting on Tuesday from 14:00, probably in the lab.
