@@ -12,6 +12,9 @@ private/
 .nb-gradle/
 .nb-gradle-properties
 
+gradle
+gradle.bat
+
 #InteliJ IDEA
 .idea/
 out/
