@@ -1,4 +1,6 @@
 
+Ok tak tohle se jeste zmeni
+
 1. Download and install XAMPP from: http://www.apachefriends.org/
     (You need mysql checked during install)
 
