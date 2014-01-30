@@ -1,8 +1,10 @@
 package cz.cuni.mff.ufal.textan.commons.ws;
 
-import cz.cuni.mff.ufal.textan.commons.models.Entity;
+import cz.cuni.mff.ufal.textan.commons.models.*;
+import cz.cuni.mff.ufal.textan.commons.models.Object;
 
 import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.jws.WebService;
 
 /**
@@ -16,30 +18,42 @@ public interface IDocumentProcessor {
     //TODO: Add user identification to methods
     //TODO: Add some special document identification
 
+
+    /**
+     * Gets ticket with information for editing.
+     *
+     * @param username the username
+     * @return the ticket
+     */
+    @WebMethod
+    public Ticket getTicket(@WebParam(name = "username") String username);
+
     /**
      * Adds a new document into the system.
+     *
      * @param text text of the new document
      * @return id of the added document
      */
     @WebMethod
-    public int addDocument(String text);
+    public int addDocument(@WebParam(name = "text") String text);
 
     /**
      * Updates the document with given id saved in the system.
+     *
      * @param text updated text
      * @param documentId id of the original document
      */
     //TODO: Add exception if document is already processed
     @WebMethod
-    public void updateDocument(String text, int documentId);
+    public void updateDocument(@WebParam(name = "text") String text, @WebParam(name = "documentId") int documentId);
 
     /**
      * Find entities in a document.
      * @param text text of the document
      * @return array of entities ({@link cz.cuni.mff.ufal.textan.commons.models.Entity}) found in the document
      */
-    @WebMethod
-    public Entity[] getEntities(String text);
+    @WebMethod(operationName = "getEntitiesFromString")
+    public Entity[] getEntities(@WebParam(name = "text") String text);
 
     /**
      * Find entities in a document.
@@ -47,17 +61,42 @@ public interface IDocumentProcessor {
      * @return array of entities ({@link cz.cuni.mff.ufal.textan.commons.models.Entity}) found in the document
      */
     @WebMethod
-    public Entity[] getEntities(int documentId);
+    public Entity[] getEntities(@WebParam(name = "documentId") int documentId);
 
     //TODO: method which returns possible objects for one entity? many entities?
 
     /**
      * Saves processed document, object and relations in the system and marks the document as processed.
+     *
+     * @param documentId the processed document id
+     * @param objects objects in the document
+     * @param relations relations between objects in the document
+     * @param ticket the ticket
+     * @param force saving is performed in every case if force is true
      */
-    //TODO: Add parameters
     @WebMethod
-    public void saveProcessedDocument();
+    public void saveProcessedDocument(
+            @WebParam(name = "documentId") int documentId,
+            @WebParam(name = "objects") Object[] objects,
+            @WebParam(name = "relations") Relation[] relations,
+            @WebParam(name = "ticket") Ticket ticket,
+            @WebParam(name = "force") boolean force
+    );
 
-//    @WebMethod
-//    public void
+    /**
+     * Returns problems in saving process.
+     *
+     * @param documentId the processed document id
+     * @param objects objects in the document
+     * @param relations relations between objects in the document
+     * @param ticket the ticket
+     */
+    @WebMethod
+    public void getProblems(  //TODO: add return type
+            @WebParam(name = "documentId") int documentId,
+            @WebParam(name = "objects") Object[] objects,
+            @WebParam(name = "relations") Relation[] relations,
+            @WebParam(name = "ticket") Ticket ticket
+    );
+
 }

@@ -121,9 +121,26 @@ public interface IDataProvider {
     @WebMethod
     public Graph getPath(@WebParam(name = "from") int fromId, @WebParam(name = "to") int toId);
 
+    /**
+     * Merges two objects into one.
+     * @param object1Id object to merge
+     * @param object2Id object to merge
+     * @return merged object
+     */
+    @WebMethod
+    public Object mergeObjects(@WebParam(name = "object1Id") int object1Id, @WebParam(name = "object2Id") int object2Id); //TODO: merge list of objects?
 
+    /**
+     * Splits merged object.
+     * @param objectId object to split
+     * @return result of operation
+     */
+    @WebMethod
+    public Boolean splitObject(@WebParam(name = "objectId") int objectId); //TODO: better return type...
+
+
+    //TODO: add exception like "Id not exists"
     //TODO: repair overloading which is not supported in web service (unfortunately)
-    //TODO: complete documentation
     //TODO: may be delete overloaded methods which use Objects
     //TODO: handle special cases (path not found etc.)
 }
