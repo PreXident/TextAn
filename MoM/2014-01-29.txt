@@ -1,4 +1,4 @@
-Venca is missing
+Venca finally came but after the meeting...
 
 Exceptions in webservices possible, but Java implementation not ideal, further investigation needed.
 Webservice interfaces done (only exceptions missing), needs to be pushed to git
