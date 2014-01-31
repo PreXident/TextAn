@@ -1,2 +1,3 @@
-rootProject.name = 'TextAn'
+rootProject.name = 'TextAn.Data'
 include ':Commons'
+project(':Commons').projectDir = new File('../Commons')
