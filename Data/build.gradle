@@ -1,8 +1,10 @@
 apply plugin: 'java'
-//apply plugin: 'application' 
+apply plugin: 'application' 
 
-sourceCompatibility = '1.8'
+sourceCompatibility = '1.7'
 defaultTasks 'run'
+
+mainClassName = 'cz.cuni.mff.ufal.textan.data.test.DataTest'
 
 repositories {
     mavenCentral()
