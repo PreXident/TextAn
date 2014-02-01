@@ -4,13 +4,16 @@
  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
 
 <hibernate-mapping>
-    
-    <class name="ObjectTypeTable" table="ObjectTypeTable">
+    <class name="cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable" table="ObjectType">
       <meta attribute="class-description">
          Type of the object (person, adress, ...) 
       </meta>
-      <id name="id" type="int" column="id_object_type">
-         <generator class="native"/>
+      <id 
+          name="id" 
+          type="long" 
+          column="id_object_type"
+          unsaved-value="0">
+         <generator class="identity"/>
       </id>  
        <property name="name" column="name" type="string"/>
     </class>
