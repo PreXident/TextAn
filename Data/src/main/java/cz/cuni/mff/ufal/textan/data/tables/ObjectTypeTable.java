@@ -11,7 +11,7 @@ package cz.cuni.mff.ufal.textan.data.tables;
  * @author Václav Pernička
  */
 
-public class ObjectTypeTable {
+public class ObjectTypeTable extends AbstractTable {
  
     private long id;
 
@@ -41,6 +41,23 @@ public class ObjectTypeTable {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return new StringBuilder("ObjectTypeTable(").append(this.id).append(" ")
+                .append(name).append(")").toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof ObjectTypeTable) {
+            ObjectTypeTable ott = (ObjectTypeTable) o;
+            return ott.getId() == this.getId() && ott.getName().equals(this.getName());
+        } else
+            return false;
+    }
+
+    
+    
     
  
 }

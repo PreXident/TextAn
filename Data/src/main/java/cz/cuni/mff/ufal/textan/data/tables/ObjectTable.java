@@ -13,7 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table( name = "Object" )
-public class ObjectTable {
+public class ObjectTable extends AbstractTable {
     
     private long id;
     private String date;

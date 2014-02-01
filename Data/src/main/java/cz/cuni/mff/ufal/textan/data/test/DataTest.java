@@ -7,6 +7,7 @@
 package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.repositories.Data;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 
 /**
  *
@@ -14,6 +15,6 @@ import cz.cuni.mff.ufal.textan.data.repositories.Data;
  */
 public class DataTest {
     public static void main(String[] args) {
-        Data.AddObjectType("Kokos");
+        
     }
 }
