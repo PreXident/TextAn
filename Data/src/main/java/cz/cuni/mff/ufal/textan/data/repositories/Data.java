@@ -16,7 +16,7 @@ import org.hibernate.Session;
 public class Data {
     
     public static void AddObjectType(String name) {
-        ObjectTypeTable m = new ObjectTypeTable("x");
+        ObjectTypeTable m = new ObjectTypeTable(name);
         Session s = HibernateUtil.getSessionFactory().openSession();
         s.beginTransaction();
         s.save(m);
