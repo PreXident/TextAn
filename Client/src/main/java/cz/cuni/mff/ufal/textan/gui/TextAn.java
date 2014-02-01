@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui;
 
-import cz.cuni.mff.ufal.textan.commons.Document;
-import cz.cuni.mff.ufal.textan.commons.ISimpleWebService;
+import cz.cuni.mff.ufal.textan.commons.models.Document;
+import cz.cuni.mff.ufal.textan.commons.ws.ISimpleWebService;
 import cz.cuni.mff.ufal.textan.utils.UnclosableStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
