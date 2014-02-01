@@ -6,13 +6,6 @@
 
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import org.hibernate.annotations.GenericGenerator;
-
 /**
  *
  * @author Václav Pernička
@@ -21,12 +14,21 @@ import org.hibernate.annotations.GenericGenerator;
 public class ObjectTypeTable {
  
     private long id;
+
     private String name;
 
+    public ObjectTypeTable() {
+        this("");
+    }
+    
     public ObjectTypeTable(String name) {
         this.name = name;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+    
     public long getId() {
         return id;
     }
