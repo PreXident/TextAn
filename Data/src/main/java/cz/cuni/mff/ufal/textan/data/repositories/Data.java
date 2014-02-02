@@ -7,7 +7,6 @@
 package cz.cuni.mff.ufal.textan.data.repositories;
 
 import cz.cuni.mff.ufal.textan.data.tables.AbstractTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import java.io.Serializable;
 import org.hibernate.Session;
 
@@ -25,10 +24,10 @@ public class Data {
      * @return null iff there is no record with specified id. Otherwise returns
      *          an instance of specified class (clazz)     *
      */
-    public static Object getRecordById(Class clazz, Serializable id) {
+    public static Object getRecordById(Class clazz, Serializable id){
         Session s = HibernateUtil.getSessionFactory().openSession();
         try {
-            s.beginTransaction();
+            //s.beginTransaction();
             return s.get(clazz, id);
         } finally {
             s.close();
@@ -61,6 +60,7 @@ public class Data {
             // tady uz ma m nastavene ID
             s.getTransaction().commit();
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         } finally {
             //System.out.println("closing session");

@@ -6,8 +6,6 @@
 
 package cz.cuni.mff.ufal.textan.data.test;
 
-import cz.cuni.mff.ufal.textan.data.repositories.Data;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 
 /**
  *

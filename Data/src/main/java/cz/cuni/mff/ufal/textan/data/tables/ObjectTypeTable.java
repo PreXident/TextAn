@@ -43,8 +43,7 @@ public class ObjectTypeTable extends AbstractTable {
 
     @Override
     public String toString() {
-        return new StringBuilder("ObjectTypeTable(").append(this.id).append(" ")
-                .append(name).append(")").toString();
+        return String.format("ObjectTypeTable(%d, \"%s\")", getId(), this.getName());
     }
 
     @Override

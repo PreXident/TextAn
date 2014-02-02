@@ -20,7 +20,7 @@
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
 
         <!-- Enable Hibernate's automatic session context management -->
-        <property name="current_session_context_class">thread</property>
+        <!--<property name="current_session_context_class">thread</property>-->
 
         <!-- Disable the second-level cache  -->
         <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
@@ -32,6 +32,7 @@
         <property name="hbm2ddl.auto">update</property>
 
         <mapping resource="cz/cuni/mff/ufal/textan/data/tables/ObjectTypeTable.hbm.xml"/>
+        <mapping resource="cz/cuni/mff/ufal/textan/data/tables/ObjectTable.hbm.xml"/>
 
     </session-factory>
 
