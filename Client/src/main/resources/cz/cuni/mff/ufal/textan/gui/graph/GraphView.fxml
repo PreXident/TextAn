@@ -15,7 +15,7 @@
 <BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
 			fx:controller="cz.cuni.mff.ufal.textan.gui.graph.GraphViewController" styleClass="root" >
 	<stylesheets >
-		<URL value="@GraphViewController.css" />
+		<URL value="@GraphView.css" />
 	</stylesheets>
 	<center>
 		<ScrollPane fx:id="scrollPane" vbarPolicy="NEVER" hbarPolicy="NEVER" >

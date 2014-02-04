@@ -1,11 +1,12 @@
-package cz.cuni.mff.ufal.textan.commons.models;
+package cz.cuni.mff.ufal.textan.commons.models.adapters;
 
+import cz.cuni.mff.ufal.textan.commons.models.Entity;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /*
  * Created by Petr Fanta on 9.12.13.
  */
-class EntityAdapter extends XmlAdapter<AdaptedEntity, Entity> {
+public class EntityAdapter extends XmlAdapter<AdaptedEntity, Entity> {
 
     @Override
     public Entity unmarshal(AdaptedEntity adaptedEntity) throws Exception {

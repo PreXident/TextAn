@@ -1,8 +1,12 @@
 package cz.cuni.mff.ufal.textan.commons.models;
 
+import cz.cuni.mff.ufal.textan.commons.models.adapters.RelationTypeAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 /**
  * Created by Petr Fanta on 24.1.14.
  */
+@XmlJavaTypeAdapter(RelationTypeAdapter.class)
 public class RelationType {
 
     private final int id;
@@ -19,5 +23,19 @@ public class RelationType {
 
     public String getType() {
         return type;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object other) {
+        if (other instanceof RelationType) {
+            return id == ((RelationType) other).id;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

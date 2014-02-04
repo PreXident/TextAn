@@ -83,7 +83,7 @@ public interface IDataProvider {
      * @return {@link cz.cuni.mff.ufal.textan.commons.models.Graph}
      */
     @WebMethod
-    public Graph getGraph(@WebParam(name = "center") int centerId, int distance);
+    public Graph getGraphByID(@WebParam(name = "center") int centerId, int distance);
 
     /**
      * Returns objects related with a given object (as a graph).
@@ -101,7 +101,7 @@ public interface IDataProvider {
      * @return {@link cz.cuni.mff.ufal.textan.commons.models.Graph}
      */
     @WebMethod
-    public Graph getRelatedObjects(@WebParam(name = "objectId") int objectId);
+    public Graph getRelatedObjectsByID(@WebParam(name = "objectId") int objectId);
 
     /**
      * Returns a path between two objects in graph.
@@ -119,7 +119,7 @@ public interface IDataProvider {
      * @return returns instance of {@link cz.cuni.mff.ufal.textan.commons.models.Graph} if path exist, otherwise returns null
      */
     @WebMethod
-    public Graph getPath(@WebParam(name = "from") int fromId, @WebParam(name = "to") int toId);
+    public Graph getPathByID(@WebParam(name = "from") int fromId, @WebParam(name = "to") int toId);
 
     /**
      * Merges two objects into one.

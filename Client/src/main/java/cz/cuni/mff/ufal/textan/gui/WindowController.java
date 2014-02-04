@@ -24,7 +24,7 @@ public abstract class WindowController implements Initializable {
     protected Window window = null;
 
     /** Stage displaying the view. It can be null if in {@link Window}. */
-    protected Stage stage = null;
+    protected OuterStage stage = null;
 
     /**
      * Returns suitable owner of a lightweight dialog.
@@ -56,7 +56,7 @@ public abstract class WindowController implements Initializable {
      * Sets the stage to be controlled.
      * @param stage Stage to be controlled
      */
-    public void setStage(final Stage stage) {
+    public void setStage(final OuterStage stage) {
         this.stage = stage;
     }
 

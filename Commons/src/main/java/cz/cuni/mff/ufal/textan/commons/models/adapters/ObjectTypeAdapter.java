@@ -1,11 +1,12 @@
-package cz.cuni.mff.ufal.textan.commons.models;
+package cz.cuni.mff.ufal.textan.commons.models.adapters;
 
+import cz.cuni.mff.ufal.textan.commons.models.ObjectType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * Created by Petr Fanta on 11.1.14.
  */
-class ObjectTypeAdapter extends XmlAdapter<AdaptedObjectType, ObjectType> {
+public class ObjectTypeAdapter extends XmlAdapter<AdaptedObjectType, ObjectType> {
 
     @Override
     public ObjectType unmarshal(AdaptedObjectType adaptedObjectType) throws Exception {

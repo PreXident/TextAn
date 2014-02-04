@@ -1,20 +1,30 @@
 package cz.cuni.mff.ufal.textan.commons.models;
 
-import java.util.ArrayList;
-import java.util.TreeMap;
+import cz.cuni.mff.ufal.textan.commons.models.adapters.GraphAdapter;
+import java.util.List;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * Created by Petr Fanta on 24.1.14.
  */
+@XmlJavaTypeAdapter(GraphAdapter.class)
 public class Graph {
 
-    private TreeMap<Integer, Object> nodes;
-    private ArrayList<Relation> edges;
+    protected List<Object> nodes;
+    protected List<Relation> edges;
 
-    public Graph(TreeMap<Integer, Object> nodes, ArrayList<Relation> edges) {
+    public Graph(List<Object> nodes, List<Relation> edges) {
         this.nodes = nodes;
         this.edges = edges;
     }
 
     //todo: add implementation
+
+    public List<Object> getNodes() {
+        return nodes;
+    }
+
+    public List<Relation> getEdges() {
+        return edges;
+    }
 }

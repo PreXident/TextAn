@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.commons.models;
 
+import cz.cuni.mff.ufal.textan.commons.models.adapters.ObjectTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
@@ -22,5 +23,19 @@ public class ObjectType {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object other) {
+        if (other instanceof ObjectType) {
+            return id == ((ObjectType) other).id;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

@@ -11,6 +11,7 @@ repositories {
 	maven {
 		url "https://oss.sonatype.org/content/repositories/snapshots" //jfxtras
 	}
+	flatDir { dirs 'lib' }
 }
 
 dependencies {
@@ -20,6 +21,7 @@ dependencies {
 	compile group: 'net.sf.jung', name: 'jung-api', version: '2.0.1'
 	compile group: 'net.sf.jung', name: 'jung-visualization', version: '2.0.1'
 	compile project(':Commons')
+	compile name: 'PretopoLib'
 }
 
 cssToBin {

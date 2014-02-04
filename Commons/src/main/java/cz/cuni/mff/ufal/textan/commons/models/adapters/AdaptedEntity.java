@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.commons.models;
+package cz.cuni.mff.ufal.textan.commons.models.adapters;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
-class AdaptedEntity {
+public class AdaptedEntity {
 
     private String value;
     private int position;

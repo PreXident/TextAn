@@ -30,7 +30,7 @@ public class ReportEditController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
     }
 
     @Override

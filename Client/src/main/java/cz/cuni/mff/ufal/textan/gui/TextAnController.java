@@ -8,21 +8,6 @@ import cz.cuni.mff.ufal.textan.gui.graph.GraphWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
-import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.SparseMultigraph;
-import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
-import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
-import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
-import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Paint;
-import java.awt.Stroke;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +17,15 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javax.swing.SwingUtilities;
 import jfxtras.labs.scene.control.window.Window;
-import org.apache.commons.collections15.Transformer;
 
 /**
  * Controller for the TextAn application.
@@ -53,7 +33,10 @@ import org.apache.commons.collections15.Transformer;
 public class TextAnController implements Initializable {
 
     /** Name of property controlling independence of windows. */
-    static private final String INDEPENDENT_WINDOW = "windows.independent";
+    static public final String INDEPENDENT_WINDOW = "windows.independent";
+
+    /** Name of property controlling displaying hypergraphs. */
+    static public final String HYPER_GRAPHS = "hypergraphs";
 
     /** Original title. */
     static protected final String TITLE = "TextAn";
@@ -66,6 +49,9 @@ public class TextAnController implements Initializable {
 
     @FXML
     private CheckMenuItem menuItemIndependentWindows;
+
+    @FXML
+    private CheckMenuItem menuItemHypergraphs;
 
     @FXML
     private TextField loginTextField;
@@ -105,6 +91,11 @@ public class TextAnController implements Initializable {
             });
             stage.show();
         }
+    }
+
+    @FXML
+    private void hypergraphs() {
+        settings.setProperty(HYPER_GRAPHS, menuItemHypergraphs.isSelected() ? "true" : "false");
     }
 
     @FXML
@@ -154,6 +145,8 @@ public class TextAnController implements Initializable {
         this.settings = settings;
         menuItemIndependentWindows.setSelected(
                 settings.getProperty(INDEPENDENT_WINDOW, "false").equals("true"));
+        menuItemHypergraphs.setSelected(
+                settings.getProperty(HYPER_GRAPHS, "false").equals("true"));
         loginTextField.setText(settings.getProperty("username", System.getProperty("user.name")));
         loginTextField.textProperty().addListener(
             (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {

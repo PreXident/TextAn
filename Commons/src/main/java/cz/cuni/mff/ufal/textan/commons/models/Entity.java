@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.commons.models;
 
+import cz.cuni.mff.ufal.textan.commons.models.adapters.EntityAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**

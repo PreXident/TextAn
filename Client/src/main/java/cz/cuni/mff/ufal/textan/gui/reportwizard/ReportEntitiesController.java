@@ -303,7 +303,7 @@ public class ReportEntitiesController extends ReportWizardController {
      * Simple holder for information about words.
      */
     private static final class Word {
-        
+
         /** Word itself. */
         final String word;
 

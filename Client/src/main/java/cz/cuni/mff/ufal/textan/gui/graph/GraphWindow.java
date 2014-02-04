@@ -31,9 +31,9 @@ public class GraphWindow extends InnerWindow {
         super(TITLE, PROPERTY_ID, settings);
         this.grapher = grapher;
         try {
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("GraphView.fxml"));
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("ObjectList.fxml"));
             final Parent loadedRoot = (Parent) loader.load();
-            GraphViewController controller = loader.getController();
+            GraphController controller = loader.getController();
             controller.setSettings(settings);
             controller.setGrapher(grapher);
             controller.setWindow(this);

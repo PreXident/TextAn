@@ -14,3 +14,5 @@ report.wizard.x=0
 report.wizard.y=0
 #maximized report wizard
 report.wizard.maximized=false
+#if true hypergraphs will be used to display object and their relations
+hypergraphs=false
