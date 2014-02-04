@@ -9,6 +9,8 @@ package cz.cuni.mff.ufal.textan.data.test;
 import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
+import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
+import cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -49,6 +51,7 @@ public class DataTest {
     
     @Test
     public void addAndRemoveObjectType() {
+        System.out.println("\n\naddAndRemoveObjectType");
         ObjectTypeTable user = new ObjectTypeTable("__Unspecified Object");
         assertTrue("Object type already exists or cant be added", Data.addRecord(user));
         long id = user.getId();
@@ -61,8 +64,22 @@ public class DataTest {
     }
     
     @Test
+    public void addAndRemoveRelationType() {
+        System.out.println("\n\naddAndRemoveRelationType");
+        RelationTypeTable user = new RelationTypeTable("__Unspecified Object");
+        assertTrue("Relation type already exists or cant be added", Data.addRecord(user));
+        long id = user.getId();
+        assertTrue("id > 0", id > 0);
+        //System.out.println("id: " + id);
+        RelationTypeTable user2 = null;
+        user2 = (RelationTypeTable)Data.getRecordById(RelationTypeTable.class, id);
+        assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
+        assertTrue("Data.deleteRecord(user2)", Data.deleteRecord(user2));
+    }
+    
+    @Test
     public void addAndRemoveObject() {
-        System.out.println("addAndRemoveObject");
+        System.out.println("\n\naddAndRemoveObject");
         ObjectTypeTable ott = new ObjectTypeTable("__ObjectType1");
         assertTrue("Object type already exists or cant be added", Data.addRecord(ott));
         System.out.println("Object typed added: " + ott);
@@ -94,6 +111,42 @@ public class DataTest {
 
         }
     }
+    
+    @Test
+    public void addAndRemoveRelation() {
+        System.out.println("\n\naddAndRemoveRelation");
+        RelationTypeTable ott = new RelationTypeTable("__RelationType1");
+        assertTrue("Object type already exists or cant be added", Data.addRecord(ott));
+        System.out.println("Object typed added: " + ott);
+        try {
+            // TODO OBJECT ADD AND REMOVE
+            
+            RelationTable ot = (RelationTable)Data.getRecordById(RelationTable.class, 1L);
+            System.out.println("ot = " + ot);
+            
+            try {
+                ot = new RelationTable(ott);
+                assertTrue("Relation type already exists or cant be added: " + ot, Data.addRecord(ot));
+                System.out.println("Relation added: " + ot);
+                
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                assertTrue("Relation cant be deleted: " + ot, Data.deleteRecord(ot));
+                System.out.println("Relation deleted: " + ot);
+            }
+            
+            
+            
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            assertTrue("Data.deleteRecord(ott)", Data.deleteRecord(ott));
+            System.out.println("Relation type deleted: " + ott);
+
+        }
+    }
+    
     /*
     @Test
     public void alwaysFail() {

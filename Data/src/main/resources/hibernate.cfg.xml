@@ -10,9 +10,14 @@
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/textanal</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password"/>
-        
+
+        <property name="show_sql">true</property>
+                
         <mapping class="cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable" resource="cz/cuni/mff/ufal/textan/data/tables/ObjectTypeTable.hbm.xml" />
         <mapping class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" resource="cz/cuni/mff/ufal/textan/data/tables/ObjectTable.hbm.xml" />
+        
+        <mapping class="cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable" resource="cz/cuni/mff/ufal/textan/data/tables/RelationTypeTable.hbm.xml" />
+        <mapping class="cz.cuni.mff.ufal.textan.data.tables.RelationTable" resource="cz/cuni/mff/ufal/textan/data/tables/RelationTable.hbm.xml" />
     </session-factory>
 </hibernate-configuration>
 

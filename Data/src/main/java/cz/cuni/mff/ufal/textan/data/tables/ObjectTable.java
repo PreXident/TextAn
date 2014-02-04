@@ -11,6 +11,9 @@ public class ObjectTable extends AbstractTable {
     private String data;
     private ObjectTypeTable objectType;
 
+    // TODO list of relations this object is in
+    
+    
     public ObjectTable() {
     }
 
