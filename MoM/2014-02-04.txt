@@ -1,0 +1,8 @@
+All here.
+
+- There will be no stored procedures in database, so any database can be used.
+- Let users chose how to display multigraphs (background color X added edges)
+- The communication about graphs between client and server prototyped
+- Manually written wsdl is considered, but it has some drawbacks - hardcoded hostnames, etc
+
+Next meeting: Tuesday 11AM
