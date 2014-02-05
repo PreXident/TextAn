@@ -5,7 +5,7 @@
 *.war
 *.ear
 
-!/
+\!/
 build/
 private/
 .gradle/
@@ -24,7 +24,3 @@ classes/
 .classpath
 .project
 .settings/
-
-#directory symlinks
-Client/Commons
-Server/Commons
