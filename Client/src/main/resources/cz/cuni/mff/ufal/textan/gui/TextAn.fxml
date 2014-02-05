@@ -35,10 +35,28 @@
 					<Menu text="Nastavení" >
 						<CheckMenuItem fx:id="menuItemIndependentWindows" text="Samostatná okna" onAction="#independentWindows" />
 						<CheckMenuItem fx:id="menuItemHypergraphs" text="Hypergrafy" onAction="#hypergraphs" />
+						<CustomMenuItem hideOnClick="false" text="Lokalizace">
+							<content>
+								<HBox alignment="CENTER_LEFT" >
+									<Label text="Localizace" styleClass="menu-item-label"/>
+									<ComboBox fx:id="localizationCombo" editable="true">
+										<items>
+											<FXCollections fx:factory="observableArrayList">
+												<String fx:value="cs" />
+												<String fx:value="en" />
+											</FXCollections>
+										</items>
+										<value>
+											<String fx:value="cs" />
+										</value>
+									</ComboBox>
+								</HBox>
+							</content>
+						</CustomMenuItem>
 						<CustomMenuItem hideOnClick="false" text="Login">
 							<content>
 								<HBox alignment="CENTER_LEFT" spacing="10"  >
-									<Label text="Login:" styleClass="login-label"/>
+									<Label text="Login:" styleClass="menu-item-label"/>
 									<TextField fx:id="loginTextField"/>
 								</HBox>
 							</content>

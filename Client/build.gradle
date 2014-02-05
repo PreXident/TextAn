@@ -24,6 +24,15 @@ dependencies {
 	compile name: 'PretopoLib'
 }
 
+//exclude resources in ! directories
+sourceSets {
+    main {
+        resources {
+			exclude '**/!/'
+        }
+    }
+}
+
 cssToBin {
 	enabled = false
 }

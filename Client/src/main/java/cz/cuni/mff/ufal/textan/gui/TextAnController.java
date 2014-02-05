@@ -11,21 +11,27 @@ import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.window.Window;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  * Controller for the TextAn application.
@@ -55,6 +61,9 @@ public class TextAnController implements Initializable {
 
     @FXML
     private TextField loginTextField;
+
+    @FXML
+    private ComboBox<String> localizationCombo;
 
     /** Properties with application settings. */
     protected Properties settings = null;
@@ -127,7 +136,6 @@ public class TextAnController implements Initializable {
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
-        System.out.printf("Initializing...\n");
         content.addEventFilter(MouseEvent.ANY, (MouseEvent t) -> {
             if (t.getX()< 0 || t.getY() < 0
                     || t.getX() > content.getWidth()
@@ -153,6 +161,12 @@ public class TextAnController implements Initializable {
                 settings.setProperty("username", newVal);
             }
         );
+        localizationCombo.getSelectionModel().select(settings.getProperty("locale.language", "cs"));
+        localizationCombo.valueProperty().addListener(
+                (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
+            Platform.runLater(() -> Dialogs.create().message("Změna se projeví, až po restartování aplikace!").showWarning());
+            settings.setProperty("locale.language", newVal);
+        });
         client = new Client(settings);
     }
 
