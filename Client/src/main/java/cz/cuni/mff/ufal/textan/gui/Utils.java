@@ -1,6 +1,8 @@
 package cz.cuni.mff.ufal.textan.gui;
 
+import java.util.MissingResourceException;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.stage.Stage;
 
@@ -32,6 +34,22 @@ public class Utils {
         stage.heightProperty().addListener(sizeListener);
         stage.xProperty().addListener(sizeListener);
         stage.yProperty().addListener(sizeListener);
+    }
+
+    /**
+     * Uses resourceBundle to localize key.
+     * If not found, logs it and returns key back.
+     * @param resourceBundle localization container
+     * @param key localization key
+     * @return localization or key if not found
+     */
+    static public String localize(final ResourceBundle resourceBundle, final String key) {
+        try {
+            return resourceBundle.getString(key);
+        } catch(MissingResourceException e) {
+            System.err.printf("Localization string \"%1$s\" not found!\n", key);
+            return key;
+        }
     }
 
     /** Utility class, no instantiation. */

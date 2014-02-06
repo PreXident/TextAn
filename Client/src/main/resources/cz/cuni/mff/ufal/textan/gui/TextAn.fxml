@@ -21,24 +21,24 @@
 		<VBox>
 			<MenuBar fx:id="menuBar" >
 				<menus>
-					<Menu text="File" >
-						<MenuItem text="Close" onAction="#close">
+					<Menu text="%file" >
+						<MenuItem text="%close" onAction="#close">
 							<accelerator>
 								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="X"/>
 							</accelerator>
 						</MenuItem>
 					</Menu>
-					<Menu text="Wizards" >
-						<MenuItem text="Report" onAction="#reportWizard" />
-						<MenuItem text="Graph" onAction="#graph" />
+					<Menu text="%wizards" >
+						<MenuItem text="%report.wizard" onAction="#reportWizard" />
+						<MenuItem text="%graph.wizard" onAction="#graph" />
 					</Menu>
 					<Menu text="Nastavení" >
-						<CheckMenuItem fx:id="menuItemIndependentWindows" text="Samostatná okna" onAction="#independentWindows" />
-						<CheckMenuItem fx:id="menuItemHypergraphs" text="Hypergrafy" onAction="#hypergraphs" />
-						<CustomMenuItem hideOnClick="false" text="Lokalizace">
+						<CheckMenuItem fx:id="menuItemIndependentWindows" text="%independent.windows" onAction="#independentWindows" />
+						<CheckMenuItem fx:id="menuItemHypergraphs" text="%hypergraphs" onAction="#hypergraphs" />
+						<CustomMenuItem hideOnClick="false" text="%localization">
 							<content>
 								<HBox alignment="CENTER_LEFT" >
-									<Label text="Localizace" styleClass="menu-item-label"/>
+									<Label text="%localization" styleClass="menu-item-label"/>
 									<ComboBox fx:id="localizationCombo" editable="true">
 										<items>
 											<FXCollections fx:factory="observableArrayList">
@@ -56,7 +56,7 @@
 						<CustomMenuItem hideOnClick="false" text="Login">
 							<content>
 								<HBox alignment="CENTER_LEFT" spacing="10"  >
-									<Label text="Login:" styleClass="menu-item-label"/>
+									<Label text="%login.label" styleClass="menu-item-label"/>
 									<TextField fx:id="loginTextField"/>
 								</HBox>
 							</content>

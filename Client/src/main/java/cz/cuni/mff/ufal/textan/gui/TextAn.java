@@ -33,7 +33,7 @@ public class TextAn extends Application {
     private static final String DEFAULT_PROPERTIES = "TextAn.properties";
 
     /** Bundle containing resources for TextAn. */
-    private static final String RESOURCE_BUNDLE = "cz.cuni.mff.ufal.textan.gui.TextAn";
+    static final String RESOURCE_BUNDLE = "cz.cuni.mff.ufal.textan.gui.TextAn";
 
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
@@ -121,7 +121,7 @@ public class TextAn extends Application {
         }
 
         //create javafx controls
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource("TextAn.fxml"));
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("TextAn.fxml"), resourceBundle);
         final Parent root = (Parent) loader.load();
         controller = loader.getController();
         controller.setSettings(settings);
@@ -175,12 +175,7 @@ public class TextAn extends Application {
      * @return localization or key if not present
      */
     private String localize(final String key) {
-        try {
-            return resourceBundle.getString(key);
-        } catch(MissingResourceException e) {
-            System.err.printf("Localization string \"%1$s\" not found!\n", key);
-            return key;
-        }
+        return Utils.localize(resourceBundle, key);
     }
 
     /**

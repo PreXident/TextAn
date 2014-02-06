@@ -79,6 +79,9 @@ public class TextAnController implements Initializable {
      */
     protected Client client = null;
 
+    /** Bundle containing localization. */
+    protected ResourceBundle resourceBundle;
+
     @FXML
     private void close() {
         Platform.exit();
@@ -143,6 +146,7 @@ public class TextAnController implements Initializable {
                 t.consume();
             }
         });
+        resourceBundle = rb;
     }
 
     /**
@@ -163,9 +167,12 @@ public class TextAnController implements Initializable {
         );
         localizationCombo.getSelectionModel().select(settings.getProperty("locale.language", "cs"));
         localizationCombo.valueProperty().addListener(
-                (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
-            Platform.runLater(() -> Dialogs.create().message("Změna se projeví, až po restartování aplikace!").showWarning());
-            settings.setProperty("locale.language", newVal);
+            (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
+                Platform.runLater(
+                        () -> Dialogs.create()
+                                .message(Utils.localize(resourceBundle,"locale.changed"))
+                                .showWarning());
+                settings.setProperty("locale.language", newVal);
         });
         client = new Client(settings);
     }
