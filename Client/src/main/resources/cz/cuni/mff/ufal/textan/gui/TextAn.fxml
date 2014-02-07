@@ -32,14 +32,14 @@
 						<MenuItem text="%report.wizard" onAction="#reportWizard" />
 						<MenuItem text="%graph.wizard" onAction="#graph" />
 					</Menu>
-					<Menu text="Nastavení" >
+					<Menu text="%settings" >
 						<CheckMenuItem fx:id="menuItemIndependentWindows" text="%independent.windows" onAction="#independentWindows" />
 						<CheckMenuItem fx:id="menuItemHypergraphs" text="%hypergraphs" onAction="#hypergraphs" />
 						<CustomMenuItem hideOnClick="false" text="%localization">
 							<content>
-								<HBox alignment="CENTER_LEFT" >
+								<HBox alignment="CENTER_LEFT" spacing="10" >
 									<Label text="%localization" styleClass="menu-item-label"/>
-									<ComboBox fx:id="localizationCombo" editable="true">
+									<ComboBox fx:id="localizationCombo" editable="true" prefWidth="35" >
 										<items>
 											<FXCollections fx:factory="observableArrayList">
 												<String fx:value="cs" />
@@ -55,9 +55,9 @@
 						</CustomMenuItem>
 						<CustomMenuItem hideOnClick="false" text="Login">
 							<content>
-								<HBox alignment="CENTER_LEFT" spacing="10"  >
+								<HBox alignment="CENTER_LEFT" spacing="10" >
 									<Label text="%login.label" styleClass="menu-item-label"/>
-									<TextField fx:id="loginTextField"/>
+									<TextField fx:id="loginTextField" prefWidth="70"/>
 								</HBox>
 							</content>
 						</CustomMenuItem>

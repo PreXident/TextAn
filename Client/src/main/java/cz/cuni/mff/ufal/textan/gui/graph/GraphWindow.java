@@ -2,8 +2,9 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.InnerWindow;
-import java.io.IOException;
+import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import org.controlsfx.dialog.Dialogs;
@@ -22,6 +23,9 @@ public class GraphWindow extends InnerWindow {
     /** Graph information provider. */
     final protected Grapher grapher;
 
+    /** Localization container. */
+    protected ResourceBundle resourceBundle;
+
     /**
      * Only constructor.
      * @param settings properties with settings
@@ -31,17 +35,19 @@ public class GraphWindow extends InnerWindow {
         super(TITLE, PROPERTY_ID, settings);
         this.grapher = grapher;
         try {
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("ObjectList.fxml"));
+            resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.graph.ObjectList");
+            setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("ObjectList.fxml"), resourceBundle);
             final Parent loadedRoot = (Parent) loader.load();
             GraphController controller = loader.getController();
             controller.setSettings(settings);
             controller.setGrapher(grapher);
             controller.setWindow(this);
             getContentPane().getChildren().add(loadedRoot);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()
-                    .title("Problém při načítání stránky!")
+                    .title(Utils.localize(resourceBundle, "page.load.error"))
                     .showException(e);
         }
     }

@@ -24,7 +24,7 @@
 	</center>
 	<bottom>
 		<HBox alignment="CENTER_RIGHT" >
-			<Button text="Zrušit" onAction="#cancel"/>
+			<Button text="%cancel" onAction="#cancel"/>
 		</HBox>
 	</bottom>
 </BorderPane>

@@ -19,19 +19,22 @@
 	</stylesheets>
 	<top>
 			<VBox>
-				<Label text="Vzdálenost"/>
+				<Label text="%distance"/>
 				<TextField fx:id="distanceTextField" text="0"/>
 			</VBox>
 	</top>
 	<center>
-		<HBox>
-			<ListView fx:id="listView" />
-		</HBox>
+		<VBox>
+			<Label text="%source"/>
+			<StackPane>
+				<ListView fx:id="listView" />
+			</StackPane>
+		</VBox>
 	</center>
 	<bottom>
 		<HBox alignment="CENTER_RIGHT" >
-			<Button text="Zrušit" onAction="#cancel"/>
-			<Button text="Dále" onAction="#next"/>
+			<Button text="%cancel" onAction="#cancel"/>
+			<Button text="%next" onAction="#next"/>
 		</HBox>
 	</bottom>
 </BorderPane>

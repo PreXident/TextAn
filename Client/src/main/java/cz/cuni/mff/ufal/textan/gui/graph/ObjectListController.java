@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 
 import cz.cuni.mff.ufal.textan.commons.models.Object;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -28,6 +29,9 @@ public class ObjectListController extends GraphController {
     @FXML
     private ListView<Object> listView;
 
+    /** Localization container. */
+    protected ResourceBundle resourceBundle;
+
     @FXML
     private void cancel() {
         closeContainer();
@@ -42,7 +46,8 @@ public class ObjectListController extends GraphController {
                 grapher.setRootId(selected.getId());
                 grapher.setDistance(distance);
 
-                final FXMLLoader loader = new FXMLLoader(getClass().getResource("GraphView.fxml"));
+                final ResourceBundle rb = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.graph.GraphView");
+                final FXMLLoader loader = new FXMLLoader(getClass().getResource("GraphView.fxml"), rb);
                 final Parent loadedRoot = (Parent) loader.load();
                 final GraphViewController controller = loader.getController();
                 if (window != null) {
@@ -60,7 +65,7 @@ public class ObjectListController extends GraphController {
                 callWithContentBackup(() -> {
                     createDialog()
                             .owner(getDialogOwner(root))
-                            .title("Zadejte celé číslo!")
+                            .title(Utils.localize(resourceBundle, "invalid.distance"))
                             .showException(e);
                 });
             } catch (Exception e) {
@@ -68,7 +73,7 @@ public class ObjectListController extends GraphController {
                 callWithContentBackup(() -> {
                     createDialog()
                             .owner(getDialogOwner(root))
-                            .title("Došlo k chybě!")
+                            .title(Utils.localize(resourceBundle, "page.load.error"))
                             .showException(e);
                 });
             }
@@ -77,6 +82,7 @@ public class ObjectListController extends GraphController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        resourceBundle = rb;
         listView.setCellFactory((ListView<Object> p) -> {
             return new ListCell<Object>() {
                 @Override

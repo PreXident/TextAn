@@ -46,7 +46,7 @@ public class Utils {
     static public String localize(final ResourceBundle resourceBundle, final String key) {
         try {
             return resourceBundle.getString(key);
-        } catch(MissingResourceException e) {
+        } catch(NullPointerException | MissingResourceException e) {
             System.err.printf("Localization string \"%1$s\" not found!\n", key);
             return key;
         }
