@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
+import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.utils.Pair;
 import java.net.URL;
 import java.util.ArrayList;
@@ -80,6 +81,9 @@ public class ReportEntitiesController extends ReportWizardController {
     /** List of words. Iterate to get marked entities. */
     List<Word> words = new ArrayList<>();
 
+    /** Localization controller. */
+    ResourceBundle resourceBundle;
+
     @FXML
     private void cancel() {
         closeContainer();
@@ -90,14 +94,15 @@ public class ReportEntitiesController extends ReportWizardController {
         callWithContentBackup(() ->
             createDialog()
                     .owner(getDialogOwner(root))
-                    .title("Hotovo!")
-                    .message("Zpráva úspěšně vytvořena")
+                    .title(Utils.localize(resourceBundle, "done"))
+                    .message(Utils.localize(resourceBundle, "done.detail"))
                     .showInformation());
         closeContainer();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
         EventHandler<ActionEvent> eh = (ActionEvent t) -> {
             final Entity e = new Entity(((MenuItem) t.getSource()).getText());
@@ -108,7 +113,7 @@ public class ReportEntitiesController extends ReportWizardController {
                 callWithContentBackup(() -> {
                     createDialog()
                             .owner(getDialogOwner(root))
-                            .title("Došlo k chybě!")
+                            .title(Utils.localize(resourceBundle, "error"))
                             .showException(ex);
                 });
             }

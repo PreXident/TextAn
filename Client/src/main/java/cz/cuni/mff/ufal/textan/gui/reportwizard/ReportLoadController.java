@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -31,6 +32,9 @@ public class ReportLoadController extends ReportWizardController {
     @FXML
     private ToggleGroup loadToggleGroup;
 
+    /** Localization container. */
+    ResourceBundle resourceBundle;
+
     @FXML
     private void cancel() {
         closeContainer();
@@ -54,7 +58,7 @@ public class ReportLoadController extends ReportWizardController {
             callWithContentBackup(() -> {
                 createDialog()
                         .owner(getDialogOwner(root))
-                        .title("Došlo k chybě!")
+                        .title(Utils.localize(resourceBundle, "error"))
                         .showException(e);
             });
         }
@@ -62,6 +66,6 @@ public class ReportLoadController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        resourceBundle = rb;
     }
 }

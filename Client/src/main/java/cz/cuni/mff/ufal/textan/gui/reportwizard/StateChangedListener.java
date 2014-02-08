@@ -4,10 +4,12 @@ import cz.cuni.mff.ufal.textan.core.processreport.IStateChangedListener;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.State;
 import cz.cuni.mff.ufal.textan.core.processreport.State.StateType;
+import cz.cuni.mff.ufal.textan.utils.Pair;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import jfxtras.labs.scene.control.window.Window;
@@ -18,7 +20,8 @@ import org.controlsfx.dialog.Dialogs;
  */
 public class StateChangedListener implements IStateChangedListener {
 
-    protected Map<StateType, String> fxmlMapping = new HashMap<>();
+    /** Contains fxml and resource bundle for each StateType. */
+    protected Map<StateType, Pair<String, String>> fxmlMapping = new HashMap<>();
 
     private final Window window;
 
@@ -29,9 +32,9 @@ public class StateChangedListener implements IStateChangedListener {
     private final ProcessReportPipeline pipeline;
 
     {
-        fxmlMapping.put(StateType.LOAD, "01_ReportLoad.fxml");
-        fxmlMapping.put(StateType.EDIT_REPORT, "02_ReportEdit.fxml");
-        fxmlMapping.put(StateType.EDIT_ENTITIES, "03_ReportEntities.fxml");
+        fxmlMapping.put(StateType.LOAD, new Pair<>("01_ReportLoad.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01_ReportLoad"));
+        fxmlMapping.put(StateType.EDIT_REPORT, new Pair<>("02_ReportEdit.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.02_ReportEdit"));
+        fxmlMapping.put(StateType.EDIT_ENTITIES, new Pair<>("03_ReportEntities.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.03_ReportEntities"));
     }
 
     private StateChangedListener(final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage, final Window window) {
@@ -52,8 +55,11 @@ public class StateChangedListener implements IStateChangedListener {
     @Override
     public void stateChanged(State newState) {
         try {
-            final String fxml = fxmlMapping.get(newState.getType());
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            final Pair<String, String> pair = fxmlMapping.get(newState.getType());
+            final String fxml = pair.getFirst();
+            final String rbName = pair.getSecond();
+            final ResourceBundle rb = ResourceBundle.getBundle(rbName);
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml), rb);
             final Parent loadedRoot = (Parent) loader.load();
             ReportWizardController controller = loader.getController();
             controller.setSettings(settings);
