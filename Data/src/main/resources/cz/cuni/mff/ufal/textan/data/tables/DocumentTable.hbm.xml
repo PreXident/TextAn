@@ -4,20 +4,21 @@
  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
 
 <hibernate-mapping>
-    <class name="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" table="Object">
+    <class name="cz.cuni.mff.ufal.textan.data.tables.DocumentTable" table="document">
       <meta attribute="class-description">
-         Entity itself 
+         Document - Report - Text writen by policemen
       </meta>
       <id 
           name="id" 
           type="long" 
-          column="id_object"
+          column="id_document"
           unsaved-value="0">
          <generator class="native" />
       </id>  
-       <property name="data" column="data" type="string"/>
-       <many-to-one name="objectType" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable" 
-                    column="id_object_type" not-null="true" lazy="false" cascade="save-update" />
+       <property name="addedDate" column="added" type="date"/>
+       <property name="processedDate" column="processed" type="date"/>
+       <property name="text" column="text" type="text"/>
+
     </class>
     
 </hibernate-mapping>

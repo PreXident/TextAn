@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+    <class name="cz.cuni.mff.ufal.textan.data.tables.AliasTable" table="Alias">
+      <meta attribute="class-description">
+         Alias of an entity. For a person it could be "Karel", "Kája" or "The butcher"
+      </meta>
+      <id 
+          name="id" 
+          type="long" 
+          column="id_alias"
+          unsaved-value="0">
+         <generator class="native" />
+      </id>  
+       <property name="alias" column="alias" type="string"/>
+       <many-to-one name="object" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" 
+                    column="id_object" not-null="true" lazy="false" cascade="save-update" />
+    </class>
+    
+</hibernate-mapping>

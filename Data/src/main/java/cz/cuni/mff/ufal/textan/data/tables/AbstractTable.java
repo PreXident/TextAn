@@ -8,7 +8,7 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 /**
  *
- * @author Venda
+ * @author Václav Pernička
  */
 public abstract class AbstractTable {
     

@@ -5,18 +5,28 @@
 
 <hibernate-mapping>
     <class name="cz.cuni.mff.ufal.textan.data.tables.RelationTable" table="Relation">
-      <meta attribute="class-description">
-         Relation itself 
-      </meta>
-      <id 
-          name="id" 
-          type="long" 
-          column="id_relation"
-          unsaved-value="0">
-         <generator class="native" />
-      </id>  
-       <many-to-one name="relationType" class="cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable" 
-                    column="id_relation_type" not-null="true" lazy="false" />
+        <meta attribute="class-description">
+            Relation itself 
+        </meta>
+        <id 
+            name="id" 
+            type="long" 
+            column="id_relation"
+            unsaved-value="0">
+            <generator class="native" />
+        </id>  
+        <list name="objectsInRelation" table="isinrelation">
+            
+            <key column="id_relation"/>
+            <list-index column="order_in_relation" />
+
+                
+            <many-to-many class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" column="id_object"/>
+                
+
+        </list>
+        <many-to-one name="relationType" class="cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable" 
+                    column="id_relation_type" not-null="true" lazy="false" cascade="save-update" />
     </class>
     
 </hibernate-mapping>
