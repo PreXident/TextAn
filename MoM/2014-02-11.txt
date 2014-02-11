@@ -1,0 +1,13 @@
+Tam is missing.
+
+- Localization infrastructure is done. users can chose how to display hypergrahs.
+- NER Windows compilation problem - solved!
+- Server start problem - it needs to be restarted several times before webservice is available
+- Petr's idea to allow users
+
+HWK:
+- Adam - finalize graph visualization and continue work on pipeline, check if graphs can contain directional and undirectional edges
+- Kuba - make nametag work, process Tam comments
+- Petr - make server reliable, finalize webservice models
+- Vence - db mapping
+- Tam - learn for exams :-)
