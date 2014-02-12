@@ -37,6 +37,7 @@ public class DataTest {
     
     @BeforeClass
     public static void setUpClass() {
+        System.out.println("Setup");
         //System.out.println("If class Method fails, be sure you started the database.");
         assertTrue("You have probably not run the database or the connection is not set properly", Data.addRecord(document));
         Data.addRecord(withRelation);
@@ -45,10 +46,12 @@ public class DataTest {
     
     @AfterClass
     public static void tearDownClass() {
+         System.out.println("\n\nClean");
          assertTrue(Data.deleteRecord(document));
          assertTrue(Data.deleteRecord(withRelation));
          assertTrue(Data.deleteRecord(withRelation.getRelationType()));
-         assertTrue(Data.deleteRecord(object));         
+         assertTrue(Data.deleteRecord(object));
+         assertTrue(Data.deleteRecord(object.getObjectType()));
     }
     
     @Before
@@ -74,7 +77,7 @@ public class DataTest {
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
         ObjectTypeTable user2 = null;
-        user2 = (ObjectTypeTable)Data.getRecordById(ObjectTypeTable.class, id);
+        user2 = Data.getRecordById(ObjectTypeTable.class, id);
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
         assertTrue("Data.deleteRecord(user2)", Data.deleteRecord(user2));
     }
@@ -88,7 +91,7 @@ public class DataTest {
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
         RelationTypeTable user2 = null;
-        user2 = (RelationTypeTable)Data.getRecordById(RelationTypeTable.class, id);
+        user2 = Data.getRecordById(RelationTypeTable.class, id);
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
         assertTrue("Data.deleteRecord(user2)", Data.deleteRecord(user2));
     }
@@ -102,7 +105,7 @@ public class DataTest {
         try {
             // TODO OBJECT ADD AND REMOVE
             
-            ObjectTable ot = (ObjectTable)Data.getRecordById(ObjectTable.class, 1L);
+            ObjectTable ot = Data.getRecordById(ObjectTable.class, 1L);
             System.out.println("ot = " + ot);
             
             try {
@@ -137,7 +140,7 @@ public class DataTest {
         try {
             // TODO OBJECT ADD AND REMOVE
             
-            RelationTable ot = (RelationTable)Data.getRecordById(RelationTable.class, 1L);
+            RelationTable ot = Data.getRecordById(RelationTable.class, 1L);
             System.out.println("ot = " + ot);
             
             try {
@@ -173,7 +176,7 @@ public class DataTest {
         try {
             // TODO OBJECT ADD AND REMOVE
             
-            RelationTable ot = (RelationTable)Data.getRecordById(RelationTable.class, 3L);
+            RelationTable ot = Data.getRecordById(RelationTable.class, 3L);
             System.out.println("ot = " + ot);
             
             // This line cannot be uncomented - throws an exception. Use performActionOnRecord instead
@@ -221,7 +224,7 @@ public class DataTest {
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
         DocumentTable doc2 = null;
-        doc2 = (DocumentTable)Data.getRecordById(DocumentTable.class, id);
+        doc2 = Data.getRecordById(DocumentTable.class, id);
         assertTrue("doc2.equals(doc): doc = " + document + "; doc2 = " + doc2, doc2.equals(document));
         assertTrue("Data.deleteRecord(user2)", Data.deleteRecord(doc2));
     }
