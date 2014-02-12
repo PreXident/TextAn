@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+    <class name="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" table="Object">
+      <meta attribute="class-description">
+         Entity itself 
+      </meta>
+      <id 
+          name="id" 
+          type="long" 
+          column="id_object"
+          unsaved-value="0">
+         <generator class="native" />
+      </id>  
+       <property name="data" column="data" type="string"/>
+       <many-to-one name="objectType" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable" 
+                    column="id_object_type" not-null="true" lazy="false" cascade="save-update" />
+    </class>
+    
+</hibernate-mapping>
