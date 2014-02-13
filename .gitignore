@@ -5,12 +5,15 @@
 *.war
 *.ear
 
-!/
+\!/
 build/
 private/
 .gradle/
 .nb-gradle/
 .nb-gradle-properties
+
+gradle
+gradle.bat
 
 #InteliJ IDEA
 .idea/
@@ -18,12 +21,9 @@ out/
 *.iml
 *.iws
 *.ipr
+classes/
 
 # Eclipse
 .classpath
 .project
 .settings/
-
-#directory symlinks
-Client/Commons
-Server/Commons

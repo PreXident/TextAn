@@ -15,28 +15,49 @@
 			fx:controller="cz.cuni.mff.ufal.textan.gui.TextAnController" styleClass="root" >
 	<stylesheets >
 		<URL value="@TextAn.css" />
+		<URL value="@window.css" />
 	</stylesheets>
 	<top>
 		<VBox>
 			<MenuBar fx:id="menuBar" >
 				<menus>
-					<Menu text="File" >
-						<MenuItem text="Close" onAction="#close">
+					<Menu text="%file" >
+						<MenuItem text="%close" onAction="#close">
 							<accelerator>
 								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="X"/>
 							</accelerator>
 						</MenuItem>
 					</Menu>
-					<Menu text="Wizards" >
-						<MenuItem text="Report" onAction="#reportWizard" />
+					<Menu text="%wizards" >
+						<MenuItem text="%report.wizard" onAction="#reportWizard" />
+						<MenuItem text="%graph.wizard" onAction="#graph" />
 					</Menu>
-					<Menu text="Nastavení" >
-						<CheckMenuItem fx:id="menuItemIndependentWindows" text="Samostatná okna" onAction="#independentWindows" />
+					<Menu text="%settings" >
+						<CheckMenuItem fx:id="menuItemIndependentWindows" text="%independent.windows" onAction="#independentWindows" />
+						<CheckMenuItem fx:id="menuItemHypergraphs" text="%hypergraphs" onAction="#hypergraphs" />
+						<CustomMenuItem hideOnClick="false" text="%localization">
+							<content>
+								<HBox alignment="CENTER_LEFT" spacing="10" >
+									<Label text="%localization" styleClass="menu-item-label"/>
+									<ComboBox fx:id="localizationCombo" editable="true" prefWidth="35" >
+										<items>
+											<FXCollections fx:factory="observableArrayList">
+												<String fx:value="cs" />
+												<String fx:value="en" />
+											</FXCollections>
+										</items>
+										<value>
+											<String fx:value="cs" />
+										</value>
+									</ComboBox>
+								</HBox>
+							</content>
+						</CustomMenuItem>
 						<CustomMenuItem hideOnClick="false" text="Login">
 							<content>
-								<HBox alignment="CENTER_LEFT" spacing="10"  >
-									<Label text="Login:" styleClass="login-label"/>
-									<TextField fx:id="loginTextField"/>
+								<HBox alignment="CENTER_LEFT" spacing="10" >
+									<Label text="%login.label" styleClass="menu-item-label"/>
+									<TextField fx:id="loginTextField" prefWidth="70"/>
 								</HBox>
 							</content>
 						</CustomMenuItem>

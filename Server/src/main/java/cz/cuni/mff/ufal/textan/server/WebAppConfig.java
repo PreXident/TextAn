@@ -6,7 +6,7 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
+/*
  * User: Petr Fanta
  * Date: 28.11.13
  * Time: 18:04
@@ -46,5 +46,26 @@ public class WebAppConfig {
     @Bean
     public SimpleWebService simpleWebService() {
         return new SimpleWebService();
+    }
+
+    /**
+     * Creates endpoint for DataProvider webservice.
+     * @return DataProvider endpoint
+     */
+    @Bean
+    public Server jaxDataProviderServer() {
+        JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
+        factory.setServiceBean(dataProvider());
+        factory.setAddress("/data");
+        return factory.create();
+    }
+
+    /**
+     * Creates Spring bean with dataprovider class.
+     * @return bean for DataProvider webservice
+     */
+    @Bean
+    public DataProvider dataProvider() {
+        return new DataProvider();
     }
 }

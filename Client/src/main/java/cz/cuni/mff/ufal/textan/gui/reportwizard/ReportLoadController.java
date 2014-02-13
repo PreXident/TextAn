@@ -1,23 +1,39 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import cz.cuni.mff.ufal.textan.gui.WindowController;
+import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
-import org.controlsfx.dialog.Dialogs;
 
 /**
  * Controls initial loading of reports.
  */
-public class ReportLoadController extends WindowController {
+public class ReportLoadController extends ReportWizardController {
 
     @FXML
     private BorderPane root;
 
     @FXML
+    private RadioButton databaseRadioButton;
+
+    @FXML
+    private RadioButton fileRadioButton;
+
+    @FXML
     private RadioButton emptyMessageRadioButton;
+
+    @FXML
+    private RadioButton loadRadioButton;
+
+    @FXML
+    private ToggleGroup loadToggleGroup;
+
+    /** Localization container. */
+    ResourceBundle resourceBundle;
 
     @FXML
     private void cancel() {
@@ -26,22 +42,30 @@ public class ReportLoadController extends WindowController {
 
     @FXML
     private void next() {
-        if (!emptyMessageRadioButton.isSelected()) {
+        final Toggle toggled = loadToggleGroup.getSelectedToggle();
+        try {
+            if (toggled == databaseRadioButton) {
+                pipeline.selectDatabaseDatasource();
+            } else if (toggled == fileRadioButton) {
+                pipeline.selectFileDatasource();
+            } else if (toggled == emptyMessageRadioButton) {
+                pipeline.selectEmptyDatasource();
+            } else if (toggled == loadRadioButton) {
+                pipeline.selectLoadDatasource();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             callWithContentBackup(() -> {
-                Dialogs.create()
+                createDialog()
                         .owner(getDialogOwner(root))
-                        .title("Zatím neimplementováno!")
-                        .message("Zvolili jste možnost, která nebyla doposud implementována")
-                        .lightweight()
-                        .showError();
+                        .title(Utils.localize(resourceBundle, "error"))
+                        .showException(e);
             });
-        } else {
-            nextFrame("02_ReportEdit.fxml");
         }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        resourceBundle = rb;
     }
 }

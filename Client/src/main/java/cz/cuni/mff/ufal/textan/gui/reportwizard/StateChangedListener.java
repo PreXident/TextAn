@@ -1,0 +1,83 @@
+package cz.cuni.mff.ufal.textan.gui.reportwizard;
+
+import cz.cuni.mff.ufal.textan.core.processreport.IStateChangedListener;
+import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
+import cz.cuni.mff.ufal.textan.core.processreport.State;
+import cz.cuni.mff.ufal.textan.core.processreport.State.StateType;
+import cz.cuni.mff.ufal.textan.utils.Pair;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import jfxtras.labs.scene.control.window.Window;
+import org.controlsfx.dialog.Dialogs;
+
+/**
+ * Implementation of IStateChangedListener.
+ */
+public class StateChangedListener implements IStateChangedListener {
+
+    /** Contains fxml and resource bundle for each StateType. */
+    protected Map<StateType, Pair<String, String>> fxmlMapping = new HashMap<>();
+
+    private final Window window;
+
+    private final ReportWizardStage stage;
+
+    private final Properties settings;
+
+    private final ProcessReportPipeline pipeline;
+
+    {
+        fxmlMapping.put(StateType.LOAD, new Pair<>("01_ReportLoad.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01_ReportLoad"));
+        fxmlMapping.put(StateType.EDIT_REPORT, new Pair<>("02_ReportEdit.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.02_ReportEdit"));
+        fxmlMapping.put(StateType.EDIT_ENTITIES, new Pair<>("03_ReportEntities.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.03_ReportEntities"));
+    }
+
+    private StateChangedListener(final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage, final Window window) {
+        this.settings = settings;
+        this.pipeline = pipeline;
+        this.stage = stage;
+        this.window = window;
+    }
+
+    public StateChangedListener(final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage) {
+        this(settings, pipeline, stage, null);
+    }
+
+    public StateChangedListener(final Properties settings, final ProcessReportPipeline pipeline, final Window window) {
+        this(settings, pipeline, null, window);
+    }
+
+    @Override
+    public void stateChanged(State newState) {
+        try {
+            final Pair<String, String> pair = fxmlMapping.get(newState.getType());
+            final String fxml = pair.getFirst();
+            final String rbName = pair.getSecond();
+            final ResourceBundle rb = ResourceBundle.getBundle(rbName);
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml), rb);
+            final Parent loadedRoot = (Parent) loader.load();
+            ReportWizardController controller = loader.getController();
+            controller.setSettings(settings);
+            controller.setPipeline(pipeline);
+            if (window != null) {
+                window.getContentPane().getChildren().clear();
+                controller.setWindow(window);
+                window.getContentPane().getChildren().add(loadedRoot);
+            } else /* if (stage != null) */ {
+                controller.setStage(stage);
+                stage.getInnerWindow().getContentPane().getChildren().clear();
+                stage.getInnerWindow().getContentPane().getChildren().add(loadedRoot);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Dialogs.create()
+                    .title("Problém při načítání další stránky!")
+                    .showException(e);
+        }
+    }
+}

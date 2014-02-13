@@ -1,0 +1,31 @@
+.my-window-titlebar {
+    -fx-glass-color: rgba(42, 42, 42, 0.9);
+    //-fx-alignment: center;
+	-fx-alignment: CENTER_LEFT;
+    //-fx-background-color: linear-gradient(to bottom, derive(-fx-glass-color, 30%), -fx-glass-color);
+    -fx-border-color: derive(-fx-glass-color, -60%);
+    -fx-border-width: 2;
+    -fx-background-insets: 1;
+    -fx-border-radius: 3;
+    //-fx-background-radius: 3;
+    //-fx-stroke: rgba(255,255,255,50);
+    -fx-fill: rgba(255,255,255,50);
+	//
+	-fx-font-size: 21px;
+    -fx-background-color: linear-gradient(#595959, #474747 37%, #343434);
+    -fx-background-radius: 5 5 0 0;
+	-fx-padding: 0 0 0 10;
+	-fx-effect: dropshadow( gaussian, rgb(70, 125, 180, 0.5), 0, 0, -1, 0);
+}
+
+.window-minimize-icon:hover {
+	-fx-border-color: rgb(255, 255, 255);
+}
+
+.window-minimize-icon {
+	-fx-border-color: rgb(148, 148, 148);
+}
+
+.window {
+	-fx-glass-color: #f4f4f4;
+}

@@ -11,12 +11,30 @@ repositories {
 	maven {
 		url "https://oss.sonatype.org/content/repositories/snapshots" //jfxtras
 	}
+	flatDir { dirs 'lib' }
 }
 
 dependencies {
 	compile group: 'org.controlsfx', name: 'controlsfx', version: '8.0.2'
 	compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT'
+	compile group: 'net.sf.jung', name: 'jung-graph-impl', version: '2.0.1'
+	compile group: 'net.sf.jung', name: 'jung-api', version: '2.0.1'
+	compile group: 'net.sf.jung', name: 'jung-visualization', version: '2.0.1'
 	compile project(':Commons')
+	compile name: 'PretopoLib'
+}
+
+//exclude resources in ! directories
+sourceSets {
+    main {
+        resources {
+			exclude '**/!/'
+        }
+    }
+}
+
+cssToBin {
+	enabled = false
 }
 
 javafx {
@@ -24,5 +42,9 @@ javafx {
 }
 
 run {
+	workingDir = 'build'
+}
+
+debug {
 	workingDir = 'build'
 }

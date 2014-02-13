@@ -1,7 +1,7 @@
 root {
-    display: block;
+	display: block;
 }
 
-.login-label {
+.menu-item-label {
 	-fx-text-fill: black;
 }
