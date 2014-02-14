@@ -1,5 +1,7 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import java.util.Objects;
+
 /**
  * @author Václav Pernička
  */
@@ -53,6 +55,26 @@ public class ObjectTable extends AbstractTable {
         return String.format("ObjectTable(%d, \"%s\". %s)", getId(), getData(), getObjectType());
                 
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ObjectTable)) return false;
+        ObjectTable ot = (ObjectTable) o;
+        return ot.getId() == this.getId() && ot.getData().equals(this.getData()) && ot.getObjectType().equals(this.getObjectType());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 79 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 79 * hash + Objects.hashCode(this.data);
+        hash = 79 * hash + Objects.hashCode(this.objectType);
+        return hash;
+    }
+
+
+
+
     
     
 

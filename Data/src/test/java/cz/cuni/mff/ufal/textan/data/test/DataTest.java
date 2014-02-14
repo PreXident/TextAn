@@ -30,7 +30,8 @@ public class DataTest {
     
     private static DocumentTable document = new DocumentTable("__[TEST] Example document with some crazy text.");
     private static RelationTable withRelation = new RelationTable(new RelationTypeTable("__[TEST] with"));
-    private static ObjectTable object = new ObjectTable("__[TEST] letter", new ObjectTypeTable("__[TEST]objecttype1"));
+    private static ObjectTypeTable objectType = new ObjectTypeTable("__[TEST]objecttype1");
+    private static ObjectTable object = new ObjectTable("__[TEST] letter", objectType);
     
     public DataTest() {
     }
@@ -80,6 +81,19 @@ public class DataTest {
         user2 = Data.getRecordById(ObjectTypeTable.class, id);
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
         assertTrue("Data.deleteRecord(user2)", Data.deleteRecord(user2));
+    }
+    @Test
+    public void InverseMappingObjectTypeToObjectTest() {
+       System.out.println("\n\nInverseMappingObjectTypeToObjectTest");
+       Data.performActionOnRecord(ObjectTypeTable.class, objectType.getId(), new TableAction<ObjectTypeTable>() {
+            // LAMBDA EXP COULD BE POSSIBLE?
+            @Override
+            public void action(ObjectTypeTable table) {
+                System.out.println("Set of objects: " + Arrays.toString(table.getObjectsOfThisType().toArray()));
+                System.out.println("Object: " + object);
+                assertTrue("Inverse mapping not working!", table.getObjectsOfThisType().contains(object));
+            }
+        });
     }
     
     @Test
