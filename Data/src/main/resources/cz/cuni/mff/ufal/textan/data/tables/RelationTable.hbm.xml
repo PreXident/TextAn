@@ -19,14 +19,18 @@
             
             <key column="id_relation"/>
             <list-index column="order_in_relation" />
-
                 
             <many-to-many class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" column="id_object"/>
-                
-
         </list>
         <many-to-one name="relationType" class="cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable" 
                     column="id_relation_type" not-null="true" lazy="false" cascade="save-update" />
+        
+        <set name="occurrences" table="RelationOccurrence" inverse="true">
+            <key>
+                <column name="id_relation"></column>
+            </key>
+            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable"></one-to-many>
+        </set>
     </class>
     
 </hibernate-mapping>

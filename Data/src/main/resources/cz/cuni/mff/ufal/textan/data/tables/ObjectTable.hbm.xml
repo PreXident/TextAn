@@ -18,6 +18,18 @@
        <property name="data" column="data" type="string"/>
        <many-to-one name="objectType" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable" 
                     column="id_object_type" not-null="true" lazy="false" cascade="save-update" />
+       <set name="aliases" table="alias" inverse="true">
+            <key>
+                <column name="id_object"></column>
+            </key>
+            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.AliasTable"></one-to-many>
+        </set>
+        <set name="relations" table="isinrelation" inverse="true">
+            <key>
+                <column name="id_object"></column>
+            </key>
+            <many-to-many class="cz.cuni.mff.ufal.textan.data.tables.RelationTable" column="id_relation" />
+        </set>
     </class>
     
 </hibernate-mapping>

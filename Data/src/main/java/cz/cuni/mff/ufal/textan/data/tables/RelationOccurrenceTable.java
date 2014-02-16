@@ -6,16 +6,19 @@
 
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import java.util.Objects;
+
 /**
  *
  * @author Václav Pernička
  */
 public class RelationOccurrenceTable extends AbstractTable {
     private long id;
-    private RelationTable relation;
-    private DocumentTable document;
     private int position;
     private String anchor;
+
+    private RelationTable relation;
+    private DocumentTable document;
 
     public RelationOccurrenceTable() {
     }
@@ -69,6 +72,31 @@ public class RelationOccurrenceTable extends AbstractTable {
 
     public void setAnchor(String anchor) {
         this.anchor = anchor;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("RelationOccurrence(%d, \"%s\", %d, %s, %s)", this.getId(), this.getAnchor(), this.getPosition(), this.getRelation(), this.getDocument());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof RelationOccurrenceTable)) return false;
+        
+        RelationOccurrenceTable rot = (RelationOccurrenceTable)o;
+        if (rot.getId() != this.getId()) return false;
+        if (rot.getPosition() != this.getPosition()) return false;
+        if (!rot.getAnchor().equals(this.getAnchor())) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 53 * hash + this.position;
+        hash = 53 * hash + Objects.hashCode(this.anchor);
+        return hash;
     }
     
     

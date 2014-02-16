@@ -24,6 +24,8 @@
 
         <mapping class="cz.cuni.mff.ufal.textan.data.tables.DocumentTable" resource="cz/cuni/mff/ufal/textan/data/tables/DocumentTable.hbm.xml" />
 
+        <mapping class="cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable" resource="cz/cuni/mff/ufal/textan/data/tables/AliasOccurrenceTable.hbm.xml" />
+        
         <mapping class="cz.cuni.mff.ufal.textan.data.tables.AliasTable" resource="cz/cuni/mff/ufal/textan/data/tables/AliasTable.hbm.xml" />
 
     </session-factory>
