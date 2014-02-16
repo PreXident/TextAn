@@ -18,8 +18,8 @@ import java.util.Set;
 public class ObjectTypeTable extends AbstractTable {
  
     private long id;
-
     private String name;
+
     private Set<ObjectTable> objectsOfThisType = new HashSet<>();
 
     public ObjectTypeTable() {

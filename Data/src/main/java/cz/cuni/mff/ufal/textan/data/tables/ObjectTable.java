@@ -1,6 +1,8 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Václav Pernička
@@ -11,10 +13,10 @@ public class ObjectTable extends AbstractTable {
     
     private long id;
     private String data;
-    private ObjectTypeTable objectType;
 
-    // TODO list of relations this object is in
-    
+    private ObjectTypeTable objectType;
+    private Set<AliasTable> aliases = new HashSet<>();
+    private Set<RelationTable> relations = new HashSet<>();
     
     public ObjectTable() {
     }
@@ -24,8 +26,22 @@ public class ObjectTable extends AbstractTable {
         this.objectType = objectType;
     }
 
-    
-    
+    public Set<RelationTable> getRelations() {
+        return relations;
+    }
+
+    public void setRelations(Set<RelationTable> relations) {
+        this.relations = relations;
+    }
+
+    public Set<AliasTable> getAliases() {
+        return aliases;
+    }
+
+    public void setAliases(Set<AliasTable> aliases) {
+        this.aliases = aliases;
+    }
+
     public ObjectTypeTable getObjectType() {
         return objectType;
     }
