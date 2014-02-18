@@ -233,7 +233,7 @@ public class ReportEntitiesController extends ReportWizardController {
             final Word first = words.get(from - 1);
             final Word last = words.get(to + 1);
             if (first.entity == last.entity && first.entity != null) {
-                throw new IllegalArgumentException("Rozdělené entity nejsou podporovány!");
+                throw new IllegalArgumentException(Utils.localize(resourceBundle, "error.split.entities"));
             }
         }
 
