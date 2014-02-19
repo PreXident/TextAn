@@ -49,12 +49,12 @@ public class DataTest {
         
         System.out.println("Setup");
         //System.out.println("If class Method fails, be sure you started the database.");
-        assertTrue("You have probably not run the database or the connection is not set properly", Data.addRecord(document));
-        assertTrue(Data.addRecord(withRelation));
-        assertTrue(Data.addRecord(relationOccurrence));
-        assertTrue(Data.addRecord(object));
-        assertTrue(Data.addRecord(alias)); 
-        assertTrue(Data.addRecord(aliasOccurrence)); 
+        assertTrue("You have probably not run the database or the connection is not set properly", DataSingleton.getSingleton().addRecord(document));
+        assertTrue(DataSingleton.getSingleton().addRecord(withRelation));
+        assertTrue(DataSingleton.getSingleton().addRecord(relationOccurrence));
+        assertTrue(DataSingleton.getSingleton().addRecord(object));
+        assertTrue(DataSingleton.getSingleton().addRecord(alias)); 
+        assertTrue(DataSingleton.getSingleton().addRecord(aliasOccurrence)); 
         //withRelation.getObjectsInRelation().add(object);
 
     }
@@ -62,14 +62,14 @@ public class DataTest {
     @AfterClass
     public static void tearDownClass() {
          System.out.println("\n\nClean");
-         assertTrue(Data.deleteRecord(relationOccurrence));
-         assertTrue(Data.deleteRecord(aliasOccurrence));
-         assertTrue(Data.deleteRecord(document));
-         assertTrue(Data.deleteRecord(withRelation));
-         assertTrue(Data.deleteRecord(withRelation.getRelationType()));
-         assertTrue(Data.deleteRecord(alias));
-         assertTrue(Data.deleteRecord(object));
-         assertTrue(Data.deleteRecord(object.getObjectType()));
+         assertTrue(DataSingleton.getSingleton().deleteRecord(relationOccurrence));
+         assertTrue(DataSingleton.getSingleton().deleteRecord(aliasOccurrence));
+         assertTrue(DataSingleton.getSingleton().deleteRecord(document));
+         assertTrue(DataSingleton.getSingleton().deleteRecord(withRelation));
+         assertTrue(DataSingleton.getSingleton().deleteRecord(withRelation.getRelationType()));
+         assertTrue(DataSingleton.getSingleton().deleteRecord(alias));
+         assertTrue(DataSingleton.getSingleton().deleteRecord(object));
+         assertTrue(DataSingleton.getSingleton().deleteRecord(object.getObjectType()));
     }
     
     @Before
@@ -90,34 +90,34 @@ public class DataTest {
     public void addAndRemoveObjectTypeTest() {
         System.out.println("\n\naddAndRemoveObjectType");
         ObjectTypeTable user = new ObjectTypeTable("__Unspecified Object");
-        assertTrue("Object type already exists or cant be added", Data.addRecord(user));
+        assertTrue("Object type already exists or cant be added", DataSingleton.getSingleton().addRecord(user));
         long id = user.getId();
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
         ObjectTypeTable user2 = null;
-        user2 = Data.getRecordById(ObjectTypeTable.class, id);
+        user2 = DataSingleton.getSingleton().getRecordById(ObjectTypeTable.class, id);
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
-        assertTrue("Data.deleteRecord(user2)", Data.deleteRecord(user2));
+        assertTrue("DataSingleton.getSingleton().deleteRecord(user2)", DataSingleton.getSingleton().deleteRecord(user2));
     }
     
     @Test
     public void addAndRemoveAliasOccurrenceTest() {
         System.out.println("\n\naddAndRemoveAliasOccurrenceTest");
         AliasOccurrenceTable user = new AliasOccurrenceTable(17, alias, document);
-        assertTrue("Alias occurence already exists or cant be added", Data.addRecord(user));
+        assertTrue("Alias occurence already exists or cant be added", DataSingleton.getSingleton().addRecord(user));
         long id = user.getId();
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
         AliasOccurrenceTable user2 = null;
-        user2 = Data.getRecordById(AliasOccurrenceTable.class, id);
+        user2 = DataSingleton.getSingleton().getRecordById(AliasOccurrenceTable.class, id);
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
-        assertTrue("Data.deleteRecord(user2)", Data.deleteRecord(user2));
+        assertTrue("DataSingleton.getSingleton().deleteRecord(user2)", DataSingleton.getSingleton().deleteRecord(user2));
     }
     
     @Test
     public void InverseMappingObjectTypeToObjectTest() {
        System.out.println("\n\nInverseMappingObjectTypeToObjectTest");
-       Data.performActionOnRecord(ObjectTypeTable.class, objectType.getId(), new TableAction<ObjectTypeTable>() {
+       DataSingleton.getSingleton().performActionOnRecord(ObjectTypeTable.class, objectType.getId(), new TableAction<ObjectTypeTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(ObjectTypeTable table) {
@@ -134,7 +134,7 @@ public class DataTest {
     @Test
     public void InverseMappingRelationToRelationOccurrenceTest() {
        System.out.println("\n\nInverseMappingRelationToRelationOccurrenceTest");
-       Data.performActionOnRecord(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
+       DataSingleton.getSingleton().performActionOnRecord(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(RelationTable table) {
@@ -149,7 +149,7 @@ public class DataTest {
     @Test
     public void InverseMappingObjectToAliasTest() {
        System.out.println("\n\nInverseMappingObjectToAliasTest");
-       Data.performActionOnRecord(ObjectTable.class, object.getId(), new TableAction<ObjectTable>() {
+       DataSingleton.getSingleton().performActionOnRecord(ObjectTable.class, object.getId(), new TableAction<ObjectTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(ObjectTable table) {
@@ -157,7 +157,7 @@ public class DataTest {
                 System.out.println("Object: " + table);
                 System.out.println("Set of aliases: " + Arrays.toString(table.getAliases().toArray()));
                 System.out.println("Alias: " + alias);
-                //System.out.println("Alias from db: " + Data.getRecordById(AliasTable.class, alias.getId()));
+                //System.out.println("Alias from db: " + DataSingleton.getSingleton().getRecordById(AliasTable.class, alias.getId()));
                 assertTrue("Inverse mapping not working!", table.getAliases().contains(alias));
             }
         });
@@ -167,7 +167,7 @@ public class DataTest {
     @Test
     public void InverseMappingRelationTypeToRelationTest() {
        System.out.println("\n\nInverseMappingRelationTypeToRelationTest");
-       Data.performActionOnRecord(RelationTypeTable.class, relationType.getId(), new TableAction<RelationTypeTable>() {
+       DataSingleton.getSingleton().performActionOnRecord(RelationTypeTable.class, relationType.getId(), new TableAction<RelationTypeTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(RelationTypeTable table) {
@@ -183,7 +183,7 @@ public class DataTest {
     @Test
     public void InverseMappingDocumentToRelationOccurenceTest() {
        System.out.println("\n\nInverseMappingRelationTypeToRelationTest");
-       Data.performActionOnRecord(DocumentTable.class, document.getId(), new TableAction<DocumentTable>() {
+       DataSingleton.getSingleton().performActionOnRecord(DocumentTable.class, document.getId(), new TableAction<DocumentTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(DocumentTable table) {
@@ -198,7 +198,7 @@ public class DataTest {
     @Test
     public void InverseMappingDocumentToAliasOccurenceTest() {
        System.out.println("\n\nInverseMappingDocumentToAliasOccurenceTest");
-       Data.performActionOnRecord(DocumentTable.class, document.getId(), new TableAction<DocumentTable>() {
+       DataSingleton.getSingleton().performActionOnRecord(DocumentTable.class, document.getId(), new TableAction<DocumentTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(DocumentTable table) {
@@ -214,7 +214,7 @@ public class DataTest {
     @Test
     public void InverseMappingAliasToAliasOccurenceTest() {
        System.out.println("\n\nInverseMappingAliasToAliasOccurenceTest");
-       Data.performActionOnRecord(AliasTable.class, alias.getId(), new TableAction<AliasTable>() {
+       DataSingleton.getSingleton().performActionOnRecord(AliasTable.class, alias.getId(), new TableAction<AliasTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(AliasTable table) {
@@ -233,7 +233,7 @@ public class DataTest {
 
        // you cannot use it like this (this relation is not fetched).
        // Look at InverseMappingObjectTypeToObjectTest how to do it properly
-       Data.getRecordById(ObjectTypeTable.class, objectType.getId()).getObjectsOfThisType().size();
+       DataSingleton.getSingleton().getRecordById(ObjectTypeTable.class, objectType.getId()).getObjectsOfThisType().size();
 
     }
     
@@ -241,37 +241,37 @@ public class DataTest {
     public void addAndRemoveRelationTypeTest() {
         System.out.println("\n\naddAndRemoveRelationType");
         RelationTypeTable user = new RelationTypeTable("__Unspecified Object");
-        assertTrue("Relation type already exists or cant be added", Data.addRecord(user));
+        assertTrue("Relation type already exists or cant be added", DataSingleton.getSingleton().addRecord(user));
         long id = user.getId();
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
         RelationTypeTable user2 = null;
-        user2 = Data.getRecordById(RelationTypeTable.class, id);
+        user2 = DataSingleton.getSingleton().getRecordById(RelationTypeTable.class, id);
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
-        assertTrue("Data.deleteRecord(user2)", Data.deleteRecord(user2));
+        assertTrue("DataSingleton.getSingleton().deleteRecord(user2)", DataSingleton.getSingleton().deleteRecord(user2));
     }
     
     @Test
     public void addAndRemoveObjectTest() {
         System.out.println("\n\naddAndRemoveObject");
         ObjectTypeTable ott = new ObjectTypeTable("__ObjectType1");
-        assertTrue("Object type already exists or cant be added", Data.addRecord(ott));
+        assertTrue("Object type already exists or cant be added", DataSingleton.getSingleton().addRecord(ott));
         System.out.println("Object typed added: " + ott);
         try {
             // TODO OBJECT ADD AND REMOVE
             
-            ObjectTable ot = Data.getRecordById(ObjectTable.class, 1L);
+            ObjectTable ot = DataSingleton.getSingleton().getRecordById(ObjectTable.class, 1L);
             System.out.println("ot = " + ot);
             
             try {
                 ot = new ObjectTable("__object data XXX ###asd", ott);
-                assertTrue("Object type already exists or cant be added: " + ot, Data.addRecord(ot));
+                assertTrue("Object type already exists or cant be added: " + ot, DataSingleton.getSingleton().addRecord(ot));
                 System.out.println("Object added: " + ot);
                 
             } catch (Exception e) {
                 throw e;
             } finally {
-                assertTrue("Object cant be deleted: " + ot, Data.deleteRecord(ot));
+                assertTrue("Object cant be deleted: " + ot, DataSingleton.getSingleton().deleteRecord(ot));
                 System.out.println("Object deleted: " + ot);
             }
             
@@ -280,7 +280,7 @@ public class DataTest {
         } catch (Exception e) {
             throw e;
         } finally {
-            assertTrue("Data.deleteRecord(ott)", Data.deleteRecord(ott));
+            assertTrue("DataSingleton.getSingleton().deleteRecord(ott)", DataSingleton.getSingleton().deleteRecord(ott));
             System.out.println("Object type deleted: " + ott);
 
         }
@@ -290,23 +290,23 @@ public class DataTest {
     public void addAndRemoveRelationTest() {
         System.out.println("\n\naddAndRemoveRelation");
         RelationTypeTable ott = new RelationTypeTable("__RelationType1");
-        assertTrue("Object type already exists or cant be added", Data.addRecord(ott));
+        assertTrue("Object type already exists or cant be added", DataSingleton.getSingleton().addRecord(ott));
         System.out.println("Object typed added: " + ott);
         try {
             // TODO OBJECT ADD AND REMOVE
             
-            RelationTable ot = Data.getRecordById(RelationTable.class, 1L);
+            RelationTable ot = DataSingleton.getSingleton().getRecordById(RelationTable.class, 1L);
             System.out.println("ot = " + ot);
             
             try {
                 ot = new RelationTable(ott);
-                assertTrue("Relation type already exists or cant be added: " + ot, Data.addRecord(ot));
+                assertTrue("Relation type already exists or cant be added: " + ot, DataSingleton.getSingleton().addRecord(ot));
                 System.out.println("Relation added: " + ot);
                 
             } catch (Exception e) {
                 throw e;
             } finally {
-                assertTrue("Relation cant be deleted: " + ot, Data.deleteRecord(ot));
+                assertTrue("Relation cant be deleted: " + ot, DataSingleton.getSingleton().deleteRecord(ot));
                 System.out.println("Relation deleted: " + ot);
             }
             
@@ -315,7 +315,7 @@ public class DataTest {
         } catch (Exception e) {
             throw e;
         } finally {
-            assertTrue("Data.deleteRecord(ott)", Data.deleteRecord(ott));
+            assertTrue("DataSingleton.getSingleton().deleteRecord(ott)", DataSingleton.getSingleton().deleteRecord(ott));
             System.out.println("Relation type deleted: " + ott);
 
         }
@@ -326,18 +326,18 @@ public class DataTest {
     public void isInRelationRelationTest() {
         System.out.println("\n\nisInRelationRelationTest");
         RelationTypeTable ott = new RelationTypeTable("__RelationType1");
-        assertTrue("Object type already exists or cant be added", Data.addRecord(ott));
+        assertTrue("Object type already exists or cant be added", DataSingleton.getSingleton().addRecord(ott));
         System.out.println("Object typed added: " + ott);
         try {
             // TODO OBJECT ADD AND REMOVE
             
-            RelationTable ot = Data.getRecordById(RelationTable.class, 3L);
+            RelationTable ot = DataSingleton.getSingleton().getRecordById(RelationTable.class, 3L);
             System.out.println("ot = " + ot);
             
             // This line cannot be uncomented - throws an exception. Use performActionOnRecord instead
             //System.out.println("Objects in relation: " + Arrays.toString(ot.getObjectsInRelation().toArray()));
             
-            Data.performActionOnRecord(RelationTable.class, 3L, new TableAction<RelationTable>() {
+            DataSingleton.getSingleton().performActionOnRecord(RelationTable.class, 3L, new TableAction<RelationTable>() {
 
                 @Override
                 public void action(RelationTable table) {
@@ -348,14 +348,14 @@ public class DataTest {
             
             try {
                 ot = new RelationTable(ott);
-                assertTrue("Relation type already exists or cant be added: " + ot, Data.addRecord(ot));
+                assertTrue("Relation type already exists or cant be added: " + ot, DataSingleton.getSingleton().addRecord(ot));
                 System.out.println("Relation added: " + ot);
                 
                 
             } catch (Exception e) {
                 throw e;
             } finally {
-                assertTrue("Relation cant be deleted: " + ot, Data.deleteRecord(ot));
+                assertTrue("Relation cant be deleted: " + ot, DataSingleton.getSingleton().deleteRecord(ot));
                 System.out.println("Relation deleted: " + ot);
             }
             
@@ -364,7 +364,7 @@ public class DataTest {
         } catch (Exception e) {
             throw e;
         } finally {
-            assertTrue("Data.deleteRecord(ott)", Data.deleteRecord(ott));
+            assertTrue("DataSingleton.getSingleton().deleteRecord(ott)", DataSingleton.getSingleton().deleteRecord(ott));
             System.out.println("Relation type deleted: " + ott);
 
         }
@@ -374,24 +374,24 @@ public class DataTest {
     public void addAndRemoveDocumentTest() {
         System.out.println("\n\naddAndRemoveDocument");
         DocumentTable document = new DocumentTable("__Extra long text from report");
-        assertTrue("Document already exists or cant be added", Data.addRecord(document));
+        assertTrue("Document already exists or cant be added", DataSingleton.getSingleton().addRecord(document));
         long id = document.getId();
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
         DocumentTable doc2 = null;
-        doc2 = Data.getRecordById(DocumentTable.class, id);
+        doc2 = DataSingleton.getSingleton().getRecordById(DocumentTable.class, id);
         assertTrue("doc2.equals(doc): doc = " + document + "; doc2 = " + doc2, doc2.equals(document));
-        assertTrue("Data.deleteRecord(user2)", Data.deleteRecord(doc2));
+        assertTrue("DataSingleton.getSingleton().deleteRecord(user2)", DataSingleton.getSingleton().deleteRecord(doc2));
     }
 
     @Test
     public void addAndRemoveAliasTest() {
         System.out.println("\n\naddAndRemoveAlias");
         AliasTable ott = new AliasTable(object, "example");
-        assertTrue("Alias already exists or cant be added", Data.addRecord(ott));
+        assertTrue("Alias already exists or cant be added", DataSingleton.getSingleton().addRecord(ott));
         System.out.println("Alias added: " + ott);
         try {
-            assertTrue("Data.deleteRecord(ott)", Data.deleteRecord(ott));
+            assertTrue("DataSingleton.getSingleton().deleteRecord(ott)", DataSingleton.getSingleton().deleteRecord(ott));
         } catch (Exception e) {
             throw e;
         } finally {
@@ -404,7 +404,7 @@ public class DataTest {
     public void IsInRelationBidirectionalTest() {
         System.out.println("\n\nInverseMappingIsInRelationTest");
         System.out.println("Objects: " + Arrays.toString(withRelation.getObjectsInRelation().toArray()));
-        Data.performActionOnRecord(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
+        DataSingleton.getSingleton().performActionOnRecord(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
 
             @Override
             public void action(RelationTable table) {
@@ -412,14 +412,14 @@ public class DataTest {
             }
         });
         // withRelation object is not actual... you have to load it again:
-        Data.performActionOnRecord(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
+        DataSingleton.getSingleton().performActionOnRecord(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
             @Override
             public void action(RelationTable table) {
                 System.out.println("Objects: " + Arrays.toString(table.getObjectsInRelation().toArray()));
                 assertTrue("Object is not present in list of objects", table.getObjectsInRelation().contains(object));
             }
         });
-        Data.performActionOnRecord(ObjectTable.class, object.getId(), new TableAction<ObjectTable>() {
+        DataSingleton.getSingleton().performActionOnRecord(ObjectTable.class, object.getId(), new TableAction<ObjectTable>() {
 
             @Override
             public void action(ObjectTable table) {
@@ -427,21 +427,21 @@ public class DataTest {
                 assertTrue(table.getRelations().contains(withRelation));
             }
         });
-        Data.performActionOnRecord(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
+        DataSingleton.getSingleton().performActionOnRecord(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
 
             @Override
             public void action(RelationTable table) {
                 table.getObjectsInRelation().clear();
             }
         });
-        Data.performActionOnRecord(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
+        DataSingleton.getSingleton().performActionOnRecord(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
             @Override
             public void action(RelationTable table) {
                 System.out.println("Objects: " + Arrays.toString(table.getObjectsInRelation().toArray()));
                 assertTrue("Object list is not empty", table.getObjectsInRelation().isEmpty());
             }
         });
-        Data.performActionOnRecord(ObjectTable.class, object.getId(), new TableAction<ObjectTable>() {
+        DataSingleton.getSingleton().performActionOnRecord(ObjectTable.class, object.getId(), new TableAction<ObjectTable>() {
 
             @Override
             public void action(ObjectTable table) {
