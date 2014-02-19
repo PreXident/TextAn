@@ -1,0 +1,19 @@
+Jakub is missing as he broke his leg. Ondrej arrived later.
+
+The GUI focus back on pipeline.
+Tam analyzing the NER output.
+Jakub model for entities, playing with new features
+Venca db mapping hibernate.
+Peter wsdl and xml schemas for objects transported between server and client. WSDL must be written by hand because generating is not reliable enough. Or create a nice wrapper around ugly generated sources.
+
+NER and tagger binaries should be uploaded to google drive (preferably linux ones).
+
+HWKS:
+searching - id, alias, type, document id, relation type and source object id, relation type (give me all objects that are in relation "meet someone")
+
+Tag multiple reports by hand, list entity types and make sure all are recognized.
+- document this, how to add entity types and features, as someone may need this to adapt to other domain
+
+Think of a special query language - not a priority
+
+Next meeting Wednesday from 14:00
