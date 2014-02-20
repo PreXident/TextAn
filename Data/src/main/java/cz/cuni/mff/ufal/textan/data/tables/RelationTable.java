@@ -19,7 +19,7 @@ public class RelationTable extends AbstractTable {
     private long id;
 
     private RelationTypeTable relationType;
-    private List<ObjectTable> objectsInRelation = new ArrayList<>();
+    private Set<InRelationTable> objectsInRelation = new HashSet<>();
     private Set<RelationOccurrenceTable> occurrences = new HashSet<>();
     
     public RelationTable() {}
@@ -36,11 +36,11 @@ public class RelationTable extends AbstractTable {
         this.occurrences = occurrences;
     }
     
-    public List<ObjectTable> getObjectsInRelation() {
+    public Set<InRelationTable> getObjectsInRelation() {
         return objectsInRelation;
     }
 
-    public void setObjectsInRelation(List<ObjectTable> objectsInRelation) {
+    public void setObjectsInRelation(Set<InRelationTable> objectsInRelation) {
         this.objectsInRelation = objectsInRelation;
     }
     

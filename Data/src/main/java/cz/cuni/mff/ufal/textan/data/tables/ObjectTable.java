@@ -16,7 +16,7 @@ public class ObjectTable extends AbstractTable {
 
     private ObjectTypeTable objectType;
     private Set<AliasTable> aliases = new HashSet<>();
-    private Set<RelationTable> relations = new HashSet<>();
+    private Set<InRelationTable> relations = new HashSet<>();
     
     public ObjectTable() {
     }
@@ -26,11 +26,11 @@ public class ObjectTable extends AbstractTable {
         this.objectType = objectType;
     }
 
-    public Set<RelationTable> getRelations() {
+    public Set<InRelationTable> getRelations() {
         return relations;
     }
 
-    public void setRelations(Set<RelationTable> relations) {
+    public void setRelations(Set<InRelationTable> relations) {
         this.relations = relations;
     }
 

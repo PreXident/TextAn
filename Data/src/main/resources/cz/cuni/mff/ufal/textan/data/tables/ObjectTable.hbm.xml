@@ -28,7 +28,7 @@
             <key>
                 <column name="id_object"></column>
             </key>
-            <many-to-many class="cz.cuni.mff.ufal.textan.data.tables.RelationTable" column="id_relation" />
+            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.InRelationTable" />
         </set>
     </class>
     

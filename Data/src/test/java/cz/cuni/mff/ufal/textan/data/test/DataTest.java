@@ -320,56 +320,7 @@ public class DataTest {
 
         }
     }
-  
-    
-    @Test
-    public void isInRelationRelationTest() {
-        System.out.println("\n\nisInRelationRelationTest");
-        RelationTypeTable ott = new RelationTypeTable("__RelationType1");
-        assertTrue("Object type already exists or cant be added", DataSingleton.getSingleton().addRecord(ott));
-        System.out.println("Object typed added: " + ott);
-        try {
-            // TODO OBJECT ADD AND REMOVE
-            
-            RelationTable ot = DataSingleton.getSingleton().getRecordById(RelationTable.class, 3L);
-            System.out.println("ot = " + ot);
-            
-            // This line cannot be uncomented - throws an exception. Use performActionOnRecord instead
-            //System.out.println("Objects in relation: " + Arrays.toString(ot.getObjectsInRelation().toArray()));
-            
-            DataSingleton.getSingleton().performActionOnRecord(RelationTable.class, 3L, new TableAction<RelationTable>() {
-
-                @Override
-                public void action(RelationTable table) {
-                    System.out.println("table = " + table);
-                    System.out.println("Objects in relation table: " + Arrays.toString(table.getObjectsInRelation().toArray()));
-                }
-            });
-            
-            try {
-                ot = new RelationTable(ott);
-                assertTrue("Relation type already exists or cant be added: " + ot, DataSingleton.getSingleton().addRecord(ot));
-                System.out.println("Relation added: " + ot);
-                
-                
-            } catch (Exception e) {
-                throw e;
-            } finally {
-                assertTrue("Relation cant be deleted: " + ot, DataSingleton.getSingleton().deleteRecord(ot));
-                System.out.println("Relation deleted: " + ot);
-            }
-            
-            
-            
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            assertTrue("DataSingleton.getSingleton().deleteRecord(ott)", DataSingleton.getSingleton().deleteRecord(ott));
-            System.out.println("Relation type deleted: " + ott);
-
-        }
-    }
-
+   
     @Test
     public void addAndRemoveDocumentTest() {
         System.out.println("\n\naddAndRemoveDocument");
@@ -399,7 +350,7 @@ public class DataTest {
 
         }
     }
-
+/*
     @Test
     public void IsInRelationBidirectionalTest() {
         System.out.println("\n\nInverseMappingIsInRelationTest");
@@ -451,7 +402,7 @@ public class DataTest {
         });
         
     }
-    
+    */
     /*
     @Test
     public void alwaysFail() {
