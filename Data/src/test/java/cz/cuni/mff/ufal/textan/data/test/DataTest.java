@@ -85,6 +85,21 @@ public class DataTest {
     //
     // @Test
     // public void hello() {}
+
+    @Test
+    public void addAndRemoveInRelationTest() {
+        System.out.println("\n\naddAndRemoveInRelationTest");
+        InRelationTable user = new InRelationTable(-1, withRelation, object);
+        assertTrue("InRelation already exists or cant be added", DataSingleton.getSingleton().addRecord(user));
+        long id = user.getId();
+        assertTrue("id > 0", id > 0);
+        //System.out.println("id: " + id);
+        InRelationTable user2 = null;
+        user2 = DataSingleton.getSingleton().getRecordById(InRelationTable.class, id);
+        assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
+        assertTrue("DataSingleton.getSingleton().deleteRecord(user2)", DataSingleton.getSingleton().deleteRecord(user2));
+    }
+
     
     @Test
     public void addAndRemoveObjectTypeTest() {
@@ -350,7 +365,43 @@ public class DataTest {
 
         }
     }
-/*
+
+    @Test
+    public void addAndRemoveJoinedObjectsTest() {
+        System.out.println("\n\naddAndRemoveJoinedObjectsTest");
+        JoinedObjectsTable user = new JoinedObjectsTable(object, object, object);
+        assertTrue("Object type already exists or cant be added", DataSingleton.getSingleton().addRecord(user));
+        long id = user.getId();
+        assertTrue("id > 0", id > 0);
+        //System.out.println("id: " + id);
+        JoinedObjectsTable user2 = null;
+        user2 = DataSingleton.getSingleton().getRecordById(JoinedObjectsTable.class, id);
+        assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
+        assertTrue("DataSingleton.getSingleton().deleteRecord(user2)", DataSingleton.getSingleton().deleteRecord(user2));
+    }
+    
+    @Test
+    public void ConcurrencyRewriteJustRewrittenTest() {
+        ObjectTypeTable objectType1 = new ObjectTypeTable("__[TEST]objecttype 1");
+        DataSingleton.getSingleton().addRecord(objectType1);
+        final long id = objectType1.getId();
+        DataSingleton.getSingleton().performActionOnRecord(ObjectTypeTable.class, id, new TableAction<ObjectTypeTable>() {
+
+            @Override
+            public void action(ObjectTypeTable table) {
+                table.setName("__[TEST]objecttype 1 changed");
+                DataSingleton.getSingleton().performActionOnRecord(ObjectTypeTable.class, id, new TableAction<ObjectTypeTable>() {
+
+                    @Override
+                    public void action(ObjectTypeTable table) {
+                        table.setName("__[TEST]objecttype 1 changed snd time");
+                    }
+                });
+            }
+        });
+    }
+    
+    /*
     @Test
     public void IsInRelationBidirectionalTest() {
         System.out.println("\n\nInverseMappingIsInRelationTest");

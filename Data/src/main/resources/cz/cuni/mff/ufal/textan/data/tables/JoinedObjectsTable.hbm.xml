@@ -4,32 +4,27 @@
  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
 
 <hibernate-mapping>
-    <class name="cz.cuni.mff.ufal.textan.data.tables.DocumentTable" table="document">
+    <class name="cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable" table="JoinedObjects">
         <meta attribute="class-description">
-            Document - Report - Text writen by policemen
+            Table that is able to cover joining two objects into one
         </meta>
         <id 
             name="id" 
-            type="long" 
-            column="id_document"
-            unsaved-value="0">
-            <generator class="native" />
+            column="id_new_object"
+            >
+            <generator class="foreign">
+                <param name="property">newObject</param>
+            </generator>
         </id>  
-        <property name="addedDate" column="added" type="date"/>
-        <property name="processedDate" column="processed" type="date"/>
-        <property name="text" column="text" type="text"/>
-        <set name="relationOccurrences" table="RelationOccurrence" inverse="true">
-            <key>
-                <column name="id_document"></column>
-            </key>
-            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable"></one-to-many>
-        </set>
-        <set name="aliasOccurrences" table="AliasOccurrence" inverse="true">
-            <key>
-                <column name="id_document"></column>
-            </key>
-            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable"></one-to-many>
-        </set>
+        <property name="from" column="from_date" type="date"></property>
+        <property name="to" column="to_date" type="date"/>
+        <many-to-one name="newObject" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" 
+                     insert="false" update="false" unique="true"
+                     column="id_new_object" not-null="true" lazy="false" cascade="save-update" />
+        <many-to-one name="oldObject1" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" 
+                     column="id_old_object1" not-null="true" lazy="false" cascade="save-update" />
+        <many-to-one name="oldObject2" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" 
+                     column="id_old_object2" not-null="true" lazy="false" cascade="save-update" />
     </class>
     
 </hibernate-mapping>
