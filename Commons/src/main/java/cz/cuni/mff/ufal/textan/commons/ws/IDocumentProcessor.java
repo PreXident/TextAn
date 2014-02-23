@@ -61,7 +61,7 @@ public interface IDocumentProcessor {
      * @return array of entities ({@link cz.cuni.mff.ufal.textan.commons.models.Entity}) found in the document
      */
     @WebMethod
-    public Entity[] getEntities(@WebParam(name = "documentId") int documentId);
+    public Entity[] getEntitiesById(@WebParam(name = "documentId") int documentId);
 
     //TODO: method which returns possible objects for one entity? many entities?
 

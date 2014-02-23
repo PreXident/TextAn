@@ -17,4 +17,4 @@ report.wizard.maximized=false
 #if true hypergraphs will be used to display object and their relations
 hypergraphs=false
 #default localization
-locale.language=cs
+locale.language=en

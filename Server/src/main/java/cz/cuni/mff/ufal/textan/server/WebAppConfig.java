@@ -68,4 +68,25 @@ public class WebAppConfig {
     public DataProvider dataProvider() {
         return new DataProvider();
     }
+
+    /**
+     * Creates endpoint for DocumentProcessor webservice.
+     * @return DocumentProcessor endpoint
+     */
+    @Bean
+    public Server jaxDocumentProcessorServer() {
+        JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
+        factory.setServiceBean(documentProcessor());
+        factory.setAddress("/document");
+        return factory.create();
+    }
+
+    /**
+     * Creates Spring bean with documentprocessor class.
+     * @return bean for DocumentProcessor webservice
+     */
+    @Bean
+    public DocumentProcessor documentProcessor() {
+        return new DocumentProcessor();
+    }
 }
