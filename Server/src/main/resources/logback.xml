@@ -6,7 +6,7 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern><!--%d--> [%thread] %-5level %X{execution} %X{dpuInstance} %logger{30} - %msg%n</pattern>
+            <pattern>%d [%thread] %-5level %X{execution} %X{dpuInstance} %logger{30} - %msg%n</pattern>
         </encoder>
     </appender>
 
