@@ -8,6 +8,8 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import java.util.Date;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -19,13 +21,30 @@ public class DocumentTable extends AbstractTable {
     private Date processedDate;
     private String text;
 
-    // TODO Lists of relation and alias occurrences
+    private Set<RelationOccurrenceTable> relationOccurrences = new HashSet<>();
+    private Set<AliasOccurrenceTable> aliasOccurrences = new HashSet<>();
     
     public DocumentTable() {}
 
     public DocumentTable(String text) {
         this();
         this.text = text;
+    }
+
+    public Set<AliasOccurrenceTable> getAliasOccurrences() {
+        return aliasOccurrences;
+    }
+
+    public void setAliasOccurrences(Set<AliasOccurrenceTable> aliasOccurrences) {
+        this.aliasOccurrences = aliasOccurrences;
+    }
+
+    public Set<RelationOccurrenceTable> getRelationOccurrences() {
+        return relationOccurrences;
+    }
+
+    public void setRelationOccurrences(Set<RelationOccurrenceTable> relationOccurrences) {
+        this.relationOccurrences = relationOccurrences;
     }
     
     public void setProcessedDateToNow() {
@@ -66,7 +85,7 @@ public class DocumentTable extends AbstractTable {
 
     @Override
     public String toString() {
-        return String.format("Document(%d, %s, %s, %s)", getId(), getAddedDate(), getProcessedDate(), getText());
+        return String.format("Document(%d, %s, %s, \"%s\")", getId(), getAddedDate(), getProcessedDate(), getText());
     }
 
     @Override

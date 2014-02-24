@@ -5,6 +5,7 @@ import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 /*
  * User: Petr Fanta
@@ -32,6 +33,7 @@ public class WebAppConfig {
      * @return Returns endpoint
      */
     @Bean
+    @DependsOn( "cxf" )
     public Server jaxWsServer() {
         JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
         factory.setServiceBean(simpleWebService());
@@ -53,6 +55,7 @@ public class WebAppConfig {
      * @return DataProvider endpoint
      */
     @Bean
+    @DependsOn( "cxf" )
     public Server jaxDataProviderServer() {
         JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
         factory.setServiceBean(dataProvider());
@@ -67,5 +70,27 @@ public class WebAppConfig {
     @Bean
     public DataProvider dataProvider() {
         return new DataProvider();
+    }
+
+    /**
+     * Creates endpoint for DocumentProcessor webservice.
+     * @return DocumentProcessor endpoint
+     */
+    @Bean
+    @DependsOn( "cxf" )
+    public Server jaxDocumentProcessorServer() {
+        JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
+        factory.setServiceBean(documentProcessor());
+        factory.setAddress("/document");
+        return factory.create();
+    }
+
+    /**
+     * Creates Spring bean with documentprocessor class.
+     * @return bean for DocumentProcessor webservice
+     */
+    @Bean
+    public DocumentProcessor documentProcessor() {
+        return new DocumentProcessor();
     }
 }

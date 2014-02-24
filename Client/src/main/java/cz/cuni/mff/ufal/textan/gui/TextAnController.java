@@ -11,16 +11,12 @@ import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckMenuItem;
@@ -122,7 +118,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final ReportWizardWindow wizard = new ReportWizardWindow(settings);
             content.getChildren().add(wizard);
-            listener = new StateChangedListener(settings, pipeline, wizard);
+            listener = new StateChangedListener(resourceBundle, settings, pipeline, wizard);
         } else {
             final ReportWizardStage stage = new ReportWizardStage(settings);
             children.add(stage);
@@ -131,7 +127,7 @@ public class TextAnController implements Initializable {
                     children.remove(stage);
                 }
             });
-            listener = new StateChangedListener(settings, pipeline, stage);
+            listener = new StateChangedListener(resourceBundle, settings, pipeline, stage);
             stage.show();
         }
         pipeline.addStateChangedListener(listener);

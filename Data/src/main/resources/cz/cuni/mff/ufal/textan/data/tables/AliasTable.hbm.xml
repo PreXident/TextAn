@@ -5,19 +5,25 @@
 
 <hibernate-mapping>
     <class name="cz.cuni.mff.ufal.textan.data.tables.AliasTable" table="Alias">
-      <meta attribute="class-description">
-         Alias of an entity. For a person it could be "Karel", "Kája" or "The butcher"
-      </meta>
-      <id 
-          name="id" 
-          type="long" 
-          column="id_alias"
-          unsaved-value="0">
-         <generator class="native" />
-      </id>  
-       <property name="alias" column="alias" type="string"/>
-       <many-to-one name="object" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" 
+        <meta attribute="class-description">
+            Alias of an entity. For a person it could be "Karel", "Kája" or "The butcher"
+        </meta>
+        <id 
+            name="id" 
+            type="long" 
+            column="id_alias"
+            unsaved-value="0">
+            <generator class="native" />
+        </id>  
+        <property name="alias" column="alias" type="string"/>
+        <many-to-one name="object" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" 
                     column="id_object" not-null="true" lazy="false" cascade="save-update" />
+        <set name="occurrences" table="AliasOccurrence" inverse="true">
+            <key>
+                <column name="id_alias"></column>
+            </key>
+            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable"></one-to-many>
+        </set>
     </class>
     
 </hibernate-mapping>

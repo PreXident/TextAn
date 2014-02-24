@@ -16,6 +16,12 @@
          <generator class="native" />
       </id>  
        <property name="name" column="name" type="string"/>
+       <set name="objectsOfThisType"  table="object" inverse="true">
+           <key>
+               <column name="id_object_type"></column>
+           </key>
+           <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable"></one-to-many>
+       </set>
     </class>
     
 </hibernate-mapping>

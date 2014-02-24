@@ -6,15 +6,22 @@
 
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 /**
  *
  * @author Václav Pernička
  */
 public class AliasTable extends AbstractTable {
     private long id;
-    private ObjectTable object;
     private String alias;
-
+    
+    private ObjectTable object;
+    private Set<AliasOccurrenceTable> occurrences = new HashSet<>();
+    
+    
     public AliasTable() {
     }
 
@@ -23,8 +30,14 @@ public class AliasTable extends AbstractTable {
         this.alias = alias;
     }
 
-    
-    
+    public Set<AliasOccurrenceTable> getOccurrences() {
+        return occurrences;
+    }
+
+    public void setOccurrences(Set<AliasOccurrenceTable> occurrences) {
+        this.occurrences = occurrences;
+    }
+
     public long getId() {
         return id;
     }
@@ -48,6 +61,29 @@ public class AliasTable extends AbstractTable {
     public void setAlias(String alias) {
         this.alias = alias;
     }
+
+    @Override
+    public String toString() {
+        return String.format("AliasTable(%d, \"%s\", %s)", this.getId(), this.getAlias(), this.getObject());
+    }   
+    
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof AliasTable)) return false;
+        AliasTable at = (AliasTable)o;
+        if (at.getId() != this.getId()) return false;
+        if (!at.getAlias().equals(this.getAlias())) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 97 * hash + Objects.hashCode(this.alias);
+        return hash;
+    }
+    
     
     
 }

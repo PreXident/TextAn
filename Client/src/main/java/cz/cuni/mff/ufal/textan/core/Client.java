@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
+import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import java.net.MalformedURLException;
@@ -22,8 +23,27 @@ public class Client {
 
     protected IDataProvider dataProvider = null;
 
+    protected IDocumentProcessor documentProcessor = null;
+
     public Client(final Properties settings) {
         this.settings = settings;
+    }
+
+    public IDocumentProcessor getDocumentProcessor() throws WebServiceException {
+        if (documentProcessor == null) {
+            try {
+                Service service = Service.create(new URL("http://localhost:9100/soap/document?wsdl"), new QName("http://server.textan.ufal.mff.cuni.cz/", "DocumentProcessor"));
+                // Endpoint Address
+                String endpointAddress = "http://localhost:9100/soap/document";
+                // Add a port to the Service
+                service.addPort(new QName("http://server.textan.ufal.mff.cuni.cz/DocumentProcessor", "DocumentProcessorPort"), SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
+                documentProcessor = service.getPort(IDocumentProcessor.class);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                throw new WebServiceException("Malformed URL!", e);
+            }
+        }
+        return documentProcessor;
     }
 
     public IDataProvider getDataProvider() throws WebServiceException {

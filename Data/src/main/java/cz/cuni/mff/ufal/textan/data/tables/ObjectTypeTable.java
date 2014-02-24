@@ -6,6 +6,10 @@
 
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 /**
  *
  * @author Václav Pernička
@@ -14,8 +18,9 @@ package cz.cuni.mff.ufal.textan.data.tables;
 public class ObjectTypeTable extends AbstractTable {
  
     private long id;
-
     private String name;
+
+    private Set<ObjectTable> objectsOfThisType = new HashSet<>();
 
     public ObjectTypeTable() {
         this("");
@@ -23,6 +28,14 @@ public class ObjectTypeTable extends AbstractTable {
     
     public ObjectTypeTable(String name) {
         this.name = name;
+    }
+
+    public Set<ObjectTable> getObjectsOfThisType() {
+        return objectsOfThisType;
+    }
+
+    public void setObjectsOfThisType(Set<ObjectTable> objectsOfThisType) {
+        this.objectsOfThisType = objectsOfThisType;
     }
 
     public void setId(long id) {
@@ -54,6 +67,16 @@ public class ObjectTypeTable extends AbstractTable {
         } else
             return false;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 97 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+ 
 
     
     

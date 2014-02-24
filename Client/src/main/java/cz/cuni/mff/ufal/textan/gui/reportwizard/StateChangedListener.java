@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.IStateChangedListener;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.State;
 import cz.cuni.mff.ufal.textan.core.processreport.State.StateType;
+import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.utils.Pair;
 import java.io.IOException;
 import java.util.HashMap;
@@ -12,7 +13,6 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
 /**
@@ -23,7 +23,7 @@ public class StateChangedListener implements IStateChangedListener {
     /** Contains fxml and resource bundle for each StateType. */
     protected Map<StateType, Pair<String, String>> fxmlMapping = new HashMap<>();
 
-    private final Window window;
+    private final ReportWizardWindow window;
 
     private final ReportWizardStage stage;
 
@@ -31,29 +31,41 @@ public class StateChangedListener implements IStateChangedListener {
 
     private final ProcessReportPipeline pipeline;
 
+    private final ResourceBundle resourceBundle;
+
     {
         fxmlMapping.put(StateType.LOAD, new Pair<>("01_ReportLoad.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01_ReportLoad"));
         fxmlMapping.put(StateType.EDIT_REPORT, new Pair<>("02_ReportEdit.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.02_ReportEdit"));
         fxmlMapping.put(StateType.EDIT_ENTITIES, new Pair<>("03_ReportEntities.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.03_ReportEntities"));
+        fxmlMapping.put(StateType.EDIT_OBJECTS, new Pair<>("04_ReportObjects.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.04_ReportObjects"));
+        fxmlMapping.put(StateType.EDIT_RELATIONS, new Pair<>("05_ReportRelations.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.05_ReportRelations"));
     }
 
-    private StateChangedListener(final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage, final Window window) {
+    private StateChangedListener(final ResourceBundle resourceBundle, final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage, final ReportWizardWindow window) {
+        this.resourceBundle = resourceBundle;
         this.settings = settings;
         this.pipeline = pipeline;
         this.stage = stage;
         this.window = window;
     }
 
-    public StateChangedListener(final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage) {
-        this(settings, pipeline, stage, null);
+    public StateChangedListener(final ResourceBundle resourceBundle, final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage) {
+        this(resourceBundle, settings, pipeline, stage, null);
     }
 
-    public StateChangedListener(final Properties settings, final ProcessReportPipeline pipeline, final Window window) {
-        this(settings, pipeline, null, window);
+    public StateChangedListener(final ResourceBundle resourceBundle, final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardWindow window) {
+        this(resourceBundle, settings, pipeline, null, window);
     }
 
     @Override
     public void stateChanged(State newState) {
+        if (newState.getType() == StateType.DONE) {
+            if (window != null) {
+                window.close();
+            } else {
+                stage.close();
+            }
+        }
         try {
             final Pair<String, String> pair = fxmlMapping.get(newState.getType());
             final String fxml = pair.getFirst();
@@ -76,7 +88,7 @@ public class StateChangedListener implements IStateChangedListener {
         } catch (IOException e) {
             e.printStackTrace();
             Dialogs.create()
-                    .title("Problém při načítání další stránky!")
+                    .title(Utils.localize(resourceBundle, "error.next.page"))
                     .showException(e);
         }
     }
