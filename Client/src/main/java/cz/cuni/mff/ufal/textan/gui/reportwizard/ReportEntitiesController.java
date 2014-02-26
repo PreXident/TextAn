@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -105,6 +106,9 @@ public class ReportEntitiesController extends ReportWizardController {
         words = pipeline.getReportWords();
         for (Word word: words) {
             final Text text = new Text(word.getWord());
+            if (word.getEntity() != null) {
+                text.getStyleClass().add("ENTITY_" + word.getEntity().getId());
+            }
             text.setOnMousePressed(e -> {
                 if (!text.getStyleClass().contains(SELECTED)) {
                     //System.out.println("pressed");
@@ -150,7 +154,15 @@ public class ReportEntitiesController extends ReportWizardController {
         textFlow.getChildren().addAll(texts);
         //
         final EventHandler<ActionEvent> eh = (ActionEvent t) -> {
-            final int id = (Integer)((MenuItem) t.getSource()).getUserData();
+            final Integer ID = (Integer)((MenuItem) t.getSource()).getUserData();
+            if (ID == null) {
+                for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
+                    words[i].setEntity(null);
+                    texts.get(i).getStyleClass().clear();
+                }
+                return;
+            }
+            final int id = ID;
             final EntityBuilder e = new EntityBuilder(id);
             try {
                 Pair<Integer, Integer> bounds = e.add(words, firstSelectedIndex, lastSelectedIndex, i -> texts.get(i).getStyleClass().clear());
@@ -177,6 +189,9 @@ public class ReportEntitiesController extends ReportWizardController {
             }
         };
         contextMenu = new ContextMenu();
+        MenuItem noEntity = new MenuItem(Utils.localize(resourceBundle, "entity.none"));
+        noEntity.setOnAction(eh);
+        contextMenu.getItems().add(noEntity);
         for (ObjectType objType : pipeline.getClient().getDataProvider().getObjectTypes()) {
             final MenuItem mi = new MenuItem(objType.getName());
             mi.setOnAction(eh);

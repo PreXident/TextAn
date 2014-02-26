@@ -9,12 +9,34 @@ import cz.cuni.mff.ufal.textan.utils.Pair;
  * To get marked entities, iterate word list.
  */
 public class EntityBuilder {
-    final int id;
+    
+    /** Entity type id. */
+    protected final int id;
 
+    /** Index in the list of entities. */
+    protected int index;
+    
     public EntityBuilder(final int id) {
         this.id = id;
     }
 
+    /**
+     * Returns entity type id.
+     * @return entity type id
+     */
+    public int getId() {
+        return id;
+    }
+
+
+    /**
+     * Returns index in the list of entities.
+     * @return index in the list of entitites
+     */
+    public int getIndex() {
+        return index;
+    }
+    
     /**
      * Checks whether this entity is nested in another one and throws exception if so.
      * @param words list of words

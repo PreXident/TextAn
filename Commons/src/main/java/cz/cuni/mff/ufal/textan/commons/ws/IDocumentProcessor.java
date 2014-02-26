@@ -66,6 +66,24 @@ public interface IDocumentProcessor {
     //TODO: method which returns possible objects for one entity? many entities?
 
     /**
+     * Assigns objects to entities in a document. The best match is used.
+     * @param text text of the document
+     * @param entities entities in the document
+     * @return array of objects ({@link cz.cuni.mff.ufal.textan.commons.models.Object}) assigned to entities
+     */
+    @WebMethod(operationName = "getObjectsFromString")
+    public Object[] getObjects(@WebParam(name = "text") String text, @WebParam(name = "entities") Entity[] entities);
+
+    /*
+     * Assigns objects to entities in a document. The best match is used.
+     * @param documentId id of document saved in the system
+     * @param entities entities in the document
+     * @return array of objects ({@link cz.cuni.mff.ufal.textan.commons.models.Object}) assigned to entities
+     */
+    @WebMethod
+    public Entity[] getObjectsById(@WebParam(name = "documentId") int documentId, @WebParam(name = "entities") Entity[] entities);
+    
+    /**
      * Saves processed document, object and relations in the system and marks the document as processed.
      *
      * @param documentId the processed document id

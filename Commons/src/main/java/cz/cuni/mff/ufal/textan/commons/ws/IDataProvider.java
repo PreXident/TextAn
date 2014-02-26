@@ -45,6 +45,14 @@ public interface IDataProvider {
     public Object[] getObjectsByType(@WebParam(name = "objectType") ObjectType objectType);
 
     /**
+     * Returns all objects of given type which are currently defined in the system.
+     * @param objectTypeId object type id
+     * @return an array of {@link cz.cuni.mff.ufal.textan.commons.models.Object} of given type
+     */
+    @WebMethod
+    public Object[] getObjectsByTypeId(@WebParam(name = "objectTypeId") int objectTypeId);
+
+    /**
      * Returns all types of relation which are currently defined in the system.
      * @return an array of {@link cz.cuni.mff.ufal.textan.commons.models.RelationType}
      */

@@ -39,7 +39,7 @@
 							<content>
 								<HBox alignment="CENTER_LEFT" spacing="10" >
 									<Label text="%localization" styleClass="menu-item-label"/>
-									<ComboBox fx:id="localizationCombo" editable="true" prefWidth="35" >
+									<ComboBox fx:id="localizationCombo" editable="true" prefWidth="75" >
 										<items>
 											<FXCollections fx:factory="observableArrayList">
 												<String fx:value="cs" />
@@ -57,7 +57,7 @@
 							<content>
 								<HBox alignment="CENTER_LEFT" spacing="10" >
 									<Label text="%login.label" styleClass="menu-item-label"/>
-									<TextField fx:id="loginTextField" prefWidth="70"/>
+									<TextField fx:id="loginTextField" prefWidth="110"/>
 								</HBox>
 							</content>
 						</CustomMenuItem>

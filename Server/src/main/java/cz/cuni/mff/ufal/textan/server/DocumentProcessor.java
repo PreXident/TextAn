@@ -30,7 +30,7 @@ public class DocumentProcessor implements IDocumentProcessor {
 
     @Override
     public Entity[] getEntities(String text) {
-        return new Entity[0];
+        return new Entity[] { new Entity(text, 0, text.length(), 0) };
     }
 
     @Override
@@ -38,6 +38,16 @@ public class DocumentProcessor implements IDocumentProcessor {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public Object[] getObjects(String text, Entity[] entities) {
+        return new Object[entities.length];
+    }
+
+    @Override
+    public Entity[] getObjectsById(int documentId, Entity[] entities) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     @Override
     public void saveProcessedDocument(int documentId, Object[] objects, Relation[] relations, Ticket ticket, boolean force) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

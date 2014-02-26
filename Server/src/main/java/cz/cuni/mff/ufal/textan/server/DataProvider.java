@@ -64,7 +64,12 @@ public class DataProvider implements IDataProvider {
 
     @Override
     public Object[] getObjectsByType(ObjectType objectType) {
-        return (Object[]) objects.stream().filter(e -> e.getType().equals(objectType)).toArray();
+        return getObjectsByTypeId(objectType.getId());
+    }
+
+    @Override
+    public Object[] getObjectsByTypeId(int objectTypeId) {
+        return (Object[]) objects.stream().filter(e -> e.getType().getId() == objectTypeId).toArray();
     }
 
     @Override

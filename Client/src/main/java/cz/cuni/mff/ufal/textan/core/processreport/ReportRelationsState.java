@@ -38,7 +38,7 @@ final class ReportRelationsState extends State {
     @Override
     public void setReportRelations(final ProcessReportPipeline pipeline, final Relation[] relations) {
         pipeline.reportRelations = relations;
-        pipeline.setState(DoneState.getInstance());
         //TODO save document
+        pipeline.setState(DoneState.getInstance());
     }
 }

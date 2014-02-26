@@ -168,6 +168,14 @@ public class ProcessReportPipeline {
     }
 
     /**
+     * Returns report's objects.
+     * @return report's objects
+     */
+    public Object[] getReportObjects() {
+        return reportObjects;
+    }
+
+    /**
      * Sets report's objects.
      * @param objects new objects
      */
@@ -179,7 +187,7 @@ public class ProcessReportPipeline {
      * Sets report's relations.
      * @param relations new relations
      */
-    public void setReportObjects(final Relation[] relations) {
+    public void setRelationsObjects(final Relation[] relations) {
         state.setReportRelations(this, relations);
     }
 }

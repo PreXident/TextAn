@@ -65,6 +65,7 @@ final class ReportEditState extends State {
             while (i < words.length
                     && words[i].getStart() <= entEnd) {
                 words[i].setEntity(builder);
+                ++i;
             }
         }
     }
