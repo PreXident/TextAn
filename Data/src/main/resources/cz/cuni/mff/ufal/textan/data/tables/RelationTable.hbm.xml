@@ -15,13 +15,12 @@
             unsaved-value="0">
             <generator class="native" />
         </id>  
-        <list name="objectsInRelation" table="isinrelation">
+        <set name="objectsInRelation" table="isinrelation">
             
             <key column="id_relation"/>
-            <list-index column="order_in_relation" />
-                
-            <many-to-many class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" column="id_object"/>
-        </list>
+                            
+            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.InRelationTable"/>
+        </set>
         <many-to-one name="relationType" class="cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable" 
                     column="id_relation_type" not-null="true" lazy="false" cascade="save-update" />
         
