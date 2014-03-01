@@ -6,7 +6,6 @@
 
 package cz.cuni.mff.ufal.textan.data.test;
 
-import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import cz.cuni.mff.ufal.textan.data.repositories.TableAction;
 import cz.cuni.mff.ufal.textan.data.tables.*;
 import java.util.Arrays;
@@ -400,6 +399,12 @@ public class DataTest {
             }
         });
     }
+    
+    // TODO: Concurrency throws exception
+    
+    
+    // TODO:IsInRelationBidirectionalTest
+    
     
     /*
     @Test

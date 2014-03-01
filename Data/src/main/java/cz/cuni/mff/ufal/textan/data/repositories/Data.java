@@ -8,6 +8,7 @@ package cz.cuni.mff.ufal.textan.data.repositories;
 
 import cz.cuni.mff.ufal.textan.data.tables.AbstractTable;
 import java.io.Serializable;
+import java.util.List;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
@@ -63,10 +64,10 @@ public class Data {
      * @param action Specify what you will do on each record of the table. You can only get some
      * data (it will work like SELECT) or you can change them (it will be UPDATED)
      */
-    public <Table extends AbstractTable> void performActionOnTable(final Class<Table> clazz, final TableAction<Table> action) {
+    public <Table extends AbstractTable> void updateAll(final Class<Table> clazz, final TableAction<Table> action) {
         StatelessSession session = HibernateUtil.getSessionFactory().openStatelessSession();
         Transaction tx = session.beginTransaction();
-        ScrollableResults customers = session.getNamedQuery("GetCustomers")
+        ScrollableResults customers = session.createCriteria(clazz)
             .scroll(ScrollMode.FORWARD_ONLY);
         while ( customers.next() ) {
             Table record = (Table) customers.get(0);
@@ -78,6 +79,28 @@ public class Data {
         session.close();
     }
     
+    /**
+     * Performs an action on specified table.
+     * In the simplest way this method serves as the SELECT ALL query.
+     * It can be also used to UPDATE these records returned by SELECT ALL from specified table.
+     * 
+     * @param <Table> Table on which are we executing command SELECT ALL (and/or UPDATE)
+     * @param clazz Just put Table.class here
+     * @param action Specify what you will do on each record of the table. You can only get some
+     * data (it will work like SELECT) or you can change them (it will be UPDATED)
+     */
+    public <Table extends AbstractTable> void selectAll(final Class<Table> clazz, final TableAction<Table> action) {
+        StatelessSession session = HibernateUtil.getSessionFactory().openStatelessSession();
+        ScrollableResults customers = session.createCriteria(clazz)
+            .scroll(ScrollMode.FORWARD_ONLY);
+        while ( customers.next() ) {
+            Table record = (Table) customers.get(0);
+            action.action(record);
+        }
+
+        session.close();
+    }
+
     public <Table extends AbstractTable> boolean addRecord(Table m) {
         //ObjectTypeTable m = new ObjectTypeTable(name);
         Session s = HibernateUtil.getSessionFactory().openSession();
