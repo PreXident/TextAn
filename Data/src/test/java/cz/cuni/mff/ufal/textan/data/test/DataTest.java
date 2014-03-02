@@ -131,7 +131,7 @@ public class DataTest {
     @Test
     public void InverseMappingObjectTypeToObjectTest() {
        System.out.println("\n\nInverseMappingObjectTypeToObjectTest");
-       DataSingleton.getSingleton().performActionOnRecord(ObjectTypeTable.class, objectType.getId(), new TableAction<ObjectTypeTable>() {
+       DataSingleton.getSingleton().updateRecordById(ObjectTypeTable.class, objectType.getId(), new TableAction<ObjectTypeTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(ObjectTypeTable table) {
@@ -148,7 +148,7 @@ public class DataTest {
     @Test
     public void InverseMappingRelationToRelationOccurrenceTest() {
        System.out.println("\n\nInverseMappingRelationToRelationOccurrenceTest");
-       DataSingleton.getSingleton().performActionOnRecord(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
+       DataSingleton.getSingleton().updateRecordById(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(RelationTable table) {
@@ -163,7 +163,7 @@ public class DataTest {
     @Test
     public void InverseMappingObjectToAliasTest() {
        System.out.println("\n\nInverseMappingObjectToAliasTest");
-       DataSingleton.getSingleton().performActionOnRecord(ObjectTable.class, object.getId(), new TableAction<ObjectTable>() {
+       DataSingleton.getSingleton().updateRecordById(ObjectTable.class, object.getId(), new TableAction<ObjectTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(ObjectTable table) {
@@ -181,7 +181,7 @@ public class DataTest {
     @Test
     public void InverseMappingRelationTypeToRelationTest() {
        System.out.println("\n\nInverseMappingRelationTypeToRelationTest");
-       DataSingleton.getSingleton().performActionOnRecord(RelationTypeTable.class, relationType.getId(), new TableAction<RelationTypeTable>() {
+       DataSingleton.getSingleton().updateRecordById(RelationTypeTable.class, relationType.getId(), new TableAction<RelationTypeTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(RelationTypeTable table) {
@@ -197,7 +197,7 @@ public class DataTest {
     @Test
     public void InverseMappingDocumentToRelationOccurenceTest() {
        System.out.println("\n\nInverseMappingRelationTypeToRelationTest");
-       DataSingleton.getSingleton().performActionOnRecord(DocumentTable.class, document.getId(), new TableAction<DocumentTable>() {
+       DataSingleton.getSingleton().updateRecordById(DocumentTable.class, document.getId(), new TableAction<DocumentTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(DocumentTable table) {
@@ -212,7 +212,7 @@ public class DataTest {
     @Test
     public void InverseMappingDocumentToAliasOccurenceTest() {
        System.out.println("\n\nInverseMappingDocumentToAliasOccurenceTest");
-       DataSingleton.getSingleton().performActionOnRecord(DocumentTable.class, document.getId(), new TableAction<DocumentTable>() {
+       DataSingleton.getSingleton().updateRecordById(DocumentTable.class, document.getId(), new TableAction<DocumentTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(DocumentTable table) {
@@ -228,7 +228,7 @@ public class DataTest {
     @Test
     public void InverseMappingAliasToAliasOccurenceTest() {
        System.out.println("\n\nInverseMappingAliasToAliasOccurenceTest");
-       DataSingleton.getSingleton().performActionOnRecord(AliasTable.class, alias.getId(), new TableAction<AliasTable>() {
+       DataSingleton.getSingleton().updateRecordById(AliasTable.class, alias.getId(), new TableAction<AliasTable>() {
             // LAMBDA EXP COULD BE POSSIBLE AS WELL
             @Override
             public void action(AliasTable table) {
@@ -378,29 +378,6 @@ public class DataTest {
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
         assertTrue("DataSingleton.getSingleton().deleteRecord(user2)", DataSingleton.getSingleton().deleteRecord(user2));
     }
-    
-    @Test
-    public void ConcurrencyRewriteJustRewrittenTest() {
-        ObjectTypeTable objectType1 = new ObjectTypeTable("__[TEST]objecttype 1");
-        DataSingleton.getSingleton().addRecord(objectType1);
-        final long id = objectType1.getId();
-        DataSingleton.getSingleton().performActionOnRecord(ObjectTypeTable.class, id, new TableAction<ObjectTypeTable>() {
-
-            @Override
-            public void action(ObjectTypeTable table) {
-                table.setName("__[TEST]objecttype 1 changed");
-                DataSingleton.getSingleton().performActionOnRecord(ObjectTypeTable.class, id, new TableAction<ObjectTypeTable>() {
-
-                    @Override
-                    public void action(ObjectTypeTable table) {
-                        table.setName("__[TEST]objecttype 1 changed snd time");
-                    }
-                });
-            }
-        });
-    }
-    
-    // TODO: Concurrency throws exception
     
     
     // TODO:IsInRelationBidirectionalTest

@@ -6,6 +6,8 @@
 
 package cz.cuni.mff.ufal.textan.data.graph;
 
+import java.util.Objects;
+
 /**
  *
  * @author Václav Pernička
@@ -14,20 +16,62 @@ public class Edge {
     enum EdgeType {
         LeftToRight, RightToLeft, Neutral
     }
-    Node leftNode, rightNode;
+    ObjectNode leftNode;
+    Node rightNode;
     int order;
+
+    public Edge() {
+    }
     
-    public Edge(Node leftNode, Node rightNode, int order) {
+    
+    public Edge(ObjectNode leftNode, Node rightNode, int order) {
         this.leftNode = leftNode;
         this.rightNode = rightNode;
         this.order = order;
     }
 
-    public Node getLeftNode() {
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 47 * hash + Objects.hashCode(this.rightNode);
+        hash = 47 * hash + this.order;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Edge other = (Edge) obj;
+        if (this.order != other.order) {
+            return false;
+        }
+        
+        if (Objects.equals(this.leftNode, other.leftNode) && Objects.equals(this.rightNode, other.rightNode)) {
+            return this.order == other.order;
+        }
+        if (Objects.equals(this.leftNode, other.rightNode) && Objects.equals(this.rightNode, other.leftNode)) {
+            return this.order == -other.order;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Edge{" + "leftNode=" + leftNode + ", rightNode=" + rightNode + ", order=" + order + '}';
+    }
+    
+    
+
+    public ObjectNode getLeftNode() {
         return leftNode;
     }
 
-    public void setLeftNode(Node leftNode) {
+    public void setLeftNode(ObjectNode leftNode) {
         this.leftNode = leftNode;
     }
 

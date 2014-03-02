@@ -6,12 +6,17 @@
 
 package cz.cuni.mff.ufal.textan.data.graph;
 
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
+
 /**
  *
  * @author Václav Pernička
  */
 public class ObjectNode extends Node{
 
+    public ObjectNode(ObjectTable obj) {
+        this(obj.getId(), obj.getData());
+    }
     public ObjectNode(long id, String name) {
         super(id, name);
     }
@@ -29,7 +34,7 @@ public class ObjectNode extends Node{
 
     @Override
     public String toString() {
-        return "ObjectNode{" + "id=" + id + ", name=" + name + '}';
+        return "ObjectNode{" + "id=" + id + ", name=\"" + name + "\"}";
     }
     
     

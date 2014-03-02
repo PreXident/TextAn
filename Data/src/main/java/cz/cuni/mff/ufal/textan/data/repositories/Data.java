@@ -43,17 +43,37 @@ public class Data {
         }
     }
     
-    public <Table extends AbstractTable> void performActionOnRecord(final Class<Table> clazz, final Serializable id, TableAction<Table> action) {
+    /**
+     * Updates a single record
+     * 
+     * @param <Table>
+     * @param clazz
+     * @param id
+     * @param action 
+     */
+    public <Table extends AbstractTable> void updateRecordById(final Class<Table> clazz, final Serializable id, TableAction<Table> action) {
         Session s = HibernateUtil.getSessionFactory().openSession();
         try {
             s.beginTransaction();
-            action.action((Table)s.get(clazz, id));
+            Table record = (Table)s.get(clazz, id);
+            action.action(record);
+            s.update(record);
             s.getTransaction().commit();
         } finally {
             s.close();
         }
     }
 
+    public <Table extends AbstractTable> void selectById(final Class<Table> clazz, final Serializable id, TableAction<Table> action) {
+        Session s = HibernateUtil.getSessionFactory().openSession();
+        try {
+            Table record = (Table)s.get(clazz, id);
+            action.action(record);
+        } finally {
+            s.close();
+        }
+    }
+    
     /**
      * Performs an action on specified table.
      * In the simplest way this method serves as the SELECT ALL query.

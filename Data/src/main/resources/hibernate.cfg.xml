@@ -32,6 +32,9 @@
         
         <mapping class="cz.cuni.mff.ufal.textan.data.tables.AliasTable" resource="cz/cuni/mff/ufal/textan/data/tables/AliasTable.hbm.xml" />
 
+        <mapping resource="cz/cuni/mff/ufal/textan/data/tables/GraphMapping.hbm.xml" />
+
+        
     </session-factory>
 </hibernate-configuration>
 

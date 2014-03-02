@@ -6,12 +6,18 @@
 
 package cz.cuni.mff.ufal.textan.data.graph;
 
+import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
+
 /**
  *
  * @author Václav Pernička
  */
 public class RelationNode extends Node {
     long relationTypeId;
+    
+    public RelationNode(RelationTable rel) {
+        this(rel.getId(), rel.getRelationType().getId(), rel.getRelationType().getName());
+    }
     
     public RelationNode(long id, long relationTypeId, String name) {
         super(id, name);
@@ -39,7 +45,7 @@ public class RelationNode extends Node {
 
     @Override
     public String toString() {
-        return "ObjectNode{" + "id=" + id + ", name=" + name + '}';
+        return "ObjectNode{" + "id=" + id + ", name=\"" + name + "\"}";
     }
 
     

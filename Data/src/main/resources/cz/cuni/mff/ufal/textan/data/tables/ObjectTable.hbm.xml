@@ -18,29 +18,29 @@
        <property name="data" column="data" type="string"/>
        <many-to-one name="objectType" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable" 
                     column="id_object_type" not-null="true" lazy="false" cascade="save-update" />
-       <set name="aliases" table="alias" inverse="true">
+       <set name="aliases" table="alias" inverse="true" cascade="delete, delete-orphan">
             <key>
                 <column name="id_object"></column>
             </key>
             <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.AliasTable"></one-to-many>
         </set>
-        <set name="relations" table="isinrelation" inverse="true">
+        <set name="relations" table="isinrelation" inverse="true" cascade="delete, delete-orphan">
             <key>
                 <column name="id_object"></column>
             </key>
             <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.InRelationTable" />
         </set>
         
-        <one-to-one name="newObject" class="cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable" property-ref="newObject">
+        <one-to-one cascade="delete, delete-orphan" name="newObject" class="cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable" property-ref="newObject">
             
         </one-to-one>
-       <set name="oldObjects1" table="JoinedObjects" inverse="true">
+       <set name="oldObjects1" table="JoinedObjects" inverse="true" cascade="delete, delete-orphan">
             <key>
                 <column name="id_old_object1"></column>
             </key>
             <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable"></one-to-many>
         </set>
-       <set name="oldObjects2" table="JoinedObjects" inverse="true">
+       <set name="oldObjects2" table="JoinedObjects" inverse="true"  cascade="delete, delete-orphan">
             <key>
                 <column name="id_old_object2"></column>
             </key>

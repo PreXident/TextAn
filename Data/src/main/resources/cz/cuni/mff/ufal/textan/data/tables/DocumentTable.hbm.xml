@@ -18,13 +18,13 @@
         <property name="addedDate" column="added" type="date"/>
         <property name="processedDate" column="processed" type="date"/>
         <property name="text" column="text" type="text"/>
-        <set name="relationOccurrences" table="RelationOccurrence" inverse="true">
+        <set name="relationOccurrences" table="RelationOccurrence" inverse="true" cascade="delete, delete-orphan">
             <key>
                 <column name="id_document"></column>
             </key>
             <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable"></one-to-many>
         </set>
-        <set name="aliasOccurrences" table="AliasOccurrence" inverse="true">
+        <set name="aliasOccurrences" table="AliasOccurrence" inverse="true" cascade="delete, delete-orphan">
             <key>
                 <column name="id_document"></column>
             </key>

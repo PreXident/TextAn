@@ -16,7 +16,7 @@
            <generator class="native" />
         </id>  
         <property name="name" column="name" type="string"/>
-        <set name="relationsOfThisType"  table="relation" inverse="true">
+        <set name="relationsOfThisType"  table="relation" inverse="true" cascade="delete, delete-orphan">
             <key>
                 <column name="id_relation_type"></column>
             </key>
