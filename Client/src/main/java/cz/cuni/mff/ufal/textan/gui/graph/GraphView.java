@@ -6,12 +6,13 @@ import cz.cuni.mff.ufal.textan.commons.models.Object;
 import cz.cuni.mff.ufal.textan.commons.models.ObjectType;
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
-import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
+import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.Hypergraph;
 import edu.uci.ics.jung.graph.SetHypergraph;
 import edu.uci.ics.jung.graph.SparseMultigraph;
+import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
@@ -66,13 +67,33 @@ public class GraphView extends SwingNode {
             }
         } else {
             for (Relation rel : relations) {
-                List<Integer> ids = rel.getObjectInRelationIds();
+                final List<Integer> ids = rel.getObjectInRelationIds();
+                final List<Integer> orders = rel.getOrderInRelation();
                 if (ids.size() > 2) {
                     final Object dummy = new Object(-1, new ObjectType(-1, rel.getType().getType()), Arrays.asList(rel.toString()));
                     g.addVertex(dummy);
-                    for (int i : ids) {
+                    boolean b = orders.stream().allMatch(order -> order < 0);
+                    for (int i = 0; i < ids.size(); ++i) {
+                        final int id = ids.get(i);
+                        final int order = orders.get(i);
                         final Relation dummyRel = new DummyRelation(rel.getType());
-                        g.addEdge(dummyRel, Arrays.asList(dummy, objectMap.get(i)));
+                        if (order < 0) {
+                            g.addEdge(dummyRel, Arrays.asList(objectMap.get(id), dummy), EdgeType.DIRECTED);
+                        } else if (order % 2 == 0) {
+                            g.addEdge(dummyRel, Arrays.asList(dummy, objectMap.get(id)), EdgeType.DIRECTED);
+                        } else {
+                            g.addEdge(dummyRel, Arrays.asList(objectMap.get(id), dummy), EdgeType.UNDIRECTED);
+                        }
+                    }
+                } else if (ids.size() == 2) {
+                    final Object first = objectMap.get(ids.get(0));
+                    final Object second = objectMap.get(ids.get(1));
+                    if (orders.get(0) < 0 && orders.get(1) >= 0) {
+                        g.addEdge(rel, Arrays.asList(first, second), EdgeType.DIRECTED);
+                    } else if (orders.get(1) < 0 && orders.get(0) >= 0) {
+                        g.addEdge(rel, Arrays.asList(second, first), EdgeType.DIRECTED);
+                    } else {
+                        g.addEdge(rel, Arrays.asList(first, second), EdgeType.UNDIRECTED);
                     }
                 } else {
                     final Stream<Integer> relatedIDs = rel.getObjectInRelationIds().stream();
@@ -81,7 +102,7 @@ public class GraphView extends SwingNode {
                 }
             }
         }
-        final Layout<Object, Relation> layout = new ISOMLayout<>(
+        final Layout<Object, Relation> layout = new FRLayout<>(
                 hypergraphs ? new PseudoHypergraph<>(g) : (Graph<Object, Relation>) g
         );
         //
