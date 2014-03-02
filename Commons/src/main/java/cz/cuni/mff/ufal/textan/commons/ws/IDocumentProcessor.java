@@ -72,7 +72,7 @@ public interface IDocumentProcessor {
      * @return array of objects ({@link cz.cuni.mff.ufal.textan.commons.models.Object}) assigned to entities
      */
     @WebMethod(operationName = "getObjectsFromString")
-    public Object[] getObjects(@WebParam(name = "text") String text, @WebParam(name = "entities") Entity[] entities);
+    public Rating[] getObjects(@WebParam(name = "text") String text, @WebParam(name = "entities") Entity[] entities);
 
     /*
      * Assigns objects to entities in a document. The best match is used.
@@ -81,8 +81,8 @@ public interface IDocumentProcessor {
      * @return array of objects ({@link cz.cuni.mff.ufal.textan.commons.models.Object}) assigned to entities
      */
     @WebMethod
-    public Entity[] getObjectsById(@WebParam(name = "documentId") int documentId, @WebParam(name = "entities") Entity[] entities);
-    
+    public Rating[] getObjectsById(@WebParam(name = "documentId") int documentId, @WebParam(name = "entities") Entity[] entities);
+
     /**
      * Saves processed document, object and relations in the system and marks the document as processed.
      *

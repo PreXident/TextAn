@@ -9,6 +9,8 @@ import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 import javax.jws.WebService;
 
 /**
@@ -37,13 +39,18 @@ public class DataProvider implements IDataProvider {
     public DataProvider() {
         Relation relation = new Relation(0, relationTypes.get(0));
         relation.getObjectInRelationIds().add(0);
+        relation.getOrderInRelation().add(-1);
         relation.getObjectInRelationIds().add(1);
+        relation.getOrderInRelation().add(1);
         relations.add(relation);
 
         relation = new Relation(1, relationTypes.get(1));
         relation.getObjectInRelationIds().add(0);
+        relation.getOrderInRelation().add(-1);
         relation.getObjectInRelationIds().add(1);
+        relation.getOrderInRelation().add(1);
         relation.getObjectInRelationIds().add(2);
+        relation.getOrderInRelation().add(2);
         relations.add(relation);
     }
 
@@ -69,7 +76,7 @@ public class DataProvider implements IDataProvider {
 
     @Override
     public Object[] getObjectsByTypeId(int objectTypeId) {
-        return (Object[]) objects.stream().filter(e -> e.getType().getId() == objectTypeId).toArray();
+        return (Object[]) objects.stream().filter(e -> e.getType().getId() == objectTypeId).collect(Collectors.toList()).toArray(new Object[0]);
     }
 
     @Override

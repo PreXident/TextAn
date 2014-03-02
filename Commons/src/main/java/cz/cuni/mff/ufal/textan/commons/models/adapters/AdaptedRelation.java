@@ -12,6 +12,7 @@ public class AdaptedRelation {
 
     protected int id;
     protected List<Integer> objectInRelationIds;
+    protected List<Integer> orderInRelation;
     protected RelationType type;
     protected boolean isNew;
 
@@ -31,6 +32,15 @@ public class AdaptedRelation {
 
     public void setObjectInRelationIds(List<Integer> objectInRelationIds) {
         this.objectInRelationIds = objectInRelationIds;
+    }
+
+    @XmlElement
+    public List<Integer> getOrderInRelation() {
+        return orderInRelation;
+    }
+
+    public void setOrderInRelation(List<Integer> orderInRelation) {
+        this.orderInRelation = orderInRelation;
     }
 
     @XmlElement

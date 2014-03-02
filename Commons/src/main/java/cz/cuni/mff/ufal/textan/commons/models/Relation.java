@@ -13,6 +13,7 @@ public class Relation {
 
     private final int id;
     private final List<Integer> objectInRelationIds;
+    private final List<Integer> orderInRelation;
     private final RelationType type;
     private boolean isNew; //TODO: better name and add getter/setter etc.
 
@@ -21,6 +22,7 @@ public class Relation {
         this.type = type;
 
         objectInRelationIds = new ArrayList<>();
+        orderInRelation = new ArrayList<>();
     }
 
     public int getId() {
@@ -29,6 +31,10 @@ public class Relation {
 
     public List<Integer> getObjectInRelationIds() {
         return objectInRelationIds;
+    }
+
+    public List<Integer> getOrderInRelation() {
+        return orderInRelation;
     }
 
     public RelationType getType() {

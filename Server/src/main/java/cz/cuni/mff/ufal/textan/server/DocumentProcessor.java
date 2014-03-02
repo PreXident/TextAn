@@ -2,9 +2,13 @@ package cz.cuni.mff.ufal.textan.server;
 
 import cz.cuni.mff.ufal.textan.commons.models.Entity;
 import cz.cuni.mff.ufal.textan.commons.models.Object;
+import cz.cuni.mff.ufal.textan.commons.models.ObjectType;
+import cz.cuni.mff.ufal.textan.commons.models.Rating;
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
 import cz.cuni.mff.ufal.textan.commons.models.Ticket;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.jws.WebService;
 
 /**
@@ -39,15 +43,21 @@ public class DocumentProcessor implements IDocumentProcessor {
     }
 
     @Override
-    public Object[] getObjects(String text, Entity[] entities) {
-        return new Object[entities.length];
+    public Rating[] getObjects(String text, Entity[] entities) {
+        final Rating[] array = new Rating[entities.length];
+        for (int i = 0; i < array.length; ++i) {
+            array[i] = new Rating();
+            array[i].candidate = new Object[] { new Object(0, new ObjectType(0, "Person"), new ArrayList<>(Arrays.asList("Pepa"))) };
+            array[i].rating = new double[] { 1D };
+        }
+        return array;
     }
 
     @Override
-    public Entity[] getObjectsById(int documentId, Entity[] entities) {
+    public Rating[] getObjectsById(int documentId, Entity[] entities) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public void saveProcessedDocument(int documentId, Object[] objects, Relation[] relations, Ticket ticket, boolean force) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

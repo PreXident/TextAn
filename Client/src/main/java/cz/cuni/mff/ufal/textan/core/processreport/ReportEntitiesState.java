@@ -1,6 +1,8 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.commons.models.Entity;
+import cz.cuni.mff.ufal.textan.commons.models.Object;
+import cz.cuni.mff.ufal.textan.commons.models.Rating;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +63,16 @@ final class ReportEntitiesState extends State {
             ents.add(new Entity(alias.toString(), start, pipeline.reportText.length() - start, builder.getId()));
         }
         pipeline.reportEntities = ents.toArray(new Entity[ents.size()]);
-        pipeline.reportObjects = pipeline.client.getDocumentProcessor().getObjects(pipeline.reportText, pipeline.reportEntities);
+        pipeline.reportObjectCandidates = pipeline.client.getDocumentProcessor().getObjects(pipeline.reportText, pipeline.reportEntities);
+        if (pipeline.reportObjects == null) {
+            pipeline.reportObjects = new Object[pipeline.reportObjectCandidates.length];
+        }
+        for (int i = 0; i < pipeline.reportObjectCandidates.length; ++i) {
+            final Rating candidates = pipeline.reportObjectCandidates[i];
+            if (candidates.candidate.length > 0) {
+                pipeline.reportObjects[0] = candidates.candidate[0];
+            }
+        }
         pipeline.setState(ReportObjectsState.getInstance());
     }
 }

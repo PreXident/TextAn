@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.commons.models.Entity;
 import cz.cuni.mff.ufal.textan.commons.models.Object;
+import cz.cuni.mff.ufal.textan.commons.models.Rating;
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
 import cz.cuni.mff.ufal.textan.core.Client;
 import java.util.ArrayList;
@@ -30,6 +31,9 @@ public class ProcessReportPipeline {
 
     /** Report entities. */
     protected Entity[] reportEntities = null;
+
+    /** Candidate objects for report entities. */
+    protected Rating[] reportObjectCandidates = null;
 
     /** Report objects. */
     protected Object[] reportObjects = null;
@@ -165,6 +169,14 @@ public class ProcessReportPipeline {
      */
     public void setReportEntities(final Entity[] entities) {
         state.setReportEntities(this, entities);
+    }
+
+    /**
+     * Returns report's candidate objects.
+     * @return report's candidate objects
+     */
+    public Rating[] getReportObjectCandidates() {
+        return reportObjectCandidates;
     }
 
     /**

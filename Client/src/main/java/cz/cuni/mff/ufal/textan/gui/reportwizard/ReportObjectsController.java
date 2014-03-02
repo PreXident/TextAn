@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.commons.models.Object;
+import cz.cuni.mff.ufal.textan.commons.models.Rating;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
@@ -17,6 +18,8 @@ import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
@@ -41,6 +44,9 @@ public class ReportObjectsController extends ReportWizardController {
 
     /** Context menu with object selection. */
     ContextMenu contextMenu;
+
+    /** ScrollPane's tooltip. */
+    Tooltip tooltip = new Tooltip("");
 
     /** Index of selected entity. */
     int selectedEntity = 0;
@@ -81,6 +87,17 @@ public class ReportObjectsController extends ReportWizardController {
                 ContextMenu cm = menus.get(word.getEntity());
                 if (cm == null) {
                     cm = new ContextMenu();
+                    final Rating proposedCands = pipeline.getReportObjectCandidates()[word.getEntity().getIndex()];
+                    for (int i = 0; i < proposedCands.candidate.length; ++i) {
+                        final Object cand = proposedCands.candidate[i];
+                        final double rating = proposedCands.rating[i];
+                        final MenuItem mi = new MenuItem(rating + ": " + cand.toString());
+                        mi.setOnAction((ActionEvent t) -> {
+                            pipeline.getReportObjects()[entityId] = cand;
+                        });
+                        cm.getItems().add(mi);
+                    }
+                    cm.getItems().add(new SeparatorMenuItem());
                     Object[] cands = pipeline.getClient().getDataProvider().getObjectsByTypeId(entityId);
                     for (final Object cand : cands) {
                         final MenuItem mi = new MenuItem(cand.toString());
@@ -98,6 +115,7 @@ public class ReportObjectsController extends ReportWizardController {
             }
             text.setOnMouseEntered((MouseEvent t) -> {
                 if (word.getEntity() != null) {
+                    scrollPane.setTooltip(tooltip);
                     final String oldTip = scrollPane.getTooltip().getText();
                     final Object obj = pipeline.getReportObjects()[word.getEntity().getIndex()];
                     if (obj != null) {
@@ -107,8 +125,11 @@ public class ReportObjectsController extends ReportWizardController {
                         }
                     }
                 } else {
-                    scrollPane.getTooltip().setText("");
+                    scrollPane.setTooltip(null);
                 }
+            });
+            text.setOnMouseExited((MouseEvent t) -> {
+                scrollPane.setTooltip(null);
             });
             texts.add(text);
         }
