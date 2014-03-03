@@ -1,5 +1,7 @@
-package cz.cuni.mff.ufal.textan.server;
+package cz.cuni.mff.ufal.textan.server.configs;
 
+import cz.cuni.mff.ufal.textan.server.ws.DataProvider;
+import cz.cuni.mff.ufal.textan.server.ws.DocumentProcessor;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
@@ -29,28 +31,6 @@ public class WebAppConfig {
     }
 
     /**
-     * Creates endpoint for SimpleWebService
-     * @return Returns endpoint
-     */
-    @Bean
-    @DependsOn( "cxf" )
-    public Server jaxWsServer() {
-        JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
-        factory.setServiceBean(simpleWebService());
-        factory.setAddress("/simple");
-        return factory.create();
-    }
-
-    /**
-     * Creates Spring bean with webservice class
-     * @return Returns bean for SimpleWebService
-     */
-    @Bean
-    public SimpleWebService simpleWebService() {
-        return new SimpleWebService();
-    }
-
-    /**
      * Creates endpoint for DataProvider webservice.
      * @return DataProvider endpoint
      */
@@ -65,7 +45,7 @@ public class WebAppConfig {
 
     /**
      * Creates Spring bean with dataprovider class.
-     * @return bean for DataProvider webservice
+     * @return bean for webservice
      */
     @Bean
     public DataProvider dataProvider() {

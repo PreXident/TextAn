@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.server;
+package cz.cuni.mff.ufal.textan.server.ws;
 
 import cz.cuni.mff.ufal.textan.commons.models.Graph;
 import cz.cuni.mff.ufal.textan.commons.models.Object;

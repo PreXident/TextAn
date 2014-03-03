@@ -18,9 +18,9 @@ dependencies {
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.28'
     
     //logging
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.5'
-    runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.5' //TODO: Change to log4j or something like that
-    //runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.5' //wrapper for spring
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
+    runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'
+    //runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.6' //wrapper for spring
 
     compile project(':Commons')
 
