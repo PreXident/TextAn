@@ -58,13 +58,18 @@ public class ReportObjectsController extends ReportWizardController {
 
     @FXML
     private void next() {
-        callWithContentBackup(() ->
-            createDialog()
-                    .owner(getDialogOwner(root))
-                    .title(Utils.localize(resourceBundle, "done"))
-                    .message(Utils.localize(resourceBundle, "done.detail"))
-                    .showInformation());
-        closeContainer();
+        for (Object obj : pipeline.getReportObjects()) {
+            if (obj == null) {
+                callWithContentBackup(() ->
+                    createDialog()
+                            .owner(getDialogOwner(root))
+                            .title(Utils.localize(resourceBundle, "error.objects.unassigned"))
+                            .message(Utils.localize(resourceBundle, "error.objects.unassigned.detail"))
+                            .showInformation());
+                return;
+            }
+        }
+        pipeline.setReportObjects(pipeline.getReportObjects());
     }
 
     @Override

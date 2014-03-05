@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.commons.models.Entity;
 import cz.cuni.mff.ufal.textan.commons.models.Object;
 import cz.cuni.mff.ufal.textan.commons.models.Rating;
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
+import cz.cuni.mff.ufal.textan.commons.models.Ticket;
 import cz.cuni.mff.ufal.textan.core.Client;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +48,9 @@ public class ProcessReportPipeline {
     /** List of listeners registered for state changing. */
     protected final List<IStateChangedListener> stateChangedListeners = new ArrayList<>();
 
+    /** Ticket for document processing. */
+    protected final Ticket ticket;
+
     /**
      * Only constructor. Do not use directly!
      * TODO think of a design preventing users from calling this constructor directly
@@ -54,6 +58,8 @@ public class ProcessReportPipeline {
      */
     public ProcessReportPipeline(final Client client) {
         this.client = client;
+        final String username = client.getSettings().getProperty("username");
+        ticket = client.getDocumentProcessor().getTicket(username);
     }
 
     /**
@@ -196,10 +202,18 @@ public class ProcessReportPipeline {
     }
 
     /**
+     * Returns report's relations.
+     * @return report's relations
+     */
+    public Relation[] getReportRelations() {
+        return reportRelations;
+    }
+
+    /**
      * Sets report's relations.
      * @param relations new relations
      */
-    public void setRelationsObjects(final Relation[] relations) {
+    public void setReportRelations(final Relation[] relations) {
         state.setReportRelations(this, relations);
     }
 }

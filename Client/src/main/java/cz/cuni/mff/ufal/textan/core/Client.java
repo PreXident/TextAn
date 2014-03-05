@@ -64,6 +64,14 @@ public class Client {
     }
 
     /**
+     * Returns settings of the application. Handle with care, their shared.
+     * @return settings of the application
+     */
+    public Properties getSettings() {
+        return settings;
+    }
+
+    /**
      * Creates new grapher for providing graph information.
      * @return new grapher for providing graph information
      */

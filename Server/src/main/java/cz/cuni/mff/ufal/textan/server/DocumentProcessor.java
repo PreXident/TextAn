@@ -9,6 +9,7 @@ import cz.cuni.mff.ufal.textan.commons.models.Ticket;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import javax.jws.WebService;
 
 /**
@@ -19,7 +20,7 @@ public class DocumentProcessor implements IDocumentProcessor {
 
     @Override
     public Ticket getTicket(String username) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Ticket(username, new Date());
     }
 
     @Override
@@ -60,7 +61,7 @@ public class DocumentProcessor implements IDocumentProcessor {
 
     @Override
     public void saveProcessedDocument(int documentId, Object[] objects, Relation[] relations, Ticket ticket, boolean force) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("DOCUMENT SAVED!");
     }
 
     @Override
