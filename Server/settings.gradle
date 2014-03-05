@@ -3,4 +3,4 @@ include ':Commons'
 project(':Commons').projectDir = new File('../Commons')
 
 include ':Data'
-project('Data').projectDir = new File('../Data')
+project(':Data').projectDir = new File('../Data')
