@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions targetNamespace="http://ws.commons.textan.ufal.mff.cuni.cz"    
     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-    xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
     xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -24,23 +23,6 @@
         
     <wsdl:message name="ticket">
         <wsdl:part name="ticket" element="tns:ticket"/>
-    </wsdl:message>
-    
-    <!-- TODO: move document related operations to DataProvider? -->
-    <wsdl:message name="addDocument">
-        <wsdl:part name="addDocument" element="tns:addDocument"/>
-    </wsdl:message>
-    
-    <wsdl:message name="addDocumentResponse">
-        <wsdl:part name="addDocumentResponse" element="tns:addDocumentResponse"/>
-    </wsdl:message>
-    
-    <wsdl:message name="updateDocument">
-        <wsdl:part name="updateDocument" element="tns:updateDocument"/>
-    </wsdl:message>
-    
-    <wsdl:message name="updateDocumentResponse">
-        <wsdl:part name="updateDocumentResponse" element="tns:updateDocumentResponse"/>
     </wsdl:message>
     
     <wsdl:message name="getEntitiesFromString">
@@ -106,17 +88,7 @@
             <wsdl:input message="ws:getTicket"/>
             <wsdl:output message="ws:getTicketResponse"/>
         </wsdl:operation>
-        
-        <wsdl:operation name="addDocument">
-            <wsdl:input message="ws:addDocument"/>
-            <wsdl:output message="ws:addDocumentResponse"/>
-        </wsdl:operation>
-        
-        <wsdl:operation name="updateDocument">
-            <wsdl:input message="ws:updateDocument"/>
-            <wsdl:output message="ws:updateDocumentResponse"/>
-        </wsdl:operation>
-        
+
         <wsdl:operation name="getEntitiesFromString">
             <wsdl:input message="ws:getEntitiesFromString"/>
             <wsdl:output message="ws:getEntitiesFromStringResponse"/>
@@ -166,27 +138,7 @@
                 <soap:body parts="getTicketResponse" use="literal"/>
             </wsdl:output>
         </wsdl:operation>
-        
-        <wsdl:operation name="addDocument">
-            <wsdl:input>
-                <soap:body parts="addDocument" use="literal"/>
-                <soap:header message="ws:ticket" part="ticket" use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body parts="addDocumentResponse" use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-    
-        <wsdl:operation name="updateDocument">
-            <wsdl:input>
-                <soap:body parts="updateDocument" use="literal"/>
-                <soap:header message="ws:ticket" part="ticket" use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body parts="updateDocumentResponse" use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        
+                
         <wsdl:operation name="getEntitiesFromString">
             <wsdl:input>
                 <soap:body parts="getEntitiesFromString" use="literal"/>

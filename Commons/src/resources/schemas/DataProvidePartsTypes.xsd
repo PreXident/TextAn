@@ -49,6 +49,12 @@
     <xs:element name="splitObject" type="SplitObject"/>
     <xs:element name="splitObjectResponse" type="SplitObjectResponse"/>    
     
+    <xs:element name="addDocument" type="AddDocument"/>
+    <xs:element name="addDocumentResponse" type="AddDocumentResponse"/>
+    
+    <xs:element name="updateDocument" type="UpdateDocument"/>
+    <xs:element name="updateDocumentResponse" type="UpdateDocumentResponse"/>
+    
     <xs:element name="getDocumentsResponse" type="GetDocumentsResponse"/>
     
     <xs:element name="getDocumentById" type="GetDocumentById"/>
@@ -206,6 +212,31 @@
         </xs:sequence>
     </xs:complexType>  
 
+    <xs:complexType name="AddDocument">
+        <xs:sequence>
+            <xs:element name="text" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="AddDocumentResponse">
+        <xs:sequence>
+            <xs:element name="documentId" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="UpdateDocument">
+        <xs:sequence>
+            <xs:element name="text" type="xs:string"/>
+            <xs:element name="documentId" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="UpdateDocumentResponse">
+        <xs:sequence>
+            <xs:element name="result" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+    
     <xs:complexType name="GetDocumentsResponse">
         <xs:sequence>
             <xs:element ref="document"/>

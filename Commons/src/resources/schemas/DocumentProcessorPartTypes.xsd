@@ -14,13 +14,7 @@
     
     <xs:element name="getTicket" type="GetTicket"/>
     <xs:element name="getTicketResponse" type="GetTicketResponse"/>
-    
-    <xs:element name="addDocument" type="AddDocument"/>
-    <xs:element name="addDocumentResponse" type="AddDocumentResponse"/>
-    
-    <xs:element name="updateDocument" type="UpdateDocument"/>
-    <xs:element name="updateDocumentResponse" type="UpdateDocumentResponse"/>
-       
+         
     <xs:element name="getEntitiesFromString" type="GetEntitiesFromString"/>
     <xs:element name="getEntitiesFromStringResponse" type="GetEntitiesFromStringResponse"/>
     
@@ -58,32 +52,7 @@
             <xs:element ref="ticket"/>
         </xs:sequence>
     </xs:complexType>
-    
-    <xs:complexType name="AddDocument">
-        <xs:sequence>
-            <xs:element name="text" type="xs:string"/>
-        </xs:sequence>
-    </xs:complexType>
-    
-    <xs:complexType name="AddDocumentResponse">
-        <xs:sequence>
-            <xs:element name="documentId" type="xs:int"/>
-        </xs:sequence>
-    </xs:complexType>
-    
-    <xs:complexType name="UpdateDocument">
-        <xs:sequence>
-            <xs:element name="text" type="xs:string"/>
-            <xs:element name="documentId" type="xs:int"/>
-        </xs:sequence>
-    </xs:complexType>
-    
-    <xs:complexType name="UpdateDocumentResponse">
-        <xs:sequence>
-            <xs:element name="result" type="xs:boolean"/>
-        </xs:sequence>
-    </xs:complexType>
-    
+      
     <xs:complexType name="GetEntitiesFromString">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
