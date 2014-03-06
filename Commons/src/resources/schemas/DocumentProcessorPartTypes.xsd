@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
+    targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="Entity.xsd" />
+    <xs:include schemaLocation="Object.xsd"/>
+    <xs:include schemaLocation="ObjectType.xsd"/>
+    <xs:include schemaLocation="Relation.xsd"/>
+    <xs:include schemaLocation="RelationType.xsd"/>
+    <xs:include schemaLocation="Graph.xsd"/>
+    <xs:include schemaLocation="Ticket.xsd"/>
+    
+    
+    <xs:element name="getTicket" type="GetTicket"/>
+    <xs:element name="getTicketResponse" type="GetTicketResponse"/>
+    
+    <xs:element name="addDocument" type="AddDocument"/>
+    <xs:element name="addDocumentResponse" type="AddDocumentResponse"/>
+    
+    <xs:element name="updateDocument" type="UpdateDocument"/>
+    <xs:element name="updateDocumentResponse" type="UpdateDocumentResponse"/>
+       
+    <xs:element name="getEntitiesFromString" type="GetEntitiesFromString"/>
+    <xs:element name="getEntitiesFromStringResponse" type="GetEntitiesFromStringResponse"/>
+    
+    <xs:element name="getEntitiesById" type="GetEntitiesById"/>
+    <xs:element name="getEntitiesByIdResponse" type="GetEntitiesByIdResponse"/>
+    
+    <xs:element name="getObjectsFromString" type="GetObjectsFromString"/>
+    <xs:element name="getObjectsFromStringResponse" type="GetObjectsFromStringResponse"/>
+    
+    <xs:element name="getObjectsById" type="GetObjectsById"/>
+    <xs:element name="getObjectsByIdResponse" type="GetObjectsByIdResponse"/>
+    
+    <xs:element name="saveProcessedDocumentById" type="SaveProcessedDocumentById"/>
+    <xs:element name="saveProcessedDocumentByIdResponse" type="SaveProcessedDocumentByIdResponse"/>
+    
+    <xs:element name="saveProcessedDocumentFromString" type="SaveProcessedDocumentFromString"/>
+    <xs:element name="saveProcessedDocumentFromStringResponse" type="SaveProcessedDocumentFromStringResponse"/>
+    
+    <xs:element name="getProblems" type="GetProblems"/>
+    <xs:element name="getProblemsResponse" type="GetProblemsResponse"/>
+      
+    
+   <!-- <xs:complexType name="Void">
+        <xs:sequence/>
+    </xs:complexType>-->
+    
+    <xs:complexType name="GetTicket">
+        <xs:sequence>
+            <xs:element name="username" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GetTicketResponse">
+        <xs:sequence>
+            <xs:element ref="ticket"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="AddDocument">
+        <xs:sequence>
+            <xs:element name="text" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="AddDocumentResponse">
+        <xs:sequence>
+            <xs:element name="documentId" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="UpdateDocument">
+        <xs:sequence>
+            <xs:element name="text" type="xs:string"/>
+            <xs:element name="documentId" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="UpdateDocumentResponse">
+        <xs:sequence>
+            <xs:element name="result" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GetEntitiesFromString">
+        <xs:sequence>
+            <xs:element name="text" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GetEntitiesFromStringResponse">
+        <xs:sequence>
+            <xs:element ref="entity" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GetEntitiesById">
+        <xs:sequence>
+            <xs:element name="documentId" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GetEntitiesByIdResponse">
+        <xs:sequence>
+            <xs:element ref="entity" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GetObjectsFromString">
+        <xs:sequence>
+            <xs:element name="text" type="xs:string"/>
+            <xs:element name="entities">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="entity" minOccurs="1" maxOccurs="unbounded"/>  
+                    </xs:sequence>
+                </xs:complexType>                
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GetObjectsFromStringResponse">
+        <xs:sequence>
+            <!-- TODO: better name for element -->
+            <xs:element name="assignment" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="entity"/>
+                        <xs:element name="objects">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GetObjectsById">
+        <xs:sequence>
+            <xs:element name="id" type="xs:int"/>
+            <xs:element name="entities">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="entity" minOccurs="1" maxOccurs="unbounded"/>  
+                    </xs:sequence>
+                </xs:complexType>                
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GetObjectsByIdResponse">
+        <xs:sequence>
+            <!-- TODO: better name for element -->
+            <xs:element name="assignment" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="entity"/>
+                        <xs:element name="objects">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Save pairs (Entity, Object)!! -->
+    <xs:complexType name="SaveProcessedDocumentById">
+        <xs:sequence>
+            <xs:element name="documentId" type="xs:int"/>
+            <xs:element name="objects">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="relations">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="relation" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="force" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="SaveProcessedDocumentByIdResponse">
+        <xs:sequence>
+            <xs:element name="result" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="SaveProcessedDocumentFromString">
+        <xs:sequence>
+            <xs:element name="text" type="xs:string"/>
+            <xs:element name="objects">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="relations">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="relation" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="force" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="SaveProcessedDocumentFromStringResponse">
+        <xs:sequence>
+            <xs:element name="result" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GetProblems">
+        <xs:sequence>
+            <xs:element name="documentId" type="xs:int"/>
+            <xs:element name="objects">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="relations">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="relation" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GetProblemsResponse">  
+
+</xs:schema>

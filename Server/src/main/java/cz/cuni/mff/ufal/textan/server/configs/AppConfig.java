@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
-import cz.cuni.mff.ufal.textan.server.DataProviderService;
+//import cz.cuni.mff.ufal.textan.server.DataProviderService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import cz.cuni.mff.ufal.textan.data.repositories.Data;
@@ -20,8 +20,8 @@ public class AppConfig {
         return new Data();
     }
 
-    @Bean
-    public DataProviderService dataProviderService() {
-        return new  DataProviderService(dataSource());
-    }
+//    @Bean
+//    public DataProviderService dataProviderService() {
+//        return new  DataProviderService(dataSource());
+//    }
 }

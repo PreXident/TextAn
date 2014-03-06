@@ -14,7 +14,7 @@ import javax.jws.WebService;
 /**
  * For now only mocking database access.
  */
-@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDataProvider", serviceName = "DataProvider")
+@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDataProvider", serviceName = "DataProvider", targetNamespace = "http://server.textan.ufal.mff.cuni.cz")
 public class DataProvider implements IDataProvider {
 
     private final List<ObjectType> objectTypes = Arrays.asList(

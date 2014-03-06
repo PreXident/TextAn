@@ -10,7 +10,7 @@ import javax.jws.WebService;
 /**
  * For now only mocking document processing.
  */
-@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor", serviceName = "DocumentProcessor")
+@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor", serviceName = "DocumentProcessor", targetNamespace = "http://server.textan.ufal.mff.cuni.cz")
 public class DocumentProcessor implements IDocumentProcessor {
 
     @Override

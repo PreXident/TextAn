@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://ws.commons.textan.ufal.mff.cuni.cz"    
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tns="http://models.commons.textan.ufal.mff.cuni.cz"
+    xmlns:ws="http://ws.commons.textan.ufal.mff.cuni.cz">
+    
+    <wsdl:types>
+        <xs:schema targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz">
+            <xs:include schemaLocation="../schemas/DocumentProcessorPartTypes.xsd"/>
+        </xs:schema>
+    </wsdl:types>
+    
+    <wsdl:message name="getTicket">
+        <wsdl:part name="getTicket" element="tns:getTicket"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getTicketResponse">
+        <wsdl:part name="getTicketResponse" element="tns:getTicketResponse"/>
+    </wsdl:message>
+        
+    <wsdl:message name="ticket">
+        <wsdl:part name="ticket" element="tns:ticket"/>
+    </wsdl:message>
+    
+    <!-- TODO: move document related operations to DataProvider? -->
+    <wsdl:message name="addDocument">
+        <wsdl:part name="addDocument" element="tns:addDocument"/>
+    </wsdl:message>
+    
+    <wsdl:message name="addDocumentResponse">
+        <wsdl:part name="addDocumentResponse" element="tns:addDocumentResponse"/>
+    </wsdl:message>
+    
+    <wsdl:message name="updateDocument">
+        <wsdl:part name="updateDocument" element="tns:updateDocument"/>
+    </wsdl:message>
+    
+    <wsdl:message name="updateDocumentResponse">
+        <wsdl:part name="updateDocumentResponse" element="tns:updateDocumentResponse"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getEntitiesFromString">
+        <wsdl:part name="getEntitiesFromString" element="tns:getEntitiesFromString"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getEntitiesFromStringResponse">
+        <wsdl:part name="getEntitiesFromStringResponse" element="tns:getEntitiesFromStringResponse"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getEntitiesById">
+        <wsdl:part name="getEntitiesById" element="tns:getEntitiesById"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getEntitiesByIdResponse">
+        <wsdl:part name="getEntitiesByIdResponse" element="tns:getEntitiesByIdResponse"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getObjectsFromString">
+        <wsdl:part name="getObjectsFromString" element="tns:getObjectsFromString"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getObjectsFromStringResponse">
+        <wsdl:part name="getObjectsFromStringResponse" element="tns:getObjectsFromStringResponse"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getObjectsById">
+        <wsdl:part name="getObjectsById" element="tns:getObjectsById"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getObjectsByIdResponse">
+        <wsdl:part name="getObjectsByIdResponse" element="tns:getObjectsByIdResponse"/>
+    </wsdl:message>
+    
+    <wsdl:message name="saveProcessedDocumentById">
+        <wsdl:part name="saveProcessedDocumentById" element="tns:saveProcessedDocumentById"/>
+    </wsdl:message>
+    
+    <wsdl:message name="saveProcessedDocumentByIdResponse">
+        <wsdl:part name="saveProcessedDocumentByIdResponse" element="tns:saveProcessedDocumentByIdResponse"/>
+    </wsdl:message>
+    
+    <wsdl:message name="saveProcessedDocumentFromString">
+        <wsdl:part name="saveProcessedDocuemntFromString" element="tns:saveProcessedDocumentFromString"/>
+    </wsdl:message>
+    
+    <wsdl:message name="saveProcessedDocumentFromStringResponse">
+        <wsdl:part name="saveProcessedDocumentFromStringResponse" element="tns:saveProcessedDocumentFromStringResponse"/>
+    </wsdl:message>
+
+    <!-- TODO: Add getProblemsFromString or something like that -->
+    <wsdl:message name="getProblems">
+        <wsdl:part name="getProblems" element="tns:getProblems"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getProblemsResponse">
+        <wsdl:part name="getProblemsResponse" element="tns:getProblemsResponse"/>
+    </wsdl:message>
+    
+    <wsdl:portType name="DocumentProcessor">
+        
+        <wsdl:operation name="getTicket">
+            <wsdl:input message="ws:getTicket"/>
+            <wsdl:output message="ws:getTicketResponse"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="addDocument">
+            <wsdl:input message="ws:addDocument"/>
+            <wsdl:output message="ws:addDocumentResponse"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="updateDocument">
+            <wsdl:input message="ws:updateDocument"/>
+            <wsdl:output message="ws:updateDocumentResponse"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="getEntitiesFromString">
+            <wsdl:input message="ws:getEntitiesFromString"/>
+            <wsdl:output message="ws:getEntitiesFromStringResponse"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="getEntitiesById">
+            <wsdl:input message="ws:getEntitiesById"/>
+            <wsdl:output message="ws:getEntitiesByIdResponse"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="getObjectsFromString">
+            <wsdl:input message="ws:getObjectsFromString"/>
+            <wsdl:output message="ws:getObjectsFromStringResponse"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="getObjectsById">
+            <wsdl:input message="ws:getObjectsById"/>
+            <wsdl:output message="ws:getObjectsByIdResponse"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="saveProcessedDocumentFromString">
+            <wsdl:input message="ws:saveProcessedDocumentFromString"/>
+            <wsdl:output message="ws:saveProcessedDocumentFromStringResponse"/>
+            <!--<wsdl:fault name="" message=""></wsdl:fault>-->
+        </wsdl:operation>
+        
+        <wsdl:operation name="saveProcessedDocumentById">
+            <wsdl:input message="ws:saveProcessedDocumentById"/>
+            <wsdl:output message="ws:saveProcessedDocumentByIdResponse"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="getProblems">
+            <wsdl:input message="ws:getProblems"/>
+            <wsdl:output message="ws:getProblemsResponse"/>
+        </wsdl:operation>
+        
+    </wsdl:portType>
+    
+    <wsdl:binding name="DocumentProcessor" type="ws:DocumentProcessor">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        
+        <wsdl:operation name="getTicket">
+            <wsdl:input>
+                <soap:body parts="getTicket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getTicketResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="addDocument">
+            <wsdl:input>
+                <soap:body parts="addDocument" use="literal"/>
+                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="addDocumentResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    
+        <wsdl:operation name="updateDocument">
+            <wsdl:input>
+                <soap:body parts="updateDocument" use="literal"/>
+                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="updateDocumentResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="getEntitiesFromString">
+            <wsdl:input>
+                <soap:body parts="getEntitiesFromString" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getEntitiesFromStringResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="getEntitiesById">
+            <wsdl:input>
+                <soap:body parts="getEntitiesById" use="literal"/>
+                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getEntitiesByIdResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="getObjectsFromString">
+            <wsdl:input>
+                <soap:body parts="getObjectsFromString" use="literal"/>
+                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getObjectsFromStringResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    
+        <wsdl:operation name="getObjectsById">
+            <wsdl:input>
+                <soap:body parts="getObjectsById" use="literal"/>
+                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getObjectsByIdResponse" use="literal"/>
+            </wsdl:output>            
+        </wsdl:operation>
+        
+        <wsdl:operation name="saveProcessedDocumentFromString">
+            <wsdl:input>
+                <soap:body parts="saveProcessedDocuemntFromString" use="literal"/>
+                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="saveProcessedDocumentFromStringResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    
+        <wsdl:operation name="saveProcessedDocumentById">
+            <wsdl:input>
+                <soap:body parts="saveProcessedDocumentById" use="literal"/>
+                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="saveProcessedDocumentByIdResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    
+        <wsdl:operation name="getProblems">
+            <wsdl:input>
+                <soap:body parts="getProblems" use="literal"/>
+                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getProblemsResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    
+    <wsdl:service name="DocumentProcessorService">
+        <wsdl:port name="DocumentProcessor" binding="ws:DocumentProcessor">
+            <soap:address location="http://localhost/soap/DocumentProvider"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
