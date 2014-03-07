@@ -12,9 +12,13 @@
             <xs:include schemaLocation="../schemas/DataProvidePartsTypes.xsd"/>
         </xs:schema>
     </wsdl:types>
+        
+    <wsdl:message name="ticket">
+        <wsdl:part name="ticket" element="tns:ticket"/>
+    </wsdl:message>
     
     <wsdl:message name="getObjectTypes">
-        <wsdl:part name="getObjectTypes" element="tns:void"/>
+        <wsdl:part name="getObjectTypes" element="tns:getObjectTypes"/>
     </wsdl:message>
     
     <wsdl:message name="getObjectTypesResponse">
@@ -30,7 +34,7 @@
     </wsdl:message>
     
     <wsdl:message name="getObjects">
-        <wsdl:part name="getObjects" element="tns:void"/>
+        <wsdl:part name="getObjects" element="tns:getObjects"/>
     </wsdl:message>
     
     <wsdl:message name="getObjectsResponse">
@@ -54,7 +58,7 @@
     </wsdl:message>
     
     <wsdl:message name="getRelationTypes">
-        <wsdl:part name="getRelationTypes" element="tns:void"/>
+        <wsdl:part name="getRelationTypes" element="tns:getRelationTypes"/>
     </wsdl:message>
     
     <wsdl:message name="getRelationTypesResponse">
@@ -118,7 +122,7 @@
     </wsdl:message>
     
     <wsdl:message name="getDocuments">
-        <wsdl:part name="getDocuments" element="tns:void"/>
+        <wsdl:part name="getDocuments" element="tns:getDocuments"/>
     </wsdl:message>
 
     <wsdl:message name="addDocument">
@@ -243,8 +247,10 @@
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         
         <wsdl:operation name="getObjectTypes">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectTypes"/>
             <wsdl:input>
-                <soap:body parts="getObjectTypes" use="literal"/>                
+                <soap:body parts="getObjectTypes" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>         
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectTypesResponse" use="literal"/>
@@ -252,6 +258,7 @@
         </wsdl:operation>
         
         <wsdl:operation name="getObject">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObject"/>
             <wsdl:input>
                 <soap:body parts="getObject" use="literal"/>
             </wsdl:input>
@@ -261,8 +268,10 @@
         </wsdl:operation>
         
         <wsdl:operation name="getObjectsByType">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsByType"/>
             <wsdl:input>
                 <soap:body parts="getObjectsByType" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectsByTypeResponse" use="literal"/>
@@ -270,8 +279,10 @@
         </wsdl:operation>
         
         <wsdl:operation name="getObjectsByTypeId">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsByTypeId"/>
             <wsdl:input>
                 <soap:body parts="getObjectsByTypeId" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectsByTypeIdResponse" use="literal"/>
@@ -279,8 +290,10 @@
         </wsdl:operation>
         
         <wsdl:operation name="getRelationTypes">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationTypes"/>
             <wsdl:input>
                 <soap:body parts="getRelationTypes" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelationTypesResponse" use="literal"/>
@@ -288,8 +301,10 @@
         </wsdl:operation>
         
         <wsdl:operation name="getRelationsByType">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationsByType"/>
             <wsdl:input>
                 <soap:body parts="getRelationsByType" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelationsByTypeResponse" use="literal"/>
@@ -297,8 +312,10 @@
         </wsdl:operation>
     
         <wsdl:operation name="getRelationsByTypeId">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationsByTypeId"/>
             <wsdl:input>
                 <soap:body parts="getRelationsByTypeId" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelationsByTypeIdResponse" use="literal"/>
@@ -306,8 +323,10 @@
         </wsdl:operation>
     
         <wsdl:operation name="getGraphById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getGraphById"/>
             <wsdl:input>
                 <soap:body parts="getGraphById" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getGraphByIdResponse" use="literal"/>
@@ -315,8 +334,10 @@
         </wsdl:operation>
     
         <wsdl:operation name="getRelatedObjectsById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelatedObjectsById"/>
             <wsdl:input>
                 <soap:body parts="getRelatedObjectsById" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelatedObjectsByIdResponse" use="literal"/>
@@ -324,8 +345,10 @@
         </wsdl:operation>
     
         <wsdl:operation name="getPathById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getPathById"/>
             <wsdl:input>
                 <soap:body parts="getPathById" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getPathByIdResponse" use="literal"/>
@@ -333,8 +356,10 @@
         </wsdl:operation>
         
         <wsdl:operation name="mergeObjects">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/mergeObjects"/>
             <wsdl:input>
                 <soap:body parts="mergeObjects" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="mergeObjectsResponse" use="literal"/>
@@ -342,8 +367,10 @@
         </wsdl:operation>
         
         <wsdl:operation name="splitObject">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/splitObject"/>
             <wsdl:input>
                 <soap:body parts="splitObject" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="splitObjectResponse" use="literal"/>
@@ -351,8 +378,10 @@
         </wsdl:operation>
         
         <wsdl:operation name="addDocument">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/addDocument"/>
             <wsdl:input>
                 <soap:body parts="addDocument" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="addDocumentResponse" use="literal"/>
@@ -360,9 +389,10 @@
         </wsdl:operation>
         
         <wsdl:operation name="updateDocument">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/updateDocument"/>
             <wsdl:input>
                 <soap:body parts="updateDocument" use="literal"/>
-                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="updateDocumentResponse" use="literal"/>
@@ -370,8 +400,10 @@
         </wsdl:operation>
     
         <wsdl:operation name="getDocuments">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getDocuments"/>
             <wsdl:input>
-                <soap:body parts="getDocuments" use="literal"/>
+                <soap:body parts="getDocuments" use="literal"/>                
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getDocuments" use="literal"/>
@@ -379,8 +411,10 @@
         </wsdl:operation>
     
         <wsdl:operation name="getDocumentById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getDocumentById"/>
             <wsdl:input>
-                <soap:body parts="getDocumentById" use="literal"/>
+                <soap:body parts="getDocumentById" use="literal"/>                
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getDocumentByIdResponse" use="literal"/>
@@ -389,7 +423,7 @@
     </wsdl:binding>
     
     <wsdl:service name="DataProviderService">
-        <wsdl:port name="DataPtovider" binding="ws:DataProvider">
+        <wsdl:port name="DataPtoviderWS" binding="ws:DataProvider">
             <soap:address location="http://localhost:9100/soap/DataProvider"/>
         </wsdl:port>
     </wsdl:service>

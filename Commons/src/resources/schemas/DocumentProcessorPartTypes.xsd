@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
-    targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz" elementFormDefault="qualified">
+    targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz" elementFormDefault="qualified"> 
 
     <xs:include schemaLocation="Entity.xsd" />
     <xs:include schemaLocation="Object.xsd"/>
@@ -12,8 +12,8 @@
     <xs:include schemaLocation="Ticket.xsd"/>
     
     
-    <xs:element name="getTicket" type="GetTicket"/>
-    <xs:element name="getTicketResponse" type="GetTicketResponse"/>
+    <xs:element name="getEditingTicket" type="GetEditingTicket"/>
+    <xs:element name="getEditingTicketResponse" type="GetEditingTicketResponse"/>
          
     <xs:element name="getEntitiesFromString" type="GetEntitiesFromString"/>
     <xs:element name="getEntitiesFromStringResponse" type="GetEntitiesFromStringResponse"/>
@@ -41,15 +41,16 @@
         <xs:sequence/>
     </xs:complexType>-->
     
-    <xs:complexType name="GetTicket">
-        <xs:sequence>
+    <xs:complexType name="GetEditingTicket">
+        <xs:sequence/>
+        <!--<xs:sequence>
             <xs:element name="username" type="xs:string"/>
-        </xs:sequence>
+        </xs:sequence>-->
     </xs:complexType>
     
-    <xs:complexType name="GetTicketResponse">
+    <xs:complexType name="GetEditingTicketResponse">
         <xs:sequence>
-            <xs:element ref="ticket"/>
+            <xs:element ref="editingTicket"/>
         </xs:sequence>
     </xs:complexType>
       
@@ -218,6 +219,9 @@
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="GetProblemsResponse">  
+    <!-- TODO: implement -->
+    <xs:complexType name="GetProblemsResponse">
+        <xs:sequence/>
+    </xs:complexType> 
 
 </xs:schema>

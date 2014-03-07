@@ -13,18 +13,22 @@
         </xs:schema>
     </wsdl:types>
     
-    <wsdl:message name="getTicket">
-        <wsdl:part name="getTicket" element="tns:getTicket"/>
-    </wsdl:message>
-    
-    <wsdl:message name="getTicketResponse">
-        <wsdl:part name="getTicketResponse" element="tns:getTicketResponse"/>
-    </wsdl:message>
-        
     <wsdl:message name="ticket">
         <wsdl:part name="ticket" element="tns:ticket"/>
     </wsdl:message>
     
+    <wsdl:message name="editingTicket">
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
+    </wsdl:message>    
+    
+    <wsdl:message name="getEditingTicket">
+        <wsdl:part name="getEditingTicket" element="tns:editingTicket"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getEditingTicketResponse">
+        <wsdl:part name="getEditingTicketResponse" element="tns:getEditingTicketResponse"/>
+    </wsdl:message>
+         
     <wsdl:message name="getEntitiesFromString">
         <wsdl:part name="getEntitiesFromString" element="tns:getEntitiesFromString"/>
     </wsdl:message>
@@ -84,9 +88,9 @@
     
     <wsdl:portType name="DocumentProcessor">
         
-        <wsdl:operation name="getTicket">
-            <wsdl:input message="ws:getTicket"/>
-            <wsdl:output message="ws:getTicketResponse"/>
+        <wsdl:operation name="getEditingTicket">
+            <wsdl:input message="ws:getEditingTicket"/>
+            <wsdl:output message="ws:getEditingTicketResponse"/>
         </wsdl:operation>
 
         <wsdl:operation name="getEntitiesFromString">
@@ -130,19 +134,22 @@
     <wsdl:binding name="DocumentProcessor" type="ws:DocumentProcessor">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         
-        <wsdl:operation name="getTicket">
+        <wsdl:operation name="getEditingTicket">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getTicket"/>
             <wsdl:input>
-                <soap:body parts="getTicket" use="literal"/>
+                <soap:body parts="getEditingTicket" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body parts="getTicketResponse" use="literal"/>
+                <soap:body parts="getEditingTicketResponse" use="literal"/>
             </wsdl:output>
         </wsdl:operation>
                 
         <wsdl:operation name="getEntitiesFromString">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getEntitiesFromString"/>
             <wsdl:input>
-                <soap:body parts="getEntitiesFromString" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getEntitiesFromString" use="literal"/>                
+                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getEntitiesFromStringResponse" use="literal"/>
@@ -150,9 +157,10 @@
         </wsdl:operation>
         
         <wsdl:operation name="getEntitiesById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getEntitiesById"/>
             <wsdl:input>
                 <soap:body parts="getEntitiesById" use="literal"/>
-                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getEntitiesByIdResponse" use="literal"/>
@@ -160,9 +168,10 @@
         </wsdl:operation>
         
         <wsdl:operation name="getObjectsFromString">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getObjectsFromString"/>
             <wsdl:input>
                 <soap:body parts="getObjectsFromString" use="literal"/>
-                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectsFromStringResponse" use="literal"/>
@@ -170,9 +179,10 @@
         </wsdl:operation>
     
         <wsdl:operation name="getObjectsById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getObjectsById"/>
             <wsdl:input>
                 <soap:body parts="getObjectsById" use="literal"/>
-                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectsByIdResponse" use="literal"/>
@@ -180,9 +190,10 @@
         </wsdl:operation>
         
         <wsdl:operation name="saveProcessedDocumentFromString">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/saveProcessedDocumentFromString"/>
             <wsdl:input>
                 <soap:body parts="saveProcessedDocuemntFromString" use="literal"/>
-                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="saveProcessedDocumentFromStringResponse" use="literal"/>
@@ -190,9 +201,10 @@
         </wsdl:operation>
     
         <wsdl:operation name="saveProcessedDocumentById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/saveProcessedDocumentById"/>
             <wsdl:input>
                 <soap:body parts="saveProcessedDocumentById" use="literal"/>
-                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="saveProcessedDocumentByIdResponse" use="literal"/>
@@ -200,9 +212,10 @@
         </wsdl:operation>
     
         <wsdl:operation name="getProblems">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getProblems"/>
             <wsdl:input>
                 <soap:body parts="getProblems" use="literal"/>
-                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getProblemsResponse" use="literal"/>

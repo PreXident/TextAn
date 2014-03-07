@@ -11,13 +11,13 @@
     <xs:include schemaLocation="Ticket.xsd"/>    
     <xs:include schemaLocation="Document.xsd"/>
     
-    <xs:element name="void" type="Void"/>
-    
+    <xs:element name="getObjectTypes" type="Void"/>    
     <xs:element name="getObjectTypesResponse"/>
     
     <xs:element name="getObject" type="GetObject"/>
     <xs:element name="getObjectResponse" type="GetObjectResponse"/>
     
+    <xs:element name="getObjects" type="Void"/>
     <xs:element name="getObjectsResponse" type="GetObjectsResponse"/>
     
     <xs:element name="getObjectsByType" type="GetObjectsByType"/>
@@ -26,6 +26,7 @@
     <xs:element name="getObjectsByTypeId" type="GetObjectsByTypeId"/>
     <xs:element name="getObjectsByTypeIdResponse" type="GetObjectsByTypeIdResponse"/>
     
+    <xs:element name="getRelationTypes" type="Void"/>
     <xs:element name="getRelationTypesResponse" type="GetRelationTypesResponse"/>
     
     <xs:element name="getRelationsByType" type="GetRelationsByType"/>
@@ -55,6 +56,7 @@
     <xs:element name="updateDocument" type="UpdateDocument"/>
     <xs:element name="updateDocumentResponse" type="UpdateDocumentResponse"/>
     
+    <xs:element name="getDocuments" type="Void"/>
     <xs:element name="getDocumentsResponse" type="GetDocumentsResponse"/>
     
     <xs:element name="getDocumentById" type="GetDocumentById"/>
