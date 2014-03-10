@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.utils.Pair;
+import java.util.List;
 
 /**
  * Simple class representing marked Entity.
@@ -9,13 +10,13 @@ import cz.cuni.mff.ufal.textan.utils.Pair;
  * To get marked entities, iterate word list.
  */
 public class EntityBuilder {
-    
+
     /** Entity type id. */
     protected final int id;
 
     /** Index in the list of entities. */
     protected int index;
-    
+
     public EntityBuilder(final int id) {
         this.id = id;
     }
@@ -36,20 +37,21 @@ public class EntityBuilder {
     public int getIndex() {
         return index;
     }
-    
+
     /**
      * Checks whether this entity is nested in another one and throws exception if so.
      * @param words list of words
      * @param from starting index
      * @param to end index
+     * @throws SplitEntitiesException if entity should be split
      */
-    private void checkAdding(final Word[] words, final int from, final int to)
+    private void checkAdding(final List<Word> words, final int from, final int to)
             throws SplitEntitiesException {
-        if (from == 0 || to == words.length - 1) {
+        if (from == 0 || to == words.size() - 1) {
             return;
         }
-        final Word first = words[from - 1];
-        final Word last = words[to + 1];
+        final Word first = words.get(from - 1);
+        final Word last = words.get(to + 1);
         if (first.getEntity() == last.getEntity() && first.getEntity() != null) {
             throw new SplitEntitiesException("Split entities not supported!");
         }
@@ -67,12 +69,12 @@ public class EntityBuilder {
      * @throws SplitEntitiesException if an entity should be split
      * @see #trim(java.util.List, int, int)
      */
-    public Pair<Integer, Integer> add(final Word[] words, final int from, final int to, final IClearer clearer)
+    public Pair<Integer, Integer> add(final List<Word> words, final int from, final int to, final IClearer clearer)
             throws SplitEntitiesException {
         checkAdding(words, from, to);
         Pair<Integer, Integer> bounds = trim(words, from, to, clearer);
         for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
-            final Word word = words[i];
+            final Word word = words.get(i);
             word.setEntity(this);
         }
         return bounds;
@@ -95,28 +97,28 @@ public class EntityBuilder {
      * @param to end index (inclusive)
      * @return pair with new trimmed from and to indeces
      */
-    private Pair<Integer, Integer> trim(final Word[] words, int from, int to, final IClearer clearer) {
+    private Pair<Integer, Integer> trim(final List<Word> words, int from, int to, final IClearer clearer) {
         //clear whites before from
-        for (int i = from - 1; i >= 0 && ignore(words[i]); --i) {
-            final Word w = words[i];
+        for (int i = from - 1; i >= 0 && ignore(words.get(i)); --i) {
+            final Word w = words.get(i);
             w.setEntity(null);
             clearer.clear(i);
         }
         //clear leading whites
-        for (; from <= to && ignore(words[from]); ++from) {
-            final Word w = words[from];
+        for (; from <= to && ignore(words.get(from)); ++from) {
+            final Word w = words.get(from);
             w.setEntity(null);
             clearer.clear(from);
         }
         //clear whites after to
-        for (int i = to + 1; i < words.length && ignore(words[i]); ++i) {
-            final Word w = words[i];
+        for (int i = to + 1; i < words.size() && ignore(words.get(i)); ++i) {
+            final Word w = words.get(i);
             w.setEntity(null);
             clearer.clear(i);
         }
         //clear trailing whites
-        for (; to > from && ignore(words[to]); --to) {
-            final Word w = words[to];
+        for (; to > from && ignore(words.get(to)); --to) {
+            final Word w = words.get(to);
             w.setEntity(null);
             clearer.clear(to);
         }

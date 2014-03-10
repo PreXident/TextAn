@@ -56,7 +56,8 @@ public class ReportRelationsController extends ReportWizardController {
                 if (word.getEntity() != null) {
                     scrollPane.setTooltip(tooltip);
                     final String oldTip = scrollPane.getTooltip().getText();
-                    final cz.cuni.mff.ufal.textan.commons.models.Object obj = pipeline.getReportObjects()[word.getEntity().getIndex()];
+                    final int entityIndex = word.getEntity().getIndex();
+                    final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
                     if (obj != null) {
                         final String newTip = obj.toString();
                         if (!newTip.equals(oldTip)) {

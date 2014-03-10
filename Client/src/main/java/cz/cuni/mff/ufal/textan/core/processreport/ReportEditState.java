@@ -1,10 +1,8 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
-import cz.cuni.mff.ufal.textan.commons.models.Entity;
-import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
+import cz.cuni.mff.ufal.textan.core.Entity;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,9 +36,8 @@ final class ReportEditState extends State {
     @Override
     public void setReport(final ProcessReportPipeline pipeline, final String report) {
         pipeline.reportText = report;
-        IDocumentProcessor documentProcessor = pipeline.client.getDocumentProcessor();
-        pipeline.reportEntities = documentProcessor.getEntities(report);
-        Arrays.sort(pipeline.reportEntities, (Entity e1, Entity e2) -> e1.getPosition() - e2.getPosition());
+        pipeline.reportEntities = pipeline.client.getEntities(report);
+        pipeline.reportEntities.sort((Entity e1, Entity e2) -> e1.getPosition() - e2.getPosition());
         pipeline.reportWords = parse(report);
         assign(pipeline.reportWords, pipeline.reportEntities);
         pipeline.setState(ReportEntitiesState.getInstance());
@@ -51,26 +48,36 @@ final class ReportEditState extends State {
         return StateType.EDIT_REPORT;
     }
 
-    private void assign(final Word[] words, final Entity[] entities) {
+    /**
+     * Assigns entities to words.
+     * @param words list of words to assign to
+     * @param entities list of entities to assign
+     */
+    private void assign(final List<Word> words, final List<Entity> entities) {
         int i = 0;
         for (Entity entity : entities) {
             final EntityBuilder builder = new EntityBuilder(entity.getType());
             int entEnd = entity.getPosition() + entity.getLength();
             //find first word
-            while (i < words.length
-                    && words[i].getEnd() < entity.getPosition()) {
+            while (i < words.size()
+                    && words.get(i).getEnd() < entity.getPosition()) {
                 ++i;
             }
             //proces words in entity
-            while (i < words.length
-                    && words[i].getStart() <= entEnd) {
-                words[i].setEntity(builder);
+            while (i < words.size()
+                    && words.get(i).getStart() <= entEnd) {
+                words.get(i).setEntity(builder);
                 ++i;
             }
         }
     }
 
-    private Word[] parse(final String report) {
+    /**
+     * Creates a list of words in report.
+     * @param report report to parse
+     * @return list of words in report
+     */
+    private List<Word> parse(final String report) {
         int start = 0;
         final List<Word> words = new ArrayList<>();
         for(int i = 0; i < report.length(); ++i) {
@@ -91,6 +98,6 @@ final class ReportEditState extends State {
             final Word word  = new Word(words.size(), start, report.length(), s);
             words.add(word);
         }
-        return words.toArray(new Word[words.size()]);
+        return words;
     }
 }

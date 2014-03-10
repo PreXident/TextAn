@@ -25,7 +25,7 @@ public class DocumentProcessor implements IDocumentProcessor {
 
     @Override
     public int addDocument(String text) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 0;
     }
 
     @Override

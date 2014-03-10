@@ -1,8 +1,10 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons.models.Object;
-import cz.cuni.mff.ufal.textan.commons.models.Entity;
-import cz.cuni.mff.ufal.textan.commons.models.Relation;
+import cz.cuni.mff.ufal.textan.core.Entity;
+import cz.cuni.mff.ufal.textan.core.Object;
+import cz.cuni.mff.ufal.textan.core.Relation;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Abstract ancestor for states of {@link ProcessReportPipeline}.
@@ -74,8 +76,8 @@ public abstract class State {
      * @param pipeline pipeline delegating the request
      * @param words new report's words
      */
-    public void setReportWords(final ProcessReportPipeline pipeline, final Word[] words) {
-        throw new IllegalStateException("Cannot set report's text when in state " + getType());
+    public void setReportWords(final ProcessReportPipeline pipeline, final List<Word> words) {
+        throw new IllegalStateException("Cannot set report's words when in state " + getType());
     }
 
     /**
@@ -83,7 +85,7 @@ public abstract class State {
      * @param pipeline pipeline delegating the request
      * @param entities new entities
      */
-    public void setReportEntities(final ProcessReportPipeline pipeline, final Entity[] entities) {
+    public void setReportEntities(final ProcessReportPipeline pipeline, final List<Entity> entities) {
         throw new IllegalStateException("Cannot set report's entities when in state " + getType());
     }
 
@@ -92,7 +94,7 @@ public abstract class State {
      * @param pipeline pipeline delegating the request
      * @param objects new objects
      */
-    public void setReportObjects(final ProcessReportPipeline pipeline, final Object[] objects) {
+    public void setReportObjects(final ProcessReportPipeline pipeline, final Set<Object> objects) {
         throw new IllegalStateException("Cannot set report's objects when in state " + getType());
     }
 
@@ -101,7 +103,7 @@ public abstract class State {
      * @param pipeline pipeline delegating the request
      * @param relations new relations
      */
-    public void setReportRelations(final ProcessReportPipeline pipeline, final Relation[] relations) {
+    public void setReportRelations(final ProcessReportPipeline pipeline, final Set<Relation> relations) {
         throw new IllegalStateException("Cannot set report's relations when in state " + getType());
     }
 

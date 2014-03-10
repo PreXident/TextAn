@@ -1,8 +1,9 @@
 package cz.cuni.mff.ufal.textan.core.graph;
 
-import cz.cuni.mff.ufal.textan.commons.models.Graph;
-import cz.cuni.mff.ufal.textan.commons.models.Object;
 import cz.cuni.mff.ufal.textan.core.Client;
+import cz.cuni.mff.ufal.textan.core.Graph;
+import cz.cuni.mff.ufal.textan.core.Object;
+import java.util.Set;
 
 /**
  * Provides information about graphs.
@@ -19,12 +20,12 @@ public class Grapher {
         this.client = client;
     }
 
-    public Object[] getObjects() {
-        return client.getDataProvider().getObjects();
+    public Set<Object> getObjects() {
+        return client.getObjectsSet();
     }
 
     public Graph getGraph() {
-        return client.getDataProvider().getGraphByID(rootId, distance);
+        return client.getGraph(rootId, distance);
     }
 
     public void setDistance(int distance) {

@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons.models.Relation;
+import cz.cuni.mff.ufal.textan.core.Relation;
+import java.util.Set;
 
 /**
  * {@link ProcessReportPipeline}'s {@link State} for editing the report's relations.
@@ -36,12 +37,13 @@ final class ReportRelationsState extends State {
     }
 
     @Override
-    public void setReportRelations(final ProcessReportPipeline pipeline, final Relation[] relations) {
+    public void setReportRelations(final ProcessReportPipeline pipeline, final Set<Relation> relations) {
         pipeline.reportRelations = relations;
-        //TODO save document, what ID?
-        pipeline.client.getDocumentProcessor().saveProcessedDocument(
-                -1, pipeline.reportObjects, pipeline.reportRelations,
-                pipeline.ticket, false);
+        pipeline.client.saveProcessedDocument(
+                pipeline.getReportText(),
+                pipeline.reportEntities,
+                pipeline.reportRelations,
+                pipeline.ticket);
         pipeline.setState(DoneState.getInstance());
     }
 }
