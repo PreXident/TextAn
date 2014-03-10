@@ -59,7 +59,10 @@ task wsdl2java {
         wsdlFiles = ['src/resources/wsdl/DocumentProcessor.wsdl', 'src/resources/wsdl/DataProvider.wsdl']
         outputDir = file "$buildDir/generated-src/cxf"
         //TODO: somehow add custom params to each input file
-        customParams = [ '-b', file("$projectDir/src/resources/customizations/bindings.xml") ]
+        customParams = [
+            '-b', file("$projectDir/src/resources/customizations/bindings.xml"),
+            '-exsh', 'true' //portable to other jax-ws providers!
+        ]
     }
 
     //register the output directory as a source directory for compilation
@@ -88,7 +91,7 @@ task wsdl2java {
                 main = 'org.apache.cxf.tools.wsdlto.WSDLToJava'
 
                 args '-d', outputDir
-                args '-client'
+                args '-all'
                 args '-verbose'
                 args '-validate'
 

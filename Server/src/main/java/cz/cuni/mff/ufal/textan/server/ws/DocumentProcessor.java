@@ -1,60 +1,53 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
-import cz.cuni.mff.ufal.textan.commons_old.models.Entity;
-import cz.cuni.mff.ufal.textan.commons_old.models.Object;
-import cz.cuni.mff.ufal.textan.commons_old.models.Relation;
-import cz.cuni.mff.ufal.textan.commons_old.models.Ticket;
-import cz.cuni.mff.ufal.textan.commons_old.ws.IDocumentProcessor;
-import javax.jws.WebService;
+
+import cz.cuni.mff.ufal.textan.commons.models.*;
+
+import javax.jws.WebParam;
+import java.util.List;
 
 /**
  * For now only mocking document processing.
  */
-@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons_old.ws.IDocumentProcessor", serviceName = "DocumentProcessor", targetNamespace = "http://server.textan.ufal.mff.cuni.cz")
-public class DocumentProcessor implements IDocumentProcessor {
+public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.DocumentProcessor {
 
     @Override
-    public Ticket getTicket(String username) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<GetObjectsFromStringResponse.Assignment> getObjectsFromString(@WebParam(name = "text", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") String text, @WebParam(name = "entities", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetObjectsFromString.Entities entities, @WebParam(name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+        return null;
     }
 
     @Override
-    public int addDocument(String text) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean saveProcessedDocumentById(@WebParam(name = "documentId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") int documentId, @WebParam(name = "objects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") SaveProcessedDocumentById.Objects objects, @WebParam(name = "relations", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") SaveProcessedDocumentById.Relations relations, @WebParam(name = "force", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") boolean force, @WebParam(name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+        return false;
     }
 
     @Override
-    public void updateDocument(String text, int documentId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void getProblems(@WebParam(name = "documentId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") int documentId, @WebParam(name = "objects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetProblems.Objects objects, @WebParam(name = "relations", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetProblems.Relations relations, @WebParam(name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+
     }
 
     @Override
-    public Entity[] getEntities(String text) {
-        return new Entity[] { new Entity(text, 0, text.length(), 0) };
+    public List<GetObjectsByIdResponse.Assignment> getObjectsById(@WebParam(name = "id", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") int id, @WebParam(name = "entities", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetObjectsById.Entities entities, @WebParam(name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+        return null;
     }
 
     @Override
-    public Entity[] getEntitiesById(int documentId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public GetEntitiesFromStringResponse getEntitiesFromString(@WebParam(partName = "getEntitiesFromString", name = "getEntitiesFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetEntitiesFromString getEntitiesFromString, @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+        return null;
     }
 
     @Override
-    public Object[] getObjects(String text, Entity[] entities) {
-        return new Object[entities.length];
+    public GetEntitiesByIdResponse getEntitiesById(@WebParam(partName = "getEntitiesById", name = "getEntitiesById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetEntitiesById getEntitiesById, @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+        return null;
     }
 
     @Override
-    public Entity[] getObjectsById(int documentId, Entity[] entities) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override
-    public void saveProcessedDocument(int documentId, Object[] objects, Relation[] relations, Ticket ticket, boolean force) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean saveProcessedDocumentFromString(@WebParam(name = "text", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") String text, @WebParam(name = "objects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") SaveProcessedDocumentFromString.Objects objects, @WebParam(name = "relations", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") SaveProcessedDocumentFromString.Relations relations, @WebParam(name = "force", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") boolean force, @WebParam(name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+        return false;
     }
 
     @Override
-    public void getProblems(int documentId, Object[] objects, Relation[] relations, Ticket ticket) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public GetEditingTicketResponse getEditingTicket(@WebParam(partName = "getEditingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") EditingTicket getEditingTicket, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+        return null;
     }
 }

@@ -1,129 +1,100 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
-import cz.cuni.mff.ufal.textan.commons_old.models.Graph;
-import cz.cuni.mff.ufal.textan.commons_old.models.Object;
-import cz.cuni.mff.ufal.textan.commons_old.models.ObjectType;
-import cz.cuni.mff.ufal.textan.commons_old.models.Relation;
-import cz.cuni.mff.ufal.textan.commons_old.models.RelationType;
-import cz.cuni.mff.ufal.textan.commons_old.ws.IDataProvider;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.jws.WebService;
+
+import cz.cuni.mff.ufal.textan.commons.models.*;
+import cz.cuni.mff.ufal.textan.commons.models.Object;
+import cz.cuni.mff.ufal.textan.commons.models.Void;
+import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
+
+import javax.jws.WebParam;
 
 /**
  * For now only mocking database access.
  */
-@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons_old.ws.IDataProvider", serviceName = "DataProvider", targetNamespace = "http://server.textan.ufal.mff.cuni.cz")
-public class DataProvider implements IDataProvider {
+public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.DataProvider {
 
-    private final List<ObjectType> objectTypes = Arrays.asList(
-            new ObjectType(0, "Person"),
-            new ObjectType(1, "Gun")
-    );
-    private final List<Object> objects =  Arrays.asList(
-            new Object(0, objectTypes.get(0), new ArrayList<>(Arrays.asList("Pepa"))),
-            new Object(1, objectTypes.get(1), new ArrayList<>(Arrays.asList("flinta"))),
-            new Object(2, objectTypes.get(0), new ArrayList<>(Arrays.asList("Franta")))
-    );
-
-    private final List<RelationType> relationTypes = Arrays.asList(
-            new RelationType(0, "vlastnit"),
-            new RelationType(0, "zabit")
-    );
-
-    private final ArrayList<Relation> relations = new ArrayList<>();
-
-    public DataProvider() {
-        Relation relation = new Relation(0, relationTypes.get(0));
-        relation.getObjectInRelationIds().add(0);
-        relation.getObjectInRelationIds().add(1);
-        relations.add(relation);
-
-        relation = new Relation(1, relationTypes.get(1));
-        relation.getObjectInRelationIds().add(0);
-        relation.getObjectInRelationIds().add(1);
-        relation.getObjectInRelationIds().add(2);
-        relations.add(relation);
+    @Override
+    public GetObjectsResponse getObjects(@WebParam(partName = "getObjects", name = "getObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") Void getObjects, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+        return null;
     }
 
     @Override
-    public ObjectType[] getObjectTypes() {
-        return objectTypes.toArray(new ObjectType[objectTypes.size()]);
+    public boolean updateDocument(@WebParam(name = "text", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") String text, @WebParam(name = "documentId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") int documentId, @WebParam(name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+        return false;
     }
 
     @Override
-    public Object getObject(int objectId) {
-        return objects.get(objectId);
+    public Object getObjectTypes(@WebParam(partName = "getObjectTypes", name = "getObjectTypes", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") Void getObjectTypes, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+        return null;
     }
 
     @Override
-    public Object[] getObjects() {
-        return objects.toArray(new Object[objects.size()]);
+    public GetDocumentByIdResponse getDocumentById(@WebParam(partName = "getDocumentById", name = "getDocumentById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetDocumentById getDocumentById, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) throws IdNotFoundException {
+        return null;
     }
 
     @Override
-    public Object[] getObjectsByType(ObjectType objectType) {
-        return getObjectsByTypeId(objectType.getId());
+    public GetRelationTypesResponse getRelationTypes(@WebParam(partName = "getRelationTypes", name = "getRelationTypes", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") Void getRelationTypes, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+        return null;
     }
 
     @Override
-    public Object[] getObjectsByTypeId(int objectTypeId) {
-        return (Object[]) objects.stream().filter(e -> e.getType().getId() == objectTypeId).toArray();
+    public GetGraphByIdResponse getGraphById(@WebParam(partName = "getGraphById", name = "getGraphById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetGraphById getGraphById, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) throws IdNotFoundException {
+        return null;
     }
 
     @Override
-    public RelationType[] getRelationTypes() {
-        return relationTypes.toArray(new RelationType[relationTypes.size()]);
+    public GetRelationsByTypeIdResponse getRelatedObjectsById(@WebParam(partName = "getRelatedObjectsById", name = "getRelatedObjectsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetRelatedObjectsById getRelatedObjectsById, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) throws IdNotFoundException {
+        return null;
     }
 
     @Override
-    public Relation[] getRelations() {
-        return relations.toArray(new Relation[relations.size()]);
+    public GetObjectsByTypeResponse getObjectsByType(@WebParam(partName = "getObjectsByType", name = "getObjectsByType", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetObjectsByType getObjectsByType, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+        return null;
     }
 
     @Override
-    public Relation[] getRelationsByType(RelationType relationType) {
-        return (Relation[]) relations.stream().filter(e -> e.getType().equals(relationType)).toArray();
+    public int addDocument(@WebParam(name = "text", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") String text, @WebParam(name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+        return 0;
     }
 
     @Override
-    public Graph getGraph(Object center, int distance) {
-        return getGraphByID(center.getId(), distance);
+    public boolean splitObject(@WebParam(name = "objectId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") int objectId, @WebParam(name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+        return false;
     }
 
     @Override
-    public Graph getGraphByID(int centerId, int distance) {
-        return new Graph(objects, relations);
+    public GetPathByIdResponse getPathById(@WebParam(partName = "getPathById", name = "getPathById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetPathById getPathById, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) throws IdNotFoundException {
+        return null;
     }
 
     @Override
-    public Graph getRelatedObjects(Object object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void getDocuments(@WebParam(name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+
     }
 
     @Override
-    public Graph getRelatedObjectsByID(int objectId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public GetRelationsByTypeResponse getRelationsByType(@WebParam(partName = "getRelationsByType", name = "getRelationsByType", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetRelationsByType getRelationsByType, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+        return null;
     }
 
     @Override
-    public Graph getPath(Object from, Object to) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public GetRelationsByTypeIdResponse getRelationsByTypeId(@WebParam(partName = "getRelationsByTypeId", name = "getRelationsByTypeId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetRelationsByTypeId getRelationsByTypeId, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) throws IdNotFoundException {
+        return null;
     }
 
     @Override
-    public Graph getPathByID(int fromId, int toId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public GetObjectsByTypeIdResponse getObjectsByTypeId(@WebParam(partName = "getObjectsByTypeId", name = "getObjectsByTypeId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetObjectsByTypeId getObjectsByTypeId, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) throws IdNotFoundException {
+        return null;
     }
 
     @Override
-    public Object mergeObjects(int object1Id, int object2Id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public GetObjectResponse getObject(@WebParam(partName = "getObject", name = "getObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetObject getObject, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) throws IdNotFoundException {
+        return null;
     }
 
     @Override
-    public Boolean splitObject(int objectId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public MergeObjectsResponse mergeObjects(@WebParam(partName = "mergeObjects", name = "mergeObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") MergeObjects mergeObjects, @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+        return null;
     }
 }
