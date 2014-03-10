@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
-import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
+import cz.cuni.mff.ufal.textan.commons_old.ws.IDataProvider;
+import cz.cuni.mff.ufal.textan.commons_old.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import java.net.MalformedURLException;

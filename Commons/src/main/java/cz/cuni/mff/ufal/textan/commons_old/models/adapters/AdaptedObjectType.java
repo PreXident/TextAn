@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.commons.models.adapters;
+package cz.cuni.mff.ufal.textan.commons_old.models.adapters;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

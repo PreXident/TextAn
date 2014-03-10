@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons.models.Relation;
+import cz.cuni.mff.ufal.textan.commons_old.models.Relation;
 
 /**
  * {@link ProcessReportPipeline}'s {@link State} for editing the report's relations.

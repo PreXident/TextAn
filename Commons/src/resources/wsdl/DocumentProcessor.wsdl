@@ -88,7 +88,7 @@
     
     <wsdl:portType name="DocumentProcessor">
         
-        <wsdl:operation name="getEditingTicket">
+        <wsdl:operation name="getEditingTicket">            
             <wsdl:input message="ws:getEditingTicket"/>
             <wsdl:output message="ws:getEditingTicketResponse"/>
         </wsdl:operation>

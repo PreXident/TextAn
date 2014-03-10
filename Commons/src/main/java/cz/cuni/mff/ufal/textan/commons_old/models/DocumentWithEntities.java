@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.commons.models;
+package cz.cuni.mff.ufal.textan.commons_old.models;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;

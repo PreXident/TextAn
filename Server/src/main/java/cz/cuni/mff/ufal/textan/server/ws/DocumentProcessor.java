@@ -1,16 +1,16 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
-import cz.cuni.mff.ufal.textan.commons.models.Entity;
-import cz.cuni.mff.ufal.textan.commons.models.Object;
-import cz.cuni.mff.ufal.textan.commons.models.Relation;
-import cz.cuni.mff.ufal.textan.commons.models.Ticket;
-import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
+import cz.cuni.mff.ufal.textan.commons_old.models.Entity;
+import cz.cuni.mff.ufal.textan.commons_old.models.Object;
+import cz.cuni.mff.ufal.textan.commons_old.models.Relation;
+import cz.cuni.mff.ufal.textan.commons_old.models.Ticket;
+import cz.cuni.mff.ufal.textan.commons_old.ws.IDocumentProcessor;
 import javax.jws.WebService;
 
 /**
  * For now only mocking document processing.
  */
-@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor", serviceName = "DocumentProcessor", targetNamespace = "http://server.textan.ufal.mff.cuni.cz")
+@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons_old.ws.IDocumentProcessor", serviceName = "DocumentProcessor", targetNamespace = "http://server.textan.ufal.mff.cuni.cz")
 public class DocumentProcessor implements IDocumentProcessor {
 
     @Override

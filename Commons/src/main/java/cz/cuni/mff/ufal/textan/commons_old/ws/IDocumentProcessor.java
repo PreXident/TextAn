@@ -1,7 +1,7 @@
-package cz.cuni.mff.ufal.textan.commons.ws;
+package cz.cuni.mff.ufal.textan.commons_old.ws;
 
-import cz.cuni.mff.ufal.textan.commons.models.*;
-import cz.cuni.mff.ufal.textan.commons.models.Object;
+import cz.cuni.mff.ufal.textan.commons_old.models.*;
+import cz.cuni.mff.ufal.textan.commons_old.models.Object;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -50,7 +50,7 @@ public interface IDocumentProcessor {
     /**
      * Find entities in a document.
      * @param text text of the document
-     * @return array of entities ({@link cz.cuni.mff.ufal.textan.commons.models.Entity}) found in the document
+     * @return array of entities ({@link cz.cuni.mff.ufal.textan.commons_old.models.Entity}) found in the document
      */
     @WebMethod(operationName = "getEntitiesFromString")
     public Entity[] getEntities(@WebParam(name = "text") String text);
@@ -58,7 +58,7 @@ public interface IDocumentProcessor {
     /**
      * Find entities in a document.
      * @param documentId id of document saved in the system
-     * @return array of entities ({@link cz.cuni.mff.ufal.textan.commons.models.Entity}) found in the document
+     * @return array of entities ({@link cz.cuni.mff.ufal.textan.commons_old.models.Entity}) found in the document
      */
     @WebMethod
     public Entity[] getEntitiesById(@WebParam(name = "documentId") int documentId);
@@ -69,7 +69,7 @@ public interface IDocumentProcessor {
      * Assigns objects to entities in a document. The best match is used.
      * @param text text of the document
      * @param entities entities in the document
-     * @return array of objects ({@link cz.cuni.mff.ufal.textan.commons.models.Object}) assigned to entities
+     * @return array of objects ({@link cz.cuni.mff.ufal.textan.commons_old.models.Object}) assigned to entities
      */
     @WebMethod(operationName = "getObjectsFromString")
     public Object[] getObjects(@WebParam(name = "text") String text, @WebParam(name = "entities") Entity[] entities);
@@ -78,7 +78,7 @@ public interface IDocumentProcessor {
      * Assigns objects to entities in a document. The best match is used.
      * @param documentId id of document saved in the system
      * @param entities entities in the document
-     * @return array of objects ({@link cz.cuni.mff.ufal.textan.commons.models.Object}) assigned to entities
+     * @return array of objects ({@link cz.cuni.mff.ufal.textan.commons_old.models.Object}) assigned to entities
      */
     @WebMethod
     public Entity[] getObjectsById(@WebParam(name = "documentId") int documentId, @WebParam(name = "entities") Entity[] entities);

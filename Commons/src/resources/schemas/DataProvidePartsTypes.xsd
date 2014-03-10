@@ -62,6 +62,8 @@
     <xs:element name="getDocumentById" type="GetDocumentById"/>
     <xs:element name="getDocumentByIdResponse" type="GetDocumentByIdResponse"/>
     
+    <xs:element name="idNotFoundException" type="IdNotFoundException"></xs:element>
+    
     <!-- type for messages without parameters -->
     <xs:complexType name="Void">
         <xs:sequence/>
@@ -256,5 +258,14 @@
             <xs:element ref="document"></xs:element>
         </xs:sequence>
     </xs:complexType>
+    
+    <!--idNotFoundException-->
+    <xs:complexType name="IdNotFoundException">
+        <xs:sequence>
+            <xs:element name="varString" nillable="true" type="xs:string"/>
+            <xs:element name="varInt" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    
     
 </xs:schema>

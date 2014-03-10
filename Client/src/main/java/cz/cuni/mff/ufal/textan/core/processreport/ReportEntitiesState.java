@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons.models.Entity;
+import cz.cuni.mff.ufal.textan.commons_old.models.Entity;
 import java.util.ArrayList;
 import java.util.List;
 

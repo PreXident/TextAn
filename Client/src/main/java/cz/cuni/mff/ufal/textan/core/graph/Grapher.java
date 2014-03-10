@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.graph;
 
-import cz.cuni.mff.ufal.textan.commons.models.Graph;
-import cz.cuni.mff.ufal.textan.commons.models.Object;
+import cz.cuni.mff.ufal.textan.commons_old.models.Graph;
+import cz.cuni.mff.ufal.textan.commons_old.models.Object;
 import cz.cuni.mff.ufal.textan.core.Client;
 
 /**

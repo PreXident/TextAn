@@ -1,6 +1,6 @@
-package cz.cuni.mff.ufal.textan.commons.models;
+package cz.cuni.mff.ufal.textan.commons_old.models;
 
-import cz.cuni.mff.ufal.textan.commons.models.adapters.RelationAdapter;
+import cz.cuni.mff.ufal.textan.commons_old.models.adapters.RelationAdapter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

@@ -1,6 +1,6 @@
-package cz.cuni.mff.ufal.textan.commons.models.adapters;
+package cz.cuni.mff.ufal.textan.commons_old.models.adapters;
 
-import cz.cuni.mff.ufal.textan.commons.models.Ticket;
+import cz.cuni.mff.ufal.textan.commons_old.models.Ticket;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**

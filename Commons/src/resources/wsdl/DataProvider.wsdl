@@ -90,7 +90,7 @@
     </wsdl:message>
     
     <wsdl:message name="getRelatedObjectsById">
-        <wsdl:part name="getRelatedObjectsById" element="tns:getRelationsByTypeId"/>
+        <wsdl:part name="getRelatedObjectsById" element="tns:getRelatedObjectsById"/>
     </wsdl:message>
     
     <wsdl:message name="getRelatedObjectsByIdResponse">
@@ -154,6 +154,10 @@
         <wsdl:part name="getDocumentByIdResponse" element="tns:getDocumentByIdResponse"/>        
     </wsdl:message>
     
+    <wsdl:message name="idNotFoundException">
+        <wsdl:part name="idNotFoundException" element="tns:idNotFoundException"/>
+    </wsdl:message>
+    
     <wsdl:portType name="DataProvider">
         
         <wsdl:operation name="getObjectTypes">
@@ -164,6 +168,7 @@
         <wsdl:operation name="getObject">
             <wsdl:input message="ws:getObject"/>
             <wsdl:output message="ws:getObjectResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
                 
         <wsdl:operation name="getObjects">
@@ -178,7 +183,8 @@
                 
         <wsdl:operation name="getObjectsByTypeId">
             <wsdl:input message="ws:getObjectsByTypeId"/>
-            <wsdl:output message="ws:getObjectsByTypeIdResponse"/>
+            <wsdl:output message="ws:getObjectsByTypeIdResponse"/>            
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
     
         <wsdl:operation name="getRelationTypes">
@@ -193,22 +199,26 @@
         
         <wsdl:operation name="getRelationsByTypeId">
             <wsdl:input message="ws:getRelationsByTypeId"/>
-            <wsdl:output message="ws:getRelationsByTypeIdResponse"/>
+            <wsdl:output message="ws:getRelationsByTypeIdResponse"/>            
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="getGraphById">
             <wsdl:input message="ws:getGraphById"/>
-            <wsdl:output message="ws:getGraphByIdResponse"/>
+            <wsdl:output message="ws:getGraphByIdResponse"/>            
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="getRelatedObjectsById">
             <wsdl:input message="ws:getRelatedObjectsById"/>
-            <wsdl:output message="ws:getRelatedObjectsByIdResponse"/>
+            <wsdl:output message="ws:getRelatedObjectsByIdResponse"/>            
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="getPathById">
             <wsdl:input message="ws:getPathById"/>
-            <wsdl:output message="ws:getPathByIdResponse"/>
+            <wsdl:output message="ws:getPathByIdResponse"/>            
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
     
         <wsdl:operation name="mergeObjects">
@@ -238,7 +248,8 @@
         
         <wsdl:operation name="getDocumentById">
             <wsdl:input message="ws:getDocumentById"/>
-            <wsdl:output message="ws:getDocumentByIdResponse"/>
+            <wsdl:output message="ws:getDocumentByIdResponse"/>            
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
     </wsdl:portType>
@@ -254,6 +265,17 @@
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectTypesResponse" use="literal"/>
+            </wsdl:output>            
+        </wsdl:operation>
+        
+        <wsdl:operation name="getObjects">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjects"/>
+            <wsdl:input>
+                <soap:body parts="getObjects" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getObjectsResponse" use="literal"/>
             </wsdl:output>
         </wsdl:operation>
         
@@ -261,10 +283,14 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObject"/>
             <wsdl:input>
                 <soap:body parts="getObject" use="literal"/>
+                <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
         
         <wsdl:operation name="getObjectsByType">
@@ -287,6 +313,9 @@
             <wsdl:output>
                 <soap:body parts="getObjectsByTypeIdResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
         
         <wsdl:operation name="getRelationTypes">
@@ -320,6 +349,9 @@
             <wsdl:output>
                 <soap:body parts="getRelationsByTypeIdResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
     
         <wsdl:operation name="getGraphById">
@@ -331,6 +363,9 @@
             <wsdl:output>
                 <soap:body parts="getGraphByIdResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
     
         <wsdl:operation name="getRelatedObjectsById">
@@ -342,6 +377,9 @@
             <wsdl:output>
                 <soap:body parts="getRelatedObjectsByIdResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
     
         <wsdl:operation name="getPathById">
@@ -353,6 +391,9 @@
             <wsdl:output>
                 <soap:body parts="getPathByIdResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
         
         <wsdl:operation name="mergeObjects">
@@ -419,6 +460,9 @@
             <wsdl:output>
                 <soap:body parts="getDocumentByIdResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
     </wsdl:binding>
     
