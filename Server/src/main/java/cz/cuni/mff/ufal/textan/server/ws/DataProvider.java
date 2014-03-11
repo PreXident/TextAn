@@ -17,7 +17,7 @@ import javax.jws.WebParam;
         serviceName = "DataProviderService",
         portName = "DataProviderWS",
         targetNamespace = "http://ws.commons.textan.ufal.mff.cuni.cz",
-        //wsdlLocation = "DataProvider.wsdl", //TODO: what is right path to wsdl?!
+        wsdlLocation = "classpath:wsdl/DataProvider.wsdl",
         endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.DataProvider")
 public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.DataProvider {
 

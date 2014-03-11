@@ -56,11 +56,11 @@ task wsdl2java {
     compileJava.dependsOn name
 
     ext {
-        wsdlFiles = ['src/resources/wsdl/DocumentProcessor.wsdl', 'src/resources/wsdl/DataProvider.wsdl']
+        wsdlFiles = ['src/main/resources/wsdl/DocumentProcessor.wsdl', 'src/main/resources/wsdl/DataProvider.wsdl']
         outputDir = file "$buildDir/generated-src/cxf"
         //TODO: somehow add custom params to each input file
         customParams = [
-            '-b', file("$projectDir/src/resources/customizations/bindings.xml"),
+            '-b', file("$projectDir/src/main/resources/customizations/bindings.xml"),
             '-exsh', 'true' //not portable to other jax-ws providers!
         ]
     }

@@ -15,7 +15,7 @@ import java.util.List;
         serviceName = "DocumentProcessorService",
         portName = "DocumentProcessor",
         targetNamespace = "http://ws.commons.textan.ufal.mff.cuni.cz",
-        //wsdlLocation = "/wsdl/DocumentProcessor.wsdl", //TODO: what is right path to wsdl?!
+        wsdlLocation = "classpath:wsdl/DocumentProcessor.wsdl",
         endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.DocumentProcessor")
 public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.DocumentProcessor {
 
