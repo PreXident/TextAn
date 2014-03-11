@@ -123,6 +123,10 @@
     
     <wsdl:message name="getDocuments">
         <wsdl:part name="getDocuments" element="tns:getDocuments"/>
+    </wsdl:message>    
+    
+    <wsdl:message name="getDocumentsResponse">
+        <wsdl:part name="getDocumentsResponse" element="tns:getDocumentsResponse"/>
     </wsdl:message>
 
     <wsdl:message name="addDocument">
@@ -140,12 +144,7 @@
     <wsdl:message name="updateDocumentResponse">
         <wsdl:part name="updateDocumentResponse" element="tns:updateDocumentResponse"/>
     </wsdl:message>
-    
-    
-    <wsdl:message name="getDocumentsResponse">
-        <wsdl:part name="getDocumentsResponse" element="tns:getDocumentsResponse"/>
-    </wsdl:message>
-    
+        
     <wsdl:message name="getDocumentById">
         <wsdl:part name="getDocumentById" element="tns:getDocumentById"/>        
     </wsdl:message>
@@ -243,7 +242,7 @@
                 
         <wsdl:operation name="getDocuments">
             <wsdl:input message="ws:getDocuments"/>
-            <wsdl:output message="ws:getDocuments"/>
+            <wsdl:output message="ws:getDocumentsResponse"/>
         </wsdl:operation>
         
         <wsdl:operation name="getDocumentById">
@@ -447,7 +446,7 @@
                 <soap:header message="ws:ticket" use="literal" part="ticket"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body parts="getDocuments" use="literal"/>
+                <soap:body parts="getDocumentsResponse" use="literal"/>
             </wsdl:output>
         </wsdl:operation>
     
@@ -467,7 +466,7 @@
     </wsdl:binding>
     
     <wsdl:service name="DataProviderService">
-        <wsdl:port name="DataPtoviderWS" binding="ws:DataProvider">
+        <wsdl:port name="DataProviderWS" binding="ws:DataProvider">
             <soap:address location="http://localhost:9100/soap/DataProvider"/>
         </wsdl:port>
     </wsdl:service>

@@ -61,7 +61,7 @@ task wsdl2java {
         //TODO: somehow add custom params to each input file
         customParams = [
             '-b', file("$projectDir/src/resources/customizations/bindings.xml"),
-            '-exsh', 'true' //portable to other jax-ws providers!
+            '-exsh', 'true' //not portable to other jax-ws providers!
         ]
     }
 
@@ -94,6 +94,7 @@ task wsdl2java {
                 args '-all'
                 args '-verbose'
                 args '-validate'
+                args '-mark-generated'
 
                 customParams.each { param ->
                     args param
