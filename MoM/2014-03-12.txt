@@ -1,0 +1,14 @@
+Venca is missing.
+
+Peter
+- wsdl and generating the classes from it are done
+
+Adam
+- added additional layer between client and webservices
+
+Kuba
+- WiP connecting nametag to server
+
+Tam
+- ranking seems to be working
+- struggling with git
