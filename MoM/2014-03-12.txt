@@ -2,6 +2,7 @@ Venca is missing.
 
 Peter
 - wsdl and generating the classes from it are done
+- skeleton class for webservices
 
 Adam
 - added additional layer between client and webservices
@@ -12,3 +13,11 @@ Kuba
 Tam
 - ranking seems to be working
 - struggling with git
+
+HWK:
+- Adam graph interactivity, relation editing, adapt client webserice layer to the new one
+- Peter merge commons-models to master, Adam merge to client and back to master
+- Peter implement connection between server and db
+- Tam push classifier to github
+
+Next meeting - Wednesday from 14:30
