@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
-import cz.cuni.mff.ufal.textan.commons.models.Relation;
-import cz.cuni.mff.ufal.textan.commons.models.RelationType;
+import cz.cuni.mff.ufal.textan.commons_old.models.Relation;
+import cz.cuni.mff.ufal.textan.commons_old.models.RelationType;
 
 /**
  * Simple descendant of {@link Relation} for displaying in pseudo hypergraphs.

@@ -20,10 +20,8 @@ public class AppConfig {
         return new Data();
     }
 
-    /*
-    @Bean
-    public DataProviderService dataProviderService() {
-        return new  DataProviderService(dataSource());
-    }
-    */
+//    @Bean
+//    public DataProviderService dataProviderService() {
+//        return new  DataProviderService(dataSource());
+//    }
 }

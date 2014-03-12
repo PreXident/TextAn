@@ -1,8 +1,8 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons.models.Object;
-import cz.cuni.mff.ufal.textan.commons.models.Entity;
-import cz.cuni.mff.ufal.textan.commons.models.Relation;
+import cz.cuni.mff.ufal.textan.commons_old.models.Object;
+import cz.cuni.mff.ufal.textan.commons_old.models.Entity;
+import cz.cuni.mff.ufal.textan.commons_old.models.Relation;
 
 /**
  * Abstract ancestor for states of {@link ProcessReportPipeline}.

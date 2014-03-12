@@ -2,9 +2,9 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 
 import PretopoVisual.Jung.BasicHypergraphRenderer;
 import PretopoVisual.Jung.PseudoHypergraph;
-import cz.cuni.mff.ufal.textan.commons.models.Object;
-import cz.cuni.mff.ufal.textan.commons.models.ObjectType;
-import cz.cuni.mff.ufal.textan.commons.models.Relation;
+import cz.cuni.mff.ufal.textan.commons_old.models.Object;
+import cz.cuni.mff.ufal.textan.commons_old.models.ObjectType;
+import cz.cuni.mff.ufal.textan.commons_old.models.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;

@@ -1,8 +1,8 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
-import cz.cuni.mff.ufal.textan.commons.models.Entity;
-import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
+import cz.cuni.mff.ufal.textan.commons_old.models.Entity;
+import cz.cuni.mff.ufal.textan.commons_old.ws.IDocumentProcessor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

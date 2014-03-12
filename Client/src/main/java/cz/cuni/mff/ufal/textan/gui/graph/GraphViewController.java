@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
-import cz.cuni.mff.ufal.textan.commons.models.Graph;
+import cz.cuni.mff.ufal.textan.commons_old.models.Graph;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import java.net.URL;
 import java.util.ResourceBundle;

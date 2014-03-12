@@ -21,7 +21,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 public class AppEntry {
 
-    private static Logger LOG = LoggerFactory.getLogger(AppEntry.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AppEntry.class);
 
     public static void main(String[] args) throws Exception {
 

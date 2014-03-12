@@ -19,7 +19,7 @@ dependencies {
 
     //spring
     compile (group: 'org.springframework', name: 'spring-context', version: '4.0.2.RELEASE') {
-        exclude group: 'commons-logging', module: 'commons-logging' // we want to use SLF4J for logging
+        exclude group: 'commons_old-logging', module: 'commons_old-logging' // we want to use SLF4J for logging
     }
     compile group: 'org.springframework', name: 'spring-web', version: '4.0.2.RELEASE'
 

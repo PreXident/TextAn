@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import cz.cuni.mff.ufal.textan.commons.models.ObjectType;
+import cz.cuni.mff.ufal.textan.commons_old.models.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder.SplitEntitiesException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.Node;

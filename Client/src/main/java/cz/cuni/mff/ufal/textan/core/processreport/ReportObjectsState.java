@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons.models.Object;
+import cz.cuni.mff.ufal.textan.commons_old.models.Object;
 
 /**
  * {@link ProcessReportPipeline}'s {@link State} for editing the report's objects.
