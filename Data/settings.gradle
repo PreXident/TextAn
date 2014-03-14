@@ -1,3 +1,3 @@
 rootProject.name = 'TextAn.Data'
-include ':Commons'
-project(':Commons').projectDir = new File('../Commons')
+//include ':Commons'
+//project(':Commons').projectDir = new File('../Commons')

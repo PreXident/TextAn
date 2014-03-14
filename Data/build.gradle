@@ -1,10 +1,6 @@
 apply plugin: 'java'
-apply plugin: 'application' 
 
-sourceCompatibility = '1.7'
-defaultTasks 'run'
-
-mainClassName = 'cz.cuni.mff.ufal.textan.data.test.DataTest'
+sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
@@ -16,13 +12,22 @@ dependencies {
 
     // mysql connector
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.28'
+
+    compile group:'commons-dbcp', name:'commons-dbcp', version: '1.2.2'
+
+
+    //spring
+    compile (group: 'org.springframework', name: 'spring-context', version: '4.0.2.RELEASE') {
+        exclude group: 'commons-logging', module: 'commons-logging' // we want to use SLF4J for logging
+    }
+    compile group: 'org.springframework', name: 'spring-orm', version: '4.0.2.RELEASE'
     
     //logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.5'
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.5' //TODO: Change to log4j or something like that
     //runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.5' //wrapper for spring
 
-    compile project(':Commons')
+    //compile project(':Commons')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
 }
