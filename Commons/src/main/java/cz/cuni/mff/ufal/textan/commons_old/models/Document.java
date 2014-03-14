@@ -1,10 +1,8 @@
-package cz.cuni.mff.ufal.textan.commons;
+package cz.cuni.mff.ufal.textan.commons_old.models;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.*;
 
-/**
+/*
  * User: Petr Fanta
  * Date: 19.11.13
  * Time: 22:09
@@ -13,10 +11,10 @@ import javax.xml.bind.annotation.XmlTransient;
 /**
  * Base class for Document data model.
  */
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlRootElement
 public class Document {
 
-    @XmlElement
     private String text;
 
     public Document() {}
@@ -29,7 +27,6 @@ public class Document {
      * Gets text of document.
      * @return text The text of document.
      */
-    @XmlTransient
     public String getText() {
         return text;
     }

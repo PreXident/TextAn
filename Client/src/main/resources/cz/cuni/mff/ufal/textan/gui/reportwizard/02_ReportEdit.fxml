@@ -24,8 +24,8 @@
 	</center>
 	<bottom>
 		<HBox alignment="CENTER_RIGHT" >
-			<Button text="Zrušit" onAction="#cancel"/>
-			<Button text="Pokračovat" onAction="#next"/>
+			<Button text="%cancel" onAction="#cancel"/>
+			<Button text="%continue" onAction="#next"/>
 		</HBox>
 	</bottom>
 </BorderPane>

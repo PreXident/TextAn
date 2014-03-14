@@ -1,0 +1,31 @@
+All here.
+
+Peter:
+- server fix, started connecting the webservice with db, compile and upload name_tag binaries
+- jni libraries cannot be loaded from jar, extraction is needed
+
+Adam:
+- entities selecting, problems with object webservice
+- null objects cannot be send through webservices right now - Peter's xsd will hopefully solve that
+  - or try sending array of array, see HWK
+
+Jakub
+- playing with nametag, features, trying to use it on messages in google drive
+- nametag cannot recognize "marihuana" :-)
+- own gazateer problems
+- maybe add more learning data, not only messages
+
+Tam
+- next week model classifier sample
+- vietnamese names not recognized :-)
+
+HWK:
+- Webservice could provide a method to get array of array of pairs representing candidate objects (with ranking) for entitites in document
+  - instead of Object[] getObjects(String, Entities[]) -> CustomMap getObjects(String, Entities[])
+  - custom map could be just array 
+- Tam or Jakub could write a class for showing the results so far
+- Adam try graph interactivity, Adam move his code to separate branch
+
+Next meeting:
+!Experiment - Sunday weekly summary report to Peter with progress!
+Next Wednesday from 14:30 at 4th floor

@@ -5,9 +5,10 @@
 *.war
 *.ear
 
-!/
+\!/
 build/
 private/
+generated/
 .gradle/
 .nb-gradle/
 .nb-gradle-properties
@@ -27,7 +28,3 @@ classes/
 .classpath
 .project
 .settings/
-
-#directory symlinks
-Client/Commons
-Server/Commons

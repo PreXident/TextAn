@@ -8,21 +8,6 @@ import cz.cuni.mff.ufal.textan.gui.graph.GraphWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
-import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.SparseMultigraph;
-import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
-import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
-import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
-import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Paint;
-import java.awt.Stroke;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +17,17 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javax.swing.SwingUtilities;
 import jfxtras.labs.scene.control.window.Window;
-import org.apache.commons.collections15.Transformer;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  * Controller for the TextAn application.
@@ -53,7 +35,10 @@ import org.apache.commons.collections15.Transformer;
 public class TextAnController implements Initializable {
 
     /** Name of property controlling independence of windows. */
-    static private final String INDEPENDENT_WINDOW = "windows.independent";
+    static public final String INDEPENDENT_WINDOW = "windows.independent";
+
+    /** Name of property controlling displaying hypergraphs. */
+    static public final String HYPER_GRAPHS = "hypergraphs";
 
     /** Original title. */
     static protected final String TITLE = "TextAn";
@@ -68,7 +53,13 @@ public class TextAnController implements Initializable {
     private CheckMenuItem menuItemIndependentWindows;
 
     @FXML
+    private CheckMenuItem menuItemHypergraphs;
+
+    @FXML
     private TextField loginTextField;
+
+    @FXML
+    private ComboBox<String> localizationCombo;
 
     /** Properties with application settings. */
     protected Properties settings = null;
@@ -83,6 +74,9 @@ public class TextAnController implements Initializable {
      * It is created when settings are provided.
      */
     protected Client client = null;
+
+    /** Bundle containing localization. */
+    protected ResourceBundle resourceBundle;
 
     @FXML
     private void close() {
@@ -108,6 +102,11 @@ public class TextAnController implements Initializable {
     }
 
     @FXML
+    private void hypergraphs() {
+        settings.setProperty(HYPER_GRAPHS, menuItemHypergraphs.isSelected() ? "true" : "false");
+    }
+
+    @FXML
     private void independentWindows() {
         settings.setProperty(INDEPENDENT_WINDOW, menuItemIndependentWindows.isSelected() ? "true" : "false");
     }
@@ -119,7 +118,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final ReportWizardWindow wizard = new ReportWizardWindow(settings);
             content.getChildren().add(wizard);
-            listener = new StateChangedListener(settings, pipeline, wizard);
+            listener = new StateChangedListener(resourceBundle, settings, pipeline, wizard);
         } else {
             final ReportWizardStage stage = new ReportWizardStage(settings);
             children.add(stage);
@@ -128,7 +127,7 @@ public class TextAnController implements Initializable {
                     children.remove(stage);
                 }
             });
-            listener = new StateChangedListener(settings, pipeline, stage);
+            listener = new StateChangedListener(resourceBundle, settings, pipeline, stage);
             stage.show();
         }
         pipeline.addStateChangedListener(listener);
@@ -136,7 +135,6 @@ public class TextAnController implements Initializable {
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
-        System.out.printf("Initializing...\n");
         content.addEventFilter(MouseEvent.ANY, (MouseEvent t) -> {
             if (t.getX()< 0 || t.getY() < 0
                     || t.getX() > content.getWidth()
@@ -144,6 +142,7 @@ public class TextAnController implements Initializable {
                 t.consume();
             }
         });
+        resourceBundle = rb;
     }
 
     /**
@@ -154,12 +153,23 @@ public class TextAnController implements Initializable {
         this.settings = settings;
         menuItemIndependentWindows.setSelected(
                 settings.getProperty(INDEPENDENT_WINDOW, "false").equals("true"));
+        menuItemHypergraphs.setSelected(
+                settings.getProperty(HYPER_GRAPHS, "false").equals("true"));
         loginTextField.setText(settings.getProperty("username", System.getProperty("user.name")));
         loginTextField.textProperty().addListener(
             (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
                 settings.setProperty("username", newVal);
             }
         );
+        localizationCombo.getSelectionModel().select(settings.getProperty("locale.language", "cs"));
+        localizationCombo.valueProperty().addListener(
+            (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
+                Platform.runLater(
+                        () -> Dialogs.create()
+                                .message(Utils.localize(resourceBundle,"locale.changed"))
+                                .showWarning());
+                settings.setProperty("locale.language", newVal);
+        });
         client = new Client(settings);
     }
 

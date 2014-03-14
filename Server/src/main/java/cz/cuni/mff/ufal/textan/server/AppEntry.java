@@ -1,5 +1,7 @@
 package cz.cuni.mff.ufal.textan.server;
 
+import cz.cuni.mff.ufal.textan.server.configs.AppConfig;
+import cz.cuni.mff.ufal.textan.server.configs.WebAppConfig;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -11,7 +13,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-/**
+/*
  * User: Petr Fanta
  * Date: 19.11.13
  * Time: 22:01
@@ -19,7 +21,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 public class AppEntry {
 
-    private static Logger LOG = LoggerFactory.getLogger(AppEntry.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AppEntry.class);
 
     public static void main(String[] args) throws Exception {
 
@@ -35,7 +37,6 @@ public class AppEntry {
         ServletContextHandler servletContextHandler = new ServletContextHandler();
         servletContextHandler.setContextPath("/");
         servletContextHandler.addServlet(servletHolder, "/soap/*");
-        //servletContextHandler.setInitParameter("contextClass", AnnotationConfigWebApplicationContext.class.getName());
         servletContextHandler.setInitParameter("contextConfigLocation", WebAppConfig.class.getName());
 
         //Create root spring's web application context for servlets
@@ -53,5 +54,6 @@ public class AppEntry {
 
         LOG.info("Server running...");
         server.join();
+
     }
 }

@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
-sourceCompatibility = '1.7'
+sourceCompatibility = '1.8'
 defaultTasks 'run'
 
 repositories {
@@ -8,5 +8,112 @@ repositories {
 }
 
 dependencies {
+    compile group: 'org.apache.cxf', name: 'cxf-tools-common', version: '2.7.7'
+
     testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+
+
+//cxf autogeneration
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("commons-io:commons-io:2.4")
+    }
+}
+
+configurations { cxf }
+
+ext {
+
+    //CXF version
+    cxfVersion = '2.7.7'
+
+    cxfArtifacts = [
+            'cxf-tools-wsdlto-frontend-jaxws',
+            'cxf-tools-wsdlto-databinding-jaxb',
+            'cxf-tools-common',
+            'cxf-tools-wsdlto-core']
+}
+
+dependencies {
+    cxfArtifacts.each { artifact ->
+        cxf "org.apache.cxf:$artifact:$cxfVersion"
+    }
+}
+
+task wsdl2java {
+    //setup new task
+    group = BasePlugin.BUILD_GROUP
+    description = 'Generate java files from wsdl'
+
+    //add compile dependency
+    compileJava.dependsOn name
+
+    ext {
+        wsdlFiles = ['src/main/resources/wsdl/DocumentProcessor.wsdl', 'src/main/resources/wsdl/DataProvider.wsdl']
+        outputDir = file "$buildDir/generated-src/cxf"
+        //TODO: somehow add custom params to each input file
+        customParams = [
+            '-b', file("$projectDir/src/main/resources/customizations/bindings.xml"),
+            '-exsh', 'true' //not portable to other jax-ws providers!
+        ]
+    }
+
+    //register the output directory as a source directory for compilation
+    sourceSets{
+        main {
+            java {
+                srcDir outputDir
+            }
+        }
+    }
+
+    outputs.dir outputDir
+    inputs.files files(wsdlFiles)
+
+    //error hack -> probably problem in wsdlToFile
+    def branch = new org.apache.commons.io.output.ByteArrayOutputStream()
+    def errorOut = new org.apache.commons.io.output.TeeOutputStream(System.err, branch)
+
+    wsdlFiles.each { inputFile ->
+        doLast {
+
+            javaexec {
+                errorOutput = errorOut
+
+                classpath configurations.cxf
+                main = 'org.apache.cxf.tools.wsdlto.WSDLToJava'
+
+                args '-d', outputDir
+                args '-all'
+                args '-verbose'
+                args '-validate'
+                args '-mark-generated'
+
+                customParams.each { param ->
+                    args param
+                }
+
+                args inputFile
+            }
+        }
+    }
+
+    //error hack -> probably problem in wsdlToFile
+    doLast {
+        def str = branch.toString()
+        if (str.contains('Usage : wsdl2java') || str.contains('WSDLToJava Error')) {
+            throw new TaskExecutionException(
+                    tasks[name],
+                    new IOException("WSDLToJava has failed, please see output.")
+            )
+        }
+    }
+
 }

@@ -18,23 +18,23 @@
 		<URL value="@01_ReportLoad.css" />
 	</stylesheets>
 	<top>
-		<Label text="Zvolte zdroj nové zprávy:"/>
+		<Label text="%pick.source"/>
 	</top>
 	<center>
 		<VBox styleClass="groupBox" >
 			<fx:define>
 				<ToggleGroup fx:id="loadToggleGroup"/>
 			</fx:define>
-			<RadioButton fx:id="databaseRadioButton" text="Databáze" toggleGroup="$loadToggleGroup" selected="true" />
-			<RadioButton fx:id="fileRadioButton" text="Textový soubor" toggleGroup="$loadToggleGroup"/>
-			<RadioButton fx:id="emptyMessageRadioButton" text="Prázdná zpráva" toggleGroup="$loadToggleGroup"/>
-			<RadioButton fx:id="loadRadioButton" text="Rozpracovaná zpráva" toggleGroup="$loadToggleGroup"/>
+			<RadioButton fx:id="databaseRadioButton" text="%database" toggleGroup="$loadToggleGroup" selected="true" />
+			<RadioButton fx:id="fileRadioButton" text="%textfile" toggleGroup="$loadToggleGroup"/>
+			<RadioButton fx:id="emptyMessageRadioButton" text="%empty" toggleGroup="$loadToggleGroup"/>
+			<RadioButton fx:id="loadRadioButton" text="%unfinished" toggleGroup="$loadToggleGroup"/>
 		</VBox>
 	</center>
 	<bottom>
 		<HBox alignment="CENTER_RIGHT" >
-			<Button text="Zrušit" onAction="#cancel"/>
-			<Button text="Pokračovat" onAction="#next"/>
+			<Button text="%cancel" onAction="#cancel"/>
+			<Button text="%continue" onAction="#next"/>
 		</HBox>
 	</bottom>
 </BorderPane>
