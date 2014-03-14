@@ -6,8 +6,6 @@
 
 package cz.cuni.mff.ufal.textan.data.graph;
 
-import cz.cuni.mff.ufal.textan.data.repositories.Data;
-import cz.cuni.mff.ufal.textan.data.repositories.HibernateUtil;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import java.util.Collection;
@@ -44,7 +42,7 @@ public class Graph {
         // TODO node to be done in the next wave
         Queue<Node> nodeQueue = new LinkedList<>();
         
-        Session s = HibernateUtil.getSessionFactory().openSession();
+        Session s = null; //TODO:repair //HibernateUtil.getSessionFactory().openSession();
         List res = s.createQuery(
                 "select new list(obj, rel, inRel.order, inRel2.order, obj2)"
                         + " from ObjectTable obj"

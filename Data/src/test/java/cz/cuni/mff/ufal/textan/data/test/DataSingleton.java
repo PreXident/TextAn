@@ -13,7 +13,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.Data;
  * @author Václav Pernička
  */
 public class DataSingleton {
-    private static final Data singleton = new Data();
+    private static final Data singleton = null;
 
     public static Data getSingleton() {
         return singleton;

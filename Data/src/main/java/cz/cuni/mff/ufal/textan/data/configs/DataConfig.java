@@ -1,6 +1,12 @@
 package cz.cuni.mff.ufal.textan.data.configs;
 
+import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.hibernate.SessionFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.core.env.Environment;
@@ -11,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -40,7 +47,14 @@ public class DataConfig {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setHibernateProperties(hibernateProperties());
-        sessionFactory.setMappingResources("classpath:*.hbm.xml"); //TODO: check if this works
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] mappings = null;
+        try {
+            mappings = resolver.getResources("classpath:mappings/*.hbm.xml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        sessionFactory.setMappingLocations(mappings);
         return sessionFactory;
     }
 
@@ -60,6 +74,12 @@ public class DataConfig {
         };
     }
 
+    //TODO: Add transaction management
+
+    @Bean
+    public Data data() {
+        return new Data(sessionFactory().getObject());
+    }
 
 
 
