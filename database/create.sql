@@ -1,5 +1,5 @@
-CREATE DATABASE textanal;
-USE textanal;
+CREATE DATABASE textan;
+USE textan;
 
 
 CREATE TABLE Document (
