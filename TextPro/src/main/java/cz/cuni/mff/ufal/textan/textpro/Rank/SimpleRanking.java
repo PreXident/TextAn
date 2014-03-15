@@ -1,26 +1,15 @@
 package cz.cuni.mff.ufal.textan.textpro.Rank;
 
 import cz.cuni.mff.ufal.textan.Data.*;
+import cz.cuni.mff.ufal.textan.textpro.TextPro;
 import java.io.BufferedReader;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.regex.*;
 
-import net.sf.javaml.core.Dataset;
-import net.sf.javaml.featureselection.scoring.GainRatio;
-import net.sf.javaml.featureselection.ranking.RecursiveFeatureEliminationSVM;
-import net.sf.javaml.distance.PearsonCorrelationCoefficient;
-import net.sf.javaml.featureselection.subset.GreedyForwardSelection;
-import net.sf.javaml.featureselection.ensemble.LinearRankingEnsemble;
-import net.sf.javaml.tools.data.FileHandler;
-import weka.attributeSelection.ASEvaluation;
-import weka.attributeSelection.ASSearch;
-import weka.attributeSelection.GainRatioAttributeEval;
-import weka.attributeSelection.Ranker;
-import net.sf.javaml.tools.weka.WekaAttributeSelection;
 
-public class SimpleRanking {
+public class SimpleRanking{
     
     int array_compare(ArrayList<String> a1, ArrayList<String> a2) {
         int match = 0;
@@ -32,6 +21,34 @@ public class SimpleRanking {
         }
         
         return match;
+    }
+    int score(ArrayList<Entity> a1, ArrayList<Entity> a2) {
+        int match = 0;
+        for(int i1 = 0; i1 < a1.size(); i1++) {
+            //System.out.println(a1.get(i1));
+            String a1_i1 = a1.get(i1).getText();
+            for(int i2 = 0; i2 < a2.size(); i2++){
+                if(a2.get(i2).getText().equalsIgnoreCase(a1_i1)) {
+                    match++;
+                }
+            }
+        }
+        
+        return match;
+    }
+    /*
+     * Top 5
+     */
+    public ArrayList<Entity> process(String TestDir, String DataDir) throws Exception {
+        ArrayList<Entity> test = LoadTest._load(TestDir);
+        SimpleRanking sr = new SimpleRanking();
+        for (int num = 1; num < 3; num++) {
+            ArrayList<Entity> instance = LoadDatabase._load(DataDir);
+            int match = sr.score(instance, test);
+            System.out.println(num + " = " + match);
+        }
+        return test;
+        
     }
     /**
      * Shows the basic steps to create use a feature scoring algorithm.

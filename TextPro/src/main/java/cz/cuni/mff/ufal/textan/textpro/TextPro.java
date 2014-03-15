@@ -20,6 +20,7 @@ public interface TextPro {
     //  Output a list of entity after processing
     public List<Entity> recognizedEntity(String document);
     
+    public List<Entity> SimpleRanking(String TestDir, String DataDir);
     // A new initialization for creating (syncronized ...)
     
     

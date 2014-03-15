@@ -6,7 +6,7 @@ import java.util.List;
 import cz.cuni.mff.ufal.textan.Data.Entity;
 import java.util.ArrayList;
 
-public class namedEntityRecognizer implements TextPro{
+public class Running implements TextPro{
     
     // List of object (corresponding to the object list in database)
     List<String> objectList;
@@ -26,9 +26,13 @@ public class namedEntityRecognizer implements TextPro{
         results.add(en);
         return results;
     }
-    
+    @Override
+    public List<Entity> SimpleRanking(String TestDir, String DataDir){
+        /*DONT KNOW WHAT TO DO*/
+        return SimpleRanking(TestDir, DataDir);
+    }
     public static void main(String[] args) {
-        TextPro ner = new namedEntityRecognizer();
+        TextPro ner = new Running();
         String doc = "This is not a test actually";
         List<Entity> ls = ner.recognizedEntity(doc);
         System.out.print(ls.get(0).getOffset());
