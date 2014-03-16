@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.commons.models.Rating;
+import cz.cuni.mff.ufal.textan.commons_old.models.Rating;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;

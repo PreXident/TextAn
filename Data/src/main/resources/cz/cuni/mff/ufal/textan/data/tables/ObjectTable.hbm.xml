@@ -28,8 +28,26 @@
             <key>
                 <column name="id_object"></column>
             </key>
-            <many-to-many class="cz.cuni.mff.ufal.textan.data.tables.RelationTable" column="id_relation" />
+            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.InRelationTable" />
         </set>
+        
+        <one-to-one name="newObject" class="cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable" property-ref="newObject">
+            
+        </one-to-one>
+       <set name="oldObjects1" table="JoinedObjects" inverse="true">
+            <key>
+                <column name="id_old_object1"></column>
+            </key>
+            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable"></one-to-many>
+        </set>
+       <set name="oldObjects2" table="JoinedObjects" inverse="true">
+            <key>
+                <column name="id_old_object2"></column>
+            </key>
+            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable"></one-to-many>
+        </set>
+
+                
     </class>
     
 </hibernate-mapping>

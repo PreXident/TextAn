@@ -1,8 +1,8 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.models.Rating;
-import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
-import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
+import cz.cuni.mff.ufal.textan.commons_old.models.Rating;
+import cz.cuni.mff.ufal.textan.commons_old.ws.IDataProvider;
+import cz.cuni.mff.ufal.textan.commons_old.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import java.net.MalformedURLException;
@@ -49,11 +49,11 @@ public class Client {
     private IDocumentProcessor getDocumentProcessor() {
         if (documentProcessor == null) {
             try {
-                Service service = Service.create(new URL("http://localhost:9100/soap/document?wsdl"), new QName("http://server.textan.ufal.mff.cuni.cz/", "DocumentProcessor"));
+                Service service = Service.create(new URL("http://localhost:9100/soap/document?wsdl"), new QName("http://server.textan.ufal.mff.cuni.cz/", "DocumentProcessorService"));
                 // Endpoint Address
                 String endpointAddress = "http://localhost:9100/soap/document";
                 // Add a port to the Service
-                service.addPort(new QName("http://server.textan.ufal.mff.cuni.cz/DocumentProcessor", "DocumentProcessorPort"), SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
+                service.addPort(new QName("http://server.textan.ufal.mff.cuni.cz/DocumentProcessorService", "DocumentProcessorPort"), SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 documentProcessor = service.getPort(IDocumentProcessor.class);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -70,11 +70,11 @@ public class Client {
     private IDataProvider getDataProvider() throws WebServiceException {
         if (dataProvider == null) {
             try {
-                Service service = Service.create(new URL("http://localhost:9100/soap/data?wsdl"), new QName("http://server.textan.ufal.mff.cuni.cz/", "DataProvider"));
+                Service service = Service.create(new URL("http://localhost:9100/soap/data?wsdl"), new QName("http://server.textan.ufal.mff.cuni.cz/", "DataProviderService"));
                 // Endpoint Address
                 String endpointAddress = "http://localhost:9100/soap/data";
                 // Add a port to the Service
-                service.addPort(new QName("http://server.textan.ufal.mff.cuni.cz/DataProvider", "DataProviderPort"), SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
+                service.addPort(new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService", "DataProviderPort"), SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 dataProvider = service.getPort(IDataProvider.class);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -116,7 +116,7 @@ public class Client {
     public void getObjects(final String text, final List<Entity> entities) {
         Rating[] candidates = getDocumentProcessor().getObjects(text, entities.stream()
                 .map(ent -> ent.toEntity())
-                .toArray(i -> new cz.cuni.mff.ufal.textan.commons.models.Entity[i])
+                .toArray(i -> new cz.cuni.mff.ufal.textan.commons_old.models.Entity[i])
         );
         for (int i = 0; i < candidates.length; ++i) {
             entities.get(i).getCandidates().clear();
@@ -235,10 +235,10 @@ public class Client {
                         .sequential()
                         .filter(ent -> ent.getCandidate() != null)
                         .map(ent -> ent.getCandidate().toObject())
-                        .toArray(i -> new cz.cuni.mff.ufal.textan.commons.models.Object[i]),
+                        .toArray(i -> new cz.cuni.mff.ufal.textan.commons_old.models.Object[i]),
                 reportRelations.stream()
                     .map(rel -> rel.toRelation())
-                    .toArray(i -> new cz.cuni.mff.ufal.textan.commons.models.Relation[i]),
+                    .toArray(i -> new cz.cuni.mff.ufal.textan.commons_old.models.Relation[i]),
                 ticket.toTicket(),
                 false);
     }

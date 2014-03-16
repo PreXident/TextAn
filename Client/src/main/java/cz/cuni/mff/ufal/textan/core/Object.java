@@ -23,7 +23,7 @@ public class Object {
      * Creates Object from object blue print.
      * @param obj object's blue print
      */
-    public Object(final cz.cuni.mff.ufal.textan.commons.models.Object obj) {
+    public Object(final cz.cuni.mff.ufal.textan.commons_old.models.Object obj) {
         id = obj.getId();
         type = new ObjectType(obj.getType());
         aliases = new HashSet<>(obj.getAliases());
@@ -90,8 +90,8 @@ public class Object {
      * Creates new commons Object.
      * @return new commons Object
      */
-    public cz.cuni.mff.ufal.textan.commons.models.Object toObject() {
-        return new cz.cuni.mff.ufal.textan.commons.models.Object(
+    public cz.cuni.mff.ufal.textan.commons_old.models.Object toObject() {
+        return new cz.cuni.mff.ufal.textan.commons_old.models.Object(
                 id,
                 type.toObjectType(),
                 new ArrayList<>(aliases)

@@ -25,7 +25,7 @@ public class Relation {
      * @param relation blue print relation
      * @param objects id -> object mapping to resolve relation ids
      */
-    public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Integer, Object> objects) {
+    public Relation(final cz.cuni.mff.ufal.textan.commons_old.models.Relation relation, final Map<Integer, Object> objects) {
         id = relation.getId();
         type = new RelationType(relation.getType());
         List<Integer> ids = relation.getObjectInRelationIds();
@@ -68,8 +68,8 @@ public class Relation {
      * Creates new commons Relation.
      * @return new commons Relation
      */
-    public cz.cuni.mff.ufal.textan.commons.models.Relation toRelation() {
-        final cz.cuni.mff.ufal.textan.commons.models.Relation result = new cz.cuni.mff.ufal.textan.commons.models.Relation(
+    public cz.cuni.mff.ufal.textan.commons_old.models.Relation toRelation() {
+        final cz.cuni.mff.ufal.textan.commons_old.models.Relation result = new cz.cuni.mff.ufal.textan.commons_old.models.Relation(
                 id, type.toRelationType()
         );
         objects.stream().forEach((pair) -> {

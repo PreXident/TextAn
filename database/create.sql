@@ -1,5 +1,5 @@
-CREATE DATABASE textanal;
-USE textanal;
+CREATE DATABASE textan;
+USE textan;
 
 
 CREATE TABLE Document (
@@ -11,18 +11,18 @@ CREATE TABLE Document (
 
 CREATE TABLE RelationType(
   id_relation_type INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR (20) UNIQUE
+  name VARCHAR (255) UNIQUE
 );
 
 CREATE TABLE ObjectType (
 	id_object_type int PRIMARY KEY AUTO_INCREMENT, 
-	name varchar (20) UNIQUE
+	name varchar (255) UNIQUE
 );
 
 CREATE TABLE Object (
 	id_object int PRIMARY KEY AUTO_INCREMENT, 
 	id_object_type int NOT NULL,
-	data varchar (50),
+	data varchar (255),
   CONSTRAINT FK_OBJECT_TO_TYPE FOREIGN KEY (id_object_type)
 		REFERENCES ObjectType(id_object_type)
 );
@@ -30,7 +30,7 @@ CREATE TABLE Object (
 CREATE TABLE Alias (
 	id_alias int PRIMARY KEY AUTO_INCREMENT, 
 	id_object int NOT NULL,
-	alias varchar(50) NOT NULL,
+	alias varchar(255) NOT NULL,
   CONSTRAINT FK_ALIAS_ID_OBJECT
    FOREIGN KEY (id_object)
 		REFERENCES Object(id_object)
@@ -74,15 +74,18 @@ CREATE TABLE IsInRelation
 
 CREATE TABLE JoinedObjects
 (
-        id_new_object int PRIMARY KEY AUTO_INCREMENT,
+        id_new_object int PRIMARY KEY,
+          CONSTRAINT FK_PK_JOINEDOBJECTS_ID
+            FOREIGN KEY (id_new_object)
+                  REFERENCES Object(id_object),
         id_old_object1 int NOT NULL,
-        CONSTRAINT FK_JOINEDOBJECTS_OLDOBJ1
-          FOREIGN KEY (id_old_object1)
-                REFERENCES Object(id_object),
+          CONSTRAINT FK_JOINEDOBJECTS_OLDOBJ1
+            FOREIGN KEY (id_old_object1)
+                  REFERENCES Object(id_object),
         id_old_object2 int NOT NULL,
-        CONSTRAINT FK_JOINEDOBJECTS_OLDOBJ2
-          FOREIGN KEY (id_old_object2)
-                REFERENCES Object(id_object),
+          CONSTRAINT FK_JOINEDOBJECTS_OLDOBJ2
+            FOREIGN KEY (id_old_object2)
+                  REFERENCES Object(id_object),
         from_date date,
         to_date date
 );
@@ -103,5 +106,5 @@ CREATE TABLE RelationOccurrence
           FOREIGN KEY (id_document)
                 REFERENCES Document(id_document),
         position int NOT NULL,
-        anchor varchar(50)
+        anchor varchar(255)
 );

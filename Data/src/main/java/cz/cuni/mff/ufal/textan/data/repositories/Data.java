@@ -25,13 +25,14 @@ public class Data {
      * <i><b>Important:</b> This method does not supports relation between tables 
      * (lists of other objects). You also cannot change the object.</i>
      * 
-     * @param clazz Table (class from package data.tables)
+     * @param <Table>
+     * @param clazz Table.class (class from package data.tables)
      * @param id Id of the record
      * @return null iff there is no record with specified id. Otherwise returns
      *          an instance of specified class (clazz)     *
      */
     @Deprecated
-    public static <Table extends AbstractTable> Table getRecordById(final Class<Table> clazz, final Serializable id) {
+    public <Table extends AbstractTable> Table getRecordById(final Class<Table> clazz, final Serializable id) {
         Session s = HibernateUtil.getSessionFactory().openSession();
         try {
             //s.beginTransaction();
@@ -41,7 +42,7 @@ public class Data {
         }
     }
     
-    public static <Table extends AbstractTable> void performActionOnRecord(final Class<Table> clazz, final Serializable id, TableAction<Table> action) {
+    public <Table extends AbstractTable> void performActionOnRecord(final Class<Table> clazz, final Serializable id, TableAction<Table> action) {
         Session s = HibernateUtil.getSessionFactory().openSession();
         try {
             s.beginTransaction();
@@ -62,7 +63,7 @@ public class Data {
      * @param action Specify what you will do on each record of the table. You can only get some
      * data (it will work like SELECT) or you can change them (it will be UPDATED)
      */
-    public static <Table extends AbstractTable> void performActionOnTable(final Class<Table> clazz, final TableAction<Table> action) {
+    public <Table extends AbstractTable> void performActionOnTable(final Class<Table> clazz, final TableAction<Table> action) {
         StatelessSession session = HibernateUtil.getSessionFactory().openStatelessSession();
         Transaction tx = session.beginTransaction();
         ScrollableResults customers = session.getNamedQuery("GetCustomers")
@@ -77,7 +78,7 @@ public class Data {
         session.close();
     }
     
-    public static <Table extends AbstractTable> boolean addRecord(Table m) {
+    public <Table extends AbstractTable> boolean addRecord(Table m) {
         //ObjectTypeTable m = new ObjectTypeTable(name);
         Session s = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -95,7 +96,7 @@ public class Data {
         return true;
     }
  
-       public static <Table extends AbstractTable> boolean deleteRecord(Table m) {
+       public <Table extends AbstractTable> boolean deleteRecord(Table m) {
         //ObjectTypeTable m = new ObjectTypeTable(name);
         Session s = HibernateUtil.getSessionFactory().openSession();
         try {

@@ -15,7 +15,7 @@ public class RelationType {
      * Only constructor.
      * @param type relation type blue print
      */
-    public RelationType(final cz.cuni.mff.ufal.textan.commons.models.RelationType type) {
+    public RelationType(final cz.cuni.mff.ufal.textan.commons_old.models.RelationType type) {
         id = type.getId();
         name = type.getType();
     }
@@ -40,8 +40,8 @@ public class RelationType {
      * Creates new commons RelationType.
      * @return new commons RelationType
      */
-    public cz.cuni.mff.ufal.textan.commons.models.RelationType toRelationType() {
-        return new cz.cuni.mff.ufal.textan.commons.models.RelationType(
+    public cz.cuni.mff.ufal.textan.commons_old.models.RelationType toRelationType() {
+        return new cz.cuni.mff.ufal.textan.commons_old.models.RelationType(
                 id, name
         );
     }

@@ -22,7 +22,7 @@ public class Graph {
      * Only constructor.
      * @param graph graph blue print
      */
-    public Graph(final cz.cuni.mff.ufal.textan.commons.models.Graph graph) {
+    public Graph(final cz.cuni.mff.ufal.textan.commons_old.models.Graph graph) {
         graph.getNodes().stream().forEach(obj -> {
             nodes.put(obj.getId(), new Object(obj));
         });
@@ -51,8 +51,8 @@ public class Graph {
      * Creates new commons Graph.
      * @return new commons Graph
      */
-    public cz.cuni.mff.ufal.textan.commons.models.Graph toGraph() {
-        return new cz.cuni.mff.ufal.textan.commons.models.Graph(
+    public cz.cuni.mff.ufal.textan.commons_old.models.Graph toGraph() {
+        return new cz.cuni.mff.ufal.textan.commons_old.models.Graph(
                 nodes.values().stream()
                         .map((Object obj) -> obj.toObject())
                         .collect(Collectors.toCollection(ArrayList::new)),

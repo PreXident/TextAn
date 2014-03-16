@@ -8,6 +8,7 @@
 \!/
 build/
 private/
+generated/
 .gradle/
 .nb-gradle/
 .nb-gradle-properties

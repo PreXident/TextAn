@@ -1,22 +1,21 @@
 package cz.cuni.mff.ufal.textan.server;
 
-import cz.cuni.mff.ufal.textan.commons.models.Graph;
-import cz.cuni.mff.ufal.textan.commons.models.Object;
-import cz.cuni.mff.ufal.textan.commons.models.ObjectType;
-import cz.cuni.mff.ufal.textan.commons.models.Relation;
-import cz.cuni.mff.ufal.textan.commons.models.RelationType;
-import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
+import cz.cuni.mff.ufal.textan.commons_old.models.Graph;
+import cz.cuni.mff.ufal.textan.commons_old.models.Object;
+import cz.cuni.mff.ufal.textan.commons_old.models.ObjectType;
+import cz.cuni.mff.ufal.textan.commons_old.models.Relation;
+import cz.cuni.mff.ufal.textan.commons_old.models.RelationType;
+import cz.cuni.mff.ufal.textan.commons_old.ws.IDataProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import javax.jws.WebService;
 
 /**
  * For now only mocking database access.
  */
-@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDataProvider", serviceName = "DataProvider")
+@WebService(endpointInterface = "cz.cuni.mff.ufal.textan.commons_old.ws.IDataProvider", serviceName = "DataProviderService")
 public class DataProvider implements IDataProvider {
 
     private final List<ObjectType> objectTypes = Arrays.asList(
