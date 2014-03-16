@@ -12,7 +12,7 @@
     <xs:include schemaLocation="Document.xsd"/>
     
     <xs:element name="getObjectTypes" type="Void"/>    
-    <xs:element name="getObjectTypesResponse"/>
+    <xs:element name="getObjectTypesResponse" type="GetObjectTypesResponse"/>
     
     <xs:element name="getObject" type="GetObject"/>
     <xs:element name="getObjectResponse" type="GetObjectResponse"/>

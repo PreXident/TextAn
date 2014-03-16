@@ -102,7 +102,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.Doc
 
     @Override
     public GetEditingTicketResponse getEditingTicket(
-            @WebParam(partName = "getEditingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") EditingTicket getEditingTicket,
+            @WebParam(partName = "getEditingTicket", name = "getEditingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetEditingTicket getEditingTicket,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
 
         LOG.debug("Executing operation getEditingTicket");

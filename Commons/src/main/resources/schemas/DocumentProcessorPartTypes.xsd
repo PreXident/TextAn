@@ -99,9 +99,16 @@
                     <xs:sequence>
                         <xs:element ref="entity"/>
                         <xs:element name="objects">
-                            <xs:complexType>
+                            <xs:complexType>                                
                                 <xs:sequence>
-                                    <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+                                    <xs:element name="objectWithRating" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                            <xs:sequence>                                                
+                                                <xs:element ref="object"/>
+                                                <xs:element name="rating" type="xs:float"/>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>                                    
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>
@@ -132,9 +139,16 @@
                     <xs:sequence>
                         <xs:element ref="entity"/>
                         <xs:element name="objects">
-                            <xs:complexType>
+                            <xs:complexType>                                
                                 <xs:sequence>
-                                    <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+                                    <xs:element name="objectWithRating" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                            <xs:sequence>                                                
+                                                <xs:element ref="object"/>
+                                                <xs:element name="rating" type="xs:float"/>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>                                    
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>

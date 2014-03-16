@@ -22,7 +22,7 @@
     </wsdl:message>    
     
     <wsdl:message name="getEditingTicket">
-        <wsdl:part name="getEditingTicket" element="tns:editingTicket"/>
+        <wsdl:part name="getEditingTicket" element="tns:getEditingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getEditingTicketResponse">

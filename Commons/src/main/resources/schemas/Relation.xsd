@@ -15,7 +15,14 @@
             <xs:element name="objectInRelationIds">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="objectId" type="xs:int" />
+                        <xs:element name="inRelation" minOccurs="2" maxOccurs="unbounded"> <!-- TODO: better name -->
+                            <xs:complexType>
+                                <xs:sequence>                                    
+                                    <xs:element name="objectId" type="xs:int"/>
+                                    <xs:element name="order" type="xs:int"/>
+                                </xs:sequence>
+                            </xs:complexType>                            
+                        </xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>

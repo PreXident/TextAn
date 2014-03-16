@@ -45,7 +45,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.DataProv
     }
 
     @Override
-    public Object getObjectTypes(
+    public GetObjectTypesResponse getObjectTypes(
             @WebParam(partName = "getObjectTypes", name = "getObjectTypes", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") Void getObjectTypes,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
 
