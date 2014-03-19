@@ -2,8 +2,8 @@ package cz.cuni.mff.ufal.textan.server.ws;
 
 
 import cz.cuni.mff.ufal.textan.commons.models.*;
-import cz.cuni.mff.ufal.textan.commons.models.Object;
-import cz.cuni.mff.ufal.textan.commons.models.Void;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

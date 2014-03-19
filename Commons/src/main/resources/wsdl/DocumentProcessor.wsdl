@@ -4,21 +4,22 @@
     xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:tns="http://models.commons.textan.ufal.mff.cuni.cz"
+    xmlns:tns="http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor"
+    xmlns:cms="http://models.commons.textan.ufal.mff.cuni.cz"
     xmlns:ws="http://ws.commons.textan.ufal.mff.cuni.cz">
     
     <wsdl:types>
-        <xs:schema targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz">
+        <xs:schema targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor">
             <xs:include schemaLocation="../schemas/DocumentProcessorPartTypes.xsd"/>
         </xs:schema>
     </wsdl:types>
     
     <wsdl:message name="ticket">
-        <wsdl:part name="ticket" element="tns:ticket"/>
+        <wsdl:part name="ticket" element="cms:ticket"/>
     </wsdl:message>
     
     <wsdl:message name="editingTicket">
-        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
+        <wsdl:part name="editingTicket" element="cms:editingTicket"/>
     </wsdl:message>    
     
     <wsdl:message name="getEditingTicket">

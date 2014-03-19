@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.server.ws;
 
 
 import cz.cuni.mff.ufal.textan.commons.models.*;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

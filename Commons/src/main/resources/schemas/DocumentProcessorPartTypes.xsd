@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
-    targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz" elementFormDefault="qualified"> 
+           xmlns:cms="http://models.commons.textan.ufal.mff.cuni.cz"
+           xmlns="http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor"
+    targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor" elementFormDefault="qualified">
 
-    <xs:include schemaLocation="Entity.xsd" />
-    <xs:include schemaLocation="Object.xsd"/>
-    <xs:include schemaLocation="ObjectType.xsd"/>
-    <xs:include schemaLocation="Relation.xsd"/>
-    <xs:include schemaLocation="RelationType.xsd"/>
-    <xs:include schemaLocation="Graph.xsd"/>
-    <xs:include schemaLocation="Ticket.xsd"/>
-    
-    
+    <xs:import namespace="http://models.commons.textan.ufal.mff.cuni.cz" schemaLocation="CommonTypes.xsd"/>
+
     <xs:element name="getEditingTicket" type="GetEditingTicket"/>
     <xs:element name="getEditingTicketResponse" type="GetEditingTicketResponse"/>
          
@@ -50,7 +44,7 @@
     
     <xs:complexType name="GetEditingTicketResponse">
         <xs:sequence>
-            <xs:element ref="editingTicket"/>
+            <xs:element ref="cms:editingTicket"/>
         </xs:sequence>
     </xs:complexType>
       
@@ -62,7 +56,7 @@
     
     <xs:complexType name="GetEntitiesFromStringResponse">
         <xs:sequence>
-            <xs:element ref="entity" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:entity" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -74,7 +68,7 @@
     
     <xs:complexType name="GetEntitiesByIdResponse">
         <xs:sequence>
-            <xs:element ref="entity" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:entity" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -84,7 +78,7 @@
             <xs:element name="entities">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="entity" minOccurs="1" maxOccurs="unbounded"/>  
+                        <xs:element ref="cms:entity" minOccurs="1" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>                
             </xs:element>
@@ -97,14 +91,14 @@
             <xs:element name="assignment" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="entity"/>
+                        <xs:element ref="cms:entity"/>
                         <xs:element name="objects">
                             <xs:complexType>                                
                                 <xs:sequence>
                                     <xs:element name="objectWithRating" minOccurs="0" maxOccurs="unbounded">
                                         <xs:complexType>
                                             <xs:sequence>                                                
-                                                <xs:element ref="object"/>
+                                                <xs:element ref="cms:object"/>
                                                 <xs:element name="rating" type="xs:float"/>
                                             </xs:sequence>
                                         </xs:complexType>
@@ -124,7 +118,7 @@
             <xs:element name="entities">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="entity" minOccurs="1" maxOccurs="unbounded"/>  
+                        <xs:element ref="cms:entity" minOccurs="1" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>                
             </xs:element>
@@ -137,14 +131,14 @@
             <xs:element name="assignment" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="entity"/>
+                        <xs:element ref="cms:entity"/>
                         <xs:element name="objects">
                             <xs:complexType>                                
                                 <xs:sequence>
                                     <xs:element name="objectWithRating" minOccurs="0" maxOccurs="unbounded">
                                         <xs:complexType>
                                             <xs:sequence>                                                
-                                                <xs:element ref="object"/>
+                                                <xs:element ref="cms:object"/>
                                                 <xs:element name="rating" type="xs:float"/>
                                             </xs:sequence>
                                         </xs:complexType>
@@ -165,14 +159,14 @@
             <xs:element name="objects">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="relations">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="relation" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -192,14 +186,14 @@
             <xs:element name="objects">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="relations">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="relation" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -219,14 +213,14 @@
             <xs:element name="objects">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="relations">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="relation" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
