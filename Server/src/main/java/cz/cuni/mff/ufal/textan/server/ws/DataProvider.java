@@ -1,9 +1,10 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
 
-import cz.cuni.mff.ufal.textan.commons.models.*;
+import cz.cuni.mff.ufal.textan.commons.models.Ticket;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
+import cz.cuni.mff.ufal.textan.commons.ws.*;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,178 +26,211 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.DataProv
 
     @Override
     public GetObjectsResponse getObjects(
-            @WebParam(partName = "getObjects", name = "getObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") Void getObjects,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+            @WebParam(partName = "getObjects", name = "getObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            Void getObjects,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket) {
 
         LOG.debug("Executing operation getObjects");
 
-        return null;
+        return new GetObjectsResponse();
     }
 
     @Override
-    public boolean updateDocument(
-            @WebParam(name = "text", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") String text,
-            @WebParam(name = "documentId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") int documentId,
-            @WebParam(name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+    public UpdateDocumentResponse updateDocument(
+            @WebParam(partName = "updateDocument", name = "updateDocument", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            UpdateDocument updateDocument,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket) {
 
         LOG.debug("Executing operation updateDocument");
 
-        return false;
+        return new UpdateDocumentResponse();
     }
 
     @Override
     public GetObjectTypesResponse getObjectTypes(
-            @WebParam(partName = "getObjectTypes", name = "getObjectTypes", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") Void getObjectTypes,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+            @WebParam(partName = "getObjectTypes", name = "getObjectTypes", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            Void getObjectTypes,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket) {
 
         LOG.debug("Executing operation getObjectTypes");
-        return null;
+
+        return new GetObjectTypesResponse();
     }
 
     @Override
     public GetDocumentByIdResponse getDocumentById(
-            @WebParam(partName = "getDocumentById", name = "getDocumentById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetDocumentById getDocumentById,
+            @WebParam(partName = "getDocumentById", name = "getDocumentById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetDocumentById getDocumentById,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket)
             throws IdNotFoundException {
 
         LOG.debug("Executing operation getDocumentById");
 
-        return null;
+        return new GetDocumentByIdResponse();
     }
 
     @Override
     public GetRelationTypesResponse getRelationTypes(
-            @WebParam(partName = "getRelationTypes", name = "getRelationTypes", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") Void getRelationTypes,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+            @WebParam(partName = "getRelationTypes", name = "getRelationTypes", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            Void getRelationTypes,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket) {
 
         LOG.debug("Executing operation getRelationTypes");
 
-        return null;
+        return new GetRelationTypesResponse();
     }
 
     @Override
     public GetGraphByIdResponse getGraphById(
-            @WebParam(partName = "getGraphById", name = "getGraphById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetGraphById getGraphById,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket)
+            @WebParam(partName = "getGraphById", name = "getGraphById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetGraphById getGraphById,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket)
             throws IdNotFoundException {
 
         LOG.debug("Executing operation getGraphById");
 
-        return null;
+        return new GetGraphByIdResponse();
     }
 
     @Override
     public GetRelationsByTypeIdResponse getRelatedObjectsById(
-            @WebParam(partName = "getRelatedObjectsById", name = "getRelatedObjectsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetRelatedObjectsById getRelatedObjectsById,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket)
+            @WebParam(partName = "getRelatedObjectsById", name = "getRelatedObjectsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetRelatedObjectsById getRelatedObjectsById,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket)
             throws IdNotFoundException {
 
         LOG.debug("Executing operation getRelatedObjectsById");
 
-        return null;
+        return new GetRelationsByTypeIdResponse();
     }
 
     @Override
     public GetObjectsByTypeResponse getObjectsByType(
-            @WebParam(partName = "getObjectsByType", name = "getObjectsByType", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetObjectsByType getObjectsByType,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+            @WebParam(partName = "getObjectsByType", name = "getObjectsByType", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetObjectsByType getObjectsByType,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket) {
 
-        LOG.debug("Executing operation getObjectsById");
+        LOG.debug("Executing operation getObjectsByType");
 
-        return null;
+        return new GetObjectsByTypeResponse();
     }
 
     @Override
-    public int addDocument(
-            @WebParam(name = "text", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") String text,
-            @WebParam(name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+    public AddDocumentResponse addDocument(
+            @WebParam(partName = "addDocument", name = "addDocument", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            AddDocument addDocument,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket) {
 
         LOG.debug("Executing operation addDocument");
 
-        return 0;
+        return new AddDocumentResponse();
     }
 
     @Override
-    public boolean splitObject(
-            @WebParam(name = "objectId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") int objectId,
-            @WebParam(name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+    public SplitObjectResponse splitObject(
+            @WebParam(partName = "splitObject", name = "splitObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            SplitObject splitObject,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket) {
 
         LOG.debug("Executing operation splitObject");
 
-        return false;
+        return new SplitObjectResponse();
     }
 
     @Override
     public GetPathByIdResponse getPathById(
-            @WebParam(partName = "getPathById", name = "getPathById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetPathById getPathById,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket)
+            @WebParam(partName = "getPathById", name = "getPathById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetPathById getPathById,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket)
             throws IdNotFoundException {
 
         LOG.debug("Executing operation getPathById");
 
-        return null;
+        return new GetPathByIdResponse();
     }
 
     @Override
     public GetDocumentsResponse getDocuments(
-            @WebParam(partName = "getDocuments", name = "getDocuments", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") Void getDocuments,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+            @WebParam(partName = "getDocuments", name = "getDocuments", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            Void getDocuments,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket) {
 
         LOG.debug("Executing operation getDocuments");
 
-        return null;
+        return new GetDocumentsResponse();
     }
 
     @Override
     public GetRelationsByTypeResponse getRelationsByType(
-            @WebParam(partName = "getRelationsByType", name = "getRelationsByType", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetRelationsByType getRelationsByType,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+            @WebParam(partName = "getRelationsByType", name = "getRelationsByType", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetRelationsByType getRelationsByType,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket) {
 
         LOG.debug("Executing operation getRelationsByType");
 
-        return null;
+        return new GetRelationsByTypeResponse();
     }
 
     @Override
     public GetRelationsByTypeIdResponse getRelationsByTypeId(
-            @WebParam(partName = "getRelationsByTypeId", name = "getRelationsByTypeId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetRelationsByTypeId getRelationsByTypeId,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket)
+            @WebParam(partName = "getRelationsByTypeId", name = "getRelationsByTypeId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetRelationsByTypeId getRelationsByTypeId,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket)
             throws IdNotFoundException {
 
         LOG.debug("Executing operation getRelationsByTypeId");
 
-        return null;
+        return new GetRelationsByTypeIdResponse();
     }
 
     @Override
     public GetObjectsByTypeIdResponse getObjectsByTypeId(
-            @WebParam(partName = "getObjectsByTypeId", name = "getObjectsByTypeId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetObjectsByTypeId getObjectsByTypeId,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket)
+            @WebParam(partName = "getObjectsByTypeId", name = "getObjectsByTypeId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetObjectsByTypeId getObjectsByTypeId,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket)
             throws IdNotFoundException {
 
         LOG.debug("Executing operation getObjectsByTypeId");
 
-        return null;
+        return new GetObjectsByTypeIdResponse();
     }
 
     @Override
     public GetObjectResponse getObject(
-            @WebParam(partName = "getObject", name = "getObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetObject getObject,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket)
+            @WebParam(partName = "getObject", name = "getObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetObject getObject,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket)
             throws IdNotFoundException {
 
         LOG.debug("Executing operation getObject");
 
-        return null;
+        return new GetObjectResponse();
     }
 
     @Override
     public MergeObjectsResponse mergeObjects(
-            @WebParam(partName = "mergeObjects", name = "mergeObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") MergeObjects mergeObjects,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+            @WebParam(partName = "mergeObjects", name = "mergeObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            MergeObjects mergeObjects,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket) {
 
         LOG.debug("Executing operation mergeObjects");
 
-        return null;
+        return new MergeObjectsResponse();
     }
 }

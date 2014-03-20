@@ -71,7 +71,7 @@
     </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentFromString">
-        <wsdl:part name="saveProcessedDocuemntFromString" element="tns:saveProcessedDocumentFromString"/>
+        <wsdl:part name="saveProcessedDocumentFromString" element="tns:saveProcessedDocumentFromString"/>
     </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentFromStringResponse">
@@ -193,7 +193,7 @@
         <wsdl:operation name="saveProcessedDocumentFromString">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/saveProcessedDocumentFromString"/>
             <wsdl:input>
-                <soap:body parts="saveProcessedDocuemntFromString" use="literal"/>
+                <soap:body parts="saveProcessedDocumentFromString" use="literal"/>
                 <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>

@@ -8,10 +8,7 @@ import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeId;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsResponse;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicket;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromString;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromString.Entities;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromStringResponse.Assignment;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromStringResponse.Assignment.Objects.ObjectWithRating;
@@ -179,9 +176,14 @@ public class Client {
             ents.getEntity().add(entity.toEntity());
             map.put(entity.getPosition(), entity);
         }
-        final List<Assignment> response =
-                getDocumentProcessor().getObjectsFromString(text, ents, ticket.toTicket());
-        for (Assignment assignment : response) {
+
+        final GetObjectsFromString request = new GetObjectsFromString();
+        request.setText(text);
+        request.setEntities(ents);
+
+        final GetObjectsFromStringResponse response = getDocumentProcessor().getObjectsFromString(request, ticket.toTicket());
+
+        for (Assignment assignment : response.getAssignment()) {
             final Entity ent = map.get(assignment.getEntity().getPosition());
             ent.getCandidates().clear();
             for (ObjectWithRating rating : assignment.getObjects().getObjectWithRating()) {
@@ -330,11 +332,15 @@ public class Client {
                         .map(Relation::toRelation)
                         .collect(Collectors.toList())
         );
+
+        final SaveProcessedDocumentFromString request = new SaveProcessedDocumentFromString();
+        request.setText(text);
+        request.setObjects(objs);
+        request.setRelations(relations);
+        request.setForce(false);
+
         getDocumentProcessor().saveProcessedDocumentFromString(
-                text,
-                objs,
-                relations,
-                false, //TODO handle save document error
+                request, //TODO handle save document error
                 ticket.toTicket()
         );
     }
