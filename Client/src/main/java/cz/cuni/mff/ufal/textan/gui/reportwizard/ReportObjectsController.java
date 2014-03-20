@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.commons_old.models.Rating;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
@@ -105,13 +105,17 @@ public class ReportObjectsController extends ReportWizardController {
                         cm.getItems().add(mi);
                     }
                     cm.getItems().add(new SeparatorMenuItem());
-                    List<Object> cands = pipeline.getClient().getObjectsListByTypeId(entityId);
-                    for (final Object cand : cands) {
-                        final MenuItem mi = new MenuItem(cand.toString());
-                        mi.setOnAction((ActionEvent t) -> {
-                            pipeline.getReportEntities().get(entityIndex).setCandidate(cand);
-                        });
-                        cm.getItems().add(mi);
+                    try {
+                        List<Object> cands = pipeline.getClient().getObjectsListByTypeId(entityId);
+                        for (final Object cand : cands) {
+                            final MenuItem mi = new MenuItem(cand.toString());
+                            mi.setOnAction((ActionEvent t) -> {
+                                pipeline.getReportEntities().get(entityIndex).setCandidate(cand);
+                            });
+                            cm.getItems().add(mi);
+                        }
+                    } catch (IdNotFoundException e) {
+                        e.printStackTrace();
                     }
                     menus.put(word.getEntity(), cm);
                 }

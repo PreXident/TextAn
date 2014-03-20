@@ -40,10 +40,10 @@ final class ReportRelationsState extends State {
     public void setReportRelations(final ProcessReportPipeline pipeline, final Set<Relation> relations) {
         pipeline.reportRelations = relations;
         pipeline.client.saveProcessedDocument(
+                pipeline.ticket,
                 pipeline.getReportText(),
                 pipeline.reportEntities,
-                pipeline.reportRelations,
-                pipeline.ticket);
+                pipeline.reportRelations);
         pipeline.setState(DoneState.getInstance());
     }
 }

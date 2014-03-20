@@ -1,11 +1,13 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
 import cz.cuni.mff.ufal.textan.core.Graph;
+import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -14,10 +16,16 @@ import javafx.scene.layout.StackPane;
 public class GraphViewController extends GraphController {
 
     @FXML
+    private BorderPane root;
+
+    @FXML
     private ScrollPane scrollPane;
 
     @FXML
     private StackPane stackPane;
+
+    /** Localization container. */
+    ResourceBundle resourceBundle;
 
     @FXML
     private void cancel() {
@@ -27,6 +35,7 @@ public class GraphViewController extends GraphController {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //localization
+        this.resourceBundle = rb;
         stackPane.prefWidthProperty().bind(scrollPane.widthProperty());
         stackPane.prefHeightProperty().bind(scrollPane.heightProperty());
     }
@@ -38,8 +47,18 @@ public class GraphViewController extends GraphController {
     @Override
     public void setGrapher(final Grapher grapher) {
         super.setGrapher(grapher);
-        final Graph g = grapher.getGraph();
-        final GraphView graphView = new GraphView(settings, g.getNodes(), g.getEdges());
-        stackPane.getChildren().add(graphView);
+        try {
+            final Graph g = grapher.getGraph();
+            final GraphView graphView = new GraphView(settings, g.getNodes(), g.getEdges());
+            stackPane.getChildren().add(graphView);
+        } catch (IdNotFoundException e) {
+            e.printStackTrace();
+            callWithContentBackup(() -> {
+                createDialog()
+                        .owner(getDialogOwner(root))
+                        .title("This should have never happened!")
+                        .showException(e);
+            });
+        }
     }
 }

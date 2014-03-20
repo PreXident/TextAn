@@ -1,9 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
-//import cz.cuni.mff.ufal.textan.server.ws.DataProvider;
-//import cz.cuni.mff.ufal.textan.server.ws.DocumentProcessor;
-import cz.cuni.mff.ufal.textan.server.DataProvider;
-import cz.cuni.mff.ufal.textan.server.DocumentProcessor;
+import cz.cuni.mff.ufal.textan.server.ws.DataProvider;
+import cz.cuni.mff.ufal.textan.server.ws.DocumentProcessor;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean;

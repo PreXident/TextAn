@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.core.graph;
 
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Graph;
+import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ public class Grapher {
         return client.getObjectsSet();
     }
 
-    public Graph getGraph() {
+    public Graph getGraph() throws IdNotFoundException {
         return client.getGraph(rootId, distance);
     }
 

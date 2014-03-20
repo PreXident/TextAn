@@ -30,7 +30,7 @@ public class Entity {
      * Constructor for creating from blue print.
      * @param entity entity blue print
      */
-    public Entity(final cz.cuni.mff.ufal.textan.commons_old.models.Entity entity) {
+    public Entity(final cz.cuni.mff.ufal.textan.commons.models.Entity entity) {
         value = entity.getValue();
         position = entity.getPosition();
         length = entity.getLength();
@@ -111,9 +111,13 @@ public class Entity {
      * Creates new commons Entity.
      * @return new commons Entity
      */
-    public cz.cuni.mff.ufal.textan.commons_old.models.Entity toEntity() {
-        return new cz.cuni.mff.ufal.textan.commons_old.models.Entity(
-                value, position, length, type
-        );
+    public cz.cuni.mff.ufal.textan.commons.models.Entity toEntity() {
+        final cz.cuni.mff.ufal.textan.commons.models.Entity result =
+                new cz.cuni.mff.ufal.textan.commons.models.Entity();
+        result.setValue(value);
+        result.setPosition(position);
+        result.setLength(length);
+        result.setType(type);
+        return result;
     }
 }

@@ -1,6 +1,8 @@
 package cz.cuni.mff.ufal.textan.core;
 
+import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds;
 import cz.cuni.mff.ufal.textan.utils.Pair;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +27,11 @@ public class Relation {
      * @param relation blue print relation
      * @param objects id -> object mapping to resolve relation ids
      */
-    public Relation(final cz.cuni.mff.ufal.textan.commons_old.models.Relation relation, final Map<Integer, Object> objects) {
+    public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Integer, Object> objects) {
         id = relation.getId();
-        type = new RelationType(relation.getType());
-        List<Integer> ids = relation.getObjectInRelationIds();
-        List<Integer> orders = relation.getOrderInRelation();
+        type = new RelationType(relation.getRelationType());
+        List<Integer> ids = Arrays.asList(relation.getObjectInRelationIds().getObjectId());
+        List<Integer> orders = Arrays.asList(0); //TODO where are orders?
         for (int i = 0; i < ids.size(); ++i) {
             this.objects.add(new Pair<>(objects.get(ids.get(i)), orders.get(i)));
         }
@@ -68,14 +70,20 @@ public class Relation {
      * Creates new commons Relation.
      * @return new commons Relation
      */
-    public cz.cuni.mff.ufal.textan.commons_old.models.Relation toRelation() {
-        final cz.cuni.mff.ufal.textan.commons_old.models.Relation result = new cz.cuni.mff.ufal.textan.commons_old.models.Relation(
-                id, type.toRelationType()
-        );
-        objects.stream().forEach((pair) -> {
-            result.getObjectInRelationIds().add(pair.getFirst().getId());
-            result.getObjectInRelationIds().add(pair.getSecond());
-        });
+    public cz.cuni.mff.ufal.textan.commons.models.Relation toRelation() {
+        final cz.cuni.mff.ufal.textan.commons.models.Relation result =
+                new cz.cuni.mff.ufal.textan.commons.models.Relation();
+        result.setId(id);
+        result.setRelationType(type.toRelationType());
+        result.setIsNew(Boolean.TRUE); //TODO add relation feature
+        final ObjectInRelationIds ids = new ObjectInRelationIds();
+        result.setObjectInRelationIds(ids);
+        //TODO add object ids and orders to result
+//        objects.stream().forEach((pair) -> {
+//            result.getObjectInRelationIds().add(pair.getFirst().getId());
+//            result.getObjectInRelationIds().add(pair.getSecond());
+//        });
+        result.setObjectInRelationIds(ids);
         return result;
     }
 }

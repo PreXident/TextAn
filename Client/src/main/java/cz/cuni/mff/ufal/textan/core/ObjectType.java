@@ -15,9 +15,9 @@ public class ObjectType {
      * Creates Object Type from commons blue print.
      * @param objectType object type blueprint
      */
-    public ObjectType(final cz.cuni.mff.ufal.textan.commons_old.models.ObjectType objectType) {
+    public ObjectType(final cz.cuni.mff.ufal.textan.commons.models.ObjectType objectType) {
         id = objectType.getId();
-        name = objectType.getName();
+        name = String.valueOf(objectType.getName()); //TODO int as name, really?
     }
 
     /**
@@ -66,9 +66,11 @@ public class ObjectType {
      * Creates new commons object type.
      * @return new commons object type
      */
-    public cz.cuni.mff.ufal.textan.commons_old.models.ObjectType toObjectType() {
-        return new cz.cuni.mff.ufal.textan.commons_old.models.ObjectType(
-                id, name
-        );
+    public cz.cuni.mff.ufal.textan.commons.models.ObjectType toObjectType() {
+        final cz.cuni.mff.ufal.textan.commons.models.ObjectType result =
+                new cz.cuni.mff.ufal.textan.commons.models.ObjectType();
+        result.setId(id);
+        result.setName(Integer.parseInt(name));
+        return result;
     }
 }

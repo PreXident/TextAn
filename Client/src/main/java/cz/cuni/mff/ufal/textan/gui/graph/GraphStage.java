@@ -56,6 +56,5 @@ public class GraphStage extends OuterStage {
     @Override
     public void close() {
         super.close();
-        //TODO save logic here
     }
 }

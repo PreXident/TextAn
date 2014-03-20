@@ -69,7 +69,6 @@ public class TextAn extends Application {
         //parse arguments from command line, ie. load property file
         final List<String> args = getParameters().getRaw();
         if (helpNeeded(args)) {
-            //TODO usage printing
             System.out.printf(localize("usage"), DEFAULT_PROPERTIES);
             System.exit(0);
         }

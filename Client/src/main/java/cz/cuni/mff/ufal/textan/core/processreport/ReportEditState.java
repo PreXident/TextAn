@@ -36,7 +36,7 @@ final class ReportEditState extends State {
     @Override
     public void setReport(final ProcessReportPipeline pipeline, final String report) {
         pipeline.reportText = report;
-        pipeline.reportEntities = pipeline.client.getEntities(report);
+        pipeline.reportEntities = pipeline.client.getEntities(pipeline.ticket, report);
         pipeline.reportEntities.sort((Entity e1, Entity e2) -> e1.getPosition() - e2.getPosition());
         pipeline.reportWords = parse(report);
         assign(pipeline.reportWords, pipeline.reportEntities);

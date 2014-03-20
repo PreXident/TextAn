@@ -11,7 +11,7 @@ import javax.jws.WebService;
  * The interface for Web Service, which provides getting information from the system.
  * Created by Petr Fanta on 7.1.14.
  */
-@WebService(name = "DataProviderService")
+@WebService(name = "DataProvider")
 public interface IDataProvider {
 
     /**

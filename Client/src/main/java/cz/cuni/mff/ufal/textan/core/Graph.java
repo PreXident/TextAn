@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import java.util.ArrayList;
+import cz.cuni.mff.ufal.textan.commons.models.Graph.Edges;
+import cz.cuni.mff.ufal.textan.commons.models.Graph.Nodes;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,11 +23,11 @@ public class Graph {
      * Only constructor.
      * @param graph graph blue print
      */
-    public Graph(final cz.cuni.mff.ufal.textan.commons_old.models.Graph graph) {
-        graph.getNodes().stream().forEach(obj -> {
+    public Graph(final cz.cuni.mff.ufal.textan.commons.models.Graph graph) {
+        graph.getNodes().getObject().stream().forEach(obj -> {
             nodes.put(obj.getId(), new Object(obj));
         });
-        graph.getEdges().stream().forEach(relation -> {
+        graph.getEdges().getRelation().stream().forEach(relation -> {
             edges.add(new Relation(relation, nodes));
         });
     }
@@ -51,14 +52,23 @@ public class Graph {
      * Creates new commons Graph.
      * @return new commons Graph
      */
-    public cz.cuni.mff.ufal.textan.commons_old.models.Graph toGraph() {
-        return new cz.cuni.mff.ufal.textan.commons_old.models.Graph(
+    public cz.cuni.mff.ufal.textan.commons.models.Graph toGraph() {
+        final cz.cuni.mff.ufal.textan.commons.models.Graph result =
+                new cz.cuni.mff.ufal.textan.commons.models.Graph();
+        final Nodes n = new Nodes();
+        n.getObject().addAll(
                 nodes.values().stream()
-                        .map((Object obj) -> obj.toObject())
-                        .collect(Collectors.toCollection(ArrayList::new)),
-                edges.stream()
-                        .map((Relation rel) -> rel.toRelation())
-                        .collect(Collectors.toCollection(ArrayList::new))
+                        .map(Object::toObject)
+                        .collect(Collectors.toList())
         );
+        result.setNodes(n);
+        final Edges e = new Edges();
+        e.getRelation().addAll(
+                edges.stream()
+                        .map(Relation::toRelation)
+                        .collect(Collectors.toList())
+        );
+        result.setEdges(e);
+        return result;
     }
 }

@@ -63,7 +63,7 @@ final class ReportEntitiesState extends State {
             builder.index = ents.size();
             ents.add(new Entity(alias.toString(), start, pipeline.reportText.length() - start, builder.getId()));
         }
-        pipeline.client.getObjects(pipeline.reportText, pipeline.reportEntities);
+        pipeline.client.getObjects(pipeline.ticket, pipeline.reportText, pipeline.reportEntities);
         pipeline.reportObjects.clear();
         for (Entity ent : pipeline.reportEntities) {
             final Optional<Double> max = ent.getCandidates().keySet().stream().max(Double::compare);
