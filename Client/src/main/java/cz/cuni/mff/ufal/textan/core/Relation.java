@@ -1,12 +1,12 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds;
+import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation;
 import cz.cuni.mff.ufal.textan.utils.Pair;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Client side representation of {@link cz.cuni.mff.ufal.textan.commons.models.Relation}.
@@ -20,7 +20,7 @@ public class Relation {
     private final RelationType type;
 
     /** Objects and their order in relation. */
-    private final Set<Pair<Object, Integer>> objects = new HashSet<>();
+    private final Set<Pair<Object, Integer>> objects;
 
     /**
      * Creates Relation from commons blue print.
@@ -30,16 +30,15 @@ public class Relation {
     public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Integer, Object> objects) {
         id = relation.getId();
         type = new RelationType(relation.getRelationType());
-        List<Integer> ids = Arrays.asList(relation.getObjectInRelationIds().getObjectId());
-        List<Integer> orders = Arrays.asList(0); //TODO where are orders?
-        for (int i = 0; i < ids.size(); ++i) {
-            this.objects.add(new Pair<>(objects.get(ids.get(i)), orders.get(i)));
-        }
+        this.objects = relation.getObjectInRelationIds().getInRelation().stream()
+                .map(inRel -> new Pair<>(objects.get(inRel.getObjectId()), inRel.getOrder()))
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
     public Relation(final int id, final RelationType type) {
         this.id  = id;
         this.type = type;
+        objects = new HashSet<>();
     }
 
     /**
@@ -77,12 +76,12 @@ public class Relation {
         result.setRelationType(type.toRelationType());
         result.setIsNew(Boolean.TRUE); //TODO add relation feature
         final ObjectInRelationIds ids = new ObjectInRelationIds();
-        result.setObjectInRelationIds(ids);
-        //TODO add object ids and orders to result
-//        objects.stream().forEach((pair) -> {
-//            result.getObjectInRelationIds().add(pair.getFirst().getId());
-//            result.getObjectInRelationIds().add(pair.getSecond());
-//        });
+        for (Pair<Object, Integer> pair : objects) {
+            final InRelation inRelation = new InRelation();
+            inRelation.setObjectId(pair.getFirst().getId());
+            inRelation.setOrder(pair.getSecond());
+            ids.getInRelation().add(inRelation);
+        }
         result.setObjectInRelationIds(ids);
         return result;
     }

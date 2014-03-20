@@ -1,20 +1,22 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
-import cz.cuni.mff.ufal.textan.commons.models.GetEditingTicketResponse;
-import cz.cuni.mff.ufal.textan.commons.models.GetEntitiesFromString;
-import cz.cuni.mff.ufal.textan.commons.models.GetEntitiesFromStringResponse;
-import cz.cuni.mff.ufal.textan.commons.models.GetGraphById;
-import cz.cuni.mff.ufal.textan.commons.models.GetGraphByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.GetObjectTypesResponse;
-import cz.cuni.mff.ufal.textan.commons.models.GetObjectsByTypeId;
-import cz.cuni.mff.ufal.textan.commons.models.GetObjectsByTypeIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.GetObjectsFromString.Entities;
-import cz.cuni.mff.ufal.textan.commons.models.GetObjectsFromStringResponse.Assignment;
-import cz.cuni.mff.ufal.textan.commons.models.GetObjectsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.SaveProcessedDocumentFromString.Objects;
-import cz.cuni.mff.ufal.textan.commons.models.SaveProcessedDocumentFromString.Relations;
-import cz.cuni.mff.ufal.textan.commons.models.Void;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetGraphById;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetGraphByIdResponse;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectTypesResponse;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeId;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdResponse;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsResponse;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicket;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromString;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromString.Entities;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromStringResponse.Assignment;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromStringResponse.Assignment.Objects.ObjectWithRating;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Objects;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Relations;
 import cz.cuni.mff.ufal.textan.commons.ws.DataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.DocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
@@ -75,11 +77,18 @@ public class Client {
     private DocumentProcessor getDocumentProcessor() {
         if (documentProcessor == null) {
             try {
-                Service service = Service.create(new URL("http://localhost:9100/soap/document?wsdl"), new QName("http://ws.commons.textan.ufal.mff.cuni.cz", "DocumentProcessorService"));
+                Service service = Service.create(
+                        new URL("http://localhost:9100/soap/document?wsdl"),
+                        new QName("http://ws.commons.textan.ufal.mff.cuni.cz",
+                                "DocumentProcessorService"));
                 // Endpoint Address
                 String endpointAddress = "http://localhost:9100/soap/document";
                 // Add a port to the Service
-                service.addPort(new QName("http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessorService", "DocumentProcessorPort"), SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
+                service.addPort(
+                        new QName("http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessorService",
+                                "DocumentProcessorPort"),
+                        SOAPBinding.SOAP11HTTP_BINDING,
+                        endpointAddress);
                 documentProcessor = service.getPort(DocumentProcessor.class);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -96,11 +105,18 @@ public class Client {
     private DataProvider getDataProvider() throws WebServiceException {
         if (dataProvider == null) {
             try {
-                Service service = Service.create(new URL("http://localhost:9100/soap/data?wsdl"), new QName("http://ws.commons.textan.ufal.mff.cuni.cz", "DataProviderService"));
+                Service service = Service.create(
+                        new URL("http://localhost:9100/soap/data?wsdl"),
+                        new QName("http://ws.commons.textan.ufal.mff.cuni.cz",
+                                "DataProviderService"));
                 // Endpoint Address
                 String endpointAddress = "http://localhost:9100/soap/data";
                 // Add a port to the Service
-                service.addPort(new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService", "DataProviderPort"), SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
+                service.addPort(
+                        new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService",
+                                "DataProviderPort"),
+                        SOAPBinding.SOAP11HTTP_BINDING,
+                        endpointAddress);
                 dataProvider = service.getPort(DataProvider.class);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -168,9 +184,11 @@ public class Client {
         for (Assignment assignment : response) {
             final Entity ent = map.get(assignment.getEntity().getPosition());
             ent.getCandidates().clear();
-            assignment.getObjects().getObject().stream().forEach(
-                    obj -> ent.getCandidates().put(1.0, new Object(obj)) //TODO candidate rating
-            );
+            for (ObjectWithRating rating : assignment.getObjects().getObjectWithRating()) {
+                final double r = rating.getRating();
+                final Object obj = new Object(rating.getObject());
+                ent.getCandidates().put(r, obj);
+            }
         }
     }
 
@@ -229,7 +247,7 @@ public class Client {
      */
     public List<ObjectType> getObjectTypesList() {
         final GetObjectTypesResponse response =
-                (GetObjectTypesResponse) getDataProvider().getObjectTypes(new Void(), createTicket()); //TODO why does getObjectTypes return java.lang.Object?
+                getDataProvider().getObjectTypes(new Void(), createTicket());
         return response.getObjectType().stream()
                 .map(ObjectType::new)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -242,7 +260,7 @@ public class Client {
      */
     public Set<ObjectType> getObjectTypesSet() {
         final GetObjectTypesResponse response =
-                (GetObjectTypesResponse) getDataProvider().getObjectTypes(new Void(), createTicket()); //TODO why does getObjectTypes return java.lang.Object?
+                getDataProvider().getObjectTypes(new Void(), createTicket());
         return response.getObjectType().stream()
                 .map(ObjectType::new)
                 .collect(Collectors.toCollection(HashSet::new));
@@ -263,12 +281,10 @@ public class Client {
      * @see IDocumentProcessor#getTicket(java.lang.String)
      */
     public Ticket getTicket(final String username) {
-        //TODO why getEditingTicket wants two tickets?
-        final EditingTicket request = new EditingTicket();
+        final GetEditingTicket request = new GetEditingTicket();
         final cz.cuni.mff.ufal.textan.commons.models.Ticket ticket =
                 new cz.cuni.mff.ufal.textan.commons.models.Ticket();
         ticket.setUsername(username);
-        request.setUsername(username);
         final DocumentProcessor docProc = getDocumentProcessor();
         final GetEditingTicketResponse response = docProc.getEditingTicket(request, ticket);
         return new Ticket(response.getEditingTicket());

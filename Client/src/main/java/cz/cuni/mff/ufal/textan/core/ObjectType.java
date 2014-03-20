@@ -17,7 +17,7 @@ public class ObjectType {
      */
     public ObjectType(final cz.cuni.mff.ufal.textan.commons.models.ObjectType objectType) {
         id = objectType.getId();
-        name = String.valueOf(objectType.getName()); //TODO int as name, really?
+        name = objectType.getName();
     }
 
     /**
@@ -70,7 +70,7 @@ public class ObjectType {
         final cz.cuni.mff.ufal.textan.commons.models.ObjectType result =
                 new cz.cuni.mff.ufal.textan.commons.models.ObjectType();
         result.setId(id);
-        result.setName(Integer.parseInt(name));
+        result.setName(name);
         return result;
     }
 }
