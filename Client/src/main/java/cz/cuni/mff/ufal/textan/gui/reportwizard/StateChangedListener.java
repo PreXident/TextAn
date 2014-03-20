@@ -5,7 +5,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.State;
 import cz.cuni.mff.ufal.textan.core.processreport.State.StateType;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import cz.cuni.mff.ufal.textan.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

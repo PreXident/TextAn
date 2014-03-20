@@ -7,7 +7,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import cz.cuni.mff.ufal.textan.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;

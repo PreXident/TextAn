@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.utils;
+package cz.cuni.mff.ufal.textan.commons.utils;
 
 import java.util.Enumeration;
 import java.util.NoSuchElementException;

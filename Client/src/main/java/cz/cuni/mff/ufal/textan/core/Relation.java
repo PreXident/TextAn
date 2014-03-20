@@ -2,7 +2,7 @@ package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds;
 import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation;
-import cz.cuni.mff.ufal.textan.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;

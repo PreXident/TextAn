@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui;
 
-import cz.cuni.mff.ufal.textan.utils.EmptyResourceBundle;
-import cz.cuni.mff.ufal.textan.utils.UnclosableStream;
+import cz.cuni.mff.ufal.textan.commons.utils.EmptyResourceBundle;
+import cz.cuni.mff.ufal.textan.commons.utils.UnclosableStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

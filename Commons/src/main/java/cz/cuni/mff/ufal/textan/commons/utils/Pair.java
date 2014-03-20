@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.utils;
+package cz.cuni.mff.ufal.textan.commons.utils;
 
 //this class can be serialized
 import java.io.Serializable;
@@ -64,12 +64,25 @@ public class Pair<First, Second> implements Cloneable, Serializable {
         try {
             First firstClone = first == null ? null : (First) first.getClass().getMethod("clone").invoke(first);
             Second secondClone = second == null ? null : (Second) second.getClass().getMethod("clone").invoke(second);
-            Pair<First, Second> clone = new Pair<>(firstClone, secondClone);
-            return clone;
+            return new Pair<>(firstClone, secondClone);
         } catch (NoSuchMethodException e) {
             throw new UnsupportedOperationException("Not both of the encapsulated objects are Cloneable!", e);
         } catch (Exception e) {
             throw new UnsupportedOperationException("An error occured!", e);
+        }
+    }
+
+    /**
+     * Returns whether the objects are equal.
+     * @param obj1 first object to test
+     * @param obj2 second object to test
+     * @return true if the objects are equal, false otherwise
+     */
+    private boolean equals(final Object obj1, final Object obj2) {
+        if (obj1 == null) {
+            return obj2 == null;
+        } else {
+            return obj1.equals(obj2);
         }
     }
 
@@ -78,14 +91,8 @@ public class Pair<First, Second> implements Cloneable, Serializable {
         if (!(obj instanceof Pair)) {
             return false;
         }
-        Pair p = (Pair) obj;
-        if (first == null) {
-            return p.first == null;
-        }
-        if (second == null) {
-            return p.second == null;
-        }
-        return first.equals(p.first) && second.equals(p.second);
+        final Pair p = (Pair) obj;
+        return equals(first, p.first) && equals(second, p.second);
     }
 
     @Override
