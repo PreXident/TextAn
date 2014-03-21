@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<jaxws:bindings
+        xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        wsdlLocation="../wsdl/DataProvider.wsdl"
+        >
+
+    <jaxws:bindings node="wsdl:definitions/wsdl:portType[@name='DataProvider']">
+        <jaxws:class name="IDataProvider"/>
+    </jaxws:bindings>
+
+</jaxws:bindings>

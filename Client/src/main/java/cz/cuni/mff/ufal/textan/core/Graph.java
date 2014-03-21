@@ -24,10 +24,10 @@ public class Graph {
      * @param graph graph blue print
      */
     public Graph(final cz.cuni.mff.ufal.textan.commons.models.Graph graph) {
-        graph.getNodes().getObject().stream().forEach(obj -> {
+        graph.getNodes().getObjects().stream().forEach(obj -> {
             nodes.put(obj.getId(), new Object(obj));
         });
-        graph.getEdges().getRelation().stream().forEach(relation -> {
+        graph.getEdges().getRelations().stream().forEach(relation -> {
             edges.add(new Relation(relation, nodes));
         });
     }
@@ -56,14 +56,14 @@ public class Graph {
         final cz.cuni.mff.ufal.textan.commons.models.Graph result =
                 new cz.cuni.mff.ufal.textan.commons.models.Graph();
         final Nodes n = new Nodes();
-        n.getObject().addAll(
+        n.getObjects().addAll(
                 nodes.values().stream()
                         .map(Object::toObject)
                         .collect(Collectors.toList())
         );
         result.setNodes(n);
         final Edges e = new Edges();
-        e.getRelation().addAll(
+        e.getRelations().addAll(
                 edges.stream()
                         .map(Relation::toRelation)
                         .collect(Collectors.toList())

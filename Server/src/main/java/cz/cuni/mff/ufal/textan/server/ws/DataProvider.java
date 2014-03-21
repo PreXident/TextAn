@@ -19,8 +19,8 @@ import javax.jws.WebParam;
         portName = "DataProviderWS",
         targetNamespace = "http://ws.commons.textan.ufal.mff.cuni.cz",
         wsdlLocation = "classpath:wsdl/DataProvider.wsdl",
-        endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.DataProvider")
-public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.DataProvider {
+        endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDataProvider")
+public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataProvider.class);
 

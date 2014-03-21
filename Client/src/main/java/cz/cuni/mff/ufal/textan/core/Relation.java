@@ -30,7 +30,7 @@ public class Relation {
     public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Integer, Object> objects) {
         id = relation.getId();
         type = new RelationType(relation.getRelationType());
-        this.objects = relation.getObjectInRelationIds().getInRelation().stream()
+        this.objects = relation.getObjectInRelationIds().getInRelations().stream()
                 .map(inRel -> new Pair<>(objects.get(inRel.getObjectId()), inRel.getOrder()))
                 .collect(Collectors.toCollection(HashSet::new));
     }
@@ -80,7 +80,7 @@ public class Relation {
             final InRelation inRelation = new InRelation();
             inRelation.setObjectId(pair.getFirst().getId());
             inRelation.setOrder(pair.getSecond());
-            ids.getInRelation().add(inRelation);
+            ids.getInRelations().add(inRelation);
         }
         result.setObjectInRelationIds(ids);
         return result;

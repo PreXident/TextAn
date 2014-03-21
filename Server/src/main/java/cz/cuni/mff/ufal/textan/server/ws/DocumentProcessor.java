@@ -14,8 +14,8 @@ import javax.jws.WebService;
         portName = "DocumentProcessor",
         targetNamespace = "http://ws.commons.textan.ufal.mff.cuni.cz",
         wsdlLocation = "classpath:wsdl/DocumentProcessor.wsdl",
-        endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.DocumentProcessor")
-public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.DocumentProcessor {
+        endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor")
+public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DocumentProcessor.class);
 

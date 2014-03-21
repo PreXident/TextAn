@@ -14,8 +14,8 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromSt
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromStringResponse.Assignment.Objects.ObjectWithRating;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Objects;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Relations;
-import cz.cuni.mff.ufal.textan.commons.ws.DataProvider;
-import cz.cuni.mff.ufal.textan.commons.ws.DocumentProcessor;
+import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
+import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import java.net.MalformedURLException;
@@ -43,10 +43,10 @@ public class Client {
     final protected Properties settings;
 
     /** Instance of data provider. */
-    protected DataProvider dataProvider = null;
+    protected IDataProvider dataProvider = null;
 
     /** Instance of document processor. */
-    protected DocumentProcessor documentProcessor = null;
+    protected IDocumentProcessor documentProcessor = null;
 
     /**
      * Only constructor
@@ -71,7 +71,7 @@ public class Client {
      * Returns {@link #documentProcessor}, it is created if needed.
      * @return document processor
      */
-    private DocumentProcessor getDocumentProcessor() {
+    private IDocumentProcessor getDocumentProcessor() {
         if (documentProcessor == null) {
             try {
                 Service service = Service.create(
@@ -86,7 +86,7 @@ public class Client {
                                 "DocumentProcessorPort"),
                         SOAPBinding.SOAP11HTTP_BINDING,
                         endpointAddress);
-                documentProcessor = service.getPort(DocumentProcessor.class);
+                documentProcessor = service.getPort(IDocumentProcessor.class);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new WebServiceException("Malformed URL!", e);
@@ -99,7 +99,7 @@ public class Client {
      * Returns {@link #dataProvider}, it is created if needed.
      * @return data provider
      */
-    private DataProvider getDataProvider() throws WebServiceException {
+    private IDataProvider getDataProvider() throws WebServiceException {
         if (dataProvider == null) {
             try {
                 Service service = Service.create(
@@ -114,7 +114,7 @@ public class Client {
                                 "DataProviderPort"),
                         SOAPBinding.SOAP11HTTP_BINDING,
                         endpointAddress);
-                dataProvider = service.getPort(DataProvider.class);
+                dataProvider = service.getPort(IDataProvider.class);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new WebServiceException("Malformed URL!", e);
@@ -128,15 +128,15 @@ public class Client {
      * @param ticket editing ticket
      * @param text text to process
      * @return entities identified in text
-     * @see DocumentProcessor#getEntitiesFromString(GetEntitiesFromString, EditingTicket)
+     * @see IDocumentProcessor#getEntitiesFromString(GetEntitiesFromString, EditingTicket)
      */
     public List<Entity> getEntities(final Ticket ticket, final String text) {
         final GetEntitiesFromString request = new GetEntitiesFromString();
         request.setText(text);
-        final DocumentProcessor docProc = getDocumentProcessor();
+        final IDocumentProcessor docProc = getDocumentProcessor();
         final GetEntitiesFromStringResponse response =
                 docProc.getEntitiesFromString(request, ticket.toTicket());
-        return response.getEntity().stream()
+        return response.getEntities().stream()
                 .map(Entity::new)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
@@ -167,13 +167,13 @@ public class Client {
      * @param ticket editing ticket
      * @param text report to process
      * @param entities where to store candidates
-     * @see IDocumentProcessor#getObjects(java.lang.String, cz.cuni.mff.ufal.textan.commons.models.Entity[])
+     * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getObjectsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromString, cz.cuni.mff.ufal.textan.commons.models.EditingTicket)
      */
     public void getObjects(final Ticket ticket, final String text, final List<Entity> entities) {
         final Entities ents = new Entities();
         final Map<Integer, Entity> map = new HashMap<>();
         for (Entity entity : entities) {
-            ents.getEntity().add(entity.toEntity());
+            ents.getEntities().add(entity.toEntity());
             map.put(entity.getPosition(), entity);
         }
 
@@ -183,10 +183,10 @@ public class Client {
 
         final GetObjectsFromStringResponse response = getDocumentProcessor().getObjectsFromString(request, ticket.toTicket());
 
-        for (Assignment assignment : response.getAssignment()) {
+        for (Assignment assignment : response.getAssignments()) {
             final Entity ent = map.get(assignment.getEntity().getPosition());
             ent.getCandidates().clear();
-            for (ObjectWithRating rating : assignment.getObjects().getObjectWithRating()) {
+            for (ObjectWithRating rating : assignment.getObjects().getObjectWithRatings()) {
                 final double r = rating.getRating();
                 final Object obj = new Object(rating.getObject());
                 ent.getCandidates().put(r, obj);
@@ -208,7 +208,7 @@ public class Client {
             request.setObjectTypeId(typeId);
             final GetObjectsByTypeIdResponse response =
                     getDataProvider().getObjectsByTypeId(request, createTicket());
-            return response.getObject().stream()
+            return response.getObjects().stream()
                     .map(Object::new)
                     .collect(Collectors.toCollection(ArrayList::new));
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
@@ -224,7 +224,7 @@ public class Client {
     public List<Object> getObjectsList() {
         final GetObjectsResponse response =
                 getDataProvider().getObjects(new Void(), createTicket());
-        return response.getObject().stream()
+        return response.getObjects().stream()
                 .map(Object::new)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
@@ -237,7 +237,7 @@ public class Client {
     public Set<Object> getObjectsSet() {
         final GetObjectsResponse response =
                 getDataProvider().getObjects(new Void(), createTicket());
-        return response.getObject().stream()
+        return response.getObjects().stream()
                 .map(Object::new)
                 .collect(Collectors.toCollection(HashSet::new));
     }
@@ -250,7 +250,7 @@ public class Client {
     public List<ObjectType> getObjectTypesList() {
         final GetObjectTypesResponse response =
                 getDataProvider().getObjectTypes(new Void(), createTicket());
-        return response.getObjectType().stream()
+        return response.getObjectTypes().stream()
                 .map(ObjectType::new)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
@@ -263,7 +263,7 @@ public class Client {
     public Set<ObjectType> getObjectTypesSet() {
         final GetObjectTypesResponse response =
                 getDataProvider().getObjectTypes(new Void(), createTicket());
-        return response.getObjectType().stream()
+        return response.getObjectTypes().stream()
                 .map(ObjectType::new)
                 .collect(Collectors.toCollection(HashSet::new));
     }
@@ -287,7 +287,7 @@ public class Client {
         final cz.cuni.mff.ufal.textan.commons.models.Ticket ticket =
                 new cz.cuni.mff.ufal.textan.commons.models.Ticket();
         ticket.setUsername(username);
-        final DocumentProcessor docProc = getDocumentProcessor();
+        final IDocumentProcessor docProc = getDocumentProcessor();
         final GetEditingTicketResponse response = docProc.getEditingTicket(request, ticket);
         return new Ticket(response.getEditingTicket());
     }
@@ -319,7 +319,7 @@ public class Client {
             final String text, final List<Entity> reportEntities,
             final Set<Relation> reportRelations) {
         final Objects objs = new Objects();
-        objs.getObject().addAll(
+        objs.getObjects().addAll(
                 reportEntities.stream()
                         .sequential()
                         .filter(ent -> ent.getCandidate() != null)
@@ -327,7 +327,7 @@ public class Client {
                         .collect(Collectors.toList())
         );
         final Relations relations = new Relations();
-        relations.getRelation().addAll(
+        relations.getRelations().addAll(
                 reportRelations.stream()
                         .map(Relation::toRelation)
                         .collect(Collectors.toList())
