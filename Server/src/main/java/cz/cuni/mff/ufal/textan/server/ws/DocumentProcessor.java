@@ -1,8 +1,10 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
 import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
+import cz.cuni.mff.ufal.textan.commons.models.Entity;
 import cz.cuni.mff.ufal.textan.commons.models.Ticket;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +29,21 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             EditingTicket editingTicket) {
 
         LOG.debug("Executing operation getObjectsFromString");
-
-        return new GetObjectsFromStringResponse();
+        final GetObjectsFromStringResponse response = new GetObjectsFromStringResponse();
+        for (Entity entity : getObjectsFromString.getEntities().getEntities()) {
+            final GetObjectsFromStringResponse.Assignment assignment = new GetObjectsFromStringResponse.Assignment();
+            assignment.setEntity(entity);
+            final GetObjectsFromStringResponse.Assignment.Objects objects =
+                    new GetObjectsFromStringResponse.Assignment.Objects();
+            final GetObjectsFromStringResponse.Assignment.Objects.ObjectWithRating rating =
+                    new GetObjectsFromStringResponse.Assignment.Objects.ObjectWithRating();
+            rating.setObject(MockDB.objects.get(0));
+            rating.setRating(1.0f);
+            objects.getObjectWithRatings().add(rating);
+            assignment.setObjects(objects);
+            response.getAssignments().add(assignment);
+        }
+        return response;
     }
 
     @Override
@@ -61,10 +76,22 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             GetObjectsById getObjectsById,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             EditingTicket editingTicket) {
-
         LOG.debug("Executing operation getObjectsById");
-
-        return new GetObjectsByIdResponse();
+        final GetObjectsByIdResponse response = new GetObjectsByIdResponse();
+        for (Entity entity : getObjectsById.getEntities().getEntities()) {
+            final GetObjectsByIdResponse.Assignment assignment = new GetObjectsByIdResponse.Assignment();
+            assignment.setEntity(entity);
+            final GetObjectsByIdResponse.Assignment.Objects objects =
+                    new GetObjectsByIdResponse.Assignment.Objects();
+            final GetObjectsByIdResponse.Assignment.Objects.ObjectWithRating rating =
+                    new GetObjectsByIdResponse.Assignment.Objects.ObjectWithRating();
+            rating.setObject(MockDB.objects.get(0));
+            rating.setRating(1.0f);
+            objects.getObjectWithRatings().add(rating);
+            assignment.setObjects(objects);
+            response.getAssignments().add(assignment);
+        }
+        return response;
     }
 
     @Override
@@ -73,10 +100,15 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             GetEntitiesFromString getEntitiesFromString,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             EditingTicket editingTicket) {
-
         LOG.debug("Executing operation getEntitiesFromString");
-
-        return new GetEntitiesFromStringResponse();
+        final GetEntitiesFromStringResponse response = new GetEntitiesFromStringResponse();
+        final Entity entity = new Entity();
+        entity.setPosition(0);
+        entity.setLength(getEntitiesFromString.getText().length());
+        entity.setType(0);
+        entity.setValue(getEntitiesFromString.getText());
+        response.getEntities().add(entity);
+        return response;
     }
 
     @Override
@@ -109,9 +141,12 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             GetEditingTicket getEditingTicket,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
-
         LOG.debug("Executing operation getEditingTicket");
-
-        return new GetEditingTicketResponse();
+        final GetEditingTicketResponse response = new GetEditingTicketResponse();
+        final EditingTicket t = new EditingTicket();
+        t.setTimestamp(new Date());
+        t.setUsername(ticket.getUsername());
+        response.setEditingTicket(t);
+        return response;
     }
 }
