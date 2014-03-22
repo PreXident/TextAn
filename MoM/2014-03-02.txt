@@ -1,0 +1,42 @@
+Hi, 
+ here are some results of our little experiment. Adam and Tam sent me report yesterday, Jakub today... and Vaclav didn't send anything, but he communicated with me all the time, so i think that experiment was quite successful. :)
+
+And here are reports (to let you know where are the problems):
+
+Adam:
+hi,
+i am sending my work summary - i cannot remember if we decided language or if the emails should be redistributed to all team members, so just in case i am writing in english
+
+the objects can now be assigned to entities and webservice provides best candidates - however i had problems with returning array of array in webservice (the exception claiming our Object has no parameterless constructor even though the adapter was provided) and needed to introduce a simple wrapper class Rating containg array of object that are candidates for assigning to the entity and array of ratings of the candidates
+
+also the hyper edges orientation in the graph is a problem as negative order column/field is not descriptive enough:
+for binary edges it's clear - if exactly one object order is <0 then it is the source, otherwise the edge is not oriented
+my solutionfor hyper edges - if order <0, the objects is source; if the order is nonnegative and even, it's destination; otherwise the edge is not oriented
+
+see ya on wednesday
+adam
+
+Tam:
+Dear Peter,
+
+I don't have much to report today. I am working on the second prototype of ML classifier with fake DB value (from files) and real NER output (from files). 
+
+I hope I could finish it on Wednesday.
+
+regards,
+
+Tam.
+
+Jakub (summary from me):
+Jakub had some issues with Spring.
+
+Vasek (summary from me):
+Vasek fix some problems with the data layer and started to implement building of graph. There were a few problems, such as: how to implement orientation in hyper edges? The solution for now is to add a node for the relation, what with only binary relation, add the node, or not?
+
+Me:
+I started to implement "business" logic in server side and continued with web services and update some dependencies in projects (so i hope that everithing works). 
+
+I hope it's sufficient for the first time. :) If you have some problem, send me (or someone else) email, maybe someone had the same problem. Don't wait for next meeting with it!
+
+Keep working and see you on Wednesday!
+Petr
