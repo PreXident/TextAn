@@ -4,22 +4,17 @@ package cz.cuni.mff.ufal.textan.server.ws;
 import cz.cuni.mff.ufal.textan.commons.models.Graph;
 import cz.cuni.mff.ufal.textan.commons.models.Graph.Edges;
 import cz.cuni.mff.ufal.textan.commons.models.Graph.Nodes;
-import cz.cuni.mff.ufal.textan.commons.models.Object;
-import cz.cuni.mff.ufal.textan.commons.models.ObjectType;
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
-import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation;
-import cz.cuni.mff.ufal.textan.commons.models.RelationType;
 import cz.cuni.mff.ufal.textan.commons.models.Ticket;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jws.WebParam;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * For now only mocking database access.
@@ -40,9 +35,12 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             Void getObjects,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
-        LOG.debug("Executing operation getObjects");
+
+        LOG.debug("Executing operation getObjects: {} {}", getObjects, ticket);
+
         final GetObjectsResponse response = new GetObjectsResponse();
         response.getObjects().addAll(MockDB.objects);
+
         return response;
     }
 
@@ -53,7 +51,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
 
-        LOG.debug("Executing operation updateDocument");
+        LOG.debug("Executing operation updateDocument: {} {}", updateDocument, ticket);
 
         return new UpdateDocumentResponse();
     }
@@ -64,9 +62,12 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             Void getObjectTypes,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
-        LOG.debug("Executing operation getObjectTypes");
+
+        LOG.debug("Executing operation getObjectTypes: {} {}", getObjectTypes, ticket);
+
         final GetObjectTypesResponse response = new GetObjectTypesResponse();
         response.getObjectTypes().addAll(MockDB.objectTypes);
+
         return response;
     }
 
@@ -77,7 +78,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getDocumentById");
+        LOG.debug("Executing operation getDocumentById: {} {}", getDocumentById, ticket);
 
         return new GetDocumentByIdResponse();
     }
@@ -88,9 +89,12 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             Void getRelationTypes,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
-        LOG.debug("Executing operation getRelationTypes");
+
+        LOG.debug("Executing operation getRelationTypes: {} {}", getRelationTypes, ticket);
+
         final GetRelationTypesResponse response = new GetRelationTypesResponse();
         response.getRelationTypes().addAll(MockDB.relationTypes);
+
         return response;
     }
 
@@ -101,7 +105,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket)
             throws IdNotFoundException {
-        LOG.debug("Executing operation getGraphById");
+
+        LOG.debug("Executing operation getGraphById: {} {}", getGraphById, ticket);
+
         final GetGraphByIdResponse response = new GetGraphByIdResponse();
         final Graph graph = new Graph();
         final Nodes nodes = new Nodes();
@@ -111,6 +117,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         edges.getRelations().addAll(MockDB.relations);
         graph.setEdges(edges);
         response.setGraph(graph);
+
         return response;
     }
 
@@ -121,7 +128,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket)
             throws IdNotFoundException {
-        LOG.debug("Executing operation getRelatedObjectsById");
+
+        LOG.debug("Executing operation getRelatedObjectsById: {} {}", getRelatedObjectsById, ticket);
+
         final GetRelationsByTypeIdResponse response = new GetRelationsByTypeIdResponse();
         final List<Relation> rels =
                 MockDB.relations.stream().filter(
@@ -130,6 +139,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
                         )
                 ).collect(Collectors.toList());
         response.getRelations().addAll(rels);
+
         return response;
     }
 
@@ -140,13 +150,15 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
 
-        LOG.debug("Executing operation getObjectsByType");
+        LOG.debug("Executing operation getObjectsByType: {} {}", getObjectsByType, ticket);
+
         final GetObjectsByTypeResponse response = new GetObjectsByTypeResponse();
         response.getObjects().addAll(
                 MockDB.objects.stream().filter(
                         obj -> obj.getObjectType().getId() == getObjectsByType.getObjectType().getId()
                 ).collect(Collectors.toList())
         );
+
         return response;
     }
 
@@ -157,7 +169,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
 
-        LOG.debug("Executing operation addDocument");
+        LOG.debug("Executing operation addDocument: {} {}", addDocument, ticket);
 
         return new AddDocumentResponse();
     }
@@ -169,7 +181,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
 
-        LOG.debug("Executing operation splitObject");
+        LOG.debug("Executing operation splitObject: {} {}", splitObject, ticket);
 
         return new SplitObjectResponse();
     }
@@ -182,7 +194,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             Ticket ticket)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getPathById");
+        LOG.debug("Executing operation getPathById: {} {}", getPathById, ticket);
 
         return new GetPathByIdResponse();
     }
@@ -194,7 +206,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
 
-        LOG.debug("Executing operation getDocuments");
+        LOG.debug("Executing operation getDocuments: {} {}", getDocuments, ticket);
 
         return new GetDocumentsResponse();
     }
@@ -205,13 +217,16 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             GetRelationsByType getRelationsByType,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
-        LOG.debug("Executing operation getRelationsByType");
+
+        LOG.debug("Executing operation getRelationsByType: {} {}", getRelationsByType, ticket);
+
         final GetRelationsByTypeResponse response = new GetRelationsByTypeResponse();
         response.getRelations().addAll(
                 MockDB.relations.stream().filter(
                         rel -> rel.getRelationType().getId() == getRelationsByType.getRelationType().getId()
                 ).collect(Collectors.toList())
         );
+
         return response;
     }
 
@@ -222,13 +237,16 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket)
             throws IdNotFoundException {
-        LOG.debug("Executing operation getRelationsByTypeId");
+
+        LOG.debug("Executing operation getRelationsByTypeId: {} {}", getRelationsByTypeId, ticket);
+
         final GetRelationsByTypeIdResponse response = new GetRelationsByTypeIdResponse();
         response.getRelations().addAll(
                 MockDB.relations.stream().filter(
                         rel -> rel.getRelationType().getId() == getRelationsByTypeId.getRelationTypeId()
                 ).collect(Collectors.toList())
         );
+
         return response;
     }
 
@@ -239,13 +257,16 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket)
             throws IdNotFoundException {
-        LOG.debug("Executing operation getObjectsByTypeId");
+
+        LOG.debug("Executing operation getObjectsByTypeId: {} {}", getObjectsByTypeId, ticket);
+
         final GetObjectsByTypeIdResponse response = new GetObjectsByTypeIdResponse();
         response.getObjects().addAll(
                 MockDB.objects.stream().filter(
                         obj -> obj.getObjectType().getId() == getObjectsByTypeId.getObjectTypeId()
                 ).collect(Collectors.toList())
         );
+
         return response;
     }
 
@@ -257,7 +278,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             Ticket ticket)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getObject");
+        LOG.debug("Executing operation getObject: {} {}", getObject, ticket);
 
         return new GetObjectResponse();
     }
@@ -269,7 +290,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
 
-        LOG.debug("Executing operation mergeObjects");
+        LOG.debug("Executing operation mergeObjects: {} {}", mergeObjects, ticket);
 
         return new MergeObjectsResponse();
     }

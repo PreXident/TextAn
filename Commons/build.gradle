@@ -8,7 +8,10 @@ repositories {
 }
 
 dependencies {
+
+    //required from jaxb cxf extension
     compile group: 'org.apache.cxf', name: 'cxf-tools-common', version: '2.7.7'
+    compile group: 'org.apache.cxf.xjc-utils', name: 'cxf-xjc-runtime', version: '2.7.0'
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
 }
@@ -40,9 +43,14 @@ ext {
 }
 
 dependencies {
+    //wsdl2java artifacts
     cxfArtifacts.each { artifact ->
         cxf "org.apache.cxf:$artifact:$cxfVersion"
     }
+
+    //jaxb cxf extensions artifacts
+    cxf "org.apache.cxf.xjcplugins:cxf-xjc-ts:2.7.0"
+    cxf "org.apache.cxf.xjcplugins:cxf-xjc-dv:2.7.0"
 }
 
 task wsdl2java {
@@ -54,15 +62,25 @@ task wsdl2java {
     compileJava.dependsOn name
 
     ext {
+        //list of wsdl files
         wsdlFiles = ['src/main/resources/wsdl/DocumentProcessor.wsdl', 'src/main/resources/wsdl/DataProvider.wsdl']
+
+        //target directory (for generated files)
         outputDir = file "$buildDir/generated-src/cxf"
-//        wsdlLocation = 'classpath:wsdl/'
-        //TODO: somehow add custom params to each input file
+//        wsdlLocation = 'classpath:wsdl/' //TODO: how to define wsdl location for each wsdl file?
+
         customParams = [
+                //customizations
                 '-b', file("$projectDir/src/main/resources/customizations/bindings.xml"),
                 '-b', file("$projectDir/src/main/resources/customizations/documentProcessorBindings.xml"),
                 '-b', file("$projectDir/src/main/resources/customizations/dataProviderBindings.xml"),
-                '-exsh', 'true', //not portable to other jax-ws providers!
+
+                '-exsh', 'true', //provide header as method parameter,not portable to other jax-ws providers!
+
+                '-xjc-Xts', //generate toString methods
+                '-xjc-Xdv' //initialize fields with default value
+
+                //args '-all' //uncomment for generate sample client, sever, ant etc.
         ]
     }
 
@@ -84,26 +102,24 @@ task wsdl2java {
 
     doLast {
 
+        //creates list of wsdl files which is parameter of wsdl2java
         def wsdlList = File.createTempFile('wsdl', '.list')
         wsdlFiles.each {file ->
             wsdlList.append("$file\n")
         }
         wsdlList.deleteOnExit()
 
+        //executes cxf wsdl2java tool
         javaexec {
             errorOutput = errorOut
 
             classpath configurations.cxf
             main = 'org.apache.cxf.tools.wsdlto.WSDLToJava'
 
-            //args '-h'
-
             args '-d', outputDir
-            //args '-all' //uncomment for generate sample client, sever, ant etc.
             args '-verbose'
             args '-validate'
             args '-mark-generated'
-//            args '-wsdlLocation', wsdlLocation
 
             customParams.each { param ->
                 args param
