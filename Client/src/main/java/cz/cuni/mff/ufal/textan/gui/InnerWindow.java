@@ -188,8 +188,11 @@ public class InnerWindow extends Window {
         final Parent p = getParent();
         if (p != null ) {
             final Bounds b = p.getLayoutBounds();
-            if (b.getWidth()< getLayoutX() + newVal) {
-                setPrefWidth(b.getWidth() - getLayoutX());
+            if (b.getWidth() < getLayoutX() + newVal) {
+                final double newWidth = b.getWidth() - getLayoutX();
+                if (newWidth >= minWidth(0)) {
+                    setPrefWidth(newWidth);
+                }
             }
         }
     }
