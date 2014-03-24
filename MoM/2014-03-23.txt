@@ -1,0 +1,31 @@
+Hi,
+ Short summary as usual...
+
+Adam:
+
+i have prepared the mockdb, so webservices in client branch can provide some functionality again
+also fixed the bug peter reported
+i am also preparing for editing relations
+
+Jakub:
+
+Nametag works with textan data classes, connection to nametag is prepared, but i didn't test it and debug it because i can't run textan in master branch. 
+And about learning own data, Milan Straka didn't respond me yet.
+
+Tam:
+
+I am working on Textpro. One problem arise: what is the input of classifier (ranker):
+
+I create an object named "Entity" which have (string, offset, length, type) as the value. Then one document is converted into a list of "entity" by NER. Normally, I take the whole list of "entity" as the input to rank. However, I wonder if that is correct? Do we need to identify each "entity" in the document?
+
+For example: "The police man met David on February 27. He come from Russia. His friend, Jenny, lives with him at Malostranske". This document is about "David", but "Jenny" maybe the name of another person in database. Do we need to find the information of  "Jenny" in this document?
+
+Venca: ... :(
+
+Me:
+I hope I've finally finished everything about web services. (If something is not working, please let me know.) The tool, which generate java sources from wsdl, generate plural names for list fields , if this is not suitable, I can change it. So, I finally start working on server side business logic and server configuration. 
+
+Part of the email, that Tam sent me, was in Czech. It is really cool! So, we can write documentation in Czech. ;)
+
+See you on Wednesday,
+Petr
