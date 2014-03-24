@@ -23,7 +23,7 @@ public class WebAppConfig {
 
     /**
      * Creates spring bean with bus for CXF initialization
-     * @return Return Spring bus
+     * @return Spring bus
      */
     @Bean( destroyMethod = "shutdown" )
     public SpringBus cxf() {

@@ -13,12 +13,10 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-/*
- * User: Petr Fanta
- * Date: 19.11.13
- * Time: 22:01
+/**
+ * Server entry point.
+ * @author Petr Fanta
  */
-
 public class AppEntry {
 
     private static final Logger LOG = LoggerFactory.getLogger(AppEntry.class);
@@ -29,7 +27,7 @@ public class AppEntry {
         AbstractApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         context.registerShutdownHook();
 
-        Server server = new Server(9100);
+        Server server = (Server)context.getBean("server");
 
         ServletHolder servletHolder = new ServletHolder(new CXFServlet());
 
@@ -52,7 +50,7 @@ public class AppEntry {
         LOG.info("Start server.");
         server.start();
 
-        LOG.info("Server running...");
+        LOG.info("Server running.");
         server.join();
 
     }
