@@ -68,7 +68,7 @@ public class GraphView extends SwingNode {
         } else {
             for (Relation rel : relations) {
                 if (rel.getObjects().size() > 2) {
-                    final Object dummy = new Object(-1, new ObjectType(-1, rel.getType().getName()), Arrays.asList(rel.toString()));
+                    final Object dummy = new RelationObject(rel);
                     g.addVertex(dummy);
                     for (Pair<Object, Integer> pair : rel.getObjects()) {
                         final Relation dummyRel = new DummyRelation(rel.getType(), pair);

@@ -85,4 +85,9 @@ public class Relation {
         result.setObjectInRelationIds(ids);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return id + ": " + type.getName();
+    }
 }
