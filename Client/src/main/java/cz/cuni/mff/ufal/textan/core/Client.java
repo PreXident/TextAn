@@ -7,6 +7,7 @@ import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectTypesRespons
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeId;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsResponse;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelationTypesResponse;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicket;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
@@ -272,6 +273,19 @@ public class Client {
         return response.getObjectTypes().stream()
                 .map(ObjectType::new)
                 .collect(Collectors.toCollection(HashSet::new));
+    }
+
+    /**
+     * Returns set of all relation types in the system.
+     * @return set of all relation types in the system
+     * @see IDataProvider#getRelationTypes()
+     */
+    public List<RelationType> getRelationTypesList() {
+        final GetRelationTypesResponse response =
+                getDataProvider().getRelationTypes(new Void(), createTicket());
+        return response.getRelationTypes().stream()
+                .map(RelationType::new)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**

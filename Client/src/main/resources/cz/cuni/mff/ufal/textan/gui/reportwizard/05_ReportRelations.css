@@ -28,3 +28,13 @@
 	-fx-underline: true;
 	-fx-fill: blue;
 }
+
+.RELATION_0 {
+	-fx-underline: true;
+	-fx-fill: pink;
+}
+
+.RELATION_1 {
+	-fx-underline: true;
+	-fx-fill: teal;
+}

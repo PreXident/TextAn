@@ -153,6 +153,7 @@ public class ReportEntitiesController extends ReportWizardController {
         textFlow.getChildren().addAll(texts);
         //
         final EventHandler<ActionEvent> eh = (ActionEvent t) -> {
+            //object id in userdata
             final Integer ID = (Integer)((MenuItem) t.getSource()).getUserData();
             if (ID == null) {
                 for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
@@ -194,7 +195,7 @@ public class ReportEntitiesController extends ReportWizardController {
         for (ObjectType objType : pipeline.getClient().getObjectTypesList()) {
             final MenuItem mi = new MenuItem(objType.getName());
             mi.setOnAction(eh);
-            mi.setUserData(objType.getId());
+            mi.setUserData(objType.getId()); //object id to userdata
             contextMenu.getItems().add(mi);
         }
     }

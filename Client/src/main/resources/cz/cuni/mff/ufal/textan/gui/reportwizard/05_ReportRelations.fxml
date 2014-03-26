@@ -11,6 +11,7 @@
 <?import javafx.scene.web.WebView?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.control.cell.*?>
 
 <BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
 			fx:controller="cz.cuni.mff.ufal.textan.gui.reportwizard.ReportRelationsController" styleClass="root" >
@@ -18,9 +19,23 @@
 		<URL value="@05_ReportRelations.css" />
 	</stylesheets>
 	<center>
-		<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
-			<TextFlow fx:id="textFlow" styleClass="text-flow" />
-		</ScrollPane>
+                <SplitPane orientation="VERTICAL">
+                    <items>
+                        <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
+                                <TextFlow fx:id="textFlow" styleClass="text-flow" />
+                        </ScrollPane>
+                        <TableView fx:id="table">
+                            <!--<columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>-->
+                            <columns>
+                                <TableColumn fx:id="orderColumn" text="%order" resizable="false" />
+                                <TableColumn fx:id="objectColumn" text="%object" resizable="false" />
+                            </columns>
+                            <placeholder>
+                                <Label text="%nothing" />
+                            </placeholder>
+                        </TableView>
+                    </items>
+                </SplitPane>
 	</center>
 	<bottom>
 		<HBox alignment="CENTER_RIGHT" >
