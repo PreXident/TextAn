@@ -3,18 +3,57 @@ package cz.cuni.mff.ufal.textan.data.repositories.common;
 import java.io.Serializable;
 import java.util.List;
 
-public interface IOperations<T extends Serializable> {
 
-    T findOne(final long id);
+/**
+ * Basic DAO operations.
+ * @param <E>  the type of the entity
+ * @param <K>  the type of the identifier of the entity
+ */
+public interface IOperations<E, K extends Serializable> {
 
-    List<T> findAll();
+    /**
+     * Finds an entity in a repository by identifier.
+     *
+     * @param key the identifier
+     * @return the entity
+     */
+    E find(final K key);
 
-    void create(final T entity);
+    /**
+     * Finds all entities in a repository.
+     *
+     * @return the list of entities
+     */
+    List<E> findAll();
 
-    T update(final T entity);
+    /**
+     * Adds an entity into a repository.
+     *
+     * @param entity the entity
+     * @return the identifier of the added entity
+     */
+    K add(E entity);
 
-    void delete(final T entity);
+    /**
+     * Updates an entity in a repository.
+     *
+     * @param entity the entity
+     * @return the updated entity
+     */
+    void update(E entity);
 
-    void deleteById(final long entityId);
+    /**
+     * Deletes an entity from a repository.
+     *
+     * @param entity the entity
+     */
+    void delete(E entity);
+
+    /**
+     * Deletes an entity from a repository by identifier.
+     *
+     * @param key the entity identifier
+     */
+    void delete(final K key);
 
 }

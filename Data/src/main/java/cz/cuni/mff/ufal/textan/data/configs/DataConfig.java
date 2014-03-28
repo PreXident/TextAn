@@ -8,6 +8,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.core.env.Environment;
 
@@ -15,6 +16,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -26,6 +29,7 @@ import java.util.Properties;
 
 @Configuration
 @PropertySource("classpath:data.properties")
+@EnableTransactionManagement
 public class DataConfig {
 
     @Autowired
@@ -43,24 +47,37 @@ public class DataConfig {
     }
 
     @Bean
-    public LocalSessionFactoryBean sessionFactory() {
+    public SessionFactory sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setHibernateProperties(hibernateProperties());
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] mappings = null;
+
         try {
             mappings = resolver.getResources("classpath:mappings/*.hbm.xml");
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         sessionFactory.setMappingLocations(mappings);
-        return sessionFactory;
+
+        try {
+            sessionFactory.afterPropertiesSet();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return sessionFactory.getObject();
     }
 
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    public PlatformTransactionManager transactionManager() {
+        return new HibernateTransactionManager(sessionFactory());
     }
 
     Properties hibernateProperties() {
@@ -78,7 +95,7 @@ public class DataConfig {
 
     @Bean
     public Data data() {
-        return new Data(sessionFactory().getObject());
+        return new Data(sessionFactory());
     }
 
 
