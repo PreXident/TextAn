@@ -6,8 +6,10 @@
 
 package cz.cuni.mff.ufal.textan.data.test;
 
+import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.graph.Graph;
 import cz.cuni.mff.ufal.textan.data.graph.ObjectNode;
+import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import cz.cuni.mff.ufal.textan.data.tables.InRelationTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
@@ -19,13 +21,23 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /**
  *
  * @author Václav Pernička
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {DataConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class GraphTest {
-    
+
+    @Autowired
+    private Data data;
+
     static final int OBJECTS_COUNT = 20;
     static final int OBJECTS_IN_RELATION_COUNT = 10;
     static final String TEST_PREFIX = "[TEST][GRAPH] ";
@@ -42,39 +54,40 @@ public class GraphTest {
     
     @BeforeClass
     public static void setUpClass() {
-        System.out.println("SETUP");
-        for (int i = 0; i < objects.length; i++) {
-            objects[i] = new ObjectTable(TEST_PREFIX + "object numero " + i, objectType);
-            DataSingleton.getSingleton().addRecord(objects[i]);
-        }
-        DataSingleton.getSingleton().addRecord(relation);
-        for (int i = 0; i < OBJECTS_IN_RELATION_COUNT; i++) {
-            inRelation[i] = new InRelationTable(i, relation, objects[i]);
-            DataSingleton.getSingleton().addRecord(inRelation[i]);
-        }
+        
     }
     
     @AfterClass
     public static void tearDownClass() {
-        System.out.println("\n\nTEAR DOWN");
-        for (int i = 0; i < OBJECTS_IN_RELATION_COUNT; i++) {
-            DataSingleton.getSingleton().deleteRecord(inRelation[i]);
-        }
-        for (int i = 0; i < objects.length; i++) {
-            DataSingleton.getSingleton().deleteRecord(objects[i]);
-        }
-        
-        DataSingleton.getSingleton().deleteRecord(objectType);
-        DataSingleton.getSingleton().deleteRecord(relation);
-        DataSingleton.getSingleton().deleteRecord(relationType);
     }
     
     @Before
     public void setUp() {
+        System.out.println("SETUP");
+        for (int i = 0; i < objects.length; i++) {
+            objects[i] = new ObjectTable(TEST_PREFIX + "object numero " + i, objectType);
+            data.addRecord(objects[i]);
+        }
+        data.addRecord(relation);
+        for (int i = 0; i < OBJECTS_IN_RELATION_COUNT; i++) {
+            inRelation[i] = new InRelationTable(i, relation, objects[i]);
+            data.addRecord(inRelation[i]);
+        }
     }
     
     @After
     public void tearDown() {
+        System.out.println("\n\nTEAR DOWN");
+        for (int i = 0; i < OBJECTS_IN_RELATION_COUNT; i++) {
+            data.deleteRecord(inRelation[i]);
+        }
+        for (int i = 0; i < objects.length; i++) {
+            data.deleteRecord(objects[i]);
+        }
+        
+        data.deleteRecord(objectType);
+        data.deleteRecord(relation);
+        data.deleteRecord(relationType);
     }
 
     // TODO add test methods here.
