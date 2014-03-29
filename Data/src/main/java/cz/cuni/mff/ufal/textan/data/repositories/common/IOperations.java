@@ -19,16 +19,8 @@ public interface IOperations<E, K extends Serializable> {
      */
     E find(final K key);
 
-    /**
-     * Finds all entities in a repository which have specified value in some column.
-     * Equals to "SELECT * WHERE columnName = columnValue" sql query
-     * 
-     * @param <T> Type of the column
-     * @param columnName Name of the column in database
-     * @param columnValue Value in the column
-     * @return List of entities satisfying the column constraint
-     */
-    <T> List<E> findAllByColumn(String columnName, T columnValue);
+    
+    //<T> List<E> findAllByColumn(String columnName, T columnValue);
     
     /**
      * Finds all entities in a repository.

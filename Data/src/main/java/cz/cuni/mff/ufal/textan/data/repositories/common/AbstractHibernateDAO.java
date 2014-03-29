@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Serializable> implements IOperations<E, K>   {
 
-    private SessionFactory sessionFactory;
+    protected SessionFactory sessionFactory;
     /**
      * The class of an entity type.
      */
@@ -89,12 +89,21 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
         return currentSession().createCriteria(type).list();
     }
 
+    /**
+     * Finds all entities in a repository which have specified value in some column.
+     * Equals to "SELECT * WHERE columnName = columnValue" sql query
+     * 
+     * @param <T> Type of the column
+     * @param columnName Name of the column in database
+     * @param columnValue Value in the column
+     * @return List of entities satisfying the column constraint
+     */
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
-    @Override
-    public <T> List<E> findAllByColumn(String columnName, T columnValue) {
+    //@Override
+    protected <T> List<E> findAllByProperty(String propertyName, T columnValue) {
         return currentSession().createCriteria(type)
-                .add(Restrictions.eq(columnName, columnValue))
+                .add(Restrictions.eq(propertyName, columnValue))
                 .list();
     }
     
