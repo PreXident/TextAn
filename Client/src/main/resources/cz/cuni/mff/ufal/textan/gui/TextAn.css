@@ -1,5 +1,8 @@
-root {
+#root {
 	display: block;
+	-fx-background-image: url("logo.jpg");
+        -fx-background-repeat: stretch;
+        -fx-background-position: center center;
 }
 
 .menu-item-label {
