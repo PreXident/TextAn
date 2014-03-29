@@ -83,6 +83,18 @@ public abstract class AbstractHibernateDAO<E, K extends Serializable> implements
         return currentSession().createCriteria(type).list();
     }
 
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<E> findAllByColumn(String columnName, T columnValue) {
+        // TODO: Implement
+        throw new UnsupportedOperationException("Not implemented yet");
+        
+        //return currentSession().createCriteria(type).list();
+    }
+    
+    
+
     /**
      * Adds an entity into a repository.
      *
