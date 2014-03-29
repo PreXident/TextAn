@@ -1,39 +1,45 @@
 package cz.cuni.mff.ufal.textan.data.repositories.common;
 
+import cz.cuni.mff.ufal.textan.data.tables.AbstractTable;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Basic DAO implemented with Hibernate
- * @param <E>  the type of the entity
+ * @param <E>  the type of the entity - extends AbstractTable
  * @param <K>  the type of the identifier of the entity
  * @see cz.cuni.mff.ufal.textan.data.repositories.common.IOperations
+ * @see cz.cuni.mff.ufal.textan.data.tables.AbstractTable
  * @see org.hibernate.SessionFactory
  * @see org.hibernate.Session
  * @see org.springframework.transaction.annotation.Transactional
  */
 //TODO: inherited classes should be annotated with @org.springframework.stereotype.Repository
 @Transactional
-public abstract class AbstractHibernateDAO<E, K extends Serializable> implements IOperations<E, K>   {
+public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Serializable> implements IOperations<E, K>   {
 
     private SessionFactory sessionFactory;
     /**
      * The class of an entity type.
      */
     protected Class<? extends E> type;
+    
+    protected AbstractHibernateDAO(Class<? extends E> type) {
+        this.type = type;
+    }
 
     /**
      * Instantiates a new abstract hibernate DAO.
      */
     @SuppressWarnings("unchecked")
     protected AbstractHibernateDAO() {
-        //TODO: this use reflection, it's maybe better to set 'type' from descendant
         this.type = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
@@ -87,10 +93,9 @@ public abstract class AbstractHibernateDAO<E, K extends Serializable> implements
     @SuppressWarnings("unchecked")
     @Override
     public <T> List<E> findAllByColumn(String columnName, T columnValue) {
-        // TODO: Implement
-        throw new UnsupportedOperationException("Not implemented yet");
-        
-        //return currentSession().createCriteria(type).list();
+        return currentSession().createCriteria(type)
+                .add(Restrictions.eq(columnName, columnValue))
+                .list();
     }
     
     
