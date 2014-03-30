@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.RelationType;
+import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.SplitException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
@@ -11,9 +12,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -24,13 +27,18 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
+import cz.cuni.mff.ufal.textan.core.Object;
 
 /**
  * Controls editing the report relations.
@@ -98,6 +106,19 @@ public class ReportRelationsController extends ReportWizardController {
     /** Localization controller. */
     ResourceBundle resourceBundle;
 
+    /** Words with assigned EntitityBuilders. */
+    List<Word> words;
+
+    /** Currently selected relation. */
+    RelationBuilder selectedRelation;
+
+    @FXML
+    private void add() {
+        if (selectedRelation != null) {
+            selectedRelation.data.add(new RelationInfo(0, null));
+        }
+    }
+
     @FXML
     private void cancel() {
         closeContainer();
@@ -105,27 +126,74 @@ public class ReportRelationsController extends ReportWizardController {
 
     @FXML
     private void next() {
-        pipeline.setReportRelations(pipeline.getReportRelations());
+        pipeline.setReportRelations(words);
+    }
+
+    @FXML
+    private void remove() {
+        if (selectedRelation != null) {
+            final int index = table.getSelectionModel().getSelectedIndex();
+            if (index >= 0) {
+                selectedRelation.data.remove(index);
+            }
+        }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
-        objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().multiply(-1)));
+        table.setEditable(true);
+        objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().multiply(-1).add(-2)));
         orderColumn.setCellValueFactory(new Callback<CellDataFeatures<RelationInfo, Number>, ObservableValue<Number>>() {
             @Override
             public ObservableValue<Number> call(CellDataFeatures<RelationInfo, Number> p) {
                 return p.getValue().order;
             }
          });
+        orderColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {
+            @Override
+            public String toString(Number t) {
+                return t.toString();
+            }
+            @Override
+            public Number fromString(String string) {
+                return Integer.parseInt(string);
+            }
+        }));
+        orderColumn.setOnEditCommit(
+            new EventHandler<CellEditEvent<RelationInfo, Number>>() {
+                @Override
+                public void handle(CellEditEvent<RelationInfo, Number> t) {
+                    ((RelationInfo) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                        ).order.setValue(t.getNewValue());
+                }
+            }
+        );
+        objectColumn.setCellValueFactory(new Callback<CellDataFeatures<RelationInfo, Object>, ObservableValue<Object>>() {
+            @Override
+            public ObservableValue<Object> call(CellDataFeatures<RelationInfo, Object> p) {
+                return p.getValue().object;
+            }
+         });
+        objectColumn.setOnEditCommit(
+            new EventHandler<CellEditEvent<RelationInfo, Object>>() {
+                @Override
+                public void handle(CellEditEvent<RelationInfo, Object> t) {
+                    ((RelationInfo) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                        ).object.setValue(t.getNewValue());
+                }
+            }
+        );
     }
 
     @Override
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
         final List<Text> texts = new ArrayList<>();
-        final List<Word> words = pipeline.getReportWords();
+        words = pipeline.getReportWords();
         for (final Word word: words) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
@@ -162,8 +230,10 @@ public class ReportRelationsController extends ReportWizardController {
                     text.getStyleClass().add(SELECTED);
                 }
                 if (word.getRelation() != null) {
-                    table.setItems(word.getRelation().data);
+                    selectedRelation = word.getRelation();
+                    table.setItems(selectedRelation.data);
                 } else {
+                    selectedRelation = null;
                     table.setItems(null);
                 }
             });
@@ -204,24 +274,24 @@ public class ReportRelationsController extends ReportWizardController {
 
         final EventHandler<ActionEvent> eh = (ActionEvent t) -> {
             //relation type id in userdata
-            final Integer ID = (Integer)((MenuItem) t.getSource()).getUserData();
-            if (ID == null) {
+            final RelationType type = (RelationType)((MenuItem) t.getSource()).getUserData();
+            if (type == null) {
                 for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
                     words.get(i).setRelation(null);
                     texts.get(i).getStyleClass().clear();
                 }
                 return;
             }
-            final int id = ID;
-            final RelationBuilder e = new RelationBuilder(id);
+            final RelationBuilder builder = new RelationBuilder(type);
             try {
-                Pair<Integer, Integer> bounds = e.add(words, firstSelectedIndex, lastSelectedIndex, i -> texts.get(i).getStyleClass().clear());
+                Pair<Integer, Integer> bounds = builder.add(words, firstSelectedIndex, lastSelectedIndex, i -> texts.get(i).getStyleClass().clear());
                 for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
                     texts.get(i).getStyleClass().clear();
-                    texts.get(i).getStyleClass().add("RELATION_" + id);
+                    texts.get(i).getStyleClass().add("RELATION_" + type.getId());
                 }
-                table.setItems(e.data);
-            } catch (RelationBuilder.SplitEntitiesException ex) {
+                selectedRelation = builder;
+                table.setItems(builder.data);
+            } catch (SplitException ex) {
                 callWithContentBackup(() -> {
                     createDialog()
                             .owner(getDialogOwner(root))
@@ -247,9 +317,16 @@ public class ReportRelationsController extends ReportWizardController {
         for (RelationType relType : pipeline.getClient().getRelationTypesList()) {
             final MenuItem mi = new MenuItem(relType.getName());
             mi.setOnAction(eh);
-            mi.setUserData(relType.getId()); //relation type id to userdata
+            mi.setUserData(relType); //relation type id to userdata
             contextMenu.getItems().add(mi);
         }
+
+        objectColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(
+                pipeline.getReportEntities().stream()
+                        .map(ent -> ent.getCandidate())
+                        .distinct()
+                        .collect(Collectors.toList())
+        )));
     }
 
     public static class RelationInfo {
@@ -257,7 +334,7 @@ public class ReportRelationsController extends ReportWizardController {
         public SimpleObjectProperty<cz.cuni.mff.ufal.textan.core.Object> object =
                 new SimpleObjectProperty<>();
 
-        public RelationInfo(int order, cz.cuni.mff.ufal.textan.core.Object object) {
+        public RelationInfo(int order, Object object) {
             this.order.set(order);
             this.object.set(object);
         }

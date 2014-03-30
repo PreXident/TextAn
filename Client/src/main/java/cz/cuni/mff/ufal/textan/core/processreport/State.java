@@ -92,18 +92,18 @@ public abstract class State {
     /**
      * Sets the report's objects.
      * @param pipeline pipeline delegating the request
-     * @param objects new objects
+     * @param objects objects set as candidates
      */
-    public void setReportObjects(final ProcessReportPipeline pipeline, final Set<Object> objects) {
+    public void setReportObjects(final ProcessReportPipeline pipeline, final List<Entity> objects) {
         throw new IllegalStateException("Cannot set report's objects when in state " + getType());
     }
 
     /**
      * Sets the report's objects.
      * @param pipeline pipeline delegating the request
-     * @param relations new relations
+     * @param words words with assigned relations
      */
-    public void setReportRelations(final ProcessReportPipeline pipeline, final Set<Relation> relations) {
+    public void setReportRelations(final ProcessReportPipeline pipeline, final List<Word> words) {
         throw new IllegalStateException("Cannot set report's relations when in state " + getType());
     }
 

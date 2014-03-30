@@ -1,13 +1,13 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
+import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.SplitException;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
-import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder.SplitEntitiesException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +170,7 @@ public class ReportEntitiesController extends ReportWizardController {
                     texts.get(i).getStyleClass().clear();
                     texts.get(i).getStyleClass().add("ENTITY_" + id);
                 }
-            } catch (SplitEntitiesException ex) {
+            } catch (SplitException ex) {
                 callWithContentBackup(() -> {
                     createDialog()
                             .owner(getDialogOwner(root))

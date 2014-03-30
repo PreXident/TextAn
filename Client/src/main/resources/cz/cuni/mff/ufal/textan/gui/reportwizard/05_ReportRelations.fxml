@@ -19,23 +19,28 @@
 		<URL value="@05_ReportRelations.css" />
 	</stylesheets>
 	<center>
-                <SplitPane orientation="VERTICAL">
-                    <items>
-                        <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
-                                <TextFlow fx:id="textFlow" styleClass="text-flow" />
-                        </ScrollPane>
-                        <TableView fx:id="table">
-                            <!--<columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>-->
-                            <columns>
-                                <TableColumn fx:id="orderColumn" text="%order" resizable="false" />
-                                <TableColumn fx:id="objectColumn" text="%object" resizable="false" />
-                            </columns>
-                            <placeholder>
-                                <Label text="%nothing" />
-                            </placeholder>
-                        </TableView>
-                    </items>
-                </SplitPane>
+		<SplitPane orientation="VERTICAL">
+			<items>
+				<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
+					<TextFlow fx:id="textFlow" styleClass="text-flow" />
+				</ScrollPane>
+				<VBox>
+					<TableView fx:id="table">
+						<columns>
+							<TableColumn fx:id="orderColumn" text="%order" resizable="false" />
+							<TableColumn fx:id="objectColumn" text="%object" resizable="false" />
+						</columns>
+						<placeholder>
+							<Label text="%nothing" />
+						</placeholder>
+					</TableView>
+					<HBox>
+						<Button text="%add" onAction="#add" />
+						<Button text="%remove" onAction="#remove" />
+					</HBox>
+				</VBox>
+			</items>
+		</SplitPane>
 	</center>
 	<bottom>
 		<HBox alignment="CENTER_RIGHT" >

@@ -337,7 +337,7 @@ public class Client {
      */
     public void saveProcessedDocument(final Ticket ticket,
             final String text, final List<Entity> reportEntities,
-            final Set<Relation> reportRelations) {
+            final List<Relation> reportRelations) {
         final Objects objs = new Objects();
         objs.getObjects().addAll(
                 reportEntities.stream()
