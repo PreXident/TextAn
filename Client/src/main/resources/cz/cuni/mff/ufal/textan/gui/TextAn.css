@@ -1,4 +1,4 @@
-#root {
+#appRoot {
 	display: block;
 	-fx-background-image: url("logo.jpg");
         -fx-background-repeat: stretch;
