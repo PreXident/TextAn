@@ -3,7 +3,7 @@
  */
 package cz.cuni.mff.ufal.textan.textpro.Rank;
 
-import cz.cuni.mff.ufal.textan.Data.Entity;
+import cz.cuni.mff.ufal.textan.Data.*;
 import java.util.ArrayList;
 
 /**
@@ -18,7 +18,7 @@ public class DoubleRank {
     public ArrayList<Entity> inputEntityList;
     
     // The list of objects in database
-    public ArrayList<Object> database;
+    public ArrayList<DBObject> database;
     
     /*
      * Blank Constructor
@@ -38,7 +38,7 @@ public class DoubleRank {
     /*
      * Compare entity and object if they share the same alias
      */
-    public boolean CompareEntityAndObject(Entity e, Object o){
+    public boolean CompareEntityAndObject(Entity e, DBObject o){
         ArrayList<String> alias = (ArrayList<String>)o.getAlias();
         if(alias.indexOf(e.getText()) == -1) {
             return false;
@@ -50,7 +50,7 @@ public class DoubleRank {
      * Check if the object is in the text or not
      * 
      */
-    public boolean CheckObjectInText(Object e, ArrayList<Entity> en) {
+    public boolean CheckObjectInText(DBObject e, ArrayList<Entity> en) {
         for (int i = 0; i < en.size(); i ++) {
             if(CompareEntityAndObject(en.get(i), e)) {
                 return true;
@@ -61,8 +61,8 @@ public class DoubleRank {
     /*
      * Find all objects in database which may appear in text
      */
-    public ArrayList<Object> FindObjects(Entity e){
-        ArrayList<Object> result = new ArrayList<Object>();
+    public ArrayList<DBObject> FindObjects(Entity e){
+        ArrayList<DBObject> result = new ArrayList<DBObject>();
         for (int i = 0; i < database.size(); i ++) {
             if(CompareEntityAndObject(e, database.get(i))) {
                 result.add(database.get(i));
@@ -89,5 +89,17 @@ public class DoubleRank {
      * Rank the objects
      */
     
+    
+    /*
+     * Find two objects sharing the same document
+     */
+    public boolean CheckObjectShare(DBObject o1, DBObject o2){
+        ArrayList<Integer> o1Docs = o1.getDocs();
+        ArrayList<Integer> o2Docs = o2.getDocs();
+        
+        
+        
+        
+    }    
     
 }
