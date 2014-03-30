@@ -3,10 +3,14 @@ package cz.cuni.mff.ufal.textan.data.repositories.common;
 import cz.cuni.mff.ufal.textan.data.tables.AbstractTable;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import org.hibernate.Criteria;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Serializable> implements IOperations<E, K>   {
 
+    // -----------------------------------------------------
+    // --------------- STATIC MEMBERS-----------------------
+    // -----------------------------------------------------
+    protected final static String thisAlias = "this";
+    
+    protected final static String getAliasPropertyName(String propertyName) {
+        return CommonOperations.getAliasPropertyName(thisAlias, propertyName);
+    }  
+    // -----------------------------------------------------
+    // --------------- NON-STATIC MEMBERS-------------------
+    // -----------------------------------------------------
+    
+    
     protected SessionFactory sessionFactory;
     /**
      * The class of an entity type.
@@ -102,11 +119,46 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     @SuppressWarnings("unchecked")
     //@Override
     protected <T> List<E> findAllByProperty(String propertyName, T columnValue) {
-        return currentSession().createCriteria(type)
-                .add(Restrictions.eq(propertyName, columnValue))
-                .list();
+        return findAllByCriteria(new Criterion[]{Restrictions.eq(propertyName, columnValue)} );
     }
     
+    /**
+     * Finds all entities in a repository by the specified criteria.
+     * Equals to "SELECT * WHERE {criteria}" sql query
+     * 
+     * @param <T> Type of the column
+     * @param criteria Criteria to filter results
+     * @return List of entities satisfying criteria constraints
+     */
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    protected <T> List<E> findAllByCriteria(Collection<Criterion> criteria) {
+        Criteria result = findAllCriteria();
+        for (Criterion criterion : criteria) {
+            result.add(criterion);
+        }
+        return result.list();
+    }
+    /**
+     * Finds all entities in a repository by the specified criteria.
+     * Equals to "SELECT * WHERE {criteria}" sql query
+     * 
+     * @param <T> Type of the column
+     * @param criteria Criteria to filter results
+     * @return List of entities satisfying criteria constraints
+     */
+
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    protected <T> List<E> findAllByCriteria(Criterion[] criteria) {
+        return findAllByCriteria(Arrays.asList(criteria));
+    }
+    
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    protected Criteria findAllCriteria() {
+        return currentSession().createCriteria(type, thisAlias);
+    }
     
 
     /**
