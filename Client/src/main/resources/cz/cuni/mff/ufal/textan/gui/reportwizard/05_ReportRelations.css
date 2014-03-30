@@ -38,3 +38,11 @@
 	-fx-underline: true;
 	-fx-fill: teal;
 }
+
+.OBJECT_0 {
+	-fx-effect: dropshadow(three-pass-box, pink, 4, 4, 0, 0);
+}
+
+.OBJECT_1 {
+	-fx-effect: dropshadow(three-pass-box, teal, 4, 4, 0, 0);
+}

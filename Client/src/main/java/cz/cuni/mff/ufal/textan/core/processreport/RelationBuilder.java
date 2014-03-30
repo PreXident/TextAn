@@ -1,16 +1,15 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
+import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.RelationType;
-import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportRelationsController.RelationInfo;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import java.util.List;
 
 /**
  * Simple class representing marked Relation.
  * Entities do not track their words, words track their entities.
  * To get marked entities, iterate word list.
  */
-public class RelationBuilder extends AbstractBuilder {
+public abstract class RelationBuilder extends AbstractBuilder {
 
     /** Relation type. */
     protected final RelationType type;
@@ -18,7 +17,7 @@ public class RelationBuilder extends AbstractBuilder {
     /**
      * Objects in relation.
      */
-    public final ObservableList<RelationInfo> data = FXCollections.observableArrayList();
+    protected final List<? extends IRelationInfo> data = createRelationInfos();
 
     /**
      * Only constructor.
@@ -49,5 +48,12 @@ public class RelationBuilder extends AbstractBuilder {
     @Override
     protected void unregister(Word word) {
         word.setRelation(null);
+    }
+
+    protected abstract List<? extends IRelationInfo> createRelationInfos();
+
+    public interface IRelationInfo {
+        int getOrder();
+        Object getObject();
     }
 }

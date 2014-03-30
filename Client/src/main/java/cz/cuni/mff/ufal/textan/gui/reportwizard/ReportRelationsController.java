@@ -1,20 +1,21 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.SplitException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
-import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.RelationInfo;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -38,7 +39,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import cz.cuni.mff.ufal.textan.core.Object;
 
 /**
  * Controls editing the report relations.
@@ -49,11 +49,19 @@ public class ReportRelationsController extends ReportWizardController {
     static final String SELECTED = "selected";
 
     /**
+     * Adds clazz style class to all items in the list.
+     * @param list items to which add the style class
+     */
+    static void addClass(final String clazz, final Iterable<? extends Node> list) {
+        list.forEach(node -> node.getStyleClass().add(clazz));
+    }
+
+    /**
      * Adds {@link #SELECTED} style class to all items in the list.
      * @param list items to which add the style class
      */
     static void addSelectedClass(Iterable<? extends Node> list) {
-        list.forEach(node -> node.getStyleClass().add(SELECTED));
+        addClass(SELECTED, list);
     }
 
     /**
@@ -61,7 +69,15 @@ public class ReportRelationsController extends ReportWizardController {
      * @param list items from which remove the style class
      */
     static void removeSelectedClass(Iterable<? extends Node> list) {
-        list.forEach(node -> node.getStyleClass().remove(SELECTED));
+        removeClass(SELECTED, list);
+    }
+
+    /**
+     * Removes clazz style class from all items in the list.
+     * @param list items from which remove the style class
+     */
+    static void removeClass(final String clazz, final Iterable<? extends Node> list) {
+        list.forEach(node -> node.getStyleClass().remove(clazz));
     }
 
     @FXML
@@ -110,12 +126,14 @@ public class ReportRelationsController extends ReportWizardController {
     List<Word> words;
 
     /** Currently selected relation. */
-    RelationBuilder selectedRelation;
+    FXRelationBuilder selectedRelation;
+
+    Map<Object, List<Text>> objectWords = new HashMap<>();
 
     @FXML
     private void add() {
         if (selectedRelation != null) {
-            selectedRelation.data.add(new RelationInfo(0, null));
+            selectedRelation.getData().add(new RelationInfo(0, null));
         }
     }
 
@@ -134,7 +152,15 @@ public class ReportRelationsController extends ReportWizardController {
         if (selectedRelation != null) {
             final int index = table.getSelectionModel().getSelectedIndex();
             if (index >= 0) {
-                selectedRelation.data.remove(index);
+                final RelationInfo remove = selectedRelation.getData().remove(index);
+                //remove selection background
+                final RelationType type = selectedRelation.getType();
+                final String clazz = "OBJECT_" + type.getId();
+                final Object obj = remove.getObject();
+                final List<Text> texts = objectWords.get(obj);
+                if (texts != null) {
+                    removeClass(clazz, texts);
+                }
             }
         }
     }
@@ -150,7 +176,7 @@ public class ReportRelationsController extends ReportWizardController {
             public ObservableValue<Number> call(CellDataFeatures<RelationInfo, Number> p) {
                 return p.getValue().order;
             }
-         });
+        });
         orderColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {
             @Override
             public String toString(Number t) {
@@ -184,6 +210,19 @@ public class ReportRelationsController extends ReportWizardController {
                     ((RelationInfo) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                         ).object.setValue(t.getNewValue());
+                    //TODO add selection background, remove selection background
+                    final RelationType type = selectedRelation.getType();
+                    final String clazz = "OBJECT_" + type.getId();
+                    final Object oldObj = t.getOldValue();
+                    final List<Text> oldTexts = objectWords.get(oldObj);
+                    if (oldTexts != null) {
+                        removeClass(clazz, oldTexts);
+                    }
+                    final Object newObj = t.getNewValue();
+                    final List<Text> newTexts = objectWords.get(newObj);
+                    if (newTexts != null) {
+                        addClass(clazz, newTexts);
+                    }
                 }
             }
         );
@@ -199,6 +238,15 @@ public class ReportRelationsController extends ReportWizardController {
             if (word.getEntity() != null) {
                 final int entityId = word.getEntity().getId();
                 text.getStyleClass().add("ENTITY_" + entityId);
+                //
+                final int entityIndex = word.getEntity().getIndex();
+                final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
+                List<Text> objTexts = objectWords.get(obj);
+                if (objTexts == null) {
+                    objTexts = new ArrayList<>();
+                    objectWords.put(obj, objTexts);
+                }
+                objTexts.add(text);
             }
             text.setOnMouseEntered((MouseEvent t) -> {
                 if (word.getEntity() != null) {
@@ -220,6 +268,8 @@ public class ReportRelationsController extends ReportWizardController {
                 scrollPane.setTooltip(null);
             });
             text.setOnMousePressed(e -> {
+                clearSelectedRelationBackground();
+                selectedRelation = null;
                 if (!text.getStyleClass().contains(SELECTED) && word.getEntity() == null) {
                     removeSelectedClass(texts);
                     dragging = true;
@@ -230,9 +280,21 @@ public class ReportRelationsController extends ReportWizardController {
                     text.getStyleClass().add(SELECTED);
                 }
                 if (word.getRelation() != null) {
-                    selectedRelation = word.getRelation();
-                    table.setItems(selectedRelation.data);
+                    clearSelectedRelationBackground();
+                    selectedRelation = (FXRelationBuilder) word.getRelation();
+                    final RelationType type = selectedRelation.getType();
+                    final String clazz = "OBJECT_" + type.getId();
+                    selectedRelation.getData().stream()
+                            .map(relInfo -> relInfo.object.get())
+                            .forEach(obj -> {
+                                final List<Text> list = objectWords.get(obj);
+                                if (list != null) {
+                                    addClass(clazz, list);
+                                }
+                            });
+                    table.setItems(selectedRelation.getData());
                 } else {
+                    clearSelectedRelationBackground();
                     selectedRelation = null;
                     table.setItems(null);
                 }
@@ -282,15 +344,16 @@ public class ReportRelationsController extends ReportWizardController {
                 }
                 return;
             }
-            final RelationBuilder builder = new RelationBuilder(type);
+            final FXRelationBuilder builder = new FXRelationBuilder(type);
             try {
                 Pair<Integer, Integer> bounds = builder.add(words, firstSelectedIndex, lastSelectedIndex, i -> texts.get(i).getStyleClass().clear());
                 for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
                     texts.get(i).getStyleClass().clear();
                     texts.get(i).getStyleClass().add("RELATION_" + type.getId());
                 }
+                clearSelectedRelationBackground();
                 selectedRelation = builder;
-                table.setItems(builder.data);
+                table.setItems(builder.getData());
             } catch (SplitException ex) {
                 callWithContentBackup(() -> {
                     createDialog()
@@ -329,14 +392,18 @@ public class ReportRelationsController extends ReportWizardController {
         )));
     }
 
-    public static class RelationInfo {
-        public SimpleIntegerProperty order = new SimpleIntegerProperty();
-        public SimpleObjectProperty<cz.cuni.mff.ufal.textan.core.Object> object =
-                new SimpleObjectProperty<>();
-
-        public RelationInfo(int order, Object object) {
-            this.order.set(order);
-            this.object.set(object);
-        }
+    protected void clearSelectedRelationBackground() {
+        if (selectedRelation != null) {
+             final RelationType type = selectedRelation.getType();
+             final String clazz = "OBJECT_" + type.getId();
+             selectedRelation.getData().stream()
+                     .map(relInfo -> relInfo.object.get())
+                     .forEach(obj -> {
+                         final List<Text> list = objectWords.get(obj);
+                         if (list != null) {
+                             removeClass(clazz, list);
+                         }
+                     });
+         }
     }
 }

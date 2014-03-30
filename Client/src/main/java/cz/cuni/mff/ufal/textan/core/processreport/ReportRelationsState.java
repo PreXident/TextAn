@@ -2,8 +2,7 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Relation;
-import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportRelationsController.RelationInfo;
+import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder.IRelationInfo;
 import java.util.List;
 
 /**
@@ -41,8 +40,8 @@ final class ReportRelationsState extends State {
 
     private Relation createRelation(final RelationBuilder builder) {
         final Relation relation = new Relation(-1, builder.getType());
-        for (RelationInfo relInfo : builder.data) {
-            relation.getObjects().add(new Pair<>(relInfo.object.get(), relInfo.order.get()));
+        for (IRelationInfo relInfo : builder.data) {
+            relation.getObjects().add(new Pair<>(relInfo.getObject(), relInfo.getOrder()));
         }
         return relation;
     }
