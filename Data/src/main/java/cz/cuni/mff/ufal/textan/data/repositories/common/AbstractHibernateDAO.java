@@ -67,7 +67,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
      *
      * @param sessionFactory the session factory
      */
-    @Autowired
+    //@Autowired
     public final void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -113,7 +113,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
      * Equals to "SELECT * WHERE columnName = columnValue" sql query
      * 
      * @param <T> Type of the column
-     * @param columnName Name of the column in database
+     * @param propertyName Name of the column in database
      * @param columnValue Value in the column
      * @return List of entities satisfying the column constraint
      */

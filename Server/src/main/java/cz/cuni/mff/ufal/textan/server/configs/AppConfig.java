@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
+import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import cz.cuni.mff.ufal.textan.data.repositories.Data;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
@@ -18,6 +20,7 @@ import org.springframework.core.env.Environment;
  */
 @Configuration
 @PropertySource("classpath:server.properties")
+@Import(DataConfig.class)
 public class AppConfig {
 
     /**
@@ -45,6 +48,9 @@ public class AppConfig {
     @Autowired
     private Environment serverProperties;
 
+    @Autowired
+    private DataConfig dataConfig;
+
     /**
      * Creates preconfigured Jetty server.
      *
@@ -70,11 +76,6 @@ public class AppConfig {
         server.setConnectors(new Connector[]{connector});
 
         return server;
-    }
-
-    @Bean
-    public Data dataSource() {
-        return new Data();
     }
 
 //    @Bean

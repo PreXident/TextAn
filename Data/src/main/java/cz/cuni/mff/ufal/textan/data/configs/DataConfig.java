@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.ObjectTableDAO;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -32,6 +33,7 @@ import javax.transaction.TransactionManager;
 @Configuration
 @PropertySource("classpath:data.properties")
 @EnableTransactionManagement
+//@ComponentScan("cz.cuni.mff.ufal.textan.data.repositories")
 public class DataConfig {
 
     @Autowired
@@ -100,11 +102,12 @@ public class DataConfig {
     public Data data() {
         return new Data(sessionFactory());
     }
-    
-/* kravina?
+
     @Bean
     public ObjectTableDAO objectTableDAO() {
-        return new ObjectTableDAO();
-    }*/
+        ObjectTableDAO objectTableDAO = new ObjectTableDAO();
+        objectTableDAO.setSessionFactory(sessionFactory());
+        return objectTableDAO;
+    }
 
 }
