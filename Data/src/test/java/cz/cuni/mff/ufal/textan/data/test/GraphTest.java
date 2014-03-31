@@ -8,6 +8,7 @@ package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.graph.Graph;
+import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.graph.ObjectNode;
 import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import cz.cuni.mff.ufal.textan.data.tables.InRelationTable;
@@ -37,6 +38,9 @@ public class GraphTest {
 
     @Autowired
     private Data data;
+    
+    @Autowired
+    private GraphFactory graphFactory;
 
     static final int OBJECTS_COUNT = 20;
     static final int OBJECTS_IN_RELATION_COUNT = 10;
@@ -96,7 +100,7 @@ public class GraphTest {
     @Test
     public void basicGraphTest() {
         System.out.println("\n\nbasicGraphTest");
-        Graph g = Graph.getGraphFromObject(objects[0].getId(), 1);
+        Graph g = null;//graphFactory.getGraphFromObject(objects[0].getId(), 1);
         System.out.println(g);
         for (int i = 0; i < OBJECTS_IN_RELATION_COUNT; i++) {
             assertTrue("Object not in graph: i = " + i, g.getNodes().contains(new ObjectNode(objects[i])));

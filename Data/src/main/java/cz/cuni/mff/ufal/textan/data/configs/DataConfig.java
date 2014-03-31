@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.data.configs;
 
+import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
@@ -29,7 +30,8 @@ import java.util.Properties;
 @PropertySource("classpath:data.properties")
 @EnableTransactionManagement
 //TODO: it is posible to to create bean manualy, but comment this line and @Autowired in AbstractHibernateDAO
-@ComponentScan("cz.cuni.mff.ufal.textan.data.repositories.dao")
+@ComponentScan(basePackages = {"cz.cuni.mff.ufal.textan.data.repositories.dao", 
+                               "cz.cuni.mff.ufal.textan.data.graph"})
 public class DataConfig {
 
     @Autowired
@@ -109,11 +111,16 @@ public class DataConfig {
         return new Data(sessionFactory());
     }
 
+    @Bean
+    public GraphFactory graphFactory() {
+        return new GraphFactory(sessionFactory());
+    }
+    
 //    @Bean
 //    public ObjectTableDAO objectTableDAO() {
 //        ObjectTableDAO objectTableDAO = new ObjectTableDAO();
 //        objectTableDAO.setSessionFactory(sessionFactory());
 //        return objectTableDAO;
 //    }
-
+    
 }
