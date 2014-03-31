@@ -8,7 +8,7 @@ package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.repositories.Data;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.ObjectTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.AliasTable;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
@@ -17,8 +17,6 @@ import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable;
-import java.util.List;
-import org.hibernate.SessionFactory;
 import org.junit.After;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -29,6 +27,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import java.util.List;
+
 /**
  *
  * @author Václav Pernička
@@ -38,10 +38,9 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 public class DAOTest {
     @Autowired
     Data data;
+
     @Autowired
-    SessionFactory sessionFactory;
-    @Autowired
-    ObjectTableDAO objectTableDAO;
+    IObjectTableDAO objectTableDAO;
     
     private DocumentTable document;
     private RelationTypeTable relationType;
@@ -92,11 +91,11 @@ public class DAOTest {
     
     @Test
     public void findAllTest() {
-//        List<ObjectTable> res = objectTableDAO.findAll();
-//        for (ObjectTable objectTable : res) {
-//            if (res.equals(object))
-//                return;
-//        }
-//        assertTrue("Object not found", false);
+        List<ObjectTable> res = objectTableDAO.findAll();
+        for (ObjectTable objectTable : res) {
+            if (res.equals(objectTable))
+                return;
+        }
+        assertTrue("Object not found", false);
     }
 }

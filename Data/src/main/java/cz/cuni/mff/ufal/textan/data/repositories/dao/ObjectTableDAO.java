@@ -27,30 +27,32 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Václav Pernička
  */
 @Repository
-@Deprecated // TODO: Not tested yet
-public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> {
-    
+@Transactional
+public class ObjectTableDAO   extends AbstractHibernateDAO<ObjectTable, Long> implements IObjectTableDAO {
+
     public ObjectTableDAO() {
         super(ObjectTable.class);
     }
-    @Deprecated // not tested yet
+
+    @Override
     public List<ObjectTable> findAllByObjectType(Long objectTypeId) {
         return super.findAllByProperty(ObjectTable.PROPERTY_NAME_OBJECT_TYPE_ID, objectTypeId);
     }
 
-    @Deprecated // not tested yet
+    @Override
     public List<ObjectTable> findAllByObjectType(ObjectTypeTable objectType) {
         return findAllByObjectType(objectType.getId());
     }
 
-    @Deprecated // not tested yet
+    @Override
     public List<ObjectTable> findAllByAliasEqualTo(String alias) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
                 .add(Restrictions.eq(CommonOperations.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_ALIAS), alias))
                 .list();
     }
-    @Deprecated // not tested yet
+
+    @Override
     public List<ObjectTable> findAllByAliasSubstring(String aliasSubstring) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
@@ -58,7 +60,8 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> {
                                        CommonOperations.getLikeSubstring(aliasSubstring)))
                 .list();
     }
-    @Deprecated // not tested yet
+
+    @Override
     public List<ObjectTable> findAllByDocumentOccurrence(Long documentId) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
