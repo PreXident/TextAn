@@ -13,6 +13,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 //TODO: inherited classes should be annotated with @org.springframework.stereotype.Repository
 @Transactional
+//@Service
 public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Serializable> implements IOperations<E, K>   {
 
     // -----------------------------------------------------

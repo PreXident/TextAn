@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.data.configs;
 
 import cz.cuni.mff.ufal.textan.data.repositories.Data;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.ObjectTableDAO;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Properties;
+import javax.transaction.TransactionManager;
 
 /**
  * Created by Petr Fanta on 14.3.14.
@@ -92,12 +94,17 @@ public class DataConfig {
     }
 
     //TODO: Add transaction management
-
+    // TODO: to uz mame ne?
+        
     @Bean
     public Data data() {
         return new Data(sessionFactory());
     }
-
-
+    
+/* kravina?
+    @Bean
+    public ObjectTableDAO objectTableDAO() {
+        return new ObjectTableDAO();
+    }*/
 
 }
