@@ -1,9 +1,10 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons_old.models.Entity;
-import cz.cuni.mff.ufal.textan.commons_old.models.Object;
-import cz.cuni.mff.ufal.textan.commons_old.models.Relation;
 import cz.cuni.mff.ufal.textan.core.Client;
+import cz.cuni.mff.ufal.textan.core.Entity;
+import cz.cuni.mff.ufal.textan.core.Object;
+import cz.cuni.mff.ufal.textan.core.Relation;
+import cz.cuni.mff.ufal.textan.core.Ticket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,22 +27,25 @@ public class ProcessReportPipeline {
     protected String reportText = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
 
     /** Report entities. */
-    protected Word[] reportWords = null;
+    protected List<Word> reportWords = new ArrayList<>();
 
     /** Report entities. */
-    protected Entity[] reportEntities = null;
+    protected List<Entity> reportEntities = new ArrayList<>();
 
     /** Report objects. */
-    protected Object[] reportObjects = null;
+    protected Set<Object> reportObjects = new HashSet<>();
 
     /** Report relations. */
-    protected Relation[] reportRelations = null;
+    protected Set<Relation> reportRelations = new HashSet<>();
 
     /** State of the pipeline. */
     protected State state = LoadReportState.getInstance();
 
     /** List of listeners registered for state changing. */
     protected final List<IStateChangedListener> stateChangedListeners = new ArrayList<>();
+
+    /** Ticket for document processing. */
+    protected final Ticket ticket;
 
     /**
      * Only constructor. Do not use directly!
@@ -50,6 +54,8 @@ public class ProcessReportPipeline {
      */
     public ProcessReportPipeline(final Client client) {
         this.client = client;
+        final String username = client.getSettings().getProperty("username");
+        ticket = client.getTicket(username);
     }
 
     /**
@@ -151,11 +157,11 @@ public class ProcessReportPipeline {
      * Returns report words.
      * @return report words
      */
-    public Word[] getReportWords() {
+    public List<Word> getReportWords() {
         return reportWords;
     }
 
-    public void setReportWords(final Word[] words) {
+    public void setReportWords(final List<Word> words) {
         state.setReportWords(this, words);
     }
 
@@ -163,15 +169,19 @@ public class ProcessReportPipeline {
      * Sets report's entities.
      * @param entities new entities
      */
-    public void setReportEntities(final Entity[] entities) {
+    public void setReportEntities(final List<Entity> entities) {
         state.setReportEntities(this, entities);
+    }
+
+    public List<Entity> getReportEntities() {
+        return reportEntities;
     }
 
     /**
      * Returns report's objects.
      * @return report's objects
      */
-    public Object[] getReportObjects() {
+    public Set<Object> getReportObjects() {
         return reportObjects;
     }
 
@@ -179,15 +189,23 @@ public class ProcessReportPipeline {
      * Sets report's objects.
      * @param objects new objects
      */
-    public void setReportObjects(final Object[] objects) {
+    public void setReportObjects(final Set<Object> objects) {
         state.setReportObjects(this, objects);
+    }
+
+    /**
+     * Returns report's relations.
+     * @return report's relations
+     */
+    public Set<Relation> getReportRelations() {
+        return reportRelations;
     }
 
     /**
      * Sets report's relations.
      * @param relations new relations
      */
-    public void setRelationsObjects(final Relation[] relations) {
+    public void setReportRelations(final Set<Relation> relations) {
         state.setReportRelations(this, relations);
     }
 }

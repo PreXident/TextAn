@@ -1,112 +1,162 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
-
-import cz.cuni.mff.ufal.textan.commons.models.*;
+import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
+import cz.cuni.mff.ufal.textan.commons.models.Entity;
+import cz.cuni.mff.ufal.textan.commons.models.Ticket;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jws.WebParam;
-import java.util.List;
+import java.util.Date;
 
-/**
- * For now only mocking document processing.
- */
 @javax.jws.WebService(
         serviceName = "DocumentProcessorService",
         portName = "DocumentProcessor",
         targetNamespace = "http://ws.commons.textan.ufal.mff.cuni.cz",
         wsdlLocation = "classpath:wsdl/DocumentProcessor.wsdl",
-        endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.DocumentProcessor")
-public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.DocumentProcessor {
+        endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor")
+public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DocumentProcessor.class);
 
     @Override
-    public List<GetObjectsFromStringResponse.Assignment> getObjectsFromString(
-            @WebParam(name = "text", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") String text,
-            @WebParam(name = "entities", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetObjectsFromString.Entities entities,
-            @WebParam(name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+    public GetObjectsFromStringResponse getObjectsFromString(
+            @WebParam(partName = "getObjectsFromString", name = "getObjectsFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            GetObjectsFromString getObjectsFromString,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            EditingTicket editingTicket) {
 
-        LOG.debug("Executing operation getObjectsFromString");
+        LOG.debug("Executing operation getObjectsFromString: {} {}", getObjectsFromString, editingTicket);
 
-        return null;
+        final GetObjectsFromStringResponse response = new GetObjectsFromStringResponse();
+        for (Entity entity : getObjectsFromString.getEntities().getEntities()) {
+            final GetObjectsFromStringResponse.Assignment assignment = new GetObjectsFromStringResponse.Assignment();
+            assignment.setEntity(entity);
+            final GetObjectsFromStringResponse.Assignment.Objects objects =
+                    new GetObjectsFromStringResponse.Assignment.Objects();
+            final GetObjectsFromStringResponse.Assignment.Objects.ObjectWithRating rating =
+                    new GetObjectsFromStringResponse.Assignment.Objects.ObjectWithRating();
+            rating.setObject(MockDB.objects.get(0));
+            rating.setRating(1.0f);
+            objects.getObjectWithRatings().add(rating);
+            assignment.setObjects(objects);
+            response.getAssignments().add(assignment);
+        }
+
+        return response;
     }
 
     @Override
-    public boolean saveProcessedDocumentById(
-            @WebParam(name = "documentId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") int documentId,
-            @WebParam(name = "objects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") SaveProcessedDocumentById.Objects objects,
-            @WebParam(name = "relations", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") SaveProcessedDocumentById.Relations relations,
-            @WebParam(name = "force", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") boolean force,
-            @WebParam(name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+    public SaveProcessedDocumentByIdResponse saveProcessedDocumentById(
+            @WebParam(partName = "saveProcessedDocumentById", name = "saveProcessedDocumentById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            SaveProcessedDocumentById saveProcessedDocumentById,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            EditingTicket editingTicket) {
 
-        LOG.debug("Executing operation saveProcessedDocumentById");
+        LOG.debug("Executing operation saveProcessedDocumentById: {} {}", saveProcessedDocumentById, editingTicket);
 
-        return false;
+        return new SaveProcessedDocumentByIdResponse();
     }
 
     @Override
-    public void getProblems(
-            @WebParam(name = "documentId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") int documentId,
-            @WebParam(name = "objects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetProblems.Objects objects,
-            @WebParam(name = "relations", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetProblems.Relations relations,
-            @WebParam(name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+    public GetProblemsResponse getProblems(
+            @WebParam(partName = "getProblems", name = "getProblems", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            GetProblems getProblems,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            EditingTicket editingTicket) {
 
-        LOG.debug("Executing operation getProblems");
+        LOG.debug("Executing operation getProblems: {} {}", getProblems, editingTicket);
 
+        return new GetProblemsResponse();
     }
 
     @Override
-    public List<GetObjectsByIdResponse.Assignment> getObjectsById(
-            @WebParam(name = "id", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") int id,
-            @WebParam(name = "entities", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetObjectsById.Entities entities,
-            @WebParam(name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+    public GetObjectsByIdResponse getObjectsById(
+            @WebParam(partName = "getObjectsById", name = "getObjectsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            GetObjectsById getObjectsById,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            EditingTicket editingTicket) {
 
-        LOG.debug("Executing operation getObjectsById");
+        LOG.debug("Executing operation getObjectsById: {} {}", getObjectsById, editingTicket);
 
-        return null;
+        final GetObjectsByIdResponse response = new GetObjectsByIdResponse();
+        for (Entity entity : getObjectsById.getEntities().getEntities()) {
+            final GetObjectsByIdResponse.Assignment assignment = new GetObjectsByIdResponse.Assignment();
+            assignment.setEntity(entity);
+            final GetObjectsByIdResponse.Assignment.Objects objects =
+                    new GetObjectsByIdResponse.Assignment.Objects();
+            final GetObjectsByIdResponse.Assignment.Objects.ObjectWithRating rating =
+                    new GetObjectsByIdResponse.Assignment.Objects.ObjectWithRating();
+            rating.setObject(MockDB.objects.get(0));
+            rating.setRating(1.0f);
+            objects.getObjectWithRatings().add(rating);
+            assignment.setObjects(objects);
+            response.getAssignments().add(assignment);
+        }
+
+        return response;
     }
 
     @Override
     public GetEntitiesFromStringResponse getEntitiesFromString(
-            @WebParam(partName = "getEntitiesFromString", name = "getEntitiesFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetEntitiesFromString getEntitiesFromString,
-            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+            @WebParam(partName = "getEntitiesFromString", name = "getEntitiesFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            GetEntitiesFromString getEntitiesFromString,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            EditingTicket editingTicket) {
 
-        LOG.debug("Executing operation getEntitiesFromString");
+        LOG.debug("Executing operation getEntitiesFromString: {} {}", getEntitiesFromString, editingTicket);
 
-        return null;
+        final GetEntitiesFromStringResponse response = new GetEntitiesFromStringResponse();
+        final Entity entity = new Entity();
+        entity.setPosition(0);
+        entity.setLength(getEntitiesFromString.getText().length());
+        entity.setType(0);
+        entity.setValue(getEntitiesFromString.getText());
+        response.getEntities().add(entity);
+
+        return response;
     }
 
     @Override
     public GetEntitiesByIdResponse getEntitiesById(
-            @WebParam(partName = "getEntitiesById", name = "getEntitiesById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") GetEntitiesById getEntitiesById,
-            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+            @WebParam(partName = "getEntitiesById", name = "getEntitiesById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            GetEntitiesById getEntitiesById,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            EditingTicket editingTicket) {
 
-        LOG.debug("Executing operation getEntitiesById");
+        LOG.debug("Executing operation getEntitiesById: {} {}", getEntitiesById, editingTicket);
 
-        return null;
+        return new GetEntitiesByIdResponse();
     }
 
     @Override
-    public boolean saveProcessedDocumentFromString(
-            @WebParam(name = "text", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") String text,
-            @WebParam(name = "objects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") SaveProcessedDocumentFromString.Objects objects,
-            @WebParam(name = "relations", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") SaveProcessedDocumentFromString.Relations relations,
-            @WebParam(name = "force", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") boolean force,
-            @WebParam(name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) EditingTicket editingTicket) {
+    public SaveProcessedDocumentFromStringResponse saveProcessedDocumentFromString(
+            @WebParam(partName = "saveProcessedDocuemntFromString", name = "saveProcessedDocumentFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            SaveProcessedDocumentFromString saveProcessedDocumentFromString,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            EditingTicket editingTicket) {
 
-        LOG.debug("Executing operation saveProcessedDocumentFromString");
+        LOG.debug("Executing operation saveProcessedDocumentFromString: {} {}", saveProcessedDocumentFromString, editingTicket);
 
-        return false;
+        return new SaveProcessedDocumentFromStringResponse();
     }
 
     @Override
     public GetEditingTicketResponse getEditingTicket(
-            @WebParam(partName = "getEditingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz") EditingTicket getEditingTicket,
-            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket) {
+            @WebParam(partName = "getEditingTicket", name = "getEditingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            GetEditingTicket getEditingTicket,
+            @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            Ticket ticket) {
 
-        LOG.debug("Executing operation getEditingTicket");
+        LOG.debug("Executing operation getEditingTicket: {} {}", getEditingTicket, ticket);
 
-        return null;
+        final GetEditingTicketResponse response = new GetEditingTicketResponse();
+        final EditingTicket t = new EditingTicket();
+        t.setTimestamp(new Date());
+        t.setUsername(ticket.getUsername());
+        response.setEditingTicket(t);
+
+        return response;
     }
 }

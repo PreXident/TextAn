@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui;
 
-import cz.cuni.mff.ufal.textan.utils.EmptyResourceBundle;
-import cz.cuni.mff.ufal.textan.utils.UnclosableStream;
+import cz.cuni.mff.ufal.textan.commons.utils.EmptyResourceBundle;
+import cz.cuni.mff.ufal.textan.commons.utils.UnclosableStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -69,7 +69,6 @@ public class TextAn extends Application {
         //parse arguments from command line, ie. load property file
         final List<String> args = getParameters().getRaw();
         if (helpNeeded(args)) {
-            //TODO usage printing
             System.out.printf(localize("usage"), DEFAULT_PROPERTIES);
             System.exit(0);
         }

@@ -25,6 +25,5 @@ public class ReportWizardWindow extends InnerWindow {
     @Override
     public void close() {
         super.close();
-        //TODO save logic here
     }
 }

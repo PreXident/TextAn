@@ -1,11 +1,14 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
-import cz.cuni.mff.ufal.textan.commons_old.models.Object;
+import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -99,6 +102,9 @@ public class ObjectListController extends GraphController {
     @Override
     public void setGrapher(final Grapher grapher) {
         super.setGrapher(grapher);
-        listView.setItems(FXCollections.observableList(Arrays.asList(grapher.getObjects())));
+        final Set<Object> set = grapher.getObjects();
+        final List<Object> list = new ArrayList<>(set);
+        list.sort((obj1, obj2) -> obj1.getId() - obj2.getId());
+        listView.setItems(FXCollections.observableList(list));
     }
 }

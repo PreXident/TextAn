@@ -1,8 +1,10 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons_old.models.Entity;
+import cz.cuni.mff.ufal.textan.core.Entity;
+import cz.cuni.mff.ufal.textan.core.Object;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * {@link ProcessReportPipeline}'s {@link State} for editing the report's entities.
@@ -38,9 +40,10 @@ final class ReportEntitiesState extends State {
     }
 
     @Override
-    public void setReportWords(final ProcessReportPipeline pipeline, final Word[] words) {
+    public void setReportWords(final ProcessReportPipeline pipeline, final List<Word> words) {
         pipeline.reportWords = words;
-        List<Entity> ents = new ArrayList<>();
+        final List<Entity> ents = pipeline.reportEntities;
+        ents.clear();
         EntityBuilder builder = null;
         int start = 0;
         StringBuilder alias = new StringBuilder();
@@ -60,8 +63,14 @@ final class ReportEntitiesState extends State {
             builder.index = ents.size();
             ents.add(new Entity(alias.toString(), start, pipeline.reportText.length() - start, builder.getId()));
         }
-        pipeline.reportEntities = ents.toArray(new Entity[ents.size()]);
-        pipeline.reportObjects = pipeline.client.getDocumentProcessor().getObjects(pipeline.reportText, pipeline.reportEntities);
+        pipeline.client.getObjects(pipeline.ticket, pipeline.reportText, pipeline.reportEntities);
+        pipeline.reportObjects.clear();
+        for (Entity ent : pipeline.reportEntities) {
+            final Optional<Double> max = ent.getCandidates().keySet().stream().max(Double::compare);
+            if (max.isPresent()) {
+                ent.setCandidate(ent.getCandidates().get(max.get()));
+            }
+        }
         pipeline.setState(ReportObjectsState.getInstance());
     }
 }

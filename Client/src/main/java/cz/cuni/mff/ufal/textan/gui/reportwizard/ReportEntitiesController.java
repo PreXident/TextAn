@@ -1,13 +1,13 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import cz.cuni.mff.ufal.textan.commons_old.models.ObjectType;
+import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder.SplitEntitiesException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import cz.cuni.mff.ufal.textan.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +80,7 @@ public class ReportEntitiesController extends ReportWizardController {
     ResourceBundle resourceBundle;
 
     /** Words with assigned EntitityBuilders. */
-    Word[] words;
+    List<Word> words;
 
     @FXML
     private void cancel() {
@@ -156,7 +156,7 @@ public class ReportEntitiesController extends ReportWizardController {
             final Integer ID = (Integer)((MenuItem) t.getSource()).getUserData();
             if (ID == null) {
                 for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
-                    words[i].setEntity(null);
+                    words.get(i).setEntity(null);
                     texts.get(i).getStyleClass().clear();
                 }
                 return;
@@ -191,7 +191,7 @@ public class ReportEntitiesController extends ReportWizardController {
         MenuItem noEntity = new MenuItem(Utils.localize(resourceBundle, "entity.none"));
         noEntity.setOnAction(eh);
         contextMenu.getItems().add(noEntity);
-        for (ObjectType objType : pipeline.getClient().getDataProvider().getObjectTypes()) {
+        for (ObjectType objType : pipeline.getClient().getObjectTypesList()) {
             final MenuItem mi = new MenuItem(objType.getName());
             mi.setOnAction(eh);
             mi.setUserData(objType.getId());

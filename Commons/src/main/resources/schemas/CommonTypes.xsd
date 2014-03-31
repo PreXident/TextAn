@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
+           targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="Ticket.xsd"/>
+    <xs:include schemaLocation="Document.xsd"/>
+    <xs:include schemaLocation="Entity.xsd"/>
+    <xs:include schemaLocation="ObjectType.xsd"/>
+    <xs:include schemaLocation="Object.xsd"/>
+    <xs:include schemaLocation="RelationType.xsd"/>
+    <xs:include schemaLocation="Relation.xsd"/>
+    <xs:include schemaLocation="Graph.xsd"/>
+
+</xs:schema>

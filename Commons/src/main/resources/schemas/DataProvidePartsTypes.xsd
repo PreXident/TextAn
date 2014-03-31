@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
-    targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz" elementFormDefault="qualified"> 
+    xmlns:cms="http://models.commons.textan.ufal.mff.cuni.cz"
+    xmlns="http://models.commons.textan.ufal.mff.cuni.cz/dataProvider"
+    targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz/dataProvider" elementFormDefault="qualified">
         
-    <xs:include schemaLocation="Object.xsd"/>
-    <xs:include schemaLocation="ObjectType.xsd"/>
-    <xs:include schemaLocation="Relation.xsd"/>
-    <xs:include schemaLocation="RelationType.xsd"/>
-    <xs:include schemaLocation="Graph.xsd"/>
-    <xs:include schemaLocation="Ticket.xsd"/>    
-    <xs:include schemaLocation="Document.xsd"/>
+    <xs:import namespace="http://models.commons.textan.ufal.mff.cuni.cz" schemaLocation="CommonTypes.xsd"/>
     
     <xs:element name="getObjectTypes" type="Void"/>    
-    <xs:element name="getObjectTypesResponse"/>
+    <xs:element name="getObjectTypesResponse" type="GetObjectTypesResponse"/>
     
     <xs:element name="getObject" type="GetObject"/>
     <xs:element name="getObjectResponse" type="GetObjectResponse"/>
@@ -71,7 +66,7 @@
     
     <xs:complexType name="GetObjectTypesResponse">
         <xs:sequence>
-            <xs:element ref="objectType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:objectType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -83,25 +78,25 @@
     
     <xs:complexType name="GetObjectResponse">
         <xs:sequence>
-            <xs:element ref="object"/>
+            <xs:element ref="cms:object"/>
         </xs:sequence>
     </xs:complexType>
     
     <xs:complexType name="GetObjectsResponse">
         <xs:sequence>
-            <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
     <xs:complexType name="GetObjectsByType">
         <xs:sequence>
-            <xs:element ref="objectType"/>
+            <xs:element ref="cms:objectType"/>
         </xs:sequence>
     </xs:complexType>
     
     <xs:complexType name="GetObjectsByTypeResponse">
         <xs:sequence>
-            <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -113,31 +108,31 @@
     
     <xs:complexType name="GetObjectsByTypeIdResponse">
         <xs:sequence>
-            <xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
     <xs:complexType name="GetRelationTypesResponse">
         <xs:sequence>
-            <xs:element ref="relationType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:relationType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
     <xs:complexType name="GetRelationsResponse">
         <xs:sequence>
-            <xs:element ref="relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
     <xs:complexType name="GetRelationsByType">
         <xs:sequence>
-            <xs:element ref="relationType"/>
+            <xs:element ref="cms:relationType"/>
         </xs:sequence>
     </xs:complexType>
     
     <xs:complexType name="GetRelationsByTypeResponse">
         <xs:sequence>
-            <xs:element ref="relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -149,7 +144,7 @@
     
     <xs:complexType name="GetRelationsByTypeIdResponse">
         <xs:sequence>
-            <xs:element ref="relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -162,7 +157,7 @@
     
     <xs:complexType name="GetGraphByIdResponse">
         <xs:sequence>
-            <xs:element ref="graph"/>
+            <xs:element ref="cms:graph"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -174,7 +169,7 @@
     
     <xs:complexType name="GetRelatedObjectsByIdResponse">
         <xs:sequence>
-            <xs:element ref="graph"/>
+            <xs:element ref="cms:graph"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -187,7 +182,7 @@
     
     <xs:complexType name="GetPathByIdResponse">
         <xs:sequence>
-            <xs:element ref="graph"/>
+            <xs:element ref="cms:graph"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -200,7 +195,7 @@
     
     <xs:complexType name="MergeObjectsResponse">
         <xs:sequence>
-            <xs:element ref="object"/>
+            <xs:element ref="cms:object"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -243,7 +238,7 @@
     
     <xs:complexType name="GetDocumentsResponse">
         <xs:sequence>
-            <xs:element ref="document"/>
+            <xs:element ref="cms:document"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -255,7 +250,7 @@
     
     <xs:complexType name="GetDocumentByIdResponse">
         <xs:sequence>
-            <xs:element ref="document"></xs:element>
+            <xs:element ref="cms:document"/>
         </xs:sequence>
     </xs:complexType>
     

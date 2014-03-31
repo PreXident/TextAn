@@ -25,6 +25,5 @@ public class ReportWizardStage extends OuterStage {
     @Override
     public void close() {
         super.close();
-        //TODO save logic here
     }
 }
