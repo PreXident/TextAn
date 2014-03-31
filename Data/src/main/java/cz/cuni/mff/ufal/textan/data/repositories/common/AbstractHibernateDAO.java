@@ -36,7 +36,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     protected final static String thisAlias = "this";
     
     protected final static String getAliasPropertyName(String propertyName) {
-        return CommonOperations.getAliasPropertyName(thisAlias, propertyName);
+        return DAOUtils.getAliasPropertyName(thisAlias, propertyName);
     }  
     // -----------------------------------------------------
     // --------------- NON-STATIC MEMBERS-------------------

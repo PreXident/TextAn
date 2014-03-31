@@ -10,7 +10,7 @@ package cz.cuni.mff.ufal.textan.data.repositories.common;
  *
  * @author Václav Pernička
  */
-public class CommonOperations {
+public class DAOUtils {
 
     public final static String getAliasPropertyName(final String tableAlias, final String propertyName) {
         return tableAlias + "." + propertyName;

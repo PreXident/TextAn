@@ -8,7 +8,7 @@ package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.common.CommonOperations;
+import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
 import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.AliasTable;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
@@ -48,7 +48,7 @@ public class ObjectTableDAO   extends AbstractHibernateDAO<ObjectTable, Long> im
     public List<ObjectTable> findAllByAliasEqualTo(String alias) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
-                .add(Restrictions.eq(CommonOperations.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_ALIAS), alias))
+                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_ALIAS), alias))
                 .list();
     }
 
@@ -56,8 +56,8 @@ public class ObjectTableDAO   extends AbstractHibernateDAO<ObjectTable, Long> im
     public List<ObjectTable> findAllByAliasSubstring(String aliasSubstring) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
-                .add(Restrictions.like(CommonOperations.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_ALIAS),
-                                       CommonOperations.getLikeSubstring(aliasSubstring)))
+                .add(Restrictions.like(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_ALIAS),
+                                       DAOUtils.getLikeSubstring(aliasSubstring)))
                 .list();
     }
 
@@ -65,11 +65,11 @@ public class ObjectTableDAO   extends AbstractHibernateDAO<ObjectTable, Long> im
     public List<ObjectTable> findAllByDocumentOccurrence(Long documentId) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
-                .createAlias(CommonOperations.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_OCCURRENCES),
+                .createAlias(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_OCCURRENCES),
                              "aliasOccurrence", JoinType.INNER_JOIN)
-                .createAlias(CommonOperations.getAliasPropertyName("aliasOccurrence", AliasOccurrenceTable.PROPERTY_NAME_DOCUMENT),
+                .createAlias(DAOUtils.getAliasPropertyName("aliasOccurrence", AliasOccurrenceTable.PROPERTY_NAME_DOCUMENT),
                              "document", JoinType.INNER_JOIN)
-                .add(Restrictions.eq(CommonOperations.getAliasPropertyName("document", DocumentTable.PROPERTY_NAME_OCCURRENCES),
+                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("document", DocumentTable.PROPERTY_NAME_OCCURRENCES),
                                      documentId))
                 .list();
     }

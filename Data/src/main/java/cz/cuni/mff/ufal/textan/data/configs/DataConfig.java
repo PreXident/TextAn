@@ -30,8 +30,7 @@ import java.util.Properties;
 @PropertySource("classpath:data.properties")
 @EnableTransactionManagement
 //TODO: it is posible to to create bean manualy, but comment this line and @Autowired in AbstractHibernateDAO
-@ComponentScan(basePackages = {"cz.cuni.mff.ufal.textan.data.repositories.dao", 
-                               "cz.cuni.mff.ufal.textan.data.graph"})
+@ComponentScan(basePackages = {"cz.cuni.mff.ufal.textan.data.repositories.dao"})
 public class DataConfig {
 
     @Autowired

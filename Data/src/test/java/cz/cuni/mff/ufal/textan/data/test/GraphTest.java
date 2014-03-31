@@ -100,7 +100,7 @@ public class GraphTest {
     @Test
     public void basicGraphTest() {
         System.out.println("\n\nbasicGraphTest");
-        Graph g = null;//graphFactory.getGraphFromObject(objects[0].getId(), 1);
+        Graph g = graphFactory.getGraphFromObject(objects[0].getId(), 1);
         System.out.println(g);
         for (int i = 0; i < OBJECTS_IN_RELATION_COUNT; i++) {
             assertTrue("Object not in graph: i = " + i, g.getNodes().contains(new ObjectNode(objects[i])));

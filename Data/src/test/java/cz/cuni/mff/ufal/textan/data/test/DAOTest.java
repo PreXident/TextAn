@@ -93,7 +93,7 @@ public class DAOTest {
     public void findAllTest() {
         List<ObjectTable> res = objectTableDAO.findAll();
         for (ObjectTable objectTable : res) {
-            if (objectTable.equals(objectTable))
+            if (objectTable.equals(object))
                 return;
         }
         assertTrue("Object not found", false);

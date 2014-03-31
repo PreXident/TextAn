@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Václav Pernička
  */
 //@Repository
-//@Transactional
+@Transactional
 public class GraphFactory {
 
     SessionFactory sessionFactory;
