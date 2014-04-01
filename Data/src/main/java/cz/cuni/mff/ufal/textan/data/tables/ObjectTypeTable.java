@@ -16,7 +16,8 @@ import java.util.Set;
  */
 
 public class ObjectTypeTable extends AbstractTable {
- 
+    public static final String PROPERTY_NAME_ID = "id";
+
     private long id;
     private String name;
 

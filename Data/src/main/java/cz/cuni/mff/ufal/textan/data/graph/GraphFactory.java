@@ -14,14 +14,14 @@ import java.util.Queue;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author Václav Pernička
  */
-//@Repository
+
+
 @Transactional
 public class GraphFactory {
 
@@ -53,6 +53,7 @@ public class GraphFactory {
         Graph result = new Graph();
         
         // TODO node to be done in the next wave
+        // TODO get results in one query?
         Queue<Node> nodeQueue = new LinkedList<>();
         
         Session s = sessionFactory.getCurrentSession();

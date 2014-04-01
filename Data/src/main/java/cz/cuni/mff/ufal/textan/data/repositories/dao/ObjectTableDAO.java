@@ -15,11 +15,9 @@ import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import java.util.List;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -28,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class ObjectTableDAO   extends AbstractHibernateDAO<ObjectTable, Long> implements IObjectTableDAO {
+public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> implements IObjectTableDAO {
 
     public ObjectTableDAO() {
         super(ObjectTable.class);
@@ -36,7 +34,10 @@ public class ObjectTableDAO   extends AbstractHibernateDAO<ObjectTable, Long> im
 
     @Override
     public List<ObjectTable> findAllByObjectType(Long objectTypeId) {
-        return super.findAllByProperty(ObjectTable.PROPERTY_NAME_OBJECT_TYPE_ID, objectTypeId);
+        return findAllCriteria()
+                .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_OBJECT_TYPE_ID), "objType", JoinType.INNER_JOIN)
+                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", ObjectTypeTable.PROPERTY_NAME_ID), objectTypeId))
+                .list();
     }
 
     @Override
@@ -69,8 +70,13 @@ public class ObjectTableDAO   extends AbstractHibernateDAO<ObjectTable, Long> im
                              "aliasOccurrence", JoinType.INNER_JOIN)
                 .createAlias(DAOUtils.getAliasPropertyName("aliasOccurrence", AliasOccurrenceTable.PROPERTY_NAME_DOCUMENT),
                              "document", JoinType.INNER_JOIN)
-                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("document", DocumentTable.PROPERTY_NAME_OCCURRENCES),
+                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("document", DocumentTable.PROPERTY_NAME_ID),
                                      documentId))
                 .list();
+    }
+
+    @Override
+    public List<ObjectTable> findAllByDocumentOccurrence(DocumentTable document) {
+        return findAllByDocumentOccurrence(document.getId());
     }
 }
