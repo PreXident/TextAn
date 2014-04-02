@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+    <class name="cz.cuni.mff.ufal.textan.data.tables.DocumentTable" table="document">
+        <meta attribute="class-description">
+            Document - Report - Text writen by policemen
+        </meta>
+        <id 
+            name="id" 
+            type="long" 
+            column="id_document"
+            unsaved-value="0">
+            <generator class="native" />
+        </id>  
+        <property name="addedDate" column="added" type="date"/>
+        <property name="processedDate" column="processed" type="date"/>
+        <property name="text" column="text" type="text"/>
+        <set name="relationOccurrences" table="RelationOccurrence" inverse="true" cascade="delete, delete-orphan">
+            <key>
+                <column name="id_document"></column>
+            </key>
+            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable"></one-to-many>
+        </set>
+        <set name="aliasOccurrences" table="AliasOccurrence" inverse="true" cascade="delete, delete-orphan">
+            <key>
+                <column name="id_document"></column>
+            </key>
+            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable"></one-to-many>
+        </set>
+    </class>
+    
+</hibernate-mapping>

@@ -1,4 +1,3 @@
-//set project name to get correctly named jars
-rootProject.name = 'TextAn'
+rootProject.name='TextAn.Client'
 include ':Commons'
-//project(':Commons').projectDir = new File('../Commons') //netbeans cannot handle this, hence symlink
+project(':Commons').projectDir = new File('../Commons')

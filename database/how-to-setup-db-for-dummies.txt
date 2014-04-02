@@ -1,0 +1,25 @@
+
+Ok tak tohle se jeste zmeni
+
+1. Download and install XAMPP from: http://www.apachefriends.org/
+    (You need mysql checked during install)
+
+2. Run XAMPP control and start Apache and MySQL
+
+3. Run your favorite web browser (not IE for no fucking reason) and type address: http://localhost/phpmyadmin/
+
+4. Click at Import (top menu). Then click "Choose file" button and choose database/create.sql and click GO button.
+
+5. That's it. At the left is new database called textan and it's ready to use. When you click on it, you should see +-10 tables.
+   If there will be some sql scripts to fill the DB with some data, just repeat step 4 with that other script instead of create.sql
+   
+    
+
+Another possibility:
+1. Download MySql database from http://dev.mysql.com/downloads/
+2. Install server and some client (commandline client, MySQL Workbench, or binding for your IDE)
+3. Run database/create.sql, which create "textan" database
+4. Change user, password and url in hibernate.cfg.xml (or data.properties) as you need.
+    (Please don't push your changes in GitHub.)
+
+(TODO: create user in MySql for Textan server.)

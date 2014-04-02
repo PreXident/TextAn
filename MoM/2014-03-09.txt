@@ -1,0 +1,29 @@
+Hi,
+ today only a short summary, because it seems there were more (small) problems...
+
+Adam:
+hi,
+this one will be brief as i have not much to report:
+i have been adding the additional layer between client and webservices as Peter asked, it is boring and tiring work so it is progressing slowly :-/
+
+adam
+
+Tam:
+Dear Petr,
+
+I am trying to push my ranking scheme to github, branch Textpro. However, i have problem that I cannot clone the TextPro branch (so I cannot push it). 
+
+I have never experienced this one before, Do you know how to do that. I tried to merge the TextPro to master, but it is not working. Thanks.
+
+Tam.
+
+Kuba:
+I'm trying to connect nametag to the server... and I have written to Fox regarding the gazeteers, because in that just could not penetrate...but nothing yet...
+
+Me:
+I finished the wsdl files (I know it's not perfect, but for now that's enough) and I started with autogenerating java sources from them, but there is some problems with Gradle, because everything is either Maven plugin or command line tool.
+
+and Vasek didn't do anything?!
+
+Have a nice beginning of the week and see you on Wednesday,
+Petr

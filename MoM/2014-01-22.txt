@@ -1,0 +1,13 @@
+Only Peter and Adam present - shame on you guys!
+
+- Tagger, NER and bindings are working on Windows too.
+- JUNG is probably suitable for our needs - it supports hypergraphs and with a little efford there can be multilabeled edges
+- The graph webservice for graph rendering will need two arguments at least with object and distance to display and will return list of Objects and list of edges with type and reference (probably ids) to objects.
+- The graph webservice for paths will take two object ids and will return list of nodes and list of edges on the path. GUI will provide means to expand the nodes on the way.
+- So db could handle the graph logic - build graphs from tables in stored procedures.
+- getRelatedObjects from IDataProvider is special case of graph webservice.
+- new method in IDataProvider getRelations returning relation with object ids.
+- IDocumentProcessor should work as atomically as possible. Save method should throw an exception on conflict. Another method can be used to reveal the conflicts or saveIgnoreConflicts (or boolean parameter of save) can be called.
+- Explore the possibility of using issue tracker on github
+
+Next meeting on Wednesday (Jan 29) at 11:00 in the lab

@@ -1,0 +1,17 @@
+Venca is missing!
+
+Use msys and MinGW-w64 to compile the tagger rather than cygwin.
+SWIG is not working properly on Windows (strange c++ error).
+
+Master branch will be used to commit finished work, so everything should compile. Create own branches otherwise.
+Interfaces should be named like ISomeInterface. In repository there should be unix line endings, modify your .gitattributes accordingly.
+
+Adam - look at Model View ViewModel
+Kuba - push testing project
+Tam - push interface
+Venca - start creating a data layer
+Petr - Spring Webservices
+
+all - try to compile the tagger on Windows
+
+Next meeting first official one with Ondrej and Honza on Wednesday, from 14:00.

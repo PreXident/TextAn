@@ -1,0 +1,54 @@
+Dears,
+ here is another short broadcast of our reports. Short, because I got reports only from Adam and Tam. So, next time I will send some notification again. 
+
+Adam:
+
+hi,
+i have been adapting the client to the new webservices and i have encountered several problems:
+Relation
+- where are orders?
+- why it contains only one object id?
+
+ObjectType's name is typed to int
+
+Document procesor
+- getEditingTicket wants two tickets, why?
+    - i understand the Ticket, so it can get the username, but why there is parameter EditingTicket, which it should return?
+- getObjectsFromString
+    - the first argument is string, but getEntitiesFromString takes some kind of wrapper around string as the first parameter
+    - there are no ratings of the candidates
+- getObjectTypes returns java.lang.Object
+
+i have successfully connected to DataProvider (NullPointerException caused crash, but it is expected as server returns always null ;-) however if i try to connect to DocumentProcessor, this beaty is thrown:
+javax.xml.ws.WebServiceException: classcz.cuni.mff.ufal.textan.commons.models.GetObjectsFromStringResponse do not have a property of the name assignment
+Caused by: javax.xml.bind.JAXBException: assignment is not a valid property on classcz.cuni.mff.ufal.textan.commons.models.GetObjectsFromStringResponse
+i briefly looked into generated sources and i can see assignment property there, but it  has only a getter and no setter
+
+so i keep changes only locally until these problems are solved, ok?
+
+adam
+
+Tam:
+
+I committed and pushed the interface of ranking into github. However, it 
+takes input as the directory of files, so I will try to finish the 
+functions which takes a list of entity or a string as input (choices for 
+you guys) by next Wednesday.
+
+Me:
+
+I changed connection to db from ugly static class to spring beans and tests so that they use spring as well. Further, I added another instructions how to set up MySql without Apache and MySqlAdmin. (And I added some mess, too :D)
+
+Yesterday I fixed some problems from Adam's report. I tried to fix the strange wrappers the last week, but I wasn't successful, so it and exceptions remain without fix.
+
+I know that Vaškova laziness is my fault, so I hope I will give him better instructions than now on Wednesday. :/
+
+See you on Wednesday,
+Petr
+
+----
+Hi,
+I'm sorry that I forgot write a report.
+I was adapting nametag for our purposes and trying to integrate with textan...as usual :D
+
+Jacob

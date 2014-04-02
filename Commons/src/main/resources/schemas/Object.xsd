@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz"
+           xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
+           elementFormDefault="qualified">
+
+    <xs:include schemaLocation="ObjectType.xsd"/>
+
+    <xs:element name="object" type="Object" />
+
+    <xs:complexType name="Object">
+        <xs:sequence>
+            <xs:element name="id" type="xs:int"/>
+            <xs:element ref="objectType" />
+            <xs:element name="aliases">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="alias" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="isNew" type="xs:boolean" default="false" /> 
+    </xs:complexType>
+
+
+</xs:schema>

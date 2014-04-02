@@ -1,0 +1,33 @@
+All members are here!
+
+Adam:
+- objects can be assigned to entitites
+- new step in pipeline
+- orientation in graphs (buggy right now)
+
+Peter
+- writing wsdl files
+
+Tam
+- finished vietnamese name gazeteer
+- ranking is better than classifier -> prototype ranking, if not good, switch to classifier
+
+Kuba
+- gazeteer problems, need consultation with Milan
+- trying to connect to the server
+
+Venca
+- added some methods to create simple graphs from db, for now only simple, WiP
+
+Errors when storing the processed document:
+- document processed by someone else
+- newly added objects (maybe object types and relation types)
+
+hwk:
+- Adam add layer to webservices so changes in the interface will not effect the code so much
+- Adam graphs are buggy
+- Peter add methods to data provider to get all documents from the db
+- move addDocument to data provider
+
+Sunday summary is out of experimental phase and it's mandatory from now!
+Next meeting - same day, same place and same time

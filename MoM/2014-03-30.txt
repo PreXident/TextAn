@@ -1,0 +1,31 @@
+Dears
+I'm sorry that I send summary a bit later. Although it is strange, Venca sent a report and sent it as first. :)
+
+Venca:
+
+I'm working on the DAOs. They should be done today evening or tomorrow.
+
+Kuba:
+
+Nothing imprtant since Wednesday, yesterday a have smaller conflict with git, I create new branch by mistake, then i want to delete it, but i deleted the right one...but i have backup i hope.
+Milan wrote me yesterday, he told me about gazetters and learning part and i asked him about binding to learning part. Milan will not do it, because it's not needed.
+
+Adam:
+
+so i have integrated the logo in the client :-)
+and also the relation editing should work now, although there are some graphical glitches
+
+Tam:
+
+A few changes in the TextPro:
+- Create a class DBObject (to distinguish itself with Object): two function: getDocs() and getAlias(), maybe need getRelation(). However, the function is empty
+- Create a class Double Ranking, responsible for finding all object
+- Create a function in Entity: getClosestObject(). (now i think it is not necessary)
+
+Me:
+
+I'm working on DAO with Venca, there is some crazy problem with spring, but I hope we fix it today. I also made changes in database schema, added db user for textan app etc. and I tested some plugins for gradle which creates one-jar (uber-jar,shadow jar etc.), but it seems that it will be  also  fun. I almost forgot, I worked on the server side business logic, but DAO is more important...
+
+So, back to work, see you on Wednesday.
+
+Petr

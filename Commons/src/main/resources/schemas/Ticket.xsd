@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz"
+           xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
+           elementFormDefault="qualified">
+
+    <xs:element name="ticket" type="Ticket" />
+    <xs:element name="editingTicket" type="EditingTicket"/>
+
+    <xs:complexType name="Ticket">
+        <xs:sequence>
+            <xs:element name="username" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="EditingTicket">
+        <xs:complexContent>
+            <xs:extension base="Ticket">
+                <xs:sequence>                    
+                    <xs:element name="timestamp" type="xs:dateTime" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

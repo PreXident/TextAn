@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+    <class name="cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable" table="AliasOccurrence">
+      <meta attribute="class-description">
+         Occurrence of an alias in a document. Keeps the position of the alias.
+      </meta>
+      <id 
+          name="id" 
+          type="long" 
+          column="id_alias_occurence"
+          unsaved-value="0">
+         <generator class="native" />
+      </id>  
+       
+       <property name="position" column="position" type="integer"/>
+       
+       <many-to-one name="document" class="cz.cuni.mff.ufal.textan.data.tables.DocumentTable" 
+                    column="id_document" not-null="true" lazy="false" cascade="save-update" />
+       <many-to-one name="alias" class="cz.cuni.mff.ufal.textan.data.tables.AliasTable" 
+                    column="id_alias" not-null="true" lazy="false" cascade="save-update"/>
+    </class>
+    
+</hibernate-mapping>

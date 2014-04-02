@@ -1,37 +1,52 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import cz.cuni.mff.ufal.textan.gui.WindowController;
+import cz.cuni.mff.ufal.textan.core.ObjectType;
+import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
+import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder.SplitEntitiesException;
+import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
+import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
+import cz.cuni.mff.ufal.textan.core.processreport.Word;
+import cz.cuni.mff.ufal.textan.gui.Utils;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import org.controlsfx.dialog.Dialogs;
 
 /**
  * Controls editing entities.
+ * TOOD refactor entity handling
  */
-public class ReportEntitiesController extends WindowController {
+public class ReportEntitiesController extends ReportWizardController {
 
-    static final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';', '!')));
-
+    /** Style class for selected words. */
     static final String SELECTED = "selected";
 
-    static void addSelectedClass(Iterable<Node> list) {
-        list.forEach(node -> node.getStyleClass().add("selected"));
+    /**
+     * Adds {@link #SELECTED} style class to all items in the list.
+     * @param list items to which add the style class
+     */
+    static void addSelectedClass(Iterable<? extends Node> list) {
+        list.forEach(node -> node.getStyleClass().add(SELECTED));
     }
 
-    static void removeSelectedClass(Iterable<Node> list) {
-        list.forEach(node -> node.getStyleClass().remove("selected"));
+    /**
+     * Removes {@link #SELECTED} style class from all items in the list.
+     * @param list items from which remove the style class
+     */
+    static void removeSelectedClass(Iterable<? extends Node> list) {
+        list.forEach(node -> node.getStyleClass().remove(SELECTED));
     }
 
     @FXML
@@ -43,7 +58,29 @@ public class ReportEntitiesController extends WindowController {
     @FXML
     TextFlow textFlow;
 
-    int startTextIndex = -1;
+    /** Index of the first selected {@link Text} node. */
+    int firstDragged = -1;
+
+    /** Index of the lasty dragged {@link Text} node. */
+    int lastDragged = -1;
+
+    /** Index of the first selected {@link Text} node. */
+    int firstSelectedIndex = -1;
+
+    /** Index of the last selected {@link Text} node. */
+    int lastSelectedIndex = -1;
+
+    /** Flag indicating whether dragging is taking place. */
+    boolean dragging = false;
+
+    /** Context menu with entity selection. */
+    ContextMenu contextMenu;
+
+    /** Localization controller. */
+    ResourceBundle resourceBundle;
+
+    /** Words with assigned EntitityBuilders. */
+    List<Word> words;
 
     @FXML
     private void cancel() {
@@ -52,40 +89,34 @@ public class ReportEntitiesController extends WindowController {
 
     @FXML
     private void next() {
-        Dialogs.create()
-                .owner(getDialogOwner(root))
-                .title("Hotovo!")
-                .message("Zpráva úspěšně vytvořena")
-                .lightweight()
-                .showInformation();
-        closeContainer();
+        pipeline.setReportWords(words);
     }
 
-    public void setReport(final String report) {
-        final List<String> words = new ArrayList<>();
-        int start = 0;
-        for(int i = 0; i < report.length(); ++i) {
-            if (separators.contains(report.charAt(i))) {
-                if (start < i) {
-                    words.add(report.substring(start, i));
-                }
-                words.add(report.substring(i, i + 1));
-                start = i + 1;
-            }
-        }
-        if (start < report.length()) {
-            words.add(report.substring(start, report.length()));
-        }
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        resourceBundle = rb;
+        textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
+    }
 
-        final List<Node> texts = textFlow.getChildren();
-        texts.clear();
-        for (String word: words) {
-            final Text text = new Text(word);
+    @Override
+    public void setPipeline(final ProcessReportPipeline pipeline) {
+        super.setPipeline(pipeline);
+        final List<Text> texts = new ArrayList<>();
+        words = pipeline.getReportWords();
+        for (Word word: words) {
+            final Text text = new Text(word.getWord());
+            if (word.getEntity() != null) {
+                text.getStyleClass().add("ENTITY_" + word.getEntity().getId());
+            }
             text.setOnMousePressed(e -> {
                 if (!text.getStyleClass().contains(SELECTED)) {
-                    System.out.println("pressed");
+                    //System.out.println("pressed");
                     removeSelectedClass(texts);
-                    startTextIndex = texts.indexOf(text);
+                    dragging = true;
+                    firstDragged = texts.indexOf(text);
+                    lastDragged = firstDragged;
+                    firstSelectedIndex = firstDragged;
+                    lastSelectedIndex = firstDragged;
                     text.getStyleClass().add(SELECTED);
                     //text.setMouseTransparent(true);
                 }
@@ -94,28 +125,77 @@ public class ReportEntitiesController extends WindowController {
                 text.startFullDrag();
             });
             text.setOnMouseDragEntered(e -> {
-                if (startTextIndex != -1) {
-                    System.out.println("dragged");
+                if (dragging) {
+                    //System.out.println("dragged");
                     removeSelectedClass(texts);
                     final int myIndex = texts.indexOf(text);
-                    final int min = Math.min(startTextIndex, myIndex);
-                    final int max = Math.max(startTextIndex, myIndex);
+                    final int min = Math.min(firstDragged, myIndex);
+                    final int max = Math.max(firstDragged, myIndex);
                     addSelectedClass(texts.subList(min, max + 1));
+                    firstSelectedIndex = min;
+                    lastSelectedIndex = max;
+                    if (!separators.contains(text.getText().charAt(0))) { //ignore separators in displaying the contextmenu
+                        lastDragged = myIndex;
+                    }
                 }
             });
             text.setOnMouseReleased(e -> {
-                if (startTextIndex != -1) {
-                    System.out.println("release");
-                    startTextIndex = -1;
+                if (dragging) {
+                    //System.out.println("released");
+                    dragging = false;
+                    contextMenu.show(texts.get(lastDragged), Side.BOTTOM, 0, 0);
                     //text.setMouseTransparent(false);
                 }
             });
             texts.add(text);
         }
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
+        textFlow.getChildren().clear();
+        textFlow.getChildren().addAll(texts);
+        //
+        final EventHandler<ActionEvent> eh = (ActionEvent t) -> {
+            final Integer ID = (Integer)((MenuItem) t.getSource()).getUserData();
+            if (ID == null) {
+                for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
+                    words.get(i).setEntity(null);
+                    texts.get(i).getStyleClass().clear();
+                }
+                return;
+            }
+            final int id = ID;
+            final EntityBuilder e = new EntityBuilder(id);
+            try {
+                Pair<Integer, Integer> bounds = e.add(words, firstSelectedIndex, lastSelectedIndex, i -> texts.get(i).getStyleClass().clear());
+                for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
+                    texts.get(i).getStyleClass().clear();
+                    texts.get(i).getStyleClass().add("ENTITY_" + id);
+                }
+            } catch (SplitEntitiesException ex) {
+                callWithContentBackup(() -> {
+                    createDialog()
+                            .owner(getDialogOwner(root))
+                            .title(Utils.localize(resourceBundle, "error.split.entities"))
+                            .showException(ex);
+                });
+                ex.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                callWithContentBackup(() -> {
+                    createDialog()
+                            .owner(getDialogOwner(root))
+                            .title(Utils.localize(resourceBundle, "error"))
+                            .showException(ex);
+                });
+            }
+        };
+        contextMenu = new ContextMenu();
+        MenuItem noEntity = new MenuItem(Utils.localize(resourceBundle, "entity.none"));
+        noEntity.setOnAction(eh);
+        contextMenu.getItems().add(noEntity);
+        for (ObjectType objType : pipeline.getClient().getObjectTypesList()) {
+            final MenuItem mi = new MenuItem(objType.getName());
+            mi.setOnAction(eh);
+            mi.setUserData(objType.getId());
+            contextMenu.getItems().add(mi);
+        }
     }
 }

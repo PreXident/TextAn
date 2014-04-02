@@ -1,0 +1,25 @@
+All here.
+
+Adam
+- demo of relation editing
+- dummy db for client brach
+
+Peter
+- dummy db merged to master and improved
+- webservices done, minor things, implementing hybernate
+
+Kuba
+- nametag to use our structures and Milan Straka has still not responded
+
+Venca
+- no progresss since last summary
+
+Tam
+- discussion about object representation in db
+
+HWK:
+- Adam look into scrollbar if window is too small
+- Adam background of the relation could change colors, objects in selected relation to change background
+- Adam list of all relations
+
+Next meeting as usual, remember Sunday Summary!

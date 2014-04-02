@@ -1,0 +1,26 @@
+All here, Tam sick, so this one will be short
+
+Tam
+- not much progress since sunday
+
+Adam
+- not much progress since sunday
+
+Peter
+- problems with java generating from wsdl, wsdl namespaces need reorganizing
+- data subproject from static classes to spring
+- wrapper around strings cannot eliminated easily
+
+Kuba
+- communicating with Milan Straka about integration, gazeteers etc.
+- integration progressing ok, not tried spring yet
+
+Vence
+- nothing new since last sunday
+
+HWK:
+- Adam put sunday reports into git repository
+- Venca graphs with distance more than one
+- it would be nice if first alfa could be preseneted next wednesday and meeting with Ondrej afterwards
+
+Next meeting as usual and sunday report too.

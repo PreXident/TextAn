@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+    <class name="cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable" table="RelationType">
+        <meta attribute="class-description">
+           Type of a relation (killed, lived, was engaged, ...) 
+        </meta>
+        <id 
+            name="id" 
+            type="long" 
+            column="id_relation_type"
+            unsaved-value="0">
+           <generator class="native" />
+        </id>  
+        <property name="name" column="name" type="string"/>
+        <set name="relationsOfThisType"  table="relation" inverse="true" cascade="delete, delete-orphan">
+            <key>
+                <column name="id_relation_type"></column>
+            </key>
+            <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.RelationTable"></one-to-many>
+        </set>
+
+    </class>
+    
+</hibernate-mapping>
