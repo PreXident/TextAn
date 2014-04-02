@@ -1,0 +1,20 @@
+All here.
+Next week meeting will be cancelled as Adam, Jakub and maybe Tam will be missing.
+Next meeting in 14 days with Ondrej.
+
+Adam
+- from sunday: relation editing working, logo integrated :-)
+- hack to prevent ignoring mouse events
+
+Jakub
+- nothing new since Sunday
+- Milan: no java binging for learning, just call the compiled binary
+
+Venca and Peter
+- prepared DOA classses, opened a issue for extending the interfaces
+
+Tam
+- discussion about db and connection, doa etc.
+
+HWK
+- make db access (spring and gradle) to textpro
