@@ -101,9 +101,6 @@ public class DataConfig {
             }
         };
     }
-
-    //TODO: Add transaction management
-    // TODO: to uz mame ne?
         
     @Bean
     public Data data() {

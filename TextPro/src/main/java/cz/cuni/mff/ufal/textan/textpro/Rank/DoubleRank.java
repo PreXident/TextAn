@@ -97,9 +97,9 @@ public class DoubleRank {
         ArrayList<Integer> o1Docs = o1.getDocs();
         ArrayList<Integer> o2Docs = o2.getDocs();
         
+        //TODO: implement
         
-        
-        
+        return false;
     }    
     
 }

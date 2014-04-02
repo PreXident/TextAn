@@ -4,3 +4,6 @@ project(':Commons').projectDir = new File('../Commons')
 
 include ':Data'
 project(':Data').projectDir = new File('../Data')
+
+include ':TextPro'
+project(':TextPro').projectDir = new File('../TextPro')
