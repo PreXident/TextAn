@@ -1,9 +1,11 @@
 /*
  * The main ranking, written in March 29, 2014
  */
-package cz.cuni.mff.ufal.textan.textpro.Rank;
+package cz.cuni.mff.ufal.textan.textpro.rank;
 
-import cz.cuni.mff.ufal.textan.Data.*;
+import cz.cuni.mff.ufal.textan.textpro.data.Entity;
+import cz.cuni.mff.ufal.textan.textpro.data.DBObject;
+
 import java.util.ArrayList;
 
 /**

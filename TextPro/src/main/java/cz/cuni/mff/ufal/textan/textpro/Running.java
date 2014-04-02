@@ -3,10 +3,10 @@ package cz.cuni.mff.ufal.textan.textpro;
 //**************IMPLEMENT THE METHOD CALLING NER*********************
 
 import java.util.List;
-import cz.cuni.mff.ufal.textan.Data.Entity;
+import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import java.util.ArrayList;
 
-public class Running implements TextPro{
+public class Running implements ITextPro{
     
     // List of object (corresponding to the object list in database)
     List<String> objectList;
@@ -32,7 +32,7 @@ public class Running implements TextPro{
         return SimpleRanking(TestDir, DataDir);
     }
     public static void main(String[] args) {
-        TextPro ner = new Running();
+        ITextPro ner = new Running();
         String doc = "This is not a test actually";
         List<Entity> ls = ner.recognizedEntity(doc);
         System.out.print(ls.get(0).getOffset());

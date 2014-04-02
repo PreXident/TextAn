@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -20,7 +21,7 @@ import org.springframework.core.env.Environment;
  */
 @Configuration
 @PropertySource("classpath:server.properties")
-@Import(DataConfig.class)
+@Import({DataConfig.class, TextProConfig.class})
 public class AppConfig {
 
     /**
@@ -50,6 +51,9 @@ public class AppConfig {
 
     @Autowired
     private DataConfig dataConfig;
+
+    @Autowired
+    private TextProConfig textProConfig;
 
     /**
      * Creates preconfigured Jetty server.

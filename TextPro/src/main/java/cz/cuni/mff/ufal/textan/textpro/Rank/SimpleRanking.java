@@ -1,12 +1,10 @@
-package cz.cuni.mff.ufal.textan.textpro.Rank;
+package cz.cuni.mff.ufal.textan.textpro.rank;
 
-import cz.cuni.mff.ufal.textan.Data.*;
-import cz.cuni.mff.ufal.textan.textpro.TextPro;
-import java.io.BufferedReader;
-import java.io.*;
+import cz.cuni.mff.ufal.textan.textpro.data.Entity;
+import cz.cuni.mff.ufal.textan.textpro.data.LoadDatabase;
+import cz.cuni.mff.ufal.textan.textpro.data.LoadTest;
+
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.regex.*;
 
 
 public class SimpleRanking{

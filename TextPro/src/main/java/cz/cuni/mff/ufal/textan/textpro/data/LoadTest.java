@@ -1,9 +1,8 @@
-package cz.cuni.mff.ufal.textan.Data;
+package cz.cuni.mff.ufal.textan.textpro.data;
 
 import java.io.BufferedReader;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.regex.*;
 
 public class LoadTest {

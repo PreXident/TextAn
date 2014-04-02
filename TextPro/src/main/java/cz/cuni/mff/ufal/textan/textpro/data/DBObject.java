@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.cuni.mff.ufal.textan.Data;
+package cz.cuni.mff.ufal.textan.textpro.data;
 
 import java.util.ArrayList;
 

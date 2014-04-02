@@ -4,8 +4,8 @@
  */
 package cz.cuni.mff.ufal.textan;
 
-import cz.cuni.mff.ufal.textan.Data.Entity;
-import cz.cuni.mff.ufal.textan.textpro.TextPro;
+import cz.cuni.mff.ufal.textan.textpro.data.Entity;
+import cz.cuni.mff.ufal.textan.textpro.ITextPro;
 import cz.cuni.mff.ufal.textan.textpro.Running;
 import java.util.List;
 
@@ -14,10 +14,13 @@ import java.util.List;
  * @author Tamhd
  */
 public class testEntity {
-    public static void main(String[] args) {
-        TextPro ner = new Running();
-        String doc = "This is not a test actually";
-        List<Entity> ls = ner.recognizedEntity(doc);
-        System.out.print(ls.get(0).getText());
-    }    
+
+    //TODO: in this directory must be only JUnit or NGUnit tests!
+
+//    public static void main(String[] args) {
+//        ITextPro ner = new Running();
+//        String doc = "This is not a test actually";
+//        List<Entity> ls = ner.recognizedEntity(doc);
+//        System.out.print(ls.get(0).getText());
+//    }
 }
