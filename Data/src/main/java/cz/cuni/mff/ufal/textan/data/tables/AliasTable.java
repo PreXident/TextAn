@@ -15,6 +15,10 @@ import java.util.Set;
  * @author Václav Pernička
  */
 public class AliasTable extends AbstractTable {
+    public static final String PROPERTY_NAME_ALIAS = "alias";
+    public static final String PROPERTY_NAME_OCCURRENCES = "occurrences";
+
+    
     private long id;
     private String alias;
     

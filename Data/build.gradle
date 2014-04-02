@@ -1,30 +1,39 @@
 apply plugin: 'java'
-apply plugin: 'application' 
 
 sourceCompatibility = '1.7'
-defaultTasks 'run'
-
-mainClassName = 'cz.cuni.mff.ufal.textan.data.test.DataTest'
 
 repositories {
     mavenCentral()
 }
 
+def springVersion = '4.0.3.RELEASE'
+
 dependencies {
     //hibernate
-    compile group: 'org.hibernate', name: 'hibernate-core', version: '4.3.0.Final'
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '4.3.4.Final'
 
     // mysql connector
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.28'
+
+    compile group:'commons-dbcp', name:'commons-dbcp', version: '1.2.2'
+
+
+    //spring
+    compile (group: 'org.springframework', name: 'spring-context', version: springVersion) {
+        exclude group: 'commons-logging', module: 'commons-logging' // we want to use SLF4J for logging
+    }
+    compile group: 'org.springframework', name: 'spring-orm', version: springVersion
+    compile group: 'org.springframework', name: 'spring-aop', version: springVersion
     
     //logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
     runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'
-    //runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.6' //wrapper for spring
+    runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.6' //wrapper for spring
 
-    compile project(':Commons')
+    //compile project(':Commons')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile group: 'org.springframework', name: 'spring-test', version: springVersion
 }
 
 

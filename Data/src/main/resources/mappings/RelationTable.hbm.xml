@@ -15,7 +15,7 @@
             unsaved-value="0">
             <generator class="native" />
         </id>  
-        <set name="objectsInRelation" table="isinrelation">
+        <set name="objectsInRelation" table="isinrelation" cascade="delete, delete-orphan">
             
             <key column="id_relation"/>
                             
@@ -24,7 +24,7 @@
         <many-to-one name="relationType" class="cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable" 
                     column="id_relation_type" not-null="true" lazy="false" cascade="save-update" />
         
-        <set name="occurrences" table="RelationOccurrence" inverse="true">
+        <set name="occurrences" table="RelationOccurrence" inverse="true" cascade="delete, delete-orphan">
             <key>
                 <column name="id_relation"></column>
             </key>

@@ -16,6 +16,8 @@ import java.util.Set;
  * @author Václav Pernička
  */
 public class DocumentTable extends AbstractTable {
+    public static final String PROPERTY_NAME_ID = "id";
+
     private long id;
     private Date addedDate = Calendar.getInstance().getTime();
     private Date processedDate;

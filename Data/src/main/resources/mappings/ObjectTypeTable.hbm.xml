@@ -16,7 +16,7 @@
          <generator class="native" />
       </id>  
        <property name="name" column="name" type="string"/>
-       <set name="objectsOfThisType"  table="object" inverse="true">
+       <set name="objectsOfThisType"  table="object" inverse="true" cascade="delete, delete-orphan">
            <key>
                <column name="id_object_type"></column>
            </key>

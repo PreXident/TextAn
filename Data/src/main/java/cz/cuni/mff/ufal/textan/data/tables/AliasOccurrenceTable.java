@@ -11,6 +11,8 @@ package cz.cuni.mff.ufal.textan.data.tables;
  * @author Václav Pernička
  */
 public class AliasOccurrenceTable extends AbstractTable {
+    public static final String PROPERTY_NAME_DOCUMENT = "document";
+
     private long id;
     private int position;
     

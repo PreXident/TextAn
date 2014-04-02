@@ -1,24 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.repositories;
 
 import cz.cuni.mff.ufal.textan.data.tables.AbstractTable;
 import java.io.Serializable;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
-import org.hibernate.Session;
-import org.hibernate.StatelessSession;
-import org.hibernate.Transaction;
+import java.util.List;
+
+import org.hibernate.*;
 
 /**
  *
  * @author Václav Pernička
  */
 public class Data {
+
+    private SessionFactory sessionFactory;
+
+    //TODO: constructor injection or property injection?
+    public Data(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
     
     /**
      * Gets an object from a specified table by given ID
@@ -33,26 +32,46 @@ public class Data {
      */
     @Deprecated
     public <Table extends AbstractTable> Table getRecordById(final Class<Table> clazz, final Serializable id) {
-        Session s = HibernateUtil.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         try {
             //s.beginTransaction();
-            return (Table)s.get(clazz, id);
+            return (Table)session.get(clazz, id);
         } finally {
-            s.close();
+            session.close();
         }
     }
     
-    public <Table extends AbstractTable> void performActionOnRecord(final Class<Table> clazz, final Serializable id, TableAction<Table> action) {
-        Session s = HibernateUtil.getSessionFactory().openSession();
+    /**
+     * Updates a single record
+     * 
+     * @param <Table>
+     * @param clazz
+     * @param id
+     * @param action 
+     */
+    public <Table extends AbstractTable> void updateRecordById(final Class<Table> clazz, final Serializable id, TableAction<Table> action) {
+        Session session = sessionFactory.openSession();
         try {
-            s.beginTransaction();
-            action.action((Table)s.get(clazz, id));
-            s.getTransaction().commit();
+            session.beginTransaction();
+            Table record = (Table)session.get(clazz, id);
+            action.action(record);
+            session.update(record);
+            session.getTransaction().commit();
         } finally {
-            s.close();
+            session.close();
         }
     }
 
+    public <Table extends AbstractTable> void selectById(final Class<Table> clazz, final Serializable id, TableAction<Table> action) {
+        Session session = sessionFactory.openSession();
+        try {
+            Table record = (Table)session.get(clazz, id);
+            action.action(record);
+        } finally {
+            session.close();
+        }
+    }
+    
     /**
      * Performs an action on specified table.
      * In the simplest way this method serves as the SELECT ALL query.
@@ -63,10 +82,10 @@ public class Data {
      * @param action Specify what you will do on each record of the table. You can only get some
      * data (it will work like SELECT) or you can change them (it will be UPDATED)
      */
-    public <Table extends AbstractTable> void performActionOnTable(final Class<Table> clazz, final TableAction<Table> action) {
-        StatelessSession session = HibernateUtil.getSessionFactory().openStatelessSession();
+    public <Table extends AbstractTable> void updateAll(final Class<Table> clazz, final TableAction<Table> action) {
+        StatelessSession session = sessionFactory.openStatelessSession();
         Transaction tx = session.beginTransaction();
-        ScrollableResults customers = session.getNamedQuery("GetCustomers")
+        ScrollableResults customers = session.createCriteria(clazz) //TODO: Customers!?
             .scroll(ScrollMode.FORWARD_ONLY);
         while ( customers.next() ) {
             Table record = (Table) customers.get(0);
@@ -78,43 +97,62 @@ public class Data {
         session.close();
     }
     
+    /**
+     * Performs an action on specified table.
+     * In the simplest way this method serves as the SELECT ALL query.
+     * It can be also used to UPDATE these records returned by SELECT ALL from specified table.
+     * 
+     * @param <Table> Table on which are we executing command SELECT ALL (and/or UPDATE)
+     * @param clazz Just put Table.class here
+     * @param action Specify what you will do on each record of the table. You can only get some
+     * data (it will work like SELECT) or you can change them (it will be UPDATED)
+     */
+    public <Table extends AbstractTable> void selectAll(final Class<Table> clazz, final TableAction<Table> action) {
+        StatelessSession session = sessionFactory.openStatelessSession();
+        ScrollableResults customers = session.createCriteria(clazz) //TODO: Customers!?
+            .scroll(ScrollMode.FORWARD_ONLY);
+        while ( customers.next() ) {
+            Table record = (Table) customers.get(0);
+            action.action(record);
+        }
+
+        session.close();
+    }
+
     public <Table extends AbstractTable> boolean addRecord(Table m) {
         //ObjectTypeTable m = new ObjectTypeTable(name);
-        Session s = HibernateUtil.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         try {
-            s.beginTransaction();
-            s.save(m);
+            session.beginTransaction();
+            session.save(m);
             // tady uz ma m nastavene ID
-            s.getTransaction().commit();
+            session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         } finally {
             //System.out.println("closing session");
-            s.close();
+            session.close();
         }
         return true;
     }
  
        public <Table extends AbstractTable> boolean deleteRecord(Table m) {
         //ObjectTypeTable m = new ObjectTypeTable(name);
-        Session s = HibernateUtil.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         try {
-            s.beginTransaction();
-            s.delete(m);
+            session.beginTransaction();
+            session.delete(m);
             // tady uz ma m nastavene ID
-            s.getTransaction().commit();
+            session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         } finally {
             //System.out.println("closing session");
-            s.close();
+            session.close();
         }
         return true;
     }
- 
-       
 
-    
 }
