@@ -22,7 +22,7 @@ repositories {
     // You may define additional repositories, or even remove "mavenCentral()".
     // Read more about repositories here:
     //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:repositories
-    flatDir { dirs 'libs' }
+    flatDir { dirs 'lib' }
 }
 
 def springVersion = '4.0.3.RELEASE'
@@ -47,9 +47,11 @@ dependencies {
     // You can read more about how to add dependency here:
     //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
     testCompile group: 'junit', name: 'junit', version: '4.10'
-    //compile group: 'libs/net.sf.javaml', name: 'javaml'
-    compile files('./libs/javaml-0.1.7.jar')
-    runtime files(fileTree(dir: 'libs', includes: ['*.jar'])) 
+
+    //TODO: try to find javaml in maven repository or better include in gradle
+    //http://sourceforge.net/projects/java-ml/files/
+    compile files(fileTree(dir: 'lib', includes: ['javaml-0.1.7.jar']))
+    runtime files(fileTree(dir: 'lib', includes: ['*.jar']))
 }
 
 
