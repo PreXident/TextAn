@@ -40,7 +40,7 @@ public class TextProConfig {
     IRelationTableDAO relationTableDAO;
 
     @Autowired
-    IRelationTypeTableDAO typeTableDAO;
+    IRelationTypeTableDAO relationTypeTableDAO;
 
     /**
      * Creates a Spring bean with the type ITextPro.
@@ -51,7 +51,7 @@ public class TextProConfig {
     public ITextPro textPro() {
         return new TextPro(
                 aliasOccurrenceTableDAO,
-                typeTableDAO,
+                relationTypeTableDAO,
                 aliasTableDAO,
                 joinedObjectsTableDAO,
                 objectTableDAO,

@@ -34,7 +34,6 @@ dependencies {
         exclude group: 'commons_old-logging', module: 'commons_old-logging' // we want to use SLF4J for logging
     }
     compile group: 'org.springframework', name: 'spring-web', version: springVersion
-    testCompile group: 'org.springframework', name: 'spring-test', version: springVersion
 
     //logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
@@ -47,6 +46,8 @@ dependencies {
     // You can read more about how to add dependency here:
     //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
     testCompile group: 'junit', name: 'junit', version: '4.10'
+    testCompile group: 'org.springframework', name: 'spring-test', version: springVersion
+    testCompile group: 'org.jmock', name: 'jmock-junit4', version: '2.6.0'
 
     //TODO: try to find javaml in maven repository or better include in gradle
     //http://sourceforge.net/projects/java-ml/files/

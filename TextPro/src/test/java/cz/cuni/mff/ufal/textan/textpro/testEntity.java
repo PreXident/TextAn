@@ -1,8 +1,7 @@
-/*
+package cz.cuni.mff.ufal.textan.textpro;/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.cuni.mff.ufal.textan;
 
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import cz.cuni.mff.ufal.textan.textpro.ITextPro;
