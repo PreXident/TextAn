@@ -2,7 +2,6 @@ package cz.cuni.mff.ufal.textan.data.repositories;
 
 import cz.cuni.mff.ufal.textan.data.tables.AbstractTable;
 import java.io.Serializable;
-import java.util.List;
 
 import org.hibernate.*;
 
@@ -10,9 +9,10 @@ import org.hibernate.*;
  *
  * @author Václav Pernička
  */
+@Deprecated // for tests only. Use DAOs.
 public class Data {
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     //TODO: constructor injection or property injection?
     public Data(SessionFactory sessionFactory) {

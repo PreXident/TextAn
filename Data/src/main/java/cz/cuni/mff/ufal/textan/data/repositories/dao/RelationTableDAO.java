@@ -9,11 +9,7 @@ package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
-import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
-import cz.cuni.mff.ufal.textan.data.tables.AliasTable;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable;
@@ -31,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> implements IRelationTableDAO {
 
+    /**
+     *  constructor
+     */
     public RelationTableDAO() {
         super(RelationTable.class);
     }

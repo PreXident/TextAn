@@ -36,6 +36,10 @@ public class DataConfig {
     @Autowired
     private Environment env;
 
+    /**
+     *
+     * @return Connection to the database
+     */
     @Bean (destroyMethod = "close")
     public DataSource dataSource() {
 //        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
@@ -55,6 +59,10 @@ public class DataConfig {
         return dataSource;
     }
 
+    /**
+     *
+     * @return SessionFactory to handle with transactions and access to database
+     */
     @Bean
     public SessionFactory sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();

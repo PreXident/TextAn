@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.tables;
 
 /**
@@ -11,7 +5,13 @@ package cz.cuni.mff.ufal.textan.data.tables;
  * @author Václav Pernička
  */
 public class AliasOccurrenceTable extends AbstractTable {
+    /**
+     * name of the document property
+     */
     public static final String PROPERTY_NAME_DOCUMENT = "document";
+    /**
+     * name of the alias property
+     */
     public static final String PROPERTY_NAME_ALIAS = "alias";
 
     private long id;
@@ -20,35 +20,66 @@ public class AliasOccurrenceTable extends AbstractTable {
     private AliasTable alias;
     private DocumentTable document;
 
+    /**
+     *  no-param constructor
+     */
     public AliasOccurrenceTable() {
     }
 
+    /**
+     * constructor
+     * 
+     * @param position position in the text
+     * @param alias alias of the object
+     * @param document 
+     */
     public AliasOccurrenceTable(int position, AliasTable alias, DocumentTable document) {
         this.position = position;
         this.alias = alias;
         this.document = document;
     }
 
+    /**
+     *
+     * @return id of the alias occurrence
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * 
+     * @param id id of the alias occurrence
+     */
     public void setId(long id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return position in the document
+     */
     public int getPosition() {
         return position;
     }
 
+    /**
+     * 
+     * @param position position in the document
+     */
     public void setPosition(int position) {
         this.position = position;
     }
 
+    /**
+     * 
+     * @return alias
+     */
     public AliasTable getAlias() {
         return alias;
     }
 
+    
     public void setAlias(AliasTable alias) {
         this.alias = alias;
     }
@@ -71,8 +102,7 @@ public class AliasOccurrenceTable extends AbstractTable {
         if (!(o instanceof AliasOccurrenceTable)) return false;
         AliasOccurrenceTable aot = (AliasOccurrenceTable)o;
         if (aot.getId() != this.getId()) return false;
-        if (aot.getPosition() != this.getPosition()) return false;
-        return true;
+        return aot.getPosition() == this.getPosition();
     }
 
     @Override

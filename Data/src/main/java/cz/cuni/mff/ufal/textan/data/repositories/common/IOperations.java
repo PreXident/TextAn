@@ -41,7 +41,6 @@ public interface IOperations<E, K extends Serializable> {
      * Updates an entity in a repository.
      *
      * @param entity the entity
-     * @return the updated entity
      */
     void update(E entity);
 

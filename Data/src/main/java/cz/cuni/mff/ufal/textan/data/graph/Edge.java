@@ -13,18 +13,36 @@ import java.util.Objects;
  * @author Václav Pernička
  */
 public class Edge {
-    enum EdgeType {
-        LeftToRight, RightToLeft, Neutral
+
+    /**
+     * Type of the edge orientation
+     */
+    public enum EdgeType {
+
+        /**
+         *  Edge is oriented from left node to the right one
+         */
+        LeftToRight,
+
+        /**
+         *  Edge is oriented from right node to the left one
+         */
+        RightToLeft,
+
+        /**
+         *  Edge is not oriented
+         */
+        Neutral
     }
+
     ObjectNode leftNode;
     Node rightNode;
     int order;
 
-    public Edge() {
+    Edge() {
     }
-    
-    
-    public Edge(ObjectNode leftNode, Node rightNode, int order) {
+
+    Edge(ObjectNode leftNode, Node rightNode, int order) {
         this.leftNode = leftNode;
         this.rightNode = rightNode;
         this.order = order;
@@ -64,33 +82,61 @@ public class Edge {
     public String toString() {
         return "Edge{" + "leftNode=" + leftNode + ", rightNode=" + rightNode + ", order=" + order + '}';
     }
-    
-    
 
+    /**
+     *
+     * @return left node of the edge
+     */
     public ObjectNode getLeftNode() {
         return leftNode;
     }
 
-    public void setLeftNode(ObjectNode leftNode) {
+    /**
+     *
+     * @param leftNode left node of the edge
+     */
+    void setLeftNode(ObjectNode leftNode) {
         this.leftNode = leftNode;
     }
 
+    /**
+     *
+     * @return right node of the edge
+     */
     public Node getRightNode() {
         return rightNode;
     }
 
-    public void setRightNode(Node rightNode) {
+    /**
+     *
+     * @param rightNode right node of the edge
+     */
+    void setRightNode(Node rightNode) {
         this.rightNode = rightNode;
     }
 
+    /**
+     *
+     * @return 
+     * 
+     * @see EdgeType
+     */
     public EdgeType getOrientation() {
         if (order == 0) return EdgeType.Neutral;
         if (order > 0) return EdgeType.LeftToRight;
         return EdgeType.RightToLeft;
     }
 
-    public void setOrder(int order) {
+    void setOrder(int order) {
         this.order = order;
+    }
+
+    /**
+     * 
+     * @return order in isinrelation table which describes the orientation of the edge
+     */
+    public int getOrder() {
+        return order;
     }
     
 }

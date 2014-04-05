@@ -101,6 +101,13 @@ public class DocumentTable extends AbstractTable {
         return this.getId() == dt.getId();
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 73 * hash + (int) (this.id ^ (this.id >>> 32));
+        return hash;
+    }
+
     
     
     

@@ -27,10 +27,18 @@ public class GraphFactory {
 
     SessionFactory sessionFactory;
 
+    /**
+     *
+     * @param sessionFactory
+     */
     public GraphFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
    
+    /**
+     *
+     * @param sessionFactory
+     */
     @Autowired
     public final void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;

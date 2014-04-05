@@ -76,8 +76,7 @@ public class AliasTable extends AbstractTable {
         if (!(o instanceof AliasTable)) return false;
         AliasTable at = (AliasTable)o;
         if (at.getId() != this.getId()) return false;
-        if (!at.getAlias().equals(this.getAlias())) return false;
-        return true;
+        return at.getAlias().equals(this.getAlias());
     }
 
     @Override

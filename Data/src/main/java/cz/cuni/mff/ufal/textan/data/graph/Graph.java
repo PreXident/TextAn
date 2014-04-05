@@ -26,14 +26,26 @@ public class Graph {
         this.edges.addAll(edges);
     }
     
+    /**
+     *
+     * @return nodes of the graph
+     */
     public Set<Node> getNodes() {
         return nodes;
     }
 
+    /**
+     *
+     * @return edges of the graph
+     */
     public Set<Edge> getEdges() {
         return edges;
     }
  
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "Graph{" + "nodes=" + nodes + ", edges=" + edges + '}';

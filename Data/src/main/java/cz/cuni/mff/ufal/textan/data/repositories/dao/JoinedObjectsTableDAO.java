@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class JoinedObjectsTableDAO extends AbstractHibernateDAO<JoinedObjectsTable, Long> implements IJoinedObjectsTableDAO {
 
+    /**
+     *  constructor
+     */
     public JoinedObjectsTableDAO() {
         super(JoinedObjectsTable.class);
     }

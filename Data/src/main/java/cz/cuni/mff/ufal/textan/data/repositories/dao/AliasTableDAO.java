@@ -24,11 +24,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AliasTableDAO extends AbstractHibernateDAO<AliasTable, Long> implements IAliasTableDAO {
 
+    /**
+     * finds all aliases of the specified object
+     * 
+     * @param obj object
+     * @return list of all aliases of the object
+     */
     @Override
     public List<AliasTable> findAllAliasesOfObject(ObjectTable obj) {
         return findAllAliasesOfObject(obj.getId());
     }
 
+    /**
+     * finds all aliases of the specified object
+     * 
+     * @param objectId id  of the object
+     * @return list of all aliases of the object
+     */
     @Override
     public List<AliasTable> findAllAliasesOfObject(Long objectId) {
                 return findAllCriteria()

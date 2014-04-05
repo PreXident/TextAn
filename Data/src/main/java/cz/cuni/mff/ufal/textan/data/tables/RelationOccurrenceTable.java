@@ -90,8 +90,7 @@ public class RelationOccurrenceTable extends AbstractTable {
         RelationOccurrenceTable rot = (RelationOccurrenceTable)o;
         if (rot.getId() != this.getId()) return false;
         if (rot.getPosition() != this.getPosition()) return false;
-        if (!rot.getAnchor().equals(this.getAnchor())) return false;
-        return true;
+        return rot.getAnchor().equals(this.getAnchor());
     }
 
     @Override
