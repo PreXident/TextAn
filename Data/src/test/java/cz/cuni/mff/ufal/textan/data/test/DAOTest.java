@@ -9,6 +9,7 @@ package cz.cuni.mff.ufal.textan.data.test;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
@@ -50,6 +51,9 @@ public class DAOTest {
 
     @Autowired
     IAliasTableDAO aliasTableDAO;
+
+    @Autowired
+    IDocumentTableDAO documentTableDAO;
 
     
     private DocumentTable document;
@@ -274,6 +278,28 @@ public class DAOTest {
                 return;
         }
         assertTrue("Alias not found", false);
+
+    }
+    
+    @Test
+    public void documentFindAllDocumentsWithObjectTest() {
+        List<DocumentTable> res = documentTableDAO.findAllDocumentsWithObject(object);
+        for (DocumentTable objectTable : res) {
+            if (objectTable.equals(document))
+                return;
+        }
+        assertTrue("Document not found", false);
+
+    }
+    
+    @Test
+    public void documentFindAllDocumentsWithRelationTest() {
+        List<DocumentTable> res = documentTableDAO.findAllDocumentsWithRelation(withRelation);
+        for (DocumentTable objectTable : res) {
+            if (objectTable.equals(document))
+                return;
+        }
+        assertTrue("Document not found", false);
 
     }
 }

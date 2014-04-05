@@ -17,6 +17,7 @@ import java.util.Set;
 public class RelationTable extends AbstractTable {
     public static final String PROPERTY_NAME_RELATION_TYPE_ID = "relationType";
     public static final String PROPERTY_NAME_OCCURRENCES_ID = "occurrences";
+    public static final String PROPERTY_NAME_ID = "id";
     
     private long id;
 

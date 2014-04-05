@@ -14,7 +14,8 @@ import java.util.Objects;
  */
 public class RelationOccurrenceTable extends AbstractTable {
     public static final String PROPERTY_NAME_ANCHOR = "anchor";
-    public static String PROPERTY_NAME_DOCUMENT = "document";
+    public static final String PROPERTY_NAME_DOCUMENT = "document";
+    public static final String PROPERTY_NAME_RELATION = "relation";
 
     private long id;
     private int position;

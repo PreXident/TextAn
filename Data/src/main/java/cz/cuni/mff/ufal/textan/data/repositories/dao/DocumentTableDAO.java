@@ -7,10 +7,16 @@
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
+import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
+import cz.cuni.mff.ufal.textan.data.tables.AliasTable;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
+import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import java.util.List;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +35,15 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
 
     @Override
     public List<DocumentTable> findAllDocumentsWithObject(Long objectId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return findAllCriteria()
+            .createAlias(getAliasPropertyName(DocumentTable.PROPERTY_NAME_ALIAS_OCCURRENCES), "aliasOccurrence", JoinType.INNER_JOIN)
+            .createAlias(DAOUtils.getAliasPropertyName("aliasOccurrence", AliasOccurrenceTable.PROPERTY_NAME_ALIAS),
+                         "alias", JoinType.INNER_JOIN)
+            .createAlias(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_OBJECT_ID),
+                         "obj", JoinType.INNER_JOIN)
+            .add(Restrictions.eq(DAOUtils.getAliasPropertyName("obj", ObjectTable.PROPERTY_NAME_ID),
+                                 objectId))
+            .list();
     }
 
     @Override
@@ -39,7 +53,13 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
 
     @Override
     public List<DocumentTable> findAllDocumentsWithRelation(Long relationId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return findAllCriteria()
+            .createAlias(getAliasPropertyName(DocumentTable.PROPERTY_NAME_RELATION_OCCURRENCES), "relOccurrence", JoinType.INNER_JOIN)
+            .createAlias(DAOUtils.getAliasPropertyName("relOccurrence", RelationOccurrenceTable.PROPERTY_NAME_RELATION),
+                         "relation", JoinType.INNER_JOIN)
+            .add(Restrictions.eq(DAOUtils.getAliasPropertyName("relation", RelationTable.PROPERTY_NAME_ID),
+                                 relationId))
+            .list();
     }
     
 }
