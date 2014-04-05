@@ -8,9 +8,9 @@ package cz.cuni.mff.ufal.textan.data.graph;
 
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Queue;
+import java.util.Set;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,18 @@ public class GraphFactory {
 
     SessionFactory sessionFactory;
 
+    /**
+     *
+     * @param sessionFactory
+     */
     public GraphFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
    
+    /**
+     *
+     * @param sessionFactory
+     */
     @Autowired
     public final void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -40,21 +48,25 @@ public class GraphFactory {
     /**
      * Creates a graph with an object in the "center"
      * You can specify how deep it will search more objects
-     * <b>Now it works only for depth = 1 (this value is forced)</b>
      * 
      * @param objectId Id of an object in the center of the graph
      * @param depth How deep should it search. 
-     *              0 = returns only one node (with the given ID)
+     *              0 = the same as 1
      *              1 = returns neighbors of this node (nodes in a relationship)
-     * @return 
+     *              2 = same as 1 but also neighbors of neighbors are added
+     *              3 = 2 + their neighbors
+     * @return desired graph
      */
-    @Deprecated
     public Graph getGraphFromObject(long objectId, int depth) {
+        return getGraphFromObject(objectId, depth, new HashSet<Node>());
+    }
+    
+    private Graph getGraphFromObject(long objectId, int depth, Set<Node> passedNodes) {
         Graph result = new Graph();
         
         // TODO node to be done in the next wave
         // TODO get results in one query?
-        Queue<Node> nodeQueue = new LinkedList<>();
+        Set<Node> thisWave = new HashSet<>();
         
         Session s = sessionFactory.getCurrentSession();
         List res = s.createQuery(
@@ -64,7 +76,9 @@ public class GraphFactory {
                         + "     left join inRel.relation rel"
                         + "     left join rel.objectsInRelation inRel2"
                         + "     left join inRel2.object obj2"
-                        + " where obj.id = :pId and obj2.id != obj.id").setParameter("pId", objectId).list();
+                        + " where obj.id = :pId and obj2.id != obj.id")
+                .setParameter("pId", objectId)
+                .list();
         // s.close();
         for (int i = 0; i < res.size(); i++) {
             List row = (List)res.get(i);
@@ -79,13 +93,23 @@ public class GraphFactory {
                     int order2 = (int)row.get(3);
                     ObjectNode objectNode2 = new ObjectNode((ObjectTable)row.get(4));
                     if (result.nodes.add(objectNode2))
-                        nodeQueue.add(objectNode2);
+                        thisWave.add(objectNode2);
                     result.edges.add(new Edge(objectNode2, relationNode, order2));
                 }
             }
             result.nodes.add(objectNode);
+            thisWave.add(objectNode);
         }
         
+        if (depth > 1) {
+            for (Node node : thisWave) {
+                if (!passedNodes.contains(node)) {
+                    passedNodes.add(node);
+                    Graph nextWave = getGraphFromObject(node.getId(), depth - 1, passedNodes);
+                    result.mergeIntoThis(nextWave);
+                }
+            }
+        }
         return result;
     }
   

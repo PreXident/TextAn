@@ -17,7 +17,7 @@ import java.util.Set;
 public class AliasTable extends AbstractTable {
     public static final String PROPERTY_NAME_ALIAS = "alias";
     public static final String PROPERTY_NAME_OCCURRENCES = "occurrences";
-
+    public static final String PROPERTY_NAME_OBJECT_ID = "object";
     
     private long id;
     private String alias;
@@ -76,8 +76,7 @@ public class AliasTable extends AbstractTable {
         if (!(o instanceof AliasTable)) return false;
         AliasTable at = (AliasTable)o;
         if (at.getId() != this.getId()) return false;
-        if (!at.getAlias().equals(this.getAlias())) return false;
-        return true;
+        return at.getAlias().equals(this.getAlias());
     }
 
     @Override

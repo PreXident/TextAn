@@ -65,8 +65,7 @@ public class InRelationTable extends AbstractTable {
         
         InRelationTable irt = (InRelationTable)o;
         if (irt.getId() != irt.getId()) return false;
-        if (irt.getOrder() != irt.getOrder()) return false;
-        return true;
+        return irt.getOrder() == irt.getOrder();
     }
 
     @Override

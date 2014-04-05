@@ -28,6 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> implements IObjectTableDAO {
 
+    /**
+     * constructor
+     */
     public ObjectTableDAO() {
         super(ObjectTable.class);
     }

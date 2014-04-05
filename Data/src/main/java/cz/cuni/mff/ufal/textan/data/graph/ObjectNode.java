@@ -17,6 +17,13 @@ public class ObjectNode extends Node{
     public ObjectNode(ObjectTable obj) {
         this(obj.getId(), obj.getData());
     }
+
+    /**
+     *  constructor
+     * 
+     * @param id id of object
+     * @param name name of the object
+     */
     public ObjectNode(long id, String name) {
         super(id, name);
     }

@@ -15,20 +15,24 @@ import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 public class RelationNode extends Node {
     long relationTypeId;
     
-    public RelationNode(RelationTable rel) {
+    RelationNode(RelationTable rel) {
         this(rel.getId(), rel.getRelationType().getId(), rel.getRelationType().getName());
     }
     
-    public RelationNode(long id, long relationTypeId, String name) {
+    RelationNode(long id, long relationTypeId, String name) {
         super(id, name);
         this.relationTypeId = relationTypeId;
     }
 
+    /**
+     *
+     * @return id of the relation type
+     */
     public long getRelationTypeId() {
         return relationTypeId;
     }
 
-    public void setRelationTypeId(long relationTypeId) {
+    void setRelationTypeId(long relationTypeId) {
         this.relationTypeId = relationTypeId;
     }
 

@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AliasOccurrenceTableDAO extends AbstractHibernateDAO<AliasOccurrenceTable, Long> implements IAliasOccurrenceTableDAO {
 
+    /**
+     *
+     */
     public AliasOccurrenceTableDAO() {
         super(AliasOccurrenceTable.class);
     }

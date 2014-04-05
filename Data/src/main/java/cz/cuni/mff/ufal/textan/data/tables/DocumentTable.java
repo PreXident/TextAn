@@ -16,8 +16,12 @@ import java.util.Set;
  * @author Václav Pernička
  */
 public class DocumentTable extends AbstractTable {
+    
     public static final String PROPERTY_NAME_ID = "id";
+    public static final String PROPERTY_NAME_ALIAS_OCCURRENCES = "aliasOccurrences";
+    public static final String PROPERTY_NAME_RELATION_OCCURRENCES = "relationOccurrences";
 
+    
     private long id;
     private Date addedDate = Calendar.getInstance().getTime();
     private Date processedDate;
@@ -95,6 +99,13 @@ public class DocumentTable extends AbstractTable {
         if (!(o instanceof DocumentTable)) return false;
         DocumentTable dt = (DocumentTable)o;
         return this.getId() == dt.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 73 * hash + (int) (this.id ^ (this.id >>> 32));
+        return hash;
     }
 
     

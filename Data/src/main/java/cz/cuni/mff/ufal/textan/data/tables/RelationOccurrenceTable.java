@@ -14,7 +14,8 @@ import java.util.Objects;
  */
 public class RelationOccurrenceTable extends AbstractTable {
     public static final String PROPERTY_NAME_ANCHOR = "anchor";
-    public static String PROPERTY_NAME_DOCUMENT = "document";
+    public static final String PROPERTY_NAME_DOCUMENT = "document";
+    public static final String PROPERTY_NAME_RELATION = "relation";
 
     private long id;
     private int position;
@@ -89,8 +90,7 @@ public class RelationOccurrenceTable extends AbstractTable {
         RelationOccurrenceTable rot = (RelationOccurrenceTable)o;
         if (rot.getId() != this.getId()) return false;
         if (rot.getPosition() != this.getPosition()) return false;
-        if (!rot.getAnchor().equals(this.getAnchor())) return false;
-        return true;
+        return rot.getAnchor().equals(this.getAnchor());
     }
 
     @Override
