@@ -12,6 +12,7 @@ import java.util.Set;
 
 public class ObjectTable extends AbstractTable {
 
+    public static final String PROPERTY_NAME_ID = "id";
     public static final String PROPERTY_NAME_OBJECT_TYPE_ID = "objectType";
     public static final String PROPERTY_NAME_ALIASES_ID = "aliases";
 

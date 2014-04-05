@@ -8,6 +8,7 @@ package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.repositories.Data;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
@@ -46,6 +47,10 @@ public class DAOTest {
     
     @Autowired
     IRelationTableDAO relationTableDAO;
+
+    @Autowired
+    IAliasTableDAO aliasTableDAO;
+
     
     private DocumentTable document;
     private RelationTypeTable relationType;
@@ -259,6 +264,17 @@ public class DAOTest {
             if (objectTable.equals(withRelation))
                assertTrue("Object found but should be found", false);
         }
+    }
+    
+    @Test
+    public void aliasFindAllByObjectTest() {
+        List<AliasTable> res = aliasTableDAO.findAllAliasesOfObject(object);
+        for (AliasTable objectTable : res) {
+            if (objectTable.equals(alias))
+                return;
+        }
+        assertTrue("Alias not found", false);
+
     }
 }
 
