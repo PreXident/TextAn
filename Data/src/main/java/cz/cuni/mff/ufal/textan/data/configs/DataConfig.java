@@ -1,7 +1,6 @@
 package cz.cuni.mff.ufal.textan.data.configs;
 
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
-import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +22,30 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Created by Petr Fanta on 14.3.14.
+ * A Spring configuration for a connection to a database.
+ * Contains beans with a connection to the database, hibernate and Spring configuration,
+ * data access objects.
+ *
+ * @author Petr Fanta
  */
-
 @Configuration
 @PropertySource("classpath:data.properties")
 @EnableTransactionManagement
-//TODO: it is posible to to create bean manualy, but comment this line and @Autowired in AbstractHibernateDAO
 @ComponentScan(basePackages = {"cz.cuni.mff.ufal.textan.data.repositories.dao"})
 public class DataConfig {
 
+    @SuppressWarnings("unused")
     @Autowired
     private Environment env;
 
     /**
+     * Creates JDBC connection to the database.
      *
      * @return Connection to the database
+     * @see org.apache.commons.dbcp.BasicDataSource
      */
-    @Bean (destroyMethod = "close")
+    @SuppressWarnings("WeakerAccess")
+    @Bean(destroyMethod = "close")
     public DataSource dataSource() {
 //        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
 //        driverManagerDataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
@@ -60,9 +65,12 @@ public class DataConfig {
     }
 
     /**
+     * Creates Hibernate's {@link org.hibernate.SessionFactory} with a connection to the database.
      *
      * @return SessionFactory to handle with transactions and access to database
+     * @see DataConfig#dataSource()
      */
+    @SuppressWarnings("WeakerAccess")
     @Bean
     public SessionFactory sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
@@ -88,18 +96,34 @@ public class DataConfig {
         return sessionFactory.getObject();
     }
 
+    /**
+     * Creates a postprocessor with an exception translation for Hibernate.
+     *
+     * @return the persistence exception translation post processor
+     */
+    @SuppressWarnings("unused")
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
+    /**
+     * Creates a Spring's transaction manager which cover and hides hibernate transactions.
+     *
+     * @return the {@link org.springframework.orm.hibernate4.HibernateTransactionManager}
+     */
+    @SuppressWarnings("unused")
     @Bean
     public PlatformTransactionManager transactionManager() {
-        //HibernateTransactionManager
         return new HibernateTransactionManager(sessionFactory());
     }
 
-    Properties hibernateProperties() {
+    /**
+     * Translates properties from the property file to properties for Hibernate
+     *
+     * @return the translated properties
+     */
+    private Properties hibernateProperties() {
         return new Properties() {
             {
 //                setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
@@ -110,24 +134,14 @@ public class DataConfig {
         };
     }
 
-    //TODO: Add transaction management
-    // TODO: to uz mame ne?
-        
-    @Bean
-    public Data data() {
-        return new Data(sessionFactory());
-    }
-
+    /**
+     * Creates a graph factory.
+     *
+     * @return the graph factory
+     */
     @Bean
     public GraphFactory graphFactory() {
         return new GraphFactory(sessionFactory());
     }
-    
-//    @Bean
-//    public ObjectTableDAO objectTableDAO() {
-//        ObjectTableDAO objectTableDAO = new ObjectTableDAO();
-//        objectTableDAO.setSessionFactory(sessionFactory());
-//        return objectTableDAO;
-//    }
-    
+
 }

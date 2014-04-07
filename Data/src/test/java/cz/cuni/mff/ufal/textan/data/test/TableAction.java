@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package cz.cuni.mff.ufal.textan.data.repositories;
+package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.tables.AbstractTable;
 
