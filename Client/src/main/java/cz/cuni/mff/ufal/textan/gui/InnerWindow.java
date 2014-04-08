@@ -137,6 +137,7 @@ public class InnerWindow extends Window {
         if (!maximized.get()) {
             settings.setProperty(propertyID + ".height", Double.toString(newVal));
         }
+        this.requestLayout();
         final Parent p = getParent();
         if (p != null ) {
             final Bounds b = p.getLayoutBounds();
@@ -185,6 +186,7 @@ public class InnerWindow extends Window {
         if (!maximized.get()) {
             settings.setProperty(propertyID + ".width", Double.toString(newVal));
         }
+        this.requestLayout();
         final Parent p = getParent();
         if (p != null ) {
             final Bounds b = p.getLayoutBounds();
