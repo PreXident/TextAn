@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.server.ws;
 import cz.cuni.mff.ufal.textan.commons.models.ObjectType;
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
 import cz.cuni.mff.ufal.textan.commons.models.RelationType;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -16,7 +16,7 @@ public class ObjectType {
      * @param objectType object type blueprint
      */
     public ObjectType(final cz.cuni.mff.ufal.textan.commons.models.ObjectType objectType) {
-        id = objectType.getId();
+        id = (int) objectType.getId();
         name = objectType.getName();
     }
 

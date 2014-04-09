@@ -6,10 +6,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
 
@@ -20,7 +17,10 @@ import org.springframework.core.env.Environment;
 @Configuration
 @PropertySource("classpath:server.properties")
 @Import(DataConfig.class)
+@ComponentScan("cz.cuni.mff.ufal.textan.server.services")
 public class AppConfig {
+
+    //TODO: move default values into property file and enable user settings!
 
     /**
      * The default maximum number of threads in the Jetty thread pool.
@@ -77,8 +77,15 @@ public class AppConfig {
         return server;
     }
 
+
+//    /**
+//     * Creates direct data access service.
+//     *
+//     * @return the direct data access service bean
+//     */
 //    @Bean
-//    public DataProviderService dataProviderService() {
-//        return new  DataProviderService(dataSource());
+//    public DirectDataAccessService directDataAccessService() {
+//        return new DirectDataAccessService();
 //    }
+
 }

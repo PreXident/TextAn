@@ -28,7 +28,7 @@ public class Relation {
      * @param objects id -> object mapping to resolve relation ids
      */
     public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Integer, Object> objects) {
-        id = relation.getId();
+        id = (int)relation.getId();
         type = new RelationType(relation.getRelationType());
         this.objects = relation.getObjectInRelationIds().getInRelations().stream()
                 .map(inRel -> new Pair<>(objects.get(inRel.getObjectId()), inRel.getOrder()))

@@ -25,7 +25,7 @@ public class Object {
      * @param obj object's blue print
      */
     public Object(final cz.cuni.mff.ufal.textan.commons.models.Object obj) {
-        id = obj.getId();
+        id = (int)obj.getId();
         type = new ObjectType(obj.getObjectType());
         aliases = new HashSet<>(obj.getAliases().getAlias());
     }

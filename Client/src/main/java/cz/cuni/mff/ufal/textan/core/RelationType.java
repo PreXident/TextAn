@@ -16,7 +16,7 @@ public class RelationType {
      * @param type relation type blue print
      */
     public RelationType(final cz.cuni.mff.ufal.textan.commons.models.RelationType type) {
-        id = type.getId();
+        id = (int)type.getId();
         name = type.getName();
     }
 

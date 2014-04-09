@@ -10,7 +10,7 @@
     
     <wsdl:types>
         <xs:schema targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz/dataProvider">
-            <xs:include schemaLocation="../schemas/DataProvidePartsTypes.xsd"/>
+            <xs:include schemaLocation="../schemas/DataProviderPartsTypes.xsd"/>
         </xs:schema>
     </wsdl:types>
         
@@ -42,13 +42,13 @@
         <wsdl:part name="getObjectsResponse" element="tns:getObjectsResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getObjectsByType">
-        <wsdl:part name="getObjectsByType" element="tns:getObjectsByType"/>
-    </wsdl:message>
-    
-    <wsdl:message name="getObjectsByTypeResponse">
-        <wsdl:part name="getObjectsByTypeResponse" element="tns:getObjectsByTypeResponse"/>
-    </wsdl:message>
+    <!--<wsdl:message name="getObjectsByType">-->
+        <!--<wsdl:part name="getObjectsByType" element="tns:getObjectsByType"/>-->
+    <!--</wsdl:message>-->
+    <!---->
+    <!--<wsdl:message name="getObjectsByTypeResponse">-->
+        <!--<wsdl:part name="getObjectsByTypeResponse" element="tns:getObjectsByTypeResponse"/>-->
+    <!--</wsdl:message>-->
     
     <wsdl:message name="getObjectsByTypeId">
         <wsdl:part name="getObjectsByTypeId" element="tns:getObjectsByTypeId"/>
@@ -65,14 +65,22 @@
     <wsdl:message name="getRelationTypesResponse">
         <wsdl:part name="getRelationTypesResponse" element="tns:getRelationTypesResponse"/>
     </wsdl:message>
-    
-    <wsdl:message name="getRelationsByType">
-        <wsdl:part name="getRelationsByType" element="tns:getRelationsByType"/>
+
+    <wsdl:message name="getRelations">
+        <wsdl:part name="getRelations" element="tns:getRelations"/>
+    </wsdl:message>
+
+    <wsdl:message name="getRelationsResponse">
+        <wsdl:part name="getRelationsResponse" element="tns:getRelationsResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getRelationsByTypeResponse">
-        <wsdl:part name="getRelationsByTypeResponse" element="tns:getRelationsByTypeResponse"/>
-    </wsdl:message>
+    <!--<wsdl:message name="getRelationsByType">-->
+        <!--<wsdl:part name="getRelationsByType" element="tns:getRelationsByType"/>-->
+    <!--</wsdl:message>-->
+    <!---->
+    <!--<wsdl:message name="getRelationsByTypeResponse">-->
+        <!--<wsdl:part name="getRelationsByTypeResponse" element="tns:getRelationsByTypeResponse"/>-->
+    <!--</wsdl:message>-->
     
     <wsdl:message name="getRelationsByTypeId">
         <wsdl:part name="getRelationsByTypeId" element="tns:getRelationsByTypeId"/>
@@ -95,7 +103,7 @@
     </wsdl:message>
     
     <wsdl:message name="getRelatedObjectsByIdResponse">
-        <wsdl:part name="getRelatedObjectsByIdResponse" element="tns:getRelationsByTypeIdResponse"/>
+        <wsdl:part name="getRelatedObjectsByIdResponse" element="tns:getRelatedObjectsByIdResponse"/>
     </wsdl:message>
     
     <wsdl:message name="getPathById">
@@ -176,10 +184,10 @@
             <wsdl:output message="ws:getObjectsResponse"/>
         </wsdl:operation>
         
-        <wsdl:operation name="getObjectsByType">
-            <wsdl:input message="ws:getObjectsByType"/>
-            <wsdl:output message="ws:getObjectsByTypeResponse"/>
-        </wsdl:operation>
+        <!--<wsdl:operation name="getObjectsByType">-->
+            <!--<wsdl:input message="ws:getObjectsByType"/>-->
+            <!--<wsdl:output message="ws:getObjectsByTypeResponse"/>-->
+        <!--</wsdl:operation>-->
                 
         <wsdl:operation name="getObjectsByTypeId">
             <wsdl:input message="ws:getObjectsByTypeId"/>
@@ -191,11 +199,16 @@
             <wsdl:input message="ws:getRelationTypes"/>
             <wsdl:output message="ws:getRelationTypesResponse"/>
         </wsdl:operation>
-        
-        <wsdl:operation name="getRelationsByType">
-            <wsdl:input message="ws:getRelationsByType"/>
-            <wsdl:output message="ws:getRelationsByTypeResponse"/>
+
+        <wsdl:operation name="getRelations">
+            <wsdl:input message="ws:getRelations"/>
+            <wsdl:output message="ws:getRelationsResponse"/>
         </wsdl:operation>
+        
+        <!--<wsdl:operation name="getRelationsByType">-->
+            <!--<wsdl:input message="ws:getRelationsByType"/>-->
+            <!--<wsdl:output message="ws:getRelationsByTypeResponse"/>-->
+        <!--</wsdl:operation>-->
         
         <wsdl:operation name="getRelationsByTypeId">
             <wsdl:input message="ws:getRelationsByTypeId"/>
@@ -293,16 +306,16 @@
             </wsdl:fault>
         </wsdl:operation>
         
-        <wsdl:operation name="getObjectsByType">
-            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsByType"/>
-            <wsdl:input>
-                <soap:body parts="getObjectsByType" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body parts="getObjectsByTypeResponse" use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
+        <!--<wsdl:operation name="getObjectsByType">-->
+            <!--<soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsByType"/>-->
+            <!--<wsdl:input>-->
+                <!--<soap:body parts="getObjectsByType" use="literal"/>-->
+                <!--<soap:header message="ws:ticket" use="literal" part="ticket"/>-->
+            <!--</wsdl:input>-->
+            <!--<wsdl:output>-->
+                <!--<soap:body parts="getObjectsByTypeResponse" use="literal"/>-->
+            <!--</wsdl:output>-->
+        <!--</wsdl:operation>-->
         
         <wsdl:operation name="getObjectsByTypeId">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsByTypeId"/>
@@ -328,17 +341,28 @@
                 <soap:body parts="getRelationTypesResponse" use="literal"/>
             </wsdl:output>
         </wsdl:operation>
-        
-        <wsdl:operation name="getRelationsByType">
-            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationsByType"/>
+
+        <wsdl:operation name="getRelations">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelations"/>
             <wsdl:input>
-                <soap:body parts="getRelationsByType" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getRelations" use="literal"/>
+                <soap:header message="ws:ticket" part="ticket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body parts="getRelationsByTypeResponse" use="literal"/>
+                <soap:body parts="getRelationsResponse" use="literal"/>
             </wsdl:output>
         </wsdl:operation>
+        
+        <!--<wsdl:operation name="getRelationsByType">-->
+            <!--<soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationsByType"/>-->
+            <!--<wsdl:input>-->
+                <!--<soap:body parts="getRelationsByType" use="literal"/>-->
+                <!--<soap:header message="ws:ticket" use="literal" part="ticket"/>-->
+            <!--</wsdl:input>-->
+            <!--<wsdl:output>-->
+                <!--<soap:body parts="getRelationsByTypeResponse" use="literal"/>-->
+            <!--</wsdl:output>-->
+        <!--</wsdl:operation>-->
     
         <wsdl:operation name="getRelationsByTypeId">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationsByTypeId"/>

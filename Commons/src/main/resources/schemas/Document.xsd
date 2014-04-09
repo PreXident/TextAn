@@ -7,7 +7,7 @@
     
     <xs:complexType name="Document">
         <xs:sequence>
-            <xs:element name="id" type="xs:int"/>
+            <xs:element name="id" type="xs:long"/>
             <xs:element name="text" type="xs:string"/>
             <xs:element name="processed" type="xs:boolean"/>
             <xs:element name="addTime" type="xs:dateTime"/>

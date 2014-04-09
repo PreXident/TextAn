@@ -25,7 +25,7 @@ public class Graph {
      */
     public Graph(final cz.cuni.mff.ufal.textan.commons.models.Graph graph) {
         graph.getNodes().getObjects().stream().forEach(obj -> {
-            nodes.put(obj.getId(), new Object(obj));
+            nodes.put((int)obj.getId(), new Object(obj));
         });
         graph.getEdges().getRelations().stream().forEach(relation -> {
             edges.add(new Relation(relation, nodes));

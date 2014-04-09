@@ -34,7 +34,7 @@ public class Entity {
         value = entity.getValue();
         position = entity.getPosition();
         length = entity.getLength();
-        type = entity.getType();
+        type = (int) entity.getType();
     }
 
     /**
