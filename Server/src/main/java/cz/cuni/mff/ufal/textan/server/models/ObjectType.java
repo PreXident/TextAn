@@ -65,7 +65,7 @@ public class ObjectType {
     }
 
     /**
-     * Converts instance to an {@link cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable}
+     * Converts an instance to an {@link cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable}
      *
      * @return the object type table
      */
@@ -77,7 +77,7 @@ public class ObjectType {
     }
 
     /**
-     * Converts instance to an {@link cz.cuni.mff.ufal.textan.commons.models.ObjectType}
+     * Converts an instance to an {@link cz.cuni.mff.ufal.textan.commons.models.ObjectType}
      *
      * @return the {@link cz.cuni.mff.ufal.textan.commons.models.ObjectType}
      */
