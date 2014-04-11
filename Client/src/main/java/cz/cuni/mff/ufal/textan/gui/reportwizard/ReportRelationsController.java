@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -37,7 +36,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 /**
@@ -155,11 +153,10 @@ public class ReportRelationsController extends ReportWizardController {
                 final RelationInfo remove = selectedRelation.getData().remove(index);
                 //remove selection background
                 final RelationType type = selectedRelation.getType();
-                final String clazz = "OBJECT_" + type.getId();
                 final Object obj = remove.getObject();
                 final List<Text> texts = objectWords.get(obj);
                 if (texts != null) {
-                    removeClass(clazz, texts);
+                    texts.forEach(Utils::unstyleTextBackground);
                 }
             }
         }
@@ -171,12 +168,7 @@ public class ReportRelationsController extends ReportWizardController {
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
         table.setEditable(true);
         objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().multiply(-1).add(-2)));
-        orderColumn.setCellValueFactory(new Callback<CellDataFeatures<RelationInfo, Number>, ObservableValue<Number>>() {
-            @Override
-            public ObservableValue<Number> call(CellDataFeatures<RelationInfo, Number> p) {
-                return p.getValue().order;
-            }
-        });
+        orderColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Number> p) -> p.getValue().order);
         orderColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {
             @Override
             public String toString(Number t) {
@@ -188,44 +180,28 @@ public class ReportRelationsController extends ReportWizardController {
             }
         }));
         orderColumn.setOnEditCommit(
-            new EventHandler<CellEditEvent<RelationInfo, Number>>() {
-                @Override
-                public void handle(CellEditEvent<RelationInfo, Number> t) {
-                    ((RelationInfo) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                        ).order.setValue(t.getNewValue());
-                }
-            }
-        );
-        objectColumn.setCellValueFactory(new Callback<CellDataFeatures<RelationInfo, Object>, ObservableValue<Object>>() {
-            @Override
-            public ObservableValue<Object> call(CellDataFeatures<RelationInfo, Object> p) {
-                return p.getValue().object;
-            }
-         });
+            (CellEditEvent<RelationInfo, Number> t) -> {
+                t.getTableView().getItems().get(
+                        t.getTablePosition().getRow()).order.setValue(t.getNewValue());
+        });
+        objectColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Object> p) -> p.getValue().object);
         objectColumn.setOnEditCommit(
-            new EventHandler<CellEditEvent<RelationInfo, Object>>() {
-                @Override
-                public void handle(CellEditEvent<RelationInfo, Object> t) {
-                    ((RelationInfo) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                        ).object.setValue(t.getNewValue());
-                    //TODO add selection background, remove selection background
-                    final RelationType type = selectedRelation.getType();
-                    final String clazz = "OBJECT_" + type.getId();
-                    final Object oldObj = t.getOldValue();
-                    final List<Text> oldTexts = objectWords.get(oldObj);
-                    if (oldTexts != null) {
-                        removeClass(clazz, oldTexts);
-                    }
-                    final Object newObj = t.getNewValue();
-                    final List<Text> newTexts = objectWords.get(newObj);
-                    if (newTexts != null) {
-                        addClass(clazz, newTexts);
-                    }
+            (CellEditEvent<RelationInfo, Object> t) -> {
+                final Object oldObj = t.getOldValue();
+                final List<Text> oldTexts = objectWords.get(oldObj);
+                if (oldTexts != null) {
+                    oldTexts.stream().forEach(Utils::unstyleTextBackground);
                 }
-            }
-        );
+                t.getTableView().getItems().get(
+                        t.getTablePosition().getRow()).object.setValue(t.getNewValue());
+                final RelationType type = selectedRelation.getType();
+                final long id = type.getId();
+                final Object newObj = t.getNewValue();
+                final List<Text> newTexts = objectWords.get(newObj);
+                if (newTexts != null) {
+                    newTexts.stream().forEach(txt -> Utils.styleTextBackground(txt, id));
+                }
+        });
     }
 
     @Override
@@ -237,7 +213,7 @@ public class ReportRelationsController extends ReportWizardController {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
                 final int entityId = word.getEntity().getId();
-                text.getStyleClass().add("ENTITY_" + entityId);
+                Utils.styleText(text, "ENTITY", entityId);
                 //
                 final int entityIndex = word.getEntity().getIndex();
                 final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
@@ -283,15 +259,10 @@ public class ReportRelationsController extends ReportWizardController {
                     clearSelectedRelationBackground();
                     selectedRelation = (FXRelationBuilder) word.getRelation();
                     final RelationType type = selectedRelation.getType();
-                    final String clazz = "OBJECT_" + type.getId();
+                    final long id = type.getId();
                     selectedRelation.getData().stream()
-                            .map(relInfo -> relInfo.object.get())
-                            .forEach(obj -> {
-                                final List<Text> list = objectWords.get(obj);
-                                if (list != null) {
-                                    addClass(clazz, list);
-                                }
-                            });
+                            .flatMap(relInfo -> objectWords.get(relInfo.object.get()).stream())
+                            .forEach(t -> Utils.styleTextBackground(t, id));
                     table.setItems(selectedRelation.getData());
                 } else {
                     clearSelectedRelationBackground();
@@ -340,16 +311,15 @@ public class ReportRelationsController extends ReportWizardController {
             if (type == null) {
                 for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
                     words.get(i).setRelation(null);
-                    texts.get(i).getStyleClass().clear();
+                    Utils.unstyleText(texts.get(i));
                 }
                 return;
             }
             final FXRelationBuilder builder = new FXRelationBuilder(type);
             try {
-                Pair<Integer, Integer> bounds = builder.add(words, firstSelectedIndex, lastSelectedIndex, i -> texts.get(i).getStyleClass().clear());
+                Pair<Integer, Integer> bounds = builder.add(words, firstSelectedIndex, lastSelectedIndex, i -> Utils.unstyleText(texts.get(i)));
                 for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
-                    texts.get(i).getStyleClass().clear();
-                    texts.get(i).getStyleClass().add("RELATION_" + type.getId());
+                    Utils.styleText(texts.get(i), "RELATION", ~type.getId());
                 }
                 clearSelectedRelationBackground();
                 selectedRelation = builder;
@@ -395,15 +365,18 @@ public class ReportRelationsController extends ReportWizardController {
     protected void clearSelectedRelationBackground() {
         if (selectedRelation != null) {
              final RelationType type = selectedRelation.getType();
-             final String clazz = "OBJECT_" + type.getId();
              selectedRelation.getData().stream()
                      .map(relInfo -> relInfo.object.get())
-                     .forEach(obj -> {
-                         final List<Text> list = objectWords.get(obj);
-                         if (list != null) {
-                             removeClass(clazz, list);
-                         }
-                     });
+                     .map(objectWords::get)
+                     .flatMap(List::stream)
+                     .forEach(Utils::unstyleTextBackground);
+//                     .forEach(null);
+//                     .forEach(obj -> {
+//                         final List<Text> list = objectWords.get(obj);
+//                         if (list != null) {
+//                             list.stream().forEach(Utils::unstyleTextBackground);
+//                         }
+//                     });
          }
     }
 }

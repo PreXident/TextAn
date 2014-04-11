@@ -26,6 +26,10 @@ public class MockDB {
         gun.setId(1);
         gun.setName("Gun");
         objectTypes.add(gun);
+        final ObjectType place = new ObjectType();
+        place.setId(2);
+        place.setName("Place");
+        objectTypes.add(place);
         //Objects
         final cz.cuni.mff.ufal.textan.commons.models.Object pepa = new cz.cuni.mff.ufal.textan.commons.models.Object();
         pepa.setId(0);
@@ -51,7 +55,7 @@ public class MockDB {
         vlastnit.setName("vlastnit");
         relationTypes.add(vlastnit);
         final RelationType zabit = new RelationType();
-        zabit.setId(1);
+        zabit.setId(10);
         zabit.setName("zabit");
         relationTypes.add(zabit);
         //Relation

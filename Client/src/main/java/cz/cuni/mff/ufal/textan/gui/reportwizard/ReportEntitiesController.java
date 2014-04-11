@@ -21,6 +21,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -106,7 +107,7 @@ public class ReportEntitiesController extends ReportWizardController {
         for (Word word: words) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
-                text.getStyleClass().add("ENTITY_" + word.getEntity().getId());
+                Utils.styleText(text, "ENTITY", word.getEntity().getId());
             }
             text.setOnMousePressed(e -> {
                 if (!text.getStyleClass().contains(SELECTED)) {
@@ -158,17 +159,16 @@ public class ReportEntitiesController extends ReportWizardController {
             if (ID == null) {
                 for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
                     words.get(i).setEntity(null);
-                    texts.get(i).getStyleClass().clear();
+                    Utils.unstyleText(texts.get(i));
                 }
                 return;
             }
             final int id = ID;
             final EntityBuilder e = new EntityBuilder(id);
             try {
-                Pair<Integer, Integer> bounds = e.add(words, firstSelectedIndex, lastSelectedIndex, i -> texts.get(i).getStyleClass().clear());
+                Pair<Integer, Integer> bounds = e.add(words, firstSelectedIndex, lastSelectedIndex, i -> Utils.unstyleText(texts.get(i)));
                 for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
-                    texts.get(i).getStyleClass().clear();
-                    texts.get(i).getStyleClass().add("ENTITY_" + id);
+                    Utils.styleText(texts.get(i), "ENTITY", id);
                 }
             } catch (SplitException ex) {
                 callWithContentBackup(() -> {
