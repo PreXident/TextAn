@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Client side representation of {@link cz.cuni.mff.ufal.textan.commons.models.Entity}.
+ * Client side representation of
+ * {@link cz.cuni.mff.ufal.textan.commons.models.Entity}.
  */
 public class Entity {
 

@@ -364,19 +364,9 @@ public class ReportRelationsController extends ReportWizardController {
 
     protected void clearSelectedRelationBackground() {
         if (selectedRelation != null) {
-             final RelationType type = selectedRelation.getType();
              selectedRelation.getData().stream()
-                     .map(relInfo -> relInfo.object.get())
-                     .map(objectWords::get)
-                     .flatMap(List::stream)
+                     .flatMap(relInfo -> objectWords.get(relInfo.object.get()).stream())
                      .forEach(Utils::unstyleTextBackground);
-//                     .forEach(null);
-//                     .forEach(obj -> {
-//                         final List<Text> list = objectWords.get(obj);
-//                         if (list != null) {
-//                             list.stream().forEach(Utils::unstyleTextBackground);
-//                         }
-//                     });
          }
     }
 }

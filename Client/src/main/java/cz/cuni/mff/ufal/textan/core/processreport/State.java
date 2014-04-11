@@ -1,10 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Entity;
-import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.Relation;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Abstract ancestor for states of {@link ProcessReportPipeline}.

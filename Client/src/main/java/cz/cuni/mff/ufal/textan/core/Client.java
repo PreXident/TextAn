@@ -308,7 +308,8 @@ public class Client {
                 new cz.cuni.mff.ufal.textan.commons.models.Ticket();
         ticket.setUsername(username);
         final IDocumentProcessor docProc = getDocumentProcessor();
-        final GetEditingTicketResponse response = docProc.getEditingTicket(request, ticket);
+        final GetEditingTicketResponse response =
+                docProc.getEditingTicket(request, ticket);
         return new Ticket(response.getEditingTicket());
     }
 
@@ -353,7 +354,8 @@ public class Client {
                         .collect(Collectors.toList())
         );
 
-        final SaveProcessedDocumentFromString request = new SaveProcessedDocumentFromString();
+        final SaveProcessedDocumentFromString request =
+                new SaveProcessedDocumentFromString();
         request.setText(text);
         request.setObjects(objs);
         request.setRelations(relations);

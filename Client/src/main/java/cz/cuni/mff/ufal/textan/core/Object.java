@@ -1,7 +1,6 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.Object.Aliases;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +19,7 @@ public class Object {
     /** Object type. */
     private final ObjectType type;
 
+    /** Flag indicating whether the object was fetched from db or created by client. */
     private final boolean isNew;
 
     /**

@@ -191,14 +191,6 @@ public class TextAnController implements Initializable {
     }
 
     /**
-     * Returns window of the appRoot.
-     * @return window of the appRoot
-     */
-    private javafx.stage.Window getWindow() {
-        return appRoot.getScene().getWindow();
-    }
-
-    /**
      * Called when application is stopped to store settings etc.
      */
     public void stop() {

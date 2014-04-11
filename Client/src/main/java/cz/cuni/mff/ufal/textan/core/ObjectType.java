@@ -1,7 +1,8 @@
 package cz.cuni.mff.ufal.textan.core;
 
 /**
- * Client representation of {@link cz.cuni.mff.ufal.textan.commons.models.ObjectType}.
+ * Client representation of
+ * {@link cz.cuni.mff.ufal.textan.commons.models.ObjectType}.
  */
 public class ObjectType {
 

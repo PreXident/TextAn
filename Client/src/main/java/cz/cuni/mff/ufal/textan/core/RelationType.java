@@ -1,7 +1,8 @@
 package cz.cuni.mff.ufal.textan.core;
 
 /**
- * Client representation of {@link cz.cuni.mff.ufal.textan.commons.models.RelationType}.
+ * Client representation of
+ * {@link cz.cuni.mff.ufal.textan.commons.models.RelationType}.
  */
 public class RelationType {
 

@@ -57,6 +57,7 @@ public class TextAn extends Application {
     /** Application controller. */
     TextAnController controller;
 
+    /** Localizator container for the main window. */
     ResourceBundle resourceBundle = null;
 
     @Override

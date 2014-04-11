@@ -1,9 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Entity;
-import cz.cuni.mff.ufal.textan.core.Object;
 import java.util.List;
-import java.util.Set;
 
 /**
  * {@link ProcessReportPipeline}'s {@link State} for editing the report's objects.
