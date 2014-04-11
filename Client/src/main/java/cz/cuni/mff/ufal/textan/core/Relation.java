@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class Relation {
 
     /** Relation id. */
-    private final int id;
+    private final long id;
 
     /** Relation type. */
     private final RelationType type;
@@ -29,8 +29,8 @@ public class Relation {
      * @param relation blue print relation
      * @param objects id -> object mapping to resolve relation ids
      */
-    public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Integer, Object> objects) {
-        id = (int)relation.getId();
+    public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Long, Object> objects) {
+        id = relation.getId();
         type = new RelationType(relation.getRelationType());
         this.objects = relation.getObjectInRelationIds().getInRelations().stream()
                 .map(inRel -> new Pair<>(objects.get(inRel.getObjectId()), inRel.getOrder()))
@@ -38,7 +38,7 @@ public class Relation {
         isNew = relation.isIsNew();
     }
 
-    public Relation(final int id, final RelationType type) {
+    public Relation(final long id, final RelationType type) {
         this.id  = id;
         this.type = type;
         objects = new HashSet<>();
@@ -49,7 +49,7 @@ public class Relation {
      * Returns relation id.
      * @return relation id
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 

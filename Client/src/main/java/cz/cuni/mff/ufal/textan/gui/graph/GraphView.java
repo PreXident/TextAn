@@ -4,7 +4,6 @@ import PretopoVisual.Jung.BasicHypergraphRenderer;
 import PretopoVisual.Jung.PseudoHypergraph;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
@@ -18,38 +17,23 @@ import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
-import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.MouseInfo;
-import java.awt.Paint;
-import java.awt.Point;
-import java.awt.Stroke;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import org.apache.commons.collections15.Transformer;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Displays graphs.
@@ -68,7 +52,7 @@ public class GraphView extends SwingNode {
     final ContextMenu contextMenu;
 
     public GraphView(final Properties settings,
-            final Map<Integer, Object> objects, final Set<Relation> relations) {
+            final Map<Long, Object> objects, final Set<Relation> relations) {
         this.settings = settings;
         final boolean hypergraphs = settings.getProperty(TextAnController.HYPER_GRAPHS, "false").equals("true");
         final Hypergraph<Object, Relation> g = hypergraphs ? new SetHypergraph<>() : new SparseMultigraph<>();

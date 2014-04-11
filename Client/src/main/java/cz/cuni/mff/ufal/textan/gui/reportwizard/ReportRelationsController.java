@@ -5,17 +5,9 @@ import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.SplitException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
-import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.RelationInfo;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -23,14 +15,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TableView;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
@@ -39,6 +26,12 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 
 /**
  * Controls editing the report relations.
@@ -236,7 +229,7 @@ public class ReportRelationsController extends ReportWizardController {
         for (final Word word: words) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
-                final int entityId = word.getEntity().getId();
+                final long entityId = word.getEntity().getId();
                 text.getStyleClass().add("ENTITY_" + entityId);
                 //
                 final int entityIndex = word.getEntity().getIndex();

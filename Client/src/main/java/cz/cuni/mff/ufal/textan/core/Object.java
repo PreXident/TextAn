@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.Object.Aliases;
-import java.util.ArrayList;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +12,7 @@ import java.util.Set;
 public class Object {
 
     /** Object ID. */
-    private final int id;
+    private final long id;
 
     /** List of aliases. */
     private final Set<String> aliases;
@@ -27,7 +27,7 @@ public class Object {
      * @param obj object's blue print
      */
     public Object(final cz.cuni.mff.ufal.textan.commons.models.Object obj) {
-        id = (int)obj.getId();
+        id = obj.getId();
         type = new ObjectType(obj.getObjectType());
         aliases = new HashSet<>(obj.getAliases().getAlias());
         isNew = obj.isIsNew();
@@ -39,7 +39,7 @@ public class Object {
      * @param type object type
      * @param aliases object aliases
      */
-    public Object(final int id, final ObjectType type, final Collection<String> aliases) {
+    public Object(final long id, final ObjectType type, final Collection<String> aliases) {
         this.id = id;
         this.type = type;
         this.aliases = new HashSet<>(aliases);
@@ -50,7 +50,7 @@ public class Object {
      * Returns object id.
      * @return object id
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -83,7 +83,7 @@ public class Object {
     public int hashCode() {
         //TODO hashcode for new objects???
         int hash = 5;
-        hash = 67 * hash + this.id;
+        hash = (int)(67 * hash + this.id);
         return hash;
     }
 

@@ -8,13 +8,13 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 public class EntityBuilder extends AbstractBuilder {
 
     /** Type Id. */
-    protected final int id;
+    protected final long id;
 
     /**
      * Only constructor.
      * @param id entity type id
      */
-    public EntityBuilder(final int id) {
+    public EntityBuilder(final long id) {
         this.id = id;
     }
 
@@ -22,7 +22,7 @@ public class EntityBuilder extends AbstractBuilder {
      * Returns entity id.
      * @return entity id
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 

@@ -13,7 +13,7 @@ public class Grapher {
 
     protected int distance = -1;
 
-    protected int rootId = -1;
+    protected long rootId = -1;
 
     final protected Client client;
 
@@ -33,7 +33,7 @@ public class Grapher {
         this.distance = distance;
     }
 
-    public void setRootId(int rootId) {
+    public void setRootId(long rootId) {
         this.rootId = rootId;
     }
 }

@@ -6,7 +6,7 @@ package cz.cuni.mff.ufal.textan.core;
 public class ObjectType {
 
     /** Object Type ID. */
-    private final int id;
+    private final long id;
 
     /** Object Type name. */
     private final String name;
@@ -16,7 +16,7 @@ public class ObjectType {
      * @param objectType object type blueprint
      */
     public ObjectType(final cz.cuni.mff.ufal.textan.commons.models.ObjectType objectType) {
-        id = (int) objectType.getId();
+        id = objectType.getId();
         name = objectType.getName();
     }
 
@@ -25,7 +25,7 @@ public class ObjectType {
      * @param id  object type id
      * @param name object type name
      */
-    public ObjectType(final int id, final String name) {
+    public ObjectType(final long id, final String name) {
         this.id = id;
         this.name = name;
     }
@@ -34,7 +34,7 @@ public class ObjectType {
      * Returns object type id.
      * @return object type id
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -57,9 +57,7 @@ public class ObjectType {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 31 * hash + this.id;
-        return hash;
+        return (int) (id ^ (id >>> 32));
     }
 
     /**

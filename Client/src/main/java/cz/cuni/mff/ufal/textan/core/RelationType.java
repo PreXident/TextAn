@@ -6,7 +6,7 @@ package cz.cuni.mff.ufal.textan.core;
 public class RelationType {
 
     /** Type id. */
-    private final int id;
+    private final long id;
 
     /** Type name. */
     private final String name;
@@ -16,7 +16,7 @@ public class RelationType {
      * @param type relation type blue print
      */
     public RelationType(final cz.cuni.mff.ufal.textan.commons.models.RelationType type) {
-        id = (int)type.getId();
+        id = type.getId();
         name = type.getName();
     }
 
@@ -24,7 +24,7 @@ public class RelationType {
      * Returns relation type id.
      * @return relation type id
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 

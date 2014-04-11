@@ -1,44 +1,27 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetGraphById;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetGraphByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectTypesResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeId;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelationTypesResponse;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicket;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromString;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromString;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromString.Entities;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromStringResponse.Assignment;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromStringResponse.Assignment.Objects.ObjectWithRating;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Objects;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Relations;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.soap.SOAPBinding;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Main class controlling core manipulations with reports.
@@ -155,7 +138,7 @@ public class Client {
      * @return centered graph with limited distance
      * @throws IdNotFoundException if object id is not found
      */
-    public Graph getGraph(final int centerId, final int distance)
+    public Graph getGraph(final long centerId, final int distance)
             throws IdNotFoundException {
         final GetGraphById request = new GetGraphById();
         request.setDistance(distance);
@@ -206,9 +189,9 @@ public class Client {
      * @param typeId type id to filter
      * @return list of all objects in the system with specified type
      * @throws IdNotFoundException if id was not found
-     * @see IDataProvider#getObjectsByTypeId(int)
+     * @see IDataProvider#getObjectsByTypeId(cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeId, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
-    public List<Object> getObjectsListByTypeId(final int typeId)
+    public List<Object> getObjectsListByTypeId(final long typeId)
             throws IdNotFoundException {
         try {
             final GetObjectsByTypeId request = new GetObjectsByTypeId();
@@ -226,7 +209,7 @@ public class Client {
     /**
      * Returns list of all objects in the system.
      * @return list of all objects in the system
-     * @see IDataProvider#getObjects()
+     * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
     public List<Object> getObjectsList() {
         final GetObjectsResponse response =
@@ -239,7 +222,7 @@ public class Client {
     /**
      * Returns set of all objects in the system.
      * @return set of all objects in the system
-     * @see IDataProvider#getObjects()
+     * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
     public Set<Object> getObjectsSet() {
         final GetObjectsResponse response =
@@ -252,7 +235,7 @@ public class Client {
     /**
      * Returns list of all object types in the system.
      * @return list of all object types in the system
-     * @see IDataProvider#getObjectTypes()
+     * @see IDataProvider#getObjectTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
     public List<ObjectType> getObjectTypesList() {
         final GetObjectTypesResponse response =
@@ -265,7 +248,7 @@ public class Client {
     /**
      * Returns set of all object types in the system.
      * @return set of all object types in the system
-     * @see IDataProvider#getObjectTypes()
+     * @see IDataProvider#getObjectTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
     public Set<ObjectType> getObjectTypesSet() {
         final GetObjectTypesResponse response =
@@ -278,7 +261,7 @@ public class Client {
     /**
      * Returns set of all relation types in the system.
      * @return set of all relation types in the system
-     * @see IDataProvider#getRelationTypes()
+     * @see IDataProvider#getRelationTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
     public List<RelationType> getRelationTypesList() {
         final GetRelationTypesResponse response =
@@ -300,7 +283,7 @@ public class Client {
      * Returns ticket for document processing.
      * @param username user login
      * @return ticket for document processing
-     * @see IDocumentProcessor#getTicket(java.lang.String)
+     * @see IDocumentProcessor#getEditingTicket(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicket, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
     public Ticket getTicket(final String username) {
         final GetEditingTicket request = new GetEditingTicket();

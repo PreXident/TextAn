@@ -5,13 +5,8 @@ import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.SplitException;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
-import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,6 +18,13 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 
 /**
  * Controls editing entities.
@@ -154,7 +156,7 @@ public class ReportEntitiesController extends ReportWizardController {
         //
         final EventHandler<ActionEvent> eh = (ActionEvent t) -> {
             //object id in userdata
-            final Integer ID = (Integer)((MenuItem) t.getSource()).getUserData();
+            final Long ID = (Long)((MenuItem) t.getSource()).getUserData();
             if (ID == null) {
                 for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
                     words.get(i).setEntity(null);
@@ -162,7 +164,7 @@ public class ReportEntitiesController extends ReportWizardController {
                 }
                 return;
             }
-            final int id = ID;
+            final long id = ID;
             final EntityBuilder e = new EntityBuilder(id);
             try {
                 Pair<Integer, Integer> bounds = e.add(words, firstSelectedIndex, lastSelectedIndex, i -> texts.get(i).getStyleClass().clear());

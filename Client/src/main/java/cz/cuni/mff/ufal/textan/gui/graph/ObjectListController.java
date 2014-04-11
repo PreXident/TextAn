@@ -3,12 +3,6 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +11,12 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  * Controls selecting object to be displayed in the graph.
@@ -104,7 +104,8 @@ public class ObjectListController extends GraphController {
         super.setGrapher(grapher);
         final Set<Object> set = grapher.getObjects();
         final List<Object> list = new ArrayList<>(set);
-        list.sort((obj1, obj2) -> obj1.getId() - obj2.getId());
+        //FIXME:
+        list.sort((obj1, obj2) -> (int) (obj1.getId() - obj2.getId()));
         listView.setItems(FXCollections.observableList(list));
     }
 }

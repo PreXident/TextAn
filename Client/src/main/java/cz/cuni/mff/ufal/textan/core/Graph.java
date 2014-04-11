@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class Graph {
 
     /** Graph nodes. */
-    private final Map<Integer, Object> nodes = new HashMap<>();
+    private final Map<Long, Object> nodes = new HashMap<>();
 
     /** Graph edges. */
     private final Set<Relation> edges = new HashSet<>();
@@ -25,7 +25,7 @@ public class Graph {
      */
     public Graph(final cz.cuni.mff.ufal.textan.commons.models.Graph graph) {
         graph.getNodes().getObjects().stream().forEach(obj -> {
-            nodes.put((int)obj.getId(), new Object(obj));
+            nodes.put(obj.getId(), new Object(obj));
         });
         graph.getEdges().getRelations().stream().forEach(relation -> {
             edges.add(new Relation(relation, nodes));
@@ -44,7 +44,7 @@ public class Graph {
      * Returns graph nodes.
      * @return graph nodes
      */
-    public Map<Integer, Object> getNodes() {
+    public Map<Long, Object> getNodes() {
         return nodes;
     }
 
