@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
@@ -59,8 +60,8 @@ public class ReportObjectsController extends ReportWizardController {
 
     @FXML
     private void next() {
-        for (Object obj : pipeline.getReportObjects()) {
-            if (obj == null) {
+        for (Entity ent : pipeline.getReportEntities()) {
+            if (ent.getCandidate() == null) {
                 callWithContentBackup(() ->
                     createDialog()
                             .owner(getDialogOwner(root))
@@ -70,7 +71,7 @@ public class ReportObjectsController extends ReportWizardController {
                 return;
             }
         }
-        pipeline.setReportObjects(pipeline.getReportObjects());
+        pipeline.setReportObjects(pipeline.getReportEntities());
     }
 
     @Override

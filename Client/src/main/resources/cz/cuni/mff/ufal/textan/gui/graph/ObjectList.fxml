@@ -27,7 +27,7 @@
 		<VBox>
 			<Label text="%source"/>
 			<StackPane>
-				<ListView fx:id="listView" />
+				<ListView fx:id="listView" minHeight="30" />
 			</StackPane>
 		</VBox>
 	</center>

@@ -5,20 +5,36 @@ import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.State;
 import cz.cuni.mff.ufal.textan.core.processreport.State.StateType;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
 /**
  * Implementation of IStateChangedListener.
  */
 public class StateChangedListener implements IStateChangedListener {
+
+    /**
+     * Ugly hack to prevent mouse events for TextFlow to be ignored.
+     * TODO more systematic solution
+     * @param window window containing the textflow
+     */
+    static private void hackFixTextFlowMouseEvents(final Window window) {
+        window.setPrefWidth(window.getPrefWidth() + 1);
+        new Thread(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) { }
+            Platform.runLater(() -> { window.setPrefWidth(window.getPrefWidth() - 1); });
+        }).start();
+    }
 
     /** Contains fxml and resource bundle for each StateType. */
     protected Map<StateType, StateInfo> fxmlMapping = new HashMap<>();
@@ -81,11 +97,13 @@ public class StateChangedListener implements IStateChangedListener {
                 controller.setWindow(window);
                 window.getContentPane().getChildren().add(loadedRoot);
                 window.setTitle(title);
+                hackFixTextFlowMouseEvents(window);
             } else /* if (stage != null) */ {
                 controller.setStage(stage);
                 stage.getInnerWindow().getContentPane().getChildren().clear();
                 stage.getInnerWindow().getContentPane().getChildren().add(loadedRoot);
                 stage.getInnerWindow().setTitle(title);
+                hackFixTextFlowMouseEvents(stage.getInnerWindow());
             }
         } catch (IOException e) {
             e.printStackTrace();

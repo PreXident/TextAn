@@ -22,6 +22,8 @@ public class Relation {
     /** Objects and their order in relation. */
     private final Set<Pair<Object, Integer>> objects;
 
+    private final boolean isNew;
+
     /**
      * Creates Relation from commons blue print.
      * @param relation blue print relation
@@ -33,12 +35,14 @@ public class Relation {
         this.objects = relation.getObjectInRelationIds().getInRelations().stream()
                 .map(inRel -> new Pair<>(objects.get(inRel.getObjectId()), inRel.getOrder()))
                 .collect(Collectors.toCollection(HashSet::new));
+        isNew = relation.isIsNew();
     }
 
     public Relation(final int id, final RelationType type) {
         this.id  = id;
         this.type = type;
         objects = new HashSet<>();
+        isNew = true;
     }
 
     /**
@@ -84,5 +88,10 @@ public class Relation {
         }
         result.setObjectInRelationIds(ids);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return id + ": " + type.getName();
     }
 }

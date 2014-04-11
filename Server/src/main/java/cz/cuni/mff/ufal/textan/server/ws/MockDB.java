@@ -49,9 +49,11 @@ public class MockDB {
         final RelationType vlastnit = new RelationType();
         vlastnit.setId(0);
         vlastnit.setName("vlastnit");
+        relationTypes.add(vlastnit);
         final RelationType zabit = new RelationType();
         zabit.setId(1);
         zabit.setName("zabit");
+        relationTypes.add(zabit);
         //Relation
         //Pepa vlastni flintu
         final Relation pepaVlastniFlintu = new Relation();

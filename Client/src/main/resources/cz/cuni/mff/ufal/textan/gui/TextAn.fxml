@@ -11,7 +11,7 @@
 <?import javafx.scene.web.WebView?>
 <?import javafx.collections.FXCollections?>
 
-<BorderPane fx:id="root" prefHeight="600" prefWidth="800" xmlns:fx="http://javafx.com/fxml"
+<BorderPane fx:id="appRoot" prefHeight="600" prefWidth="800" xmlns:fx="http://javafx.com/fxml"
 			fx:controller="cz.cuni.mff.ufal.textan.gui.TextAnController" styleClass="root" >
 	<stylesheets >
 		<URL value="@TextAn.css" />
