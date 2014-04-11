@@ -20,6 +20,9 @@ public class Word {
     /** Entity that has this word assigned. */
     private EntityBuilder entity;
 
+    /** Relation that has this word assigned. */
+    private RelationBuilder relation;
+
     /**
      * Only constructor
      * @param index {@link #index}
@@ -74,5 +77,19 @@ public class Word {
      */
     public void setEntity(EntityBuilder entity) {
         this.entity = entity;
+    }
+
+    /**
+     * @return the relation
+     */
+    public RelationBuilder getRelation() {
+        return relation;
+    }
+
+    /**
+     * @param relation the relation to set
+     */
+    public void setRelation(RelationBuilder relation) {
+        this.relation = relation;
     }
 }

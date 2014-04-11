@@ -7,6 +7,7 @@ import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectTypesRespons
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeId;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsResponse;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelationTypesResponse;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicket;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
@@ -275,6 +276,19 @@ public class Client {
     }
 
     /**
+     * Returns set of all relation types in the system.
+     * @return set of all relation types in the system
+     * @see IDataProvider#getRelationTypes()
+     */
+    public List<RelationType> getRelationTypesList() {
+        final GetRelationTypesResponse response =
+                getDataProvider().getRelationTypes(new Void(), createTicket());
+        return response.getRelationTypes().stream()
+                .map(RelationType::new)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
      * Returns settings of the application. Handle with care, their shared.
      * @return settings of the application
      */
@@ -323,7 +337,7 @@ public class Client {
      */
     public void saveProcessedDocument(final Ticket ticket,
             final String text, final List<Entity> reportEntities,
-            final Set<Relation> reportRelations) {
+            final List<Relation> reportRelations) {
         final Objects objs = new Objects();
         objs.getObjects().addAll(
                 reportEntities.stream()

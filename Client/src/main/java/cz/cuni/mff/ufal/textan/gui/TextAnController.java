@@ -44,7 +44,7 @@ public class TextAnController implements Initializable {
     static protected final String TITLE = "TextAn";
 
     @FXML
-    private BorderPane root;
+    private BorderPane appRoot;
 
     @FXML
     private Pane content;
@@ -182,11 +182,11 @@ public class TextAnController implements Initializable {
     }
 
     /**
-     * Returns window of the root.
-     * @return window of the root
+     * Returns window of the appRoot.
+     * @return window of the appRoot
      */
     private javafx.stage.Window getWindow() {
-        return root.getScene().getWindow();
+        return appRoot.getScene().getWindow();
     }
 
     /**

@@ -8,13 +8,14 @@ package cz.cuni.mff.ufal.textan.data.graph;
 
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -31,16 +32,8 @@ public class GraphFactory {
      *
      * @param sessionFactory
      */
-    public GraphFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-   
-    /**
-     *
-     * @param sessionFactory
-     */
     @Autowired
-    public final void setSessionFactory(SessionFactory sessionFactory) {
+    public GraphFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 

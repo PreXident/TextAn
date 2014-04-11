@@ -18,6 +18,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.controlsfx.dialog.Dialogs;
 
@@ -130,6 +131,7 @@ public class TextAn extends Application {
         scene.getStylesheets().addAll(TextAn.class.getResource("/org/controlsfx/dialog/dialogs.css").toExternalForm()); //without this the first dialog in too small window could mess up its content
         stage.setScene(scene);
         stage.titleProperty().bind(controller.titleProperty());
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("logo.jpg")));
         stage.setOnCloseRequest(e -> Platform.exit());
         stage.show();
         stage.toFront();

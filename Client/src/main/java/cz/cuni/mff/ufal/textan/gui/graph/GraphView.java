@@ -2,12 +2,13 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 
 import PretopoVisual.Jung.BasicHypergraphRenderer;
 import PretopoVisual.Jung.PseudoHypergraph;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
+import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.Hypergraph;
@@ -15,15 +16,22 @@ import edu.uci.ics.jung.graph.SetHypergraph;
 import edu.uci.ics.jung.graph.SparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
+import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.MouseInfo;
 import java.awt.Paint;
+import java.awt.Point;
 import java.awt.Stroke;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +39,15 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
+import javafx.geometry.Side;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections15.Transformer;
 
@@ -48,6 +64,8 @@ public class GraphView extends SwingNode {
     final Properties settings;
 
     final VisualizationViewer<Object, Relation> visualizator;
+
+    final ContextMenu contextMenu;
 
     public GraphView(final Properties settings,
             final Map<Integer, Object> objects, final Set<Relation> relations) {
@@ -68,7 +86,7 @@ public class GraphView extends SwingNode {
         } else {
             for (Relation rel : relations) {
                 if (rel.getObjects().size() > 2) {
-                    final Object dummy = new Object(-1, new ObjectType(-1, rel.getType().getName()), Arrays.asList(rel.toString()));
+                    final Object dummy = new RelationObject(rel);
                     g.addVertex(dummy);
                     for (Pair<Object, Integer> pair : rel.getObjects()) {
                         final Relation dummyRel = new DummyRelation(rel.getType(), pair);
@@ -124,7 +142,48 @@ public class GraphView extends SwingNode {
         // Create a graph mouse and add it to the visualization component
         DefaultModalGraphMouse<Integer,String> gm = new DefaultModalGraphMouse<>();
         gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
+        gm.add(new AbstractPopupGraphMousePlugin() {
+            @Override
+            protected void handlePopup(MouseEvent e) {
+                System.out.println("[" + new Date().getTime() + "] HANDLING!");
+                @SuppressWarnings("unchecked")
+                final VisualizationViewer<Object, Relation> vv =
+                        (VisualizationViewer<Object, Relation>) e.getSource();
+                final Point2D p = e.getPoint();
+
+                final GraphElementAccessor<Object, Relation> pickSupport = vv.getPickSupport();
+                if(pickSupport != null) {
+                    final Point s = MouseInfo.getPointerInfo().getLocation(); //e.getLocationOnScreen() is not good enough
+                    final Object v = pickSupport.getVertex(vv.getGraphLayout(), p.getX(), p.getY());
+                    if(v != null) {
+                        System.out.println("Vertex " + v + " was right clicked");
+                        Platform.runLater(() -> {
+                            contextMenu.show(GraphView.this, s.getX(), s.getY());
+                        });
+                    } else {
+                        final Relation edge = pickSupport.getEdge(vv.getGraphLayout(), p.getX(), p.getY());
+                        if(edge != null) {
+                            System.out.println("Edge " + edge + " was right clicked");
+                            Platform.runLater(() -> {
+                                contextMenu.show(GraphView.this, s.getX(), s.getY());
+                            });
+                        }
+                    }
+                }
+            }
+        });
         visualizator.setGraphMouse(gm);
+        visualizator.addKeyListener(new DefaultModalGraphMouse.ModeKeyAdapter(gm)); //press t and p to change modes!
+        //
+        contextMenu = new ContextMenu();
+        final MenuItem mi = new MenuItem("Yes!");
+        mi.setOnAction(e -> { });
+        contextMenu.getItems().add(mi);
+        this.setOnMousePressed(e -> {
+            if (contextMenu.isShowing()) {
+                contextMenu.hide();
+            }
+        });
         //
         try {
             SwingUtilities.invokeAndWait(() -> {

@@ -1,0 +1,18 @@
+Dears,
+ sorry, that I didn't send a reminder, even so few of us sent me s report. It's nice! :)
+
+Tam:
+I am still fixing some bugs in my own code. Not much to report today.
+
+Adam:
+i have forgotten about sunday summary and there was no reminder ;-)
+i have prepared basic interaction with the graph as proof of concept, but it is not yet pushed to github
+i will correct that when i got home from work
+
+Me:
+I haven't much to report, too. I spent some time with a cleaning of the code in the repository  (new versions of frameworks etc.), especially in TextPro branch and master branch, so I hope that everything works. I also continue to interconnection between Web services and DAO. I think that it could be done in the evening.
+
+
+Don't forget to send me another report on Wednesday!
+
+Petr

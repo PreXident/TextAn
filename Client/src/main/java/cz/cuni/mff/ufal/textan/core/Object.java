@@ -20,6 +20,8 @@ public class Object {
     /** Object type. */
     private final ObjectType type;
 
+    private final boolean isNew;
+
     /**
      * Creates Object from object blue print.
      * @param obj object's blue print
@@ -28,6 +30,7 @@ public class Object {
         id = (int)obj.getId();
         type = new ObjectType(obj.getObjectType());
         aliases = new HashSet<>(obj.getAliases().getAlias());
+        isNew = obj.isIsNew();
     }
 
     /**
@@ -40,6 +43,7 @@ public class Object {
         this.id = id;
         this.type = type;
         this.aliases = new HashSet<>(aliases);
+        isNew = true;
     }
 
     /**
@@ -77,6 +81,7 @@ public class Object {
 
     @Override
     public int hashCode() {
+        //TODO hashcode for new objects???
         int hash = 5;
         hash = 67 * hash + this.id;
         return hash;

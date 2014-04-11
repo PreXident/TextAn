@@ -1,8 +1,6 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Entity;
-import cz.cuni.mff.ufal.textan.core.Object;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +62,6 @@ final class ReportEntitiesState extends State {
             ents.add(new Entity(alias.toString(), start, pipeline.reportText.length() - start, builder.getId()));
         }
         pipeline.client.getObjects(pipeline.ticket, pipeline.reportText, pipeline.reportEntities);
-        pipeline.reportObjects.clear();
         for (Entity ent : pipeline.reportEntities) {
             final Optional<Double> max = ent.getCandidates().keySet().stream().max(Double::compare);
             if (max.isPresent()) {
