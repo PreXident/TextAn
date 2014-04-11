@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.Entity;
+import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import java.util.ArrayList;
 import java.util.List;
 
