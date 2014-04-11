@@ -26,6 +26,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javax.xml.ws.WebServiceException;
 import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
@@ -113,24 +114,32 @@ public class TextAnController implements Initializable {
 
     @FXML
     private void reportWizard() {
-        final ProcessReportPipeline pipeline = client.createNewReportPipeline();
-        StateChangedListener listener;
-        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-            final ReportWizardWindow wizard = new ReportWizardWindow(settings);
-            content.getChildren().add(wizard);
-            listener = new StateChangedListener(resourceBundle, settings, pipeline, wizard);
-        } else {
-            final ReportWizardStage stage = new ReportWizardStage(settings);
-            children.add(stage);
-            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
-                if (!newVal) {
-                    children.remove(stage);
-                }
-            });
-            listener = new StateChangedListener(resourceBundle, settings, pipeline, stage);
-            stage.show();
+        try {
+            final ProcessReportPipeline pipeline = client.createNewReportPipeline();
+            StateChangedListener listener;
+            if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+                final ReportWizardWindow wizard = new ReportWizardWindow(settings);
+                content.getChildren().add(wizard);
+                listener = new StateChangedListener(resourceBundle, settings, pipeline, wizard);
+            } else {
+                final ReportWizardStage stage = new ReportWizardStage(settings);
+                children.add(stage);
+                stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                    if (!newVal) {
+                        children.remove(stage);
+                    }
+                });
+                listener = new StateChangedListener(resourceBundle, settings, pipeline, stage);
+                stage.show();
+            }
+            pipeline.addStateChangedListener(listener);
+        } catch (WebServiceException e) {
+            e.printStackTrace();
+            Dialogs.create()
+                    .owner(null)
+                    .title(Utils.localize(resourceBundle, "webservice.error"))
+                    .showException(e);
         }
-        pipeline.addStateChangedListener(listener);
     }
 
     @Override
