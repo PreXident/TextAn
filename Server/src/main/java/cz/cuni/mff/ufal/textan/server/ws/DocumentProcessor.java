@@ -4,11 +4,15 @@ import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.commons.models.Entity;
 import cz.cuni.mff.ufal.textan.commons.models.Ticket;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
+import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
+import cz.cuni.mff.ufal.textan.server.services.NamedEntityRecognizerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jws.WebParam;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @javax.jws.WebService(
         serviceName = "DocumentProcessorService",
@@ -19,6 +23,12 @@ import java.util.Date;
 public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DocumentProcessor.class);
+
+    private final NamedEntityRecognizerService namedEntityService;
+
+    public DocumentProcessor(NamedEntityRecognizerService namedEntityService) {
+        this.namedEntityService = namedEntityService;
+    }
 
     @Override
     public GetObjectsFromStringResponse getObjectsFromString(
@@ -107,13 +117,14 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         LOG.debug("Executing operation getEntitiesFromString: {} {}", getEntitiesFromString, editingTicket);
 
-        final GetEntitiesFromStringResponse response = new GetEntitiesFromStringResponse();
-        final Entity entity = new Entity();
-        entity.setPosition(0);
-        entity.setLength(getEntitiesFromString.getText().length());
-        entity.setType(0);
-        entity.setValue(getEntitiesFromString.getText());
-        response.getEntities().add(entity);
+        cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
+
+        List<Entity> entities = namedEntityService.getEntities(getEntitiesFromString.getText(), serverTicket).stream()
+                .map(cz.cuni.mff.ufal.textan.server.models.Entity::toCommonsEntity)
+                .collect(Collectors.toList());
+
+        GetEntitiesFromStringResponse response = new GetEntitiesFromStringResponse();
+        response.getEntities().addAll(entities);
 
         return response;
     }
@@ -123,9 +134,27 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "getEntitiesById", name = "getEntitiesById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             GetEntitiesById getEntitiesById,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
-            EditingTicket editingTicket) {
+            EditingTicket editingTicket) throws IdNotFoundException{
 
         LOG.debug("Executing operation getEntitiesById: {} {}", getEntitiesById, editingTicket);
+
+        cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
+
+        List<Entity> entities;
+        try {
+            entities = namedEntityService.getEntities(getEntitiesById.getDocumentId(), serverTicket).stream()
+                    .map(cz.cuni.mff.ufal.textan.server.models.Entity::toCommonsEntity)
+                    .collect(Collectors.toList());
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException();
+        }
+
+        GetEntitiesByIdResponse response = new GetEntitiesByIdResponse();
+        response.getEntities().addAll(entities);
 
         return new GetEntitiesByIdResponse();
     }

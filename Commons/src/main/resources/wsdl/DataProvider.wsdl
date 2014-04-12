@@ -163,7 +163,7 @@
     </wsdl:message>
     
     <wsdl:message name="idNotFoundException">
-        <wsdl:part name="idNotFoundException" element="tns:idNotFoundException"/>
+        <wsdl:part name="idNotFoundException" element="cms:idNotFoundException"/>
     </wsdl:message>
     
     <wsdl:portType name="DataProvider">

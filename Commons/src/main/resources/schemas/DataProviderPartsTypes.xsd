@@ -59,9 +59,7 @@
     
     <xs:element name="getDocumentById" type="GetDocumentById"/>
     <xs:element name="getDocumentByIdResponse" type="GetDocumentByIdResponse"/>
-    
-    <xs:element name="idNotFoundException" type="IdNotFoundException"/>
-    
+
     <!-- type for messages without parameters -->
     <xs:complexType name="Void">
         <xs:sequence/>
@@ -257,15 +255,5 @@
             <xs:element ref="cms:document"/>
         </xs:sequence>
     </xs:complexType>
-    
-    <!--idNotFoundException-->
-    <xs:complexType name="IdNotFoundException">
-        <xs:sequence>
-            <!--<xs:element name="message" nillable="true" type="xs:string"/>-->
-            <xs:element name="fieldName" nillable="true" type="xs:string"/>
-            <xs:element name="fieldValue" nillable="true" type="xs:long"/>
-        </xs:sequence>
-    </xs:complexType>
-    
-    
+
 </xs:schema>

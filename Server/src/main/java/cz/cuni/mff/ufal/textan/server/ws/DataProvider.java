@@ -75,11 +75,11 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        boolean result = false;
+        boolean result;
         try {
             result = dbService.updateDocument(updateDocument.getDocumentId(), updateDocument.getText(), serverTicket);
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
-            cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException();
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
 
@@ -144,11 +144,11 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        Document document = null;
+        Document document;
         try {
             document = dbService.getDocument(getDocumentById.getDocumentId(), serverTicket).toCommonsDocument();
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
-                cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException();
+                cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
                 exceptionBody.setFieldName(e.getFieldName());
                 exceptionBody.setFieldValue(e.getFieldValue());
 
@@ -253,11 +253,11 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        boolean result = false;
+        boolean result;
         try {
             result = dbService.splitObject(splitObject.getObjectId(), serverTicket);
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
-            cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException();
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
 
@@ -368,11 +368,11 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
 
-        Object object = null;
+        Object object;
         try {
             object = dbService.getObject(getObject.getObjectId(), serverTicket).toCommonsObject();
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
-                cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException();
+                cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
                 exceptionBody.setFieldName(e.getFieldName());
                 exceptionBody.setFieldValue(e.getFieldValue());
 
@@ -396,11 +396,11 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        long objectId = 0;
+        long objectId;
         try {
             objectId = dbService.mergeObjects(mergeObjects.getObject1Id(), mergeObjects.getObject2Id(), serverTicket);
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
-            cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException();
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
 

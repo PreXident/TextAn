@@ -86,6 +86,10 @@
     <wsdl:message name="getProblemsResponse">
         <wsdl:part name="getProblemsResponse" element="tns:getProblemsResponse"/>
     </wsdl:message>
+
+    <wsdl:message name="idNotFoundException">
+        <wsdl:part name="idNotFoundException" element="cms:idNotFoundException"/>
+    </wsdl:message>
     
     <wsdl:portType name="DocumentProcessor">
         
@@ -102,6 +106,7 @@
         <wsdl:operation name="getEntitiesById">
             <wsdl:input message="ws:getEntitiesById"/>
             <wsdl:output message="ws:getEntitiesByIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="getObjectsFromString">
@@ -166,6 +171,9 @@
             <wsdl:output>
                 <soap:body parts="getEntitiesByIdResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal" />
+            </wsdl:fault>
         </wsdl:operation>
         
         <wsdl:operation name="getObjectsFromString">

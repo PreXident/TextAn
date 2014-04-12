@@ -12,4 +12,14 @@
     <xs:include schemaLocation="Relation.xsd"/>
     <xs:include schemaLocation="Graph.xsd"/>
 
+    <!--idNotFoundException-->
+    <xs:element name="idNotFoundException" type="IdNotFoundException"/>
+    <xs:complexType name="IdNotFoundException">
+        <xs:sequence>
+            <!--<xs:element name="message" nillable="true" type="xs:string"/>-->
+            <xs:element name="fieldName" nillable="true" type="xs:string"/>
+            <xs:element name="fieldValue" nillable="true" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
 </xs:schema>
