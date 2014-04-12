@@ -69,13 +69,22 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "updateDocument", name = "updateDocument", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             UpdateDocument updateDocument,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
-            Ticket ticket) {
+            Ticket ticket) throws IdNotFoundException {
 
         LOG.debug("Executing operation updateDocument: {} {}", updateDocument, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        boolean result = dbService.updateDocument(updateDocument.getDocumentId(), updateDocument.getText(), serverTicket);
+        boolean result = false;
+        try {
+            result = dbService.updateDocument(updateDocument.getDocumentId(), updateDocument.getText(), serverTicket);
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(),exceptionBody);
+        }
 
         UpdateDocumentResponse updateDocumentResponse = new UpdateDocumentResponse();
         updateDocumentResponse.setResult(result);
@@ -135,9 +144,17 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        Document document = dbService.getDocument(getDocumentById.getDocumentId(), serverTicket).toCommonsDocument();
+        Document document = null;
+        try {
+            document = dbService.getDocument(getDocumentById.getDocumentId(), serverTicket).toCommonsDocument();
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+                cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException();
+                exceptionBody.setFieldName(e.getFieldName());
+                exceptionBody.setFieldValue(e.getFieldValue());
 
-        //TODO: add exception throwing
+                throw new IdNotFoundException(e.getMessage(),exceptionBody);
+        }
+
 
         GetDocumentByIdResponse getDocumentByIdResponse = new GetDocumentByIdResponse();
         getDocumentByIdResponse.setDocument(document);
@@ -230,14 +247,22 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "splitObject", name = "splitObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             SplitObject splitObject,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
-            Ticket ticket) {
+            Ticket ticket) throws IdNotFoundException{
 
         LOG.debug("Executing operation splitObject: {} {}", splitObject, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        //TODO: add some exceptions
-        boolean result = dbService.splitObject(splitObject.getObjectId(), serverTicket);
+        boolean result = false;
+        try {
+            result = dbService.splitObject(splitObject.getObjectId(), serverTicket);
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(),exceptionBody);
+        }
 
         SplitObjectResponse splitObjectResponse = new SplitObjectResponse();
         splitObjectResponse.setResult(result);
@@ -342,8 +367,17 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        //TODO add exceptions
-        Object object = dbService.getObject(getObject.getObjectId(), serverTicket).toCommonsObject();
+
+        Object object = null;
+        try {
+            object = dbService.getObject(getObject.getObjectId(), serverTicket).toCommonsObject();
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+                cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException();
+                exceptionBody.setFieldName(e.getFieldName());
+                exceptionBody.setFieldValue(e.getFieldValue());
+
+                throw new IdNotFoundException(e.getMessage(),exceptionBody);
+        }
 
         GetObjectResponse getObjectResponse = new GetObjectResponse();
         getObjectResponse.setObject(object);
@@ -356,13 +390,22 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "mergeObjects", name = "mergeObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             MergeObjects mergeObjects,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
-            Ticket ticket) {
+            Ticket ticket) throws IdNotFoundException{
 
         LOG.debug("Executing operation mergeObjects: {} {}", mergeObjects, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        long objectId = dbService.mergeObjects(mergeObjects.getObject1Id(), mergeObjects.getObject2Id(), serverTicket);
+        long objectId = 0;
+        try {
+            objectId = dbService.mergeObjects(mergeObjects.getObject1Id(), mergeObjects.getObject2Id(), serverTicket);
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.dataprovider.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(),exceptionBody);
+        }
 
         MergeObjectsResponse mergeObjectsResponse = new MergeObjectsResponse();
         mergeObjectsResponse.setObjectId(objectId);

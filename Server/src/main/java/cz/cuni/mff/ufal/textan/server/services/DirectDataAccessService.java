@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.server.services;
 
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
  * @author Petr Fanta
  */
 @Service
+@Transactional
 public class DirectDataAccessService {
 
     private final IDocumentTableDAO documentTableDAO;
@@ -74,9 +76,14 @@ public class DirectDataAccessService {
      * @param ticket the ticket with information about a user
      * @return the document
      */
-    public Document getDocument(long documentId, Ticket ticket) {
+    public Document getDocument(long documentId, Ticket ticket) throws IdNotFoundException{
 
-        return Document.fromDocumentTable(documentTableDAO.find(documentId));
+        DocumentTable documentTable = documentTableDAO.find(documentId);
+        if (documentTable == null) {
+            throw new IdNotFoundException("documentId", documentId);
+        }
+
+        return Document.fromDocumentTable(documentTable);
     }
 
     /**
@@ -99,10 +106,13 @@ public class DirectDataAccessService {
      * @param ticket the ticket with information about a user
      * @return the indicates if document was updated
      */
-    @Transactional
-    public boolean updateDocument(long documentId, String text, Ticket ticket) {
+    public boolean updateDocument(long documentId, String text, Ticket ticket) throws IdNotFoundException {
 
         DocumentTable documentTable = documentTableDAO.find(documentId);
+        if (documentTable == null) {
+            throw new IdNotFoundException("documentId", documentId);
+        }
+
         documentTable.setText(text);
         documentTableDAO.update(documentTable);
 
@@ -130,9 +140,14 @@ public class DirectDataAccessService {
      * @param ticket the ticket with information about a user
      * @return the object
      */
-    public Object getObject(long objectId, Ticket ticket) {
+    public Object getObject(long objectId, Ticket ticket) throws IdNotFoundException {
 
-        return Object.fromObjectTable(objectTableDAO.find(objectId));
+        ObjectTable objectTable = objectTableDAO.find(objectId);
+        if (objectTable == null) {
+            throw new IdNotFoundException("objectId", objectId);
+        }
+
+        return Object.fromObjectTable(objectTable);
     }
 
     /**
@@ -170,7 +185,7 @@ public class DirectDataAccessService {
      * @param ticket the ticket with information about a user
      * @return the identifier of the new objects
      */
-    public long mergeObjects(long object1Id, long object2Id, Ticket ticket) {
+    public long mergeObjects(long object1Id, long object2Id, Ticket ticket) throws IdNotFoundException {
         //TODO: implement
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -182,7 +197,7 @@ public class DirectDataAccessService {
      * @param ticket the ticket with information about a user
      * @return true if object was split, false otherwise
      */
-    public boolean splitObject(long objectId, Ticket ticket) {
+    public boolean splitObject(long objectId, Ticket ticket) throws IdNotFoundException {
         //TODO: implement
         throw new UnsupportedOperationException("Not implemented yet");
     }

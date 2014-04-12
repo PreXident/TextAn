@@ -237,11 +237,13 @@
         <wsdl:operation name="mergeObjects">
             <wsdl:input message="ws:mergeObjects"/>
             <wsdl:output message="ws:mergeObjectsResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="splitObject">
             <wsdl:input message="ws:splitObject"/>
             <wsdl:output message="ws:splitObjectResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="addDocument">
@@ -252,6 +254,7 @@
         <wsdl:operation name="updateDocument">
             <wsdl:input message="ws:updateDocument"/>
             <wsdl:output message="ws:updateDocumentResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
                 
         <wsdl:operation name="getDocuments">
@@ -429,6 +432,9 @@
             <wsdl:output>
                 <soap:body parts="mergeObjectsResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
         
         <wsdl:operation name="splitObject">
@@ -440,6 +446,9 @@
             <wsdl:output>
                 <soap:body parts="splitObjectResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
         
         <wsdl:operation name="addDocument">
@@ -462,6 +471,9 @@
             <wsdl:output>
                 <soap:body parts="updateDocumentResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
     
         <wsdl:operation name="getDocuments">
