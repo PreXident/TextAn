@@ -4,8 +4,8 @@ USE textan;
 
 CREATE TABLE Document (
 	id_document int PRIMARY KEY AUTO_INCREMENT, 
-	added date,
-	processed date NULL,
+	added datetime,
+	processed datetime NULL,
 	text text NOT NULL
 );
 
