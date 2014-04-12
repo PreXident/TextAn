@@ -53,8 +53,6 @@ public class DirectDataAccessService {
         this.relationTableDAO = relationTableDAO;
     }
 
-    //TODO: handle id not found etc.
-
     /**
      * Adds a new document document into the system.
      *

@@ -15,43 +15,51 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 /**
  * Server entry point.
+ *
  * @author Petr Fanta
  */
 public class AppEntry {
 
     private static final Logger LOG = LoggerFactory.getLogger(AppEntry.class);
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
-        //Create root aplication context
-        AbstractApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-        context.registerShutdownHook();
+        try {
 
-        Server server = (Server)context.getBean("server");
+            //Create root aplication context
+            AbstractApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+            context.registerShutdownHook();
 
-        ServletHolder servletHolder = new ServletHolder(new CXFServlet());
+            Server server = (Server) context.getBean("server");
 
-        //Setup servlet handler
-        ServletContextHandler servletContextHandler = new ServletContextHandler();
-        servletContextHandler.setContextPath("/");
-        servletContextHandler.addServlet(servletHolder, "/soap/*");
-        servletContextHandler.setInitParameter("contextConfigLocation", WebAppConfig.class.getName());
+            ServletHolder servletHolder = new ServletHolder(new CXFServlet());
 
-        //Create root spring's web application context for servlets
-        AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
-        webContext.setParent(context);
-        webContext.setServletContext(servletContextHandler.getServletContext());
+            //Setup servlet handler
+            ServletContextHandler servletContextHandler = new ServletContextHandler();
+            servletContextHandler.setContextPath("/");
+            servletContextHandler.addServlet(servletHolder, "/soap/*");
+            servletContextHandler.setInitParameter("contextConfigLocation", WebAppConfig.class.getName());
 
-        //Register root context
-        servletContextHandler.addEventListener(new ContextLoaderListener(webContext));
+            //Create root spring's web application context for servlets
+            AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
+            webContext.setParent(context);
+            webContext.setServletContext(servletContextHandler.getServletContext());
 
-        server.setHandler(servletContextHandler);
+            //Register root context
+            servletContextHandler.addEventListener(new ContextLoaderListener(webContext));
 
-        LOG.info("Start server.");
-        server.start();
+            server.setHandler(servletContextHandler);
 
-        LOG.info("Server running.");
-        server.join();
+            LOG.info("Start server.");
+            server.start();
 
+            LOG.info("Server running.");
+            server.join();
+
+        } catch (Exception e) {
+
+            LOG.error("Unexpected exception", e);
+            System.exit(1);
+        }
     }
 }
