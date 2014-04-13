@@ -13,10 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Controls selecting object to be displayed in the graph.
@@ -104,8 +101,9 @@ public class ObjectListController extends GraphController {
         super.setGrapher(grapher);
         final Set<Object> set = grapher.getObjects();
         final List<Object> list = new ArrayList<>(set);
-        //FIXME:
-        list.sort((obj1, obj2) -> (int) (obj1.getId() - obj2.getId()));
+        //FIXME: is the comparison right?
+        list.sort((obj1, obj2) -> Long.compare(obj1.getId(), obj2.getId()));
+
         listView.setItems(FXCollections.observableList(list));
     }
 }

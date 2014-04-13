@@ -20,6 +20,7 @@ public class Object {
     /** Object type. */
     private final ObjectType type;
 
+    /** Flag indicating whether the object was fetched from db or created by client. */
     private final boolean isNew;
 
     /**

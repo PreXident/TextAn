@@ -9,7 +9,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Client side representation of {@link cz.cuni.mff.ufal.textan.commons.models.Graph}.
+ * Client side representation of
+ * {@link cz.cuni.mff.ufal.textan.commons.models.Graph}.
  */
 public class Graph {
 

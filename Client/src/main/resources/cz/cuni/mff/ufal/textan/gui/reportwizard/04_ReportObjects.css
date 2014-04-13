@@ -9,22 +9,6 @@
 	-fx-effect: dropshadow(three-pass-box, lightblue, 4, 4, 0, 0);
 }
 
-.ENTITY_0 {
+.ENTITY {
 	-fx-underline: true;
-	-fx-fill: brown;
-}
-
-.ENTITY_1 {
-	-fx-underline: true;
-	-fx-fill: red;
-}
-
-.ENTITY_2 {
-	-fx-underline: true;
-	-fx-fill: green;
-}
-
-.ENTITY_3 {
-	-fx-underline: true;
-	-fx-fill: blue;
 }

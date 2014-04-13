@@ -9,40 +9,10 @@
 	-fx-effect: dropshadow(three-pass-box, lightblue, 4, 4, 0, 0);
 }
 
-.ENTITY_0 {
+.ENTITY {
 	-fx-underline: true;
-	-fx-fill: brown;
 }
 
-.ENTITY_1 {
+.RELATION {
 	-fx-underline: true;
-	-fx-fill: red;
-}
-
-.ENTITY_2 {
-	-fx-underline: true;
-	-fx-fill: green;
-}
-
-.ENTITY_3 {
-	-fx-underline: true;
-	-fx-fill: blue;
-}
-
-.RELATION_0 {
-	-fx-underline: true;
-	-fx-fill: pink;
-}
-
-.RELATION_1 {
-	-fx-underline: true;
-	-fx-fill: teal;
-}
-
-.OBJECT_0 {
-	-fx-effect: dropshadow(three-pass-box, pink, 4, 4, 0, 0);
-}
-
-.OBJECT_1 {
-	-fx-effect: dropshadow(three-pass-box, teal, 4, 4, 0, 0);
 }

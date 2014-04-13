@@ -38,56 +38,64 @@ public class Word {
     }
 
     /**
-     * @return the word
+     * Returns the word itself.
+     * @return the word itself
      */
     public String getWord() {
         return word;
     }
 
     /**
-     * @return the index
+     * Returns index in the list of words/report.
+     * @return the index in the list of words
      */
     public int getIndex() {
         return index;
     }
 
     /**
-     * @return the start
+     * Returns index of word's first character in report.
+     * @return index of word's first character in report.
      */
     public int getStart() {
         return start;
     }
 
     /**
-     * @return the end
+     * Returns index of word's last character in report.
+     * @return index of word's last character in report.
      */
     public int getEnd() {
         return end;
     }
 
     /**
-     * @return the entity
+     * Returns entity which this word is assigned to.
+     * @return entity which this word is assigned to
      */
     public EntityBuilder getEntity() {
         return entity;
     }
 
     /**
-     * @param entity the entity to set
+     * Sets entity which this word is assigned to
+     * @param entity new entity
      */
     public void setEntity(EntityBuilder entity) {
         this.entity = entity;
     }
 
     /**
-     * @return the relation
+     * Returns relation which this word is assigned to.
+     * @return relation which this word is assigned to
      */
     public RelationBuilder getRelation() {
         return relation;
     }
 
     /**
-     * @param relation the relation to set
+     * Sets relation which this word is assigned to
+     * @param relation new relation
      */
     public void setRelation(RelationBuilder relation) {
         this.relation = relation;

@@ -83,7 +83,7 @@ public class ReportObjectsController extends ReportWizardController {
             if (word.getEntity() != null) {
                 final long entityId = word.getEntity().getId();
                 final int entityIndex = word.getEntity().getIndex();
-                text.getStyleClass().add("ENTITY_" + entityId);
+                Utils.styleText(text, "ENTITY", entityId);
 
                 ContextMenu cm = menus.get(word.getEntity());
                 if (cm == null) {

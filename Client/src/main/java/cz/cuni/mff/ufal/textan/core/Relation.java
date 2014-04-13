@@ -22,6 +22,7 @@ public class Relation {
     /** Objects and their order in relation. */
     private final Set<Pair<Object, Integer>> objects;
 
+    /** Flag indicating whether the relation was fetched from db or created by client. */
     private final boolean isNew;
 
     /**
