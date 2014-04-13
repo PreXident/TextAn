@@ -61,4 +61,8 @@ public class Entity{
     public void setType(int type) {
         this.type = type;
     }    
+    public boolean equals (Entity e2) {
+        if(this.offset != e2.offset) return false;
+        return true;
+    }
 }

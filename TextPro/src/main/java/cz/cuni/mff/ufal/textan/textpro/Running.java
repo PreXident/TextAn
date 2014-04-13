@@ -40,7 +40,7 @@ public class Running implements ITextPro{
     }
 
     @Override
-    public Map<Entity, Map<Object, Double>> DoubleRanking() {
+    public Map<Entity, Map<Long, Double>> DoubleRanking(String document,List<Entity> eList) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

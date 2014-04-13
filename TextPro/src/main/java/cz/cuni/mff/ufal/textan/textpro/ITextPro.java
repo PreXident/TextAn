@@ -21,6 +21,8 @@ public interface ITextPro {
     public List<Entity> recognizedEntity(String document);
     
     public List<Entity> SimpleRanking(String TestDir, String DataDir);
-    
-    public Map<Entity, Map<Object, Double>> DoubleRanking();
+    /*
+     * Entity, ObjectID-Score
+     */
+    public Map<Entity, Map<Long, Double>> DoubleRanking(String document,List<Entity> eList);
 }
