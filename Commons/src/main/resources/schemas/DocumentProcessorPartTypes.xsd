@@ -2,77 +2,78 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:cms="http://models.commons.textan.ufal.mff.cuni.cz"
            xmlns="http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor"
-    targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor" elementFormDefault="qualified">
+           targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor"
+           elementFormDefault="qualified">
 
     <xs:import namespace="http://models.commons.textan.ufal.mff.cuni.cz" schemaLocation="CommonTypes.xsd"/>
 
     <xs:element name="getEditingTicket" type="GetEditingTicket"/>
     <xs:element name="getEditingTicketResponse" type="GetEditingTicketResponse"/>
-         
+
     <xs:element name="getEntitiesFromString" type="GetEntitiesFromString"/>
     <xs:element name="getEntitiesFromStringResponse" type="GetEntitiesFromStringResponse"/>
-    
+
     <xs:element name="getEntitiesById" type="GetEntitiesById"/>
     <xs:element name="getEntitiesByIdResponse" type="GetEntitiesByIdResponse"/>
-    
-    <xs:element name="getObjectsFromString" type="GetObjectsFromString"/>
-    <xs:element name="getObjectsFromStringResponse" type="GetObjectsFromStringResponse"/>
-    
-    <xs:element name="getObjectsById" type="GetObjectsById"/>
-    <xs:element name="getObjectsByIdResponse" type="GetObjectsByIdResponse"/>
-    
+
+    <xs:element name="getAssignmentsFromString" type="GetAssignmentsFromString"/>
+    <xs:element name="getAssignmentsFromStringResponse" type="GetAssignmentsFromStringResponse"/>
+
+    <xs:element name="getAssignmentsById" type="GetAssignmentsById"/>
+    <xs:element name="getAssignmentsByIdResponse" type="GetAssignmentsByIdResponse"/>
+
     <xs:element name="saveProcessedDocumentById" type="SaveProcessedDocumentById"/>
     <xs:element name="saveProcessedDocumentByIdResponse" type="SaveProcessedDocumentByIdResponse"/>
-    
+
     <xs:element name="saveProcessedDocumentFromString" type="SaveProcessedDocumentFromString"/>
     <xs:element name="saveProcessedDocumentFromStringResponse" type="SaveProcessedDocumentFromStringResponse"/>
-    
+
     <xs:element name="getProblems" type="GetProblems"/>
     <xs:element name="getProblemsResponse" type="GetProblemsResponse"/>
-      
-    
-   <!-- <xs:complexType name="Void">
-        <xs:sequence/>
-    </xs:complexType>-->
-    
+
+
+    <!-- <xs:complexType name="Void">
+         <xs:sequence/>
+     </xs:complexType>-->
+
     <xs:complexType name="GetEditingTicket">
         <xs:sequence/>
         <!--<xs:sequence>
             <xs:element name="username" type="xs:string"/>
         </xs:sequence>-->
     </xs:complexType>
-    
+
     <xs:complexType name="GetEditingTicketResponse">
         <xs:sequence>
             <xs:element ref="cms:editingTicket"/>
         </xs:sequence>
     </xs:complexType>
-      
+
     <xs:complexType name="GetEntitiesFromString">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="GetEntitiesFromStringResponse">
         <xs:sequence>
             <xs:element ref="cms:entity" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="GetEntitiesById">
         <xs:sequence>
             <xs:element name="documentId" type="xs:long"/>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="GetEntitiesByIdResponse">
         <xs:sequence>
             <xs:element ref="cms:entity" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
-    
-    <xs:complexType name="GetObjectsFromString">
+
+    <xs:complexType name="GetAssignmentsFromString">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
             <xs:element name="entities">
@@ -80,39 +81,19 @@
                     <xs:sequence>
                         <xs:element ref="cms:entity" minOccurs="1" maxOccurs="unbounded"/>
                     </xs:sequence>
-                </xs:complexType>                
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-    
-    <xs:complexType name="GetObjectsFromStringResponse">
-        <xs:sequence>
-            <!-- TODO: better name for element -->
-            <xs:element name="assignment" maxOccurs="unbounded">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element ref="cms:entity"/>
-                        <xs:element name="objects">
-                            <xs:complexType>                                
-                                <xs:sequence>
-                                    <xs:element name="objectWithRating" minOccurs="0" maxOccurs="unbounded">
-                                        <xs:complexType>
-                                            <xs:sequence>                                                
-                                                <xs:element ref="cms:object"/>
-                                                <xs:element name="rating" type="xs:float"/>
-                                            </xs:sequence>
-                                        </xs:complexType>
-                                    </xs:element>                                    
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    
-    <xs:complexType name="GetObjectsById">
+
+    <xs:complexType name="GetAssignmentsFromStringResponse">
+        <xs:sequence>
+            <!-- TODO: better name for element -->
+            <xs:element name="assignment" type="Assignment" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetAssignmentsById">
         <xs:sequence>
             <xs:element name="id" type="xs:long"/>
             <xs:element name="entities">
@@ -120,38 +101,18 @@
                     <xs:sequence>
                         <xs:element ref="cms:entity" minOccurs="1" maxOccurs="unbounded"/>
                     </xs:sequence>
-                </xs:complexType>                
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-    
-    <xs:complexType name="GetObjectsByIdResponse">
-        <xs:sequence>
-            <!-- TODO: better name for element -->
-            <xs:element name="assignment" maxOccurs="unbounded">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element ref="cms:entity"/>
-                        <xs:element name="objects">
-                            <xs:complexType>                                
-                                <xs:sequence>
-                                    <xs:element name="objectWithRating" minOccurs="0" maxOccurs="unbounded">
-                                        <xs:complexType>
-                                            <xs:sequence>                                                
-                                                <xs:element ref="cms:object"/>
-                                                <xs:element name="rating" type="xs:float"/>
-                                            </xs:sequence>
-                                        </xs:complexType>
-                                    </xs:element>                                    
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    
+
+    <xs:complexType name="GetAssignmentsByIdResponse">
+        <xs:sequence>
+            <!-- TODO: better name for element -->
+            <xs:element name="assignment" type="Assignment" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <!-- Save pairs (Entity, Object)!! -->
     <xs:complexType name="SaveProcessedDocumentById">
         <xs:sequence>
@@ -173,13 +134,13 @@
             <xs:element name="force" type="xs:boolean"/>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="SaveProcessedDocumentByIdResponse">
         <xs:sequence>
             <xs:element name="result" type="xs:boolean"/>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="SaveProcessedDocumentFromString">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
@@ -200,13 +161,13 @@
             <xs:element name="force" type="xs:boolean"/>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="SaveProcessedDocumentFromStringResponse">
         <xs:sequence>
             <xs:element name="result" type="xs:boolean"/>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="GetProblems">
         <xs:sequence>
             <xs:element name="documentId" type="xs:long"/>
@@ -226,10 +187,24 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    
+
     <!-- TODO: implement -->
     <xs:complexType name="GetProblemsResponse">
         <xs:sequence/>
-    </xs:complexType> 
+    </xs:complexType>
+
+    <xs:complexType name="Assignment">
+        <xs:sequence>
+            <xs:element ref="cms:entity"/>
+            <xs:element name="ratedObject" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="cms:object"/>
+                        <xs:element name="score" type="xs:float"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
 
 </xs:schema>

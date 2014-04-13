@@ -4,9 +4,7 @@ import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromString.Entities;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromStringResponse.Assignment;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromStringResponse.Assignment.Objects.ObjectWithRating;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromString.Entities;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Objects;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Relations;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
@@ -157,7 +155,7 @@ public class Client {
      * @param ticket editing ticket
      * @param text report to process
      * @param entities where to store candidates
-     * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getObjectsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetObjectsFromString, cz.cuni.mff.ufal.textan.commons.models.EditingTicket)
+     * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromString, cz.cuni.mff.ufal.textan.commons.models.EditingTicket)
      */
     public void getObjects(final Ticket ticket, final String text, final List<Entity> entities) {
         final Entities ents = new Entities();
@@ -167,17 +165,17 @@ public class Client {
             map.put(entity.getPosition(), entity);
         }
 
-        final GetObjectsFromString request = new GetObjectsFromString();
+        final GetAssignmentsFromString request = new GetAssignmentsFromString();
         request.setText(text);
         request.setEntities(ents);
 
-        final GetObjectsFromStringResponse response = getDocumentProcessor().getObjectsFromString(request, ticket.toTicket());
+        final GetAssignmentsFromStringResponse response = getDocumentProcessor().getAssignmentsFromString(request, ticket.toTicket());
 
         for (Assignment assignment : response.getAssignments()) {
             final Entity ent = map.get(assignment.getEntity().getPosition());
             ent.getCandidates().clear();
-            for (ObjectWithRating rating : assignment.getObjects().getObjectWithRatings()) {
-                final double r = rating.getRating();
+            for (Assignment.RatedObject rating : assignment.getRatedObjects()) {
+                final double r = rating.getScore();
                 final Object obj = new Object(rating.getObject());
                 ent.getCandidates().put(r, obj);
             }

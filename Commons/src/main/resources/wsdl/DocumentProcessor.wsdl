@@ -46,20 +46,20 @@
         <wsdl:part name="getEntitiesByIdResponse" element="tns:getEntitiesByIdResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getObjectsFromString">
-        <wsdl:part name="getObjectsFromString" element="tns:getObjectsFromString"/>
+    <wsdl:message name="getAssignmentsFromString">
+        <wsdl:part name="getAssignmentsFromString" element="tns:getAssignmentsFromString"/>
     </wsdl:message>
     
-    <wsdl:message name="getObjectsFromStringResponse">
-        <wsdl:part name="getObjectsFromStringResponse" element="tns:getObjectsFromStringResponse"/>
+    <wsdl:message name="getAssignmentsFromStringResponse">
+        <wsdl:part name="getAssignmentsFromStringResponse" element="tns:getAssignmentsFromStringResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getObjectsById">
-        <wsdl:part name="getObjectsById" element="tns:getObjectsById"/>
+    <wsdl:message name="getAssignmentsById">
+        <wsdl:part name="getAssignmentsById" element="tns:getAssignmentsById"/>
     </wsdl:message>
     
-    <wsdl:message name="getObjectsByIdResponse">
-        <wsdl:part name="getObjectsByIdResponse" element="tns:getObjectsByIdResponse"/>
+    <wsdl:message name="getAssignmentsByIdResponse">
+        <wsdl:part name="getAssignmentsByIdResponse" element="tns:getAssignmentsByIdResponse"/>
     </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentById">
@@ -109,14 +109,15 @@
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
-        <wsdl:operation name="getObjectsFromString">
-            <wsdl:input message="ws:getObjectsFromString"/>
-            <wsdl:output message="ws:getObjectsFromStringResponse"/>
+        <wsdl:operation name="getAssignmentsFromString">
+            <wsdl:input message="ws:getAssignmentsFromString"/>
+            <wsdl:output message="ws:getAssignmentsFromStringResponse"/>
         </wsdl:operation>
         
-        <wsdl:operation name="getObjectsById">
-            <wsdl:input message="ws:getObjectsById"/>
-            <wsdl:output message="ws:getObjectsByIdResponse"/>
+        <wsdl:operation name="getAssignmentsById">
+            <wsdl:input message="ws:getAssignmentsById"/>
+            <wsdl:output message="ws:getAssignmentsByIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="saveProcessedDocumentFromString">
@@ -176,26 +177,29 @@
             </wsdl:fault>
         </wsdl:operation>
         
-        <wsdl:operation name="getObjectsFromString">
-            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getObjectsFromString"/>
+        <wsdl:operation name="getAssignmentsFromString">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getAssignmentsFromString"/>
             <wsdl:input>
-                <soap:body parts="getObjectsFromString" use="literal"/>
+                <soap:body parts="getAssignmentsFromString" use="literal"/>
                 <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body parts="getObjectsFromStringResponse" use="literal"/>
+                <soap:body parts="getAssignmentsFromStringResponse" use="literal"/>
             </wsdl:output>
         </wsdl:operation>
     
-        <wsdl:operation name="getObjectsById">
-            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getObjectsById"/>
+        <wsdl:operation name="getAssignmentsById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getAssignmentsById"/>
             <wsdl:input>
-                <soap:body parts="getObjectsById" use="literal"/>
+                <soap:body parts="getAssignmentsById" use="literal"/>
                 <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body parts="getObjectsByIdResponse" use="literal"/>
-            </wsdl:output>            
+                <soap:body parts="getAssignmentsByIdResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal" />
+            </wsdl:fault>
         </wsdl:operation>
         
         <wsdl:operation name="saveProcessedDocumentFromString">
