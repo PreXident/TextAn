@@ -101,16 +101,15 @@ public class Relation {
         commonsRelation.setRelationType(type.toCommonsRelationType());
 
         cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds objectInRelationIds = new cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds();
-        objectInRelationIds.getInRelations().addAll(
-                objectsInRelation.stream().map(inRelation -> {
-                    cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation commonsInRelation = new cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation();
-                    commonsInRelation.setObjectId(inRelation.getFirst());
-                    commonsInRelation.setOrder(inRelation.getSecond());
-                    return commonsInRelation;
-                })
-                .collect(Collectors.toList())
-        );
+        for (Pair<Long, Integer> inRelation : objectsInRelation) {
+            cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation commonsInRelation = new cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation();
+            commonsInRelation.setObjectId(inRelation.getFirst());
+            commonsInRelation.setOrder(inRelation.getSecond());
+
+            objectInRelationIds.getInRelations().add(commonsInRelation);
+        }
         commonsRelation.setObjectInRelationIds(objectInRelationIds);
+
         commonsRelation.setIsNew(isNew);
 
         return commonsRelation;

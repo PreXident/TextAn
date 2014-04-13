@@ -1,10 +1,11 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
 import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
-import cz.cuni.mff.ufal.textan.commons.models.Entity;
 import cz.cuni.mff.ufal.textan.commons.models.Ticket;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
+import cz.cuni.mff.ufal.textan.server.models.Assignment;
+import cz.cuni.mff.ufal.textan.server.models.Entity;
 import cz.cuni.mff.ufal.textan.server.services.NamedEntityRecognizerService;
 import cz.cuni.mff.ufal.textan.server.services.ObjectAssignmentService;
 import org.slf4j.Logger;
@@ -46,16 +47,15 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
-        List<cz.cuni.mff.ufal.textan.server.models.Entity> serverEntities = getAssignmentsFromString.getEntities().getEntities().stream()
-                .map(cz.cuni.mff.ufal.textan.server.models.Entity::fromCommonsEntity)
-                .collect(Collectors.toList());
-
-        List<Assignment> assignments = objectAssignmentService.getAssignments(getAssignmentsFromString.getText(), serverEntities, serverTicket).stream()
-                .map(cz.cuni.mff.ufal.textan.server.models.Assignment::toCommonsAssignment)
+        List<Entity> serverEntities = getAssignmentsFromString.getEntities().getEntities().stream()
+                .map(Entity::fromCommonsEntity)
                 .collect(Collectors.toList());
 
         GetAssignmentsFromStringResponse response = new GetAssignmentsFromStringResponse();
-        response.getAssignments().addAll(assignments);
+        List<Assignment> assignments = objectAssignmentService.getAssignments(getAssignmentsFromString.getText(), serverEntities, serverTicket);
+        for (Assignment assignment : assignments) {
+            response.getAssignments().add(assignment.toCommonsAssignment());
+        }
 
         return response;
     }
@@ -99,12 +99,14 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
                 .map(cz.cuni.mff.ufal.textan.server.models.Entity::fromCommonsEntity)
                 .collect(Collectors.toList());
 
-        List<Assignment> assignments;
         try {
+            GetAssignmentsByIdResponse response = new GetAssignmentsByIdResponse();
+            List<Assignment> assignments = objectAssignmentService.getAssignments(getAssignmentsById.getId(), serverEntities, serverTicket);
+            for (Assignment assignment : assignments) {
+                response.getAssignments().add(assignment.toCommonsAssignment());
+            }
 
-            assignments = objectAssignmentService.getAssignments(getAssignmentsById.getId(), serverEntities, serverTicket).stream()
-                    .map(cz.cuni.mff.ufal.textan.server.models.Assignment::toCommonsAssignment)
-                    .collect(Collectors.toList());
+            return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
 
@@ -115,10 +117,6 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             throw new IdNotFoundException(e.getMessage(),exceptionBody);
         }
 
-        GetAssignmentsByIdResponse response = new GetAssignmentsByIdResponse();
-        response.getAssignments().addAll(assignments);
-
-        return response;
     }
 
     @Override
@@ -132,12 +130,11 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
-        List<Entity> entities = namedEntityService.getEntities(getEntitiesFromString.getText(), serverTicket).stream()
-                .map(cz.cuni.mff.ufal.textan.server.models.Entity::toCommonsEntity)
-                .collect(Collectors.toList());
-
         GetEntitiesFromStringResponse response = new GetEntitiesFromStringResponse();
-        response.getEntities().addAll(entities);
+        List<Entity> entities = namedEntityService.getEntities(getEntitiesFromString.getText(), serverTicket);
+        for (Entity entity : entities) {
+            response.getEntities().add(entity.toCommonsEntity());
+        }
 
         return response;
     }
@@ -153,11 +150,15 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
-        List<Entity> entities;
         try {
-            entities = namedEntityService.getEntities(getEntitiesById.getDocumentId(), serverTicket).stream()
-                    .map(cz.cuni.mff.ufal.textan.server.models.Entity::toCommonsEntity)
-                    .collect(Collectors.toList());
+            GetEntitiesByIdResponse response = new GetEntitiesByIdResponse();
+            List<Entity> entities = namedEntityService.getEntities(getEntitiesById.getDocumentId(), serverTicket);
+            for (Entity entity : entities) {
+                response.getEntities().add(entity.toCommonsEntity());
+            }
+
+            return new GetEntitiesByIdResponse();
+
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
@@ -165,11 +166,6 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
             throw new IdNotFoundException();
         }
-
-        GetEntitiesByIdResponse response = new GetEntitiesByIdResponse();
-        response.getEntities().addAll(entities);
-
-        return new GetEntitiesByIdResponse();
     }
 
     @Override

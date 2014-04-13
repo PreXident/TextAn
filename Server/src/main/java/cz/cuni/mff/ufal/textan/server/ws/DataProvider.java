@@ -1,11 +1,11 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
-
-import cz.cuni.mff.ufal.textan.commons.models.*;
-import cz.cuni.mff.ufal.textan.commons.models.Object;
+import cz.cuni.mff.ufal.textan.commons.models.Ticket;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
+import cz.cuni.mff.ufal.textan.server.models.*;
+import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.services.DirectDataAccessService;
 import cz.cuni.mff.ufal.textan.server.services.GraphService;
 import org.slf4j.Logger;
@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.jws.WebParam;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * For now only mocking database access.
@@ -54,14 +53,14 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        List<Object> objects = dbService.getObjects(serverTicket).stream()
-                .map(cz.cuni.mff.ufal.textan.server.models.Object::toCommonsObject)
-                .collect(Collectors.toList());
+        GetObjectsResponse response = new GetObjectsResponse();
+        List<Object> serverObjects = dbService.getObjects(serverTicket);
 
-        GetObjectsResponse getObjectsResponse = new GetObjectsResponse();
-        getObjectsResponse.getObjects().addAll(objects);
+        for (Object object : serverObjects) {
+            response.getObjects().add(object.toCommonsObject());
+        }
 
-        return getObjectsResponse;
+        return response;
     }
 
     @Override
@@ -75,9 +74,14 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        boolean result;
         try {
-            result = dbService.updateDocument(updateDocument.getDocumentId(), updateDocument.getText(), serverTicket);
+            boolean result = dbService.updateDocument(updateDocument.getDocumentId(), updateDocument.getText(), serverTicket);
+
+            UpdateDocumentResponse response = new UpdateDocumentResponse();
+            response.setResult(result);
+
+            return response;
+
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
@@ -85,11 +89,6 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
             throw new IdNotFoundException(e.getMessage(),exceptionBody);
         }
-
-        UpdateDocumentResponse updateDocumentResponse = new UpdateDocumentResponse();
-        updateDocumentResponse.setResult(result);
-
-        return updateDocumentResponse;
     }
 
     @Override
@@ -103,14 +102,13 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        List<Relation> relations = dbService.getRelations(serverTicket).stream()
-                .map(cz.cuni.mff.ufal.textan.server.models.Relation::toCommonsRelation)
-                .collect(Collectors.toList());
+        GetRelationsResponse response = new GetRelationsResponse();
+        List<Relation> relations = dbService.getRelations(serverTicket);
+        for (Relation relation : relations) {
+            response.getRelations().add(relation.toCommonsRelation());
+        }
 
-        GetRelationsResponse getRelationsResponse = new GetRelationsResponse();
-        getRelationsResponse.getRelations().addAll(relations);
-
-        return getRelationsResponse;
+        return response;
     }
 
     @Override
@@ -124,11 +122,11 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        List<ObjectType> objectTypes = dbService.getObjectTypes(serverTicket).stream().map(cz.cuni.mff.ufal.textan.server.models.ObjectType::toCommonsObjectType)
-                .collect(Collectors.toList());
-
         final GetObjectTypesResponse response = new GetObjectTypesResponse();
-        response.getObjectTypes().addAll(objectTypes);
+        List<ObjectType> objectTypes = dbService.getObjectTypes(serverTicket);
+        for (ObjectType objectType : objectTypes) {
+            response.getObjectTypes().add(objectType.toCommonsObjectType());
+        }
 
         return response;
     }
@@ -144,9 +142,13 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        Document document;
         try {
-            document = dbService.getDocument(getDocumentById.getDocumentId(), serverTicket).toCommonsDocument();
+            Document document = dbService.getDocument(getDocumentById.getDocumentId(), serverTicket);
+            GetDocumentByIdResponse getDocumentByIdResponse = new GetDocumentByIdResponse();
+            getDocumentByIdResponse.setDocument(document.toCommonsDocument());
+
+            return getDocumentByIdResponse;
+
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
                 cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
                 exceptionBody.setFieldName(e.getFieldName());
@@ -154,12 +156,6 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
                 throw new IdNotFoundException(e.getMessage(),exceptionBody);
         }
-
-
-        GetDocumentByIdResponse getDocumentByIdResponse = new GetDocumentByIdResponse();
-        getDocumentByIdResponse.setDocument(document);
-
-        return getDocumentByIdResponse;
     }
 
     @Override
@@ -173,12 +169,11 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        List<RelationType> relationTypes = dbService.getRelationTypes(serverTicket).stream()
-                .map(cz.cuni.mff.ufal.textan.server.models.RelationType::toCommonsRelationType)
-                .collect(Collectors.toList());
-
         final GetRelationTypesResponse response = new GetRelationTypesResponse();
-        response.getRelationTypes().addAll(relationTypes);
+        List<RelationType> relationTypes = dbService.getRelationTypes(serverTicket);
+        for (RelationType relationType : relationTypes) {
+            response.getRelationTypes().add(relationType.toCommonsRelationType());
+        }
 
         return response;
     }
@@ -195,10 +190,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        Graph graph = graphService.getGraph(getGraphById.getObjectId(), getGraphById.getDistance(), serverTicket).toCommonsGraph();
-
         GetGraphByIdResponse getGraphByIdResponse = new GetGraphByIdResponse();
-        getGraphByIdResponse.setGraph(graph);
+        Graph graph = graphService.getGraph(getGraphById.getObjectId(), getGraphById.getDistance(), serverTicket);
+        getGraphByIdResponse.setGraph(graph.toCommonsGraph());
 
         return getGraphByIdResponse;
     }
@@ -215,10 +209,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        Graph graph = graphService.getRelatedObjects(getRelatedObjectsById.getObjectId(), serverTicket).toCommonsGraph();
-
         GetRelatedObjectsByIdResponse getRelatedObjectsByIdResponse = new GetRelatedObjectsByIdResponse();
-        getRelatedObjectsByIdResponse.setGraph(graph);
+        Graph graph = graphService.getRelatedObjects(getRelatedObjectsById.getObjectId(), serverTicket);
+        getRelatedObjectsByIdResponse.setGraph(graph.toCommonsGraph());
 
         return getRelatedObjectsByIdResponse;
     }
@@ -253,9 +246,14 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        boolean result;
         try {
-            result = dbService.splitObject(splitObject.getObjectId(), serverTicket);
+            boolean result = dbService.splitObject(splitObject.getObjectId(), serverTicket);
+
+            SplitObjectResponse response = new SplitObjectResponse();
+            response.setResult(result);
+
+            return response;
+
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
@@ -263,11 +261,6 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
             throw new IdNotFoundException(e.getMessage(),exceptionBody);
         }
-
-        SplitObjectResponse splitObjectResponse = new SplitObjectResponse();
-        splitObjectResponse.setResult(result);
-
-        return splitObjectResponse;
     }
 
     @Override
@@ -282,10 +275,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        Graph graph = graphService.getPath(getPathById.getStartObjectId(), getPathById.getTargetObjectId(), serverTicket).toCommonsGraph();
-
         GetPathByIdResponse getPathByIdResponse = new GetPathByIdResponse();
-        getPathByIdResponse.setGraph(graph);
+        Graph graph = graphService.getPath(getPathById.getStartObjectId(), getPathById.getTargetObjectId(), serverTicket);
+        getPathByIdResponse.setGraph(graph.toCommonsGraph());
 
         return getPathByIdResponse;
     }
@@ -301,12 +293,11 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        List<Document> documents = dbService.getDocuments(serverTicket).stream()
-                .map(cz.cuni.mff.ufal.textan.server.models.Document::toCommonsDocument)
-                .collect(Collectors.toList());
-
-        GetDocumentsResponse getDocumentsResponse = new GetDocumentsResponse();
-        getDocumentsResponse.getDocuments().addAll(documents);
+        GetDocumentsResponse response = new GetDocumentsResponse();
+        List<Document> documents = dbService.getDocuments(serverTicket);
+        for (Document document : documents) {
+            response.getDocuments().add(document.toCommonsDocument());
+        }
 
         return new GetDocumentsResponse();
     }
@@ -323,14 +314,13 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        List<Relation> relations = dbService.getRelations(getRelationsByTypeId.getRelationTypeId(), serverTicket).stream()
-                .map(cz.cuni.mff.ufal.textan.server.models.Relation::toCommonsRelation)
-                .collect(Collectors.toList());
+        GetRelationsByTypeIdResponse response = new GetRelationsByTypeIdResponse();
+        List<Relation> relations = dbService.getRelations(getRelationsByTypeId.getRelationTypeId(), serverTicket);
+        for (Relation relation : relations) {
+            response.getRelations().add(relation.toCommonsRelation());
+        }
 
-        GetRelationsByTypeIdResponse getRelationsByTypeIdResponse = new GetRelationsByTypeIdResponse();
-        getRelationsByTypeIdResponse.getRelations().addAll(relations);
-
-        return getRelationsByTypeIdResponse;
+        return response;
     }
 
     @Override
@@ -345,14 +335,13 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        List<Object> objects = dbService.getObjects(getObjectsByTypeId.getObjectTypeId(), serverTicket).stream()
-                .map(cz.cuni.mff.ufal.textan.server.models.Object::toCommonsObject)
-                .collect(Collectors.toList());
+        GetObjectsByTypeIdResponse response = new GetObjectsByTypeIdResponse();
+        List<Object> objects = dbService.getObjects(getObjectsByTypeId.getObjectTypeId(), serverTicket);
+        for (Object object : objects) {
+            response.getObjects().add(object.toCommonsObject());
+        }
 
-        GetObjectsByTypeIdResponse getObjectsByTypeIdResponse = new GetObjectsByTypeIdResponse();
-        getObjectsByTypeIdResponse.getObjects().addAll(objects);
-
-        return getObjectsByTypeIdResponse;
+        return response;
     }
 
     @Override
@@ -367,10 +356,13 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-
-        Object object;
         try {
-            object = dbService.getObject(getObject.getObjectId(), serverTicket).toCommonsObject();
+            GetObjectResponse response = new GetObjectResponse();
+            Object object = dbService.getObject(getObject.getObjectId(), serverTicket);
+            response.setObject(object.toCommonsObject());
+
+            return response;
+
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
                 cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
                 exceptionBody.setFieldName(e.getFieldName());
@@ -378,11 +370,6 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
                 throw new IdNotFoundException(e.getMessage(),exceptionBody);
         }
-
-        GetObjectResponse getObjectResponse = new GetObjectResponse();
-        getObjectResponse.setObject(object);
-
-        return getObjectResponse;
     }
 
     @Override
@@ -396,9 +383,13 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        long objectId;
         try {
-            objectId = dbService.mergeObjects(mergeObjects.getObject1Id(), mergeObjects.getObject2Id(), serverTicket);
+            MergeObjectsResponse response = new MergeObjectsResponse();
+            long objectId = dbService.mergeObjects(mergeObjects.getObject1Id(), mergeObjects.getObject2Id(), serverTicket);
+            response.setObjectId(objectId);
+
+            return response;
+
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
@@ -406,10 +397,5 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
             throw new IdNotFoundException(e.getMessage(),exceptionBody);
         }
-
-        MergeObjectsResponse mergeObjectsResponse = new MergeObjectsResponse();
-        mergeObjectsResponse.setObjectId(objectId);
-
-        return mergeObjectsResponse;
     }
 }
