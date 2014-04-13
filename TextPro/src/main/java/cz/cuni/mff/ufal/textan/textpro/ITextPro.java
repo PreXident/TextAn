@@ -4,6 +4,7 @@ package cz.cuni.mff.ufal.textan.textpro;
 
 import java.util.List;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
+import java.util.Map;
 
 /*
  * This is interface version 0
@@ -20,10 +21,6 @@ public interface ITextPro {
     public List<Entity> recognizedEntity(String document);
     
     public List<Entity> SimpleRanking(String TestDir, String DataDir);
-    // A new initialization for creating (syncronized ...)
     
-    
-    // Ranking objects 
-    //public List<Objects> rankObjects(Objects obj);
-    
+    public Map<Entity, Map<Object, Double>> DoubleRanking();
 }

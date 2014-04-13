@@ -2,25 +2,26 @@
  * The main ranking, written in March 29, 2014
  */
 package cz.cuni.mff.ufal.textan.textpro.rank;
-
+import cz.cuni.mff.ufal.textan.textpro.TextPro;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import cz.cuni.mff.ufal.textan.textpro.data.DBObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Tamhd
  */
-public class DoubleRank {
+public class DoubleRank{
     // The input document : Petr was born 27.03.2014 at Malastranska. He and his friend David.
     public String inputText;
     
     // The input list of entity
-    public ArrayList<Entity> inputEntityList;
+    public List<Entity> inputEntityList;
     
     // The list of objects in database
-    public ArrayList<DBObject> database;
+    public List<DBObject> database;
     
     /*
      * Blank Constructor
@@ -79,7 +80,7 @@ public class DoubleRank {
     public ArrayList<Object> FindAllObjects(){
         ArrayList<Object> result = new ArrayList<Object>();
         for (int i = 0; i < database.size(); i ++) {
-            if(CheckObjectInText(database.get(i), this.inputEntityList)) {
+            if(CheckObjectInText(database.get(i), (ArrayList<Entity>) this.inputEntityList)) {
                 result.add(database.get(i));
             }
         }

@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple example of an implementation of the ITextPro interface as a Spring bean.
@@ -85,5 +86,14 @@ public class TextPro implements ITextPro {
     @Override
     public List<Entity> SimpleRanking(String TestDir, String DataDir) {
         throw new UnsupportedOperationException("Not implemented yet");
+    }
+    
+    /**
+     *
+     * @return the result of DoubleRank
+     */
+    public Map<Entity, Map<Object, Double>> DoubleRanking(){
+        throw new UnsupportedOperationException("Not implemented yet");
+        /// waiting for the double rank
     }
 }

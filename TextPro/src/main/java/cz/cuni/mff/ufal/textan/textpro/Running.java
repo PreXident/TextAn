@@ -5,6 +5,7 @@ package cz.cuni.mff.ufal.textan.textpro;
 import java.util.List;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Running implements ITextPro{
     
@@ -36,5 +37,10 @@ public class Running implements ITextPro{
         String doc = "This is not a test actually";
         List<Entity> ls = ner.recognizedEntity(doc);
         System.out.print(ls.get(0).getOffset());
+    }
+
+    @Override
+    public Map<Entity, Map<Object, Double>> DoubleRanking() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
