@@ -49,7 +49,7 @@ public class GraphService {
         return getGraph(objectId, 1);
     }
 
-    private Graph getGraph(long objectId, int distance) {
+    private Graph getGraph(long objectId, int distance) throws IdNotFoundException {
 
         //TODO implement properly
 
@@ -57,6 +57,10 @@ public class GraphService {
         List<Relation> edges = new ArrayList<Relation>();
 
         cz.cuni.mff.ufal.textan.data.graph.Graph dataGraph = graphFactory.getGraphFromObject(objectId, distance);
+
+        if (dataGraph.getNodes().isEmpty()) {
+            throw new IdNotFoundException("objectId", objectId);
+        }
 
         for (Node node : dataGraph.getNodes()) {
 
