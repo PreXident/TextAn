@@ -6,6 +6,7 @@
 
 package cz.cuni.mff.ufal.textan.data.graph;
 
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import org.hibernate.Session;
@@ -26,6 +27,9 @@ import java.util.Set;
 @Transactional
 public class GraphFactory {
 
+    @Autowired
+    IObjectTableDAO objectTableDAO;
+    
     SessionFactory sessionFactory;
 
     /**
@@ -53,6 +57,23 @@ public class GraphFactory {
     public Graph getGraphFromObject(long objectId, int depth) {
         return getGraphFromObject(objectId, depth, new HashSet<Node>());
     }
+
+    /**
+     * Creates a graph with an object in the "center"
+     * You can specify how deep it will search more objects
+     * 
+     * @param obj object in the center of the graph
+     * @param depth How deep should it search. 
+     *              0 = the same as 1
+     *              1 = returns neighbors of this node (nodes in a relationship)
+     *              2 = same as 1 but also neighbors of neighbors are added
+     *              3 = 2 + their neighbors
+     * @return desired graph
+     */
+    public Graph getGraphFromObject(ObjectTable obj, int depth) {
+        return getGraphFromObject(obj.getId(), depth);
+    }
+
     
     private Graph getGraphFromObject(long objectId, int depth, Set<Node> passedNodes) {
         Graph result = new Graph();
@@ -69,10 +90,17 @@ public class GraphFactory {
                         + "     left join inRel.relation rel"
                         + "     left join rel.objectsInRelation inRel2"
                         + "     left join inRel2.object obj2"
-                        + " where obj.id = :pId and obj2.id != obj.id")
+                
+                        + " where obj.id = :pId and obj2.id != obj.id"
+                  )
                 .setParameter("pId", objectId)
                 .list();
         // s.close();
+        
+        if (res.isEmpty()) {
+            return new Graph().add(new ObjectNode(objectTableDAO.find(objectId)));
+        }
+        
         for (int i = 0; i < res.size(); i++) {
             List row = (List)res.get(i);
             ObjectNode objectNode = new ObjectNode((ObjectTable)row.get(0));
@@ -105,5 +133,7 @@ public class GraphFactory {
         }
         return result;
     }
+
+
   
 }
