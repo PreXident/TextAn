@@ -87,7 +87,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
 
-            throw new IdNotFoundException(e.getMessage(),exceptionBody);
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
         }
     }
 
@@ -150,11 +150,11 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             return getDocumentByIdResponse;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
-                cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-                exceptionBody.setFieldName(e.getFieldName());
-                exceptionBody.setFieldValue(e.getFieldValue());
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
 
-                throw new IdNotFoundException(e.getMessage(),exceptionBody);
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
         }
     }
 
@@ -190,11 +190,19 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        GetGraphByIdResponse getGraphByIdResponse = new GetGraphByIdResponse();
-        Graph graph = graphService.getGraph(getGraphById.getObjectId(), getGraphById.getDistance(), serverTicket);
-        getGraphByIdResponse.setGraph(graph.toCommonsGraph());
+        try {
+            GetGraphByIdResponse getGraphByIdResponse = new GetGraphByIdResponse();
+            Graph graph = graphService.getGraph(getGraphById.getObjectId(), getGraphById.getDistance(), serverTicket);
+            getGraphByIdResponse.setGraph(graph.toCommonsGraph());
 
-        return getGraphByIdResponse;
+            return getGraphByIdResponse;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
     }
 
     @Override
@@ -208,12 +216,19 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         LOG.debug("Executing operation getRelatedObjectsById: {} {}", getRelatedObjectsById, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
+        try {
+            GetRelatedObjectsByIdResponse getRelatedObjectsByIdResponse = new GetRelatedObjectsByIdResponse();
+            Graph graph = graphService.getRelatedObjects(getRelatedObjectsById.getObjectId(), serverTicket);
+            getRelatedObjectsByIdResponse.setGraph(graph.toCommonsGraph());
 
-        GetRelatedObjectsByIdResponse getRelatedObjectsByIdResponse = new GetRelatedObjectsByIdResponse();
-        Graph graph = graphService.getRelatedObjects(getRelatedObjectsById.getObjectId(), serverTicket);
-        getRelatedObjectsByIdResponse.setGraph(graph.toCommonsGraph());
+            return getRelatedObjectsByIdResponse;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
 
-        return getRelatedObjectsByIdResponse;
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
     }
 
     @Override
@@ -240,7 +255,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "splitObject", name = "splitObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             SplitObject splitObject,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
-            Ticket ticket) throws IdNotFoundException{
+            Ticket ticket) throws IdNotFoundException {
 
         LOG.debug("Executing operation splitObject: {} {}", splitObject, ticket);
 
@@ -259,7 +274,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
 
-            throw new IdNotFoundException(e.getMessage(),exceptionBody);
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
         }
     }
 
@@ -275,11 +290,19 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        GetPathByIdResponse getPathByIdResponse = new GetPathByIdResponse();
-        Graph graph = graphService.getPath(getPathById.getStartObjectId(), getPathById.getTargetObjectId(), serverTicket);
-        getPathByIdResponse.setGraph(graph.toCommonsGraph());
+        try {
+            GetPathByIdResponse getPathByIdResponse = new GetPathByIdResponse();
+            Graph graph = graphService.getPath(getPathById.getStartObjectId(), getPathById.getTargetObjectId(), serverTicket);
+            getPathByIdResponse.setGraph(graph.toCommonsGraph());
 
-        return getPathByIdResponse;
+            return getPathByIdResponse;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
     }
 
     @Override
@@ -364,11 +387,11 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
-                cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-                exceptionBody.setFieldName(e.getFieldName());
-                exceptionBody.setFieldValue(e.getFieldValue());
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
 
-                throw new IdNotFoundException(e.getMessage(),exceptionBody);
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
         }
     }
 
@@ -377,7 +400,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "mergeObjects", name = "mergeObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             MergeObjects mergeObjects,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
-            Ticket ticket) throws IdNotFoundException{
+            Ticket ticket) throws IdNotFoundException {
 
         LOG.debug("Executing operation mergeObjects: {} {}", mergeObjects, ticket);
 
@@ -395,7 +418,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
 
-            throw new IdNotFoundException(e.getMessage(),exceptionBody);
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
         }
     }
 }

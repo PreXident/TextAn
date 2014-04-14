@@ -29,13 +29,17 @@ public class Graph {
     public cz.cuni.mff.ufal.textan.commons.models.Graph toCommonsGraph() {
         cz.cuni.mff.ufal.textan.commons.models.Graph commonsGraph = new cz.cuni.mff.ufal.textan.commons.models.Graph();
 
+        cz.cuni.mff.ufal.textan.commons.models.Graph.Nodes commonsNodes = new cz.cuni.mff.ufal.textan.commons.models.Graph.Nodes();
         for (Object node : nodes) {
-            commonsGraph.getNodes().getObjects().add(node.toCommonsObject());
+            commonsNodes.getObjects().add(node.toCommonsObject());
         }
+        commonsGraph.setNodes(commonsNodes);
 
+        cz.cuni.mff.ufal.textan.commons.models.Graph.Edges commonsEdges = new cz.cuni.mff.ufal.textan.commons.models.Graph.Edges();
         for (Relation edge : edges) {
-            commonsGraph.getEdges().getRelations().add(edge.toCommonsRelation());
+            commonsEdges.getRelations().add(edge.toCommonsRelation());
         }
+        commonsGraph.setEdges(commonsEdges);
 
         return commonsGraph;
     }

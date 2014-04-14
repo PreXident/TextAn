@@ -48,7 +48,15 @@ INSERT INTO `object`(`id_object`,`id_object_type`,`data`) VALUES (5, 4, "");
 
 INSERT INTO `object`(`id_object`,`id_object_type`,`data`) VALUES (6, 5, ""); 
 	INSERT INTO `alias`(`id_alias`,`id_object`,`alias`) VALUES (9, 6, "baseballovou pálkou");
-		INSERT INTO `aliasoccurrence`(`id_alias_occurence`,`id_alias`,`id_document`,`position`) VALUES(9, 9, 1, 204)
+		INSERT INTO `aliasoccurrence`(`id_alias_occurence`,`id_alias`,`id_document`,`position`) VALUES(9, 9, 1, 204);
+
+INSERT INTO `relation`(`id_relation`,`id_relation_type`) VALUES (1, 1);
+	INSERT INTO `relationoccurrence`(`id_relation_occurence`,`id_relation`,`id_document`,`position`,`anchor`) VALUES (1, 1, 1, 49, "narozen");
+
+	INSERT INTO `isinrelation`(`id_is_in_relation`, `id_relation`, `id_object`,`order_in_relation`) VALUES (1, 1, 1, 0);
+	INSERT INTO `isinrelation`(`id_is_in_relation`, `id_relation`, `id_object`,`order_in_relation`) VALUES (2, 1, 2, 0);
+
+
 
 -- todo: finish
 
