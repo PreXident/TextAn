@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Configuration file can be in Groovy! -->
+
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d [%thread] %-5level %X{execution} %X{dpuInstance} %logger{30} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>TextAn.log</file>
+
+        <encoder>
+            <pattern>%d [%thread] %-5level exec:%X{execution} dpu:%X{dpuInstance} %logger{30} - %msg%n</pattern>
+        </encoder>
+    </appender>-->
+
+    <logger name="org.hibernate.SQL">	
+        <level value="DEBUG" />	
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <logger name="org.springframework" level="ERROR" />
+
+    <!--
+    <root level="ALL">
+        <appender-ref ref="STDOUT" />
+       
+    </root>
+    -->
+
+</configuration>
