@@ -42,6 +42,17 @@ public class Graph {
         return edges;
     }
  
+    Graph add(Node node) {
+        nodes.add(node);
+        return this;
+    } 
+
+    Graph add(Edge edge) {
+        edges.add(edge);
+        return this;
+    } 
+
+    
     /**
      *
      * @return
