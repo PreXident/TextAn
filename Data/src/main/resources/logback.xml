@@ -23,6 +23,10 @@
         <appender-ref ref="STDOUT" />
     </logger>
 
+    <logger name="org.hibernate.type">	
+        <level value="TRACE" />	
+        <appender-ref ref="STDOUT" />
+    </logger>
     <logger name="org.springframework" level="ERROR" />
 
     <!--
