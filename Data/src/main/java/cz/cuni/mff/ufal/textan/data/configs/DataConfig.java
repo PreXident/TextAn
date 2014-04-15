@@ -29,7 +29,8 @@ import java.util.Properties;
  * @author Petr Fanta
  */
 @Configuration
-@PropertySource("classpath:data.properties")
+@PropertySource("classpath:data-default.properties")
+@PropertySource(value = "file:./data.properties", ignoreResourceNotFound = true)
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"cz.cuni.mff.ufal.textan.data.repositories.dao"})
 public class DataConfig {

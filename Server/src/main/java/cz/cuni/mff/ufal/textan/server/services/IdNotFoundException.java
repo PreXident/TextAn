@@ -6,6 +6,7 @@ package cz.cuni.mff.ufal.textan.server.services;
  */
 public class IdNotFoundException extends Exception {
 
+    private static final long serialVersionUID = 4029317836826316856L;
     private final String fieldName;
     private final long fieldValue;
 
@@ -17,10 +18,7 @@ public class IdNotFoundException extends Exception {
      */
     public IdNotFoundException(String fieldName, long fieldValue) {
         super(
-                new StringBuilder()
-                        .append("The identifier '").append(fieldName)
-                        .append("' with value ").append(fieldValue).append(" not found.")
-                        .toString()
+                "The identifier '" + fieldName + "' with value " + fieldValue + " not found."
         );
 
         this.fieldName = fieldName;

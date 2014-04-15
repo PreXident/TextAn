@@ -15,34 +15,11 @@ import org.springframework.core.env.Environment;
  * @author Petr Fanta
  */
 @Configuration
-@PropertySource("classpath:server.properties")
+@PropertySource("classpath:server-default.properties")
+@PropertySource(value = "file:./server.properties", ignoreResourceNotFound = true)
 @Import(DataConfig.class)
 @ComponentScan("cz.cuni.mff.ufal.textan.server.services")
 public class AppConfig {
-
-    //TODO: move default values into property file and enable user settings!
-
-    /**
-     * The default maximum number of threads in the Jetty thread pool.
-     */
-    public static final int DEFAULT_THREAD_PULL_MAX_THREADS = 200;
-    /**
-     * The default minimum number of threads in the Jetty thread pool.
-     */
-    public static final int DEFAULT_THREAD_PULL_THREADS = 8;
-    /**
-     * The default maximum thread idle time in the Jetty thread pool.
-     */
-    public static final int DEFAULT_THREAD_PULL_IDLE_TIMEOUT = 60000;
-
-    /**
-     * The default port number of the Socket Address
-     */
-    public static final int DEFAULT_CONNECTOR_PORT = 9100;
-    /**
-     * The default hostname of the Socket Address.
-     */
-    public static final String DEFAULT_CONNECTOR_HOST = "0.0.0.0";
 
     @Autowired
     private Environment serverProperties;
@@ -61,16 +38,16 @@ public class AppConfig {
 
         Server server = new Server(
                 new QueuedThreadPool(
-                        serverProperties.getProperty("server.threadPool.minThreads", int.class, DEFAULT_THREAD_PULL_MAX_THREADS),
-                        serverProperties.getProperty("server.threadPool.maxThreads", int.class, DEFAULT_THREAD_PULL_THREADS),
-                        serverProperties.getProperty("server.threadPool.idleTimeout", int.class, DEFAULT_THREAD_PULL_IDLE_TIMEOUT)
+                        serverProperties.getProperty("server.threadPool.minThreads", int.class),
+                        serverProperties.getProperty("server.threadPool.maxThreads", int.class),
+                        serverProperties.getProperty("server.threadPool.idleTimeout", int.class)
                 )
         );
 
         //TODO: what about SSL connector?
         ServerConnector connector = new ServerConnector(server);
-        connector.setPort(serverProperties.getProperty("server.connector.port", int.class, DEFAULT_CONNECTOR_PORT));
-        connector.setHost(serverProperties.getProperty("server.connector.host", String.class, DEFAULT_CONNECTOR_HOST));
+        connector.setPort(serverProperties.getProperty("server.connector.port", int.class));
+        connector.setHost(serverProperties.getProperty("server.connector.host", String.class));
 
         server.setConnectors(new Connector[]{connector});
 
