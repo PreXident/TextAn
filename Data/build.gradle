@@ -1,5 +1,6 @@
 apply plugin: 'java'
 
+[compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
 sourceCompatibility = '1.8'
 
 repositories {

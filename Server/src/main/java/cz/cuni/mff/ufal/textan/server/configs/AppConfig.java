@@ -77,15 +77,4 @@ public class AppConfig {
         return server;
     }
 
-
-//    /**
-//     * Creates direct data access service.
-//     *
-//     * @return the direct data access service bean
-//     */
-//    @Bean
-//    public DirectDataAccessService directDataAccessService() {
-//        return new DirectDataAccessService();
-//    }
-
 }

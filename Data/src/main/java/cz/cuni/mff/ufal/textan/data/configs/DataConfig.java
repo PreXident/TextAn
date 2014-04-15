@@ -123,6 +123,7 @@ public class DataConfig {
      *
      * @return the translated properties
      */
+    @SuppressWarnings("serial")
     private Properties hibernateProperties() {
         return new Properties() {
             {

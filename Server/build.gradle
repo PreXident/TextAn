@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
+[compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
 sourceCompatibility = '1.8'
 defaultTasks 'run'
 

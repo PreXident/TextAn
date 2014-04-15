@@ -74,7 +74,7 @@ public class GraphFactory {
         return getGraphFromObject(obj.getId(), depth);
     }
 
-    
+    @SuppressWarnings({"rawtypes"})
     private Graph getGraphFromObject(long objectId, int depth, Set<Node> passedNodes) {
         Graph result = new Graph();
         

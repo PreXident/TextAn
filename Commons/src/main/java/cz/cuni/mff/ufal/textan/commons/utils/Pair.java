@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.commons.utils;
 
 //this class can be serialized
+
 import java.io.Serializable;
 
 /**
@@ -9,6 +10,8 @@ import java.io.Serializable;
  * @param <Second> type of the second object of the pair
  */
 public class Pair<First, Second> implements Cloneable, Serializable {
+
+    private static final long serialVersionUID = -1784712946550240078L;
 
     /** First encapsulated object */
     private final First first;
@@ -68,7 +71,7 @@ public class Pair<First, Second> implements Cloneable, Serializable {
         } catch (NoSuchMethodException e) {
             throw new UnsupportedOperationException("Not both of the encapsulated objects are Cloneable!", e);
         } catch (Exception e) {
-            throw new UnsupportedOperationException("An error occured!", e);
+            throw new UnsupportedOperationException("An error occurred!", e);
         }
     }
 
@@ -87,6 +90,7 @@ public class Pair<First, Second> implements Cloneable, Serializable {
     }
 
     @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public boolean equals(Object obj) {
         if (!(obj instanceof Pair)) {
             return false;

@@ -9,16 +9,13 @@ package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
-import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
-import cz.cuni.mff.ufal.textan.data.tables.AliasTable;
-import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
-import java.util.List;
+import cz.cuni.mff.ufal.textan.data.tables.*;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  *
@@ -36,6 +33,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByObjectType(Long objectTypeId) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_OBJECT_TYPE_ID), "objType", JoinType.INNER_JOIN)
@@ -49,6 +47,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByAliasEqualTo(String alias) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
@@ -57,6 +56,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByAliasSubstring(String aliasSubstring) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
@@ -66,6 +66,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByDocumentOccurrence(Long documentId) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
