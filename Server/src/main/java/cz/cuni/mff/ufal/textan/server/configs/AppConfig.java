@@ -38,8 +38,8 @@ public class AppConfig {
 
         Server server = new Server(
                 new QueuedThreadPool(
-                        serverProperties.getProperty("server.threadPool.minThreads", int.class),
                         serverProperties.getProperty("server.threadPool.maxThreads", int.class),
+                        serverProperties.getProperty("server.threadPool.minThreads", int.class),
                         serverProperties.getProperty("server.threadPool.idleTimeout", int.class)
                 )
         );
