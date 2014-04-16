@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
+import cz.cuni.mff.ufal.textan.nametagintegration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class NamedEntityRecognizerService {
      */
     public List<Entity> getEntities(String text, EditingTicket editingTicket) {
         //TODO: call nametag
-
+        NametagIntegration.ProcessDocument(text);
         return new ArrayList<>();
     }
 

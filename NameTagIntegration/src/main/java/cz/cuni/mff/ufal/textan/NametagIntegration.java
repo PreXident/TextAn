@@ -1,7 +1,6 @@
-package cz.cuni.mff.ufal.textan;
+package cz.cuni.mff.ufal.textan.nametagintegration;
 
 import cz.cuni.mff.ufal.nametag.*;
-import cz.cuni.mff.ufal.textan.*;
 import cz.cuni.mff.ufal.textan.commons.models.*;
 import cz.cuni.mff.ufal.textan.commons.models.Object;
 
@@ -12,13 +11,13 @@ import java.util.Stack;
 /**
  * Created by Vlcak on 29.3.14.
  */
-public class NametagIntegration {
+public static class NametagIntegration {
     public static String encodeEntities(String text) {
         return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
     }
 
 
-    public DocumentWithEntities processDocument(Document document) {
+    public static DocumentWithEntities ProcessDocument(Document document) {
         Forms forms = new Forms();
         TokenRanges tokens = new TokenRanges();
         NamedEntities entities = new NamedEntities();
