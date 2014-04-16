@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.nametagintegration;
 import cz.cuni.mff.ufal.nametag.*;
 import cz.cuni.mff.ufal.textan.commons.models.*;
 import cz.cuni.mff.ufal.textan.commons.models.Object;
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 
 import javax.jws.WebParam;
 import java.util.Scanner;
@@ -12,18 +13,21 @@ import java.util.Stack;
  * Created by Vlcak on 29.3.14.
  */
 public static class NametagIntegration {
-    public static String encodeEntities(String text) {
+    private static String encodeEntities(String text) {
         return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
     }
 
-
     public static DocumentWithEntities ProcessDocument(Document document) {
+        return ProcessDocument(document.getText());
+    }
+
+    public static DocumentWithEntities ProcessDocument(String text) {
         Forms forms = new Forms();
         TokenRanges tokens = new TokenRanges();
         NamedEntities entities = new NamedEntities();
-        Scanner reader = new Scanner(document.getText());
+        Scanner reader = new Scanner(text);
         Stack<Integer> openEntities = new Stack<Integer>();
-        Ner ner = Ner.load("");
+        Ner ner = Ner.load("models/czech-cnec2.0-140304.ner");
         Tokenizer tokenizer = ner.newTokenizer();
         DocumentWithEntities documentWithEntities = new DocumentWithEntities(document.getText());
         boolean not_eof = true;
