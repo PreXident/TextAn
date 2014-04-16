@@ -1,0 +1,39 @@
+All here!
+
+Pre-alpha is ready!
+
+Adam:
+- nothing important since Sunday
+
+Peter:
+- service layer with for example direct data access service for connecting to db, graph service, nametag and textpro services etc.
+- got the pre-alpha version together
+
+Kuba:
+- finished the recognize part for textan
+- looking how call training part from java, probably call the binary with tagged file as a parameter
+
+Venca:
+- fixing the graph provider
+- experiments with logging
+
+Tam:
+- textpro should work and can interact with other interfaces
+- improving rating and maybe machine learning
+
+db edit by new reports
+query the webservice by specific object type and relation types to get the graph
+
+HWK
+- Adam - add feature for adding objects
+  - two columns in popup menu, one with new objects and one with objects from db
+  - display only a few first aliases and other displayed in hover tooltip
+  - tooltip display immediately
+  - oznacovani vztahu: umoznit i nejdriv vybrat drag and drop dolu na pracovni stolecek a potom az oznacit kotvu relaci
+- Kuba - look at tokenizer binding
+- Venca - graph fix, no adding objects for relations with multiple objects
+  - break early if there are no longer any objects to visit
+- Peter - write some issues to Venca
+
+
+Next meeting as usual.
