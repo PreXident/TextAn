@@ -1,11 +1,9 @@
-package cz.cuni.mff.ufal.textan.nametagintegration;
+package cz.cuni.mff.ufal.textan.nametagIntegration;
 
 import cz.cuni.mff.ufal.nametag.*;
 import cz.cuni.mff.ufal.textan.commons.models.*;
 import cz.cuni.mff.ufal.textan.commons.models.Object;
-import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 
-import javax.jws.WebParam;
 import java.util.Scanner;
 import java.util.Stack;
 
