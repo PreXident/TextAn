@@ -1,0 +1,3 @@
+rootProject.name = 'TextAn'
+include ':Commons'
+include ':Data'
