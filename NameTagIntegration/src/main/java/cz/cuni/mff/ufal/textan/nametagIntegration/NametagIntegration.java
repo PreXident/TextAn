@@ -4,30 +4,32 @@ import cz.cuni.mff.ufal.nametag.*;
 import cz.cuni.mff.ufal.textan.commons.models.*;
 import cz.cuni.mff.ufal.textan.commons.models.Object;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
 /**
  * Created by Vlcak on 29.3.14.
  */
-public static class NametagIntegration {
+public class NameTagIntegration {
     private static String encodeEntities(String text) {
         return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
     }
 
-    public static DocumentWithEntities ProcessDocument(Document document) {
+    public static List<Entity> ProcessDocument(Document document) {
         return ProcessDocument(document.getText());
     }
 
-    public static DocumentWithEntities ProcessDocument(String text) {
+    public static List<Entity> ProcessDocument(String input) {
         Forms forms = new Forms();
         TokenRanges tokens = new TokenRanges();
         NamedEntities entities = new NamedEntities();
-        Scanner reader = new Scanner(text);
+        Scanner reader = new Scanner(input);
         Stack<Integer> openEntities = new Stack<Integer>();
         Ner ner = Ner.load("models/czech-cnec2.0-140304.ner");
         Tokenizer tokenizer = ner.newTokenizer();
-        DocumentWithEntities documentWithEntities = new DocumentWithEntities(document.getText());
+        List<Entity> entitiesList = new ArrayList<Entity>();
         boolean not_eof = true;
         while (not_eof) {
             StringBuilder textBuilder = new StringBuilder();
@@ -51,7 +53,11 @@ public static class NametagIntegration {
                     NamedEntity entity = entities.get(i);
                     int entity_start = (int) tokens.get((int) entity.getStart()).getStart();
                     int entity_end = (int) (tokens.get((int) (entity.getStart() + entity.getLength() - 1)).getStart() + tokens.get((int) (entity.getStart() + entity.getLength() - 1)).getLength());
-                    documentWithEntities.AddEntity(new Entity("",entity_start,entity_end,0));
+                    Entity e = new Entity();
+                    e.setPosition(entity_start);
+                    e.setLength(entity_end - entity_start);
+                    e.setValue("");
+                    entitiesList.add(e);//"", entity_start,entity_end,0));
 
                     /*
                     // Close entities that end sooned than current entity
@@ -80,6 +86,6 @@ public static class NametagIntegration {
             // Write rest of the text (should be just spaces)
             if (unprinted < text.length()) System.out.print(encodeEntities(text.substring(unprinted)));
         }
-        return documentWithEntities;
+        return entitiesList;
     }
 }
