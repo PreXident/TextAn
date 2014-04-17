@@ -1,8 +1,8 @@
 package cz.cuni.mff.ufal.textan.nametagIntegration;
 
 import cz.cuni.mff.ufal.nametag.*;
-import cz.cuni.mff.ufal.textan.commons.models.*;
-import cz.cuni.mff.ufal.textan.commons.models.Object;
+import cz.cuni.mff.ufal.textan.server.models.Document;
+import cz.cuni.mff.ufal.textan.server.models.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +17,11 @@ public class NameTagIntegration {
         return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
     }
 
-    public static List<Entity> ProcessDocument(Document document) {
+    public List<Entity> ProcessDocument(Document document) {
         return ProcessDocument(document.getText());
     }
 
-    public static List<Entity> ProcessDocument(String input) {
+    public List<Entity> ProcessDocument(String input) {
         Forms forms = new Forms();
         TokenRanges tokens = new TokenRanges();
         NamedEntities entities = new NamedEntities();
@@ -53,11 +53,12 @@ public class NameTagIntegration {
                     NamedEntity entity = entities.get(i);
                     int entity_start = (int) tokens.get((int) entity.getStart()).getStart();
                     int entity_end = (int) (tokens.get((int) (entity.getStart() + entity.getLength() - 1)).getStart() + tokens.get((int) (entity.getStart() + entity.getLength() - 1)).getLength());
-                    Entity e = new Entity();
+                    Entity e = new Entity("",entity_start,entity_end - entity_start,0);
+                    /*
                     e.setPosition(entity_start);
                     e.setLength(entity_end - entity_start);
-                    e.setValue("");
-                    entitiesList.add(e);//"", entity_start,entity_end,0));
+                    e.setValue(""); */
+                    entitiesList.add(e);
 
                     /*
                     // Close entities that end sooned than current entity

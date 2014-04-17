@@ -1,4 +1,4 @@
 rootProject.name = 'TextAn.NametagIntegration'
 
-include ':Commons'
-project(':Commons').projectDir = new File('../Commons')
+include ':Server'
+project(':Server').projectDir = new File('../Server')

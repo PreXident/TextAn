@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Service
 public class NamedEntityRecognizerService {
-
+    private NameTagIntegration nameTagIntegration;
     private final IDocumentTableDAO documentTableDAO;
     //TODO add field with "nametag"
 
@@ -29,6 +29,7 @@ public class NamedEntityRecognizerService {
     @Autowired
     public NamedEntityRecognizerService(IDocumentTableDAO documentTableDAO) {
         this.documentTableDAO = documentTableDAO;
+        this.nameTagIntegration = new NameTagIntegration();
     }
 
     /**
@@ -41,7 +42,7 @@ public class NamedEntityRecognizerService {
     public List<Entity> getEntities(String text, EditingTicket editingTicket) {
         //TODO: call nametag
 
-        return NameTagIntegration.ProcessDocument(text);
+        return nameTagIntegration.ProcessDocument(text);
     }
 
     /**
@@ -59,6 +60,6 @@ public class NamedEntityRecognizerService {
             throw new IdNotFoundException("documentId", documentId);
         }
 
-        return NameTagIntegration.ProcessDocument(documentTable.getText());
+        return nameTagIntegration.ProcessDocument(documentTable.getText());
     }
 }
