@@ -1,14 +1,19 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.env.Environment;
-
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 /**
  * The root spring configuration.
@@ -20,6 +25,9 @@ import org.springframework.core.env.Environment;
 @Import(DataConfig.class)
 @ComponentScan("cz.cuni.mff.ufal.textan.server.services")
 public class AppConfig {
+
+    @Autowired
+    private AbstractApplicationContext context;
 
     @Autowired
     private Environment serverProperties;
@@ -50,6 +58,24 @@ public class AppConfig {
         connector.setHost(serverProperties.getProperty("server.connector.host", String.class));
 
         server.setConnectors(new Connector[]{connector});
+
+        ServletHolder servletHolder = new ServletHolder(new CXFServlet());
+
+        //Setup servlet handler
+        ServletContextHandler servletContextHandler = new ServletContextHandler();
+        servletContextHandler.setContextPath("/");
+        servletContextHandler.addServlet(servletHolder, "/soap/*");
+        servletContextHandler.setInitParameter("contextConfigLocation", WebAppConfig.class.getName());
+
+        //Create root spring's web application context for servlets
+        AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
+        webContext.setParent(context);
+        webContext.setServletContext(servletContextHandler.getServletContext());
+
+        //Register root context
+        servletContextHandler.addEventListener(new ContextLoaderListener(webContext));
+
+        server.setHandler(servletContextHandler);
 
         return server;
     }
