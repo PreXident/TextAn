@@ -19,6 +19,9 @@ import javafx.scene.text.TextFlow;
 import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 
 /**
  * Controls editing objects.
@@ -40,8 +43,8 @@ public class ReportObjectsController extends ReportWizardController {
     /** Context menu with object selection. */
     ContextMenu contextMenu;
 
-    /** ScrollPane's tooltip. */
-    Tooltip tooltip = new Tooltip("");
+    /** Texts' tooltip. */
+    final Tooltip tooltip = new Tooltip("");
 
     /** Index of selected entity. */
     int selectedEntity = 0;
@@ -120,22 +123,21 @@ public class ReportObjectsController extends ReportWizardController {
             }
             text.setOnMouseEntered((MouseEvent t) -> {
                 if (word.getEntity() != null) {
-                    scrollPane.setTooltip(tooltip);
-                    final String oldTip = scrollPane.getTooltip().getText();
                     final int entityIndex = word.getEntity().getIndex();
                     final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
                     if (obj != null) {
                         final String newTip = obj.toString();
-                        if (!newTip.equals(oldTip)) {
-                            scrollPane.getTooltip().setText(newTip);
-                        }
+                        tooltip.setText(newTip);
+                        Bounds bounds = text.getLayoutBounds();
+                        final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
+                        tooltip.show(text, p.getX(), p.getY());
                     }
                 } else {
-                    scrollPane.setTooltip(null);
+                    tooltip.hide();
                 }
             });
             text.setOnMouseExited((MouseEvent t) -> {
-                scrollPane.setTooltip(null);
+                tooltip.hide();
             });
             texts.add(text);
         }

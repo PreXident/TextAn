@@ -30,6 +30,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 
 /**
  * Controls editing the report relations.
@@ -89,7 +91,7 @@ public class ReportRelationsController extends ReportWizardController {
     @FXML
     TableColumn<RelationInfo, Object> objectColumn;
 
-    /** ScrollPane's tooltip. */
+    /** Texts's tooltip. */
     Tooltip tooltip = new Tooltip("");
 
     /** Index of the first selected {@link Text} node. */
@@ -219,22 +221,21 @@ public class ReportRelationsController extends ReportWizardController {
             }
             text.setOnMouseEntered((MouseEvent t) -> {
                 if (word.getEntity() != null) {
-                    scrollPane.setTooltip(tooltip);
-                    final String oldTip = scrollPane.getTooltip().getText();
                     final int entityIndex = word.getEntity().getIndex();
                     final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
                     if (obj != null) {
                         final String newTip = obj.toString();
-                        if (!newTip.equals(oldTip)) {
-                            scrollPane.getTooltip().setText(newTip);
-                        }
+                        tooltip.setText(newTip);
+                        Bounds bounds = text.getLayoutBounds();
+                        final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
+                        tooltip.show(text, p.getX(), p.getY());
                     }
                 } else {
-                    scrollPane.setTooltip(null);
+                    tooltip.hide();
                 }
             });
             text.setOnMouseExited((MouseEvent t) -> {
-                scrollPane.setTooltip(null);
+                tooltip.hide();
             });
             text.setOnMousePressed(e -> {
                 clearSelectedRelationBackground();
