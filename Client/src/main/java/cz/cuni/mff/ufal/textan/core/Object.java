@@ -90,7 +90,7 @@ public class Object {
 
     @Override
     public String toString() {
-        return id + ": " + String.join(",", aliases);
+        return id + ": " + String.join(", ", aliases);
     }
 
     /**
