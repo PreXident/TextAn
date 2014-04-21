@@ -9,7 +9,9 @@ package cz.cuni.mff.ufal.textan.data.test;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import cz.cuni.mff.ufal.textan.data.repositories.TableAction;
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
+import org.hibernate.StaleObjectStateException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,43 +33,45 @@ public class ConcurrencyTest {
 
     @Autowired
     Data data;
+    private DocumentTable objectType1;
     
     @Before
     public void setUp() {
         System.out.println("Setup:");
+        objectType1 = new DocumentTable("__[TEST]objecttype 1");
+        data.addRecord(objectType1);
+
     }
     
     @After
     public void tearDown() {
         System.out.println("\n\nTear down");
+        data.deleteRecord(objectType1);
     }
 
     
-    @Test
-    public void ConcurrencyRewriteJustRewrittenTest() {
+    @Test(expected = StaleObjectStateException.class)
+    public void DocumentRewriteJustRewrittenTest() {
         System.out.println("\n\nConcurrencyRewriteJustRewrittenTest");
-        ObjectTypeTable objectType1 = new ObjectTypeTable("__[TEST]objecttype 1");
-        data.addRecord(objectType1);
         final long id = objectType1.getId();
-        data.updateRecordById(ObjectTypeTable.class, id, new TableAction<ObjectTypeTable>() {
+        data.updateRecordById(DocumentTable.class, id, new TableAction<DocumentTable>() {
 
             @Override
-            public void action(ObjectTypeTable table) {
-                table.setName("__[TEST]objecttype 1 changed");
-                data.updateRecordById(ObjectTypeTable.class, id, new TableAction<ObjectTypeTable>() {
+            public void action(DocumentTable table) {
+                table.setText("__[TEST]objecttype 1 changed");
+                data.updateRecordById(DocumentTable.class, id, new TableAction<DocumentTable>() {
 
                     @Override
-                    public void action(ObjectTypeTable table) {
-                        table.setName("__[TEST]objecttype 1 changed snd time");
+                    public void action(DocumentTable table) {
+                        table.setText("__[TEST]objecttype 1 changed snd time");
                         System.out.println("commiting __[TEST]objecttype 1 changed snd time");
                     }
                 });
                 System.out.println("sommiting __[TEST]objecttype 1 changed");
             }
         });
-        ObjectTypeTable objectType2 = data.getRecordById(ObjectTypeTable.class, objectType1.getId());
+        DocumentTable objectType2 = data.getRecordById(DocumentTable.class, objectType1.getId());
         System.out.println("Changed object: " + objectType2);
-        data.deleteRecord(objectType1);
     }
     
     // TODO: Concurrency throws exception
