@@ -56,7 +56,7 @@ public class GraphFactory {
      * 
      * @param objectId Id of an object in the center of the graph
      * @param depth How deep should it search. 
-     *              0 = the same as 1
+     *              0 = returns only one object
      *              1 = returns neighbors of this node (nodes in a relationship)
      *              2 = same as 1 but also neighbors of neighbors are added
      *              3 = 2 + their neighbors
@@ -72,7 +72,7 @@ public class GraphFactory {
      * 
      * @param obj object in the center of the graph
      * @param depth How deep should it search. 
-     *              0 = the same as 1
+     *              0 = returns only one object
      *              1 = returns neighbors of this node (nodes in a relationship)
      *              2 = same as 1 but also neighbors of neighbors are added
      *              3 = 2 + their neighbors
@@ -84,6 +84,11 @@ public class GraphFactory {
 
     
     private Graph getGraphFromObject(long objectId, int depth, Set<Node> passedNodes) {
+        if (depth <= 0) {
+            return new Graph().add(new ObjectNode(objectTableDAO.find(objectId)));
+        }
+       
+        
         Graph result = new Graph();
         
         // TODO node to be done in the next wave
