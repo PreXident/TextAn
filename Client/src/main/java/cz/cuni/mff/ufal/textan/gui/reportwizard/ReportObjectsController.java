@@ -95,7 +95,9 @@ public class ReportObjectsController extends ReportWizardController {
                     for (Entry<Double, Object> candidate : candidates.entrySet()) {
                         final Object cand = candidate.getValue();
                         final double rating = candidate.getKey();
-                        final MenuItem mi = new MenuItem(rating + ": " + cand.toString());
+                        final String label = rating + ": " + cand.toString();
+                        final String shortLabel = shorter(label);
+                        final MenuItem mi = new MenuItem(shortLabel);
                         mi.setOnAction((ActionEvent t) -> {
                             pipeline.getReportEntities().get(entityIndex).setCandidate(cand);
                         });
@@ -105,7 +107,8 @@ public class ReportObjectsController extends ReportWizardController {
                     try {
                         List<Object> cands = pipeline.getClient().getObjectsListByTypeId(entityId);
                         for (final Object cand : cands) {
-                            final MenuItem mi = new MenuItem(cand.toString());
+                            final String shortLabel = shorter(cand.toString());
+                            final MenuItem mi = new MenuItem(shortLabel);
                             mi.setOnAction((ActionEvent t) -> {
                                 pipeline.getReportEntities().get(entityIndex).setCandidate(cand);
                             });
@@ -143,5 +146,11 @@ public class ReportObjectsController extends ReportWizardController {
         }
         textFlow.getChildren().clear();
         textFlow.getChildren().addAll(texts);
+    }
+
+    private String shorter(final String string) {
+        return string.length() > 35 ?
+                string.substring(0, 33) + "..."
+                : string;
     }
 }
