@@ -12,10 +12,12 @@ import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
  *
  * @author Václav Pernička
  */
-public class ObjectNode extends Node{
+public class ObjectNode extends Node {
+    public static final String UNKNOWN_OBJECT_NAME = "Unknown Object";
 
     public ObjectNode(ObjectTable obj) {
-        this(obj.getId(), obj.getData());
+        this(obj == null ? Node.UNKNOWN_NODE_ID : obj.getId(), 
+             obj == null ? UNKNOWN_OBJECT_NAME : obj.getData());
     }
 
     /**
