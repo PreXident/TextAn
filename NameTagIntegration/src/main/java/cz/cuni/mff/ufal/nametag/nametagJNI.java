@@ -66,7 +66,7 @@ public class nametagJNI {
   public final static native long Ner_newTokenizer(long jarg1, Ner jarg1_);
 
   static {
-    System.loadLibrary("nametag_java");
+    System.loadLibrary("lib/nametag_java");
   }
 
 }
