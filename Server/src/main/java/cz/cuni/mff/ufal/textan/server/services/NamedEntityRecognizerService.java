@@ -29,7 +29,7 @@ public class NamedEntityRecognizerService {
     @Autowired
     public NamedEntityRecognizerService(IDocumentTableDAO documentTableDAO) {
         this.documentTableDAO = documentTableDAO;
-        ner = Ner.load("models/czech-cnec2.0-140304.ner");
+        ner = Ner.load("../NameTagIntegration/models/czech-cnec2.0-140304.ner");
         tokenizer = ner.newTokenizer();
     }
 
@@ -110,10 +110,14 @@ public class NamedEntityRecognizerService {
                         openEntities.push(sortedEntities.get(e));
                     }
                     // pridat zjisteni id entity
-                    Entity ent = new Entity(text.substring(token_start, token_end), token_start, token_end, 0);
-                    entitiesList.add(ent);
+                    //Entity ent = new Entity(text.substring(token_start, token_end), token_start, token_end, 0);
+                    //entitiesList.add(ent);
 
                     while (!openEntities.empty() && (openEntities.peek().getStart() + openEntities.peek().getLength() - 1) == i) {
+                        NamedEntity ending = openEntities.peek();
+                        int entity_start = (int) tokens.get((int) (i - ending.getLength() + 1)).getStart();
+                        int entity_end = (int) (tokens.get(i).getStart() + tokens.get(i).getLength());
+                        entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end, 0));
                         openEntities.pop();
                     }
 
