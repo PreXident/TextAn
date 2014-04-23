@@ -9,12 +9,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Client side representation of {@link cz.cuni.mff.ufal.textan.commons.models.Graph}.
+ * Client side representation of
+ * {@link cz.cuni.mff.ufal.textan.commons.models.Graph}.
  */
 public class Graph {
 
     /** Graph nodes. */
-    private final Map<Integer, Object> nodes = new HashMap<>();
+    private final Map<Long, Object> nodes = new HashMap<>();
 
     /** Graph edges. */
     private final Set<Relation> edges = new HashSet<>();
@@ -44,7 +45,7 @@ public class Graph {
      * Returns graph nodes.
      * @return graph nodes
      */
-    public Map<Integer, Object> getNodes() {
+    public Map<Long, Object> getNodes() {
         return nodes;
     }
 

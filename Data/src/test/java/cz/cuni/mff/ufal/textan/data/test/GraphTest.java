@@ -10,7 +10,6 @@ import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.graph.Graph;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.graph.ObjectNode;
-import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import cz.cuni.mff.ufal.textan.data.tables.InRelationTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
@@ -33,7 +32,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
  * @author Václav Pernička
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {DataConfig.class}, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = {DataConfig.class, Data.class}, loader = AnnotationConfigContextLoader.class)
 public class GraphTest {
 
     @Autowired

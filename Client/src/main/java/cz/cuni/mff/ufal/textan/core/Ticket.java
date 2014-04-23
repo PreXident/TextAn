@@ -4,7 +4,8 @@ import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
 import java.util.Date;
 
 /**
- * Client representation of {@link cz.cuni.mff.ufal.textan.commons.models.EditingTicket}.
+ * Client representation of
+ * {@link cz.cuni.mff.ufal.textan.commons.models.EditingTicket}.
  */
 public class Ticket {
 

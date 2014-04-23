@@ -1,17 +1,12 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
+import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.SplitException;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
-import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder.SplitEntitiesException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
-import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,6 +18,13 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 
 /**
  * Controls editing entities.
@@ -106,7 +108,7 @@ public class ReportEntitiesController extends ReportWizardController {
         for (Word word: words) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
-                text.getStyleClass().add("ENTITY_" + word.getEntity().getId());
+                Utils.styleText(text, "ENTITY", word.getEntity().getId());
             }
             text.setOnMousePressed(e -> {
                 if (!text.getStyleClass().contains(SELECTED)) {
@@ -153,23 +155,23 @@ public class ReportEntitiesController extends ReportWizardController {
         textFlow.getChildren().addAll(texts);
         //
         final EventHandler<ActionEvent> eh = (ActionEvent t) -> {
-            final Integer ID = (Integer)((MenuItem) t.getSource()).getUserData();
+            //object id in userdata
+            final Long ID = (Long)((MenuItem) t.getSource()).getUserData();
             if (ID == null) {
                 for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
                     words.get(i).setEntity(null);
-                    texts.get(i).getStyleClass().clear();
+                    Utils.unstyleText(texts.get(i));
                 }
                 return;
             }
-            final int id = ID;
+            final long id = ID;
             final EntityBuilder e = new EntityBuilder(id);
             try {
-                Pair<Integer, Integer> bounds = e.add(words, firstSelectedIndex, lastSelectedIndex, i -> texts.get(i).getStyleClass().clear());
+                Pair<Integer, Integer> bounds = e.add(words, firstSelectedIndex, lastSelectedIndex, i -> Utils.unstyleText(texts.get(i)));
                 for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
-                    texts.get(i).getStyleClass().clear();
-                    texts.get(i).getStyleClass().add("ENTITY_" + id);
+                    Utils.styleText(texts.get(i), "ENTITY", id);
                 }
-            } catch (SplitEntitiesException ex) {
+            } catch (SplitException ex) {
                 callWithContentBackup(() -> {
                     createDialog()
                             .owner(getDialogOwner(root))
@@ -194,7 +196,7 @@ public class ReportEntitiesController extends ReportWizardController {
         for (ObjectType objType : pipeline.getClient().getObjectTypesList()) {
             final MenuItem mi = new MenuItem(objType.getName());
             mi.setOnAction(eh);
-            mi.setUserData(objType.getId());
+            mi.setUserData(objType.getId()); //object id to userdata
             contextMenu.getItems().add(mi);
         }
     }

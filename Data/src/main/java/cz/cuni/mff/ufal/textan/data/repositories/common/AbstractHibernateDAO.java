@@ -13,6 +13,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -82,6 +83,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
      * @param sessionFactory the session factory
      */
     @Autowired
+    @Required
     public final void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }

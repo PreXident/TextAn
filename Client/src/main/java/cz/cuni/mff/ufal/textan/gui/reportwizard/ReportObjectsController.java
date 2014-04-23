@@ -1,30 +1,24 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+
+import java.net.URL;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Controls editing objects.
@@ -59,8 +53,8 @@ public class ReportObjectsController extends ReportWizardController {
 
     @FXML
     private void next() {
-        for (Object obj : pipeline.getReportObjects()) {
-            if (obj == null) {
+        for (Entity ent : pipeline.getReportEntities()) {
+            if (ent.getCandidate() == null) {
                 callWithContentBackup(() ->
                     createDialog()
                             .owner(getDialogOwner(root))
@@ -70,7 +64,7 @@ public class ReportObjectsController extends ReportWizardController {
                 return;
             }
         }
-        pipeline.setReportObjects(pipeline.getReportObjects());
+        pipeline.setReportObjects(pipeline.getReportEntities());
     }
 
     @Override
@@ -87,9 +81,9 @@ public class ReportObjectsController extends ReportWizardController {
         for (final Word word: pipeline.getReportWords()) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
-                final int entityId = word.getEntity().getId();
+                final long entityId = word.getEntity().getId();
                 final int entityIndex = word.getEntity().getIndex();
-                text.getStyleClass().add("ENTITY_" + entityId);
+                Utils.styleText(text, "ENTITY", entityId);
 
                 ContextMenu cm = menus.get(word.getEntity());
                 if (cm == null) {

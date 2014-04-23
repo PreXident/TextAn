@@ -13,11 +13,12 @@ import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable;
-import java.util.List;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  *
@@ -35,6 +36,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<RelationTable> findAllByRelationType(Long relationTypeId) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_RELATION_TYPE_ID), "objType", JoinType.INNER_JOIN)
@@ -48,6 +50,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<RelationTable> findAllByAliasEqualTo(String alias) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
@@ -56,6 +59,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<RelationTable> findAllByAliasSubstring(String aliasSubstring) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
@@ -65,6 +69,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<RelationTable> findAllByDocumentOccurrence(Long documentId) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)

@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
+[compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
 sourceCompatibility = '1.8'
 defaultTasks 'run'
 
@@ -26,8 +27,8 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-web', version: springVersion
 
     //web services
-    compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: '2.7.7'
-    compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: '2.7.7'
+    compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: '2.7.10'
+    compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: '2.7.10'
 
     //logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
@@ -40,6 +41,70 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.+'
 }
 
+/*
+ * Apache shade plugin for Gradle -> Shadow plugin
+ * More on: https://github.com/johnrengelman/shadow
+ */
+apply plugin: 'shadow'
 
+import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
+import com.github.jengelman.gradle.plugins.shadow.transformers.XmlAppendingTransformer
 
+//add plugin dependency
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
+        //classpath 'org.apache.cxf:cxf-buildtools:2.2.12' //CFX transformers. TODO: find documentation!
+    }
+}
 
+//make standard jar task executable
+jar {
+    manifest {
+        attributes 'Main-Class': 'cz.cuni.mff.ufal.textan.server.AppEntry'
+    }
+}
+
+//configure shadow plugin
+//TODO: http://stackoverflow.com/questions/6831954/how-to-package-an-apache-cxf-application-into-a-monolithic-jar-with-the-maven-s
+//TODO: why this works?:D
+shadow {
+    //exclude signs for manifests from joined jars
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+
+    //append given resources
+    transformer(AppendingTransformer) {
+        resource = 'META-INF/spring.handlers'
+    }
+    transformer(AppendingTransformer) {
+        resource = 'META-INF/spring.schemas'
+    }
+    transformer(AppendingTransformer) {
+        resource = 'META-INF/cxf/bus-extensions.txt'
+    }
+    transformer(AppendingTransformer) {
+        resource = 'META-INF/services/com.sun.tools.xjc.Plugin'
+    }
+    transformer(AppendingTransformer) {
+        resource = 'META-INF/cxf/cxf.extension'
+    }
+    transformer(XmlAppendingTransformer) {
+        resource = 'META-INF/extensions.xml'
+    }
+    transformer(XmlAppendingTransformer) {
+        resource = 'META-INF/cxf/extensions.xml'
+    }
+//    transformer(XmlAppendingTransformer) {
+//        resource = 'META-INF/wsdl.plugin.xml'
+//    }
+//    transformer(XmlAppendingTransformer) {
+//        resource = 'META-INF/tools.service.validator.xml'
+//    }
+//    transformer(XmlAppendingTransformer) {
+//        resource = 'META-INF/cxf/java2wsbeans.xml'
+//    }
+}

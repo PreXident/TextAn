@@ -2,7 +2,6 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Entity;
-import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.Ticket;
 import java.util.ArrayList;
@@ -32,11 +31,8 @@ public class ProcessReportPipeline {
     /** Report entities. */
     protected List<Entity> reportEntities = new ArrayList<>();
 
-    /** Report objects. */
-    protected Set<Object> reportObjects = new HashSet<>();
-
     /** Report relations. */
-    protected Set<Relation> reportRelations = new HashSet<>();
+    protected List<Relation> reportRelations = new ArrayList<>();
 
     /** State of the pipeline. */
     protected State state = LoadReportState.getInstance();
@@ -178,34 +174,26 @@ public class ProcessReportPipeline {
     }
 
     /**
-     * Returns report's objects.
-     * @return report's objects
-     */
-    public Set<Object> getReportObjects() {
-        return reportObjects;
-    }
-
-    /**
      * Sets report's objects.
-     * @param objects new objects
+     * @param entities objects as entity candidates
      */
-    public void setReportObjects(final Set<Object> objects) {
-        state.setReportObjects(this, objects);
+    public void setReportObjects(final List<Entity> entities) {
+        state.setReportObjects(this, entities);
     }
 
     /**
      * Returns report's relations.
      * @return report's relations
      */
-    public Set<Relation> getReportRelations() {
+    public List<Relation> getReportRelations() {
         return reportRelations;
     }
 
     /**
      * Sets report's relations.
-     * @param relations new relations
+     * @param words words with assigned relations
      */
-    public void setReportRelations(final Set<Relation> relations) {
-        state.setReportRelations(this, relations);
+    public void setReportRelations(final List<Word> words) {
+        state.setReportRelations(this, words);
     }
 }

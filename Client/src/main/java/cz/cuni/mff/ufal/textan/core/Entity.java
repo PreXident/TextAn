@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Client side representation of {@link cz.cuni.mff.ufal.textan.commons.models.Entity}.
+ * Client side representation of
+ * {@link cz.cuni.mff.ufal.textan.commons.models.Entity}.
  */
 public class Entity {
 
@@ -18,7 +19,7 @@ public class Entity {
     private final int length;
 
     /** Object Type. */
-    private final int type;
+    private final long type;
 
     /** Object candidates for this entity. */
     private final Map<Double, Object> candidates = new HashMap<>();
@@ -44,7 +45,7 @@ public class Entity {
      * @param length length
      * @param type type
      */
-    public Entity(String value, int position, int length, int type) {
+    public Entity(String value, int position, int length, long type) {
         this.value = value;
         this.position = position;
         this.length = length;
@@ -95,7 +96,7 @@ public class Entity {
      * Returns type.
      * @return type
      */
-    public int getType() {
+    public long getType() {
         return type;
     }
 

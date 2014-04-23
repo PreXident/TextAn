@@ -10,7 +10,7 @@
 
     <xs:complexType name="Relation">
         <xs:sequence>
-            <xs:element name="id" type="xs:int"/>
+            <xs:element name="id" type="xs:long"/>
             <xs:element ref="relationType" />
             <xs:element name="objectInRelationIds">
                 <xs:complexType>
@@ -18,7 +18,7 @@
                         <xs:element name="inRelation" minOccurs="2" maxOccurs="unbounded"> <!-- TODO: better name -->
                             <xs:complexType>
                                 <xs:sequence>                                    
-                                    <xs:element name="objectId" type="xs:int"/>
+                                    <xs:element name="objectId" type="xs:long"/>
                                     <xs:element name="order" type="xs:int"/>
                                 </xs:sequence>
                             </xs:complexType>                            

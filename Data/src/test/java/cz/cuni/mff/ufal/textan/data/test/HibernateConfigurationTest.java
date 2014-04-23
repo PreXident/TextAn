@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.data.test.configs;
+package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import org.hibernate.SessionFactory;

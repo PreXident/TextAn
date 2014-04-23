@@ -8,17 +8,13 @@ package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
-import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
-import cz.cuni.mff.ufal.textan.data.tables.AliasTable;
-import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
-import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
-import java.util.List;
+import cz.cuni.mff.ufal.textan.data.tables.*;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  *
@@ -34,6 +30,7 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<DocumentTable> findAllDocumentsWithObject(Long objectId) {
         return findAllCriteria()
             .createAlias(getAliasPropertyName(DocumentTable.PROPERTY_NAME_ALIAS_OCCURRENCES), "aliasOccurrence", JoinType.INNER_JOIN)
@@ -52,6 +49,7 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<DocumentTable> findAllDocumentsWithRelation(Long relationId) {
         return findAllCriteria()
             .createAlias(getAliasPropertyName(DocumentTable.PROPERTY_NAME_RELATION_OCCURRENCES), "relOccurrence", JoinType.INNER_JOIN)

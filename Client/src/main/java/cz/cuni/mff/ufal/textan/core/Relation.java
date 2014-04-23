@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class Relation {
 
     /** Relation id. */
-    private final int id;
+    private final long id;
 
     /** Relation type. */
     private final RelationType type;
@@ -22,30 +22,35 @@ public class Relation {
     /** Objects and their order in relation. */
     private final Set<Pair<Object, Integer>> objects;
 
+    /** Flag indicating whether the relation was fetched from db or created by client. */
+    private final boolean isNew;
+
     /**
      * Creates Relation from commons blue print.
      * @param relation blue print relation
      * @param objects id -> object mapping to resolve relation ids
      */
-    public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Integer, Object> objects) {
+    public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Long, Object> objects) {
         id = relation.getId();
         type = new RelationType(relation.getRelationType());
         this.objects = relation.getObjectInRelationIds().getInRelations().stream()
                 .map(inRel -> new Pair<>(objects.get(inRel.getObjectId()), inRel.getOrder()))
                 .collect(Collectors.toCollection(HashSet::new));
+        isNew = relation.isIsNew();
     }
 
-    public Relation(final int id, final RelationType type) {
+    public Relation(final long id, final RelationType type) {
         this.id  = id;
         this.type = type;
         objects = new HashSet<>();
+        isNew = true;
     }
 
     /**
      * Returns relation id.
      * @return relation id
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -84,5 +89,10 @@ public class Relation {
         }
         result.setObjectInRelationIds(ids);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return id + ": " + type.getName();
     }
 }

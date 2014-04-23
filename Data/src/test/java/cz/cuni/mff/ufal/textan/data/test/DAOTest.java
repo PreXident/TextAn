@@ -7,7 +7,6 @@
 package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
-import cz.cuni.mff.ufal.textan.data.repositories.Data;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
@@ -38,7 +37,7 @@ import org.springframework.test.util.AssertionErrors;
  * @author Václav Pernička
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {DataConfig.class}, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = {DataConfig.class, Data.class}, loader = AnnotationConfigContextLoader.class)
 public class DAOTest {
     @Autowired
     Data data;

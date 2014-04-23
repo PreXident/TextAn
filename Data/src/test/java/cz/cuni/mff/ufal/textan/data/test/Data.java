@@ -1,20 +1,24 @@
-package cz.cuni.mff.ufal.textan.data.repositories;
+package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.tables.AbstractTable;
 import java.io.Serializable;
 
 import org.hibernate.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Václav Pernička
  */
 @Deprecated // for tests only. Use DAOs.
+@Component
 public class Data {
 
     private final SessionFactory sessionFactory;
 
     //TODO: constructor injection or property injection?
+    @Autowired
     public Data(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }

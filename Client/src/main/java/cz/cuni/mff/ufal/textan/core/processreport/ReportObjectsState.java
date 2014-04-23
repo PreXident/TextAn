@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.core.Object;
-import java.util.Set;
+import cz.cuni.mff.ufal.textan.core.Entity;
+import java.util.List;
 
 /**
  * {@link ProcessReportPipeline}'s {@link State} for editing the report's objects.
@@ -37,8 +37,8 @@ final class ReportObjectsState extends State {
     }
 
     @Override
-    public void setReportObjects(final ProcessReportPipeline pipeline, final Set<Object> objects) {
-        pipeline.reportObjects = objects;
+    public void setReportObjects(final ProcessReportPipeline pipeline, final List<Entity> entities) {
+        pipeline.reportEntities = entities;
         pipeline.setState(ReportRelationsState.getInstance());
     }
 }

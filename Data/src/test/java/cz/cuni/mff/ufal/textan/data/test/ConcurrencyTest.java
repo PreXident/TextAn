@@ -7,10 +7,7 @@
 package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
-import cz.cuni.mff.ufal.textan.data.repositories.Data;
-import cz.cuni.mff.ufal.textan.data.repositories.TableAction;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import org.hibernate.StaleObjectStateException;
 import org.junit.After;
 import org.junit.Before;

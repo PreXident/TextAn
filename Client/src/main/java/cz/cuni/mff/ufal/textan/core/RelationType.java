@@ -1,12 +1,13 @@
 package cz.cuni.mff.ufal.textan.core;
 
 /**
- * Client representation of {@link cz.cuni.mff.ufal.textan.commons.models.RelationType}.
+ * Client representation of
+ * {@link cz.cuni.mff.ufal.textan.commons.models.RelationType}.
  */
 public class RelationType {
 
     /** Type id. */
-    private final int id;
+    private final long id;
 
     /** Type name. */
     private final String name;
@@ -24,7 +25,7 @@ public class RelationType {
      * Returns relation type id.
      * @return relation type id
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
