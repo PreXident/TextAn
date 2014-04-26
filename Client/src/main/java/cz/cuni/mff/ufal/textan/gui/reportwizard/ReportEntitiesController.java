@@ -98,6 +98,9 @@ public class ReportEntitiesController extends ReportWizardController {
     /** List with all entity types. */
     ObservableList<ObjectType> allTypes;
 
+    /** Content of {@link #textFlow}. */
+    List<Text> texts;
+
     @FXML
     private void cancel() {
         closeContainer();
@@ -119,6 +122,12 @@ public class ReportEntitiesController extends ReportWizardController {
         border.setCenter(listView);
         filterField = new TextField();
         filterField.textProperty().addListener(e -> filterTypes());
+        filterField.setOnAction(ev -> {
+            if (listView.getItems().size() == 1) {
+                final ObjectType ot = listView.getItems().get(0);
+                assignEntityToSelectedTexts(ot);
+            }
+        });
         border.setTop(filterField);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
     }
@@ -126,7 +135,7 @@ public class ReportEntitiesController extends ReportWizardController {
     @Override
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
-        final List<Text> texts = new ArrayList<>();
+        texts = new ArrayList<>();
         words = pipeline.getReportWords();
         for (Word word: words) {
             final Text text = new Text(word.getWord());
@@ -182,37 +191,7 @@ public class ReportEntitiesController extends ReportWizardController {
                             contextMenu.hide();
                             @SuppressWarnings("unchecked")
                             final ObjectType ot = ((ListCell<ObjectType>) t.getSource()).getItem();
-                            if (ot == null) {
-                                for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
-                                    words.get(i).setEntity(null);
-                                    Utils.unstyleText(texts.get(i));
-                                }
-                                return;
-                            }
-                            final long id = ot.getId();
-                            final EntityBuilder e = new EntityBuilder(id);
-                            try {
-                                Pair<Integer, Integer> bounds = e.add(words, firstSelectedIndex, lastSelectedIndex, i -> Utils.unstyleText(texts.get(i)));
-                                for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
-                                    Utils.styleText(texts.get(i), "ENTITY", id);
-                                }
-                            } catch (SplitException ex) {
-                                callWithContentBackup(() -> {
-                                    createDialog()
-                                            .owner(getDialogOwner(root))
-                                            .title(Utils.localize(resourceBundle, "error.split.entities"))
-                                            .showException(ex);
-                                });
-                                ex.printStackTrace();
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                                callWithContentBackup(() -> {
-                                    createDialog()
-                                            .owner(getDialogOwner(root))
-                                            .title(Utils.localize(resourceBundle, "error"))
-                                            .showException(ex);
-                                });
-                            }
+                            assignEntityToSelectedTexts(ot);
                         });
                     }
                     @Override
@@ -253,5 +232,40 @@ public class ReportEntitiesController extends ReportWizardController {
             }
             return t.getName().toLowerCase().contains(filter.toLowerCase());
         }));
+    }
+
+    private void assignEntityToSelectedTexts(final ObjectType ot) {
+        contextMenu.hide();
+        if (ot == null) {
+            for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
+                words.get(i).setEntity(null);
+                Utils.unstyleText(texts.get(i));
+            }
+            return;
+        }
+        final long id = ot.getId();
+        final EntityBuilder e = new EntityBuilder(id);
+        try {
+            Pair<Integer, Integer> bounds = e.add(words, firstSelectedIndex, lastSelectedIndex, i -> Utils.unstyleText(texts.get(i)));
+            for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
+                Utils.styleText(texts.get(i), "ENTITY", id);
+            }
+        } catch (SplitException ex) {
+            callWithContentBackup(() -> {
+                createDialog()
+                        .owner(getDialogOwner(root))
+                        .title(Utils.localize(resourceBundle, "error.split.entities"))
+                        .showException(ex);
+            });
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            callWithContentBackup(() -> {
+                createDialog()
+                        .owner(getDialogOwner(root))
+                        .title(Utils.localize(resourceBundle, "error"))
+                        .showException(ex);
+            });
+        }
     }
 }
