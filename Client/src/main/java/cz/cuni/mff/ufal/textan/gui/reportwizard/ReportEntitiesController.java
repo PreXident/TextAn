@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
@@ -163,7 +164,7 @@ public class ReportEntitiesController extends ReportWizardController {
             text.setOnMouseReleased(e -> {
                 if (dragging) {
                     dragging = false;
-                    contextMenu.show(text, e.getScreenX(), e.getScreenY());
+                    contextMenu.show(texts.get(lastDragged), Side.BOTTOM, 0, 0);
                     filterField.requestFocus();
                 }
             });
