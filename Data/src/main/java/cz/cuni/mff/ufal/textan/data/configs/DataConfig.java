@@ -48,23 +48,20 @@ public class DataConfig {
      */
     @SuppressWarnings("WeakerAccess")
     @Bean(destroyMethod = "close")
-    public DataSource dataSource() {
+    public DataSource dataSource() throws PropertyVetoException {
 
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        try {
-            dataSource.setDriverClass(env.getProperty("jdbc.driverClassName"));
-            dataSource.setJdbcUrl(env.getProperty("jdbc.url"));
-            dataSource.setUser(env.getProperty("jdbc.user"));
-            dataSource.setPassword(env.getProperty("jdbc.pass"));
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        }
+        dataSource.setDriverClass(env.getProperty("jdbc.driverClassName"));
+        dataSource.setJdbcUrl(env.getProperty("jdbc.url"));
+        dataSource.setUser(env.getProperty("jdbc.user"));
+        dataSource.setPassword(env.getProperty("jdbc.pass"));
 
         dataSource.setMaxPoolSize(env.getProperty("c3p0.maxPoolSize", int.class));
         dataSource.setInitialPoolSize(env.getProperty("c3p0.initialPoolSize", int.class));
         dataSource.setMinPoolSize(env.getProperty("c3p0.minPoolSize", int.class));
         dataSource.setAcquireIncrement(env.getProperty("c3p0.acquireIncrement", int.class));
         dataSource.setMaxIdleTime(env.getProperty("c3p0.maxIdleTime", int.class));
+        dataSource.setCheckoutTimeout(env.getProperty("c3p0.checkoutTimeout", int.class));
 
         dataSource.setMaxStatements(env.getProperty("c3p0.maxStatements", int.class));
         dataSource.setMaxStatementsPerConnection(env.getProperty("c3p0.maxStatementsPerConnection", int.class));
@@ -81,26 +78,16 @@ public class DataConfig {
      */
     @SuppressWarnings("WeakerAccess")
     @Bean
-    public SessionFactory sessionFactory() {
+    public SessionFactory sessionFactory() throws PropertyVetoException, IOException {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setHibernateProperties(hibernateProperties());
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] mappings = null;
 
-        try {
-            mappings = resolver.getResources("classpath:mappings/*.hbm.xml");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        mappings = resolver.getResources("classpath:mappings/*.hbm.xml");
         sessionFactory.setMappingLocations(mappings);
-
-        try {
-            sessionFactory.afterPropertiesSet();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        sessionFactory.afterPropertiesSet();
 
         return sessionFactory.getObject();
     }
@@ -123,7 +110,7 @@ public class DataConfig {
      */
     @SuppressWarnings("unused")
     @Bean
-    public PlatformTransactionManager transactionManager() {
+    public PlatformTransactionManager transactionManager() throws PropertyVetoException, IOException {
         return new HibernateTransactionManager(sessionFactory());
     }
 
@@ -150,8 +137,7 @@ public class DataConfig {
      * @return the graph factory
      */
     @Bean
-    public GraphFactory graphFactory() {
+    public GraphFactory graphFactory() throws PropertyVetoException, IOException {
         return new GraphFactory(sessionFactory());
     }
-
 }
