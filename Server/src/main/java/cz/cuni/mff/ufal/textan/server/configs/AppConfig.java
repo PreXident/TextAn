@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -36,7 +37,7 @@ public class AppConfig {
     private DataConfig dataConfig;
 
     /**
-     * Creates preconfigured Jetty server.
+     * Creates a pre-configured Jetty server.
      *
      * @return the server
      * @see org.eclipse.jetty.server.Server
@@ -80,4 +81,15 @@ public class AppConfig {
         return server;
     }
 
+
+    /**
+     * Creates a command invoker.
+     *
+     * @return the command invoker
+     * @see cz.cuni.mff.ufal.textan.server.commands.CommandInvoker
+     */
+    @Bean(destroyMethod = "stop")
+    public CommandInvoker commandInvoker() {
+        return new CommandInvoker();
+    }
 }

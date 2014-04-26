@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.server;
 
+import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.configs.AppConfig;
 import org.eclipse.jetty.server.Server;
 import org.slf4j.Logger;
@@ -19,17 +20,17 @@ public class AppEntry {
     public static void main(String[] args) {
 
         try {
-            //Create root aplication context
+            //Create root application context
             AbstractApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
             context.registerShutdownHook();
 
-            Server server = (Server) context.getBean("server");
+            Server server = context.getBean(Server.class);
+            CommandInvoker invoker = context.getBean(CommandInvoker.class);
 
             LOG.info("Start server.");
             server.start();
-
-            LOG.info("Server running.");
-            server.join();
+            LOG.info("Server command invoker");
+            invoker.start();
 
         } catch (Exception e) {
 
