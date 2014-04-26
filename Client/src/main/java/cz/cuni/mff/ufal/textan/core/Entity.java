@@ -1,13 +1,19 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import java.util.HashMap;
-import java.util.Map;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Client side representation of
  * {@link cz.cuni.mff.ufal.textan.commons.models.Entity}.
  */
 public class Entity {
+
+    /** {@link #candidates}'s comparator. */
+    final static public Comparator<Pair<Double, Object>> COMPARATOR =
+            (p1, p2) -> Double.compare(p1.getFirst(), p2.getFirst());
 
     /** String value. */
     private final String value;
@@ -22,7 +28,7 @@ public class Entity {
     private final long type;
 
     /** Object candidates for this entity. */
-    private final Map<Double, Object> candidates = new HashMap<>();
+    private final List<Pair<Double, Object>> candidates = new ArrayList<>();
 
     /** Selected candidate. */
     private Object candidate = null;
@@ -72,7 +78,7 @@ public class Entity {
      * Returns object candidates.
      * @return object candidates
      */
-    public Map<Double, Object> getCandidates() {
+    public List<Pair<Double, Object>> getCandidates() {
         return candidates;
     }
 

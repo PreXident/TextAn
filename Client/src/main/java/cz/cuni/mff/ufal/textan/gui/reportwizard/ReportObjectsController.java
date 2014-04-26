@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
@@ -7,21 +8,33 @@ import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import javafx.event.ActionEvent;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.geometry.Orientation;
+import javafx.geometry.Point2D;
 import javafx.geometry.Side;
-import javafx.scene.control.*;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-
-import java.net.URL;
-import java.util.*;
-import java.util.Map.Entry;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
+import javafx.util.Callback;
 
 /**
  * Controls editing objects.
@@ -47,7 +60,28 @@ public class ReportObjectsController extends ReportWizardController {
     final Tooltip tooltip = new Tooltip("");
 
     /** Index of selected entity. */
-    int selectedEntity = 0;
+    EntityInfo selectedEntity = null;
+
+    /** Mapping of ObjectType->Objects. */
+    Map<Long, List<Object>> typeObjects = new HashMap<>();
+
+    /** Lists for given Entity. */
+    Map<EntityBuilder, EntityInfo> entityLists = new HashMap<>();
+
+    ListView<Pair<Double, Object>> rankedListView;
+
+    ListView<Object> allListView;
+
+    ListView<Object> newListView;
+
+    /** TextField in ContextMenu with filter. */
+    TextField filterField;
+
+    Tooltip rankedTooltip = new Tooltip();
+
+    Tooltip allTooltip = new Tooltip();
+
+    Tooltip newTooltip = new Tooltip();
 
     @FXML
     private void cancel() {
@@ -74,6 +108,26 @@ public class ReportObjectsController extends ReportWizardController {
     public void initialize(URL url, ResourceBundle rb) {
         resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
+        //create popup
+        BorderPane border = new BorderPane();
+        final SplitPane splitVert = new SplitPane();
+        splitVert.setOrientation(Orientation.HORIZONTAL);
+        final SplitPane splitHor = new SplitPane();
+        splitHor.setOrientation(Orientation.VERTICAL);
+        rankedListView = new ListView<>();
+        rankedListView.setPrefHeight(100);
+        rankedListView.setTooltip(new Tooltip());
+        allListView = new ListView<>();
+        allListView.setPrefHeight(100);
+        newListView = new ListView<>();
+        newListView.setPrefHeight(100);
+        splitHor.getItems().addAll(rankedListView, allListView);
+        splitVert.getItems().addAll(splitHor, newListView);
+        border.setCenter(splitVert);
+        filterField = new TextField();
+        filterField.textProperty().addListener(e -> filterObjects(selectedEntity));
+        border.setTop(filterField);
+        contextMenu = new ContextMenu(new CustomMenuItem(border, true));
     }
 
     @Override
@@ -84,44 +138,40 @@ public class ReportObjectsController extends ReportWizardController {
         for (final Word word: pipeline.getReportWords()) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
-                final long entityId = word.getEntity().getId();
-                final int entityIndex = word.getEntity().getIndex();
+                final EntityBuilder entity = word.getEntity();
+                final long entityId = entity.getId();
+                final int entityIndex = entity.getIndex();
                 Utils.styleText(text, "ENTITY", entityId);
 
-                ContextMenu cm = menus.get(word.getEntity());
-                if (cm == null) {
-                    cm = new ContextMenu();
-                    Map<Double, Object> candidates = pipeline.getReportEntities().get(word.getEntity().getIndex()).getCandidates();
-                    for (Entry<Double, Object> candidate : candidates.entrySet()) {
-                        final Object cand = candidate.getValue();
-                        final double rating = candidate.getKey();
-                        final String label = rating + ": " + cand.toString();
-                        final String shortLabel = shorter(label);
-                        final MenuItem mi = new MenuItem(shortLabel);
-                        mi.setOnAction((ActionEvent t) -> {
-                            pipeline.getReportEntities().get(entityIndex).setCandidate(cand);
-                        });
-                        cm.getItems().add(mi);
-                    }
-                    cm.getItems().add(new SeparatorMenuItem());
-                    try {
-                        List<Object> cands = pipeline.getClient().getObjectsListByTypeId(entityId);
-                        for (final Object cand : cands) {
-                            final String shortLabel = shorter(cand.toString());
-                            final MenuItem mi = new MenuItem(shortLabel);
-                            mi.setOnAction((ActionEvent t) -> {
-                                pipeline.getReportEntities().get(entityIndex).setCandidate(cand);
-                            });
-                            cm.getItems().add(mi);
+                EntityInfo entityInfo = entityLists.get(word.getEntity());
+                if (entityInfo == null) {
+                    entityInfo = new EntityInfo();
+                    entityInfo.index = entityIndex;
+                    final List<Pair<Double, Object>> candidates =
+                            pipeline.getReportEntities().get(entityIndex).getCandidates();
+                    Collections.sort(candidates, Entity.COMPARATOR);
+                    entityInfo.ranked = FXCollections.observableArrayList(candidates);
+                    List<Object> all = typeObjects.get(entityId);
+                    if (all == null) {
+                        try {
+                            all = pipeline.getClient().getObjectsListByTypeId(entityId);
+                            typeObjects.put(entityId, all);
+                            Collections.sort(all, (o1, o2) -> Long.compare(o1.getId(), o2.getId()));
+                        } catch (IdNotFoundException e) {
+                            e.printStackTrace();
+                            all = new ArrayList<>();
+                            typeObjects.put(entityId, all);
                         }
-                    } catch (IdNotFoundException e) {
-                        e.printStackTrace();
                     }
-                    menus.put(word.getEntity(), cm);
+                    entityInfo.all = FXCollections.observableArrayList(all);
+                    entityLists.put(entity, entityInfo);
                 }
-                final ContextMenu finalCM = cm;
+                final EntityInfo ei = entityInfo;
+
                 text.setOnMousePressed(e -> {
-                    finalCM.show(text, Side.BOTTOM, 0, 0);
+                    selectedEntity = ei;
+                    filterObjects(ei);
+                    contextMenu.show(text, Side.BOTTOM, 0, 0);
                 });
             }
             text.setOnMouseEntered((MouseEvent t) -> {
@@ -146,11 +196,122 @@ public class ReportObjectsController extends ReportWizardController {
         }
         textFlow.getChildren().clear();
         textFlow.getChildren().addAll(texts);
+        //
+        rankedListView.setCellFactory(new Callback<ListView<Pair<Double, Object>>, ListCell<Pair<Double, Object>>>() {
+            @Override
+            public ListCell<Pair<Double, Object>> call(ListView<Pair<Double, Object>> p) {
+                return new ListCell<Pair<Double, Object>>() {
+                    {
+                        this.setOnMouseClicked((MouseEvent e) -> {
+                            contextMenu.hide();
+                            @SuppressWarnings("unchecked")
+                            final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
+                            pipeline.getReportEntities().get(selectedEntity.index).setCandidate(p.getSecond());
+                        });
+                        this.setOnMouseEntered(e -> {
+                            @SuppressWarnings("unchecked")
+                            final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
+                            if (p != null) {
+                                rankedTooltip.setText(p.getSecond().toString());
+                                rankedListView.setTooltip(rankedTooltip);
+                            }
+                        });
+                        this.setOnMouseExited(e -> {
+                            rankedListView.setTooltip(null);
+                        });
+                    }
+                    @Override
+                    protected void updateItem(Pair<Double, Object> p, boolean empty) {
+                        super.updateItem(p, empty);
+                        if (empty) {
+                            setText("");
+                            return;
+                        }
+                        if (p != null) {
+                            setText(shorter(p.getFirst().toString() + ": " + p.getSecond().toString()));
+                        }
+                    }
+                };
+            }
+        });
+        allListView.setCellFactory(new Callback<ListView<Object>, ListCell<Object>>() {
+            @Override
+            public ListCell<Object> call(ListView<Object> p) {
+                return new ListCell<Object>() {
+                    {
+                        this.setOnMouseClicked((MouseEvent t) -> {
+                            contextMenu.hide();
+                            @SuppressWarnings("unchecked")
+                            final Object o = ((ListCell<Object>) t.getSource()).getItem();
+                            pipeline.getReportEntities().get(selectedEntity.index).setCandidate(o);
+                        });
+                        this.setOnMouseEntered(e -> {
+                            @SuppressWarnings("unchecked")
+                            final Object o = ((ListCell<Object>) e.getSource()).getItem();
+                            if (o != null) {
+                                allTooltip.setText(o.toString());
+                                allListView.setTooltip(allTooltip);
+                            }
+                        });
+                        this.setOnMouseExited(e -> {
+                            allListView.setTooltip(null);
+                        });
+                    }
+                    @Override
+                    protected void updateItem(Object o, boolean empty) {
+                        super.updateItem(o, empty);
+                        if (empty) {
+                            setText("");
+                            return;
+                        }
+                        if (o != null) {
+                            setText(shorter(o.toString()));
+                        }
+                    }
+                };
+            }
+        });
     }
 
     private String shorter(final String string) {
         return string.length() > 35 ?
                 string.substring(0, 33) + "..."
                 : string;
+    }
+
+    /**
+     * Updates content of list views by filtering entityInfo's lists.
+     * @param entityInfo selected entity
+     */
+    private void filterObjects(final EntityInfo entityInfo) {
+        rankedListView.setItems(entityInfo.ranked.filtered(p -> {
+            final String filter = filterField.getText();
+            if (filter == null || filter.isEmpty()) {
+                return true;
+            }
+            if (p == null) {
+                return false;
+            }
+            final String aliases = String.join(", ", p.getSecond().getAliases());
+            return aliases.toLowerCase().contains(filter.toLowerCase());
+        }));
+
+        allListView.setItems(entityInfo.all.filtered((Object o) -> {
+            final String filter = filterField.getText();
+            if (filter == null || filter.isEmpty()) {
+                return true;
+            }
+            if (o == null) {
+                return false;
+            }
+            final String aliases = String.join(", ", o.getAliases());
+            return aliases.toLowerCase().contains(filter.toLowerCase());
+        }));
+    }
+
+    static class EntityInfo {
+        int index;
+        ObservableList<Pair<Double, Object>> ranked;
+        ObservableList<Object> all;
     }
 }

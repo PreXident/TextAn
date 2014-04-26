@@ -7,6 +7,7 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromString.Entities;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Objects;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Relations;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
@@ -177,7 +178,7 @@ public class Client {
             for (Assignment.RatedObject rating : assignment.getRatedObjects()) {
                 final double r = rating.getScore();
                 final Object obj = new Object(rating.getObject());
-                ent.getCandidates().put(r, obj);
+                ent.getCandidates().add(new Pair<>(r, obj));
             }
         }
     }
