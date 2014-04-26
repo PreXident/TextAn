@@ -51,7 +51,8 @@ public class GraphViewController extends GraphController {
         super.setGrapher(grapher);
         try {
             final Graph g = grapher.getGraph();
-            final GraphView graphView = new GraphView(settings, g.getNodes(), g.getEdges());
+            final GraphView graphView = new GraphView(settings,
+                    g.getNodes(), g.getEdges(), grapher.getRootId());
             stackPane.getChildren().add(graphView);
         } catch (IdNotFoundException e) {
             e.printStackTrace();
