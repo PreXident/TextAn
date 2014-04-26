@@ -13,6 +13,8 @@ import java.util.Map;
  * A simple example of an implementation of the ITextPro interface as a Spring bean.
  * @author Petr Fanta
  * @see cz.cuni.mff.ufal.textan.textpro.ITextPro
+ * @author Tam Hoang
+ * Implement the first ranking scheme DoubleRanking(document, list of entities, number of K)
  */
 public class TextPro implements ITextPro {
 
@@ -98,7 +100,7 @@ public class TextPro implements ITextPro {
      * @return the result of DoubleRank
      */
     @Override
-    public Map<Entity, Map<Long, Double>> DoubleRanking(String document,List<Entity> eList){
+    public Map<Entity, Map<Long, Double>> DoubleRanking(String document,List<Entity> eList, int topK){
         /*
          * Assign value to the mapping
          */
@@ -135,17 +137,26 @@ public class TextPro implements ITextPro {
             
             /* Normalize the value */
             double sum = 0;
+            double minscore = 0; // the minimum value of score will be taken
             for (int i = 0; i < size; i++) {
                 sum+= score[i];
+                
             }
             for (int i = 0; i < size; i++) {
                 score[i] = score[i]/sum;
             }
-                        
+            if(size > topK) {
+                Double[] sort_score= score.clone();
+                minscore = sort_score[topK];
+            }
+            
+            
             /* Assign value */
             Map <Long,Double> entityScore = new HashMap <Long,Double>();
             for (int i = 0; i < size; i++){
-                entityScore.put(oListID.get(id), score[i]);
+                if(score[i] >= minscore) {
+                    entityScore.put(oListID.get(id), score[i]);
+                }
             }
             eMap.put(e, entityScore);
             
@@ -177,5 +188,10 @@ public class TextPro implements ITextPro {
         }
         this.mapping = eMap;
     }
-
+    
+    /*
+     * The relation identification
+     */
+    
+    
 }

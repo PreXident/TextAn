@@ -24,5 +24,5 @@ public interface ITextPro {
     /*
      * Entity, ObjectID-Score
      */
-    public Map<Entity, Map<Long, Double>> DoubleRanking(String document,List<Entity> eList);
+    public Map<Entity, Map<Long, Double>> DoubleRanking(String document,List<Entity> eList, int topK);
 }
