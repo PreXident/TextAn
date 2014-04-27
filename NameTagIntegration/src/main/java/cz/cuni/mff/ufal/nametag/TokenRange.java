@@ -29,30 +29,30 @@ public class TokenRange {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        nametagJNI.delete_TokenRange(swigCPtr);
+        nametag_javaJNI.delete_TokenRange(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setStart(long value) {
-    nametagJNI.TokenRange_start_set(swigCPtr, this, value);
+    nametag_javaJNI.TokenRange_start_set(swigCPtr, this, value);
   }
 
   public long getStart() {
-    return nametagJNI.TokenRange_start_get(swigCPtr, this);
+    return nametag_javaJNI.TokenRange_start_get(swigCPtr, this);
   }
 
   public void setLength(long value) {
-    nametagJNI.TokenRange_length_set(swigCPtr, this, value);
+    nametag_javaJNI.TokenRange_length_set(swigCPtr, this, value);
   }
 
   public long getLength() {
-    return nametagJNI.TokenRange_length_get(swigCPtr, this);
+    return nametag_javaJNI.TokenRange_length_get(swigCPtr, this);
   }
 
   public TokenRange() {
-    this(nametagJNI.new_TokenRange(), true);
+    this(nametag_javaJNI.new_TokenRange(), true);
   }
 
 }

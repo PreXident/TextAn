@@ -29,42 +29,42 @@ public class NamedEntity {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        nametagJNI.delete_NamedEntity(swigCPtr);
+        nametag_javaJNI.delete_NamedEntity(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setStart(long value) {
-    nametagJNI.NamedEntity_start_set(swigCPtr, this, value);
+    nametag_javaJNI.NamedEntity_start_set(swigCPtr, this, value);
   }
 
   public long getStart() {
-    return nametagJNI.NamedEntity_start_get(swigCPtr, this);
+    return nametag_javaJNI.NamedEntity_start_get(swigCPtr, this);
   }
 
   public void setLength(long value) {
-    nametagJNI.NamedEntity_length_set(swigCPtr, this, value);
+    nametag_javaJNI.NamedEntity_length_set(swigCPtr, this, value);
   }
 
   public long getLength() {
-    return nametagJNI.NamedEntity_length_get(swigCPtr, this);
+    return nametag_javaJNI.NamedEntity_length_get(swigCPtr, this);
   }
 
   public void setType(String value) {
-    nametagJNI.NamedEntity_type_set(swigCPtr, this, value);
+    nametag_javaJNI.NamedEntity_type_set(swigCPtr, this, value);
   }
 
   public String getType() {
-    return nametagJNI.NamedEntity_type_get(swigCPtr, this);
+    return nametag_javaJNI.NamedEntity_type_get(swigCPtr, this);
   }
 
   public NamedEntity() {
-    this(nametagJNI.new_NamedEntity__SWIG_0(), true);
+    this(nametag_javaJNI.new_NamedEntity__SWIG_0(), true);
   }
 
   public NamedEntity(long start, long length, String type) {
-    this(nametagJNI.new_NamedEntity__SWIG_1(start, length, type), true);
+    this(nametag_javaJNI.new_NamedEntity__SWIG_1(start, length, type), true);
   }
 
 }

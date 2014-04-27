@@ -29,23 +29,23 @@ public class Ner {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        nametagJNI.delete_Ner(swigCPtr);
+        nametag_javaJNI.delete_Ner(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public static Ner load(String fname) {
-    long cPtr = nametagJNI.Ner_load(fname);
+    long cPtr = nametag_javaJNI.Ner_load(fname);
     return (cPtr == 0) ? null : new Ner(cPtr, true);
   }
 
   public void recognize(Forms forms, NamedEntities entities) {
-    nametagJNI.Ner_recognize(swigCPtr, this, Forms.getCPtr(forms), forms, NamedEntities.getCPtr(entities), entities);
+    nametag_javaJNI.Ner_recognize(swigCPtr, this, Forms.getCPtr(forms), forms, NamedEntities.getCPtr(entities), entities);
   }
 
   public Tokenizer newTokenizer() {
-    long cPtr = nametagJNI.Ner_newTokenizer(swigCPtr, this);
+    long cPtr = nametag_javaJNI.Ner_newTokenizer(swigCPtr, this);
     return (cPtr == 0) ? null : new Tokenizer(cPtr, true);
   }
 

@@ -29,50 +29,50 @@ public class TokenRanges {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        nametagJNI.delete_TokenRanges(swigCPtr);
+        nametag_javaJNI.delete_TokenRanges(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public TokenRanges() {
-    this(nametagJNI.new_TokenRanges__SWIG_0(), true);
+    this(nametag_javaJNI.new_TokenRanges__SWIG_0(), true);
   }
 
   public TokenRanges(long n) {
-    this(nametagJNI.new_TokenRanges__SWIG_1(n), true);
+    this(nametag_javaJNI.new_TokenRanges__SWIG_1(n), true);
   }
 
   public long size() {
-    return nametagJNI.TokenRanges_size(swigCPtr, this);
+    return nametag_javaJNI.TokenRanges_size(swigCPtr, this);
   }
 
   public long capacity() {
-    return nametagJNI.TokenRanges_capacity(swigCPtr, this);
+    return nametag_javaJNI.TokenRanges_capacity(swigCPtr, this);
   }
 
   public void reserve(long n) {
-    nametagJNI.TokenRanges_reserve(swigCPtr, this, n);
+    nametag_javaJNI.TokenRanges_reserve(swigCPtr, this, n);
   }
 
   public boolean isEmpty() {
-    return nametagJNI.TokenRanges_isEmpty(swigCPtr, this);
+    return nametag_javaJNI.TokenRanges_isEmpty(swigCPtr, this);
   }
 
   public void clear() {
-    nametagJNI.TokenRanges_clear(swigCPtr, this);
+    nametag_javaJNI.TokenRanges_clear(swigCPtr, this);
   }
 
   public void add(TokenRange x) {
-    nametagJNI.TokenRanges_add(swigCPtr, this, TokenRange.getCPtr(x), x);
+    nametag_javaJNI.TokenRanges_add(swigCPtr, this, TokenRange.getCPtr(x), x);
   }
 
   public TokenRange get(int i) {
-    return new TokenRange(nametagJNI.TokenRanges_get(swigCPtr, this, i), false);
+    return new TokenRange(nametag_javaJNI.TokenRanges_get(swigCPtr, this, i), false);
   }
 
   public void set(int i, TokenRange val) {
-    nametagJNI.TokenRanges_set(swigCPtr, this, i, TokenRange.getCPtr(val), val);
+    nametag_javaJNI.TokenRanges_set(swigCPtr, this, i, TokenRange.getCPtr(val), val);
   }
 
 }

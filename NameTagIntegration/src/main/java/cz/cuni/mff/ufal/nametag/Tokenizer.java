@@ -29,18 +29,23 @@ public class Tokenizer {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        nametagJNI.delete_Tokenizer(swigCPtr);
+        nametag_javaJNI.delete_Tokenizer(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setText(String text) {
-    nametagJNI.Tokenizer_setText(swigCPtr, this, text);
+    nametag_javaJNI.Tokenizer_setText(swigCPtr, this, text);
   }
 
   public boolean nextSentence(Forms forms, TokenRanges tokens) {
-    return nametagJNI.Tokenizer_nextSentence(swigCPtr, this, Forms.getCPtr(forms), forms, TokenRanges.getCPtr(tokens), tokens);
+    return nametag_javaJNI.Tokenizer_nextSentence(swigCPtr, this, Forms.getCPtr(forms), forms, TokenRanges.getCPtr(tokens), tokens);
+  }
+
+  public static Tokenizer newVerticalTokenizer() {
+    long cPtr = nametag_javaJNI.Tokenizer_newVerticalTokenizer();
+    return (cPtr == 0) ? null : new Tokenizer(cPtr, true);
   }
 
 }

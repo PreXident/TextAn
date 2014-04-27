@@ -29,50 +29,50 @@ public class Forms {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        nametagJNI.delete_Forms(swigCPtr);
+        nametag_javaJNI.delete_Forms(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public Forms() {
-    this(nametagJNI.new_Forms__SWIG_0(), true);
+    this(nametag_javaJNI.new_Forms__SWIG_0(), true);
   }
 
   public Forms(long n) {
-    this(nametagJNI.new_Forms__SWIG_1(n), true);
+    this(nametag_javaJNI.new_Forms__SWIG_1(n), true);
   }
 
   public long size() {
-    return nametagJNI.Forms_size(swigCPtr, this);
+    return nametag_javaJNI.Forms_size(swigCPtr, this);
   }
 
   public long capacity() {
-    return nametagJNI.Forms_capacity(swigCPtr, this);
+    return nametag_javaJNI.Forms_capacity(swigCPtr, this);
   }
 
   public void reserve(long n) {
-    nametagJNI.Forms_reserve(swigCPtr, this, n);
+    nametag_javaJNI.Forms_reserve(swigCPtr, this, n);
   }
 
   public boolean isEmpty() {
-    return nametagJNI.Forms_isEmpty(swigCPtr, this);
+    return nametag_javaJNI.Forms_isEmpty(swigCPtr, this);
   }
 
   public void clear() {
-    nametagJNI.Forms_clear(swigCPtr, this);
+    nametag_javaJNI.Forms_clear(swigCPtr, this);
   }
 
   public void add(String x) {
-    nametagJNI.Forms_add(swigCPtr, this, x);
+    nametag_javaJNI.Forms_add(swigCPtr, this, x);
   }
 
   public String get(int i) {
-    return nametagJNI.Forms_get(swigCPtr, this, i);
+    return nametag_javaJNI.Forms_get(swigCPtr, this, i);
   }
 
   public void set(int i, String val) {
-    nametagJNI.Forms_set(swigCPtr, this, i, val);
+    nametag_javaJNI.Forms_set(swigCPtr, this, i, val);
   }
 
 }

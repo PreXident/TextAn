@@ -29,50 +29,50 @@ public class NamedEntities {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        nametagJNI.delete_NamedEntities(swigCPtr);
+        nametag_javaJNI.delete_NamedEntities(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public NamedEntities() {
-    this(nametagJNI.new_NamedEntities__SWIG_0(), true);
+    this(nametag_javaJNI.new_NamedEntities__SWIG_0(), true);
   }
 
   public NamedEntities(long n) {
-    this(nametagJNI.new_NamedEntities__SWIG_1(n), true);
+    this(nametag_javaJNI.new_NamedEntities__SWIG_1(n), true);
   }
 
   public long size() {
-    return nametagJNI.NamedEntities_size(swigCPtr, this);
+    return nametag_javaJNI.NamedEntities_size(swigCPtr, this);
   }
 
   public long capacity() {
-    return nametagJNI.NamedEntities_capacity(swigCPtr, this);
+    return nametag_javaJNI.NamedEntities_capacity(swigCPtr, this);
   }
 
   public void reserve(long n) {
-    nametagJNI.NamedEntities_reserve(swigCPtr, this, n);
+    nametag_javaJNI.NamedEntities_reserve(swigCPtr, this, n);
   }
 
   public boolean isEmpty() {
-    return nametagJNI.NamedEntities_isEmpty(swigCPtr, this);
+    return nametag_javaJNI.NamedEntities_isEmpty(swigCPtr, this);
   }
 
   public void clear() {
-    nametagJNI.NamedEntities_clear(swigCPtr, this);
+    nametag_javaJNI.NamedEntities_clear(swigCPtr, this);
   }
 
   public void add(NamedEntity x) {
-    nametagJNI.NamedEntities_add(swigCPtr, this, NamedEntity.getCPtr(x), x);
+    nametag_javaJNI.NamedEntities_add(swigCPtr, this, NamedEntity.getCPtr(x), x);
   }
 
   public NamedEntity get(int i) {
-    return new NamedEntity(nametagJNI.NamedEntities_get(swigCPtr, this, i), false);
+    return new NamedEntity(nametag_javaJNI.NamedEntities_get(swigCPtr, this, i), false);
   }
 
   public void set(int i, NamedEntity val) {
-    nametagJNI.NamedEntities_set(swigCPtr, this, i, NamedEntity.getCPtr(val), val);
+    nametag_javaJNI.NamedEntities_set(swigCPtr, this, i, NamedEntity.getCPtr(val), val);
   }
 
 }
