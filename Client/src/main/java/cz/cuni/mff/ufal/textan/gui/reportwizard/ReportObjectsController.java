@@ -4,12 +4,14 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
+import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +24,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
@@ -68,20 +71,29 @@ public class ReportObjectsController extends ReportWizardController {
     /** Lists for given Entity. */
     Map<EntityBuilder, EntityInfo> entityLists = new HashMap<>();
 
+    /** ListView with ranked objects. */
     ListView<Pair<Double, Object>> rankedListView;
 
+    /** ListView with all objects of given type. */
     ListView<Object> allListView;
 
+    /** ListView with new objects of given type. */
     ListView<Object> newListView;
 
     /** TextField in ContextMenu with filter. */
     TextField filterField;
 
+    /** Tooltip for {@link #rankedListView}. */
     Tooltip rankedTooltip = new Tooltip();
 
+    /** Tooltip for {@link #allListView}. */
     Tooltip allTooltip = new Tooltip();
 
+    /** Tooltip for {@link #newListView}. */
     Tooltip newTooltip = new Tooltip();
+
+    /** List of all new objects. */
+    ObservableList<Object> newObjects = FXCollections.observableArrayList();
 
     @FXML
     private void cancel() {
@@ -119,10 +131,21 @@ public class ReportObjectsController extends ReportWizardController {
         rankedListView.setTooltip(new Tooltip());
         allListView = new ListView<>();
         allListView.setPrefHeight(100);
+        splitHor.getItems().addAll(rankedListView, allListView);
         newListView = new ListView<>();
         newListView.setPrefHeight(100);
-        splitHor.getItems().addAll(rankedListView, allListView);
-        splitVert.getItems().addAll(splitHor, newListView);
+        final BorderPane leftBorder = new BorderPane();
+        leftBorder.setCenter(newListView);
+        final Button add = new Button("+");
+        add.setOnAction(e -> {
+            contextMenu.hide();
+            final Entity ent = pipeline.getReportEntities().get(selectedEntity.index);
+            final Object newObject = new Object(-newObjects.size() - 1, new ObjectType(ent.getType(), ""), Arrays.asList(ent.getValue()));
+            newObjects.add(newObject);
+            pipeline.getReportEntities().get(selectedEntity.index).setCandidate(newObject);
+        });
+        leftBorder.setTop(add);
+        splitVert.getItems().addAll(splitHor, leftBorder);
         border.setCenter(splitVert);
         filterField = new TextField();
         filterField.textProperty().addListener(e -> filterObjects(selectedEntity));
@@ -134,7 +157,6 @@ public class ReportObjectsController extends ReportWizardController {
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
         final List<Text> texts = new ArrayList<>();
-        final Map<EntityBuilder, ContextMenu> menus = new HashMap<>();
         for (final Word word: pipeline.getReportWords()) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
@@ -147,8 +169,9 @@ public class ReportObjectsController extends ReportWizardController {
                 if (entityInfo == null) {
                     entityInfo = new EntityInfo();
                     entityInfo.index = entityIndex;
-                    final List<Pair<Double, Object>> candidates =
-                            pipeline.getReportEntities().get(entityIndex).getCandidates();
+                    final Entity ent = pipeline.getReportEntities().get(entityIndex);
+                    entityInfo.type = ent.getType();
+                    final List<Pair<Double, Object>> candidates = ent.getCandidates();
                     Collections.sort(candidates, Entity.COMPARATOR);
                     entityInfo.ranked = FXCollections.observableArrayList(candidates);
                     List<Object> all = typeObjects.get(entityId);
@@ -271,11 +294,53 @@ public class ReportObjectsController extends ReportWizardController {
                 };
             }
         });
+        newListView.setCellFactory(new Callback<ListView<Object>, ListCell<Object>>() {
+            @Override
+            public ListCell<Object> call(ListView<Object> p) {
+                return new ListCell<Object>() {
+                    {
+                        this.setOnMouseClicked((MouseEvent t) -> {
+                            contextMenu.hide();
+                            @SuppressWarnings("unchecked")
+                            final Object o = ((ListCell<Object>) t.getSource()).getItem();
+                            pipeline.getReportEntities().get(selectedEntity.index).setCandidate(o);
+                        });
+                        this.setOnMouseEntered(e -> {
+                            @SuppressWarnings("unchecked")
+                            final Object o = ((ListCell<Object>) e.getSource()).getItem();
+                            if (o != null) {
+                                newTooltip.setText(o.toString());
+                                newListView.setTooltip(allTooltip);
+                            }
+                        });
+                        this.setOnMouseExited(e -> {
+                            newListView.setTooltip(null);
+                        });
+                    }
+                    @Override
+                    protected void updateItem(Object o, boolean empty) {
+                        super.updateItem(o, empty);
+                        if (empty) {
+                            setText("");
+                            return;
+                        }
+                        if (o != null) {
+                            setText(shorter(o.toString()));
+                        }
+                    }
+                };
+            }
+        });
     }
 
+    /**
+     * If string is too long, returns its shortened variant that ends with ...
+     * @param string string to shorter
+     * @return shorter string
+     */
     private String shorter(final String string) {
         return string.length() > 35 ?
-                string.substring(0, 33) + "..."
+                string.substring(0, 32) + "..."
                 : string;
     }
 
@@ -307,10 +372,18 @@ public class ReportObjectsController extends ReportWizardController {
             final String aliases = String.join(", ", o.getAliases());
             return aliases.toLowerCase().contains(filter.toLowerCase());
         }));
+        newListView.setItems(entityInfo.all.filtered((Object o) -> {
+            return o.getType().getId() == selectedEntity.type;
+        }));
     }
 
+    /**
+     * Simple holder of information about entity to provide the right
+     * set of object to chose from.
+     */
     static class EntityInfo {
         int index;
+        long type;
         ObservableList<Pair<Double, Object>> ranked;
         ObservableList<Object> all;
     }
