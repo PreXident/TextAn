@@ -26,6 +26,7 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="anchor" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="isNew" type="xs:boolean" default="false" />
     </xs:complexType>

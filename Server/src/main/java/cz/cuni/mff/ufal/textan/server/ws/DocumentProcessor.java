@@ -3,16 +3,22 @@ package cz.cuni.mff.ufal.textan.server.ws;
 import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.commons.models.Ticket;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.server.models.Assignment;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
+import cz.cuni.mff.ufal.textan.server.models.Object;
+import cz.cuni.mff.ufal.textan.server.models.Relation;
 import cz.cuni.mff.ufal.textan.server.services.NamedEntityRecognizerService;
 import cz.cuni.mff.ufal.textan.server.services.ObjectAssignmentService;
+import cz.cuni.mff.ufal.textan.server.services.SaveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jws.WebParam;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,10 +34,16 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
     private final NamedEntityRecognizerService namedEntityService;
     private final ObjectAssignmentService objectAssignmentService;
+    private final SaveService saveService;
 
-    public DocumentProcessor(NamedEntityRecognizerService namedEntityService, ObjectAssignmentService objectAssignmentService) {
+    public DocumentProcessor(
+            NamedEntityRecognizerService namedEntityService,
+            ObjectAssignmentService objectAssignmentService,
+            SaveService saveService) {
+
         this.namedEntityService = namedEntityService;
         this.objectAssignmentService = objectAssignmentService;
+        this.saveService = saveService;
     }
 
     @Override
@@ -65,11 +77,55 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "saveProcessedDocumentById", name = "saveProcessedDocumentById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             SaveProcessedDocumentById saveProcessedDocumentById,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
-            EditingTicket editingTicket) {
+            EditingTicket editingTicket) throws IdNotFoundException {
 
         LOG.debug("Executing operation saveProcessedDocumentById: {} {}", saveProcessedDocumentById, editingTicket);
 
-        return new SaveProcessedDocumentByIdResponse();
+        cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
+
+        try {
+
+            HashMap<Long, Object> objects = new HashMap<>();
+            for (cz.cuni.mff.ufal.textan.commons.models.Object commonsObject : saveProcessedDocumentById.getObjects()) {
+                objects.put(commonsObject.getId(), Object.fromCommonsObject(commonsObject));
+            }
+
+            List<Pair<Entity, Object>> entityObjectAssignments = new ArrayList<>(saveProcessedDocumentById.getEntityObjectAssignments().size());
+            for (SaveProcessedDocumentById.EntityObjectAssignment commonsEntityObjectPair : saveProcessedDocumentById.getEntityObjectAssignments()) {
+                entityObjectAssignments.add(
+                        new Pair<>(
+                            Entity.fromCommonsEntity(commonsEntityObjectPair.getEntity()),
+                            objects.get(commonsEntityObjectPair.getObjectId())
+                        )
+                );
+            }
+
+            List<Relation> relations = new ArrayList<>(saveProcessedDocumentById.getRelations().size());
+            for (cz.cuni.mff.ufal.textan.commons.models.Relation relation : saveProcessedDocumentById.getRelations()) {
+                relations.add(Relation.fromCommonsRelation(relation));
+            }
+
+            boolean result = saveService.save(
+                    saveProcessedDocumentById.getDocumentId(),
+                    entityObjectAssignments,
+                    relations,
+                    saveProcessedDocumentById.isForce(),
+                    serverTicket
+            );
+
+            SaveProcessedDocumentByIdResponse response = new SaveProcessedDocumentByIdResponse();
+            response.setResult(result);
+
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
     }
 
     @Override
@@ -177,7 +233,42 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         LOG.debug("Executing operation saveProcessedDocumentFromString: {} {}", saveProcessedDocumentFromString, editingTicket);
 
-        return new SaveProcessedDocumentFromStringResponse();
+        cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
+
+
+        HashMap<Long, Object> objects = new HashMap<>();
+        for (cz.cuni.mff.ufal.textan.commons.models.Object commonsObject : saveProcessedDocumentFromString.getObjects()) {
+            objects.put(commonsObject.getId(), Object.fromCommonsObject(commonsObject));
+        }
+
+        List<Pair<Entity, Object>> entityObjectAssignments = new ArrayList<>(saveProcessedDocumentFromString.getEntityObjectAssignments().size());
+        for (SaveProcessedDocumentFromString.EntityObjectAssignment commonsEntityObjectPair : saveProcessedDocumentFromString.getEntityObjectAssignments()) {
+            entityObjectAssignments.add(
+                    new Pair<>(
+                            Entity.fromCommonsEntity(commonsEntityObjectPair.getEntity()),
+                            objects.get(commonsEntityObjectPair.getObjectId())
+                    )
+            );
+        }
+
+        List<Relation> relations = new ArrayList<>(saveProcessedDocumentFromString.getRelations().size());
+        for (cz.cuni.mff.ufal.textan.commons.models.Relation relation : saveProcessedDocumentFromString.getRelations()) {
+            relations.add(Relation.fromCommonsRelation(relation));
+        }
+
+        //todo:implement
+        boolean result = saveService.save(
+                saveProcessedDocumentFromString.getText(),
+                entityObjectAssignments,
+                relations,
+                saveProcessedDocumentFromString.isForce(),
+                serverTicket
+        );
+
+        SaveProcessedDocumentFromStringResponse response = new SaveProcessedDocumentFromStringResponse();
+        response.setResult(result);
+
+        return response;
     }
 
     @Override
