@@ -3,6 +3,11 @@ package cz.cuni.mff.ufal.textan.server.nametagIntegration;
 import cz.cuni.mff.ufal.nametag.*;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -15,6 +20,28 @@ public class NameTagServices {
     public NameTagServices(String model) {
         ner = Ner.load(model);
         tokenizer = ner.newTokenizer();
+    }
+
+    void Learn() {
+        Runtime rt = Runtime.getRuntime();
+        try {
+            File dir = new File(Paths.get("../NameTagIntegration/training").toAbsolutePath().toString());
+            String[] commands = {"cmd","/C", "start", ".\\train.bat"};
+
+            //List cmdAndArgs = Arrays.asList(commands);
+            //ProcessBuilder pb = new ProcessBuilder(cmdAndArgs);
+            //pb.directory(dir);
+            //Process ps = pb.start();
+            Process ps = rt.exec(commands,null,dir);
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+            String line = null;
+            while ((line = bfr.readLine()) != null) {
+                System.out.println(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
