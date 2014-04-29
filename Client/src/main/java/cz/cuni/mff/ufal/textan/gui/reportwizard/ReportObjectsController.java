@@ -35,6 +35,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
@@ -43,6 +45,22 @@ import javafx.util.Callback;
  * Controls editing objects.
  */
 public class ReportObjectsController extends ReportWizardController {
+
+    /**
+     * Sets the entity candidate to object.
+     * Removes previous object's alias if needed, adds new alias to the new object.
+     * @param entity entity to add alias to
+     * @param object new candidate
+     */
+    static private void setNewObjectAsCandidate(final Entity entity, final Object object) {
+        final Object prev = entity.getCandidate();
+        final String alias = entity.getValue();
+        if (prev != null && prev.getId() < 0) {
+            prev.getAliases().remove(alias);
+        }
+        entity.setCandidate(object);
+        object.getAliases().add(alias);
+    }
 
     @FXML
     BorderPane root;
@@ -134,22 +152,22 @@ public class ReportObjectsController extends ReportWizardController {
         splitHor.getItems().addAll(rankedListView, allListView);
         newListView = new ListView<>();
         newListView.setPrefHeight(100);
-        final BorderPane leftBorder = new BorderPane();
-        leftBorder.setCenter(newListView);
         final Button add = new Button("+");
         add.setOnAction(e -> {
             contextMenu.hide();
             final Entity ent = pipeline.getReportEntities().get(selectedEntity.index);
             final Object newObject = new Object(-newObjects.size() - 1, new ObjectType(ent.getType(), ""), Arrays.asList(ent.getValue()));
             newObjects.add(newObject);
-            pipeline.getReportEntities().get(selectedEntity.index).setCandidate(newObject);
+            setNewObjectAsCandidate(ent, newObject);
         });
-        leftBorder.setTop(add);
-        splitVert.getItems().addAll(splitHor, leftBorder);
+        splitVert.getItems().addAll(splitHor, newListView);
         border.setCenter(splitVert);
         filterField = new TextField();
         filterField.textProperty().addListener(e -> filterObjects(selectedEntity));
-        border.setTop(filterField);
+        final HBox top =new HBox();
+        top.getChildren().addAll(filterField, add);
+        HBox.setHgrow(filterField, Priority.ALWAYS);
+        border.setTop(top);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
     }
 
@@ -302,15 +320,16 @@ public class ReportObjectsController extends ReportWizardController {
                         this.setOnMouseClicked((MouseEvent t) -> {
                             contextMenu.hide();
                             @SuppressWarnings("unchecked")
-                            final Object o = ((ListCell<Object>) t.getSource()).getItem();
-                            pipeline.getReportEntities().get(selectedEntity.index).setCandidate(o);
+                            final Object obj = ((ListCell<Object>) t.getSource()).getItem();
+                            final Entity entity = pipeline.getReportEntities().get(selectedEntity.index);
+                            setNewObjectAsCandidate(entity, obj);
                         });
                         this.setOnMouseEntered(e -> {
                             @SuppressWarnings("unchecked")
                             final Object o = ((ListCell<Object>) e.getSource()).getItem();
                             if (o != null) {
                                 newTooltip.setText(o.toString());
-                                newListView.setTooltip(allTooltip);
+                                newListView.setTooltip(newTooltip);
                             }
                         });
                         this.setOnMouseExited(e -> {
@@ -372,7 +391,7 @@ public class ReportObjectsController extends ReportWizardController {
             final String aliases = String.join(", ", o.getAliases());
             return aliases.toLowerCase().contains(filter.toLowerCase());
         }));
-        newListView.setItems(entityInfo.all.filtered((Object o) -> {
+        newListView.setItems(newObjects.filtered((Object o) -> {
             return o.getType().getId() == selectedEntity.type;
         }));
     }
@@ -382,9 +401,16 @@ public class ReportObjectsController extends ReportWizardController {
      * set of object to chose from.
      */
     static class EntityInfo {
+        /** Entity index. */
         int index;
+
+        /** Entity type. */
         long type;
+
+        /** List of ranked objects candidating for this entity. */
         ObservableList<Pair<Double, Object>> ranked;
+
+        /** List of all suitable candidates fot this entity. */
         ObservableList<Object> all;
     }
 }
