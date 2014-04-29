@@ -68,7 +68,9 @@ public class NameTagServices {
                         NamedEntity ending = openEntities.peek();
                         int entity_start = (int) tokens.get((int) (i - ending.getLength() + 1)).getStart();
                         int entity_end = (int) (tokens.get(i).getStart() + tokens.get(i).getLength());
-                        entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end, 0));
+                        if (openEntities.size() == 1) {
+                            entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end, 0));
+                        }
                         openEntities.pop();
                     }
 
