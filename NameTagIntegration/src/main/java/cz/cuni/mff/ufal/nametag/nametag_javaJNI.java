@@ -76,7 +76,7 @@ public class nametag_javaJNI {
   public final static native long Ner_newTokenizer(long jarg1, Ner jarg1_);
 
   static {
-    java.io.File localNametag = new java.io.File(System.mapLibraryName("nametag_java"));
+    java.io.File localNametag = new java.io.File(System.mapLibraryName("lib/nametag_java"));
 
     if (localNametag.exists())
       System.load(localNametag.getAbsolutePath());
