@@ -213,6 +213,7 @@ public class ReportObjectsController extends ReportWizardController {
                     selectedEntity = ei;
                     filterObjects(ei);
                     contextMenu.show(text, Side.BOTTOM, 0, 0);
+                    filterField.requestFocus();
                 });
             }
             text.setOnMouseEntered((MouseEvent t) -> {

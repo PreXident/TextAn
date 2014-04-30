@@ -5,33 +5,45 @@ import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.SplitException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
+import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.RelationInfo;
+import java.net.URL;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
-
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 
 /**
  * Controls editing the report relations.
@@ -110,7 +122,7 @@ public class ReportRelationsController extends ReportWizardController {
     boolean dragging = false;
 
     /** Context menu with entity selection. */
-    ContextMenu contextMenu;
+    ContextMenu contextMenu = new ContextMenu();
 
     /** Localization controller. */
     ResourceBundle resourceBundle;
@@ -121,7 +133,20 @@ public class ReportRelationsController extends ReportWizardController {
     /** Currently selected relation. */
     FXRelationBuilder selectedRelation;
 
+    /** Texts assigned to objects. */
     Map<Object, List<Text>> objectWords = new HashMap<>();
+
+    /** TextField in ContextMenu with filter. */
+    TextField filterField;
+
+    /** List with all relation types. */
+    ObservableList<RelationType> allTypes;
+
+    /** ListView in ContextMenu with list of relation types. */
+    ListView<RelationType> listView;
+
+    /** Content of {@link #textFlow}. */
+    List<Text> texts;
 
     @FXML
     private void add() {
@@ -197,12 +222,39 @@ public class ReportRelationsController extends ReportWizardController {
                     newTexts.stream().forEach(txt -> Utils.styleTextBackground(txt, id));
                 }
         });
+        //create popup
+        BorderPane border = new BorderPane();
+        listView = new ListView<>();
+        listView.setPrefHeight(100);
+        border.setCenter(listView);
+        filterField = new TextField();
+        filterField.textProperty().addListener(e -> {
+            listView.setItems(allTypes.filtered(t -> {
+                final String filter = filterField.getText();
+                if (filter == null || filter.isEmpty()) {
+                    return true;
+                }
+                if (t == null) {
+                    return false;
+                }
+                return t.getName().toLowerCase().contains(filter.toLowerCase());
+            }));
+        });
+        filterField.setOnAction(ev -> {
+            if (listView.getItems().size() == 1) {
+                contextMenu.hide();
+                final RelationType rt = listView.getItems().get(0);
+                assignRelationToSelectedTexts(rt);
+            }
+        });
+        border.setTop(filterField);
+        contextMenu = new ContextMenu(new CustomMenuItem(border, true));
     }
 
     @Override
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
-        final List<Text> texts = new ArrayList<>();
+        texts = new ArrayList<>();
         words = pipeline.getReportWords();
         for (final Word word: words) {
             final Text text = new Text(word.getWord());
@@ -292,61 +344,48 @@ public class ReportRelationsController extends ReportWizardController {
                 if (dragging) {
                     dragging = false;
                     contextMenu.show(texts.get(lastDragged), Side.BOTTOM, 0, 0);
+                    filterField.requestFocus();
                 }
             });
             texts.add(text);
         }
         textFlow.getChildren().clear();
         textFlow.getChildren().addAll(texts);
-
-        final EventHandler<ActionEvent> eh = (ActionEvent t) -> {
-            //relation type id in userdata
-            final RelationType type = (RelationType)((MenuItem) t.getSource()).getUserData();
-            if (type == null) {
-                for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
-                    words.get(i).setRelation(null);
-                    Utils.unstyleText(texts.get(i));
-                }
-                return;
+        //
+        listView.setCellFactory(new Callback<ListView<RelationType>, ListCell<RelationType>>() {
+            @Override
+            public ListCell<RelationType> call(ListView<RelationType> p) {
+                return new ListCell<RelationType>() {
+                    {
+                        this.setOnMouseClicked((MouseEvent t) -> {
+                            contextMenu.hide();
+                            @SuppressWarnings("unchecked")
+                            final RelationType rt = ((ListCell<RelationType>) t.getSource()).getItem();
+                            assignRelationToSelectedTexts(rt);
+                        });
+                    }
+                    @Override
+                    protected void updateItem(RelationType t, boolean empty) {
+                        super.updateItem(t, empty);
+                        if (empty) {
+                            setText("");
+                            return;
+                        }
+                        if (t != null) {
+                            setText(t.getName());
+                        } else {
+                            setText(Utils.localize(resourceBundle, "relation.none"));
+                        }
+                    }
+                };
             }
-            final FXRelationBuilder builder = new FXRelationBuilder(type);
-            try {
-                Pair<Integer, Integer> bounds = builder.add(words, firstSelectedIndex, lastSelectedIndex, i -> Utils.unstyleText(texts.get(i)));
-                for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
-                    Utils.styleText(texts.get(i), "RELATION", ~type.getId());
-                }
-                clearSelectedRelationBackground();
-                selectedRelation = builder;
-                table.setItems(builder.getData());
-            } catch (SplitException ex) {
-                callWithContentBackup(() -> {
-                    createDialog()
-                            .owner(getDialogOwner(root))
-                            .title(Utils.localize(resourceBundle, "error.split.entities"))
-                            .showException(ex);
-                });
-                ex.printStackTrace();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                callWithContentBackup(() -> {
-                    createDialog()
-                            .owner(getDialogOwner(root))
-                            .title(Utils.localize(resourceBundle, "error"))
-                            .showException(ex);
-                });
-            }
-        };
-
-        contextMenu = new ContextMenu();
-        MenuItem noRelation = new MenuItem(Utils.localize(resourceBundle, "relation.none"));
-        noRelation.setOnAction(eh);
-        contextMenu.getItems().add(noRelation);
-        for (RelationType relType : pipeline.getClient().getRelationTypesList()) {
-            final MenuItem mi = new MenuItem(relType.getName());
-            mi.setOnAction(eh);
-            mi.setUserData(relType); //relation type id to userdata
-            contextMenu.getItems().add(mi);
-        }
+        });
+        final List<RelationType> types = pipeline.getClient().getRelationTypesList();
+        final Collator collator = Collator.getInstance();
+        Collections.sort(types, (o1, o2) -> collator.compare(o1.getName(), o2.getName()));
+        types.add(0, null); //None relation
+        allTypes = FXCollections.observableArrayList(types);
+        listView.setItems(allTypes);
 
         objectColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(
                 pipeline.getReportEntities().stream()
@@ -356,6 +395,49 @@ public class ReportRelationsController extends ReportWizardController {
         )));
     }
 
+    /**
+     * Assigns relation to selected texts.
+     * @param relation RelationType to assign
+     */
+    protected void assignRelationToSelectedTexts(final RelationType relation) {
+        if (relation == null) {
+            for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
+                words.get(i).setRelation(null);
+                Utils.unstyleText(texts.get(i));
+            }
+            return;
+        }
+        final FXRelationBuilder builder = new FXRelationBuilder(relation);
+        try {
+            Pair<Integer, Integer> bounds = builder.add(words, firstSelectedIndex, lastSelectedIndex, i -> Utils.unstyleText(texts.get(i)));
+            for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
+                Utils.styleText(texts.get(i), "RELATION", ~relation.getId());
+            }
+            clearSelectedRelationBackground();
+            selectedRelation = builder;
+            table.setItems(builder.getData());
+        } catch (SplitException ex) {
+            callWithContentBackup(() -> {
+                createDialog()
+                        .owner(getDialogOwner(root))
+                        .title(Utils.localize(resourceBundle, "error.split.entities"))
+                        .showException(ex);
+            });
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            callWithContentBackup(() -> {
+                createDialog()
+                        .owner(getDialogOwner(root))
+                        .title(Utils.localize(resourceBundle, "error"))
+                        .showException(ex);
+            });
+        }
+    }
+
+    /**
+     * Clears background of the selected relation.
+     */
     protected void clearSelectedRelationBackground() {
         if (selectedRelation != null) {
              selectedRelation.getData().stream()
