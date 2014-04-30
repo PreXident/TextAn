@@ -1,17 +1,12 @@
 package cz.cuni.mff.ufal.textan.server;
 
+import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.configs.AppConfig;
-import cz.cuni.mff.ufal.textan.server.configs.WebAppConfig;
-import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 /**
  * Server entry point.
@@ -25,40 +20,21 @@ public class AppEntry {
     public static void main(String[] args) {
 
         try {
-
-            //Create root aplication context
+            //Create root application context
             AbstractApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
             context.registerShutdownHook();
 
-            Server server = (Server) context.getBean("server");
-
-            ServletHolder servletHolder = new ServletHolder(new CXFServlet());
-
-            //Setup servlet handler
-            ServletContextHandler servletContextHandler = new ServletContextHandler();
-            servletContextHandler.setContextPath("/");
-            servletContextHandler.addServlet(servletHolder, "/soap/*");
-            servletContextHandler.setInitParameter("contextConfigLocation", WebAppConfig.class.getName());
-
-            //Create root spring's web application context for servlets
-            AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
-            webContext.setParent(context);
-            webContext.setServletContext(servletContextHandler.getServletContext());
-
-            //Register root context
-            servletContextHandler.addEventListener(new ContextLoaderListener(webContext));
-
-            server.setHandler(servletContextHandler);
+            Server server = context.getBean(Server.class);
+            CommandInvoker invoker = context.getBean(CommandInvoker.class);
 
             LOG.info("Start server.");
             server.start();
-
-            LOG.info("Server running.");
-            server.join();
+            LOG.info("Server command invoker");
+            invoker.start();
 
         } catch (Exception e) {
 
-            LOG.error("Unexpected exception", e);
+            LOG.error("Unexpected exception: ", e);
             System.exit(1);
         }
     }
