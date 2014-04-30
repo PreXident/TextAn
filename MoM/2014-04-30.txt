@@ -1,0 +1,33 @@
+Kuba is missing.
+
+Adam:
+- adding objects works
+- all context menus in pipeline uses the same pattern
+
+Peter:
+- improved saving document webservice api
+- multiple connections to db
+- started implementation of save service
+
+Venca:
+- researched ENVERS for logging, found that it's too complex for us
+- logging will done by Interceptors (triggers in hibernate)
+
+Tam:
+- designed method for machine learning, needs consulting with Ondrej
+  - problems with dynamic lists for classification
+
+HWK:
+- Adam, merge server-impl to client and work on the changes there
+- Adam, down arrow to switch to the list in context menus
+- Adam, only one list for ranked objects and objects from db (with checkbox to display db objects)
+- Adam, back buttons for pipeline
+- Adam, buttons on graph for picking/translating (and maybe other for filtering)
+- Adam, close button for windows
+- Peter, finish saving
+- Venca, finish logic clock and versioning
+- Peter, use versioning and improve 
+- Peter, merge TextPro and Nametag to master branch
+- think about changes on document during processing
+
+Next meeting as usual (maybe with Ondrej)
