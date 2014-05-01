@@ -1,6 +1,10 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.RelationOccurrence;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Object;
+import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import java.util.List;
 
@@ -19,6 +23,12 @@ public abstract class RelationBuilder extends AbstractBuilder {
      */
     protected final List<? extends IRelationInfo> data = createRelationInfos();
 
+    /** Anchors's position in report. */
+    protected int position;
+
+    /** Relations' anchor. */
+    protected String alias;
+
     /**
      * Only constructor.
      * @param type relation type
@@ -35,6 +45,8 @@ public abstract class RelationBuilder extends AbstractBuilder {
         return type;
     }
 
+    protected abstract List<? extends IRelationInfo> createRelationInfos();
+
     @Override
     protected RelationBuilder extract(final Word word) {
         return word.getRelation();
@@ -50,10 +62,51 @@ public abstract class RelationBuilder extends AbstractBuilder {
         word.setRelation(null);
     }
 
-    protected abstract List<? extends IRelationInfo> createRelationInfos();
+    /**
+     * Creates new Relation from the builder.
+     * @return new Relation from the builder
+     */
+    public cz.cuni.mff.ufal.textan.commons.models.Relation toRelation() {
+        final Relation relation = new Relation(-index, type);
+        for (IRelationInfo relInfo : data) {
+            relation.getObjects().add(new Pair<>(relInfo.getObject(), relInfo.getOrder()));
+        }
+        return relation.toRelation();
+    }
 
+    /**
+     * Creates new RelationOccurrence from the builder.
+     * Returns null for if the relation has no anchor
+     * @return new RelationOccurrence from the builder
+     */
+    public RelationOccurrence toRelationOccurrence() {
+        if (alias == null) {
+            return null;
+        }
+        final RelationOccurrence result = new RelationOccurrence();
+        result.setRelationId(-index);
+        final Occurrence occurrence = new Occurrence();
+        occurrence.setPosition(position);
+        occurrence.setValue(alias);
+        result.setAnchor(occurrence);
+        return result;
+    }
+
+    /**
+     * Simple holder for object to relation assignments.
+     */
     public interface IRelationInfo {
-        int getOrder();
+
+        /**
+         * Returns assigned object.
+         * @return assigned object
+         */
         Object getObject();
+
+        /**
+         * Returns assigned object's order.
+         * @return assigned object's order
+         */
+        int getOrder();
     }
 }

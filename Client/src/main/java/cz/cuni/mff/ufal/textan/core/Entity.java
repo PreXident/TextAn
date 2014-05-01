@@ -1,5 +1,7 @@
 package cz.cuni.mff.ufal.textan.core;
 
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.ObjectOccurrence;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -126,5 +128,19 @@ public class Entity {
         result.setLength(length);
         result.setType(type);
         return result;
+    }
+
+    /**
+     * Creates new webservice ObjectOccurrence.
+     * @return new webservice ObjectOccurrence
+     */
+    public ObjectOccurrence toObjectOccurrence() {
+        final ObjectOccurrence occurrence = new ObjectOccurrence();
+        occurrence.setObjectId(candidate.getId());
+        final Occurrence o = new Occurrence();
+        o.setPosition(position);
+        o.setValue(value);
+        occurrence.setAlias(o);
+        return occurrence;
     }
 }

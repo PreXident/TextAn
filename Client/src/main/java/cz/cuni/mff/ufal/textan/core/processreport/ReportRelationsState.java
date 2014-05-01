@@ -49,21 +49,29 @@ final class ReportRelationsState extends State {
     @Override
     public void setReportRelations(final ProcessReportPipeline pipeline, final List<Word> words) {
         pipeline.reportWords = words;
-        final List<Relation> rels = pipeline.reportRelations;
+        final List<RelationBuilder> rels = pipeline.reportRelations;
         rels.clear();
         RelationBuilder builder = null;
+        int start = 0;
+        int counter = 0;
+        StringBuilder alias = new StringBuilder();
         for (Word word : words) {
             if (word.getRelation() != builder) {
                 if (builder != null) {
-                    builder.index = rels.size();
-                    rels.add(createRelation(builder));
+                    builder.index = ++counter;
+                    builder.position = start;
+                    builder.alias = alias.toString();
+                    rels.add(builder);
                 }
+                start = word.getStart();
+                alias.setLength(0);
                 builder = word.getRelation();
             }
+            alias.append(word.getWord());
         }
         if (builder != null) {
-            builder.index = rels.size();
-            rels.add(createRelation(builder));
+            builder.index = ++counter;
+            rels.add(builder);
         }
         pipeline.reportRelations = rels;
         pipeline.client.saveProcessedDocument(

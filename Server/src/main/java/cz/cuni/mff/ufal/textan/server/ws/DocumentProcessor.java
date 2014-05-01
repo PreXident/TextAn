@@ -90,12 +90,14 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
                 objects.put(commonsObject.getId(), Object.fromCommonsObject(commonsObject));
             }
 
-            List<Pair<Entity, Object>> entityObjectAssignments = new ArrayList<>(saveProcessedDocumentById.getEntityObjectAssignments().size());
-            for (SaveProcessedDocumentById.EntityObjectAssignment commonsEntityObjectPair : saveProcessedDocumentById.getEntityObjectAssignments()) {
+            List<Pair<Entity, Object>> entityObjectAssignments = new ArrayList<>(saveProcessedDocumentById.getObjectOccurrences().size());
+            for (SaveProcessedDocumentById.ObjectOccurrence occurrence : saveProcessedDocumentById.getObjectOccurrences()) {
+                final String alias = occurrence.getAlias().getValue();
+                final Object obj = objects.get(occurrence.getObjectId());
                 entityObjectAssignments.add(
                         new Pair<>(
-                            Entity.fromCommonsEntity(commonsEntityObjectPair.getEntity()),
-                            objects.get(commonsEntityObjectPair.getObjectId())
+                            new Entity(alias, occurrence.getAlias().getPosition(), alias.length(), obj.getType().getId()),
+                            obj
                         )
                 );
             }
@@ -241,12 +243,14 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             objects.put(commonsObject.getId(), Object.fromCommonsObject(commonsObject));
         }
 
-        List<Pair<Entity, Object>> entityObjectAssignments = new ArrayList<>(saveProcessedDocumentFromString.getEntityObjectAssignments().size());
-        for (SaveProcessedDocumentFromString.EntityObjectAssignment commonsEntityObjectPair : saveProcessedDocumentFromString.getEntityObjectAssignments()) {
+        List<Pair<Entity, Object>> entityObjectAssignments = new ArrayList<>(saveProcessedDocumentFromString.getObjectOccurrences().size());
+        for (SaveProcessedDocumentFromString.ObjectOccurrence occurrence : saveProcessedDocumentFromString.getObjectOccurrences()) {
+            final String alias = occurrence.getAlias().getValue();
+            final Object obj = objects.get(occurrence.getObjectId());
             entityObjectAssignments.add(
                     new Pair<>(
-                            Entity.fromCommonsEntity(commonsEntityObjectPair.getEntity()),
-                            objects.get(commonsEntityObjectPair.getObjectId())
+                            new Entity(alias, occurrence.getAlias().getPosition(), alias.length(), obj.getType().getId()),
+                            obj
                     )
             );
         }

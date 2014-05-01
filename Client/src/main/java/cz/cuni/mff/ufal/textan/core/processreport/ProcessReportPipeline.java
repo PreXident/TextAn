@@ -25,14 +25,14 @@ public class ProcessReportPipeline {
     /** Report text. TOODO change test content to empty string */
     protected String reportText = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
 
-    /** Report entities. */
+    /** Report words. */
     protected List<Word> reportWords = new ArrayList<>();
 
     /** Report entities. */
     protected List<Entity> reportEntities = new ArrayList<>();
 
     /** Report relations. */
-    protected List<Relation> reportRelations = new ArrayList<>();
+    protected List<RelationBuilder> reportRelations = new ArrayList<>();
 
     /** State of the pipeline. */
     protected State state = LoadReportState.getInstance();
@@ -185,7 +185,7 @@ public class ProcessReportPipeline {
      * Returns report's relations.
      * @return report's relations
      */
-    public List<Relation> getReportRelations() {
+    public List<RelationBuilder> getReportRelations() {
         return reportRelations;
     }
 

@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.server.services.DirectDataAccessService;
 import cz.cuni.mff.ufal.textan.server.services.GraphService;
 import cz.cuni.mff.ufal.textan.server.services.NamedEntityRecognizerService;
 import cz.cuni.mff.ufal.textan.server.services.ObjectAssignmentService;
+import cz.cuni.mff.ufal.textan.server.services.SaveService;
 import cz.cuni.mff.ufal.textan.server.ws.DataProvider;
 import cz.cuni.mff.ufal.textan.server.ws.DocumentProcessor;
 import org.apache.cxf.bus.spring.SpringBus;
@@ -34,6 +35,9 @@ public class WebAppConfig {
 
     @Autowired
     private ObjectAssignmentService objectAssignmentService;
+
+    @Autowired
+    private SaveService saveService;
 
     /**
      * Creates spring bean with bus for CXF initialization
