@@ -37,6 +37,7 @@ dependencies {
 
     compile project(':Commons')
     compile project(':Data')
+    compile project(':NameTagIntegration')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
