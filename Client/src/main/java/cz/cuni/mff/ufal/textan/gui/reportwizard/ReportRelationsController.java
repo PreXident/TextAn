@@ -38,6 +38,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
@@ -240,6 +241,12 @@ public class ReportRelationsController extends ReportWizardController {
                 return t.getName().toLowerCase().contains(filter.toLowerCase());
             }));
         });
+        filterField.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.DOWN && listView.getItems().size() > 0) {
+                listView.getSelectionModel().select(0);
+                listView.requestFocus();
+            }
+        });
         filterField.setOnAction(ev -> {
             if (listView.getItems().size() == 1) {
                 contextMenu.hide();
@@ -352,6 +359,14 @@ public class ReportRelationsController extends ReportWizardController {
         textFlow.getChildren().clear();
         textFlow.getChildren().addAll(texts);
         //
+        listView.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                contextMenu.hide();
+                final RelationType item =
+                        listView.getSelectionModel().getSelectedItem();
+                assignRelationToSelectedTexts(item);
+            }
+        });
         listView.setCellFactory(new Callback<ListView<RelationType>, ListCell<RelationType>>() {
             @Override
             public ListCell<RelationType> call(ListView<RelationType> p) {

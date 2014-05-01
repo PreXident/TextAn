@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -25,6 +27,8 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
@@ -128,6 +132,12 @@ public class ReportEntitiesController extends ReportWizardController {
                 assignEntityToSelectedTexts(ot);
             }
         });
+        filterField.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.DOWN && listView.getItems().size() > 0) {
+                listView.getSelectionModel().select(0);
+                listView.requestFocus();
+            }
+        });
         border.setTop(filterField);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
     }
@@ -182,6 +192,13 @@ public class ReportEntitiesController extends ReportWizardController {
         textFlow.getChildren().clear();
         textFlow.getChildren().addAll(texts);
         //
+        listView.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                contextMenu.hide();
+                final ObjectType item = listView.getSelectionModel().getSelectedItem();
+                assignEntityToSelectedTexts(item);
+            }
+        });
         listView.setCellFactory(new Callback<ListView<ObjectType>, ListCell<ObjectType>>() {
             @Override
             public ListCell<ObjectType> call(ListView<ObjectType> p) {
