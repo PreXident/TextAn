@@ -90,6 +90,6 @@ public class WebAppConfig {
      */
     @Bean
     public DocumentProcessor documentProcessor() {
-        return new DocumentProcessor(namedEntityRecognizerService, objectAssignmentService);
+        return new DocumentProcessor(namedEntityRecognizerService, objectAssignmentService, saveService);
     }
 }

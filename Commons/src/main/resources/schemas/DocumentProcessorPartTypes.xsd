@@ -117,17 +117,22 @@
     <xs:complexType name="SaveProcessedDocumentById">
         <xs:sequence>
             <xs:element name="documentId" type="xs:long"/>
-            <xs:element name="objects">
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="objectOccurrence" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="objectId" type="xs:long"/>
+                        <xs:element name="alias" type="Occurrence"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="relations">
+            <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="relationOccurrence" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
+                        <!-- TODO: make sure if it's all -->
+                        <xs:element name="relationId" type="xs:long" />
+                        <xs:element name="anchor" type="Occurrence"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -144,17 +149,22 @@
     <xs:complexType name="SaveProcessedDocumentFromString">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
-            <xs:element name="objects">
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="objectOccurrence" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="objectId" type="xs:long"/>
+                        <xs:element name="alias" type="Occurrence"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="relations">
+            <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="relationOccurrence" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
+                        <!-- TODO: make sure if it's all -->
+                        <xs:element name="relationId" type="xs:long" />
+                        <xs:element name="anchor" type="Occurrence"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -207,4 +217,10 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="Occurrence">
+        <xs:sequence>
+            <xs:element name="value" type="xs:string"/>
+            <xs:element name="position" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>

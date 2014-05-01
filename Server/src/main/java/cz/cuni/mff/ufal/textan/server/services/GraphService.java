@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A service which provides construction of graphs.
+ * A service which provides a construction of graphs.
  *
  * @author Petr Fanta
  */

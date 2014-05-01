@@ -1,14 +1,20 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
+import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.env.Environment;
-
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 /**
  * The root spring configuration.
@@ -22,13 +28,16 @@ import org.springframework.core.env.Environment;
 public class AppConfig {
 
     @Autowired
+    private AbstractApplicationContext context;
+
+    @Autowired
     private Environment serverProperties;
 
     @Autowired
     private DataConfig dataConfig;
 
     /**
-     * Creates preconfigured Jetty server.
+     * Creates a pre-configured Jetty server.
      *
      * @return the server
      * @see org.eclipse.jetty.server.Server
@@ -51,7 +60,36 @@ public class AppConfig {
 
         server.setConnectors(new Connector[]{connector});
 
+        ServletHolder servletHolder = new ServletHolder(new CXFServlet());
+
+        //Setup servlet handler
+        ServletContextHandler servletContextHandler = new ServletContextHandler();
+        servletContextHandler.setContextPath("/");
+        servletContextHandler.addServlet(servletHolder, "/soap/*");
+        servletContextHandler.setInitParameter("contextConfigLocation", WebAppConfig.class.getName());
+
+        //Create root spring's web application context for servlets
+        AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
+        webContext.setParent(context);
+        webContext.setServletContext(servletContextHandler.getServletContext());
+
+        //Register root context
+        servletContextHandler.addEventListener(new ContextLoaderListener(webContext));
+
+        server.setHandler(servletContextHandler);
+
         return server;
     }
 
+
+    /**
+     * Creates a command invoker.
+     *
+     * @return the command invoker
+     * @see cz.cuni.mff.ufal.textan.server.commands.CommandInvoker
+     */
+    @Bean(destroyMethod = "stop")
+    public CommandInvoker commandInvoker() {
+        return new CommandInvoker();
+    }
 }

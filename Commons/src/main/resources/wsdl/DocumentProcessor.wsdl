@@ -129,6 +129,7 @@
         <wsdl:operation name="saveProcessedDocumentById">
             <wsdl:input message="ws:saveProcessedDocumentById"/>
             <wsdl:output message="ws:saveProcessedDocumentByIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="getProblems">
@@ -222,6 +223,9 @@
             <wsdl:output>
                 <soap:body parts="saveProcessedDocumentByIdResponse" use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal" />
+            </wsdl:fault>
         </wsdl:operation>
     
         <wsdl:operation name="getProblems">
