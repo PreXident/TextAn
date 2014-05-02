@@ -95,6 +95,13 @@ public class ProcessReportPipeline {
     }
 
     /**
+     * Moves one step back in pipeline.
+     */
+    public void back() {
+        state.back(this);
+    }
+
+    /**
      * Selects database as a source of the new report.
      * Available in {@link State.StateType#LOAD} state. Proceeds to next State.
      * @see State#selectDatabaseDatasource(cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline)

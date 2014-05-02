@@ -157,6 +157,11 @@ public class ReportRelationsController extends ReportWizardController {
     }
 
     @FXML
+    private void back() {
+        pipeline.back();
+    }
+
+    @FXML
     private void cancel() {
         closeContainer();
     }

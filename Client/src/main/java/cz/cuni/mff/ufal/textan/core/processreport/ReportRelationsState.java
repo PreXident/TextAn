@@ -38,12 +38,9 @@ final class ReportRelationsState extends State {
         return State.StateType.EDIT_RELATIONS;
     }
 
-    private Relation createRelation(final RelationBuilder builder) {
-        final Relation relation = new Relation(-1, builder.getType());
-        for (IRelationInfo relInfo : builder.data) {
-            relation.getObjects().add(new Pair<>(relInfo.getObject(), relInfo.getOrder()));
-        }
-        return relation;
+    @Override
+    public void back(final ProcessReportPipeline pipeline) {
+        pipeline.setState(ReportObjectsState.getInstance());
     }
 
     @Override

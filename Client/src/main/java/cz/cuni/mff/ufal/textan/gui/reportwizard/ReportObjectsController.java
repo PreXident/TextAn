@@ -113,7 +113,13 @@ public class ReportObjectsController extends ReportWizardController {
     /** List of all new objects. */
     ObservableList<Object> newObjects = FXCollections.observableArrayList();
 
+    /** CheckBox for adding all objects from db to {@link #dbListView}. */
     CheckBox allObjectsCheckBox;
+
+    @FXML
+    public void back() {
+        pipeline.back();
+    }
 
     @FXML
     private void cancel() {

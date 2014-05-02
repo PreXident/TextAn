@@ -106,6 +106,11 @@ public class ReportEntitiesController extends ReportWizardController {
     List<Text> texts;
 
     @FXML
+    private void back() {
+        pipeline.back();
+    }
+
+    @FXML
     private void cancel() {
         closeContainer();
     }
