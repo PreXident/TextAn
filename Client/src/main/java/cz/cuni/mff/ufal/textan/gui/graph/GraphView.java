@@ -58,9 +58,14 @@ public class GraphView extends SwingNode {
      */
     final Properties settings;
 
+    /** Graph visualizator. */
     final VisualizationViewer<Object, Relation> visualizator;
 
+    /** Graph context menu. */
     final ContextMenu contextMenu;
+
+    /** Mouse handler. */
+    final DefaultModalGraphMouse<Integer,String> graphMouse;
 
     public GraphView(final Properties settings, final Map<Long, Object> objects,
             final Set<Relation> relations, final long rootId) {
@@ -139,9 +144,9 @@ public class GraphView extends SwingNode {
         visualizator.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<>());
         visualizator.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.CNTR);
         // Create a graph mouse and add it to the visualization component
-        DefaultModalGraphMouse<Integer,String> gm = new DefaultModalGraphMouse<>();
-        gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
-        gm.add(new AbstractPopupGraphMousePlugin() {
+        graphMouse = new DefaultModalGraphMouse<>();
+        graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
+        graphMouse.add(new AbstractPopupGraphMousePlugin() {
             @Override
             protected void handlePopup(MouseEvent e) {
                 System.out.println("[" + new Date().getTime() + "] HANDLING!");
@@ -171,8 +176,8 @@ public class GraphView extends SwingNode {
                 }
             }
         });
-        visualizator.setGraphMouse(gm);
-        visualizator.addKeyListener(new DefaultModalGraphMouse.ModeKeyAdapter(gm)); //press t and p to change modes!
+        visualizator.setGraphMouse(graphMouse);
+        visualizator.addKeyListener(new DefaultModalGraphMouse.ModeKeyAdapter(graphMouse)); //press t and p to change modes!
         //
         contextMenu = new ContextMenu();
         final MenuItem mi = new MenuItem("Yes!");
@@ -208,11 +213,25 @@ public class GraphView extends SwingNode {
         }).start();
     }
 
+    /**
+     * Switches graph to pick mode.
+     */
+    public void pick() {
+        graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
+    }
+
     @Override
     public void resize(double width, double height) {
         super.resize(width, height);
         SwingUtilities.invokeLater(() -> {
             visualizator.setSize((int) width, (int) height);
         });
+    }
+
+    /**
+     * Switches graph to transform mode.
+     */
+    public void transform() {
+        graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
     }
 }
