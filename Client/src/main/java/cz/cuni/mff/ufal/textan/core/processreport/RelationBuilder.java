@@ -15,6 +15,28 @@ import java.util.List;
  */
 public abstract class RelationBuilder extends AbstractBuilder {
 
+    /** Cleaner for cleaning relation builders from words. */
+    private static final RelationBuilder CLEANER = new RelationBuilder(null) {
+        @Override
+        protected List<? extends IRelationInfo> createRelationInfos() {
+            return null;
+        }
+    };
+
+    /**
+     * Cleans relations from words.
+     * @param words list of words
+     * @param from starting index
+     * @param to final index (inclusive)
+     * @param clearer functor to clear trimmed words
+     * @throws SplitException if an relation should be split
+     */
+    static public void clear(final List<Word> words, final int from,
+            final int to, final IClearer clearer) throws SplitException {
+        CLEANER.clean(words, from, to, clearer);
+    }
+
+
     /** Relation type. */
     protected final RelationType type;
 

@@ -3,9 +3,11 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.RelationType;
+import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.IClearer;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.SplitException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
+import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.RelationInfo;
@@ -56,6 +58,7 @@ public class ReportRelationsController extends ReportWizardController {
 
     /**
      * Adds clazz style class to all items in the list.
+     * @param clazz style class to add
      * @param list items to which add the style class
      */
     static void addClass(final String clazz, final Iterable<? extends Node> list) {
@@ -80,6 +83,7 @@ public class ReportRelationsController extends ReportWizardController {
 
     /**
      * Removes clazz style class from all items in the list.
+     * @param clazz class to be added
      * @param list items from which remove the style class
      */
     static void removeClass(final String clazz, final Iterable<? extends Node> list) {
@@ -420,16 +424,15 @@ public class ReportRelationsController extends ReportWizardController {
      * @param relation RelationType to assign
      */
     protected void assignRelationToSelectedTexts(final RelationType relation) {
-        if (relation == null) {
-            for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
-                words.get(i).setRelation(null);
-                Utils.unstyleText(texts.get(i));
-            }
-            return;
-        }
-        final FXRelationBuilder builder = new FXRelationBuilder(relation);
         try {
-            Pair<Integer, Integer> bounds = builder.add(words, firstSelectedIndex, lastSelectedIndex, i -> Utils.unstyleText(texts.get(i)));
+            final IClearer clearer = i -> Utils.unstyleText(texts.get(i));
+            if (relation == null) {
+                RelationBuilder.clear(words, firstSelectedIndex, lastSelectedIndex, clearer);
+                return;
+            }
+            final FXRelationBuilder builder = new FXRelationBuilder(relation);
+            final Pair<Integer, Integer> bounds =
+                    builder.add(words, firstSelectedIndex, lastSelectedIndex, clearer);
             for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
                 Utils.styleText(texts.get(i), "RELATION", ~relation.getId());
             }

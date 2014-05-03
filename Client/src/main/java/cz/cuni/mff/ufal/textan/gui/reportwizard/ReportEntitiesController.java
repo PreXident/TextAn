@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
+import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.IClearer;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.SplitException;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
@@ -258,17 +259,16 @@ public class ReportEntitiesController extends ReportWizardController {
 
     private void assignEntityToSelectedTexts(final ObjectType ot) {
         contextMenu.hide();
-        if (ot == null) {
-            for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
-                words.get(i).setEntity(null);
-                Utils.unstyleText(texts.get(i));
-            }
-            return;
-        }
-        final long id = ot.getId();
-        final EntityBuilder e = new EntityBuilder(id);
         try {
-            Pair<Integer, Integer> bounds = e.add(words, firstSelectedIndex, lastSelectedIndex, i -> Utils.unstyleText(texts.get(i)));
+            final IClearer clearer = i -> Utils.unstyleText(texts.get(i));
+            if (ot == null) {
+                EntityBuilder.clear(words, firstSelectedIndex, lastSelectedIndex, clearer);
+                return;
+            }
+            final long id = ot.getId();
+            final EntityBuilder e = new EntityBuilder(id);
+            final Pair<Integer, Integer> bounds =
+                    e.add(words, firstSelectedIndex, lastSelectedIndex, clearer);
             for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
                 Utils.styleText(texts.get(i), "ENTITY", id);
             }
