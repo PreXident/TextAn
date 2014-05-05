@@ -69,12 +69,12 @@ public class ObjectType {
      *
      * @return the object type table
      */
-    public ObjectTypeTable toObjectTypeTable() {
-        ObjectTypeTable objectTypeTable = new ObjectTypeTable();
-        objectTypeTable.setId(id);
-        objectTypeTable.setName(name);
-        return objectTypeTable;
-    }
+//    public ObjectTypeTable toObjectTypeTable() {
+//        ObjectTypeTable objectTypeTable = new ObjectTypeTable();
+//        objectTypeTable.setId(id);
+//        objectTypeTable.setName(name);
+//        return objectTypeTable;
+//    }
 
     /**
      * Converts an instance to an {@link cz.cuni.mff.ufal.textan.commons.models.ObjectType}

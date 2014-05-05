@@ -3,10 +3,8 @@ package cz.cuni.mff.ufal.textan.server.services;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.*;
-import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
+import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
-import cz.cuni.mff.ufal.textan.server.models.Occurrence;
-import cz.cuni.mff.ufal.textan.server.models.Relation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,35 +22,37 @@ import java.util.List;
 public class SaveService {
 
     private final IDocumentTableDAO documentTableDAO;
+    private final IObjectTypeTableDAO objectTypeTableDAO;
     private final IObjectTableDAO objectTableDAO;
     private final IAliasTableDAO aliasTableDAO;
     private final IAliasOccurrenceTableDAO aliasOccurrenceTableDAO;
+    private final IRelationTypeTableDAO relationTypeTableDAO;
     private final IRelationTableDAO relationTableDAO;
     private final IRelationOccurrenceTableDAO relationOccurrenceTableDAO;
 
     @Autowired
     public SaveService(
             IDocumentTableDAO documentTableDAO,
-            IObjectTableDAO objectTableDAO,
+            IObjectTypeTableDAO objectTypeTableDAO, IObjectTableDAO objectTableDAO,
             IAliasTableDAO aliasTableDAO,
             IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
-            IRelationTableDAO relationTableDAO,
+            IRelationTypeTableDAO relationTypeTableDAO, IRelationTableDAO relationTableDAO,
             IRelationOccurrenceTableDAO relationOccurrenceTableDAO) {
 
         this.documentTableDAO = documentTableDAO;
+        this.objectTypeTableDAO = objectTypeTableDAO;
         this.objectTableDAO = objectTableDAO;
         this.aliasTableDAO = aliasTableDAO;
         this.aliasOccurrenceTableDAO = aliasOccurrenceTableDAO;
+        this.relationTypeTableDAO = relationTypeTableDAO;
         this.relationTableDAO = relationTableDAO;
         this.relationOccurrenceTableDAO = relationOccurrenceTableDAO;
     }
-
 
     /*
     * TODO:
     *  - relation occurrence?
     * */
-
 
     public boolean save(
             String text,
@@ -98,6 +98,8 @@ public class SaveService {
             List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences,
             EditingTicket ticket) throws IdNotFoundException {
 
+        documentTable.setProcessedDateToNow();
+
         //create hashmaps for objects, objects id mappings
         HashMap<Long, Object> objectHashMap = new HashMap<>();
         for (Object object : objects) {
@@ -119,7 +121,13 @@ public class SaveService {
 
                 if (!objectIdMapping.containsKey(objectId)) {
                     //add object
-                    objectTable = object.toObjectTable();
+                    objectTable = new ObjectTable();
+                    ObjectTypeTable objectTypeTable = objectTypeTableDAO.find(object.getType().getId());
+                    if (objectTypeTable == null) {
+                        throw new IdNotFoundException("objectTypeId", object.getType().getId());
+                    }
+                    objectTable.setObjectType(objectTypeTable);
+
                     objectTableDAO.add(objectTable);
                     objectIdMapping.put(objectId, objectTable);
                 } else {
@@ -174,7 +182,15 @@ public class SaveService {
 
                 if (!relationIdMapping.containsKey(relationId)) {
 
-                    relationTable = relation.toRelationTable();
+                    relationTable = new RelationTable();
+
+                    RelationTypeTable relationTypeTable = relationTypeTableDAO.find(relation.getType().getId());
+                    if (relationTypeTable == null) {
+                        throw new IdNotFoundException("relationTypeId", relation.getType().getId());
+                    }
+
+                    relationTable.setRelationType(relationTypeTable);
+
                     relationTableDAO.add(relationTable);
                     relationIdMapping.put(relationId, relationTable);
                 } else {
@@ -187,6 +203,25 @@ public class SaveService {
 
             if (relationTable == null) {
                 throw new IdNotFoundException("relationId", relationId);
+            }
+
+            if (relation != null) {
+                for (Pair<Long,Integer> objectInRelation : relation.getObjectsInRelation()) {
+
+                    long objectInRelationId = objectInRelation.getFirst();
+                    int order = objectInRelation.getSecond();
+
+                    ObjectTable objectInRelationTable = objectIdMapping.get(objectInRelationId);
+                    if (objectInRelationTable == null) {
+                        objectInRelationTable = objectTableDAO.find(objectInRelationId);
+
+                        if (objectInRelationTable == null) {
+                            throw new IdNotFoundException("objectInRelationId", objectInRelationId);
+                        }
+                    }
+
+                    relationTable.getObjectsInRelation().add(new InRelationTable(order, relationTable, objectInRelationTable));
+                }
             }
 
             RelationOccurrenceTable relationOccurrenceTable = new RelationOccurrenceTable(relationTable,documentTable, occurrence.getPosition(), occurrence.getValue());

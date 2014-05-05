@@ -118,16 +118,6 @@ public class Object {
         return commonsObject;
     }
 
-    public ObjectTable toObjectTable() {
-        ObjectTable objectTable = new ObjectTable();
-        objectTable.setObjectType(type.toObjectTypeTable());
-        if (!isNew) {
-            objectTable.setId(id);
-        }
-
-        return objectTable;
-    }
-
     @Override
     public boolean equals(java.lang.Object o) {
         if (this == o) return true;

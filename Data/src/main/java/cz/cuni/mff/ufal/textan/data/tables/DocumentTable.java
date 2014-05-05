@@ -54,7 +54,7 @@ public class DocumentTable extends AbstractTable {
     }
     
     public void setProcessedDateToNow() {
-        setProcessedDate(Calendar.getInstance().getTime());
+        setProcessedDate(new Date());
     }
     
     public boolean isProcessed() {

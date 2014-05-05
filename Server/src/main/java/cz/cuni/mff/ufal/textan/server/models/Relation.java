@@ -143,16 +143,6 @@ public class Relation {
         return commonsRelation;
     }
 
-    public RelationTable toRelationTable() {
-        RelationTable relationTable = new RelationTable();
-        relationTable.setRelationType(type.toRelationTypeTable());
-        if (!isNew) {
-            relationTable.setId(id);
-        }
-
-        return relationTable;
-    }
-
     @Override
     public boolean equals(java.lang.Object o) {
         if (this == o) return true;
