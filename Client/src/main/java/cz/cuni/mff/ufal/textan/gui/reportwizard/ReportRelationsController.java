@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Ref;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.IClearer;
@@ -22,6 +23,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -108,6 +110,9 @@ public class ReportRelationsController extends ReportWizardController {
     @FXML
     TableColumn<RelationInfo, Object> objectColumn;
 
+    @FXML
+    ListView<FXRelationBuilder> relationsListView;
+
     /** Texts's tooltip. */
     Tooltip tooltip = new Tooltip("");
 
@@ -161,6 +166,23 @@ public class ReportRelationsController extends ReportWizardController {
     }
 
     @FXML
+    private void addRelation() {
+        clearSelectedRelationBackground();
+        Ref<RelationType> relation = new Ref<>();
+        callWithContentBackup(() -> {
+            relation.val = createDialog()
+                .owner(getDialogOwner(root))
+                .title(Utils.localize(resourceBundle, "select.relation.type"))
+                .showChoices(allTypes);
+        });
+        if (relation.val != null) {
+            selectedRelation = new FXRelationBuilder(relation.val, relationsListView.getItems());
+            table.setItems(selectedRelation.getData());
+            relationsListView.getSelectionModel().select(selectedRelation);
+        }
+    }
+
+    @FXML
     private void back() {
         pipeline.back();
     }
@@ -172,7 +194,9 @@ public class ReportRelationsController extends ReportWizardController {
 
     @FXML
     private void next() {
-        pipeline.setReportRelations(words);
+        final FilteredList<FXRelationBuilder> unanchored =
+                relationsListView.getItems().filtered(rel -> rel.words.isEmpty());
+        pipeline.setReportRelations(words, unanchored);
     }
 
     @FXML
@@ -182,13 +206,25 @@ public class ReportRelationsController extends ReportWizardController {
             if (index >= 0) {
                 final RelationInfo remove = selectedRelation.getData().remove(index);
                 //remove selection background
-                final RelationType type = selectedRelation.getType();
                 final Object obj = remove.getObject();
                 final List<Text> texts = objectWords.get(obj);
                 if (texts != null) {
                     texts.forEach(Utils::unstyleTextBackground);
                 }
             }
+        }
+    }
+
+    @FXML
+    private void removeRelation() {
+        if (selectedRelation != null) {
+            clearSelectedRelationBackground();
+            for (Word w : selectedRelation.words) {
+                w.setRelation(null);
+                final Text t = texts.get(w.getIndex());
+                Utils.unstyleText(t);
+            }
+            relationsListView.getItems().remove(selectedRelation);
         }
     }
 
@@ -265,6 +301,9 @@ public class ReportRelationsController extends ReportWizardController {
         });
         border.setTop(filterField);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
+        //
+        relationsListView.getSelectionModel().selectedItemProperty().addListener(
+                (ov, oldVal, newVal) -> { selectRelation(newVal); });
     }
 
     @Override
@@ -308,6 +347,7 @@ public class ReportRelationsController extends ReportWizardController {
             text.setOnMousePressed(e -> {
                 clearSelectedRelationBackground();
                 selectedRelation = null;
+                relationsListView.getSelectionModel().select(-1);
                 if (!text.getStyleClass().contains(SELECTED) && word.getEntity() == null) {
                     removeSelectedClass(texts);
                     dragging = true;
@@ -318,14 +358,9 @@ public class ReportRelationsController extends ReportWizardController {
                     text.getStyleClass().add(SELECTED);
                 }
                 if (word.getRelation() != null) {
-                    clearSelectedRelationBackground();
-                    selectedRelation = (FXRelationBuilder) word.getRelation();
-                    final RelationType type = selectedRelation.getType();
-                    final long id = type.getId();
-                    selectedRelation.getData().stream()
-                            .flatMap(relInfo -> objectWords.get(relInfo.object.get()).stream())
-                            .forEach(t -> Utils.styleTextBackground(t, id));
-                    table.setItems(selectedRelation.getData());
+                    final FXRelationBuilder relation = (FXRelationBuilder) word.getRelation();
+                    selectRelation(relation);
+                    relationsListView.getSelectionModel().select(relation);
                 } else {
                     clearSelectedRelationBackground();
                     selectedRelation = null;
@@ -428,17 +463,18 @@ public class ReportRelationsController extends ReportWizardController {
             final IClearer clearer = i -> Utils.unstyleText(texts.get(i));
             if (relation == null) {
                 RelationBuilder.clear(words, firstSelectedIndex, lastSelectedIndex, clearer);
+                selectRelation(selectedRelation);
                 return;
             }
-            final FXRelationBuilder builder = new FXRelationBuilder(relation);
+            final FXRelationBuilder builder = new FXRelationBuilder(relation, relationsListView.getItems());
             final Pair<Integer, Integer> bounds =
                     builder.add(words, firstSelectedIndex, lastSelectedIndex, clearer);
             for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
-                Utils.styleText(texts.get(i), "RELATION", ~relation.getId());
+                final Text t = texts.get(i);
+                Utils.unstyleText(t);
+                Utils.styleText(t, "RELATION", ~relation.getId());
             }
-            clearSelectedRelationBackground();
-            selectedRelation = builder;
-            table.setItems(builder.getData());
+            selectRelation(builder);
         } catch (SplitException ex) {
             callWithContentBackup(() -> {
                 createDialog()
@@ -467,5 +503,33 @@ public class ReportRelationsController extends ReportWizardController {
                      .flatMap(relInfo -> objectWords.get(relInfo.object.get()).stream())
                      .forEach(Utils::unstyleTextBackground);
          }
+    }
+
+    /**
+     * Does all necessary steps to select given relation.
+     * Clears backgrounds and old selection, selects relation's words,
+     * prepares backgrounds, sets table content.
+     * @param relation FXRelationBuilder to select
+     */
+    protected void selectRelation(final FXRelationBuilder relation) {
+        clearSelectedRelationBackground();
+        removeSelectedClass(texts);
+        selectedRelation = relation;
+        if (relation == null) {
+            relationsListView.getSelectionModel().select(-1);
+            table.setItems(null);
+            return;
+        }
+        final List<Text> relTexts = relation.words.stream()
+                .map(Word::getIndex)
+                .map(texts::get)
+                .collect(Collectors.toList());
+        addSelectedClass(relTexts);
+        final RelationType type = selectedRelation.getType();
+        final long id = type.getId();
+        selectedRelation.getData().stream()
+                .flatMap(relInfo -> objectWords.get(relInfo.object.get()).stream())
+                .forEach(t -> Utils.styleTextBackground(t, id));
+        table.setItems(selectedRelation.getData());
     }
 }

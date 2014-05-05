@@ -21,6 +21,14 @@ public abstract class RelationBuilder extends AbstractBuilder {
         protected List<? extends IRelationInfo> createRelationInfos() {
             return null;
         }
+
+        @Override
+        protected void unregister(Word word) {
+            final RelationBuilder old = word.getRelation();
+            if (old != null) {
+                old.unregister(word);
+            }
+        }
     };
 
     /**

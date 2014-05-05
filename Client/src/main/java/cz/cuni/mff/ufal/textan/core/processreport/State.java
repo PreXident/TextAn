@@ -106,8 +106,10 @@ public abstract class State {
      * Sets the report's objects.
      * @param pipeline pipeline delegating the request
      * @param words words with assigned relations
+     * @param unanchoredRelations list of unanchored relations
      */
-    public void setReportRelations(final ProcessReportPipeline pipeline, final List<Word> words) {
+    public void setReportRelations(final ProcessReportPipeline pipeline,
+            final List<Word> words, final List<? extends RelationBuilder> unanchoredRelations) {
         throw new IllegalStateException("Cannot set report's relations when in state " + getType());
     }
 
