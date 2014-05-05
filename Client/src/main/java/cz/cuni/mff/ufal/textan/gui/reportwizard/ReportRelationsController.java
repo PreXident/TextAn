@@ -372,7 +372,14 @@ public class ReportRelationsController extends ReportWizardController {
             });
             text.setOnMouseDragEntered(e -> {
                 if (dragging) {
-                    if (word.getEntity() != null) {
+                    boolean overEntity = false;
+                    for (int i = firstSelectedIndex; i <= word.getIndex(); ++i) {
+                        if (words.get(i).getEntity() != null) {
+                            overEntity = true;
+                            break;
+                        }
+                    }
+                    if (overEntity) {
                         dragging = false;
                         for (int i = firstSelectedIndex; i <= lastSelectedIndex; ++i) {
                             texts.get(i).getStyleClass().remove(SELECTED);
