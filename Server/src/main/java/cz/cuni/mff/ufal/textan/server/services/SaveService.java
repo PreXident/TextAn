@@ -224,7 +224,14 @@ public class SaveService {
                 }
             }
 
-            RelationOccurrenceTable relationOccurrenceTable = new RelationOccurrenceTable(relationTable,documentTable, occurrence.getPosition(), occurrence.getValue());
+            RelationOccurrenceTable relationOccurrenceTable;
+            if (occurrence != null) {
+                relationOccurrenceTable = new RelationOccurrenceTable(relationTable, documentTable, occurrence.getPosition(), occurrence.getValue());
+            } else {
+                relationOccurrenceTable = new RelationOccurrenceTable();
+                relationOccurrenceTable.setDocument(documentTable);
+                relationOccurrenceTable.setRelation(relationTable);
+            }
             relationOccurrenceTableDAO.add(relationOccurrenceTable);
         }
 

@@ -14,7 +14,11 @@ public class Occurrence {
     }
 
     public static Occurrence fromCommonsOccurrence(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence commonsOccurrence) {
-        return new Occurrence(commonsOccurrence.getValue(), commonsOccurrence.getPosition());
+        if (commonsOccurrence != null) {
+            return new Occurrence(commonsOccurrence.getValue(), commonsOccurrence.getPosition());
+        } else {
+            return null;
+        }
     }
 
     public String getValue() {
