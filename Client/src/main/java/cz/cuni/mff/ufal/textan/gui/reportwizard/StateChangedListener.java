@@ -28,13 +28,15 @@ public class StateChangedListener implements IStateChangedListener {
      * @param window window containing the textflow
      */
     static private void hackFixTextFlowMouseEvents(final Window window) {
-        window.setPrefWidth(window.getPrefWidth() + 1);
-        new Thread(() -> {
-            try {
-                Thread.sleep(100);
-            } catch (Exception e) { }
-            Platform.runLater(() -> { window.setPrefWidth(window.getPrefWidth() - 1); });
-        }).start();
+        if (!window.prefWidthProperty().isBound()) {
+            window.setPrefWidth(window.getPrefWidth() + 1);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) { }
+                Platform.runLater(() -> { window.setPrefWidth(window.getPrefWidth() - 1); });
+            }).start();
+        }
     }
 
     /** Contains fxml and resource bundle for each StateType. */
