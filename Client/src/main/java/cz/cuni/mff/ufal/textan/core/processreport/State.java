@@ -24,6 +24,13 @@ public abstract class State {
     public abstract StateType getType();
 
     /**
+     * Moves one step back in pipeline.
+     */
+    public void back(final ProcessReportPipeline pipeline) {
+        throw new IllegalStateException("Cannot go back when in state " + getType());
+    }
+
+    /**
      * Selects database as a source of the new report.
      * Available in {@link State.StateType#LOAD} state.
      * @param pipeline pipeline delegating the request

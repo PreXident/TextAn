@@ -17,6 +17,12 @@
 	<stylesheets >
 		<URL value="@GraphView.css" />
 	</stylesheets>
+	<top>
+		<HBox>
+			<Button text="%transform" onAction="#transform" />
+			<Button text="%pick" onAction="#pick" />
+		</HBox>
+	</top>
 	<center>
 		<ScrollPane fx:id="scrollPane" vbarPolicy="NEVER" hbarPolicy="NEVER" >
 			<StackPane fx:id="stackPane" />

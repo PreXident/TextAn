@@ -1,4 +1,4 @@
-CREATE DATABASE textan;
+CREATE DATABASE textan CHARACTER SET utf8;
 USE textan;
 
 

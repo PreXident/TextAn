@@ -103,6 +103,7 @@ public class OuterStage extends Stage {
         System.out.println(innerWindow.getTitleBarStyleClass());
         innerWindow.setTitleBarStyleClass("my-window-titlebar");
         getScene().getStylesheets().add(ReportWizardStage.class.getResource("/cz/cuni/mff/ufal/textan/gui/window.css").toExternalForm());
+        getScene().getStylesheets().add(TextAn.class.getResource("CustomMenuItem.css").toExternalForm()); //styles for context menus must be set on scene
         innerWindow.widthProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
             double delta = getWidth() - t1.doubleValue();
             setWidth(t1.doubleValue());

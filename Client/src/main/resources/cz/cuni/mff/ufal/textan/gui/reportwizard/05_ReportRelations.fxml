@@ -44,6 +44,7 @@
 	</center>
 	<bottom>
 		<HBox alignment="CENTER_RIGHT" >
+			<Button text="%back" onAction="#back"/>
 			<Button text="%cancel" onAction="#cancel"/>
 			<Button text="%continue" onAction="#next"/>
 		</HBox>
