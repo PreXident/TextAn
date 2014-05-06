@@ -3,10 +3,8 @@ package cz.cuni.mff.ufal.textan.server.nametagIntegration;
 import cz.cuni.mff.ufal.nametag.*;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -28,7 +26,7 @@ public class NameTagServices {
             File dir = new File(Paths.get("../NameTagIntegration/training").toAbsolutePath().toString());
             // File dir = new File(Paths.get("../training").toAbsolutePath().toString());
             String[] commandsWindows = {"cmd","/C", "start", "train.bat"};
-            String[] commandsOther = {"train.sh"}
+            String[] commandsOther = {"train.sh"};
             Process ps;
             if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
                 ps = rt.exec(commandsWindows, null, dir);
