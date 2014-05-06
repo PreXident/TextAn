@@ -1,9 +1,7 @@
-apply plugin: 'java'
-//apply plugin: 'idea'
-
 defaultTasks 'Client:run'
 
-subprojects {
-  apply plugin: 'java'
+allprojects {
+    apply plugin: 'java'
+    version = '0.1.0'
 }
 

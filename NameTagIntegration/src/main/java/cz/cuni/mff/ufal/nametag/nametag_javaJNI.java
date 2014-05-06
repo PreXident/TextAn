@@ -75,13 +75,13 @@ public class nametag_javaJNI {
   public final static native void Ner_recognize(long jarg1, Ner jarg1_, long jarg2, Forms jarg2_, long jarg3, NamedEntities jarg3_);
   public final static native long Ner_newTokenizer(long jarg1, Ner jarg1_);
 
-  static {
-    java.io.File localNametag = new java.io.File(System.mapLibraryName("../NameTagIntegration/lib/nametag_java"));
+    static {
+        java.io.File localNametag = new java.io.File(System.mapLibraryName("lib/nametag_java"));
 
-    if (localNametag.exists())
-      System.load(localNametag.getAbsolutePath());
-    else
-      System.loadLibrary("../NameTagIntegration/lib/nametag_java");
-  }
+        if (localNametag.exists())
+            System.load(localNametag.getAbsolutePath());
+        else
+            System.loadLibrary("nametag_java");
+    }
 
 }

@@ -7,6 +7,9 @@ defaultTasks 'run'
 
 mainClassName = 'cz.cuni.mff.ufal.textan.server.AppEntry'
 
+run {workingDir = 'build'}
+test {workingDir = 'build'}
+
 repositories {
     mavenCentral()
 }
@@ -41,6 +44,15 @@ dependencies {
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+}
+
+task copyNametagLib(type: Copy) {
+    run.dependsOn name
+
+    from (new File(project(':NameTagIntegration').projectDir, 'lib')) {
+        include System.mapLibraryName("nametag_java")
+    }
+    into new File(buildDir, 'lib')
 }
 
 /*
@@ -109,4 +121,13 @@ shadow {
 //    transformer(XmlAppendingTransformer) {
 //        resource = 'META-INF/cxf/java2wsbeans.xml'
 //    }
+}
+
+task shadowCopyNametagLib(type: Copy) {
+    shadowJar.dependsOn name
+
+    from (new File(project(':NameTagIntegration').projectDir, 'lib')) {
+        include System.mapLibraryName("nametag_java")
+    }
+    into new File(shadow.destinationDir, 'lib')
 }

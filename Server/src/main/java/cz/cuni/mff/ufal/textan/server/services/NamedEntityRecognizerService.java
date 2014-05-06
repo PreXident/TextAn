@@ -1,16 +1,14 @@
 package cz.cuni.mff.ufal.textan.server.services;
 
-import cz.cuni.mff.ufal.nametag.*;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
-import cz.cuni.mff.ufal.nametag.NamedEntity;
 import cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * A service which provides a named entity recognition.
@@ -28,7 +26,7 @@ public class NamedEntityRecognizerService {
     @Autowired
     public NamedEntityRecognizerService(IDocumentTableDAO documentTableDAO) {
         this.documentTableDAO = documentTableDAO;
-        nts = new NameTagServices("../NameTagIntegration/models/czech-cnec2.0-140304.ner");
+        nts = new NameTagServices("../../NameTagIntegration/models/czech-cnec2.0-140304.ner");
     }
 
     /**
