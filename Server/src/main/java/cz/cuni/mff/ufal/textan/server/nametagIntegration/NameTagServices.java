@@ -26,18 +26,21 @@ public class NameTagServices {
         Runtime rt = Runtime.getRuntime();
         try {
             File dir = new File(Paths.get("../NameTagIntegration/training").toAbsolutePath().toString());
-            String[] commands = {"cmd","/C", "start", ".\\train.bat"};
-
-            //List cmdAndArgs = Arrays.asList(commands);
-            //ProcessBuilder pb = new ProcessBuilder(cmdAndArgs);
-            //pb.directory(dir);
-            //Process ps = pb.start();
-            Process ps = rt.exec(commands,null,dir);
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(ps.getInputStream()));
-            String line = null;
-            while ((line = bfr.readLine()) != null) {
-                System.out.println(line);
+            // File dir = new File(Paths.get("../training").toAbsolutePath().toString());
+            String[] commandsWindows = {"cmd","/C", "start", "train.bat"};
+            String[] commandsOther = {"train.sh"}
+            Process ps;
+            if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
+                ps = rt.exec(commandsWindows, null, dir);
             }
+            else {
+                ps = rt.exec(commandsOther, null, dir);
+            }
+            //BufferedReader bfr = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+            //String line = null;
+            //while ((line = bfr.readLine()) != null) {
+            //    System.out.println(line);
+            //}
 
         } catch (IOException e) {
             e.printStackTrace();
