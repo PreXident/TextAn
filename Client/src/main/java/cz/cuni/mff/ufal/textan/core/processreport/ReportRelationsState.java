@@ -1,8 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.core.Relation;
-import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder.IRelationInfo;
+import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
+
 import java.util.List;
 
 /**
@@ -74,11 +73,18 @@ final class ReportRelationsState extends State {
         }
         rels.addAll(unanchoredRelations);
         pipeline.reportRelations = rels;
-        pipeline.client.saveProcessedDocument(
-                pipeline.ticket,
-                pipeline.getReportText(),
-                pipeline.reportEntities,
-                pipeline.reportRelations);
+
+        //TODO: handle exception correctly!
+        try {
+            pipeline.client.saveProcessedDocument(
+                    pipeline.ticket,
+                    pipeline.getReportText(),
+                    pipeline.reportEntities,
+                    pipeline.reportRelations);
+        } catch (IdNotFoundException e) {
+            e.printStackTrace();
+        }
+
         pipeline.setState(DoneState.getInstance());
     }
 }

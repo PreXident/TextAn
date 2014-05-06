@@ -6,9 +6,9 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.server.models.Assignment;
-import cz.cuni.mff.ufal.textan.server.models.Entity;
+import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
-import cz.cuni.mff.ufal.textan.server.models.Relation;
+import cz.cuni.mff.ufal.textan.server.models.Occurrence;
 import cz.cuni.mff.ufal.textan.server.services.NamedEntityRecognizerService;
 import cz.cuni.mff.ufal.textan.server.services.ObjectAssignmentService;
 import cz.cuni.mff.ufal.textan.server.services.SaveService;
@@ -16,9 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jws.WebParam;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,34 +81,30 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
+        List<Object> objects = saveProcessedDocumentById.getObjects().stream()
+                .map(Object::fromCommonsObject)
+                .collect(Collectors.toList());
+
+        List<Pair<Long, Occurrence>> objectOccurrences = saveProcessedDocumentById.getObjectOccurrences().stream()
+                .map(o -> new Pair<>(o.getObjectId(), Occurrence.fromCommonsOccurrence(o.getAlias())))
+                .collect(Collectors.toList());
+
+        List<Relation> relations = saveProcessedDocumentById.getRelations().stream()
+                .map(Relation::fromCommonsRelation)
+                .collect(Collectors.toList());
+
+        List<Pair<Long, Occurrence>> relationOccurrences = saveProcessedDocumentById.getRelationOccurrences().stream()
+                .map(o -> new Pair<>(o.getRelationId(), Occurrence.fromCommonsOccurrence(o.getAnchor())))
+                .collect(Collectors.toList());
+
         try {
-
-            HashMap<Long, Object> objects = new HashMap<>();
-            for (cz.cuni.mff.ufal.textan.commons.models.Object commonsObject : saveProcessedDocumentById.getObjects()) {
-                objects.put(commonsObject.getId(), Object.fromCommonsObject(commonsObject));
-            }
-
-            List<Pair<Entity, Object>> entityObjectAssignments = new ArrayList<>(saveProcessedDocumentById.getObjectOccurrences().size());
-            for (SaveProcessedDocumentById.ObjectOccurrence occurrence : saveProcessedDocumentById.getObjectOccurrences()) {
-                final String alias = occurrence.getAlias().getValue();
-                final Object obj = objects.get(occurrence.getObjectId());
-                entityObjectAssignments.add(
-                        new Pair<>(
-                            new Entity(alias, occurrence.getAlias().getPosition(), alias.length(), obj.getType().getId()),
-                            obj
-                        )
-                );
-            }
-
-            List<Relation> relations = new ArrayList<>(saveProcessedDocumentById.getRelations().size());
-            for (cz.cuni.mff.ufal.textan.commons.models.Relation relation : saveProcessedDocumentById.getRelations()) {
-                relations.add(Relation.fromCommonsRelation(relation));
-            }
 
             boolean result = saveService.save(
                     saveProcessedDocumentById.getDocumentId(),
-                    entityObjectAssignments,
+                    objects,
+                    objectOccurrences,
                     relations,
+                    relationOccurrences,
                     saveProcessedDocumentById.isForce(),
                     serverTicket
             );
@@ -172,7 +166,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
 
-            throw new IdNotFoundException(e.getMessage(),exceptionBody);
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
         }
 
     }
@@ -202,7 +196,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "getEntitiesById", name = "getEntitiesById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             GetEntitiesById getEntitiesById,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
-            EditingTicket editingTicket) throws IdNotFoundException{
+            EditingTicket editingTicket) throws IdNotFoundException {
 
         LOG.debug("Executing operation getEntitiesById: {} {}", getEntitiesById, editingTicket);
 
@@ -231,48 +225,51 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "saveProcessedDocumentFromString", name = "saveProcessedDocumentFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             SaveProcessedDocumentFromString saveProcessedDocumentFromString,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
-            EditingTicket editingTicket) {
+            EditingTicket editingTicket) throws IdNotFoundException {
 
         LOG.debug("Executing operation saveProcessedDocumentFromString: {} {}", saveProcessedDocumentFromString, editingTicket);
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
+        List<Object> objects = saveProcessedDocumentFromString.getObjects().stream()
+                .map(Object::fromCommonsObject)
+                .collect(Collectors.toList());
 
-        HashMap<Long, Object> objects = new HashMap<>();
-        for (cz.cuni.mff.ufal.textan.commons.models.Object commonsObject : saveProcessedDocumentFromString.getObjects()) {
-            objects.put(commonsObject.getId(), Object.fromCommonsObject(commonsObject));
-        }
+        List<Pair<Long, Occurrence>> objectOccurrences = saveProcessedDocumentFromString.getObjectOccurrences().stream()
+                .map(o -> new Pair<>(o.getObjectId(), Occurrence.fromCommonsOccurrence(o.getAlias())))
+                .collect(Collectors.toList());
 
-        List<Pair<Entity, Object>> entityObjectAssignments = new ArrayList<>(saveProcessedDocumentFromString.getObjectOccurrences().size());
-        for (SaveProcessedDocumentFromString.ObjectOccurrence occurrence : saveProcessedDocumentFromString.getObjectOccurrences()) {
-            final String alias = occurrence.getAlias().getValue();
-            final Object obj = objects.get(occurrence.getObjectId());
-            entityObjectAssignments.add(
-                    new Pair<>(
-                            new Entity(alias, occurrence.getAlias().getPosition(), alias.length(), obj.getType().getId()),
-                            obj
-                    )
+        List<Relation> relations = saveProcessedDocumentFromString.getRelations().stream()
+                .map(Relation::fromCommonsRelation)
+                .collect(Collectors.toList());
+
+        List<Pair<Long, Occurrence>> relationOccurrences = saveProcessedDocumentFromString.getRelationOccurrences().stream()
+                .map(o -> new Pair<>(o.getRelationId(), Occurrence.fromCommonsOccurrence(o.getAnchor())))
+                .collect(Collectors.toList());
+
+        try {
+
+            boolean result = saveService.save(
+                    saveProcessedDocumentFromString.getText(),
+                    objects,
+                    objectOccurrences,
+                    relations,
+                    relationOccurrences,
+                    saveProcessedDocumentFromString.isForce(),
+                    serverTicket
             );
+
+            SaveProcessedDocumentFromStringResponse response = new SaveProcessedDocumentFromStringResponse();
+            response.setResult(result);
+
+            return response;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException("", exceptionBody);
         }
-
-        List<Relation> relations = new ArrayList<>(saveProcessedDocumentFromString.getRelations().size());
-        for (cz.cuni.mff.ufal.textan.commons.models.Relation relation : saveProcessedDocumentFromString.getRelations()) {
-            relations.add(Relation.fromCommonsRelation(relation));
-        }
-
-        //todo:implement
-        boolean result = saveService.save(
-                saveProcessedDocumentFromString.getText(),
-                entityObjectAssignments,
-                relations,
-                saveProcessedDocumentFromString.isForce(),
-                serverTicket
-        );
-
-        SaveProcessedDocumentFromStringResponse response = new SaveProcessedDocumentFromStringResponse();
-        response.setResult(result);
-
-        return response;
     }
 
     @Override

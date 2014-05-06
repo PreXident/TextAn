@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.ObjectOccurrence;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.ObjectOccurrence;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.util.ArrayList;
 import java.util.Comparator;

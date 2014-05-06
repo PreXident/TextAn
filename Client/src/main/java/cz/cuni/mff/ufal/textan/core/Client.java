@@ -2,48 +2,27 @@ package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetGraphById;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetGraphByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectTypesResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeId;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelationTypesResponse;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Assignment;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromString;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromString.Entities;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicket;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromString;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.ObjectOccurrence;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.RelationOccurrence;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.ObjectOccurrence;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RelationOccurrence;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
-import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.soap.SOAPBinding;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Main class controlling core manipulations with reports.
@@ -343,7 +322,7 @@ public class Client {
      */
     public void saveProcessedDocument(final Ticket ticket,
             final String text, final List<Entity> reportEntities,
-            final List<RelationBuilder> reportRelations) {
+            final List<RelationBuilder> reportRelations) throws IdNotFoundException{
         final SaveProcessedDocumentFromString request =
                 new SaveProcessedDocumentFromString();
         //
@@ -371,10 +350,14 @@ public class Client {
         //
         request.setText(text);
         request.setForce(false);
-        //
-        getDocumentProcessor().saveProcessedDocumentFromString(
-                request, //TODO handle save document error
-                ticket.toTicket()
-        );
+
+        try {
+            getDocumentProcessor().saveProcessedDocumentFromString(
+                    request, //TODO handle save document error
+                    ticket.toTicket()
+            );
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
     }
 }
