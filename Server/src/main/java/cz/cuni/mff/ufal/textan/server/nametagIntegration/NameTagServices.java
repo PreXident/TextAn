@@ -6,26 +6,38 @@ import cz.cuni.mff.ufal.textan.server.models.Entity;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Created by Vlcak on 29. 4. 2014.
+ * Created by Jakub Vlcek on 29. 4. 2014.
  */
 public class NameTagServices {
-    Tokenizer tokenizer;
-    Ner ner;
+    private Tokenizer tokenizer;
+    private Ner ner;
+    private static final Logger LOG = LoggerFactory.getLogger(NameTagServices.class);
 
     public NameTagServices(String model) {
         ner = Ner.load(model);
-        tokenizer = ner.newTokenizer();
+        if (ner != null) {
+            tokenizer = ner.newTokenizer();
+        }
+        else {
+            LOG.error("Model wasn't found!");
+        }
+
     }
 
     void Learn() {
-        Runtime rt = Runtime.getRuntime();
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        LOG.info("Started training at " + sdf.format(cal.getTime()));
         try {
+            Runtime rt = Runtime.getRuntime();
             File dir = new File(Paths.get("../NameTagIntegration/training").toAbsolutePath().toString());
-            // File dir = new File(Paths.get("../training").toAbsolutePath().toString());
-            String[] commandsWindows = {"cmd","/C", "start", "train.bat"};
+            String[] commandsWindows = {"cmd","/C", "train.bat"};
             String[] commandsOther = {"train.sh"};
             Process ps;
             if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
@@ -34,20 +46,26 @@ public class NameTagServices {
             else {
                 ps = rt.exec(commandsOther, null, dir);
             }
-            //BufferedReader bfr = new BufferedReader(new InputStreamReader(ps.getInputStream()));
-            //String line = null;
-            //while ((line = bfr.readLine()) != null) {
-            //    System.out.println(line);
-            //}
 
+            /*BufferedReader bes = new BufferedReader(new InputStreamReader(ps.getErrorStream())); //Dont't know why, but output is in error stream
+            String lineerr;
+            while ((lineerr = bes.readLine()) != null) {
+                LOG.info(lineerr);
+            }*/
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Training failed " + sdf.format(cal.getTime()), e);
         }
+
+        LOG.info("Training done at " + sdf.format(cal.getTime()));
     }
 
 
     public List<Entity> TagText(String input)
     {
+        if (ner == null) {
+            LOG.error("NameTag wasn't initialized!");
+            return new ArrayList<Entity>();
+        }
         Forms forms = new Forms();
         TokenRanges tokens = new TokenRanges();
         NamedEntities entities = new NamedEntities();
