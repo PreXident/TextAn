@@ -15,16 +15,12 @@ import org.slf4j.LoggerFactory;
  * Created by Jakub Vlcek on 29. 4. 2014.
  */
 public class NameTagServices {
-    private Tokenizer tokenizer;
     private Ner ner;
     private static final Logger LOG = LoggerFactory.getLogger(NameTagServices.class);
 
     public NameTagServices(String model) {
         ner = Ner.load(model);
-        if (ner != null) {
-            tokenizer = ner.newTokenizer();
-        }
-        else {
+        if (ner == null) {
             LOG.error("Model wasn't found!");
         }
 
@@ -57,6 +53,10 @@ public class NameTagServices {
         }
 
         LOG.info("Training done at " + sdf.format(cal.getTime()));
+        LOG.info("Changing ner.");
+        Ner tmpNer = Ner.load("../../NameTagIntegration/training/czech-140205-cnec2.0.ner");
+        ner = tmpNer;
+        LOG.info("Ner changed.");
     }
 
 
@@ -66,6 +66,7 @@ public class NameTagServices {
             LOG.error("NameTag wasn't initialized!");
             return new ArrayList<Entity>();
         }
+        Tokenizer tokenizer = ner.newTokenizer();
         Forms forms = new Forms();
         TokenRanges tokens = new TokenRanges();
         NamedEntities entities = new NamedEntities();
