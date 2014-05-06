@@ -24,19 +24,45 @@ public class StateChangedListener implements IStateChangedListener {
 
     /**
      * Ugly hack to prevent mouse events for TextFlow to be ignored.
+     * If width is not bound, call {@link #hackFixTextFlowMouseEvents(Window)}.
+     * TODO more systematic solution
+     * @param window report wizard window containing the textflow
+     */
+    static private void hackFixTextFlowMouseEvents(final ReportWizardWindow window) {
+        final boolean widthBound = window.prefWidthProperty().isBound();
+        if (!widthBound) {
+            hackFixTextFlowMouseEvents((Window) window);
+            return;
+        }
+        window.prefWidthProperty().unbind();
+        window.setPrefWidth(window.getPrefWidth() - 1);
+        runFXlater(() -> {
+            window.prefWidthProperty().bind(window.boundWidth);
+        });
+    }
+
+    /**
+     * Ugly hack to prevent mouse events for TextFlow to be ignored.
+     * Does not support bound width!
      * TODO more systematic solution
      * @param window window containing the textflow
      */
     static private void hackFixTextFlowMouseEvents(final Window window) {
-        if (!window.prefWidthProperty().isBound()) {
-            window.setPrefWidth(window.getPrefWidth() + 1);
-            new Thread(() -> {
-                try {
-                    Thread.sleep(100);
-                } catch (Exception e) { }
-                Platform.runLater(() -> { window.setPrefWidth(window.getPrefWidth() - 1); });
-            }).start();
-        }
+        window.setPrefWidth(window.getPrefWidth() - 1);
+        runFXlater(() -> window.setPrefWidth(window.getPrefWidth() + 1));
+    }
+
+    /**
+     * Runs finalizer in FX thread after 100 ms sleep in other thread.
+     * @param finalizer runnable to be run
+     */
+    static private void runFXlater(final Runnable finalizer) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) { }
+            Platform.runLater(finalizer);
+        }).start();
     }
 
     /** Contains fxml and resource bundle for each StateType. */
