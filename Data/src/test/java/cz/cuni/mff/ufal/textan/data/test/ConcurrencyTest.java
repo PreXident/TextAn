@@ -25,7 +25,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {DataConfig.class}, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = {DataConfig.class, Data.class}, loader = AnnotationConfigContextLoader.class)
 public class ConcurrencyTest {
 
     @Autowired
