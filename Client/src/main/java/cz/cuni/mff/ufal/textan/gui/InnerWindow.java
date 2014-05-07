@@ -171,6 +171,7 @@ public class InnerWindow extends Window {
             setResizableWindow(true);
             setPrefHeight(unmaximizedHeight);
             setPrefWidth(unmaximizedWidth);
+            super.layoutChildren();
             setLayoutX(unmaximizedX);
             setLayoutY(unmaximizedY);
         }
