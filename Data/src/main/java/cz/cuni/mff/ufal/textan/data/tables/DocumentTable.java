@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -24,6 +26,8 @@ public class DocumentTable extends AbstractTable {
     
     private long id;
     private int version;
+    
+    //@Temporal(TemporalType.TIMESTAMP)
     private Date addedDate = Calendar.getInstance().getTime();
     private Date processedDate;
     private String text;
