@@ -161,9 +161,7 @@ public class InnerWindow extends Window {
             final Parent parent = getParent();
             setResizableWindow(false);
             if (parent instanceof Region) {
-                final Region region = (Region) parent;
-                prefHeightProperty().bind(region.heightProperty());
-                prefWidthProperty().bind(region.widthProperty());
+                bindPrefSize((Region) parent);
             } else {
                 //TODO binding to non-region parent's size
             }
@@ -239,6 +237,15 @@ public class InnerWindow extends Window {
                 }
             }
         }
+    }
+
+    /**
+     * Should bind the prefHeight and prefWidth to the region's size.
+     * @param region parent region
+     */
+    protected void bindPrefSize(final Region region) {
+        prefHeightProperty().bind(region.heightProperty());
+        prefWidthProperty().bind(region.widthProperty());
     }
 
     /**

@@ -100,7 +100,6 @@ public class OuterStage extends Stage {
             }
         });
         innerWindow.setMovable(false);
-        System.out.println(innerWindow.getTitleBarStyleClass());
         innerWindow.setTitleBarStyleClass("my-window-titlebar");
         getScene().getStylesheets().add(ReportWizardStage.class.getResource("/cz/cuni/mff/ufal/textan/gui/window.css").toExternalForm());
         getScene().getStylesheets().add(TextAn.class.getResource("CustomMenuItem.css").toExternalForm()); //styles for context menus must be set on scene

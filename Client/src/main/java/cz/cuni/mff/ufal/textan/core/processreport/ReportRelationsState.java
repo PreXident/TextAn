@@ -43,7 +43,9 @@ final class ReportRelationsState extends State {
     }
 
     @Override
-    public void setReportRelations(final ProcessReportPipeline pipeline, final List<Word> words) {
+    public void setReportRelations(final ProcessReportPipeline pipeline,
+            final List<Word> words,
+            final List<? extends RelationBuilder> unanchoredRelations) {
         pipeline.reportWords = words;
         final List<RelationBuilder> rels = pipeline.reportRelations;
         rels.clear();
@@ -69,6 +71,7 @@ final class ReportRelationsState extends State {
             builder.index = ++counter;
             rels.add(builder);
         }
+        rels.addAll(unanchoredRelations);
         pipeline.reportRelations = rels;
 
         //TODO: handle exception correctly!

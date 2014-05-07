@@ -199,8 +199,10 @@ public class ProcessReportPipeline {
     /**
      * Sets report's relations.
      * @param words words with assigned relations
+     * @param unanchoredRelations list of unanchored relations
      */
-    public void setReportRelations(final List<Word> words) {
-        state.setReportRelations(this, words);
+    public void setReportRelations(final List<Word> words,
+            final List<? extends RelationBuilder> unanchoredRelations) {
+        state.setReportRelations(this, words, unanchoredRelations);
     }
 }

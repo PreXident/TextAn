@@ -1,7 +1,6 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.Object.Aliases;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
