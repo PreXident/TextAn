@@ -6,7 +6,7 @@
 <hibernate-mapping>
     <class name="cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable" table="RelationOccurrence">
       <meta attribute="class-description">
-         Occurrence of a relation in a document. Keeps the position and anchor of the relation.
+         Occurrence of a relation in a document. Stores the position and anchor of the relation.
       </meta>
       <id 
           name="id" 
