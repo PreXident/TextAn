@@ -13,6 +13,8 @@ import java.util.Objects;
  * @author Václav Pernička
  */
 public class Node {
+    public static final long UNKNOWN_NODE_ID = -1;
+    
     long id;
     String name;
 

@@ -18,7 +18,7 @@ public class RelationOccurrenceTable extends AbstractTable {
     public static final String PROPERTY_NAME_RELATION = "relation";
 
     private long id;
-    private int position;
+    private Integer position;
     private String anchor;
 
     private RelationTable relation;
@@ -27,7 +27,14 @@ public class RelationOccurrenceTable extends AbstractTable {
     public RelationOccurrenceTable() {
     }
 
-    public RelationOccurrenceTable(RelationTable relation, DocumentTable document, int position, String anchor) {
+    /**
+     *
+     * @param relation
+     * @param document
+     * @param position
+     * @param anchor
+     */
+    public RelationOccurrenceTable(RelationTable relation, DocumentTable document, Integer position, String anchor) {
         this.relation = relation;
         this.document = document;
         this.position = position;

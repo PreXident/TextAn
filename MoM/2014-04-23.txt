@@ -1,0 +1,27 @@
+Venca is missing.
+
+Adam:
+- new GUI for selecting of entities is done, selecting objects will work similarly
+
+Venca:
+- fixed some bugs with graph building
+- prepared logic clock for checking changes in db
+
+Kuba:
+- integrated Nametag to server part
+- experimenting with learning
+- theres a binding for tagger
+
+Tam:
+- improving ranking
+
+Peter:
+- not much work done since sunday
+
+Next release would be nice in two weeks, including machine learning, pipeline, graphs, logic clock.
+
+HWK:
+- Tam, add parameter how many object should be returned in ranking
+- machine learning as soon as possible
+
+Next meeting same as usual, send sunday summary!
