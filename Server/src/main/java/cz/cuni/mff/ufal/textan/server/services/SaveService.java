@@ -3,14 +3,18 @@ package cz.cuni.mff.ufal.textan.server.services;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.*;
-import cz.cuni.mff.ufal.textan.server.models.*;
+import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.server.models.Object;
+import cz.cuni.mff.ufal.textan.server.models.Occurrence;
+import cz.cuni.mff.ufal.textan.server.models.Relation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A service which provides a saving of a processed document.
@@ -30,6 +34,8 @@ public class SaveService {
     private final IRelationTableDAO relationTableDAO;
     private final IRelationOccurrenceTableDAO relationOccurrenceTableDAO;
 
+    private final IInRelationTableDAO inRelationTableDAO;
+
     @Autowired
     public SaveService(
             IDocumentTableDAO documentTableDAO,
@@ -37,7 +43,7 @@ public class SaveService {
             IAliasTableDAO aliasTableDAO,
             IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
             IRelationTypeTableDAO relationTypeTableDAO, IRelationTableDAO relationTableDAO,
-            IRelationOccurrenceTableDAO relationOccurrenceTableDAO) {
+            IRelationOccurrenceTableDAO relationOccurrenceTableDAO, IInRelationTableDAO inRelationTableDAO) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
@@ -47,6 +53,7 @@ public class SaveService {
         this.relationTypeTableDAO = relationTypeTableDAO;
         this.relationTableDAO = relationTableDAO;
         this.relationOccurrenceTableDAO = relationOccurrenceTableDAO;
+        this.inRelationTableDAO = inRelationTableDAO;
     }
 
     /*
@@ -206,6 +213,10 @@ public class SaveService {
             }
 
             if (relation != null) {
+                Set<Long> alreadyInRelation = relationTable.getObjectsInRelation().stream()
+                        .map(x -> x.getObject().getId())
+                        .collect(Collectors.toSet());
+
                 for (Pair<Long,Integer> objectInRelation : relation.getObjectsInRelation()) {
 
                     long objectInRelationId = objectInRelation.getFirst();
@@ -220,7 +231,12 @@ public class SaveService {
                         }
                     }
 
-                    relationTable.getObjectsInRelation().add(new InRelationTable(order, relationTable, objectInRelationTable));
+//                    relationTable.getObjectsInRelation().add(new InRelationTable(order, relationTable, objectInRelationTable));
+                    //todo: add test: can be object in relation more than once?
+                    if (!alreadyInRelation.contains(objectInRelationTable.getId())) {
+                        inRelationTableDAO.add(new InRelationTable(order, relationTable, objectInRelationTable));
+                        alreadyInRelation.add(objectInRelationTable.getId());
+                    }
                 }
             }
 
