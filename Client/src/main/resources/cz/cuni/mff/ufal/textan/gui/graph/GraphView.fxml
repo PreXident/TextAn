@@ -30,6 +30,9 @@
 						<Image url="@cursor-move.png"/>
 					</ImageView>
 				</graphic>
+				<tooltip>
+					<Tooltip text="%transform" />
+				</tooltip>
 			</ToggleButton>
 			<ToggleButton fx:id="pickButton" toggleGroup="$graphModeToggleGroup"
 						onAction="#pick">
@@ -38,6 +41,9 @@
 						<Image url="@cursor-hand.png"/>
 					</ImageView>
 				</graphic>
+				<tooltip>
+					<Tooltip text="%pick" />
+				</tooltip>
 			</ToggleButton>
 		</ToolBar>
 	</top>
