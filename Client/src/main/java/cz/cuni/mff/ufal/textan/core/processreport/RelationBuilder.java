@@ -110,15 +110,14 @@ public abstract class RelationBuilder extends AbstractBuilder {
      * @return new RelationOccurrence from the builder
      */
     public RelationOccurrence toRelationOccurrence() {
-        if (alias == null) {
-            return null;
-        }
         final RelationOccurrence result = new RelationOccurrence();
         result.setRelationId(-index);
-        final Occurrence occurrence = new Occurrence();
-        occurrence.setPosition(position);
-        occurrence.setValue(alias);
-        result.setAnchor(occurrence);
+        if (alias != null) {
+            final Occurrence occurrence = new Occurrence();
+            occurrence.setPosition(position);
+            occurrence.setValue(alias);
+            result.setAnchor(occurrence);
+        }
         return result;
     }
 

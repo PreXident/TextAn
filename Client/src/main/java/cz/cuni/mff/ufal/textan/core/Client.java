@@ -343,9 +343,7 @@ public class Client {
         for (RelationBuilder relation : reportRelations) {
             relations.add(relation.toRelation());
             final RelationOccurrence occ = relation.toRelationOccurrence();
-            if (occ != null) {
-                relationOccurrences.add(occ);
-            }
+            relationOccurrences.add(occ);
         }
         //
         request.setText(text);
