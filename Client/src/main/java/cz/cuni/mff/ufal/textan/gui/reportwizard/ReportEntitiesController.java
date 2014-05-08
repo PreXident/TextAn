@@ -8,6 +8,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
+import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
 import java.text.Collator;
@@ -256,6 +257,9 @@ public class ReportEntitiesController extends ReportWizardController {
 
     private void assignEntityToSelectedTexts(final ObjectType ot) {
         contextMenu.hide();
+        if (settings.getProperty(CLEAR_FILTERS, "false").equals("true")) {
+            filterField.clear();
+        }
         pipeline.resetStepsBack();
         try {
             final IClearer clearer = i -> Utils.unstyleText(texts.get(i));

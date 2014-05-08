@@ -10,6 +10,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
+import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.RelationInfo;
 import java.net.URL;
@@ -483,6 +484,9 @@ public class ReportRelationsController extends ReportWizardController {
      * @param relation RelationType to assign
      */
     protected void assignRelationToSelectedTexts(final RelationType relation) {
+        if (settings.getProperty(CLEAR_FILTERS, "false").equals("true")) {
+            filterField.clear();
+        }
         try {
             pipeline.resetStepsBack();
             final IClearer clearer = i -> Utils.unstyleText(texts.get(i));

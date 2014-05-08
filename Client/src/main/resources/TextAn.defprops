@@ -18,3 +18,5 @@ report.wizard.maximized=false
 hypergraphs=false
 #default localization
 locale.language=en
+#clear filter fields after selection?
+clear.filters=false
