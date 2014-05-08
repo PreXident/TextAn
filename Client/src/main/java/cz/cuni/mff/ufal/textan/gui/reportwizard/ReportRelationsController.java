@@ -161,6 +161,7 @@ public class ReportRelationsController extends ReportWizardController {
     @FXML
     private void add() {
         if (selectedRelation != null) {
+            pipeline.resetStepsBack();
             selectedRelation.getData().add(new RelationInfo(0, null));
         }
     }
@@ -176,6 +177,7 @@ public class ReportRelationsController extends ReportWizardController {
                 .showChoices(allTypes);
         });
         if (relation.val != null) {
+            pipeline.resetStepsBack();
             selectedRelation = new FXRelationBuilder(relation.val, relationsListView.getItems());
             table.setItems(selectedRelation.getData());
             relationsListView.getSelectionModel().select(selectedRelation);
@@ -184,6 +186,9 @@ public class ReportRelationsController extends ReportWizardController {
 
     @FXML
     private void back() {
+        final List<RelationBuilder> rels = pipeline.getReportRelations();
+        rels.clear();
+        rels.addAll(relationsListView.getItems());
         pipeline.back();
     }
 
@@ -202,6 +207,7 @@ public class ReportRelationsController extends ReportWizardController {
     @FXML
     private void remove() {
         if (selectedRelation != null) {
+            pipeline.resetStepsBack();
             final int index = table.getSelectionModel().getSelectedIndex();
             if (index >= 0) {
                 final RelationInfo remove = selectedRelation.getData().remove(index);
@@ -218,6 +224,7 @@ public class ReportRelationsController extends ReportWizardController {
     @FXML
     private void removeRelation() {
         if (selectedRelation != null) {
+            pipeline.resetStepsBack();
             clearSelectedRelationBackground();
             for (Word w : selectedRelation.words) {
                 w.setRelation(null);
@@ -253,6 +260,7 @@ public class ReportRelationsController extends ReportWizardController {
         objectColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Object> p) -> p.getValue().object);
         objectColumn.setOnEditCommit(
             (CellEditEvent<RelationInfo, Object> t) -> {
+                pipeline.resetStepsBack();
                 final Object oldObj = t.getOldValue();
                 final List<Text> oldTexts = objectWords.get(oldObj);
                 if (oldTexts != null) {
@@ -311,6 +319,11 @@ public class ReportRelationsController extends ReportWizardController {
         super.setPipeline(pipeline);
         texts = new ArrayList<>();
         words = pipeline.getReportWords();
+        for (RelationBuilder r : pipeline.getReportRelations()) {
+            final FXRelationBuilder relation = (FXRelationBuilder) r;
+            relation.list = relationsListView.getItems();
+            relationsListView.getItems().add(relation);
+        }
         for (final Word word: words) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
@@ -325,6 +338,10 @@ public class ReportRelationsController extends ReportWizardController {
                     objectWords.put(obj, objTexts);
                 }
                 objTexts.add(text);
+            }
+            if (word.getRelation() != null) {
+                final RelationType type = word.getRelation().getType();
+                Utils.styleText(text, "RELATION", ~type.getId());
             }
             text.setOnMouseEntered((MouseEvent t) -> {
                 if (word.getEntity() != null) {
@@ -467,6 +484,7 @@ public class ReportRelationsController extends ReportWizardController {
      */
     protected void assignRelationToSelectedTexts(final RelationType relation) {
         try {
+            pipeline.resetStepsBack();
             final IClearer clearer = i -> Utils.unstyleText(texts.get(i));
             if (relation == null) {
                 RelationBuilder.clear(words, firstSelectedIndex, lastSelectedIndex, clearer);

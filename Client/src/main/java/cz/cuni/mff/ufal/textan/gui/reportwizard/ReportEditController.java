@@ -30,12 +30,13 @@ public class ReportEditController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        //nothing
     }
 
     @Override
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
         textArea.setText(pipeline.getReportText());
+        textArea.textProperty().addListener(e -> pipeline.resetStepsBack());
     }
 }

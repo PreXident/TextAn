@@ -161,6 +161,7 @@ public class ReportObjectsController extends ReportWizardController {
             final Entity ent = pipeline.getReportEntities().get(selectedEntity.index);
             final Object newObject = new Object(-newObjects.size() - 1, new ObjectType(ent.getType(), ""), Arrays.asList(ent.getValue()));
             newObjects.add(newObject);
+            pipeline.resetStepsBack();
             setNewObjectAsCandidate(ent, newObject);
         });
         allObjectsCheckBox = new CheckBox();
@@ -250,6 +251,7 @@ public class ReportObjectsController extends ReportWizardController {
                 final Pair<Double, Object> p = dbListView.getSelectionModel().getSelectedItem();
                 final Entity e = pipeline.getReportEntities().get(selectedEntity.index);
                 e.setCandidate(p.getSecond());
+                pipeline.resetStepsBack();
             }
         });
         dbListView.setCellFactory(new Callback<ListView<Pair<Double, Object>>, ListCell<Pair<Double, Object>>>() {
@@ -262,6 +264,7 @@ public class ReportObjectsController extends ReportWizardController {
                             @SuppressWarnings("unchecked")
                             final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
                             pipeline.getReportEntities().get(selectedEntity.index).setCandidate(p.getSecond());
+                            pipeline.resetStepsBack();
                         });
                         this.setOnMouseEntered(e -> {
                             @SuppressWarnings("unchecked")
@@ -303,6 +306,7 @@ public class ReportObjectsController extends ReportWizardController {
                             @SuppressWarnings("unchecked")
                             final Object obj = ((ListCell<Object>) t.getSource()).getItem();
                             final Entity entity = pipeline.getReportEntities().get(selectedEntity.index);
+                            pipeline.resetStepsBack();
                             setNewObjectAsCandidate(entity, obj);
                         });
                         this.setOnMouseEntered(e -> {

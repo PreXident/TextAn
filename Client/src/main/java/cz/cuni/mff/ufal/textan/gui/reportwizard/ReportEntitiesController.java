@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -29,7 +27,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
@@ -259,6 +256,7 @@ public class ReportEntitiesController extends ReportWizardController {
 
     private void assignEntityToSelectedTexts(final ObjectType ot) {
         contextMenu.hide();
+        pipeline.resetStepsBack();
         try {
             final IClearer clearer = i -> Utils.unstyleText(texts.get(i));
             if (ot == null) {

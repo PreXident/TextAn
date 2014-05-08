@@ -16,7 +16,7 @@ import javafx.collections.ObservableList;
  */
 public class FXRelationBuilder extends RelationBuilder {
 
-    final List<FXRelationBuilder> list;
+    List<FXRelationBuilder> list;
 
     final List<Word> words = new ArrayList<>();
 

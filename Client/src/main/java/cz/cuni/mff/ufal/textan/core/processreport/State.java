@@ -25,6 +25,7 @@ public abstract class State {
 
     /**
      * Moves one step back in pipeline.
+     * @param pipeline pipeline delegating the request
      */
     public void back(final ProcessReportPipeline pipeline) {
         throw new IllegalStateException("Cannot go back when in state " + getType());
@@ -126,6 +127,8 @@ public abstract class State {
         /** Editing the relations. Implemented by {@link ReportRelationsState}. */
         EDIT_RELATIONS,
         /** Document saved. */
-        DONE
+        DONE,
+        /** Document error. */
+        ERROR
     }
 }
