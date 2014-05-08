@@ -63,6 +63,14 @@ public class Object {
     }
 
     /**
+     * Returns whether the object was fetched from DB or created by client.
+     * @return true if the object was fetched from DB, false otherwise
+     */
+    public boolean isNew() {
+        return isNew;
+    }
+
+    /**
      * Returns object type.
      * @return object type
      */

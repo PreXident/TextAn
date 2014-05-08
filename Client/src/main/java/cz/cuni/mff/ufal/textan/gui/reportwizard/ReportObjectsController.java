@@ -208,7 +208,7 @@ public class ReportObjectsController extends ReportWizardController {
                     entityInfo.ranked = FXCollections.observableArrayList(candidates);
                     entityLists.put(entity, entityInfo);
                     final Object cand = ent.getCandidate();
-                    if (cand.isNew() && !newObjects.contains(cand)) {
+                    if (cand != null && cand.isNew() && !newObjects.contains(cand)) {
                         newObjects.add(cand);
                     }
                 }
