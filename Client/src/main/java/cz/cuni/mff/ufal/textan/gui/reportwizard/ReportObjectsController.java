@@ -52,22 +52,6 @@ import javafx.util.Callback;
  */
 public class ReportObjectsController extends ReportWizardController {
 
-    /**
-     * Sets the entity candidate to object.
-     * Removes previous object's alias if needed, adds new alias to the new object.
-     * @param entity entity to add alias to
-     * @param object new candidate
-     */
-    static private void setNewObjectAsCandidate(final Entity entity, final Object object) {
-        final Object prev = entity.getCandidate();
-        final String alias = entity.getValue();
-        if (prev != null && prev.getId() < 0) {
-            prev.getAliases().remove(alias);
-        }
-        entity.setCandidate(object);
-        object.getAliases().add(alias);
-    }
-
     @FXML
     BorderPane root;
 
@@ -158,11 +142,11 @@ public class ReportObjectsController extends ReportWizardController {
         final Button add = new Button("+");
         add.setOnAction(e -> {
             contextMenu.hide();
-            final Entity ent = pipeline.getReportEntities().get(selectedEntity.index);
+            final Entity ent =
+                    pipeline.getReportEntities().get(selectedEntity.index);
             final Object newObject = new Object(-newObjects.size() - 1, new ObjectType(ent.getType(), ""), Arrays.asList(ent.getValue()));
             newObjects.add(newObject);
-            pipeline.resetStepsBack();
-            setNewObjectAsCandidate(ent, newObject);
+            setNewObjectAsSelectedEntityCandidate(newObject);
         });
         allObjectsCheckBox = new CheckBox();
         allObjectsCheckBox.setText(Utils.localize(resourceBundle, "include.all.objects"));
@@ -249,9 +233,7 @@ public class ReportObjectsController extends ReportWizardController {
             if (ev.getCode() == KeyCode.ENTER) {
                 contextMenu.hide();
                 final Pair<Double, Object> p = dbListView.getSelectionModel().getSelectedItem();
-                final Entity e = pipeline.getReportEntities().get(selectedEntity.index);
-                e.setCandidate(p.getSecond());
-                pipeline.resetStepsBack();
+                setObjectAsSelectedEntityCandidate(p.getSecond());
             }
         });
         dbListView.setCellFactory(new Callback<ListView<Pair<Double, Object>>, ListCell<Pair<Double, Object>>>() {
@@ -263,8 +245,7 @@ public class ReportObjectsController extends ReportWizardController {
                             contextMenu.hide();
                             @SuppressWarnings("unchecked")
                             final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
-                            pipeline.getReportEntities().get(selectedEntity.index).setCandidate(p.getSecond());
-                            pipeline.resetStepsBack();
+                            setObjectAsSelectedEntityCandidate(p.getSecond());
                         });
                         this.setOnMouseEntered(e -> {
                             @SuppressWarnings("unchecked")
@@ -305,9 +286,7 @@ public class ReportObjectsController extends ReportWizardController {
                             contextMenu.hide();
                             @SuppressWarnings("unchecked")
                             final Object obj = ((ListCell<Object>) t.getSource()).getItem();
-                            final Entity entity = pipeline.getReportEntities().get(selectedEntity.index);
-                            pipeline.resetStepsBack();
-                            setNewObjectAsCandidate(entity, obj);
+                            setNewObjectAsSelectedEntityCandidate(obj);
                         });
                         this.setOnMouseEntered(e -> {
                             @SuppressWarnings("unchecked")
@@ -335,6 +314,35 @@ public class ReportObjectsController extends ReportWizardController {
                 };
             }
         });
+    }
+
+    /**
+     * Sets the entity candidate to new object.
+     * Removes previous object's alias if needed, adds new alias to the new object.
+     * @param object new candidate
+     */
+    private void setNewObjectAsSelectedEntityCandidate(final Object object) {
+        final Entity ent = setObjectAsSelectedEntityCandidate(object);
+        object.getAliases().add(ent.getValue());
+    }
+
+    /**
+     * Sets the selected entity candidate to object.
+     * Removes previous object's alias if needed.
+     * @param object new candidate
+     * @return Entity behind selectedEntity
+     */
+    private Entity setObjectAsSelectedEntityCandidate(final Object object) {
+        final Entity entity =
+                pipeline.getReportEntities().get(selectedEntity.index);
+        final Object prev = entity.getCandidate();
+        final String alias = entity.getValue();
+        if (prev != null && prev.isNew()) {
+            prev.getAliases().remove(alias);
+        }
+        entity.setCandidate(object);
+        pipeline.resetStepsBack();
+        return entity;
     }
 
     /**
