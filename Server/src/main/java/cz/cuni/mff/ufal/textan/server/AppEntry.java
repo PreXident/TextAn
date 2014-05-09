@@ -29,7 +29,7 @@ public class AppEntry {
 
             LOG.info("Start server.");
             server.start();
-            LOG.info("Server command invoker");
+            LOG.info("Server command invoker.");
             invoker.start();
 
         } catch (Exception e) {

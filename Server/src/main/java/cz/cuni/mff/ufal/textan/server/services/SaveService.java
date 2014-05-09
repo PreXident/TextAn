@@ -36,6 +36,19 @@ public class SaveService {
 
     private final IInRelationTableDAO inRelationTableDAO;
 
+    /**
+     * Instantiates a new Save service.
+     *
+     * @param documentTableDAO the document table dAO
+     * @param objectTypeTableDAO the object type table dAO
+     * @param objectTableDAO the object table dAO
+     * @param aliasTableDAO the alias table dAO
+     * @param aliasOccurrenceTableDAO the alias occurrence table dAO
+     * @param relationTypeTableDAO the relation type table dAO
+     * @param relationTableDAO the relation table dAO
+     * @param relationOccurrenceTableDAO the relation occurrence table dAO
+     * @param inRelationTableDAO the in relation table dAO
+     */
     @Autowired
     public SaveService(
             IDocumentTableDAO documentTableDAO,
@@ -61,6 +74,24 @@ public class SaveService {
     *  - relation occurrence?
     * */
 
+    /**
+     * Saves a processed document in the database.
+     * Creates a new document in the database and adds records related to the document.
+     *
+     * @param text the text of document
+     * @param objects the list of objects which are modified by the save (e.g. new objects)
+     * @param objectOccurrences the list of occurrences of objects in the document.
+     *                          Objects are searched (in sequence) in: {@code objects} parameter, the database.
+     * @param relations the list of relations which are modified by the save (e.g. new relations, new objects in relation)
+     * @param relationOccurrences the list occurrences of relations in the document.
+     *                            Relations are searched (in sequence) in: {@code relations}, the database.
+     *                            Relations without anchor in the text of the document should be in the list,
+     *                            but with {@link cz.cuni.mff.ufal.textan.server.models.Occurrence} set to null.
+     * @param force if true changes in the database made ​​during editing the document will not be considered an error TODO: better explanation
+     * @param ticket the ticket
+     * @return true if the processed document was successfully saved, false otherwise
+     * @throws IdNotFoundException the id not found exception TODO
+     */
     public boolean save(
             String text,
             List<Object> objects, List<Pair<Long, Occurrence>> objectOccurrences,
@@ -71,12 +102,30 @@ public class SaveService {
             return false;
         }
 
-        DocumentTable documentTable = new DocumentTable(text);
+        final DocumentTable documentTable = new DocumentTable(text);
         documentTableDAO.add(documentTable);
 
         return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences, ticket);
     }
 
+    /**
+     * Saves a processed document in the database.
+     * Finds a document with given identifier in the database and adds records related to the document.
+     *
+     * @param documentId the identifier of a document in the database
+     * @param objects the list of objects which are modified by the save (e.g. new objects)
+     * @param objectOccurrences the list of occurrences of objects in the document.
+     *                          Objects are searched (in sequence) in: {@code objects} parameter, the database.
+     * @param relations the list of relations which are modified by the save (e.g. new relations, new objects in relation)
+     * @param relationOccurrences the list occurrences of relations in the document.
+     *                            Relations are searched (in sequence) in: {@code relations}, the database.
+     *                            Relations without anchor in the text of the document should be in the list,
+     *                            but with {@link cz.cuni.mff.ufal.textan.server.models.Occurrence} set to null.
+     * @param force if true changes in the database made ​​during editing the document will not be considered an error TODO: better explanation
+     * @param ticket the ticket
+     * @return true if the processed document was successfully saved, false otherwise
+     * @throws IdNotFoundException the id not found exception TODO
+     */
     public boolean save(
             long documentId,
             List<Object> objects, List<Pair<Long, Occurrence>> objectOccurrences,

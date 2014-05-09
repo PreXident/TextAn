@@ -52,7 +52,12 @@ public class Object {
                 );
     }
 
-    //TODO:add comment
+    /**
+     * Converts a {@link cz.cuni.mff.ufal.textan.commons.models.Object} to a {@link cz.cuni.mff.ufal.textan.server.models.Object}.
+     *
+     * @param commonsObject the commons object
+     * @return the object
+     */
     public static Object fromCommonsObject(cz.cuni.mff.ufal.textan.commons.models.Object commonsObject) {
         return new Object(
                 commonsObject.getId(),
