@@ -54,10 +54,10 @@ public abstract class RelationBuilder extends AbstractBuilder {
     protected final List<? extends IRelationInfo> data = createRelationInfos();
 
     /** Anchors's position in report. */
-    protected int position;
+    protected int position = -1;
 
     /** Relations' anchor. */
-    protected String alias;
+    protected String alias = null;
 
     /**
      * Only constructor.
@@ -112,12 +112,10 @@ public abstract class RelationBuilder extends AbstractBuilder {
     public RelationOccurrence toRelationOccurrence() {
         final RelationOccurrence result = new RelationOccurrence();
         result.setRelationId(-index);
-        if (alias != null) {
-            final Occurrence occurrence = new Occurrence();
-            occurrence.setPosition(position);
-            occurrence.setValue(alias);
-            result.setAnchor(occurrence);
-        }
+        final Occurrence occurrence = new Occurrence();
+        occurrence.setPosition(position);
+        occurrence.setValue(alias);
+        result.setAnchor(occurrence);
         return result;
     }
 
