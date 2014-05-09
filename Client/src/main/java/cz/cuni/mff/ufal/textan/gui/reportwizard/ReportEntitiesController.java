@@ -19,6 +19,8 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -27,6 +29,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -103,6 +106,9 @@ public class ReportEntitiesController extends ReportWizardController {
 
     /** Content of {@link #textFlow}. */
     List<Text> texts;
+
+    /** Tooltip for assigned entities. */
+    Tooltip tooltip = new Tooltip();
 
     @FXML
     private void back() {
@@ -190,6 +196,20 @@ public class ReportEntitiesController extends ReportWizardController {
                     contextMenu.show(texts.get(lastDragged), Side.BOTTOM, 0, 0);
                     filterField.requestFocus();
                 }
+            });
+            text.setOnMouseEntered((MouseEvent t) -> {
+                if (word.getEntity() != null) {
+                    final String newTip = word.getEntity().getType().toString();
+                    tooltip.setText(newTip);
+                    Bounds bounds = text.getLayoutBounds();
+                    final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
+                    tooltip.show(text, p.getX(), p.getY());
+                } else {
+                    tooltip.hide();
+                }
+            });
+            text.setOnMouseExited((MouseEvent t) -> {
+                tooltip.hide();
             });
             texts.add(text);
         }

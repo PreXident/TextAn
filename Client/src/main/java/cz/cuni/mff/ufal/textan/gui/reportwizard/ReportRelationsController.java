@@ -358,6 +358,12 @@ public class ReportRelationsController extends ReportWizardController {
                         final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
                         tooltip.show(text, p.getX(), p.getY());
                     }
+                } else if (word.getRelation() != null) {
+                    final String newTip = word.getRelation().getType().toString();
+                    tooltip.setText(newTip);
+                    Bounds bounds = text.getLayoutBounds();
+                    final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
+                    tooltip.show(text, p.getX(), p.getY());
                 } else {
                     tooltip.hide();
                 }
