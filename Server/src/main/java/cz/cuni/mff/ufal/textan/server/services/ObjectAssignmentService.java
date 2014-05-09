@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.server.services;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.server.models.Assignment;
 import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
@@ -40,7 +41,7 @@ public class ObjectAssignmentService {
 
         for (Entity entity : entities) {
 
-            List<ObjectTable> objectTables = objectTableDAO.findAllByObjectType(entity.getType());
+            List<ObjectTable> objectTables = objectTableDAO.findAllByObjectType(entity.getType().getId());
             List<Pair<Object, Float>> ratedObjects = new ArrayList<>();
 
             for (ObjectTable table : objectTables) {
@@ -54,8 +55,27 @@ public class ObjectAssignmentService {
     }
 
     public List<Assignment> getAssignments(long documentId, List<Entity> entities, EditingTicket ticket) throws IdNotFoundException {
-
         //TODO: implement
-        return getAssignments("", entities, ticket);
+
+        DocumentTable documentTable = documentTableDAO.find(documentId);
+        if (documentTable == null) {
+            throw new IdNotFoundException("documentId", documentId);
+        }
+
+        List<Assignment> assignments = new ArrayList<>();
+
+        for (Entity entity : entities) {
+
+            List<ObjectTable> objectTables = objectTableDAO.findAllByObjectType(entity.getType().getId());
+            List<Pair<Object, Float>> ratedObjects = new ArrayList<>();
+
+            for (ObjectTable table : objectTables) {
+                ratedObjects.add(new Pair<Object, Float>(Object.fromObjectTable(table), 0.0f));
+            }
+
+            assignments.add(new Assignment(entity, ratedObjects));
+        }
+
+        return assignments;
     }
 }

@@ -9,42 +9,81 @@ public class Entity {
     private final String value;
     private final int position;
     private final int length;
-    private final long type;
+    private final ObjectType type;
 
-    public Entity(String value, int position, int length, long type) {
+    /**
+     * Instantiates a new Entity.
+     *
+     * @param value the value
+     * @param position the position
+     * @param length the length
+     * @param type the type
+     */
+    public Entity(String value, int position, int length, ObjectType type) {
         this.value = value;
         this.position = position;
         this.length = length;
         this.type = type;
     }
 
+    /**
+     * Converts an {@link cz.cuni.mff.ufal.textan.commons.models.Entity} to {@link cz.cuni.mff.ufal.textan.server.models.Entity}
+     *
+     * @param commonsEntity the commons entity
+     * @return the entity
+     */
     public static Entity fromCommonsEntity(cz.cuni.mff.ufal.textan.commons.models.Entity commonsEntity) {
-        return new Entity(commonsEntity.getValue(), commonsEntity.getPosition(), commonsEntity.getLength(), commonsEntity.getType());
+        return new Entity(commonsEntity.getValue(), commonsEntity.getPosition(), commonsEntity.getLength(), ObjectType.fromCommonsObjectType(commonsEntity.getType()));
     }
 
+    /**
+     * Gets value.
+     *
+     * @return the value
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Gets position.
+     *
+     * @return the position
+     */
     public int getPosition() {
         return position;
     }
 
+    /**
+     * Gets length.
+     *
+     * @return the length
+     */
     public int getLength() {
         return length;
     }
 
-    public long getType() {
+    /**
+     * Gets type.
+     *
+     * @return the type
+     */
+    public ObjectType getType() {
         return type;
     }
 
+    /**
+     * Converts an instance to an {@link cz.cuni.mff.ufal.textan.commons.models.Entity}
+     *
+     * @return {@link cz.cuni.mff.ufal.textan.commons.models.Entity}
+     */
     public cz.cuni.mff.ufal.textan.commons.models.Entity toCommonsEntity() {
 
         cz.cuni.mff.ufal.textan.commons.models.Entity commonsEntity = new cz.cuni.mff.ufal.textan.commons.models.Entity();
         commonsEntity.setValue(value);
         commonsEntity.setPosition(position);
         commonsEntity.setLength(length);
-        commonsEntity.setType(type);
+        commonsEntity.setType(type.toCommonsObjectType());
 
         return commonsEntity;
     }
@@ -58,7 +97,7 @@ public class Entity {
 
         if (length != entity.length) return false;
         if (position != entity.position) return false;
-        if (type != entity.type) return false;
+        if (type != null ? !type.equals(entity.type) : entity.type != null) return false;
         if (value != null ? !value.equals(entity.value) : entity.value != null) return false;
 
         return true;
@@ -69,7 +108,7 @@ public class Entity {
         int result = value != null ? value.hashCode() : 0;
         result = 31 * result + position;
         result = 31 * result + length;
-        result = 31 * result + (int) (type ^ (type >>> 32));
+        result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
 
