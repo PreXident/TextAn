@@ -17,6 +17,12 @@ import jfxtras.labs.scene.control.window.Window;
  */
 public class InnerWindow extends Window {
 
+    /** Minimal width of inner widows. */
+    static final int MIN_WIDTH = 450;
+
+    /** Minimal height of inner widows. */
+    static final int MIN_HEIGHT = 450;
+
     /**
      * Settings of the application.
      * Handle with care, they're shared!
@@ -65,6 +71,7 @@ public class InnerWindow extends Window {
         super(title);
         this.propertyID = propertyID;
         this.settings = settings;
+        this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
         //
         parentProperty().addListener(
             (ObservableValue<? extends Parent> ov, Parent oldVal, Parent newVal) -> {
@@ -91,8 +98,8 @@ public class InnerWindow extends Window {
         );
         //init from settings
         maximized.set(settings.getProperty(propertyID + ".maximized", "false").equals("true"));
-        setPrefWidth(Double.parseDouble(settings.getProperty(propertyID + ".width", "300")));
-        setPrefHeight(Double.parseDouble(settings.getProperty(propertyID + ".height", "200")));
+        setPrefWidth(Double.parseDouble(settings.getProperty(propertyID + ".width", String.valueOf(MIN_WIDTH))));
+        setPrefHeight(Double.parseDouble(settings.getProperty(propertyID + ".height", String.valueOf(MIN_HEIGHT))));
         setLayoutX(Double.parseDouble(settings.getProperty(propertyID + ".x", "0")));
         setLayoutY(Double.parseDouble(settings.getProperty(propertyID + ".y", "0")));
         //

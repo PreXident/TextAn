@@ -1,5 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui;
 
+import static cz.cuni.mff.ufal.textan.gui.InnerWindow.MIN_HEIGHT;
+import static cz.cuni.mff.ufal.textan.gui.InnerWindow.MIN_WIDTH;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import java.util.Properties;
 import javafx.beans.value.ObservableValue;
@@ -60,8 +62,9 @@ public class OuterStage extends Stage {
         setScene(new Scene(pane));
         getScene().setFill(null);
         innerWindow = new Window(title);
-        innerWindow.setPrefWidth(Double.parseDouble(settings.getProperty(propertyID + ".width", "300")));
-        innerWindow.setPrefHeight(Double.parseDouble(settings.getProperty(propertyID + ".height", "200")));
+        innerWindow.setMinSize(MIN_WIDTH, MIN_HEIGHT);
+        innerWindow.setPrefWidth(Double.parseDouble(settings.getProperty(propertyID + ".width", String.valueOf(MIN_WIDTH))));
+        innerWindow.setPrefHeight(Double.parseDouble(settings.getProperty(propertyID + ".height", String.valueOf(MIN_HEIGHT))));
         innerWindow.setLayoutX(Double.parseDouble(settings.getProperty(propertyID + ".x", "0")));
         innerWindow.setLayoutY(Double.parseDouble(settings.getProperty(propertyID + ".y", "0")));
         innerWindow.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent t) -> {
