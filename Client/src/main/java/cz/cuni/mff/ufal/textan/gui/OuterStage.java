@@ -2,11 +2,13 @@ package cz.cuni.mff.ufal.textan.gui;
 
 import static cz.cuni.mff.ufal.textan.gui.InnerWindow.MIN_HEIGHT;
 import static cz.cuni.mff.ufal.textan.gui.InnerWindow.MIN_WIDTH;
+import static cz.cuni.mff.ufal.textan.gui.TextAn.ICON_RES;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import java.util.Properties;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
@@ -49,6 +51,7 @@ public class OuterStage extends Stage {
     public OuterStage(final String title, final String propertyID, final Properties settings) {
         super(StageStyle.TRANSPARENT);
         setTitle(title);
+        getIcons().add(new Image(getClass().getResourceAsStream(ICON_RES)));
         this.propertyID = propertyID;
         this.settings = settings;
         setOnCloseRequest(e -> close());
