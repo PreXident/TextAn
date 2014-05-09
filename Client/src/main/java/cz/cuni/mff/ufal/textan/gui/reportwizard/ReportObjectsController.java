@@ -411,6 +411,21 @@ public class ReportObjectsController extends ReportWizardController {
         newListView.setItems(newObjects.filtered((Object o) -> {
             return o.getType().getId() == selectedEntity.type;
         }));
+        final Entity ent = pipeline.getReportEntities().get(entityInfo.index);
+        if (ent.getCandidate() != null) {
+            final Object candidate = ent.getCandidate();
+            if (candidate.isNew()) {
+                newListView.getSelectionModel().select(candidate);
+                dbListView.getSelectionModel().select(-1);
+            } else {
+                newListView.getSelectionModel().select(-1);
+                for (Pair<Double, Object> p : dbListView.getItems()) {
+                    if (p.getSecond() == candidate) {
+                        dbListView.getSelectionModel().select(p);
+                    }
+                }
+            }
+        }
     }
 
     /**
