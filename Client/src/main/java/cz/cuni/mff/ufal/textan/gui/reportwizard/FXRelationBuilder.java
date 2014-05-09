@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -16,14 +18,28 @@ import javafx.collections.ObservableList;
  */
 public class FXRelationBuilder extends RelationBuilder {
 
+    /**
+     * List to remove builder from if words count hits zero.
+     * This needs to be updated on return to relation edit!
+     */
     List<FXRelationBuilder> list;
 
+    /** List of words assigned to the builder. */
     final List<Word> words = new ArrayList<>();
 
+    /** Holds string representation of the builder. */
+    final StringProperty stringRepresentation = new SimpleStringProperty("");
+
+    /**
+     * Only constructor.
+     * @param type relation type
+     * @param list {@link #list}
+     */
     public FXRelationBuilder(final RelationType type, final List<FXRelationBuilder> list) {
         super(type);
         this.list = list;
         list.add(this);
+        updateStringRepresentation();
     }
 
     @Override
@@ -44,11 +60,12 @@ public class FXRelationBuilder extends RelationBuilder {
         }
         words.add(word);
         super.register(word);
+        updateStringRepresentation();
     }
 
     @Override
     public String toString() {
-        return type.toString();
+        return stringRepresentation.get();
     }
 
     @Override
@@ -57,13 +74,42 @@ public class FXRelationBuilder extends RelationBuilder {
             list.remove(this);
         }
         super.unregister(word);
+        updateStringRepresentation();
     }
 
+    /**
+     * Updates {@link #stringRepresentation}.
+     */
+    protected void updateStringRepresentation() {
+        if (words.isEmpty()) {
+            stringRepresentation.setValue(type.toString());
+            return;
+        }
+        final StringBuilder repre = new StringBuilder(type.toString() + " (");
+        for (Word w : words) {
+            repre.append(w.getWord());
+        }
+        repre.append(")");
+        stringRepresentation.setValue(repre.toString());
+    }
+
+    /**
+     * Holds information about object assigned to relation in JavaFX way.
+     */
     public static class RelationInfo implements IRelationInfo {
+
+        /** Object's order. */
         public SimpleIntegerProperty order = new SimpleIntegerProperty();
+
+        /** Object itself. */
         public SimpleObjectProperty<Object> object =
                 new SimpleObjectProperty<>();
 
+        /**
+         * Only constructor.
+         * @param order object's order
+         * @param object object itself
+         */
         public RelationInfo(int order, Object object) {
             this.order.set(order);
             this.object.set(object);

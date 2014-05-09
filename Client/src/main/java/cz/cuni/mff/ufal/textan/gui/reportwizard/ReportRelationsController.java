@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -311,6 +312,8 @@ public class ReportRelationsController extends ReportWizardController {
         border.setTop(filterField);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
         //
+        relationsListView.setItems(FXCollections.observableArrayList(
+                (FXRelationBuilder p) -> new Observable[] { p.stringRepresentation }));
         relationsListView.getSelectionModel().selectedItemProperty().addListener(
                 (ov, oldVal, newVal) -> { selectRelation(newVal); });
     }
