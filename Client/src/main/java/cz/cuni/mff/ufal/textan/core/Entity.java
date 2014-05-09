@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.ObjectOccurrence;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,7 +27,7 @@ public class Entity {
     private final int length;
 
     /** Object Type. */
-    private final long type;
+    private final ObjectType type;
 
     /** Object candidates for this entity. */
     private final List<Pair<Double, Object>> candidates = new ArrayList<>();
@@ -43,7 +43,7 @@ public class Entity {
         value = entity.getValue();
         position = entity.getPosition();
         length = entity.getLength();
-        type = entity.getType().getId(); //FIXME
+        type = new ObjectType(entity.getType());
     }
 
     /**
@@ -53,7 +53,7 @@ public class Entity {
      * @param length length
      * @param type type
      */
-    public Entity(String value, int position, int length, long type) {
+    public Entity(final String value, final int position, final int length, final ObjectType type) {
         this.value = value;
         this.position = position;
         this.length = length;
@@ -104,7 +104,7 @@ public class Entity {
      * Returns type.
      * @return type
      */
-    public long getType() {
+    public ObjectType getType() {
         return type;
     }
 
@@ -126,10 +126,7 @@ public class Entity {
         result.setValue(value);
         result.setPosition(position);
         result.setLength(length);
-
-        //FIXME:
-        ObjectType objectType = new ObjectType(type, "");
-        result.setType(objectType.toObjectType());
+        result.setType(type.toObjectType());
         return result;
     }
 

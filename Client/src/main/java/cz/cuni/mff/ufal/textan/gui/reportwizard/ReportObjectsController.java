@@ -144,7 +144,7 @@ public class ReportObjectsController extends ReportWizardController {
             contextMenu.hide();
             final Entity ent =
                     pipeline.getReportEntities().get(selectedEntity.index);
-            final Object newObject = new Object(-newObjects.size() - 1, new ObjectType(ent.getType(), ""), Arrays.asList(ent.getValue()));
+            final Object newObject = new Object(-newObjects.size() - 1, ent.getType(), Arrays.asList(ent.getValue()));
             newObjects.add(newObject);
             setNewObjectAsSelectedEntityCandidate(newObject);
         });
@@ -178,7 +178,7 @@ public class ReportObjectsController extends ReportWizardController {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
                 final EntityBuilder entity = word.getEntity();
-                final long entityId = entity.getId();
+                final long entityId = entity.getType().getId();
                 final int entityIndex = entity.getIndex();
                 Utils.styleText(text, "ENTITY", entityId);
 
@@ -187,7 +187,7 @@ public class ReportObjectsController extends ReportWizardController {
                     entityInfo = new EntityInfo();
                     entityInfo.index = entityIndex;
                     final Entity ent = pipeline.getReportEntities().get(entityIndex);
-                    entityInfo.type = ent.getType();
+                    entityInfo.type = ent.getType().getId();
                     final List<Pair<Double, Object>> candidates = ent.getCandidates();
                     Collections.sort(candidates, Entity.COMPARATOR);
                     entityInfo.ranked = FXCollections.observableArrayList(candidates);

@@ -58,7 +58,7 @@ final class ReportEntitiesState extends State {
                 if (word.getEntity() != builder) {
                     if (builder != null) {
                         builder.index = ents.size();
-                        ents.add(new Entity(alias.toString(), start, word.getStart() - start, builder.getId()));
+                        ents.add(new Entity(alias.toString(), start, word.getStart() - start, builder.getType()));
                     }
                     start = word.getStart();
                     alias.setLength(0);
@@ -68,7 +68,7 @@ final class ReportEntitiesState extends State {
             }
             if (builder != null) {
                 builder.index = ents.size();
-                ents.add(new Entity(alias.toString(), start, pipeline.reportText.length() - start, builder.getId()));
+                ents.add(new Entity(alias.toString(), start, pipeline.reportText.length() - start, builder.getType()));
             }
             pipeline.client.getObjects(pipeline.ticket, pipeline.reportText, pipeline.reportEntities);
             for (Entity ent : pipeline.reportEntities) {

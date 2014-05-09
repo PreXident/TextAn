@@ -154,7 +154,7 @@ public class ReportEntitiesController extends ReportWizardController {
         for (Word word: words) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
-                Utils.styleText(text, "ENTITY", word.getEntity().getId());
+                Utils.styleText(text, "ENTITY", word.getEntity().getType().getId());
             }
             text.setOnMousePressed(e -> {
                 if (!text.getStyleClass().contains(SELECTED)) {
@@ -268,7 +268,7 @@ public class ReportEntitiesController extends ReportWizardController {
                 return;
             }
             final long id = ot.getId();
-            final EntityBuilder e = new EntityBuilder(id);
+            final EntityBuilder e = new EntityBuilder(ot);
             final Pair<Integer, Integer> bounds =
                     e.add(words, firstSelectedIndex, lastSelectedIndex, clearer);
             for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {

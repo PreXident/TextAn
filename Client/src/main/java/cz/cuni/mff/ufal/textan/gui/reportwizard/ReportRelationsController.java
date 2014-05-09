@@ -331,7 +331,7 @@ public class ReportRelationsController extends ReportWizardController {
         for (final Word word: words) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
-                final long entityId = word.getEntity().getId();
+                final long entityId = word.getEntity().getType().getId();
                 Utils.styleText(text, "ENTITY", entityId);
                 //
                 final int entityIndex = word.getEntity().getIndex();
