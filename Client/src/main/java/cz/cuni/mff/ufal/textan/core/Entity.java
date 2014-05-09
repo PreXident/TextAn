@@ -43,7 +43,7 @@ public class Entity {
         value = entity.getValue();
         position = entity.getPosition();
         length = entity.getLength();
-        type = entity.getType();
+        type = entity.getType().getId(); //FIXME
     }
 
     /**
@@ -126,7 +126,10 @@ public class Entity {
         result.setValue(value);
         result.setPosition(position);
         result.setLength(length);
-        result.setType(type);
+
+        //FIXME:
+        ObjectType objectType = new ObjectType(type, "");
+        result.setType(objectType.toObjectType());
         return result;
     }
 

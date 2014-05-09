@@ -41,7 +41,7 @@ public class ObjectAssignmentService {
 
         for (Entity entity : entities) {
 
-            List<ObjectTable> objectTables = objectTableDAO.findAllByObjectType(entity.getType());
+            List<ObjectTable> objectTables = objectTableDAO.findAllByObjectType(entity.getType().getId());
             List<Pair<Object, Float>> ratedObjects = new ArrayList<>();
 
             for (ObjectTable table : objectTables) {
@@ -66,7 +66,7 @@ public class ObjectAssignmentService {
 
         for (Entity entity : entities) {
 
-            List<ObjectTable> objectTables = objectTableDAO.findAllByObjectType(entity.getType());
+            List<ObjectTable> objectTables = objectTableDAO.findAllByObjectType(entity.getType().getId());
             List<Pair<Object, Float>> ratedObjects = new ArrayList<>();
 
             for (ObjectTable table : objectTables) {
