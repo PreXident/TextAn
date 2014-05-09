@@ -474,7 +474,20 @@ public class ReportRelationsController extends ReportWizardController {
         allTypes = FXCollections.observableArrayList(types);
         listView.setItems(allTypes);
 
-        objectColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(
+        objectColumn.setCellFactory(ComboBoxTableCell.forTableColumn(new StringConverter<Object>() {
+            @Override
+            public String toString(Object t) {
+                if (t == null) {
+                    return "";
+                }
+                return t.getType().getName() + " - " + t.getId() + ": " + String.join(", ", t.getAliases());
+            }
+
+            @Override
+            public Object fromString(String string) {
+                throw new UnsupportedOperationException("This should not be needed!");
+            }
+        }, FXCollections.observableArrayList(
                 pipeline.getReportEntities().stream()
                         .map(ent -> ent.getCandidate())
                         .distinct()
