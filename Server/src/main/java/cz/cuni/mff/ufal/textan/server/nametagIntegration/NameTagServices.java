@@ -27,17 +27,24 @@ public class NameTagServices {
 
     }
 
-    String prepareLearningArguments(boolean isWindows) {
+    /**
+     * Function that creates commands for learning new nametag model.
+     * @return string array with commands
+     */
+    String[] prepareLearningArguments() {
         String[] configValues = {"czech", "morphodita:czech-131112-pos_only.tagger", "features-tsd13.txt", "2","30", "-0.1", "0.1", "0.01", "0.5", "0", ""};
         String[] configNames = {"ner_identifier", "tagger", "featuresFile", "stages", "iterations", "missing_weight", "initial_learning_rage", "final_learning_rage", "gaussian", "hidden_layer", "heldout_data"};
-        StringBuilder result = new StringBuilder();
+        StringBuilder command = new StringBuilder();
+        String[] result;
         // binary and setting splitter
         String pathSplitter;
-        if (isWindows) {
-            result.append(".\\train_ner.exe");
+        if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
+            result = new String[]{"cmd","/C", ""};
+            command.append(".\\train_ner.exe");
             pathSplitter = "\\";
         } else {
-            result.append("./train_ner");
+            result = new String[]{""};
+            command.append("./train_ner");
             pathSplitter = "/";
         }
         try {
@@ -56,14 +63,14 @@ public class NameTagServices {
                 } catch (Exception e) {
                     LOG.warn("Config value " + configNames[i] + " wasn't set, using default value.", e);
                 } finally {
-                    result.append( configValues[i].isEmpty() ? "" : " " + configValues[i]);
+                    command.append( configValues[i].isEmpty() ? "" : " " + configValues[i]);
                 }
             }
         }
         catch (Exception e) {
             LOG.warn("Config file for NameTag wasn't found, using default values.", e);
             for (int i = 0; i < configNames.length; ++i) {
-                result.append(configValues[i].length() > 0 ? " " + configValues[i] : "");
+                command.append(configValues[i].length() > 0 ? " " + configValues[i] : "");
             }
         }
 
@@ -77,11 +84,12 @@ public class NameTagServices {
         // test file
         result.append(" cnec2.0-all" + pathSplitter + "dtest.txt"); */
         // learning data INPUT
-        result.append(" <cnec2.0-all" + pathSplitter + "train.txt");
+        command.append(" <cnec2.0-all" + pathSplitter + "train.txt");
         // model file OUTPUT
         SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
-        result.append(" >." + pathSplitter + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner");
-        return result.toString();
+        command.append(" >." + pathSplitter + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner");
+        result[result.length - 1] = command.toString();
+        return result;
     }
 
     void Learn() {
@@ -91,15 +99,8 @@ public class NameTagServices {
         try {
             Runtime rt = Runtime.getRuntime();
             File dir = new File(Paths.get("../NameTagIntegration/training").toAbsolutePath().toString());
-            String[] commandsWindows = {"cmd","/C", "train.bat"};
-            String[] commandsOther = {"train.sh"};
             Process ps;
-            if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
-                ps = rt.exec(commandsWindows, null, dir);
-            }
-            else {
-                ps = rt.exec(commandsOther, null, dir);
-            }
+            ps = rt.exec(prepareLearningArguments(), null, dir);
 
             /*BufferedReader bes = new BufferedReader(new InputStreamReader(ps.getErrorStream())); //Dont't know why, but output is in error stream
             String lineerr;
