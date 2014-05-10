@@ -5,9 +5,13 @@ import cz.cuni.mff.ufal.textan.server.models.Entity;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import oracle.jrockit.jfr.StringConstantPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +31,8 @@ public class NameTagServices {
     }
 
     String prepareLearningArguments(boolean isWindows) {
+        String[] configValues = {"czech", "morphodita:czech-131112-pos_only.tagger", "features-tsd13.txt", "2","30", "-0.1", "0.1", "0.01", "0.5", "0", ""};
+        String[] configNames = {"ner_identifier", "tagger", "featuresFile", "stages", "iterations", "missing_weight", "initial_learning_rage", "final_learning_rage", "gaussian", "hidden_layer", "heldout_data"};
         StringBuilder result = new StringBuilder();
         // binary and setting splitter
         String pathSplitter;
@@ -37,6 +43,34 @@ public class NameTagServices {
             result.append("./train_ner");
             pathSplitter = "/";
         }
+        try {
+            InputStream configFileStream = NameTagServices.class.getResource("/NametagLearningConfiguration.cnf").openStream();
+            Properties p = new Properties();
+            p.load(configFileStream);
+            configFileStream.close();
+            for (int i = 0; i < configNames.length; ++i) {
+                try {
+                    String value = (String)p.get(configNames[i]);
+                    if ( value != null) {
+                        configValues[i] = value;
+                    } else {
+                        LOG.warn("Config value " + configNames[i] + " wasn't set, using default value.");
+                    }
+                } catch (Exception e) {
+                    LOG.warn("Config value " + configNames[i] + " wasn't set, using default value.", e);
+                } finally {
+                    result.append( configValues[i].isEmpty() ? "" : " " + configValues[i]);
+                }
+            }
+        }
+        catch (Exception e) {
+            LOG.warn("Config file for NameTag wasn't found, using default values.", e);
+            for (int i = 0; i < configNames.length; ++i) {
+                result.append(configValues[i].length() > 0 ? " " + configValues[i] : "");
+            }
+        }
+
+        /*
         // taggger
         result.append(" czech morphodita:czech-131112-pos_only.tagger");
         // features
@@ -44,10 +78,10 @@ public class NameTagServices {
         // training parameters
         result.append(" 2 30 -0.1 0.1 0.01 0.5 0");
         // test file
-        result.append(" cnec2.0-all" + pathSplitter + "dtest.txt");
-        // learning data
+        result.append(" cnec2.0-all" + pathSplitter + "dtest.txt"); */
+        // learning data INPUT
         result.append(" <cnec2.0-all" + pathSplitter + "train.txt");
-        //output model file
+        // model file OUTPUT
         SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
         result.append(" >." + pathSplitter + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner");
         return result.toString();
