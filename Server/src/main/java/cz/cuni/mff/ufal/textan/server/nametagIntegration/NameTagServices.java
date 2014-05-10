@@ -26,6 +26,33 @@ public class NameTagServices {
 
     }
 
+    String prepareLearningArguments(boolean isWindows) {
+        StringBuilder result = new StringBuilder();
+        // binary and setting splitter
+        String pathSplitter;
+        if (isWindows) {
+            result.append(".\\train_ner.exe");
+            pathSplitter = "\\";
+        } else {
+            result.append("./train_ner");
+            pathSplitter = "/";
+        }
+        // taggger
+        result.append(" czech morphodita:czech-131112-pos_only.tagger");
+        // features
+        result.append(" features-tsd13.txt");
+        // training parameters
+        result.append(" 2 30 -0.1 0.1 0.01 0.5 0");
+        // test file
+        result.append(" cnec2.0-all" + pathSplitter + "dtest.txt");
+        // learning data
+        result.append(" <cnec2.0-all" + pathSplitter + "train.txt");
+        //output model file
+        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
+        result.append(" >." + pathSplitter + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner");
+        return result.toString();
+    }
+
     void Learn() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
