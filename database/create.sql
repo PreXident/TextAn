@@ -1,4 +1,4 @@
-CREATE DATABASE textan;
+CREATE DATABASE IF NOT EXISTS textan;
 USE textan;
 
 
