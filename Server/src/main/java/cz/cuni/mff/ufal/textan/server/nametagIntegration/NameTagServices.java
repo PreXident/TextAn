@@ -6,12 +6,9 @@ import cz.cuni.mff.ufal.textan.server.models.Entity;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import oracle.jrockit.jfr.StringConstantPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,11 +170,18 @@ public class NameTagServices {
                     //entitiesList.add(ent);
 
                     while (!openEntities.empty() && (openEntities.peek().getStart() + openEntities.peek().getLength() - 1) == i) {
-                        NamedEntity ending = openEntities.peek();
-                        int entity_start = (int) tokens.get((int) (i - ending.getLength() + 1)).getStart();
+                        NamedEntity endingEntity = openEntities.peek();
+                        int entity_start = (int) tokens.get((int) (i - endingEntity.getLength() + 1)).getStart();
                         int entity_end = (int) (tokens.get(i).getStart() + tokens.get(i).getLength());
                         if (openEntities.size() == 1) {
-                            entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end, 0));
+                            Long entityID = 0L;
+                            try {
+                                entityID = Long.parseLong(endingEntity.getType());
+                            }
+                            catch (NumberFormatException nfe) {
+                                LOG.error("Entity type " + endingEntity.getType() + " wasn't recognized.", nfe);
+                            }
+                            entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end, entityID));
                         }
                         openEntities.pop();
                     }
