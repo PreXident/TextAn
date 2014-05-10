@@ -46,11 +46,27 @@ public class Grapher {
     }
 
     /**
+     * Returns root object id.
+     * @return root object id
+     */
+    public int getDistance() {
+        return distance;
+    }
+
+    /**
      * Sets distance for fetching related objects.
      * @param distance new distance
      */
     public void setDistance(int distance) {
         this.distance = distance;
+    }
+
+    /**
+     * Returns root object id.
+     * @return root object id
+     */
+    public long getRootId() {
+        return rootId;
     }
 
     /**

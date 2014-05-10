@@ -3,6 +3,8 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
+import cz.cuni.mff.ufal.textan.core.processreport.Word;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -14,8 +16,14 @@ import javafx.collections.ObservableList;
  */
 public class FXRelationBuilder extends RelationBuilder {
 
-    public FXRelationBuilder(final RelationType type) {
+    final List<FXRelationBuilder> list;
+
+    final List<Word> words = new ArrayList<>();
+
+    public FXRelationBuilder(final RelationType type, final List<FXRelationBuilder> list) {
         super(type);
+        this.list = list;
+        list.add(this);
     }
 
     @Override
@@ -26,6 +34,29 @@ public class FXRelationBuilder extends RelationBuilder {
     @SuppressWarnings("unchecked")
     ObservableList<RelationInfo> getData() {
         return (ObservableList<RelationInfo>) data;
+    }
+
+    @Override
+    protected void register(Word word) {
+        final RelationBuilder old = word.getRelation();
+        if (old != null && old instanceof FXRelationBuilder) {
+            ((FXRelationBuilder) old).unregister(word);
+        }
+        words.add(word);
+        super.register(word);
+    }
+
+    @Override
+    public String toString() {
+        return type.toString();
+    }
+
+    @Override
+    protected void unregister(Word word) {
+        if (words.remove(word) && words.isEmpty()) {
+            list.remove(this);
+        }
+        super.unregister(word);
     }
 
     public static class RelationInfo implements IRelationInfo {

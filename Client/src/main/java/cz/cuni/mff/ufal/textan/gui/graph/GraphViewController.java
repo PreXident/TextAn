@@ -29,9 +29,22 @@ public class GraphViewController extends GraphController {
     /** Localization container. */
     ResourceBundle resourceBundle;
 
+    /** Graph container. */
+    GraphView graphView;
+
     @FXML
     private void cancel() {
         closeContainer();
+    }
+
+    @FXML
+    private void pick() {
+        graphView.pick();
+    }
+
+    @FXML
+    private void transform() {
+        graphView.transform();
     }
 
     @Override
@@ -51,7 +64,8 @@ public class GraphViewController extends GraphController {
         super.setGrapher(grapher);
         try {
             final Graph g = grapher.getGraph();
-            final GraphView graphView = new GraphView(settings, g.getNodes(), g.getEdges());
+            graphView = new GraphView(settings,
+                    g.getNodes(), g.getEdges(), grapher.getRootId());
             stackPane.getChildren().add(graphView);
         } catch (IdNotFoundException e) {
             e.printStackTrace();

@@ -1,7 +1,6 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.Object.Aliases;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -82,7 +81,6 @@ public class Object {
 
     @Override
     public int hashCode() {
-        //TODO hashcode for new objects???
         int hash = 5;
         hash = (int)(67 * hash + this.id);
         return hash;
@@ -90,7 +88,7 @@ public class Object {
 
     @Override
     public String toString() {
-        return id + ": " + String.join(",", aliases);
+        return id + ": " + String.join(", ", aliases);
     }
 
     /**
@@ -102,7 +100,7 @@ public class Object {
                 new cz.cuni.mff.ufal.textan.commons.models.Object();
         result.setId(id);
         result.setObjectType(type.toObjectType());
-        result.setIsNew(Boolean.FALSE); //TODO add object feature
+        result.setIsNew(isNew);
         final Aliases alias = new Aliases();
         alias.getAlias().addAll(aliases);
         result.setAliases(alias);

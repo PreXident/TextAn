@@ -24,26 +24,44 @@
 				<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
 					<TextFlow fx:id="textFlow" styleClass="text-flow" />
 				</ScrollPane>
-				<VBox>
-					<TableView fx:id="table">
-						<columns>
-							<TableColumn fx:id="orderColumn" text="%order" resizable="false" />
-							<TableColumn fx:id="objectColumn" text="%object" resizable="false" />
-						</columns>
-						<placeholder>
-							<Label text="%nothing" />
-						</placeholder>
-					</TableView>
-					<HBox>
-						<Button text="%add" onAction="#add" />
-						<Button text="%remove" onAction="#remove" />
-					</HBox>
-				</VBox>
+				<BorderPane>
+					<center>
+						<TableView fx:id="table">
+							<columns>
+								<TableColumn fx:id="orderColumn" text="%order" resizable="false" />
+								<TableColumn fx:id="objectColumn" text="%object" resizable="false" />
+							</columns>
+							<placeholder>
+								<Label text="%nothing" />
+							</placeholder>
+						</TableView>
+					</center>
+					<bottom>
+						<HBox>
+							<Button text="%add" onAction="#add" />
+							<Button text="%remove" onAction="#remove" />
+						</HBox>
+					</bottom>
+					<right>
+						<BorderPane>
+							<top>
+								<HBox>
+									<Button text="%add" onAction="#addRelation" />
+									<Button text="%remove" onAction="#removeRelation" />
+								</HBox>
+							</top>
+							<center>
+								<ListView fx:id="relationsListView" />
+							</center>
+						</BorderPane>
+					</right>
+				</BorderPane>
 			</items>
 		</SplitPane>
 	</center>
 	<bottom>
 		<HBox alignment="CENTER_RIGHT" >
+			<Button text="%back" onAction="#back"/>
 			<Button text="%cancel" onAction="#cancel"/>
 			<Button text="%continue" onAction="#next"/>
 		</HBox>

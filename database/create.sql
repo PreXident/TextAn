@@ -1,4 +1,4 @@
-CREATE DATABASE textan;
+CREATE DATABASE textan CHARACTER SET utf8;
 USE textan;
 
 
@@ -6,7 +6,8 @@ CREATE TABLE Document (
 	id_document int PRIMARY KEY AUTO_INCREMENT, 
 	added datetime,
 	processed datetime NULL,
-	text text NOT NULL
+	text text NOT NULL,
+	version int
 );
 
 CREATE TABLE RelationType(

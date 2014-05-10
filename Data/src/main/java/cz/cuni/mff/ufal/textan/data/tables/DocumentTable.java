@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -23,6 +25,9 @@ public class DocumentTable extends AbstractTable {
 
     
     private long id;
+    private int version;
+    
+    //@Temporal(TemporalType.TIMESTAMP)
     private Date addedDate = Calendar.getInstance().getTime();
     private Date processedDate;
     private String text;
@@ -35,6 +40,14 @@ public class DocumentTable extends AbstractTable {
     public DocumentTable(String text) {
         this();
         this.text = text;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public int getVersion() {
+        return version;
     }
 
     public Set<AliasOccurrenceTable> getAliasOccurrences() {
@@ -54,7 +67,7 @@ public class DocumentTable extends AbstractTable {
     }
     
     public void setProcessedDateToNow() {
-        setProcessedDate(Calendar.getInstance().getTime());
+        setProcessedDate(new Date());
     }
     
     public boolean isProcessed() {

@@ -25,14 +25,14 @@ public class ProcessReportPipeline {
     /** Report text. TOODO change test content to empty string */
     protected String reportText = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
 
-    /** Report entities. */
+    /** Report words. */
     protected List<Word> reportWords = new ArrayList<>();
 
     /** Report entities. */
     protected List<Entity> reportEntities = new ArrayList<>();
 
     /** Report relations. */
-    protected List<Relation> reportRelations = new ArrayList<>();
+    protected List<RelationBuilder> reportRelations = new ArrayList<>();
 
     /** State of the pipeline. */
     protected State state = LoadReportState.getInstance();
@@ -92,6 +92,13 @@ public class ProcessReportPipeline {
      */
     public boolean removeStateChangedListener(final IStateChangedListener listener) {
         return stateChangedListeners.remove(listener);
+    }
+
+    /**
+     * Moves one step back in pipeline.
+     */
+    public void back() {
+        state.back(this);
     }
 
     /**
@@ -185,15 +192,17 @@ public class ProcessReportPipeline {
      * Returns report's relations.
      * @return report's relations
      */
-    public List<Relation> getReportRelations() {
+    public List<RelationBuilder> getReportRelations() {
         return reportRelations;
     }
 
     /**
      * Sets report's relations.
      * @param words words with assigned relations
+     * @param unanchoredRelations list of unanchored relations
      */
-    public void setReportRelations(final List<Word> words) {
-        state.setReportRelations(this, words);
+    public void setReportRelations(final List<Word> words,
+            final List<? extends RelationBuilder> unanchoredRelations) {
+        state.setReportRelations(this, words, unanchoredRelations);
     }
 }

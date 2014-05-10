@@ -37,6 +37,11 @@ final class ReportObjectsState extends State {
     }
 
     @Override
+    public void back(final ProcessReportPipeline pipeline) {
+        pipeline.setState(ReportEntitiesState.getInstance());
+    }
+
+    @Override
     public void setReportObjects(final ProcessReportPipeline pipeline, final List<Entity> entities) {
         pipeline.reportEntities = entities;
         pipeline.setState(ReportRelationsState.getInstance());

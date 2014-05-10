@@ -48,4 +48,9 @@ public class RelationType {
         result.setName(name);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

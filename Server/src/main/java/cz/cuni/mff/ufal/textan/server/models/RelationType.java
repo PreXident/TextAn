@@ -67,13 +67,13 @@ public class RelationType {
      *
      * @return the relation type table
      */
-    public RelationTypeTable toRelationTypeTable() {
-        RelationTypeTable relationTypeTable = new RelationTypeTable();
-        relationTypeTable.setId(id);
-        relationTypeTable.setName(name);
-
-        return relationTypeTable;
-    }
+//    public RelationTypeTable toRelationTypeTable() {
+//        RelationTypeTable relationTypeTable = new RelationTypeTable();
+//        relationTypeTable.setId(id);
+//        relationTypeTable.setName(name);
+//
+//        return relationTypeTable;
+//    }
 
     /**
      * Converts the instance into a {@link cz.cuni.mff.ufal.textan.commons.models.RelationType}

@@ -33,8 +33,10 @@ public abstract class AbstractBuilder {
             return;
         }
         final Word first = words.get(from - 1);
+        final AbstractBuilder firstBuilder = extract(first);
         final Word last = words.get(to + 1);
-        if (extract(first) == extract(last) && extract(first) != null) {
+        final AbstractBuilder lastBuilder = extract(last);
+        if (firstBuilder == lastBuilder && firstBuilder != null) {
             throw new SplitException("Splitting not supported!");
         }
     }
@@ -61,6 +63,28 @@ public abstract class AbstractBuilder {
             register(word);
         }
         return bounds;
+    }
+
+    /**
+     * Cleans the given words from builders.
+     * Intended to be use in cleaner descendant.  Checks input by
+     * {@link #checkAdding(java.util.List, int, int)}. Also clears trailing and
+     * leading whites (as defined in {@link #ignore(Word)}).
+     * @param words list of words
+     * @param from starting index
+     * @param to final index (inclusive)
+     * @param clearer functor to clear trimmed words
+     * @throws SplitException if an builder should be split
+     * @see #trim(java.util.List, int, int)
+     */
+    protected void clean(final List<Word> words, final int from, final int to, final IClearer clearer) throws SplitException {
+        checkAdding(words, from, to);
+        final Pair<Integer, Integer> bounds = trim(words, from, to, clearer);
+        for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
+            final Word word = words.get(i);
+            unregister(word);
+            clearer.clear(i);
+        }
     }
 
     /**
