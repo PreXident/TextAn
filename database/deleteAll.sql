@@ -1,15 +1,7 @@
 USE textan;
 
-
-
-
-
-
-
-
 DROP TABLE AliasOccurrence;
 DROP TABLE Alias;
-
 
 DROP TABLE IsInRelation;
 
@@ -24,4 +16,7 @@ DROP TABLE RelationType;
 
 DROP TABLE Document;
 
+DROP TABLE GlobalVersion;
+DROP TABLE Audit;
 
+-- TODO delete users

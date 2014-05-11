@@ -4,6 +4,21 @@ CREATE DATABASE IF NOT EXISTS textan
 USE textan;
 
 
+CREATE TABLE GlobalVersion (
+  version int DEFAULT 0 NOT NULL
+);
+
+INSERT INTO  `globalversion` (  `version` ) 
+VALUES ( 0 );
+
+CREATE TABLE Audit (
+	id_audit int PRIMARY KEY AUTO_INCREMENT, 
+  username NVARCHAR(255) NOT NULL,
+  edittype VARCHAR(255) NOT NULL,            -- INSERT | DELETE | UPDATE
+  edit text CHARSET utf8 NOT NULL
+);
+
+
 CREATE TABLE Document (
 	id_document int PRIMARY KEY AUTO_INCREMENT, 
 	added datetime,
@@ -26,8 +41,9 @@ CREATE TABLE Object (
 	id_object int PRIMARY KEY AUTO_INCREMENT, 
 	id_object_type int NOT NULL,
 	data NVARCHAR (255),
-  CONSTRAINT FK_OBJECT_TO_TYPE FOREIGN KEY (id_object_type)
-		REFERENCES ObjectType(id_object_type)
+    CONSTRAINT FK_OBJECT_TO_TYPE FOREIGN KEY (id_object_type)
+  		REFERENCES ObjectType(id_object_type),
+	globalversion int DEFAULT 0 NOT NULL	
 );
 
 CREATE TABLE Alias (
