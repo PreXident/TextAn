@@ -18,13 +18,40 @@ import org.slf4j.LoggerFactory;
 public class NameTagServices {
     private Ner ner;
     private static final Logger LOG = LoggerFactory.getLogger(NameTagServices.class);
+    Hashtable<String, Long> translationTable;
 
     public NameTagServices(String model) {
         ner = Ner.load(model);
         if (ner == null) {
             LOG.error("Model wasn't found!");
         }
+        translationTable = new Hashtable<>();
+        translationTable.put("P", 1L); //osoba
+        translationTable.put("TD", 2L); //datum
+        translationTable.put("GS", 3L); //ulice
+        translationTable.put("GC", 4L); //mesto
+        translationTable.put("GQ", 4L); //mestska cast
+        //translationTable.put("", 5L); //zbran
+        translationTable.put("TH", 6L); //cas
+        //translationTable.put("", 7L); //automobil
+        //translationTable.put("", 8L); //SPZ
+        //translationTable.put("", 9L); //Podnik
+        //translationTable.put("", 10L); //Zakon
 
+    }
+
+    long translateEntity(String entityType) {
+        long value = 0L;
+        if (translationTable.containsKey(entityType.toUpperCase())) {
+            value = translationTable.get(entityType.toUpperCase());
+        } else {
+            try {
+                value = Long.parseLong(entityType);
+            } catch (NumberFormatException nfe) {
+                LOG.error("Entity type " + entityType + " wasn't recognized.", nfe);
+            }
+        }
+        return value;
     }
 
     /**
@@ -92,6 +119,9 @@ public class NameTagServices {
         return result;
     }
 
+    /**
+     * Learn new model
+     */
     void Learn() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -129,10 +159,10 @@ public class NameTagServices {
         Forms forms = new Forms();
         TokenRanges tokens = new TokenRanges();
         NamedEntities entities = new NamedEntities();
-        ArrayList<NamedEntity> sortedEntities = new ArrayList<NamedEntity>();
+        ArrayList<NamedEntity> sortedEntities = new ArrayList<>();
         Scanner reader = new Scanner(input);
-        List<Entity> entitiesList = new ArrayList<Entity>();
-        Stack<NamedEntity> openEntities = new Stack<NamedEntity>();
+        List<Entity> entitiesList = new ArrayList<>();
+        Stack<NamedEntity> openEntities = new Stack<>();
         boolean not_eof = true;
         while(not_eof)
 
@@ -175,14 +205,7 @@ public class NameTagServices {
                         int entity_start = (int) tokens.get((int) (i - endingEntity.getLength() + 1)).getStart();
                         int entity_end = (int) (tokens.get(i).getStart() + tokens.get(i).getLength());
                         if (openEntities.size() == 1) {
-                            Long entityID = 0L;
-                            try {
-                                entityID = Long.parseLong(endingEntity.getType());
-                            }
-                            catch (NumberFormatException nfe) {
-                                LOG.error("Entity type " + endingEntity.getType() + " wasn't recognized.", nfe);
-                            }
-                            entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end, entityID));
+                            entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end, translateEntity(endingEntity.getType())));
                         }
                         openEntities.pop();
                     }
