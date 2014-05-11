@@ -1,12 +1,26 @@
-CREATE DATABASE textan CHARACTER SET utf8;
+CREATE DATABASE IF NOT EXISTS textan
+  DEFAULT CHARACTER SET utf8
+  DEFAULT COLLATE utf8_general_ci;
 USE textan;
+
+DROP TABLE IF EXISTS `RelationOccurrence`;
+DROP TABLE IF EXISTS `JoinedObjects`;
+DROP TABLE IF EXISTS `IsInRelation`;
+DROP TABLE IF EXISTS `Relation`;
+DROP TABLE IF EXISTS `AliasOccurrence`;
+DROP TABLE IF EXISTS `Alias`;
+DROP TABLE IF EXISTS `Object`;
+DROP TABLE IF EXISTS `ObjectType`;
+DROP TABLE IF EXISTS `RelationType`;
+DROP TABLE IF EXISTS `Document`;
+
 
 
 CREATE TABLE Document (
 	id_document int PRIMARY KEY AUTO_INCREMENT, 
 	added datetime,
 	processed datetime NULL,
-	text text NOT NULL,
+	text text CHARSET utf8 NOT NULL,
 	version int
 );
 
