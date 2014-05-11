@@ -1,16 +1,19 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
+import cz.cuni.mff.ufal.textan.commons.models.Relation;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromString.Entities;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Objects;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromString.Relations;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.ObjectOccurrence;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RelationOccurrence;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
+import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -177,7 +180,7 @@ public class Client {
             for (Assignment.RatedObject rating : assignment.getRatedObjects()) {
                 final double r = rating.getScore();
                 final Object obj = new Object(rating.getObject());
-                ent.getCandidates().put(r, obj);
+                ent.getCandidates().add(new Pair<>(r, obj));
             }
         }
     }
@@ -319,32 +322,42 @@ public class Client {
      */
     public void saveProcessedDocument(final Ticket ticket,
             final String text, final List<Entity> reportEntities,
-            final List<Relation> reportRelations) {
-        final Objects objs = new Objects();
-        objs.getObjects().addAll(
-                reportEntities.stream()
-                        .sequential()
-                        .filter(ent -> ent.getCandidate() != null)
-                        .map(ent -> ent.getCandidate().toObject())
-                        .collect(Collectors.toList())
-        );
-        final Relations relations = new Relations();
-        relations.getRelations().addAll(
-                reportRelations.stream()
-                        .map(Relation::toRelation)
-                        .collect(Collectors.toList())
-        );
-
+            final List<RelationBuilder> reportRelations) throws IdNotFoundException{
         final SaveProcessedDocumentFromString request =
                 new SaveProcessedDocumentFromString();
+        //
+        final List<cz.cuni.mff.ufal.textan.commons.models.Object> objects =
+                request.getObjects();
+        final List<ObjectOccurrence> objectOccurrences =
+                request.getObjectOccurrences();
+        for (Entity ent : reportEntities) {
+            if (ent.getCandidate() != null) {
+                objects.add(ent.getCandidate().toObject());
+                objectOccurrences.add(ent.toObjectOccurrence());
+            }
+        }
+        //
+        final List<Relation> relations = request.getRelations();
+        final List<RelationOccurrence> relationOccurrences =
+                request.getRelationOccurrences();
+        for (RelationBuilder relation : reportRelations) {
+            relations.add(relation.toRelation());
+            final RelationOccurrence occ = relation.toRelationOccurrence();
+            if (occ != null) {
+                relationOccurrences.add(occ);
+            }
+        }
+        //
         request.setText(text);
-        request.setObjects(objs);
-        request.setRelations(relations);
         request.setForce(false);
 
-        getDocumentProcessor().saveProcessedDocumentFromString(
-                request, //TODO handle save document error
-                ticket.toTicket()
-        );
+        try {
+            getDocumentProcessor().saveProcessedDocumentFromString(
+                    request, //TODO handle save document error
+                    ticket.toTicket()
+            );
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
     }
 }

@@ -1,0 +1,26 @@
+All here!
+
+Adam
+- almost all HWKs from last time done
+
+Tam
+- proposal rejected by Ondrej
+
+HWK
+- Adam, it should be obvious which graph mode is selected
+- Adam, use icon instead of words for graph mode buttons (rather tool bar)
+- Adam, forward immediately after back should not forget user changes
+- Adam, close buttons! You lazy, programmer!
+- Adam, filter field should be cleared after selection (or maybe option in settings)
+- Adam, optional HWK - add possibility to add anchor for unanchored relations by drag and drop
+- Adam, back to objects forgets new objects
+- Adam, add label to context menu displaying currently selected entity/object/relation...
+- Adam, remove relation when object is null throws an exception
+- Adam, tabs for quick go back to certain step (or at least for orientation)
+- Peter, test relation without anchor
+- create documentation placeholders in repository, go through previous MoMs and pick documentation notes from there
+
+Do not forget a chapter "How to setup the system for new domain" in documentation!
+Possible extension: think of a way to provide arguments (types, obligatoriness) to relations
+
+Next meeting - see issue #35

@@ -41,13 +41,25 @@ public class Object {
      */
     public static Object fromObjectTable(ObjectTable objectTable) {
 
-        List<String> aliases = objectTable.getAliases().stream().map(AliasTable::getAlias).collect(Collectors.toList());
+        List<String> aliases = objectTable.getAliases().stream()
+                .map(AliasTable::getAlias)
+                .collect(Collectors.toList());
 
         return new Object(
                 objectTable.getId(),
                 ObjectType.fromObjectTypeTable(objectTable.getObjectType()),
                 aliases, false
                 );
+    }
+
+    //TODO:add comment
+    public static Object fromCommonsObject(cz.cuni.mff.ufal.textan.commons.models.Object commonsObject) {
+        return new Object(
+                commonsObject.getId(),
+                ObjectType.fromCommonsObjectType(commonsObject.getObjectType()),
+                commonsObject.getAliases().getAlias(),
+                commonsObject.isIsNew()
+        );
     }
 
     /**
@@ -139,4 +151,5 @@ public class Object {
 
         return sb.toString();
     }
+
 }

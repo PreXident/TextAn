@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
@@ -151,6 +152,7 @@ public class InnerWindow extends Window {
      * (Un)bind size and position according to {@link #maximilized}.
      */
     protected void adjustMaximized() {
+        this.setCursor(Cursor.DEFAULT);
         if (maximized.get()) {
             unmaximizedHeight = getPrefHeight();
             unmaximizedWidth = getPrefWidth();
@@ -161,9 +163,7 @@ public class InnerWindow extends Window {
             final Parent parent = getParent();
             setResizableWindow(false);
             if (parent instanceof Region) {
-                final Region region = (Region) parent;
-                prefHeightProperty().bind(region.heightProperty());
-                prefWidthProperty().bind(region.widthProperty());
+                bindPrefSize((Region) parent);
             } else {
                 //TODO binding to non-region parent's size
             }
@@ -173,6 +173,7 @@ public class InnerWindow extends Window {
             setResizableWindow(true);
             setPrefHeight(unmaximizedHeight);
             setPrefWidth(unmaximizedWidth);
+            super.layoutChildren();
             setLayoutX(unmaximizedX);
             setLayoutY(unmaximizedY);
         }
@@ -239,6 +240,15 @@ public class InnerWindow extends Window {
                 }
             }
         }
+    }
+
+    /**
+     * Should bind the prefHeight and prefWidth to the region's size.
+     * @param region parent region
+     */
+    protected void bindPrefSize(final Region region) {
+        prefHeightProperty().bind(region.heightProperty());
+        prefWidthProperty().bind(region.widthProperty());
     }
 
     /**

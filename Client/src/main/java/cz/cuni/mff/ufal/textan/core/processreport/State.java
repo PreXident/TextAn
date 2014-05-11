@@ -24,6 +24,13 @@ public abstract class State {
     public abstract StateType getType();
 
     /**
+     * Moves one step back in pipeline.
+     */
+    public void back(final ProcessReportPipeline pipeline) {
+        throw new IllegalStateException("Cannot go back when in state " + getType());
+    }
+
+    /**
      * Selects database as a source of the new report.
      * Available in {@link State.StateType#LOAD} state.
      * @param pipeline pipeline delegating the request
@@ -99,8 +106,10 @@ public abstract class State {
      * Sets the report's objects.
      * @param pipeline pipeline delegating the request
      * @param words words with assigned relations
+     * @param unanchoredRelations list of unanchored relations
      */
-    public void setReportRelations(final ProcessReportPipeline pipeline, final List<Word> words) {
+    public void setReportRelations(final ProcessReportPipeline pipeline,
+            final List<Word> words, final List<? extends RelationBuilder> unanchoredRelations) {
         throw new IllegalStateException("Cannot set report's relations when in state " + getType());
     }
 

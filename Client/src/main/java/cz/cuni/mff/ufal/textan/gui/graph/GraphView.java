@@ -4,7 +4,6 @@ import PretopoVisual.Jung.BasicHypergraphRenderer;
 import PretopoVisual.Jung.PseudoHypergraph;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
@@ -15,13 +14,14 @@ import edu.uci.ics.jung.graph.Hypergraph;
 import edu.uci.ics.jung.graph.SetHypergraph;
 import edu.uci.ics.jung.graph.SparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
+import edu.uci.ics.jung.visualization.Layer;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
-import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
+import edu.uci.ics.jung.visualization.transform.MutableTransformer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.MouseInfo;
@@ -41,13 +41,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections15.Transformer;
 
@@ -63,18 +58,27 @@ public class GraphView extends SwingNode {
      */
     final Properties settings;
 
+    /** Graph visualizator. */
     final VisualizationViewer<Object, Relation> visualizator;
 
+    /** Graph context menu. */
     final ContextMenu contextMenu;
 
-    public GraphView(final Properties settings,
-            final Map<Long, Object> objects, final Set<Relation> relations) {
+    /** Mouse handler. */
+    final DefaultModalGraphMouse<Integer,String> graphMouse;
+
+    public GraphView(final Properties settings, final Map<Long, Object> objects,
+            final Set<Relation> relations, final long rootId) {
         this.settings = settings;
         final boolean hypergraphs = settings.getProperty(TextAnController.HYPER_GRAPHS, "false").equals("true");
         final Hypergraph<Object, Relation> g = hypergraphs ? new SetHypergraph<>() : new SparseMultigraph<>();
+        Object root = null;
         // Add vertices
         for (Object obj : objects.values()) {
             g.addVertex(obj);
+            if (obj.getId() == rootId) {
+                root = obj;
+            }
         }
         // Add edges
         if (hypergraphs) {
@@ -140,9 +144,9 @@ public class GraphView extends SwingNode {
         visualizator.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<>());
         visualizator.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.CNTR);
         // Create a graph mouse and add it to the visualization component
-        DefaultModalGraphMouse<Integer,String> gm = new DefaultModalGraphMouse<>();
-        gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
-        gm.add(new AbstractPopupGraphMousePlugin() {
+        graphMouse = new DefaultModalGraphMouse<>();
+        graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
+        graphMouse.add(new AbstractPopupGraphMousePlugin() {
             @Override
             protected void handlePopup(MouseEvent e) {
                 System.out.println("[" + new Date().getTime() + "] HANDLING!");
@@ -172,8 +176,8 @@ public class GraphView extends SwingNode {
                 }
             }
         });
-        visualizator.setGraphMouse(gm);
-        visualizator.addKeyListener(new DefaultModalGraphMouse.ModeKeyAdapter(gm)); //press t and p to change modes!
+        visualizator.setGraphMouse(graphMouse);
+        visualizator.addKeyListener(new DefaultModalGraphMouse.ModeKeyAdapter(graphMouse)); //press t and p to change modes!
         //
         contextMenu = new ContextMenu();
         final MenuItem mi = new MenuItem("Yes!");
@@ -190,6 +194,30 @@ public class GraphView extends SwingNode {
                 this.setContent(visualizator);
             });
         } catch (Exception e) { }
+
+        //center to the graph root, for some reason we must wait a bit
+        final Object r = root;
+        new Thread(() -> {
+            try {
+                Thread.sleep(50);
+            } catch (Exception e) { }
+            SwingUtilities.invokeLater(() -> {
+                Point2D p = layout.transform(r);
+                MutableTransformer layout2 = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT);
+                Point2D ctr = visualizator.getCenter();
+                double scale = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW).getScale();
+                double deltaX = (ctr.getX() - p.getX())*1/scale;
+                double deltaY = (ctr.getY() - p.getY())*1/scale;
+                layout2.translate(deltaX, deltaY);
+            });
+        }).start();
+    }
+
+    /**
+     * Switches graph to pick mode.
+     */
+    public void pick() {
+        graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
     }
 
     @Override
@@ -198,5 +226,12 @@ public class GraphView extends SwingNode {
         SwingUtilities.invokeLater(() -> {
             visualizator.setSize((int) width, (int) height);
         });
+    }
+
+    /**
+     * Switches graph to transform mode.
+     */
+    public void transform() {
+        graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
     }
 }
