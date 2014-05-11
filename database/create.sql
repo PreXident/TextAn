@@ -12,18 +12,18 @@ CREATE TABLE Document (
 
 CREATE TABLE RelationType(
   id_relation_type INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR (255) UNIQUE
+  name NVARCHAR(255) UNIQUE
 );
 
 CREATE TABLE ObjectType (
 	id_object_type int PRIMARY KEY AUTO_INCREMENT, 
-	name varchar (255) UNIQUE
+	name NVARCHAR(255) UNIQUE 
 );
 
 CREATE TABLE Object (
 	id_object int PRIMARY KEY AUTO_INCREMENT, 
 	id_object_type int NOT NULL,
-	data varchar (255),
+	data NVARCHAR (255),
   CONSTRAINT FK_OBJECT_TO_TYPE FOREIGN KEY (id_object_type)
 		REFERENCES ObjectType(id_object_type)
 );
@@ -31,7 +31,7 @@ CREATE TABLE Object (
 CREATE TABLE Alias (
 	id_alias int PRIMARY KEY AUTO_INCREMENT, 
 	id_object int NOT NULL,
-	alias varchar(255) NOT NULL,
+	alias NVARCHAR(255) NOT NULL,  
   CONSTRAINT FK_ALIAS_ID_OBJECT
    FOREIGN KEY (id_object)
 		REFERENCES Object(id_object)
