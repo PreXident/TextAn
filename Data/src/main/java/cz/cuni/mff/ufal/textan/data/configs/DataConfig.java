@@ -70,7 +70,12 @@ public class DataConfig {
 
         return dataSource;
     }
-
+    
+    @Bean
+    public LogInterceptor logInterceptor() {
+        return new LogInterceptor("username");
+    }
+    
     /**
      * Creates Hibernate's {@link org.hibernate.SessionFactory} with a connection to the database.
      *
@@ -90,7 +95,7 @@ public class DataConfig {
         sessionFactory.setMappingLocations(mappings);
         sessionFactory.afterPropertiesSet();
         
-        //sessionFactory.getConfiguration().setInterceptor(new LogInterceptor("MyUserName"));
+        //sessionFactory.getConfiguration().setInterceptor(logInterceptor());
         
         return sessionFactory.getObject();
     }
@@ -143,4 +148,6 @@ public class DataConfig {
     public GraphFactory graphFactory() throws PropertyVetoException, IOException {
         return new GraphFactory(sessionFactory());
     }
+    
+
 }

@@ -16,7 +16,12 @@
          <generator class="native" />
       </id>  
        <property name="username" column="username" type="string"/>
-       <property name="type" column="edittype" type="string"/>
+       <!--<property name="type" column="edittype" type="string">
+            <type name="org.hibernate.type.EnumType">
+            <param name="enumClass">cz.cuni.mff.ufal.textan.data.tables.AuditTable.AuditType</param>
+            <param name="type">12</param>
+           </type>
+       </property>-->
        <property name="edit" column="edit" type="string"/>
     </class>
     
