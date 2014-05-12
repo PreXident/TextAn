@@ -1,0 +1,18 @@
+Zapis ze dne 14.10.2013
+
+Schuzka s policistou Honzou Horinkem, ktery nam ukazal soucasny system a jeho pouziti a slibil dodat model sveta ve forme sledovanych entit a jejich atributu a dale anonymizovane priklady sledovanych zprav. Zakladem projektu by melo byt rozpoznavani entit v cesky psanem textu z techto policejnich reportu, idealne jako webova sluzba, aby mohla byt snadno navazana na soucasny system. Vystup teto sluzby bude rucne prekontrolovan a pote vkladan do databaze. V zajmu generalizace projektu bude ale treba vyvinout i graficke rozhrani pro validaci a zobrazovani grafu vztahu.
+Jako pripadne rozsireni pripada v uvahu export do databaze Interpolu, pripadne alespon castecne zpracovani i jinych jazyku nez cestiny (kvuli zpravam z ciziny, nebo odchyceni cizojazycne komunikace nez bude hotovy preklad).
+
+Nadhozena nutnost urceni projektoveho manazera, ktery bude po vsech ostatnich vyzadovat dodani slibeneho, a dokumentacniho manazera, ktery bude dbat na stav projektove dokumentace, pokud nebude dostatecne razantni pri jejim vymahani, bude ji muset psat sam :-) Tyto funkce mohou byt putovni.
+
+Domluveno verzovani pomoci gitu a (alespon prozatimni) hostovani projektu na GitHubu.
+
+K provedeni zapisu se protentokrat dobrovolne prihlasil Adam.
+!Dalsi schuzka se bude konat v patek 18.10. ve dve hodiny!
+
+Rozdeleni prace, pripadne ukol do patecni schuzky:
+Petr Fanta - rozpoznavani entit a parsovani textu, moznost pouziti existujicich komponent/nastroju
+Adam Hujecek - GUI validace, schema komponent a jejich komunikace
+Vaclav Pernicka - databaze, pripady uziti zmen schematu db
+Peter Sipos - webova sluzba, GUI grafu, testovani
+Jakub Vlcek - rozpoznavani entit a parsovani textu, moznost pouziti existujicich komponent/nastroju

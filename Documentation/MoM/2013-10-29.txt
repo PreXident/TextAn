@@ -1,0 +1,14 @@
+Dnesni schuzky bez vedouciho se nezucastnil ani Peter Sipos.
+
+Predveden prvni prototyp uzivatelskeho rozhrani jako demostrace technologie.
+Odsouhlasena motivace pro zadani a jeho predbezna struktura.
+Doplneny a revidovany jednotlive funkcni a nefunkcni pozadavky.
+Upozorneno na nepresnosti ve "finalnim" schematu databaze.
+Funkcni pozadavky se musi prepsat tak, aby pouzivali terminologii domluvenou na predchozi schuzce!
+
+Otazka: v zadani jen body pro jednotlive funkcni pozadavky, nebo souvisly text?
+
+Bez dobrovolnika zapis sepisuje jen heslovite Adam
+
+Dalsi schuzky:
+  - Patek 1.11.2013 14:00 mistnost 423
