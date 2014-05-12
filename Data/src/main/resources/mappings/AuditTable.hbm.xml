@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+    <class name="cz.cuni.mff.ufal.textan.data.tables.AuditTable" table="Audit">
+      <meta attribute="class-description">
+         Log of changes in DB 
+      </meta>
+      <id 
+          name="id" 
+          type="long" 
+          column="id_audit"
+          unsaved-value="0">
+         <generator class="native" />
+      </id>  
+       <property name="username" column="username" type="string"/>
+       <property name="type" column="edittype" type="string"/>
+       <property name="edit" column="edit" type="string"/>
+    </class>
+    
+</hibernate-mapping>
