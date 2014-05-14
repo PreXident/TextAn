@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.server.configs;
 import cz.cuni.mff.ufal.textan.server.services.*;
 import cz.cuni.mff.ufal.textan.server.ws.DataProvider;
 import cz.cuni.mff.ufal.textan.server.ws.DocumentProcessor;
+import cz.cuni.mff.ufal.textan.server.ws.TicketInterceptor;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
@@ -42,7 +43,10 @@ public class WebAppConfig {
      */
     @Bean(destroyMethod = "shutdown")
     public SpringBus cxf() {
-        return new SpringBus();
+        SpringBus bus = new SpringBus();
+        bus.getInInterceptors().add(new TicketInterceptor());
+
+        return bus;
     }
 
     /**
