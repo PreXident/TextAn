@@ -21,6 +21,7 @@ HWK:
     - add pipeline progress indicator
     - change order of information about object to relation assigment (alias, id, type)
     - higlight object's text while selecting object to be assigned to relation (if possible)
+    - add wait cursor when connecting to server
 
   Venca:
     - read latest MoM (because of assigned HWK)
@@ -37,4 +38,6 @@ HWK:
     - write Milan about entity IDs
     - finish testing because of merging nametagintegration to master
 
+  Adam and Peter:
+    - result of saving document: document processed, document changed, added objects or relations, objects joined/split
 Next meeting as usual.
