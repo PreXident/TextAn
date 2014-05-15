@@ -21,7 +21,8 @@ HWK:
     -Higlight object's text while selecting object to be assigned to relation
 
   Venca:
-    -Read latest MoM
+    -Read latest MoM (because of assigned HWK)
+    -finish interceptors
     
   Petr:
     -add adding interceptors in hibernate
