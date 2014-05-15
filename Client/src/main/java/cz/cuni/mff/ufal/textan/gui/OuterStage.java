@@ -14,7 +14,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import jfxtras.labs.scene.control.window.Window;
 
 /**
  * Class for displaying Window in independent OS window.
@@ -65,6 +64,7 @@ public class OuterStage extends Stage {
         setScene(new Scene(pane));
         getScene().setFill(null);
         innerWindow = new Window(title);
+        innerWindow.setContainerCloser(() -> this.close());
         innerWindow.setMinSize(MIN_WIDTH, MIN_HEIGHT);
         innerWindow.setPrefWidth(Double.parseDouble(settings.getProperty(propertyID + ".width", String.valueOf(MIN_WIDTH))));
         innerWindow.setPrefHeight(Double.parseDouble(settings.getProperty(propertyID + ".height", String.valueOf(MIN_HEIGHT))));

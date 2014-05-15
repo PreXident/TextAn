@@ -6,7 +6,6 @@ import java.util.Properties;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
 /**
@@ -50,6 +49,7 @@ public abstract class WindowController implements Initializable {
      */
     public void setWindow(final Window window) {
         this.window = window;
+        window.setContainerCloser(() -> closeContainer());
     }
 
     /**
@@ -58,10 +58,12 @@ public abstract class WindowController implements Initializable {
      */
     public void setStage(final OuterStage stage) {
         this.stage = stage;
+        stage.getInnerWindow().setContainerCloser(() -> closeContainer());
     }
 
     /**
      * Closes the {@link #window} or {@link #stage}.
+     * Gets called on close button click.
      */
     protected void closeContainer() {
         if (window != null) {

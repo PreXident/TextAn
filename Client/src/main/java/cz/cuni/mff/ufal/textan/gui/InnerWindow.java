@@ -10,7 +10,6 @@ import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import jfxtras.labs.scene.control.window.Window;
 
 /**
  * Ancestor of all inner windows.
@@ -72,6 +71,7 @@ public class InnerWindow extends Window {
         this.propertyID = propertyID;
         this.settings = settings;
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
+        this.setContainerCloser(() -> close());
         //
         parentProperty().addListener(
             (ObservableValue<? extends Parent> ov, Parent oldVal, Parent newVal) -> {
@@ -103,7 +103,7 @@ public class InnerWindow extends Window {
         setLayoutX(Double.parseDouble(settings.getProperty(propertyID + ".x", "0")));
         setLayoutY(Double.parseDouble(settings.getProperty(propertyID + ".y", "0")));
         //
-        getRightIcons().add(new MaximizeIcon(this));
+        getRightIcons().add(0, new MaximizeIcon(this));
         addEventFilter(MouseEvent.MOUSE_PRESSED, e -> this.toFront());
         layoutXProperty().addListener(
             (ObservableValue<? extends Number> ov, Number oldVal, Number newVal) -> {
