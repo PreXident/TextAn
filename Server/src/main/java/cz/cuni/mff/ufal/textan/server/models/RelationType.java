@@ -9,7 +9,6 @@ import cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable;
  */
 public class RelationType {
 
-    //TODO: add comments
     private final long id;
     private final String name;
 

@@ -35,6 +35,7 @@
 					<Menu text="%settings" >
 						<CheckMenuItem fx:id="menuItemIndependentWindows" text="%independent.windows" onAction="#independentWindows" />
 						<CheckMenuItem fx:id="menuItemHypergraphs" text="%hypergraphs" onAction="#hypergraphs" />
+						<CheckMenuItem fx:id="menuItemClearFilters" text="%clear.filters" onAction="#clearFilters" />
 						<CustomMenuItem hideOnClick="false" text="%localization">
 							<content>
 								<HBox alignment="CENTER_LEFT" spacing="10" >

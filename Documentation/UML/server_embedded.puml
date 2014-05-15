@@ -1,0 +1,24 @@
+@startuml
+skinparam componentStyle uml2
+'left to right direction
+
+'declarations
+component Client
+node Server {
+	component WebServer
+	component Analyzer
+}
+
+database DB
+
+'relations
+Client <-> WebServer
+Analyzer -- DB
+
+'notes
+note right of WebServer
+	Separated
+	Thread
+end note
+
+@enduml

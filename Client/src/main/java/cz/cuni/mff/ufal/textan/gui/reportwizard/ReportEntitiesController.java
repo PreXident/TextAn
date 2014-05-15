@@ -8,6 +8,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
+import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
 import java.text.Collator;
@@ -17,9 +18,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -28,8 +29,8 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
@@ -106,6 +107,9 @@ public class ReportEntitiesController extends ReportWizardController {
     /** Content of {@link #textFlow}. */
     List<Text> texts;
 
+    /** Tooltip for assigned entities. */
+    Tooltip tooltip = new Tooltip();
+
     @FXML
     private void back() {
         pipeline.back();
@@ -156,7 +160,7 @@ public class ReportEntitiesController extends ReportWizardController {
         for (Word word: words) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
-                Utils.styleText(text, "ENTITY", word.getEntity().getId());
+                Utils.styleText(text, "ENTITY", word.getEntity().getType().getId());
             }
             text.setOnMousePressed(e -> {
                 if (!text.getStyleClass().contains(SELECTED)) {
@@ -192,6 +196,20 @@ public class ReportEntitiesController extends ReportWizardController {
                     contextMenu.show(texts.get(lastDragged), Side.BOTTOM, 0, 0);
                     filterField.requestFocus();
                 }
+            });
+            text.setOnMouseEntered((MouseEvent t) -> {
+                if (word.getEntity() != null) {
+                    final String newTip = word.getEntity().getType().toString();
+                    tooltip.setText(newTip);
+                    Bounds bounds = text.getLayoutBounds();
+                    final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
+                    tooltip.show(text, p.getX(), p.getY());
+                } else {
+                    tooltip.hide();
+                }
+            });
+            text.setOnMouseExited((MouseEvent t) -> {
+                tooltip.hide();
             });
             texts.add(text);
         }
@@ -259,6 +277,10 @@ public class ReportEntitiesController extends ReportWizardController {
 
     private void assignEntityToSelectedTexts(final ObjectType ot) {
         contextMenu.hide();
+        if (settings.getProperty(CLEAR_FILTERS, "false").equals("true")) {
+            filterField.clear();
+        }
+        pipeline.resetStepsBack();
         try {
             final IClearer clearer = i -> Utils.unstyleText(texts.get(i));
             if (ot == null) {
@@ -266,7 +288,7 @@ public class ReportEntitiesController extends ReportWizardController {
                 return;
             }
             final long id = ot.getId();
-            final EntityBuilder e = new EntityBuilder(id);
+            final EntityBuilder e = new EntityBuilder(ot);
             final Pair<Integer, Integer> bounds =
                     e.add(words, firstSelectedIndex, lastSelectedIndex, clearer);
             for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {

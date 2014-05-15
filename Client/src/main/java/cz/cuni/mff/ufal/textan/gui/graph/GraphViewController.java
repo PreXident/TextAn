@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 
@@ -26,6 +27,12 @@ public class GraphViewController extends GraphController {
     @FXML
     private StackPane stackPane;
 
+    @FXML
+    private ToggleButton transformButton;
+
+    @FXML
+    private ToggleButton pickButton;
+
     /** Localization container. */
     ResourceBundle resourceBundle;
 
@@ -40,11 +47,13 @@ public class GraphViewController extends GraphController {
     @FXML
     private void pick() {
         graphView.pick();
+        pickButton.setSelected(true);
     }
 
     @FXML
     private void transform() {
         graphView.transform();
+        transformButton.setSelected(true);
     }
 
     @Override

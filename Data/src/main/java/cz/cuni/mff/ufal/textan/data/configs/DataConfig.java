@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.data.configs;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
+import cz.cuni.mff.ufal.textan.data.logging.LogInterceptor;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -88,7 +89,9 @@ public class DataConfig {
         mappings = resolver.getResources("classpath:mappings/*.hbm.xml");
         sessionFactory.setMappingLocations(mappings);
         sessionFactory.afterPropertiesSet();
-
+        
+        //sessionFactory.getConfiguration().setInterceptor(new LogInterceptor("MyUserName"));
+        
         return sessionFactory.getObject();
     }
 

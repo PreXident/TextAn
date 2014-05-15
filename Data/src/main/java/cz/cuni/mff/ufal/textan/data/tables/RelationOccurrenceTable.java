@@ -69,11 +69,11 @@ public class RelationOccurrenceTable extends AbstractTable {
         this.document = document;
     }
 
-    public int getPosition() {
+    public Integer getPosition() {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(Integer position) {
         this.position = position;
     }
 

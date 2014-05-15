@@ -38,12 +38,19 @@ final class ReportObjectsState extends State {
 
     @Override
     public void back(final ProcessReportPipeline pipeline) {
+        pipeline.incStepsBack();
         pipeline.setState(ReportEntitiesState.getInstance());
     }
 
     @Override
     public void setReportObjects(final ProcessReportPipeline pipeline, final List<Entity> entities) {
         pipeline.reportEntities = entities;
+        if (pipeline.getStepsBack() <= 0) {
+            pipeline.reportWords.stream().forEach(w -> w.setRelation(null));
+            pipeline.getReportRelations().clear();
+        } else {
+            pipeline.decStepsBack();
+        }
         pipeline.setState(ReportRelationsState.getInstance());
     }
 }

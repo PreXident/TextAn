@@ -1,19 +1,22 @@
-CREATE DATABASE IF NOT EXISTS textan
+CREATE DATABASE IF NOT EXISTS textan 
   DEFAULT CHARACTER SET utf8
   DEFAULT COLLATE utf8_general_ci;
 USE textan;
 
-DROP TABLE IF EXISTS `RelationOccurrence`;
-DROP TABLE IF EXISTS `JoinedObjects`;
-DROP TABLE IF EXISTS `IsInRelation`;
-DROP TABLE IF EXISTS `Relation`;
-DROP TABLE IF EXISTS `AliasOccurrence`;
-DROP TABLE IF EXISTS `Alias`;
-DROP TABLE IF EXISTS `Object`;
-DROP TABLE IF EXISTS `ObjectType`;
-DROP TABLE IF EXISTS `RelationType`;
-DROP TABLE IF EXISTS `Document`;
 
+CREATE TABLE GlobalVersion (
+  version int DEFAULT 0 NOT NULL
+);
+
+INSERT INTO  `globalversion` (  `version` ) 
+VALUES ( 0 );
+
+CREATE TABLE Audit (
+	id_audit int PRIMARY KEY AUTO_INCREMENT, 
+  username NVARCHAR(255) NOT NULL,
+  edittype VARCHAR(255) NOT NULL,            -- INSERT | DELETE | UPDATE
+  edit text CHARSET utf8 NOT NULL
+);
 
 
 CREATE TABLE Document (
@@ -21,31 +24,32 @@ CREATE TABLE Document (
 	added datetime,
 	processed datetime NULL,
 	text text CHARSET utf8 NOT NULL,
-	version int
+	version int DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE RelationType(
   id_relation_type INT PRIMARY KEY AUTO_INCREMENT,
-  name NVARCHAR(255) UNIQUE
+  name NVARCHAR (255) UNIQUE
 );
 
 CREATE TABLE ObjectType (
 	id_object_type int PRIMARY KEY AUTO_INCREMENT, 
-	name NVARCHAR(255) UNIQUE 
+	name NVARCHAR (255) UNIQUE
 );
 
 CREATE TABLE Object (
 	id_object int PRIMARY KEY AUTO_INCREMENT, 
 	id_object_type int NOT NULL,
 	data NVARCHAR (255),
-  CONSTRAINT FK_OBJECT_TO_TYPE FOREIGN KEY (id_object_type)
-		REFERENCES ObjectType(id_object_type)
+    CONSTRAINT FK_OBJECT_TO_TYPE FOREIGN KEY (id_object_type)
+  		REFERENCES ObjectType(id_object_type),
+	globalversion int DEFAULT 0 NOT NULL	
 );
 
 CREATE TABLE Alias (
 	id_alias int PRIMARY KEY AUTO_INCREMENT, 
 	id_object int NOT NULL,
-	alias NVARCHAR(255) NOT NULL,  
+	alias NVARCHAR(255) NOT NULL,
   CONSTRAINT FK_ALIAS_ID_OBJECT
    FOREIGN KEY (id_object)
 		REFERENCES Object(id_object)
@@ -121,7 +125,7 @@ CREATE TABLE RelationOccurrence
           FOREIGN KEY (id_document)
                 REFERENCES Document(id_document),
         position int NOT NULL,
-        anchor varchar(255)
+        anchor NVARCHAR(255)
 );
 
 

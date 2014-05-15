@@ -320,7 +320,7 @@ public class Client {
      * @param reportEntities report entities
      * @param reportRelations report relations
      */
-    public void saveProcessedDocument(final Ticket ticket,
+    public boolean saveProcessedDocument(final Ticket ticket,
             final String text, final List<Entity> reportEntities,
             final List<RelationBuilder> reportRelations) throws IdNotFoundException{
         final SaveProcessedDocumentFromString request =
@@ -343,19 +343,18 @@ public class Client {
         for (RelationBuilder relation : reportRelations) {
             relations.add(relation.toRelation());
             final RelationOccurrence occ = relation.toRelationOccurrence();
-            if (occ != null) {
-                relationOccurrences.add(occ);
-            }
+            relationOccurrences.add(occ);
         }
         //
         request.setText(text);
         request.setForce(false);
 
         try {
-            getDocumentProcessor().saveProcessedDocumentFromString(
-                    request, //TODO handle save document error
-                    ticket.toTicket()
-            );
+            final SaveProcessedDocumentFromStringResponse response =
+                    getDocumentProcessor().saveProcessedDocumentFromString(
+                        request, //TODO handle save document error
+                        ticket.toTicket());
+            return response.isResult();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
         }

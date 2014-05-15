@@ -1,7 +1,6 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
-
 import java.util.List;
 
 /**
@@ -39,6 +38,7 @@ final class ReportRelationsState extends State {
 
     @Override
     public void back(final ProcessReportPipeline pipeline) {
+        pipeline.incStepsBack();
         pipeline.setState(ReportObjectsState.getInstance());
     }
 
@@ -46,45 +46,51 @@ final class ReportRelationsState extends State {
     public void setReportRelations(final ProcessReportPipeline pipeline,
             final List<Word> words,
             final List<? extends RelationBuilder> unanchoredRelations) {
-        pipeline.reportWords = words;
-        final List<RelationBuilder> rels = pipeline.reportRelations;
-        rels.clear();
-        RelationBuilder builder = null;
-        int start = 0;
-        int counter = 0;
-        StringBuilder alias = new StringBuilder();
-        for (Word word : words) {
-            if (word.getRelation() != builder) {
-                if (builder != null) {
-                    builder.index = ++counter;
-                    builder.position = start;
-                    builder.alias = alias.toString();
-                    rels.add(builder);
+        if (pipeline.getStepsBack() <= 0) {
+            pipeline.reportWords = words;
+            final List<RelationBuilder> rels = pipeline.reportRelations;
+            rels.clear();
+            RelationBuilder builder = null;
+            int start = 0;
+            int counter = 0;
+            StringBuilder alias = new StringBuilder();
+            for (Word word : words) {
+                if (word.getRelation() != builder) {
+                    if (builder != null) {
+                        builder.index = ++counter;
+                        builder.position = start;
+                        builder.alias = alias.toString();
+                        rels.add(builder);
+                    }
+                    start = word.getStart();
+                    alias.setLength(0);
+                    builder = word.getRelation();
                 }
-                start = word.getStart();
-                alias.setLength(0);
-                builder = word.getRelation();
+                alias.append(word.getWord());
             }
-            alias.append(word.getWord());
+            if (builder != null) {
+                builder.index = ++counter;
+                rels.add(builder);
+            }
+            rels.addAll(unanchoredRelations);
+            pipeline.reportRelations = rels;
+            //TODO: handle exception correctly!
+            try {
+                pipeline.result = pipeline.client.saveProcessedDocument(
+                        pipeline.ticket,
+                        pipeline.getReportText(),
+                        pipeline.reportEntities,
+                        pipeline.reportRelations);
+            } catch (IdNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            pipeline.decStepsBack();
         }
-        if (builder != null) {
-            builder.index = ++counter;
-            rels.add(builder);
+        if (pipeline.result) {
+            pipeline.setState(DoneState.getInstance());
+        } else {
+            pipeline.setState(ReportErrorState.getInstance());
         }
-        rels.addAll(unanchoredRelations);
-        pipeline.reportRelations = rels;
-
-        //TODO: handle exception correctly!
-        try {
-            pipeline.client.saveProcessedDocument(
-                    pipeline.ticket,
-                    pipeline.getReportText(),
-                    pipeline.reportEntities,
-                    pipeline.reportRelations);
-        } catch (IdNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        pipeline.setState(DoneState.getInstance());
     }
 }
