@@ -11,7 +11,7 @@ repositories {
     mavenCentral()
 }
 
-def springVersion = '4.0.3.RELEASE'
+def springVersion = '4.0.5.RELEASE'
 
 dependencies {
     //web servers

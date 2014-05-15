@@ -3,7 +3,9 @@ package cz.cuni.mff.ufal.textan.data.configs;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.logging.LogInterceptor;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IAuditTableDAO;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,6 +20,7 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
@@ -36,6 +39,8 @@ import java.util.Properties;
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"cz.cuni.mff.ufal.textan.data.repositories.dao"})
 public class DataConfig {
+
+    BeanFactory factory;
 
     @SuppressWarnings("unused")
     @Autowired
@@ -70,12 +75,12 @@ public class DataConfig {
 
         return dataSource;
     }
-    
+
     @Bean
     public LogInterceptor logInterceptor() {
         return new LogInterceptor("username");
     }
-    
+
     /**
      * Creates Hibernate's {@link org.hibernate.SessionFactory} with a connection to the database.
      *
@@ -94,9 +99,9 @@ public class DataConfig {
         mappings = resolver.getResources("classpath:mappings/*.hbm.xml");
         sessionFactory.setMappingLocations(mappings);
         sessionFactory.afterPropertiesSet();
-        
-        //sessionFactory.getConfiguration().setInterceptor(logInterceptor());
-        
+
+        sessionFactory.getConfiguration().setInterceptor(logInterceptor());
+
         return sessionFactory.getObject();
     }
 
@@ -148,6 +153,38 @@ public class DataConfig {
     public GraphFactory graphFactory() throws PropertyVetoException, IOException {
         return new GraphFactory(sessionFactory());
     }
-    
 
+    /**
+     * BeanFactoryPostProcessor which resolve the cyclic dependency between AuditDao, LogInterceptor and SessionFactory.
+     *
+     * @return the bean factory post processor
+     */
+//    public static BeanFactoryPostProcessor logInterceptorHackBeanFactoryPostProcessor() {
+//        return new BeanFactoryPostProcessor() {
+//            @Override
+//            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+//                LogInterceptor interceptor = beanFactory.getBean(LogInterceptor.class);
+//                interceptor.setAudit(beanFactory.getBean(IAuditTableDAO.class));
+//            }
+//        };
+//    }
+
+    @Bean
+    public LogInterceptorHack logInterceptorHack() {
+        return new LogInterceptorHack();
+    }
+
+    public class LogInterceptorHack {
+
+        @Autowired
+        private LogInterceptor interceptor;
+
+        @Autowired
+        private IAuditTableDAO auditTableDAO;
+
+        @PostConstruct
+        public void inject() {
+            interceptor.setAudit(auditTableDAO);
+        }
+    }
 }
