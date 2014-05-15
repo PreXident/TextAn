@@ -27,6 +27,8 @@ public class NameTagServices {
         }
         translationTable = new Hashtable<>();
         translationTable.put("P", 1L); //osoba
+        translationTable.put("PS", 1L); //osoba
+        translationTable.put("PF", 1L); //osoba
         translationTable.put("TD", 2L); //datum
         translationTable.put("GS", 3L); //ulice
         translationTable.put("GC", 4L); //mesto
@@ -48,7 +50,7 @@ public class NameTagServices {
             try {
                 value = Long.parseLong(entityType);
             } catch (NumberFormatException nfe) {
-                LOG.error("Entity type " + entityType + " wasn't recognized.", nfe);
+                LOG.warn("Entity type " + entityType + " wasn't recognized.", nfe);
             }
         }
         return value;
@@ -205,7 +207,9 @@ public class NameTagServices {
                         int entity_start = (int) tokens.get((int) (i - endingEntity.getLength() + 1)).getStart();
                         int entity_end = (int) (tokens.get(i).getStart() + tokens.get(i).getLength());
                         if (openEntities.size() == 1) {
-                            entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end, translateEntity(endingEntity.getType())));
+                            //entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), (int)endingEntity.getStart() + 1, i - (int)endingEntity.getStart() + 2, translateEntity(endingEntity.getType())));
+                            entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end - entity_start - 1, translateEntity(endingEntity.getType())));
+                            LOG.error(entity_start + ":" + (entity_end - entity_start) + "-" + translateEntity(endingEntity.getType()));
                         }
                         openEntities.pop();
                     }
