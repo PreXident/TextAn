@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz"
+           xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
+           elementFormDefault="qualified">
+
+    <xs:include schemaLocation="Object.xsd"/>
+
+    <xs:element name="joinedObject" type="JoinedObject" />
+
+    <xs:complexType name="JoinedObject">
+        <xs:sequence>
+            <xs:element name="rootObject" type="Object"/>
+            <xs:element name="childObject" type="Object" minOccurs="2" maxOccurs="2" />
+        </xs:sequence>
+    </xs:complexType>
+
+
+</xs:schema>

@@ -28,8 +28,11 @@
     <xs:element name="saveProcessedDocumentFromString" type="SaveProcessedDocumentFromString"/>
     <xs:element name="saveProcessedDocumentFromStringResponse" type="SaveProcessedDocumentFromStringResponse"/>
 
-    <xs:element name="getProblems" type="GetProblems"/>
-    <xs:element name="getProblemsResponse" type="GetProblemsResponse"/>
+    <xs:element name="getProblemsById" type="GetProblemsById"/>
+    <xs:element name="getProblemsByIdResponse" type="GetProblemsByIdResponse"/>
+
+    <xs:element name="getProblemsFromString" type="GetProblemsFromString"/>
+    <xs:element name="getProblemsFromStringResponse" type="GetProblemsFromStringResponse"/>
 
 
     <!-- <xs:complexType name="Void">
@@ -148,29 +151,36 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetProblems">
-        <xs:sequence>
-            <xs:element name="documentId" type="xs:long"/>
-            <xs:element name="objects">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="relations">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-        </xs:sequence>
+    <xs:complexType name="GetProblemsFromString">
+        <xs:sequence/>
+        <!--<xs:sequence>-->
+            <!--<xs:element name="text" type="xs:string"/> &lt;!&ndash; TODO: je potreba posilat text dokumentu? &ndash;&gt;-->
+        <!--</xs:sequence>-->
     </xs:complexType>
 
     <!-- TODO: implement -->
-    <xs:complexType name="GetProblemsResponse">
-        <xs:sequence/>
+    <xs:complexType name="GetProblemsFromStringResponse">
+        <xs:sequence>
+            <xs:element name="newObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="newRelation" type="cms:Relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="newJoinedObject" type="cms:JoinedObject" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetProblemsById">
+        <xs:sequence>
+            <xs:element name="documentId" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetProblemsByIdResponse">
+        <xs:sequence>
+            <xs:element name="documentProcessed" type="xs:boolean"/> <!-- TODO: processed and changed move to excpetions? -->
+            <xs:element name="documentChanged" type="xs:boolean"/>
+            <xs:element name="newObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="newRelation" type="cms:Relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="newJoinedObject" type="cms:JoinedObject" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="Assignment">

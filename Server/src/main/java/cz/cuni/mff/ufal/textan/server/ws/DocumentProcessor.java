@@ -125,15 +125,15 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
     }
 
     @Override
-    public GetProblemsResponse getProblems(
-            @WebParam(partName = "getProblems", name = "getProblems", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
-            GetProblems getProblems,
+    public GetProblemsByIdResponse getProblemsById(
+            @WebParam(partName = "getProblemsById", name = "getProblemsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            GetProblemsById getProblemsById,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
-            EditingTicket editingTicket) {
+            EditingTicket editingTicket) throws IdNotFoundException {
 
-        LOG.debug("Executing operation getProblems: {} {}", getProblems, editingTicket);
+        LOG.debug("Executing operation getProblems: {} {}", getProblemsById, editingTicket);
 
-        return new GetProblemsResponse();
+        return new GetProblemsByIdResponse();
     }
 
     @Override
@@ -270,6 +270,18 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
             throw new IdNotFoundException("", exceptionBody);
         }
+    }
+
+    @Override
+    public GetProblemsFromStringResponse getProblemsFromString(
+            @WebParam(partName = "getProblemsFromString", name = "getProblemsFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            GetProblemsFromString getProblemsFromString,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
+            EditingTicket editingTicket) {
+
+        LOG.debug("Executing operation getEditingTicket: {} {}", getProblemsFromString, editingTicket);
+
+        return new GetProblemsFromStringResponse();
     }
 
     @Override
