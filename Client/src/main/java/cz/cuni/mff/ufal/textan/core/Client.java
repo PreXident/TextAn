@@ -5,7 +5,7 @@ import cz.cuni.mff.ufal.textan.commons.models.Relation;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromString.Entities;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest.Entities;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.ObjectOccurrence;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RelationOccurrence;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
@@ -119,10 +119,10 @@ public class Client {
      * @param ticket editing ticket
      * @param text text to process
      * @return entities identified in text
-     * @see IDocumentProcessor#getEntitiesFromString(GetEntitiesFromString, EditingTicket)
+     * @see IDocumentProcessor#getEntitiesFromString(GetEntitiesFromStringRequest, EditingTicket)
      */
     public List<Entity> getEntities(final Ticket ticket, final String text) {
-        final GetEntitiesFromString request = new GetEntitiesFromString();
+        final GetEntitiesFromStringRequest request = new GetEntitiesFromStringRequest();
         request.setText(text);
         final IDocumentProcessor docProc = getDocumentProcessor();
         final GetEntitiesFromStringResponse response =
@@ -141,7 +141,7 @@ public class Client {
      */
     public Graph getGraph(final long centerId, final int distance)
             throws IdNotFoundException {
-        final GetGraphById request = new GetGraphById();
+        final GetGraphByIdRequest request = new GetGraphByIdRequest();
         request.setDistance(distance);
         request.setObjectId(centerId);
         try {
@@ -158,7 +158,7 @@ public class Client {
      * @param ticket editing ticket
      * @param text report to process
      * @param entities where to store candidates
-     * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromString, cz.cuni.mff.ufal.textan.commons.models.EditingTicket)
+     * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.EditingTicket)
      */
     public void getObjects(final Ticket ticket, final String text, final List<Entity> entities) {
         final Entities ents = new Entities();
@@ -168,7 +168,7 @@ public class Client {
             map.put(entity.getPosition(), entity);
         }
 
-        final GetAssignmentsFromString request = new GetAssignmentsFromString();
+        final GetAssignmentsFromStringRequest request = new GetAssignmentsFromStringRequest();
         request.setText(text);
         request.setEntities(ents);
 
@@ -190,12 +190,12 @@ public class Client {
      * @param typeId type id to filter
      * @return list of all objects in the system with specified type
      * @throws IdNotFoundException if id was not found
-     * @see IDataProvider#getObjectsByTypeId(cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeId, cz.cuni.mff.ufal.textan.commons.models.Ticket)
+     * @see IDataProvider#getObjectsByTypeId(cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdRequest, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
     public List<Object> getObjectsListByTypeId(final long typeId)
             throws IdNotFoundException {
         try {
-            final GetObjectsByTypeId request = new GetObjectsByTypeId();
+            final GetObjectsByTypeIdRequest request = new GetObjectsByTypeIdRequest();
             request.setObjectTypeId(typeId);
             final GetObjectsByTypeIdResponse response =
                     getDataProvider().getObjectsByTypeId(request, createTicket());
@@ -284,10 +284,10 @@ public class Client {
      * Returns ticket for document processing.
      * @param username user login
      * @return ticket for document processing
-     * @see IDocumentProcessor#getEditingTicket(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicket, cz.cuni.mff.ufal.textan.commons.models.Ticket)
+     * @see IDocumentProcessor#getEditingTicket(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketRequest, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
     public Ticket getTicket(final String username) {
-        final GetEditingTicket request = new GetEditingTicket();
+        final GetEditingTicketRequest request = new GetEditingTicketRequest();
         final cz.cuni.mff.ufal.textan.commons.models.Ticket ticket =
                 new cz.cuni.mff.ufal.textan.commons.models.Ticket();
         ticket.setUsername(username);
@@ -323,9 +323,9 @@ public class Client {
     public boolean saveProcessedDocument(final Ticket ticket,
             final String text, final List<Entity> reportEntities,
             final List<RelationBuilder> reportRelations) throws IdNotFoundException{
-        final SaveProcessedDocumentFromString request =
-                new SaveProcessedDocumentFromString();
-        //
+        final SaveProcessedDocumentFromStringRequest request =
+                new SaveProcessedDocumentFromStringRequest();
+
         final List<cz.cuni.mff.ufal.textan.commons.models.Object> objects =
                 request.getObjects();
         final List<ObjectOccurrence> objectOccurrences =
@@ -336,7 +336,7 @@ public class Client {
                 objectOccurrences.add(ent.toObjectOccurrence());
             }
         }
-        //
+
         final List<Relation> relations = request.getRelations();
         final List<RelationOccurrence> relationOccurrences =
                 request.getRelationOccurrences();
@@ -345,7 +345,7 @@ public class Client {
             final RelationOccurrence occ = relation.toRelationOccurrence();
             relationOccurrences.add(occ);
         }
-        //
+        
         request.setText(text);
         request.setForce(false);
 

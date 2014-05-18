@@ -7,31 +7,31 @@
 
     <xs:import namespace="http://models.commons.textan.ufal.mff.cuni.cz" schemaLocation="CommonTypes.xsd"/>
 
-    <xs:element name="getEditingTicket" type="GetEditingTicket"/>
+    <xs:element name="getEditingTicketRequest" type="GetEditingTicketRequest"/>
     <xs:element name="getEditingTicketResponse" type="GetEditingTicketResponse"/>
 
-    <xs:element name="getEntitiesFromString" type="GetEntitiesFromString"/>
+    <xs:element name="getEntitiesFromStringRequest" type="GetEntitiesFromStringRequest"/>
     <xs:element name="getEntitiesFromStringResponse" type="GetEntitiesFromStringResponse"/>
 
-    <xs:element name="getEntitiesById" type="GetEntitiesById"/>
+    <xs:element name="getEntitiesByIdRequest" type="GetEntitiesByIdRequest"/>
     <xs:element name="getEntitiesByIdResponse" type="GetEntitiesByIdResponse"/>
 
-    <xs:element name="getAssignmentsFromString" type="GetAssignmentsFromString"/>
+    <xs:element name="getAssignmentsFromStringRequest" type="GetAssignmentsFromStringRequest"/>
     <xs:element name="getAssignmentsFromStringResponse" type="GetAssignmentsFromStringResponse"/>
 
-    <xs:element name="getAssignmentsById" type="GetAssignmentsById"/>
+    <xs:element name="getAssignmentsByIdRequest" type="GetAssignmentsByIdRequest"/>
     <xs:element name="getAssignmentsByIdResponse" type="GetAssignmentsByIdResponse"/>
 
-    <xs:element name="saveProcessedDocumentById" type="SaveProcessedDocumentById"/>
+    <xs:element name="saveProcessedDocumentByIdRequest" type="SaveProcessedDocumentByIdRequest"/>
     <xs:element name="saveProcessedDocumentByIdResponse" type="SaveProcessedDocumentByIdResponse"/>
 
-    <xs:element name="saveProcessedDocumentFromString" type="SaveProcessedDocumentFromString"/>
+    <xs:element name="saveProcessedDocumentFromStringRequest" type="SaveProcessedDocumentFromStringRequest"/>
     <xs:element name="saveProcessedDocumentFromStringResponse" type="SaveProcessedDocumentFromStringResponse"/>
 
-    <xs:element name="getProblemsById" type="GetProblemsById"/>
+    <xs:element name="getProblemsByIdRequest" type="GetProblemsByIdRequest"/>
     <xs:element name="getProblemsByIdResponse" type="GetProblemsByIdResponse"/>
 
-    <xs:element name="getProblemsFromString" type="GetProblemsFromString"/>
+    <xs:element name="getProblemsFromStringRequest" type="GetProblemsFromStringRequest"/>
     <xs:element name="getProblemsFromStringResponse" type="GetProblemsFromStringResponse"/>
 
 
@@ -39,7 +39,7 @@
          <xs:sequence/>
      </xs:complexType>-->
 
-    <xs:complexType name="GetEditingTicket">
+    <xs:complexType name="GetEditingTicketRequest">
         <xs:sequence/>
         <!--<xs:sequence>
             <xs:element name="username" type="xs:string"/>
@@ -52,7 +52,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetEntitiesFromString">
+    <xs:complexType name="GetEntitiesFromStringRequest">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
         </xs:sequence>
@@ -64,7 +64,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetEntitiesById">
+    <xs:complexType name="GetEntitiesByIdRequest">
         <xs:sequence>
             <xs:element name="documentId" type="xs:long"/>
         </xs:sequence>
@@ -76,7 +76,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetAssignmentsFromString">
+    <xs:complexType name="GetAssignmentsFromStringRequest">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
             <xs:element name="entities">
@@ -96,7 +96,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetAssignmentsById">
+    <xs:complexType name="GetAssignmentsByIdRequest">
         <xs:sequence>
             <xs:element name="id" type="xs:long"/>
             <xs:element name="entities">
@@ -117,7 +117,7 @@
     </xs:complexType>
 
     <!-- Save pairs (Entity, Object)!! -->
-    <xs:complexType name="SaveProcessedDocumentById">
+    <xs:complexType name="SaveProcessedDocumentByIdRequest">
         <xs:sequence>
             <xs:element name="documentId" type="xs:long"/>
             <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
@@ -134,7 +134,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="SaveProcessedDocumentFromString">
+    <xs:complexType name="SaveProcessedDocumentFromStringRequest">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
             <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
@@ -151,7 +151,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetProblemsFromString">
+    <xs:complexType name="GetProblemsFromStringRequest">
         <xs:sequence/>
         <!--<xs:sequence>-->
             <!--<xs:element name="text" type="xs:string"/> &lt;!&ndash; TODO: je potreba posilat text dokumentu? &ndash;&gt;-->
@@ -167,7 +167,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetProblemsById">
+    <xs:complexType name="GetProblemsByIdRequest">
         <xs:sequence>
             <xs:element name="documentId" type="xs:long"/>
         </xs:sequence>

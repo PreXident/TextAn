@@ -66,16 +66,16 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public UpdateDocumentResponse updateDocument(
             @WebParam(partName = "updateDocument", name = "updateDocument", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            UpdateDocument updateDocument,
+            UpdateDocumentRequest updateDocumentRequest,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) throws IdNotFoundException {
 
-        LOG.debug("Executing operation updateDocument: {} {}", updateDocument, ticket);
+        LOG.debug("Executing operation updateDocument: {} {}", updateDocumentRequest, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
         try {
-            boolean result = dbService.updateDocument(updateDocument.getDocumentId(), updateDocument.getText(), serverTicket);
+            boolean result = dbService.updateDocument(updateDocumentRequest.getDocumentId(), updateDocumentRequest.getText(), serverTicket);
 
             UpdateDocumentResponse response = new UpdateDocumentResponse();
             response.setResult(result);
@@ -134,16 +134,16 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public GetDocumentByIdResponse getDocumentById(
             @WebParam(partName = "getDocumentById", name = "getDocumentById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetDocumentById getDocumentById,
+            GetDocumentByIdRequest getDocumentByIdRequest,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true) Ticket ticket)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getDocumentById: {} {}", getDocumentById, ticket);
+        LOG.debug("Executing operation getDocumentById: {} {}", getDocumentByIdRequest, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
         try {
-            Document document = dbService.getDocument(getDocumentById.getDocumentId(), serverTicket);
+            Document document = dbService.getDocument(getDocumentByIdRequest.getDocumentId(), serverTicket);
             GetDocumentByIdResponse getDocumentByIdResponse = new GetDocumentByIdResponse();
             getDocumentByIdResponse.setDocument(document.toCommonsDocument());
 
@@ -181,18 +181,18 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public GetGraphByIdResponse getGraphById(
             @WebParam(partName = "getGraphById", name = "getGraphById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetGraphById getGraphById,
+            GetGraphByIdRequest getGraphByIdRequest,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getGraphById: {} {}", getGraphById, ticket);
+        LOG.debug("Executing operation getGraphById: {} {}", getGraphByIdRequest, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
         try {
             GetGraphByIdResponse getGraphByIdResponse = new GetGraphByIdResponse();
-            Graph graph = graphService.getGraph(getGraphById.getObjectId(), getGraphById.getDistance(), serverTicket);
+            Graph graph = graphService.getGraph(getGraphByIdRequest.getObjectId(), getGraphByIdRequest.getDistance(), serverTicket);
             getGraphByIdResponse.setGraph(graph.toCommonsGraph());
 
             return getGraphByIdResponse;
@@ -208,17 +208,17 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public GetRelatedObjectsByIdResponse getRelatedObjectsById(
             @WebParam(partName = "getRelatedObjectsById", name = "getRelatedObjectsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetRelatedObjectsById getRelatedObjectsById,
+            GetRelatedObjectsByIdRequest getRelatedObjectsByIdRequest,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getRelatedObjectsById: {} {}", getRelatedObjectsById, ticket);
+        LOG.debug("Executing operation getRelatedObjectsById: {} {}", getRelatedObjectsByIdRequest, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
         try {
             GetRelatedObjectsByIdResponse getRelatedObjectsByIdResponse = new GetRelatedObjectsByIdResponse();
-            Graph graph = graphService.getRelatedObjects(getRelatedObjectsById.getObjectId(), serverTicket);
+            Graph graph = graphService.getRelatedObjects(getRelatedObjectsByIdRequest.getObjectId(), serverTicket);
             getRelatedObjectsByIdResponse.setGraph(graph.toCommonsGraph());
 
             return getRelatedObjectsByIdResponse;
@@ -234,15 +234,15 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public AddDocumentResponse addDocument(
             @WebParam(partName = "addDocument", name = "addDocument", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            AddDocument addDocument,
+            AddDocumentRequest addDocumentRequest,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) {
 
-        LOG.debug("Executing operation addDocument: {} {}", addDocument, ticket);
+        LOG.debug("Executing operation addDocument: {} {}", addDocumentRequest, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
-        long documentId = dbService.addDocument(addDocument.getText(), serverTicket);
+        long documentId = dbService.addDocument(addDocumentRequest.getText(), serverTicket);
 
         AddDocumentResponse addDocumentResponse = new AddDocumentResponse();
         addDocumentResponse.setDocumentId(documentId);
@@ -253,16 +253,16 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public SplitObjectResponse splitObject(
             @WebParam(partName = "splitObject", name = "splitObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            SplitObject splitObject,
+            SplitObjectRequest splitObjectRequest,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) throws IdNotFoundException {
 
-        LOG.debug("Executing operation splitObject: {} {}", splitObject, ticket);
+        LOG.debug("Executing operation splitObject: {} {}", splitObjectRequest, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
         try {
-            boolean result = dbService.splitObject(splitObject.getObjectId(), serverTicket);
+            boolean result = dbService.splitObject(splitObjectRequest.getObjectId(), serverTicket);
 
             SplitObjectResponse response = new SplitObjectResponse();
             response.setResult(result);
@@ -281,18 +281,18 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public GetPathByIdResponse getPathById(
             @WebParam(partName = "getPathById", name = "getPathById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetPathById getPathById,
+            GetPathByIdRequest getPathByIdRequest,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getPathById: {} {}", getPathById, ticket);
+        LOG.debug("Executing operation getPathById: {} {}", getPathByIdRequest, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
         try {
             GetPathByIdResponse getPathByIdResponse = new GetPathByIdResponse();
-            Graph graph = graphService.getPath(getPathById.getStartObjectId(), getPathById.getTargetObjectId(), serverTicket);
+            Graph graph = graphService.getPath(getPathByIdRequest.getStartObjectId(), getPathByIdRequest.getTargetObjectId(), serverTicket);
             getPathByIdResponse.setGraph(graph.toCommonsGraph());
 
             return getPathByIdResponse;
@@ -328,17 +328,17 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public GetRelationsByTypeIdResponse getRelationsByTypeId(
             @WebParam(partName = "getRelationsByTypeId", name = "getRelationsByTypeId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetRelationsByTypeId getRelationsByTypeId,
+            GetRelationsByTypeIdRequest getRelationsByTypeIdRequest,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getRelationsByTypeId: {} {}", getRelationsByTypeId, ticket);
+        LOG.debug("Executing operation getRelationsByTypeId: {} {}", getRelationsByTypeIdRequest, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
         GetRelationsByTypeIdResponse response = new GetRelationsByTypeIdResponse();
-        List<Relation> relations = dbService.getRelations(getRelationsByTypeId.getRelationTypeId(), serverTicket);
+        List<Relation> relations = dbService.getRelations(getRelationsByTypeIdRequest.getRelationTypeId(), serverTicket);
         for (Relation relation : relations) {
             response.getRelations().add(relation.toCommonsRelation());
         }
@@ -349,17 +349,17 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public GetObjectsByTypeIdResponse getObjectsByTypeId(
             @WebParam(partName = "getObjectsByTypeId", name = "getObjectsByTypeId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetObjectsByTypeId getObjectsByTypeId,
+            GetObjectsByTypeIdRequest getObjectsByTypeIdRequest,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getObjectsByTypeId: {} {}", getObjectsByTypeId, ticket);
+        LOG.debug("Executing operation getObjectsByTypeId: {} {}", getObjectsByTypeIdRequest, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
         GetObjectsByTypeIdResponse response = new GetObjectsByTypeIdResponse();
-        List<Object> objects = dbService.getObjects(getObjectsByTypeId.getObjectTypeId(), serverTicket);
+        List<Object> objects = dbService.getObjects(getObjectsByTypeIdRequest.getObjectTypeId(), serverTicket);
         for (Object object : objects) {
             response.getObjects().add(object.toCommonsObject());
         }
@@ -370,18 +370,18 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public GetObjectResponse getObject(
             @WebParam(partName = "getObject", name = "getObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetObject getObject,
+            GetObjectRequest getObjectRequest,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getObject: {} {}", getObject, ticket);
+        LOG.debug("Executing operation getObject: {} {}", getObjectRequest, ticket);
 
         cz.cuni.mff.ufal.textan.server.models.Ticket serverTicket = cz.cuni.mff.ufal.textan.server.models.Ticket.fromCommonsTicket(ticket);
 
         try {
             GetObjectResponse response = new GetObjectResponse();
-            Object object = dbService.getObject(getObject.getObjectId(), serverTicket);
+            Object object = dbService.getObject(getObjectRequest.getObjectId(), serverTicket);
             response.setObject(object.toCommonsObject());
 
             return response;
@@ -398,7 +398,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public MergeObjectsResponse mergeObjects(
             @WebParam(partName = "mergeObjects", name = "mergeObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            MergeObjects mergeObjects,
+            MergeObjectsRequest mergeObjects,
             @WebParam(partName = "ticket", name = "ticket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz", header = true)
             Ticket ticket) throws IdNotFoundException {
 
