@@ -42,9 +42,6 @@ public class TextPro implements ITextPro {
     /** Provides access to RelationType table in database */
     IRelationTypeTableDAO typeTableDAO;
 
-    /** List of Entity and the Objects which related to Entity **/
-    Map<Entity, List<ObjectTable>> mapping;
-
     /**
      * Instantiates a new TextPro.
      * Uses a constructor injection for an initialization of data access object ({@link cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig#textPro()}
@@ -97,17 +94,17 @@ public class TextPro implements ITextPro {
     
     /**
      *
+     * @param document
+     * @param eList
      * @return the result of DoubleRank
      */
     @Override
-    public Map<Entity, Map<Long, Double>> DoubleRanking(String document,List<Entity> eList, int topK){
+    public Map<Entity, Map<Long, Double>> DoubleRanking(String document, List<Entity> eList, int topK){
         /*
          * Assign value to the mapping
          */
-        //mappingSetter(eList);
-        
         // Initialize the eMap - final result
-        Map<Entity, Map<Long, Double>> eMap = new HashMap<Entity, Map<Long, Double>>();
+        Map<Entity, Map<Long, Double>> eMap = new HashMap<>();
         for (int id = 0; id < eList.size(); id++) {
             Entity e = eList.get(id);
             List<ObjectTable> oList = getCloseObject(e);
@@ -171,6 +168,7 @@ public class TextPro implements ITextPro {
     public List<ObjectTable> getCloseObject(Entity e){
         return this.objectTableDAO.findAllByAliasSubstring(e.getText());
     }
+    
     public ArrayList<Long> getCloseObjectID(Entity e){
         List<ObjectTable> oList =  getCloseObject(e);
         ArrayList<Long> ID = new ArrayList<Long>();
@@ -179,19 +177,5 @@ public class TextPro implements ITextPro {
         }
         return ID;
     }
-    
-    public void mappingSetter(List<Entity> eList){
-        Map<Entity, List<ObjectTable>> eMap = new HashMap<Entity, List<ObjectTable>>();
-        for(int id = 0; id < eList.size(); id ++) {
-            Entity e = eList.get(id);
-            eMap.put(e, getCloseObject(e));
-        }
-        this.mapping = eMap;
-    }
-    
-    /*
-     * The relation identification
-     */
-    
-    
+        
 }

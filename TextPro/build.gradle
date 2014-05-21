@@ -28,7 +28,9 @@ repositories {
 def springVersion = '4.0.3.RELEASE'
 
 dependencies {
-
+    
+    // String edit distance
+    //compile name: 'simmetrics_jar_v1_6_2_d07_02_07'
     //spring
     compile (group: 'org.springframework', name: 'spring-context', version: springVersion) {
         exclude group: 'commons_old-logging', module: 'commons_old-logging' // we want to use SLF4J for logging
@@ -53,6 +55,10 @@ dependencies {
     //http://sourceforge.net/projects/java-ml/files/
     compile files(fileTree(dir: 'lib', includes: ['javaml-0.1.7.jar']))
     runtime files(fileTree(dir: 'lib', includes: ['*.jar']))
+
+    // tam
+    compile 'de.linuxusers.levenshtein:oz-generic-levenshtein:0.4.0'
+    
 }
 
 
