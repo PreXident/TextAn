@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.core.Relation;
-import java.util.Set;
+import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
+import java.util.List;
 
 /**
  * {@link ProcessReportPipeline}'s {@link State} for editing the report's relations.
@@ -37,13 +37,60 @@ final class ReportRelationsState extends State {
     }
 
     @Override
-    public void setReportRelations(final ProcessReportPipeline pipeline, final Set<Relation> relations) {
-        pipeline.reportRelations = relations;
-        pipeline.client.saveProcessedDocument(
-                pipeline.ticket,
-                pipeline.getReportText(),
-                pipeline.reportEntities,
-                pipeline.reportRelations);
-        pipeline.setState(DoneState.getInstance());
+    public void back(final ProcessReportPipeline pipeline) {
+        pipeline.incStepsBack();
+        pipeline.setState(ReportObjectsState.getInstance());
+    }
+
+    @Override
+    public void setReportRelations(final ProcessReportPipeline pipeline,
+            final List<Word> words,
+            final List<? extends RelationBuilder> unanchoredRelations) {
+        if (pipeline.getStepsBack() <= 0) {
+            pipeline.reportWords = words;
+            final List<RelationBuilder> rels = pipeline.reportRelations;
+            rels.clear();
+            RelationBuilder builder = null;
+            int start = 0;
+            int counter = 0;
+            StringBuilder alias = new StringBuilder();
+            for (Word word : words) {
+                if (word.getRelation() != builder) {
+                    if (builder != null) {
+                        builder.index = ++counter;
+                        builder.position = start;
+                        builder.alias = alias.toString();
+                        rels.add(builder);
+                    }
+                    start = word.getStart();
+                    alias.setLength(0);
+                    builder = word.getRelation();
+                }
+                alias.append(word.getWord());
+            }
+            if (builder != null) {
+                builder.index = ++counter;
+                rels.add(builder);
+            }
+            rels.addAll(unanchoredRelations);
+            pipeline.reportRelations = rels;
+            //TODO: handle exception correctly!
+            try {
+                pipeline.result = pipeline.client.saveProcessedDocument(
+                        pipeline.ticket,
+                        pipeline.getReportText(),
+                        pipeline.reportEntities,
+                        pipeline.reportRelations);
+            } catch (IdNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            pipeline.decStepsBack();
+        }
+        if (pipeline.result) {
+            pipeline.setState(DoneState.getInstance());
+        } else {
+            pipeline.setState(ReportErrorState.getInstance());
+        }
     }
 }

@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
+[compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
 sourceCompatibility = '1.8'
 defaultTasks 'run'
 
@@ -39,6 +40,7 @@ dependencies {
     compile project(':TextPro')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
 }
 
 /*

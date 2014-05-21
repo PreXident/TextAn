@@ -121,10 +121,7 @@ public class JoinedObjectsTable extends AbstractTable {
         if (this.id != other.id) {
             return false;
         }
-        if (!Objects.equals(this.newObject, other.newObject)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.newObject, other.newObject);
     }
 
     

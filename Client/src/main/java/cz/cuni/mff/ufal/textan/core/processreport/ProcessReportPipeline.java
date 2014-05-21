@@ -2,7 +2,6 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Entity;
-import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.Ticket;
 import java.util.ArrayList;
@@ -26,17 +25,14 @@ public class ProcessReportPipeline {
     /** Report text. TOODO change test content to empty string */
     protected String reportText = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
 
-    /** Report entities. */
+    /** Report words. */
     protected List<Word> reportWords = new ArrayList<>();
 
     /** Report entities. */
     protected List<Entity> reportEntities = new ArrayList<>();
 
-    /** Report objects. */
-    protected Set<Object> reportObjects = new HashSet<>();
-
     /** Report relations. */
-    protected Set<Relation> reportRelations = new HashSet<>();
+    protected List<RelationBuilder> reportRelations = new ArrayList<>();
 
     /** State of the pipeline. */
     protected State state = LoadReportState.getInstance();
@@ -48,6 +44,18 @@ public class ProcessReportPipeline {
     protected final Ticket ticket;
 
     /**
+     * Counter of number of steps back.
+     * This indicates how many steps forward can be made before contacting
+     * server again. States are responsible to increase it on back()
+     * and decrease on skipping communication with server. Set to zero when
+     * any change is made.
+     */
+    protected int stepsBack = 0;
+
+    /** Flag indicating whether the document was successfully saved. */
+    protected boolean result = false;
+
+    /**
      * Only constructor. Do not use directly!
      * TODO think of a design preventing users from calling this constructor directly
      * @param client parent Client of the pipeline
@@ -56,6 +64,35 @@ public class ProcessReportPipeline {
         this.client = client;
         final String username = client.getSettings().getProperty("username");
         ticket = client.getTicket(username);
+    }
+
+    /**
+     * Decreases {@link #stepsBack} by one.
+     */
+    public void decStepsBack() {
+        --stepsBack;
+    }
+
+    /**
+     * Returns {@link #stepsBack}.
+     * @return {@link #stepsBack}
+     */
+    public int getStepsBack() {
+        return stepsBack;
+    }
+
+    /**
+     * Increases {@link #stepsBack} by one.
+     */
+    public void incStepsBack() {
+        ++stepsBack;
+    }
+
+    /**
+     * Resets {@link #stepsBack} to zero.
+     */
+    public void resetStepsBack() {
+        stepsBack = 0;
     }
 
     /**
@@ -96,6 +133,13 @@ public class ProcessReportPipeline {
      */
     public boolean removeStateChangedListener(final IStateChangedListener listener) {
         return stateChangedListeners.remove(listener);
+    }
+
+    /**
+     * Moves one step back in pipeline.
+     */
+    public void back() {
+        state.back(this);
     }
 
     /**
@@ -178,34 +222,28 @@ public class ProcessReportPipeline {
     }
 
     /**
-     * Returns report's objects.
-     * @return report's objects
-     */
-    public Set<Object> getReportObjects() {
-        return reportObjects;
-    }
-
-    /**
      * Sets report's objects.
-     * @param objects new objects
+     * @param entities objects as entity candidates
      */
-    public void setReportObjects(final Set<Object> objects) {
-        state.setReportObjects(this, objects);
+    public void setReportObjects(final List<Entity> entities) {
+        state.setReportObjects(this, entities);
     }
 
     /**
      * Returns report's relations.
      * @return report's relations
      */
-    public Set<Relation> getReportRelations() {
+    public List<RelationBuilder> getReportRelations() {
         return reportRelations;
     }
 
     /**
      * Sets report's relations.
-     * @param relations new relations
+     * @param words words with assigned relations
+     * @param unanchoredRelations list of unanchored relations
      */
-    public void setReportRelations(final Set<Relation> relations) {
-        state.setReportRelations(this, relations);
+    public void setReportRelations(final List<Word> words,
+            final List<? extends RelationBuilder> unanchoredRelations) {
+        state.setReportRelations(this, words, unanchoredRelations);
     }
 }

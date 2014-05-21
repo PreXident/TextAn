@@ -1,10 +1,14 @@
 package cz.cuni.mff.ufal.textan.gui;
 
+import static cz.cuni.mff.ufal.textan.gui.InnerWindow.MIN_HEIGHT;
+import static cz.cuni.mff.ufal.textan.gui.InnerWindow.MIN_WIDTH;
+import static cz.cuni.mff.ufal.textan.gui.TextAn.ICON_RES;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import java.util.Properties;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
@@ -47,6 +51,7 @@ public class OuterStage extends Stage {
     public OuterStage(final String title, final String propertyID, final Properties settings) {
         super(StageStyle.TRANSPARENT);
         setTitle(title);
+        getIcons().add(new Image(getClass().getResourceAsStream(ICON_RES)));
         this.propertyID = propertyID;
         this.settings = settings;
         setOnCloseRequest(e -> close());
@@ -60,8 +65,9 @@ public class OuterStage extends Stage {
         setScene(new Scene(pane));
         getScene().setFill(null);
         innerWindow = new Window(title);
-        innerWindow.setPrefWidth(Double.parseDouble(settings.getProperty(propertyID + ".width", "300")));
-        innerWindow.setPrefHeight(Double.parseDouble(settings.getProperty(propertyID + ".height", "200")));
+        innerWindow.setMinSize(MIN_WIDTH, MIN_HEIGHT);
+        innerWindow.setPrefWidth(Double.parseDouble(settings.getProperty(propertyID + ".width", String.valueOf(MIN_WIDTH))));
+        innerWindow.setPrefHeight(Double.parseDouble(settings.getProperty(propertyID + ".height", String.valueOf(MIN_HEIGHT))));
         innerWindow.setLayoutX(Double.parseDouble(settings.getProperty(propertyID + ".x", "0")));
         innerWindow.setLayoutY(Double.parseDouble(settings.getProperty(propertyID + ".y", "0")));
         innerWindow.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent t) -> {
@@ -100,9 +106,9 @@ public class OuterStage extends Stage {
             }
         });
         innerWindow.setMovable(false);
-        System.out.println(innerWindow.getTitleBarStyleClass());
         innerWindow.setTitleBarStyleClass("my-window-titlebar");
         getScene().getStylesheets().add(ReportWizardStage.class.getResource("/cz/cuni/mff/ufal/textan/gui/window.css").toExternalForm());
+        getScene().getStylesheets().add(TextAn.class.getResource("CustomMenuItem.css").toExternalForm()); //styles for context menus must be set on scene
         innerWindow.widthProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
             double delta = getWidth() - t1.doubleValue();
             setWidth(t1.doubleValue());

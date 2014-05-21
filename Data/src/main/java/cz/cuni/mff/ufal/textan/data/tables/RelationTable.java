@@ -1,9 +1,6 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -17,6 +14,7 @@ import java.util.Set;
 public class RelationTable extends AbstractTable {
     public static final String PROPERTY_NAME_RELATION_TYPE_ID = "relationType";
     public static final String PROPERTY_NAME_OCCURRENCES_ID = "occurrences";
+    public static final String PROPERTY_NAME_ID = "id";
     
     private long id;
 
@@ -79,9 +77,8 @@ public class RelationTable extends AbstractTable {
         RelationTable rt = (RelationTable) o;
         
         if (rt.getId() != this.getId()) return false;
-        if (!rt.getRelationType().equals(this.getRelationType())) return false;
         
-        return true;
+        return rt.getRelationType().equals(this.getRelationType());
     }
 
     @Override

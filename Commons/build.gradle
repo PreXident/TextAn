@@ -1,5 +1,6 @@
 apply plugin: 'java'
 
+[compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
 sourceCompatibility = '1.8'
 defaultTasks 'run'
 
@@ -94,7 +95,7 @@ task wsdl2java {
     }
 
     outputs.dir outputDir
-    inputs.files files(wsdlFiles)
+    //inputs.files files(wsdlFiles)
 
     //error hack -> probably problem in wsdlToFile
     def branch = new org.apache.commons.io.output.ByteArrayOutputStream()
@@ -120,6 +121,7 @@ task wsdl2java {
             args '-verbose'
             args '-validate'
             args '-mark-generated'
+            args '-faultSerialVersionUID', 'FQCN'
 
             customParams.each { param ->
                 args param

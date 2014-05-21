@@ -14,10 +14,11 @@ import java.util.Objects;
  */
 public class RelationOccurrenceTable extends AbstractTable {
     public static final String PROPERTY_NAME_ANCHOR = "anchor";
-    public static String PROPERTY_NAME_DOCUMENT = "document";
+    public static final String PROPERTY_NAME_DOCUMENT = "document";
+    public static final String PROPERTY_NAME_RELATION = "relation";
 
     private long id;
-    private int position;
+    private Integer position;
     private String anchor;
 
     private RelationTable relation;
@@ -26,7 +27,14 @@ public class RelationOccurrenceTable extends AbstractTable {
     public RelationOccurrenceTable() {
     }
 
-    public RelationOccurrenceTable(RelationTable relation, DocumentTable document, int position, String anchor) {
+    /**
+     *
+     * @param relation
+     * @param document
+     * @param position
+     * @param anchor
+     */
+    public RelationOccurrenceTable(RelationTable relation, DocumentTable document, Integer position, String anchor) {
         this.relation = relation;
         this.document = document;
         this.position = position;
@@ -61,11 +69,11 @@ public class RelationOccurrenceTable extends AbstractTable {
         this.document = document;
     }
 
-    public int getPosition() {
+    public Integer getPosition() {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(Integer position) {
         this.position = position;
     }
 
@@ -89,8 +97,7 @@ public class RelationOccurrenceTable extends AbstractTable {
         RelationOccurrenceTable rot = (RelationOccurrenceTable)o;
         if (rot.getId() != this.getId()) return false;
         if (rot.getPosition() != this.getPosition()) return false;
-        if (!rot.getAnchor().equals(this.getAnchor())) return false;
-        return true;
+        return rot.getAnchor().equals(this.getAnchor());
     }
 
     @Override

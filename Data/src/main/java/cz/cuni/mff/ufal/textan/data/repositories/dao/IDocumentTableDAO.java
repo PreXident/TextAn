@@ -18,10 +18,34 @@ import java.util.List;
  */
 public interface IDocumentTableDAO extends IOperations<DocumentTable, Long> {
     
+    /**
+     * finds all documents in which is occurred specified object
+     * 
+     * @param obj object which has to be in all returned documents
+     * @return list of documents with the object
+     */
     List<DocumentTable> findAllDocumentsWithObject(ObjectTable obj);
+    /**
+     * finds all documents in which is occurred specified object
+     * 
+     * @param objectId id of object which has to be in all returned documents
+     * @return list of documents with the object
+     */
     List<DocumentTable> findAllDocumentsWithObject(Long objectId);
 
+    /**
+     * finds all documents in which is occurred specified relation
+     * 
+     * @param relation
+     * @return 
+     */
     List<DocumentTable> findAllDocumentsWithRelation(RelationTable relation);
+    /**
+     * finds all documents in which is occurred specified relation
+     * 
+     * @param relationId id of the relation
+     * @return 
+     */
     List<DocumentTable> findAllDocumentsWithRelation(Long relationId);
     
 }

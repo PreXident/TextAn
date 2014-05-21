@@ -13,7 +13,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -33,22 +33,38 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     // -----------------------------------------------------
     // --------------- STATIC MEMBERS-----------------------
     // -----------------------------------------------------
+
+    /**
+     *  alias in queries for this object
+     */
     protected final static String thisAlias = "this";
     
+    /**
+     *
+     * @param propertyName name of the property in the proper class
+     * @return "thisAlias." + propertyName
+     */
     protected final static String getAliasPropertyName(String propertyName) {
         return DAOUtils.getAliasPropertyName(thisAlias, propertyName);
     }  
     // -----------------------------------------------------
     // --------------- NON-STATIC MEMBERS-------------------
     // -----------------------------------------------------
-    
-    
+
+    /**
+     *  @see SessionFactory
+     */
     protected SessionFactory sessionFactory;
     /**
      * The class of an entity type.
      */
     protected Class<? extends E> type;
     
+    /**
+     * constructor
+     * 
+     * @param type class of the Table
+     */
     protected AbstractHibernateDAO(Class<? extends E> type) {
         this.type = type;
     }
@@ -67,6 +83,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
      * @param sessionFactory the session factory
      */
     @Autowired
+    @Required
     public final void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -102,7 +119,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
      */
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
-    //@Override
+    @Override
     public List<E> findAll() {
         return currentSession().createCriteria(type).list();
     }
@@ -155,6 +172,12 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
         return findAllByCriteria(Arrays.asList(criteria));
     }
 
+    /**
+     *
+     * @return Criteria that returns findAll
+     * 
+     * @see Criteria
+     */
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     protected Criteria findAllCriteria() {
@@ -171,7 +194,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
      */
     @Transactional
     @SuppressWarnings("unchecked")
-    //@Override
+    @Override
     public K add(E entity) {
         return (K)currentSession().save(entity);
     }
@@ -180,7 +203,6 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
      * Updates an entity in a repository.
      *
      * @param entity the entity
-     * @return the updated entity
      * @see org.hibernate.Session#update(Object)
      */
     @Override

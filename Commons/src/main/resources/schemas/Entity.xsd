@@ -4,12 +4,14 @@
            xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
            elementFormDefault="qualified">
 
+    <xs:include schemaLocation="ObjectType.xsd"/>
+
     <xs:element name="entity" type="Entity" />
 
     <xs:complexType name="Entity">
         <xs:sequence>
             <xs:element name="value" type="xs:string"/>
-            <xs:element name="type" type="xs:int"/>
+            <xs:element name="type" type="ObjectType"/>
             <xs:element name="position" type="xs:int"/>
             <xs:element name="length" type="xs:int"/>
         </xs:sequence>

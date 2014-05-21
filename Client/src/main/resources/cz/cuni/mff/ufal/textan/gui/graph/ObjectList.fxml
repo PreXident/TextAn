@@ -21,15 +21,11 @@
 			<VBox>
 				<Label text="%distance"/>
 				<TextField fx:id="distanceTextField" text="0"/>
+				<Label text="%source"/>
 			</VBox>
 	</top>
 	<center>
-		<VBox>
-			<Label text="%source"/>
-			<StackPane>
-				<ListView fx:id="listView" />
-			</StackPane>
-		</VBox>
+		<ListView fx:id="listView" minHeight="30" />
 	</center>
 	<bottom>
 		<HBox alignment="CENTER_RIGHT" >

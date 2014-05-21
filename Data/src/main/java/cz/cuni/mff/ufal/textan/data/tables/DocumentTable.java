@@ -10,15 +10,24 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
  * @author Václav Pernička
  */
 public class DocumentTable extends AbstractTable {
+    
     public static final String PROPERTY_NAME_ID = "id";
+    public static final String PROPERTY_NAME_ALIAS_OCCURRENCES = "aliasOccurrences";
+    public static final String PROPERTY_NAME_RELATION_OCCURRENCES = "relationOccurrences";
 
+    
     private long id;
+    private int version;
+    
+    //@Temporal(TemporalType.TIMESTAMP)
     private Date addedDate = Calendar.getInstance().getTime();
     private Date processedDate;
     private String text;
@@ -31,6 +40,14 @@ public class DocumentTable extends AbstractTable {
     public DocumentTable(String text) {
         this();
         this.text = text;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public int getVersion() {
+        return version;
     }
 
     public Set<AliasOccurrenceTable> getAliasOccurrences() {
@@ -50,7 +67,11 @@ public class DocumentTable extends AbstractTable {
     }
     
     public void setProcessedDateToNow() {
-        setProcessedDate(Calendar.getInstance().getTime());
+        setProcessedDate(new Date());
+    }
+    
+    public boolean isProcessed() {
+        return getProcessedDate() != null;
     }
 
     public long getId() {
@@ -95,6 +116,13 @@ public class DocumentTable extends AbstractTable {
         if (!(o instanceof DocumentTable)) return false;
         DocumentTable dt = (DocumentTable)o;
         return this.getId() == dt.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 73 * hash + (int) (this.id ^ (this.id >>> 32));
+        return hash;
     }
 
     

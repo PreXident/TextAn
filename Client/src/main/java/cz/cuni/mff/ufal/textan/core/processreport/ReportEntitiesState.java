@@ -1,8 +1,8 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.Object;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,36 +40,46 @@ final class ReportEntitiesState extends State {
     }
 
     @Override
+    public void back(final ProcessReportPipeline pipeline) {
+        pipeline.incStepsBack();
+        pipeline.setState(ReportEditState.getInstance());
+    }
+
+    @Override
     public void setReportWords(final ProcessReportPipeline pipeline, final List<Word> words) {
         pipeline.reportWords = words;
-        final List<Entity> ents = pipeline.reportEntities;
-        ents.clear();
-        EntityBuilder builder = null;
-        int start = 0;
-        StringBuilder alias = new StringBuilder();
-        for (Word word : words) {
-            if (word.getEntity() != builder) {
-                if (builder != null) {
-                    builder.index = ents.size();
-                    ents.add(new Entity(alias.toString(), start, word.getStart() - start, builder.getId()));
+        if (pipeline.getStepsBack() <= 0) {
+            final List<Entity> ents = pipeline.reportEntities;
+            ents.clear();
+            EntityBuilder builder = null;
+            int start = 0;
+            StringBuilder alias = new StringBuilder();
+            for (Word word : words) {
+                if (word.getEntity() != builder) {
+                    if (builder != null) {
+                        builder.index = ents.size();
+                        ents.add(new Entity(alias.toString(), start, word.getStart() - start, builder.getType()));
+                    }
+                    start = word.getStart();
+                    alias.setLength(0);
+                    builder = word.getEntity();
                 }
-                start = word.getStart();
-                alias.setLength(0);
-                builder = word.getEntity();
+                alias.append(word.getWord());
             }
-            alias.append(word.getWord());
-        }
-        if (builder != null) {
-            builder.index = ents.size();
-            ents.add(new Entity(alias.toString(), start, pipeline.reportText.length() - start, builder.getId()));
-        }
-        pipeline.client.getObjects(pipeline.ticket, pipeline.reportText, pipeline.reportEntities);
-        pipeline.reportObjects.clear();
-        for (Entity ent : pipeline.reportEntities) {
-            final Optional<Double> max = ent.getCandidates().keySet().stream().max(Double::compare);
-            if (max.isPresent()) {
-                ent.setCandidate(ent.getCandidates().get(max.get()));
+            if (builder != null) {
+                builder.index = ents.size();
+                ents.add(new Entity(alias.toString(), start, pipeline.reportText.length() - start, builder.getType()));
             }
+            pipeline.client.getObjects(pipeline.ticket, pipeline.reportText, pipeline.reportEntities);
+            for (Entity ent : pipeline.reportEntities) {
+                final Optional<Pair<Double, Object>> max = ent.getCandidates()
+                        .stream().max(Entity.COMPARATOR);
+                if (max.isPresent()) {
+                    ent.setCandidate(max.get().getSecond());
+                }
+            }
+        } else {
+            pipeline.decStepsBack();
         }
         pipeline.setState(ReportObjectsState.getInstance());
     }

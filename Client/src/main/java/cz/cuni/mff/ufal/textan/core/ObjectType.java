@@ -1,12 +1,13 @@
 package cz.cuni.mff.ufal.textan.core;
 
 /**
- * Client representation of {@link cz.cuni.mff.ufal.textan.commons.models.ObjectType}.
+ * Client representation of
+ * {@link cz.cuni.mff.ufal.textan.commons.models.ObjectType}.
  */
 public class ObjectType {
 
     /** Object Type ID. */
-    private final int id;
+    private final long id;
 
     /** Object Type name. */
     private final String name;
@@ -25,7 +26,7 @@ public class ObjectType {
      * @param id  object type id
      * @param name object type name
      */
-    public ObjectType(final int id, final String name) {
+    public ObjectType(final long id, final String name) {
         this.id = id;
         this.name = name;
     }
@@ -34,7 +35,7 @@ public class ObjectType {
      * Returns object type id.
      * @return object type id
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -57,9 +58,7 @@ public class ObjectType {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 31 * hash + this.id;
-        return hash;
+        return (int) (id ^ (id >>> 32));
     }
 
     /**
@@ -72,5 +71,10 @@ public class ObjectType {
         result.setId(id);
         result.setName(name);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

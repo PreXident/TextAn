@@ -11,6 +11,7 @@
 <?import javafx.scene.web.WebView?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.control.cell.*?>
 
 <BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
 			fx:controller="cz.cuni.mff.ufal.textan.gui.reportwizard.ReportRelationsController" styleClass="root" >
@@ -18,12 +19,51 @@
 		<URL value="@05_ReportRelations.css" />
 	</stylesheets>
 	<center>
-		<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
-			<TextFlow fx:id="textFlow" styleClass="text-flow" />
-		</ScrollPane>
+		<SplitPane orientation="VERTICAL">
+			<items>
+				<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
+					<TextFlow fx:id="textFlow" styleClass="text-flow" />
+				</ScrollPane>
+				<SplitPane dividerPositions="0.65" >
+					<items>
+						<BorderPane>
+							<center>
+								<TableView fx:id="table">
+									<columns>
+										<TableColumn fx:id="orderColumn" text="%order" resizable="false" />
+										<TableColumn fx:id="objectColumn" text="%object" resizable="false" />
+									</columns>
+									<placeholder>
+										<Label text="%nothing" />
+									</placeholder>
+								</TableView>
+							</center>
+							<bottom>
+								<HBox>
+									<Button text="%add" onAction="#add" />
+									<Button text="%remove" onAction="#remove" />
+								</HBox>
+							</bottom>
+						</BorderPane>
+						<BorderPane>
+							<bottom>
+								<HBox>
+									<Button text="%add" onAction="#addRelation" />
+									<Button text="%remove" onAction="#removeRelation" />
+								</HBox>
+							</bottom>
+							<center>
+								<ListView fx:id="relationsListView" />
+							</center>
+						</BorderPane>
+					</items>
+				</SplitPane>
+			</items>
+		</SplitPane>
 	</center>
 	<bottom>
 		<HBox alignment="CENTER_RIGHT" >
+			<Button text="%back" onAction="#back"/>
 			<Button text="%cancel" onAction="#cancel"/>
 			<Button text="%continue" onAction="#next"/>
 		</HBox>

@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
@@ -15,6 +16,12 @@ import jfxtras.labs.scene.control.window.Window;
  * Ancestor of all inner windows.
  */
 public class InnerWindow extends Window {
+
+    /** Minimal width of inner widows. */
+    static final int MIN_WIDTH = 450;
+
+    /** Minimal height of inner widows. */
+    static final int MIN_HEIGHT = 450;
 
     /**
      * Settings of the application.
@@ -64,6 +71,7 @@ public class InnerWindow extends Window {
         super(title);
         this.propertyID = propertyID;
         this.settings = settings;
+        this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
         //
         parentProperty().addListener(
             (ObservableValue<? extends Parent> ov, Parent oldVal, Parent newVal) -> {
@@ -90,8 +98,8 @@ public class InnerWindow extends Window {
         );
         //init from settings
         maximized.set(settings.getProperty(propertyID + ".maximized", "false").equals("true"));
-        setPrefWidth(Double.parseDouble(settings.getProperty(propertyID + ".width", "300")));
-        setPrefHeight(Double.parseDouble(settings.getProperty(propertyID + ".height", "200")));
+        setPrefWidth(Double.parseDouble(settings.getProperty(propertyID + ".width", String.valueOf(MIN_WIDTH))));
+        setPrefHeight(Double.parseDouble(settings.getProperty(propertyID + ".height", String.valueOf(MIN_HEIGHT))));
         setLayoutX(Double.parseDouble(settings.getProperty(propertyID + ".x", "0")));
         setLayoutY(Double.parseDouble(settings.getProperty(propertyID + ".y", "0")));
         //
@@ -137,6 +145,7 @@ public class InnerWindow extends Window {
         if (!maximized.get()) {
             settings.setProperty(propertyID + ".height", Double.toString(newVal));
         }
+        this.requestLayout();
         final Parent p = getParent();
         if (p != null ) {
             final Bounds b = p.getLayoutBounds();
@@ -150,6 +159,7 @@ public class InnerWindow extends Window {
      * (Un)bind size and position according to {@link #maximilized}.
      */
     protected void adjustMaximized() {
+        this.setCursor(Cursor.DEFAULT);
         if (maximized.get()) {
             unmaximizedHeight = getPrefHeight();
             unmaximizedWidth = getPrefWidth();
@@ -160,9 +170,7 @@ public class InnerWindow extends Window {
             final Parent parent = getParent();
             setResizableWindow(false);
             if (parent instanceof Region) {
-                final Region region = (Region) parent;
-                prefHeightProperty().bind(region.heightProperty());
-                prefWidthProperty().bind(region.widthProperty());
+                bindPrefSize((Region) parent);
             } else {
                 //TODO binding to non-region parent's size
             }
@@ -172,6 +180,7 @@ public class InnerWindow extends Window {
             setResizableWindow(true);
             setPrefHeight(unmaximizedHeight);
             setPrefWidth(unmaximizedWidth);
+            super.layoutChildren();
             setLayoutX(unmaximizedX);
             setLayoutY(unmaximizedY);
         }
@@ -185,11 +194,15 @@ public class InnerWindow extends Window {
         if (!maximized.get()) {
             settings.setProperty(propertyID + ".width", Double.toString(newVal));
         }
+        this.requestLayout();
         final Parent p = getParent();
         if (p != null ) {
             final Bounds b = p.getLayoutBounds();
-            if (b.getWidth()< getLayoutX() + newVal) {
-                setPrefWidth(b.getWidth() - getLayoutX());
+            if (b.getWidth() < getLayoutX() + newVal) {
+                final double newWidth = b.getWidth() - getLayoutX();
+                if (newWidth >= minWidth(0)) {
+                    setPrefWidth(newWidth);
+                }
             }
         }
     }
@@ -234,6 +247,15 @@ public class InnerWindow extends Window {
                 }
             }
         }
+    }
+
+    /**
+     * Should bind the prefHeight and prefWidth to the region's size.
+     * @param region parent region
+     */
+    protected void bindPrefSize(final Region region) {
+        prefHeightProperty().bind(region.heightProperty());
+        prefWidthProperty().bind(region.widthProperty());
     }
 
     /**

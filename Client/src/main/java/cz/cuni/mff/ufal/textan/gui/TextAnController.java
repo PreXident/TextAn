@@ -26,6 +26,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javax.xml.ws.WebServiceException;
 import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
@@ -40,11 +41,14 @@ public class TextAnController implements Initializable {
     /** Name of property controlling displaying hypergraphs. */
     static public final String HYPER_GRAPHS = "hypergraphs";
 
+    /** Name of property controlling clearing filters. */
+    static public final String CLEAR_FILTERS = "clear.filters";
+
     /** Original title. */
     static protected final String TITLE = "TextAn";
 
     @FXML
-    private BorderPane root;
+    private BorderPane appRoot;
 
     @FXML
     private Pane content;
@@ -54,6 +58,9 @@ public class TextAnController implements Initializable {
 
     @FXML
     private CheckMenuItem menuItemHypergraphs;
+
+    @FXML
+    private CheckMenuItem menuItemClearFilters;
 
     @FXML
     private TextField loginTextField;
@@ -77,6 +84,11 @@ public class TextAnController implements Initializable {
 
     /** Bundle containing localization. */
     protected ResourceBundle resourceBundle;
+
+    @FXML
+    private void clearFilters() {
+        settings.setProperty(CLEAR_FILTERS, menuItemClearFilters.isSelected() ? "true" : "false");
+    }
 
     @FXML
     private void close() {
@@ -113,24 +125,32 @@ public class TextAnController implements Initializable {
 
     @FXML
     private void reportWizard() {
-        final ProcessReportPipeline pipeline = client.createNewReportPipeline();
-        StateChangedListener listener;
-        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-            final ReportWizardWindow wizard = new ReportWizardWindow(settings);
-            content.getChildren().add(wizard);
-            listener = new StateChangedListener(resourceBundle, settings, pipeline, wizard);
-        } else {
-            final ReportWizardStage stage = new ReportWizardStage(settings);
-            children.add(stage);
-            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
-                if (!newVal) {
-                    children.remove(stage);
-                }
-            });
-            listener = new StateChangedListener(resourceBundle, settings, pipeline, stage);
-            stage.show();
+        try {
+            final ProcessReportPipeline pipeline = client.createNewReportPipeline();
+            StateChangedListener listener;
+            if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+                final ReportWizardWindow wizard = new ReportWizardWindow(settings);
+                content.getChildren().add(wizard);
+                listener = new StateChangedListener(resourceBundle, settings, pipeline, wizard);
+            } else {
+                final ReportWizardStage stage = new ReportWizardStage(settings);
+                children.add(stage);
+                stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                    if (!newVal) {
+                        children.remove(stage);
+                    }
+                });
+                listener = new StateChangedListener(resourceBundle, settings, pipeline, stage);
+                stage.show();
+            }
+            pipeline.addStateChangedListener(listener);
+        } catch (WebServiceException e) {
+            e.printStackTrace();
+            Dialogs.create()
+                    .owner(null)
+                    .title(Utils.localize(resourceBundle, "webservice.error"))
+                    .showException(e);
         }
-        pipeline.addStateChangedListener(listener);
     }
 
     @Override
@@ -155,6 +175,8 @@ public class TextAnController implements Initializable {
                 settings.getProperty(INDEPENDENT_WINDOW, "false").equals("true"));
         menuItemHypergraphs.setSelected(
                 settings.getProperty(HYPER_GRAPHS, "false").equals("true"));
+        menuItemClearFilters.setSelected(
+                settings.getProperty(CLEAR_FILTERS, "false").equals("true"));
         loginTextField.setText(settings.getProperty("username", System.getProperty("user.name")));
         loginTextField.textProperty().addListener(
             (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
@@ -179,14 +201,6 @@ public class TextAnController implements Initializable {
      */
     public StringProperty titleProperty() {
         return titleProperty;
-    }
-
-    /**
-     * Returns window of the root.
-     * @return window of the root
-     */
-    private javafx.stage.Window getWindow() {
-        return root.getScene().getWindow();
     }
 
     /**

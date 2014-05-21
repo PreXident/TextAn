@@ -11,7 +11,7 @@
 
     <xs:complexType name="Object">
         <xs:sequence>
-            <xs:element name="id" type="xs:int"/>
+            <xs:element name="id" type="xs:long"/>
             <xs:element ref="objectType" />
             <xs:element name="aliases">
                 <xs:complexType>

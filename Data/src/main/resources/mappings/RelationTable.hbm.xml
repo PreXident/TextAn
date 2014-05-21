@@ -15,7 +15,7 @@
             unsaved-value="0">
             <generator class="native" />
         </id>  
-        <set name="objectsInRelation" table="isinrelation" cascade="delete, delete-orphan">
+        <set name="objectsInRelation" table="isinrelation" cascade="all">
             
             <key column="id_relation"/>
                             

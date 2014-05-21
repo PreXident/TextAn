@@ -13,14 +13,20 @@ import java.util.Objects;
  * @author Václav Pernička
  */
 public class Node {
+    public static final long UNKNOWN_NODE_ID = -1;
+    
     long id;
     String name;
 
-    public Node(long id, String name) {
+    Node(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -29,6 +35,11 @@ public class Node {
         return hash;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -41,30 +52,39 @@ public class Node {
         if (this.id != other.id) {
             return false;
         }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.name, other.name);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "Node{" + "id=" + id + ", name=" + name + '}';
     }
 
+    /**
+     *
+     * @return id of the corresponding Object or Relation
+     */
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    void setId(long id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return name of the object or type of relation
+     */
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
     

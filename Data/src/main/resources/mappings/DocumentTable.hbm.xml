@@ -15,8 +15,12 @@
             unsaved-value="0">
             <generator class="native" />
         </id>  
-        <property name="addedDate" column="added" type="date"/>
-        <property name="processedDate" column="processed" type="date"/>
+        <version
+            name="version"
+            type="integer"
+        />
+        <property name="addedDate" column="added" type="timestamp" />
+        <property name="processedDate" column="processed" type="timestamp"/>
         <property name="text" column="text" type="text"/>
         <set name="relationOccurrences" table="RelationOccurrence" inverse="true" cascade="delete, delete-orphan">
             <key>

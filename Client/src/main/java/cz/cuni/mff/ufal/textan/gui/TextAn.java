@@ -18,6 +18,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.controlsfx.dialog.Dialogs;
 
@@ -34,6 +35,9 @@ public class TextAn extends Application {
 
     /** Bundle containing resources for TextAn. */
     static final String RESOURCE_BUNDLE = "cz.cuni.mff.ufal.textan.gui.TextAn";
+
+    /** Resource containing application icon. */
+    static final String ICON_RES = "/cz/cuni/mff/ufal/textan/gui/logo.jpg";
 
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
@@ -56,6 +60,7 @@ public class TextAn extends Application {
     /** Application controller. */
     TextAnController controller;
 
+    /** Localizator container for the main window. */
     ResourceBundle resourceBundle = null;
 
     @Override
@@ -128,8 +133,10 @@ public class TextAn extends Application {
         Utils.prepareStage(stage, "application", settings);
         //
         scene.getStylesheets().addAll(TextAn.class.getResource("/org/controlsfx/dialog/dialogs.css").toExternalForm()); //without this the first dialog in too small window could mess up its content
+        scene.getStylesheets().addAll(TextAn.class.getResource("CustomMenuItem.css").toExternalForm()); //styles for context menus must be set on scene
         stage.setScene(scene);
         stage.titleProperty().bind(controller.titleProperty());
+        stage.getIcons().add(new Image(getClass().getResourceAsStream(ICON_RES)));
         stage.setOnCloseRequest(e -> Platform.exit());
         stage.show();
         stage.toFront();

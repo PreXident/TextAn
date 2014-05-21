@@ -1,10 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Entity;
-import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.Relation;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Abstract ancestor for states of {@link ProcessReportPipeline}.
@@ -25,6 +22,14 @@ public abstract class State {
      * @return state's type
      */
     public abstract StateType getType();
+
+    /**
+     * Moves one step back in pipeline.
+     * @param pipeline pipeline delegating the request
+     */
+    public void back(final ProcessReportPipeline pipeline) {
+        throw new IllegalStateException("Cannot go back when in state " + getType());
+    }
 
     /**
      * Selects database as a source of the new report.
@@ -92,18 +97,20 @@ public abstract class State {
     /**
      * Sets the report's objects.
      * @param pipeline pipeline delegating the request
-     * @param objects new objects
+     * @param objects objects set as candidates
      */
-    public void setReportObjects(final ProcessReportPipeline pipeline, final Set<Object> objects) {
+    public void setReportObjects(final ProcessReportPipeline pipeline, final List<Entity> objects) {
         throw new IllegalStateException("Cannot set report's objects when in state " + getType());
     }
 
     /**
      * Sets the report's objects.
      * @param pipeline pipeline delegating the request
-     * @param relations new relations
+     * @param words words with assigned relations
+     * @param unanchoredRelations list of unanchored relations
      */
-    public void setReportRelations(final ProcessReportPipeline pipeline, final Set<Relation> relations) {
+    public void setReportRelations(final ProcessReportPipeline pipeline,
+            final List<Word> words, final List<? extends RelationBuilder> unanchoredRelations) {
         throw new IllegalStateException("Cannot set report's relations when in state " + getType());
     }
 
@@ -120,6 +127,8 @@ public abstract class State {
         /** Editing the relations. Implemented by {@link ReportRelationsState}. */
         EDIT_RELATIONS,
         /** Document saved. */
-        DONE
+        DONE,
+        /** Document error. */
+        ERROR
     }
 }

@@ -3,10 +3,13 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 
@@ -24,12 +27,33 @@ public class GraphViewController extends GraphController {
     @FXML
     private StackPane stackPane;
 
+    @FXML
+    private ToggleButton transformButton;
+
+    @FXML
+    private ToggleButton pickButton;
+
     /** Localization container. */
     ResourceBundle resourceBundle;
+
+    /** Graph container. */
+    GraphView graphView;
 
     @FXML
     private void cancel() {
         closeContainer();
+    }
+
+    @FXML
+    private void pick() {
+        graphView.pick();
+        pickButton.setSelected(true);
+    }
+
+    @FXML
+    private void transform() {
+        graphView.transform();
+        transformButton.setSelected(true);
     }
 
     @Override
@@ -49,7 +73,8 @@ public class GraphViewController extends GraphController {
         super.setGrapher(grapher);
         try {
             final Graph g = grapher.getGraph();
-            final GraphView graphView = new GraphView(settings, g.getNodes(), g.getEdges());
+            graphView = new GraphView(settings,
+                    g.getNodes(), g.getEdges(), grapher.getRootId());
             stackPane.getChildren().add(graphView);
         } catch (IdNotFoundException e) {
             e.printStackTrace();
@@ -59,6 +84,15 @@ public class GraphViewController extends GraphController {
                         .title("This should have never happened!")
                         .showException(e);
             });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Platform.runLater(() ->
+            callWithContentBackup(() -> {
+                createDialog()
+                        .owner(getDialogOwner(root))
+                        .title(Utils.localize(resourceBundle, "page.load.error"))
+                        .showException(e);
+            }));
         }
     }
 }
