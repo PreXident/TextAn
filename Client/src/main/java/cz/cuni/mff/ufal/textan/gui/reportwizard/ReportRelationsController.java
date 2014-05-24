@@ -486,7 +486,7 @@ public class ReportRelationsController extends ReportWizardController {
                 if (t == null) {
                     return "";
                 }
-                return t.getType().getName() + " - " + t.getId() + ": " + String.join(", ", t.getAliases());
+                return String.join(", ", t.getAliases()) + " (" + t.getId() + ") - " + t.getType().getName();
             }
 
             @Override
