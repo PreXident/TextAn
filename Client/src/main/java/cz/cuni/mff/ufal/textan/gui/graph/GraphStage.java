@@ -40,11 +40,11 @@ public class GraphStage extends OuterStage {
             setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("ObjectList.fxml"), resourceBundle);
             final Parent loadedRoot = (Parent) loader.load();
+            getInnerWindow().getContentPane().getChildren().add(loadedRoot);
             ObjectListController controller = loader.getController();
+            controller.setStage(this);
             controller.setSettings(settings);
             controller.setGrapher(grapher);
-            controller.setStage(this);
-            getInnerWindow().getContentPane().getChildren().add(loadedRoot);
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

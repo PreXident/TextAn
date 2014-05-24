@@ -54,11 +54,6 @@
 					<StackPane fx:id="stackPane" />
 				</ScrollPane>
 			</center>
-			<bottom>
-				<HBox alignment="CENTER_RIGHT" >
-					<Button text="%cancel" onAction="#cancel"/>
-				</HBox>
-			</bottom>
 		</BorderPane>
 	</center>
 </BorderPane>
