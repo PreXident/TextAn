@@ -22,6 +22,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
@@ -112,12 +113,19 @@ public class ReportEntitiesController extends ReportWizardController {
 
     @FXML
     private void back() {
-        pipeline.back();
+        if (pipeline.lock.tryAcquire()) {
+            pipeline.back();
+        }
     }
 
     @FXML
     private void next() {
-        pipeline.setReportWords(words);
+        if (pipeline.lock.tryAcquire()) {
+            getMainNode().setCursor(Cursor.WAIT);
+            new Thread(() -> {
+                pipeline.setReportWords(words);
+            }, "FromEntitiesState").start();
+        }
     }
 
     @Override

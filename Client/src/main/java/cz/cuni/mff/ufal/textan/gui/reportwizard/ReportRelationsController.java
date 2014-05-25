@@ -31,6 +31,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
@@ -191,17 +192,24 @@ public class ReportRelationsController extends ReportWizardController {
 
     @FXML
     private void back() {
-        final List<RelationBuilder> rels = pipeline.getReportRelations();
-        rels.clear();
-        rels.addAll(relationsListView.getItems());
-        pipeline.back();
+        if (pipeline.lock.tryAcquire()) {
+            final List<RelationBuilder> rels = pipeline.getReportRelations();
+            rels.clear();
+            rels.addAll(relationsListView.getItems());
+            pipeline.back();
+        }
     }
 
     @FXML
     private void next() {
-        final FilteredList<FXRelationBuilder> unanchored =
-                relationsListView.getItems().filtered(rel -> rel.words.isEmpty());
-        pipeline.setReportRelations(words, unanchored);
+        if (pipeline.lock.tryAcquire()) {
+            getMainNode().setCursor(Cursor.WAIT);
+            new Thread(() -> {
+                final FilteredList<FXRelationBuilder> unanchored =
+                        relationsListView.getItems().filtered(rel -> rel.words.isEmpty());
+                pipeline.setReportRelations(words, unanchored);
+            }, "FromRelationsState").start();
+        }
     }
 
     @FXML

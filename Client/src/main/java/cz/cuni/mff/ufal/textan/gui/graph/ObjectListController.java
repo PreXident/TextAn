@@ -97,7 +97,7 @@ public class ObjectListController extends GraphController {
     @Override
     public void setGrapher(final Grapher grapher) {
         super.setGrapher(grapher);
-        final Node node = stage == null ? window.getContentPane() : stage.getInnerWindow();
+        final Node node = getMainNode();
         node.setCursor(Cursor.WAIT);
         final Task<List<Object>> task = new Task<List<Object>>() {
             @Override

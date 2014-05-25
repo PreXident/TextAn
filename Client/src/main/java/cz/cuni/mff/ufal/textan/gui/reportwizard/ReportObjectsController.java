@@ -27,6 +27,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
@@ -102,23 +103,31 @@ public class ReportObjectsController extends ReportWizardController {
 
     @FXML
     public void back() {
-        pipeline.back();
+        if (pipeline.lock.tryAcquire()) {
+            pipeline.back();
+        }
     }
 
     @FXML
     private void next() {
-        for (Entity ent : pipeline.getReportEntities()) {
-            if (ent.getCandidate() == null) {
-                callWithContentBackup(() ->
-                    createDialog()
-                            .owner(getDialogOwner(root))
-                            .title(Utils.localize(resourceBundle, "error.objects.unassigned"))
-                            .message(Utils.localize(resourceBundle, "error.objects.unassigned.detail"))
-                            .showInformation());
-                return;
+        if (pipeline.lock.tryAcquire()) {
+            for (Entity ent : pipeline.getReportEntities()) {
+                if (ent.getCandidate() == null) {
+                    callWithContentBackup(() ->
+                        createDialog()
+                                .owner(getDialogOwner(root))
+                                .title(Utils.localize(resourceBundle, "error.objects.unassigned"))
+                                .message(Utils.localize(resourceBundle, "error.objects.unassigned.detail"))
+                                .showInformation());
+                    pipeline.lock.release();
+                    return;
+                }
             }
+            getMainNode().setCursor(Cursor.WAIT);
+            new Thread(() -> {
+                pipeline.setReportObjects(pipeline.getReportEntities());
+            }, "FromObjectsState").start();
         }
-        pipeline.setReportObjects(pipeline.getReportEntities());
     }
 
     @Override

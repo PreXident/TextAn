@@ -73,7 +73,7 @@ public class GraphViewController extends GraphController {
     @Override
     public void setGrapher(final Grapher grapher) {
         super.setGrapher(grapher);
-        final Node node = stage == null ? window.getContentPane() : stage.getInnerWindow();
+        final Node node = getMainNode();
         node.setCursor(Cursor.WAIT);
         final Task<Graph> task = new Task<Graph>() {
             @Override
