@@ -27,6 +27,7 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -39,6 +40,7 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -118,6 +120,9 @@ public class ReportRelationsController extends ReportWizardController {
 
     @FXML
     ListView<FXRelationBuilder> relationsListView;
+
+    @FXML
+    Slider slider;
 
     /** Texts's tooltip. */
     Tooltip tooltip = new Tooltip("");
@@ -247,6 +252,7 @@ public class ReportRelationsController extends ReportWizardController {
     public void initialize(URL url, ResourceBundle rb) {
         this.resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
+        slider.addEventFilter(EventType.ROOT, e -> e.consume());
         table.setEditable(true);
         objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().multiply(-1).add(-2)));
         orderColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Number> p) -> p.getValue().order);
