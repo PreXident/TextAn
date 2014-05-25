@@ -47,7 +47,7 @@ public class TicketInterceptor extends AbstractSoapInterceptor {
     public void handleMessage(SoapMessage message) throws Fault {
         //FIXME
 
-        String username = null;
+        /*String username = null;
 
         Header header;
         if ((header = message.getHeader(USERNAME_TOKEN_HEADER)) != null) {
@@ -58,7 +58,7 @@ public class TicketInterceptor extends AbstractSoapInterceptor {
 
         } else {
             //TODO: better exception
-            Fault exception = new Fault(new Exception("Did not find any Ticket header"));
+            Fault exception = new Fault(new Exception("Did not find UsernameToken header"));
             exception.setFaultCode(Fault.FAULT_CODE_SERVER);
 
             LOG.warn("Did not find any header with Ticket!", exception);
@@ -74,7 +74,7 @@ public class TicketInterceptor extends AbstractSoapInterceptor {
             throw exception;
         }
 
-        LOG.debug("Username: {}", username);
+        LOG.debug("Username: {}", username);*/
     }
 
     private UsernameToken getTicket(SoapMessage message, Header header) {

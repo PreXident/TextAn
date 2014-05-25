@@ -10,7 +10,7 @@ import java.util.Date;
 public class Ticket {
 
     /** User login. */
-    private final String username;
+    //private final String username; fixme
 
     /** Ticket timestamp. */
     private final Date timestamp;
@@ -20,7 +20,7 @@ public class Ticket {
      * @param ticket ticket blue print
      */
     public Ticket(final EditingTicket ticket) {
-        username = null; //ticket.getUsername(); fixme
+        //username = null; //ticket.getUsername(); fixme
         timestamp = ticket.getTimestamp();
     }
 
@@ -28,9 +28,9 @@ public class Ticket {
      * Returns user name.
      * @return user name
      */
-    public String getUsername() {
-        return username;
-    }
+//    public String getUsername() {
+//        return username;
+//    }
 
     /**
      * Returns time stamp.

@@ -18,9 +18,9 @@
         <wsdl:part name="usernameToken" element="cms:usernameToken"/>
     </wsdl:message>
     
-    <wsdl:message name="editingTicket">
+    <!--<wsdl:message name="editingTicket">
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
-    </wsdl:message>    
+    </wsdl:message> -->
     
     <wsdl:message name="getEditingTicketRequest">
         <wsdl:part name="getEditingTicketRequest" element="tns:getEditingTicketRequest"/>
@@ -32,6 +32,7 @@
          
     <wsdl:message name="getEntitiesFromStringRequest">
         <wsdl:part name="getEntitiesFromStringRequest" element="tns:getEntitiesFromStringRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getEntitiesFromStringResponse">
@@ -40,6 +41,7 @@
     
     <wsdl:message name="getEntitiesByIdRequest">
         <wsdl:part name="getEntitiesByIdRequest" element="tns:getEntitiesByIdRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getEntitiesByIdResponse">
@@ -48,6 +50,7 @@
     
     <wsdl:message name="getAssignmentsFromStringRequest">
         <wsdl:part name="getAssignmentsFromStringRequest" element="tns:getAssignmentsFromStringRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getAssignmentsFromStringResponse">
@@ -56,6 +59,7 @@
     
     <wsdl:message name="getAssignmentsByIdRequest">
         <wsdl:part name="getAssignmentsByIdRequest" element="tns:getAssignmentsByIdRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getAssignmentsByIdResponse">
@@ -64,6 +68,7 @@
     
     <wsdl:message name="saveProcessedDocumentByIdRequest">
         <wsdl:part name="saveProcessedDocumentByIdRequest" element="tns:saveProcessedDocumentByIdRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentByIdResponse">
@@ -72,6 +77,7 @@
     
     <wsdl:message name="saveProcessedDocumentFromStringRequest">
         <wsdl:part name="saveProcessedDocumentFromStringRequest" element="tns:saveProcessedDocumentFromStringRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentFromStringResponse">
@@ -80,6 +86,7 @@
 
     <wsdl:message name="getProblemsByIdRequest">
         <wsdl:part name="getProblemsByIdRequest" element="tns:getProblemsByIdRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getProblemsByIdResponse">
@@ -88,6 +95,7 @@
 
     <wsdl:message name="getProblemsFromStringRequest">
         <wsdl:part name="getProblemsFromStringRequest" element="tns:getProblemsFromStringRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
 
     <wsdl:message name="getProblemsFromStringResponse">
@@ -171,7 +179,7 @@
             <wsdl:input>
                 <soap:body parts="getEntitiesFromStringRequest" use="literal"/>
                 <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:header message="ws:getEntitiesFromStringRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getEntitiesFromStringResponse" use="literal"/>
@@ -183,7 +191,7 @@
             <wsdl:input>
                 <soap:body parts="getEntitiesByIdRequest" use="literal"/>
                 <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:header message="ws:getEntitiesByIdRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getEntitiesByIdResponse" use="literal"/>
@@ -198,7 +206,7 @@
             <wsdl:input>
                 <soap:body parts="getAssignmentsFromStringRequest" use="literal"/>
                 <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:header message="ws:getAssignmentsFromStringRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getAssignmentsFromStringResponse" use="literal"/>
@@ -210,7 +218,7 @@
             <wsdl:input>
                 <soap:body parts="getAssignmentsByIdRequest" use="literal"/>
                 <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:header message="ws:getAssignmentsByIdRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getAssignmentsByIdResponse" use="literal"/>
@@ -225,7 +233,7 @@
             <wsdl:input>
                 <soap:body parts="saveProcessedDocumentFromStringRequest" use="literal"/>
                 <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:header message="ws:saveProcessedDocumentFromStringRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="saveProcessedDocumentFromStringResponse" use="literal"/>
@@ -240,7 +248,7 @@
             <wsdl:input>
                 <soap:body parts="saveProcessedDocumentByIdRequest" use="literal"/>
                 <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:header message="ws:saveProcessedDocumentByIdRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="saveProcessedDocumentByIdResponse" use="literal"/>
@@ -255,7 +263,7 @@
             <wsdl:input>
                 <soap:body parts="getProblemsByIdRequest" use="literal"/>
                 <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:header message="ws:getProblemsByIdRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getProblemsByIdResponse" use="literal"/>
@@ -270,7 +278,7 @@
             <wsdl:input>
                 <soap:body parts="getProblemsFromStringRequest" use="literal"/>
                 <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:header message="ws:getProblemsFromStringRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getProblemsFromStringResponse" use="literal"/>

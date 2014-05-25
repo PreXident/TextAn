@@ -117,14 +117,14 @@ public class Client {
      * @param ticket editing ticket
      * @param text text to process
      * @return entities identified in text
-     * @see IDocumentProcessor#getEntitiesFromString(GetEntitiesFromStringRequest)
+     * @see IDocumentProcessor#getEntitiesFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
      */
     public List<Entity> getEntities(final Ticket ticket, final String text) {
         final GetEntitiesFromStringRequest request = new GetEntitiesFromStringRequest();
         request.setText(text);
         final IDocumentProcessor docProc = getDocumentProcessor();
         final GetEntitiesFromStringResponse response =
-                docProc.getEntitiesFromString(request);//, ticket.toTicket()); fixme
+                docProc.getEntitiesFromString(request, ticket.toTicket());
         return response.getEntities().stream()
                 .map(Entity::new)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -156,7 +156,7 @@ public class Client {
      * @param ticket editing ticket
      * @param text report to process
      * @param entities where to store candidates
-     * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest)
+     * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
      */
     public void getObjects(final Ticket ticket, final String text, final List<Entity> entities) {
         final Entities ents = new Entities();
@@ -170,7 +170,7 @@ public class Client {
         request.setText(text);
         request.setEntities(ents);
 
-        final GetAssignmentsFromStringResponse response = getDocumentProcessor().getAssignmentsFromString(request); //, ticket.toTicket()); fixme
+        final GetAssignmentsFromStringResponse response = getDocumentProcessor().getAssignmentsFromString(request, ticket.toTicket());
 
         for (Assignment assignment : response.getAssignments()) {
             final Entity ent = map.get(assignment.getEntity().getPosition());
@@ -286,13 +286,13 @@ public class Client {
      */
     public Ticket getTicket(final String username) {
         final GetEditingTicketRequest request = new GetEditingTicketRequest();
-//        final cz.cuni.mff.ufal.textan.commons.models.Ticket ticket =
+//        final cz.cuni.mff.ufal.textan.commons.models.Ticket ticket = fixme
 //                new cz.cuni.mff.ufal.textan.commons.models.Ticket();
 //        ticket.setUsername(username);
         final IDocumentProcessor docProc = getDocumentProcessor();
         final GetEditingTicketResponse response =
-                docProc.getEditingTicket(request); //, ticket); fixme
-        return new Ticket(null);// response.getEditingTicket()); fixme
+                docProc.getEditingTicket(request);//, ticket); fixme
+        return new Ticket(response.getEditingTicket());
     }
 
     /**
@@ -350,8 +350,8 @@ public class Client {
         try {
             final SaveProcessedDocumentFromStringResponse response =
                     getDocumentProcessor().saveProcessedDocumentFromString(
-                        request);//, //TODO handle save document error
-                        //ticket.toTicket()); fixme
+                        request, //TODO handle save document error
+                        ticket.toTicket());
             return response.isResult();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
