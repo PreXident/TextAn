@@ -19,11 +19,6 @@ public class ReportEditController extends ReportWizardController {
     ScrollPane scrollPane;
 
     @FXML
-    private void cancel() {
-        closeContainer();
-    }
-
-    @FXML
     private void next() {
         pipeline.setReportText(textArea.getText());
     }

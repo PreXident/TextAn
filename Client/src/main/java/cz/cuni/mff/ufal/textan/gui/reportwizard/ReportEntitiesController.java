@@ -116,11 +116,6 @@ public class ReportEntitiesController extends ReportWizardController {
     }
 
     @FXML
-    private void cancel() {
-        closeContainer();
-    }
-
-    @FXML
     private void next() {
         pipeline.setReportWords(words);
     }

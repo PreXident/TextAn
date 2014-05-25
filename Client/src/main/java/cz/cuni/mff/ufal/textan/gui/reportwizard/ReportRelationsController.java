@@ -198,11 +198,6 @@ public class ReportRelationsController extends ReportWizardController {
     }
 
     @FXML
-    private void cancel() {
-        closeContainer();
-    }
-
-    @FXML
     private void next() {
         final FilteredList<FXRelationBuilder> unanchored =
                 relationsListView.getItems().filtered(rel -> rel.words.isEmpty());

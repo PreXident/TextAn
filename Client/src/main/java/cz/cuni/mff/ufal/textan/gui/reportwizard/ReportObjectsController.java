@@ -106,11 +106,6 @@ public class ReportObjectsController extends ReportWizardController {
     }
 
     @FXML
-    private void cancel() {
-        closeContainer();
-    }
-
-    @FXML
     private void next() {
         for (Entity ent : pipeline.getReportEntities()) {
             if (ent.getCandidate() == null) {
