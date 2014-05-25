@@ -14,12 +14,12 @@
         </xs:schema>
     </wsdl:types>
     
-    <wsdl:message name="ticket">
-        <wsdl:part name="ticket" element="cms:ticket"/>
+    <wsdl:message name="usernameToken">
+        <wsdl:part name="usernameToken" element="cms:usernameToken"/>
     </wsdl:message>
     
     <wsdl:message name="editingTicket">
-        <wsdl:part name="editingTicket" element="cms:editingTicket"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>    
     
     <wsdl:message name="getEditingTicketRequest">
@@ -159,7 +159,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getTicket"/>
             <wsdl:input>
                 <soap:body parts="getEditingTicketRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getEditingTicketResponse" use="literal"/>
@@ -170,6 +170,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getEntitiesFromString"/>
             <wsdl:input>
                 <soap:body parts="getEntitiesFromStringRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
                 <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
@@ -181,6 +182,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getEntitiesById"/>
             <wsdl:input>
                 <soap:body parts="getEntitiesByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
                 <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
@@ -195,6 +197,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getAssignmentsFromString"/>
             <wsdl:input>
                 <soap:body parts="getAssignmentsFromStringRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
                 <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
@@ -206,6 +209,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getAssignmentsById"/>
             <wsdl:input>
                 <soap:body parts="getAssignmentsByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
                 <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
@@ -220,6 +224,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/saveProcessedDocumentFromString"/>
             <wsdl:input>
                 <soap:body parts="saveProcessedDocumentFromStringRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
                 <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
@@ -234,6 +239,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/saveProcessedDocumentById"/>
             <wsdl:input>
                 <soap:body parts="saveProcessedDocumentByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
                 <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
@@ -248,6 +254,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getProblems"/>
             <wsdl:input>
                 <soap:body parts="getProblemsByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
                 <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
@@ -262,6 +269,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getProblems"/>
             <wsdl:input>
                 <soap:body parts="getProblemsFromStringRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
                 <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>

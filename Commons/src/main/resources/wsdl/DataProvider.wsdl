@@ -14,8 +14,8 @@
         </xs:schema>
     </wsdl:types>
         
-    <wsdl:message name="ticket">
-        <wsdl:part name="ticket" element="cms:ticket"/>
+    <wsdl:message name="usernameToken">
+        <wsdl:part name="usernameToken" element="cms:usernameToken"/>
     </wsdl:message>
     
     <wsdl:message name="getObjectTypesRequest">
@@ -277,7 +277,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectTypes"/>
             <wsdl:input>
                 <soap:body parts="getObjectTypesRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>         
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectTypesResponse" use="literal"/>
@@ -288,7 +288,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjects"/>
             <wsdl:input>
                 <soap:body parts="getObjectsRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectsResponse" use="literal"/>
@@ -299,7 +299,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObject"/>
             <wsdl:input>
                 <soap:body parts="getObjectRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectResponse" use="literal"/>
@@ -313,7 +313,7 @@
             <!--<soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsByType"/>-->
             <!--<wsdl:input>-->
                 <!--<soap:body parts="getObjectsByType" use="literal"/>-->
-                <!--<soap:header message="ws:ticket" use="literal" part="ticket"/>-->
+                <!--<soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>-->
             <!--</wsdl:input>-->
             <!--<wsdl:output>-->
                 <!--<soap:body parts="getObjectsByTypeResponse" use="literal"/>-->
@@ -324,7 +324,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsByTypeId"/>
             <wsdl:input>
                 <soap:body parts="getObjectsByTypeIdRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectsByTypeIdResponse" use="literal"/>
@@ -338,7 +338,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationTypes"/>
             <wsdl:input>
                 <soap:body parts="getRelationTypesRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelationTypesResponse" use="literal"/>
@@ -349,7 +349,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelations"/>
             <wsdl:input>
                 <soap:body parts="getRelationsRequest" use="literal"/>
-                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+                <soap:header message="ws:usernameToken" part="usernameToken" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelationsResponse" use="literal"/>
@@ -360,7 +360,7 @@
             <!--<soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationsByType"/>-->
             <!--<wsdl:input>-->
                 <!--<soap:body parts="getRelationsByType" use="literal"/>-->
-                <!--<soap:header message="ws:ticket" use="literal" part="ticket"/>-->
+                <!--<soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>-->
             <!--</wsdl:input>-->
             <!--<wsdl:output>-->
                 <!--<soap:body parts="getRelationsByTypeResponse" use="literal"/>-->
@@ -371,7 +371,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationsByTypeId"/>
             <wsdl:input>
                 <soap:body parts="getRelationsByTypeIdRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelationsByTypeIdResponse" use="literal"/>
@@ -385,7 +385,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getGraphById"/>
             <wsdl:input>
                 <soap:body parts="getGraphByIdRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getGraphByIdResponse" use="literal"/>
@@ -399,7 +399,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelatedObjectsById"/>
             <wsdl:input>
                 <soap:body parts="getRelatedObjectsByIdRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelatedObjectsByIdResponse" use="literal"/>
@@ -413,7 +413,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getPathById"/>
             <wsdl:input>
                 <soap:body parts="getPathByIdRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getPathByIdResponse" use="literal"/>
@@ -427,7 +427,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/mergeObjects"/>
             <wsdl:input>
                 <soap:body parts="mergeObjectsRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="mergeObjectsResponse" use="literal"/>
@@ -441,7 +441,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/splitObject"/>
             <wsdl:input>
                 <soap:body parts="splitObjectRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="splitObjectResponse" use="literal"/>
@@ -455,7 +455,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/addDocument"/>
             <wsdl:input>
                 <soap:body parts="addDocumentRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="addDocumentResponse" use="literal"/>
@@ -466,7 +466,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/updateDocument"/>
             <wsdl:input>
                 <soap:body parts="updateDocumentRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="updateDocumentResponse" use="literal"/>
@@ -480,7 +480,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getDocuments"/>
             <wsdl:input>
                 <soap:body parts="getDocumentsRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getDocumentsResponse" use="literal"/>
@@ -491,7 +491,7 @@
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getDocumentById"/>
             <wsdl:input>
                 <soap:body parts="getDocumentByIdRequest" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getDocumentByIdResponse" use="literal"/>

@@ -1,7 +1,6 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
-import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
-import cz.cuni.mff.ufal.textan.commons.models.Ticket;
+import cz.cuni.mff.ufal.textan.commons.models.UsernameToken;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
 import org.apache.cxf.binding.soap.interceptor.SoapHeaderInterceptor;
@@ -26,8 +25,7 @@ public class TicketInterceptor extends AbstractSoapInterceptor {
     private static final Logger LOG = LoggerFactory.getLogger(TicketInterceptor.class);
 
     //TODO: remove timestamp from ticket?
-    private static final QName TICKET_HEADER = new QName("http://models.commons.textan.ufal.mff.cuni.cz", "ticket");
-    private static final QName EDITING_TICKET_HEADER = new QName("http://models.commons.textan.ufal.mff.cuni.cz", "editingTicket");
+    private static final QName USERNAME_TOKEN_HEADER = new QName("http://models.commons.textan.ufal.mff.cuni.cz", "usernameToken");
 
     /**
      * Instantiates a new Ticket interceptor.
@@ -47,21 +45,16 @@ public class TicketInterceptor extends AbstractSoapInterceptor {
      */
     @Override
     public void handleMessage(SoapMessage message) throws Fault {
+        //FIXME
 
         String username = null;
 
         Header header;
-        if ((header = message.getHeader(TICKET_HEADER)) != null) {
-            Ticket ticket = getTicket(message, header);
-            LOG.debug("Ticket found: {}", ticket);
+        if ((header = message.getHeader(USERNAME_TOKEN_HEADER)) != null) {
+            UsernameToken token = getTicket(message, header);
+            LOG.debug("Username token: {}", token);
 
-            username = ticket.getUsername();
-
-        } else if ((header = message.getHeader(EDITING_TICKET_HEADER)) != null) {
-            EditingTicket editingTicket = getEditingTicket(message, header);
-            LOG.debug("Editing ticket found: {}", editingTicket);
-
-            username = editingTicket.getUsername();
+            username = token.getUsername();
 
         } else {
             //TODO: better exception
@@ -84,14 +77,9 @@ public class TicketInterceptor extends AbstractSoapInterceptor {
         LOG.debug("Username: {}", username);
     }
 
-    private Ticket getTicket(SoapMessage message, Header header) {
+    private UsernameToken getTicket(SoapMessage message, Header header) {
         DataReader<Node> dataReader = getNodeDataReader(message);
-        return (Ticket) dataReader.read(TICKET_HEADER, (Node) header.getObject(), Ticket.class);
-    }
-
-    private EditingTicket getEditingTicket(SoapMessage message, Header header) {
-        DataReader<Node> dataReader = getNodeDataReader(message);
-        return (EditingTicket) dataReader.read(EDITING_TICKET_HEADER, (Node) header.getObject(), EditingTicket.class);
+        return (UsernameToken) dataReader.read(USERNAME_TOKEN_HEADER, (Node) header.getObject(), UsernameToken.class);
     }
 
     private DataReader<Node> getNodeDataReader(SoapMessage message) {

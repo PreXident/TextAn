@@ -34,6 +34,7 @@
     <xs:element name="getProblemsFromStringRequest" type="GetProblemsFromStringRequest"/>
     <xs:element name="getProblemsFromStringResponse" type="GetProblemsFromStringResponse"/>
 
+    <xs:element name="editingTicket" type="EditingTicket"/>
 
     <!-- <xs:complexType name="Void">
          <xs:sequence/>
@@ -48,7 +49,7 @@
 
     <xs:complexType name="GetEditingTicketResponse">
         <xs:sequence>
-            <xs:element ref="cms:editingTicket"/>
+            <xs:element ref="editingTicket"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -216,6 +217,12 @@
             <!-- TODO: make sure if it's all -->
             <xs:element name="relationId" type="xs:long" />
             <xs:element name="anchor" type="Occurrence" nillable="true"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="EditingTicket">
+        <xs:sequence>
+            <xs:element name="timestamp" type="xs:dateTime"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>

@@ -3,7 +3,8 @@
            xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
            targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz" elementFormDefault="qualified">
 
-    <xs:include schemaLocation="Ticket.xsd"/>
+    <xs:include schemaLocation="UsernameToken.xsd"/>
+
     <xs:include schemaLocation="Document.xsd"/>
     <xs:include schemaLocation="Entity.xsd"/>
     <xs:include schemaLocation="ObjectType.xsd"/>

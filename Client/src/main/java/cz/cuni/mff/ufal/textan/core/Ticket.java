@@ -1,11 +1,11 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket;
 import java.util.Date;
 
 /**
  * Client representation of
- * {@link cz.cuni.mff.ufal.textan.commons.models.EditingTicket}.
+ * {@link cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket}.
  */
 public class Ticket {
 
@@ -20,7 +20,7 @@ public class Ticket {
      * @param ticket ticket blue print
      */
     public Ticket(final EditingTicket ticket) {
-        username = ticket.getUsername();
+        username = null; //ticket.getUsername(); fixme
         timestamp = ticket.getTimestamp();
     }
 
@@ -44,10 +44,10 @@ public class Ticket {
      * Creates new commons Ticket.
      * @return new commons Ticket
      */
-    public cz.cuni.mff.ufal.textan.commons.models.EditingTicket toTicket() {
-        final cz.cuni.mff.ufal.textan.commons.models.EditingTicket result =
-                new cz.cuni.mff.ufal.textan.commons.models.EditingTicket();
-        result.setUsername(username);
+    public cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket toTicket() {
+        final cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket result =
+                new cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket();
+        //result.setUsername(username); fixme
         result.setTimestamp(timestamp);
         return result;
     }

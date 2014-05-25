@@ -76,7 +76,7 @@ task wsdl2java {
                 '-b', file("$projectDir/src/main/resources/customizations/documentProcessorBindings.xml"),
                 '-b', file("$projectDir/src/main/resources/customizations/dataProviderBindings.xml"),
 
-                '-exsh', 'true', //provide header as method parameter,not portable to other jax-ws providers!
+                //'-exsh', 'true', //provide header as method parameter,not portable to other jax-ws providers!
 
                 '-xjc-Xts', //generate toString methods
                 '-xjc-Xdv' //initialize fields with default value
