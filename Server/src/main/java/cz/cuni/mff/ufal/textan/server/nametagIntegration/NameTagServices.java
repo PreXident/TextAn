@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import cz.cuni.mff.ufal.textan.server.models.ObjectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,7 @@ import org.slf4j.LoggerFactory;
 public class NameTagServices {
     private Ner ner;
     private static final Logger LOG = LoggerFactory.getLogger(NameTagServices.class);
-    Hashtable<String, Long> translationTable;
+    Hashtable<String, ObjectType> translationTable;
 
     public NameTagServices(String model) {
         ner = Ner.load(model);
@@ -26,15 +28,19 @@ public class NameTagServices {
             LOG.error("Model wasn't found!");
         }
         translationTable = new Hashtable<>();
-        translationTable.put("P", 1L); //osoba
-        translationTable.put("PS", 1L); //osoba
-        translationTable.put("PF", 1L); //osoba
-        translationTable.put("TD", 2L); //datum
-        translationTable.put("GS", 3L); //ulice
-        translationTable.put("GC", 4L); //mesto
-        translationTable.put("GQ", 4L); //mestska cast
+        translationTable.put("P", new ObjectType(1L, "Osoba")); //osoba
+        translationTable.put("PS", new ObjectType(1L, "Osoba")); //osoba
+        translationTable.put("PF", new ObjectType(1L, "Osoba")); //osoba
+        translationTable.put("T", new ObjectType(2L, "Datum")); //datum
+        translationTable.put("TD", new ObjectType(2L, "Datum")); //datum
+        translationTable.put("TM", new ObjectType(2L, "Datum")); //datum
+        translationTable.put("TY", new ObjectType(2L, "Datum")); //datum
+        translationTable.put("GS", new ObjectType(3L, "Ulice")); //ulice
+        translationTable.put("GC", new ObjectType(4L, "Město")); //mesto
+        translationTable.put("GU", new ObjectType(4L, "Město")); //mesto
+        translationTable.put("GQ", new ObjectType(4L, "Město")); //mestska cast
         //translationTable.put("", 5L); //zbran
-        translationTable.put("TH", 6L); //cas
+        translationTable.put("TH", new ObjectType(6L, "Čas")); //cas
         //translationTable.put("", 7L); //automobil
         //translationTable.put("", 8L); //SPZ
         //translationTable.put("", 9L); //Podnik
@@ -42,13 +48,13 @@ public class NameTagServices {
 
     }
 
-    long translateEntity(String entityType) {
-        long value = 0L;
+    ObjectType translateEntity(String entityType) {
+        ObjectType value = new ObjectType(-1L, "");
         if (translationTable.containsKey(entityType.toUpperCase())) {
             value = translationTable.get(entityType.toUpperCase());
         } else {
             try {
-                value = Long.parseLong(entityType);
+                //value = Long.parseLong(entityType);
             } catch (NumberFormatException nfe) {
                 LOG.warn("Entity type " + entityType + " wasn't recognized.", nfe);
             }
@@ -153,6 +159,7 @@ public class NameTagServices {
 
     public List<Entity> TagText(String input)
     {
+        LOG.debug(input);
         if (ner == null) {
             LOG.error("NameTag wasn't initialized!");
             return new ArrayList<Entity>();
@@ -167,7 +174,6 @@ public class NameTagServices {
         Stack<NamedEntity> openEntities = new Stack<>();
         boolean not_eof = true;
         while(not_eof)
-
         {
             StringBuilder textBuilder = new StringBuilder();
             String line;
@@ -194,8 +200,6 @@ public class NameTagServices {
                     //if (unprinted < token_start) System.out.print(encodeEntities(text.substring(unprinted, token_start)));
 
                     for (; e < sortedEntities.size() && sortedEntities.get(e).getStart() == i; e++) {
-                        String ent = sortedEntities.get(e).getType();
-                        System.out.printf("<ne type=\"%s\">", ent);
                         openEntities.push(sortedEntities.get(e));
                     }
                     // pridat zjisteni id entity
@@ -206,10 +210,10 @@ public class NameTagServices {
                         NamedEntity endingEntity = openEntities.peek();
                         int entity_start = (int) tokens.get((int) (i - endingEntity.getLength() + 1)).getStart();
                         int entity_end = (int) (tokens.get(i).getStart() + tokens.get(i).getLength());
+                        LOG.debug(entity_start + ":" + (entity_end - entity_start) + "-" + endingEntity.getType());
                         if (openEntities.size() == 1) {
-                            //entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), (int)endingEntity.getStart() + 1, i - (int)endingEntity.getStart() + 2, translateEntity(endingEntity.getType())));
                             entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end - entity_start - 1, translateEntity(endingEntity.getType())));
-                            LOG.error(entity_start + ":" + (entity_end - entity_start) + "-" + translateEntity(endingEntity.getType()));
+
                         }
                         openEntities.pop();
                     }

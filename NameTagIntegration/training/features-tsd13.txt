@@ -18,4 +18,3 @@ PreviousStage/5
 URLEmailDetector mi me
 
 # Entity processors
-CzechAddContainers
