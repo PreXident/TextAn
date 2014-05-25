@@ -13,6 +13,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.RelationInfo;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -31,11 +32,13 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -480,25 +483,27 @@ public class ReportRelationsController extends ReportWizardController {
         allTypes = FXCollections.observableArrayList(types);
         listView.setItems(allTypes);
 
-        objectColumn.setCellFactory(ComboBoxTableCell.forTableColumn(new StringConverter<Object>() {
-            @Override
-            public String toString(Object t) {
-                if (t == null) {
-                    return "";
-                }
-                return String.join(", ", t.getAliases()) + " (" + t.getId() + ") - " + t.getType().getName();
-            }
-
-            @Override
-            public Object fromString(String string) {
-                throw new UnsupportedOperationException("This should not be needed!");
-            }
-        }, FXCollections.observableArrayList(
+        final ObservableList<Object> candidates = FXCollections.observableArrayList(
                 pipeline.getReportEntities().stream()
                         .map(ent -> ent.getCandidate())
                         .distinct()
                         .collect(Collectors.toList())
-        )));
+        );
+        final Callback<TableColumn<RelationInfo, Object>, TableCell<RelationInfo, Object>> cellFactory =
+                (TableColumn<RelationInfo, Object> param) -> new ObjectTableCell(new StringConverter<Object>() {
+                    @Override
+                    public String toString(Object o) {
+                        if (o == null) {
+                            return "";
+                        }
+                        return String.join(", ", o.getAliases()) + " (" + o.getId() + ") - " + o.getType().getName();
+                    }
+                    @Override
+                    public Object fromString(String string) {
+                        throw new UnsupportedOperationException("This should not be needed!");
+                    }
+                }, candidates);
+        objectColumn.setCellFactory(cellFactory);
     }
 
     /**
@@ -582,5 +587,74 @@ public class ReportRelationsController extends ReportWizardController {
                 .flatMap(relInfo -> objectWords.get(relInfo.object.get()).stream())
                 .forEach(t -> Utils.styleTextBackground(t, id));
         table.setItems(selectedRelation.getData());
+    }
+
+    /**
+     * Hacky class to add background to objects being selected.
+     */
+    public class ObjectTableCell extends ComboBoxTableCell<FXRelationBuilder.RelationInfo, Object> {
+
+        /**
+         * Only constructor. Converter is used if reflection fails.
+         * @param converter A {@link StringConverter} that can convert an item of type T
+         *      into a user-readable string so that it may then be shown in the
+         *      ComboBox popup menu.
+         * @param items The items to show in the ComboBox popup menu when selected
+         *      by the user.
+         */
+        public ObjectTableCell(StringConverter<Object> converter, ObservableList<Object> items) {
+            super(converter, items);
+        }
+
+        @Override
+        public void startEdit() {
+            try {
+                final Field comboBoxField = ComboBoxTableCell.class.getDeclaredField("comboBox");
+                comboBoxField.setAccessible(true);
+                java.lang.Object cb1 = comboBoxField.get(this);
+                super.startEdit();
+                java.lang.Object cb2 = comboBoxField.get(this);
+                if (cb2 != null && !cb2.equals(cb1) && cb2 instanceof ComboBox) {
+                    @SuppressWarnings("unchecked")
+                    final ComboBox<Object> cb = (ComboBox<Object>) cb2;
+                    cb.setCellFactory(new Callback<ListView<Object>, ListCell<Object>>() {
+                        @Override
+                        public ListCell<Object> call(ListView<Object> param) {
+                            final ListCell<Object> cell = new ListCell<Object>() {
+                                @Override
+                                public void updateItem(Object item, boolean empty) {
+                                        super.updateItem(item, empty);
+                                        String text;
+                                        if (getConverter() != null) {
+                                            text = getConverter().toString(item);
+                                        } else {
+                                            text = item == null ? "" : item.toString();
+                                        }
+                                        setText(text);
+                                    }
+                            };
+                            cell.setOnMouseEntered(e -> {
+                                final RelationType type = selectedRelation.getType();
+                                final long id = type.getId();
+                                objectWords.get(cell.getItem()).stream()
+                                    .forEach(t -> Utils.styleTextBackground(t, id));
+                            });
+                            cell.setOnMouseExited(e -> {
+                                final Object obj = cell.getItem();
+                                boolean found = selectedRelation.getData().stream()
+                                        .anyMatch(rel -> rel.getObject() == obj);
+                                if (!found) {
+                                    objectWords.get(cell.getItem()).stream()
+                                        .forEach(t -> Utils.unstyleTextBackground(t));
+                                }
+                            });
+                            return cell;
+                        }
+                    });
+                }
+            } catch (NoSuchFieldException | IllegalAccessException | SecurityException e) {
+                super.startEdit(); //we failed, lets behave normally
+            }
+        }
     }
 }
