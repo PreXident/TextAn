@@ -18,7 +18,7 @@ import java.util.List;
  */
 @javax.jws.WebService(
         serviceName = "DataProviderService",
-        portName = "DataProviderWS",
+        portName = "DataProviderPort",
         targetNamespace = "http://ws.commons.textan.ufal.mff.cuni.cz",
         wsdlLocation = "classpath:wsdl/DataProvider.wsdl",
         endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDataProvider")

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @javax.jws.WebService(
         serviceName = "DocumentProcessorService",
-        portName = "DocumentProcessor",
+        portName = "DocumentProcessorPort",
         targetNamespace = "http://ws.commons.textan.ufal.mff.cuni.cz",
         wsdlLocation = "classpath:wsdl/DocumentProcessor.wsdl",
         endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor")

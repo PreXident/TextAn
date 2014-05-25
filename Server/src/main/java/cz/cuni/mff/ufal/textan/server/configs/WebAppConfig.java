@@ -3,7 +3,7 @@ package cz.cuni.mff.ufal.textan.server.configs;
 import cz.cuni.mff.ufal.textan.server.services.*;
 import cz.cuni.mff.ufal.textan.server.ws.DataProvider;
 import cz.cuni.mff.ufal.textan.server.ws.DocumentProcessor;
-import cz.cuni.mff.ufal.textan.server.ws.TicketInterceptor;
+import cz.cuni.mff.ufal.textan.server.ws.UsernameTokenInterceptor;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
@@ -46,7 +46,7 @@ public class WebAppConfig {
     @Bean(destroyMethod = "shutdown")
     public SpringBus cxf() {
         SpringBus bus = new SpringBus();
-        bus.getInInterceptors().add(new TicketInterceptor());
+        bus.getInInterceptors().add(new UsernameTokenInterceptor());
 
         LoggingInInterceptor loggingIn = new LoggingInInterceptor();
         loggingIn.setPrettyLogging(true);

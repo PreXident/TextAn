@@ -27,6 +27,14 @@ import java.util.stream.Collectors;
  */
 public class Client {
 
+    private static final QName DOCUMENT_PROCESSOR_SERVICE = new QName("http://ws.commons.textan.ufal.mff.cuni.cz", "DocumentProcessorService");
+    private static final QName DOCUMENT_PROCESSOR_PORT = new QName("http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessorService", "DocumentProcessorPort");
+
+    private static final QName DATA_PROVIDER_SERVICE = new QName("http://ws.commons.textan.ufal.mff.cuni.cz", "DataProviderService");
+    private static final QName DATA_PROVIDER_PORT = new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService", "DataProviderPort");
+
+    private static final QName USERNAME_TOKEN_HEADER = new QName("http://models.commons.textan.ufal.mff.cuni.cz", "usernameToken");
+
     /** Settings of the application. Handle with care, they're shared. */
     final protected Properties settings;
 
@@ -60,21 +68,15 @@ public class Client {
      * Returns {@link #documentProcessor}, it is created if needed.
      * @return document processor
      */
+    //TODO: configurable wsdl location!
     private IDocumentProcessor getDocumentProcessor() {
         if (documentProcessor == null) {
             try {
-                Service service = Service.create(
-                        new URL("http://localhost:9100/soap/document?wsdl"),
-                        new QName("http://ws.commons.textan.ufal.mff.cuni.cz",
-                                "DocumentProcessorService"));
+                Service service = Service.create(new URL("http://localhost:9100/soap/document?wsdl"), DOCUMENT_PROCESSOR_SERVICE);
                 // Endpoint Address
                 String endpointAddress = "http://localhost:9100/soap/document";
                 // Add a port to the Service
-                service.addPort(
-                        new QName("http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessorService",
-                                "DocumentProcessorPort"),
-                        SOAPBinding.SOAP11HTTP_BINDING,
-                        endpointAddress);
+                service.addPort(DOCUMENT_PROCESSOR_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 documentProcessor = service.getPort(IDocumentProcessor.class);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -88,21 +90,15 @@ public class Client {
      * Returns {@link #dataProvider}, it is created if needed.
      * @return data provider
      */
-    private IDataProvider getDataProvider() throws WebServiceException {
+    //TODO: configurable wsdl location!
+    private IDataProvider getDataProvider() throws WebServiceException { //FIXME: declared runtime exception?
         if (dataProvider == null) {
             try {
-                Service service = Service.create(
-                        new URL("http://localhost:9100/soap/data?wsdl"),
-                        new QName("http://ws.commons.textan.ufal.mff.cuni.cz",
-                                "DataProviderService"));
+                Service service = Service.create(new URL("http://localhost:9100/soap/data?wsdl"), DATA_PROVIDER_SERVICE);
                 // Endpoint Address
                 String endpointAddress = "http://localhost:9100/soap/data";
                 // Add a port to the Service
-                service.addPort(
-                        new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService",
-                                "DataProviderPort"),
-                        SOAPBinding.SOAP11HTTP_BINDING,
-                        endpointAddress);
+                service.addPort(DATA_PROVIDER_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 dataProvider = service.getPort(IDataProvider.class);
             } catch (MalformedURLException e) {
                 e.printStackTrace();

@@ -81,7 +81,7 @@ task wsdl2java {
                 '-xjc-Xts', //generate toString methods
                 '-xjc-Xdv' //initialize fields with default value
 
-                //args '-all' //uncomment for generate sample client, sever, ant etc.
+                //'-all' //uncomment for generate sample client, sever, ant etc.
         ]
     }
 

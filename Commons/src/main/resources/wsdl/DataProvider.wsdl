@@ -270,7 +270,7 @@
         
     </wsdl:portType>
     
-    <wsdl:binding name="DataProvider" type="ws:DataProvider">
+    <wsdl:binding name="DataProviderBinging" type="ws:DataProvider">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         
         <wsdl:operation name="getObjectTypes">
@@ -503,7 +503,7 @@
     </wsdl:binding>
     
     <wsdl:service name="DataProviderService">
-        <wsdl:port name="DataProviderWS" binding="ws:DataProvider">
+        <wsdl:port name="DataProviderPort" binding="ws:DataProviderBinging">
             <soap:address location="http://localhost:9100/soap/DataProvider"/>
         </wsdl:port>
     </wsdl:service>

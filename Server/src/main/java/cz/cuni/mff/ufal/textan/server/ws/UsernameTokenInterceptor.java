@@ -17,20 +17,19 @@ import org.w3c.dom.Node;
 import javax.xml.namespace.QName;
 
 /**
- * A CXF interceptor which extracts Tickets headers from SOAP message.
+ * A CXF interceptor which extracts UsernameToken header from SOAP message.
  * @author Petr Fanta
  */
-public class TicketInterceptor extends AbstractSoapInterceptor {
+public class UsernameTokenInterceptor extends AbstractSoapInterceptor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TicketInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UsernameTokenInterceptor.class);
 
-    //TODO: remove timestamp from ticket?
     private static final QName USERNAME_TOKEN_HEADER = new QName("http://models.commons.textan.ufal.mff.cuni.cz", "usernameToken");
 
     /**
      * Instantiates a new Ticket interceptor.
      */
-    public TicketInterceptor() {
+    public UsernameTokenInterceptor() {
 
         //Ticket interceptor must be processed before CXF converts soap to java calls
         super(Phase.UNMARSHAL);
@@ -45,16 +44,23 @@ public class TicketInterceptor extends AbstractSoapInterceptor {
      */
     @Override
     public void handleMessage(SoapMessage message) throws Fault {
-        //FIXME
-
-        /*String username = null;
 
         Header header;
         if ((header = message.getHeader(USERNAME_TOKEN_HEADER)) != null) {
-            UsernameToken token = getTicket(message, header);
+            UsernameToken token = getToken(message, header);
             LOG.debug("Username token: {}", token);
 
-            username = token.getUsername();
+            String username = token.getUsername();
+
+            if ((username == null) || (username.isEmpty())) {
+                Fault exception = new Fault(new Exception("User name can not be empty!"));
+                exception.setFaultCode(Fault.FAULT_CODE_SERVER);
+
+                LOG.warn("User name can not be empty!", exception);
+                throw exception;
+            }
+
+            LOG.debug("Username: {}", username);
 
         } else {
             //TODO: better exception
@@ -64,20 +70,9 @@ public class TicketInterceptor extends AbstractSoapInterceptor {
             LOG.warn("Did not find any header with Ticket!", exception);
             throw exception;
         }
-
-
-        if ((username == null) || (username.isEmpty())) {
-            Fault exception = new Fault(new Exception("User name can not be empty!"));
-            exception.setFaultCode(Fault.FAULT_CODE_SERVER);
-
-            LOG.warn("User name can not be empty!", exception);
-            throw exception;
-        }
-
-        LOG.debug("Username: {}", username);*/
     }
 
-    private UsernameToken getTicket(SoapMessage message, Header header) {
+    private UsernameToken getToken(SoapMessage message, Header header) {
         DataReader<Node> dataReader = getNodeDataReader(message);
         return (UsernameToken) dataReader.read(USERNAME_TOKEN_HEADER, (Node) header.getObject(), UsernameToken.class);
     }

@@ -160,7 +160,7 @@
         
     </wsdl:portType>
     
-    <wsdl:binding name="DocumentProcessor" type="ws:DocumentProcessor">
+    <wsdl:binding name="DocumentProcessorBinging" type="ws:DocumentProcessor">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         
         <wsdl:operation name="getEditingTicket">
@@ -287,7 +287,7 @@
     </wsdl:binding>
     
     <wsdl:service name="DocumentProcessorService">
-        <wsdl:port name="DocumentProcessor" binding="ws:DocumentProcessor">
+        <wsdl:port name="DocumentProcessorPort" binding="ws:DocumentProcessorBinging">
             <soap:address location="http://localhost/soap/DocumentProvider"/>
         </wsdl:port>
     </wsdl:service>
