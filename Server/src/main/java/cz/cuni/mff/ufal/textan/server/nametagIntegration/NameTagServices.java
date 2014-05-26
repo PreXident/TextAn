@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.nametagIntegration;
 
 import cz.cuni.mff.ufal.nametag.*;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.ObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
 
 import java.io.File;
@@ -11,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import cz.cuni.mff.ufal.textan.server.models.ObjectType;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,41 +22,45 @@ import org.slf4j.LoggerFactory;
 public class NameTagServices {
     private Ner ner;
     private static final Logger LOG = LoggerFactory.getLogger(NameTagServices.class);
-    Hashtable<String, ObjectType> translationTable;
+    Hashtable<String, ObjectType> idTempTable;
+    ObjectTypeTableDAO idTable;
 
     public NameTagServices(String model) {
         ner = Ner.load(model);
         if (ner == null) {
             LOG.error("Model wasn't found!");
         }
-        translationTable = new Hashtable<>();
-        translationTable.put("P", new ObjectType(1L, "Osoba")); //osoba
-        translationTable.put("PS", new ObjectType(1L, "Osoba")); //osoba
-        translationTable.put("PF", new ObjectType(1L, "Osoba")); //osoba
-        translationTable.put("T", new ObjectType(2L, "Datum")); //datum
-        translationTable.put("TD", new ObjectType(2L, "Datum")); //datum
-        translationTable.put("TM", new ObjectType(2L, "Datum")); //datum
-        translationTable.put("TY", new ObjectType(2L, "Datum")); //datum
-        translationTable.put("GS", new ObjectType(3L, "Ulice")); //ulice
-        translationTable.put("GC", new ObjectType(4L, "Město")); //mesto
-        translationTable.put("GU", new ObjectType(4L, "Město")); //mesto
-        translationTable.put("GQ", new ObjectType(4L, "Město")); //mestska cast
-        //translationTable.put("", 5L); //zbran
-        translationTable.put("TH", new ObjectType(6L, "Čas")); //cas
-        //translationTable.put("", 7L); //automobil
-        //translationTable.put("", 8L); //SPZ
-        //translationTable.put("", 9L); //Podnik
-        //translationTable.put("", 10L); //Zakon
+        idTempTable = new Hashtable<>();
+        idTable = new ObjectTypeTableDAO();
+//        idTempTable.put("P", new ObjectType(1L, "Osoba")); //osoba
+//        idTempTable.put("PS", new ObjectType(1L, "Osoba")); //osoba
+//        idTempTable.put("PF", new ObjectType(1L, "Osoba")); //osoba
+//        idTempTable.put("T", new ObjectType(2L, "Datum")); //datum
+//        idTempTable.put("TD", new ObjectType(2L, "Datum")); //datum
+//        idTempTable.put("TM", new ObjectType(2L, "Datum")); //datum
+//        idTempTable.put("TY", new ObjectType(2L, "Datum")); //datum
+//        idTempTable.put("GS", new ObjectType(3L, "Ulice")); //ulice
+//        idTempTable.put("GC", new ObjectType(4L, "Město")); //mesto
+//        idTempTable.put("GU", new ObjectType(4L, "Město")); //mesto
+//        idTempTable.put("GQ", new ObjectType(4L, "Město")); //mestska cast
+//        //translationTable.put("", 5L); //zbran
+//        idTempTable.put("TH", new ObjectType(6L, "Čas")); //cas
+//        //translationTable.put("", 7L); //automobil
+//        //translationTable.put("", 8L); //SPZ
+//        //translationTable.put("", 9L); //Podnik
+//        //translationTable.put("", 10L); //Zakon
 
     }
 
     ObjectType translateEntity(String entityType) {
         ObjectType value = new ObjectType(-1L, "");
-        if (translationTable.containsKey(entityType.toUpperCase())) {
-            value = translationTable.get(entityType.toUpperCase());
+        if (idTempTable.containsKey(entityType.toUpperCase())) {
+            value = idTempTable.get(entityType.toUpperCase());
         } else {
             try {
-                //value = Long.parseLong(entityType);
+                ObjectTypeTable tableObject = idTable.find(Long.parseLong(entityType));
+                value = new ObjectType(tableObject.getId(), tableObject.getName());
+                idTempTable.put(entityType, value);
             } catch (NumberFormatException nfe) {
                 LOG.warn("Entity type " + entityType + " wasn't recognized.", nfe);
             }
