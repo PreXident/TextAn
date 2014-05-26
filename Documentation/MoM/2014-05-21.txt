@@ -1,0 +1,19 @@
+All here!
+
+Adam:
+- nothing, prepared for exam but the teacher did not show up @☠#%:!!!!
+
+Kuba:
+- written to Milan about nametag -> tags ID can now be longs
+- discovered bug in training data causing dates to be recognized as time, one solution failed, other WiP
+
+Peter:
+- nothing from Sunday (plan to finish the refactoring of webservice definition part and change client and server to be compatible with these changes)
+
+Tam:
+- nothing from Sunday
+
+Vence:
+- nothing, learning for SW engineering
+
+Next meeting on Wednesday from 14:00.
