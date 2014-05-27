@@ -4,8 +4,8 @@ ji	_
 ,	_
 jmenuje	_
 se	_
-Ann	I-pf
-Suba	I-ps
+Ann	I-1
+Suba	I-1
 .	_
 
 Zaplatil	_
@@ -86,8 +86,8 @@ Myslím	_
 i	_
 legendární	_
 ošetřovatelka	_
-Florence	I-pf
-Nigthingale	I-ps
+Florence	I-1
+Nigthingale	I-1
 ,	_
 která	_
 je	_
@@ -151,11 +151,11 @@ prosinec	I-2
 )	_
 .	_
 
-W	I-pf
-.	I-pf
+W	I-1
+.	I-1
 W	I-pm
 .	I-pm
-Tomek	I-ps
+Tomek	I-1
 o	_
 něm	_
 ve	_
@@ -193,7 +193,7 @@ a	_
 duchovních	_
 ,	_
 a	_
-Žižka	I-ps
+Žižka	I-1
 z	_
 něho	_
 odvozoval	_
@@ -227,8 +227,8 @@ Sting	I-p_
 ,	_
 vlastním	_
 jménem	_
-Gordon	I-pf
-Sumner	I-ps
+Gordon	I-1
+Sumner	I-1
 ,	_
 který	_
 má	_
@@ -262,15 +262,15 @@ hotelů	_
 
 Hrají	_
 :	_
-Jason	I-pf
+Jason	I-1
 Scott	I-pm
-Lee	I-ps
+Lee	I-1
 ,	_
-Cary	I-pf
-Elwes	I-ps
+Cary	I-1
+Elwes	I-1
 ,	_
-Lena	I-pf
-Headeyová	I-ps
+Lena	I-1
+Headeyová	I-1
 .	_
 -	_
 ci	_
@@ -324,8 +324,8 @@ jednoho	_
 ze	_
 zakladatelů	_
 Porty	I-ia
-Miloslava	I-pf
-Langra	I-ps
+Miloslava	I-1
+Langra	I-1
 ,	_
 přenášený	_
 na	_
@@ -361,7 +361,7 @@ kteří	_
 podobně	_
 jako	_
 pan	_
-Langer	I-ps
+Langer	I-1
 ,	_
 žijí	_
 někde	_
@@ -377,7 +377,7 @@ tuberkulóza	_
 Chybět	_
 bude	_
 jen	_
-Petrouš	I-ps
+Petrouš	I-1
 (	_
 sádra	_
 )	_
@@ -387,9 +387,9 @@ tedy	_
 i	_
 zahraniční	_
 posily	_
-Binič	I-ps
+Binič	I-1
 a	_
-Tatarčuk	I-ps
+Tatarčuk	I-1
 .	_
 
 "	_
@@ -400,7 +400,7 @@ rozhodnutí	_
 ,	_
 "	_
 uzavřel	_
-Lang	I-ps
+Lang	I-1
 svůj	_
 příspěvek	_
 ,	_
@@ -428,8 +428,8 @@ Zasáhli	_
 u	_
 pořadu	_
 z	_
-Františka	I-pf
-Halase	I-ps
+Františka	I-1
+Halase	I-1
 Naše	I-oa
 paní	I-oa
 Božena	I-oa
@@ -531,10 +531,10 @@ EU	I-io
 pro	_
 vnější	_
 vztahy	_
-Hanse	I-pf
-van	I-ps
-den	I-ps
-Broeka	I-ps
+Hanse	I-1
+van	I-1
+den	I-1
+Broeka	I-1
 není	_
 pro	_
 skutečné	_
@@ -580,9 +580,9 @@ všechno	_
 .	_
 
 Podle	_
-S	I-pf
-.	I-pf
-Miloševiče	I-ps
+S	I-1
+.	I-1
+Miloševiče	I-1
 vyvolá	_
 stažení	_
 sil	_
@@ -648,8 +648,8 @@ prodeji	_
 
 Ministr	_
 zdravotnictví	_
-Jan	I-pf
-Stráský	I-ps
+Jan	I-1
+Stráský	I-1
 ještě	_
 začátkem	_
 letošního	_
@@ -699,8 +699,8 @@ dní	_
 řekl	_
 majitel	_
 obchodu	_
-Patrick	I-pf
-Barouhiel	I-ps
+Patrick	I-1
+Barouhiel	I-1
 .	_
 
 Teď	_
@@ -720,18 +720,18 @@ V	_
 první	_
 půli	_
 brankář	_
-Šimurka	I-ps
+Šimurka	I-1
 zázračně	_
 vyrazil	_
 gólovou	_
 střelu	_
 ostravského	_
-Slončíka	I-ps
+Slončíka	I-1
 ,	_
 ve	_
 druhém	_
-Marek	I-pf
-Poštulka	I-ps
+Marek	I-1
+Poštulka	I-1
 netrefil	_
 domácí	_
 branku	_
@@ -986,8 +986,8 @@ zahraničních	_
 věcí	_
 Spojených	I-4
 států	I-4
-Madeleine	I-pf
-Albrightové	I-ps
+Madeleine	I-1
+Albrightové	I-1
 ,	_
 aby	_
 některé	_
@@ -1013,8 +1013,8 @@ tohle	_
 Náměstek	_
 ministra	_
 obrany	_
-Jaroslav	I-pf
-Novotný	I-ps
+Jaroslav	I-1
+Novotný	I-1
 míní	_
 ,	_
 že	_
@@ -1029,9 +1029,9 @@ nepotřebují	_
 Senátor	_
 za	_
 Zelené	I-io
-Athos	I-pf
-De	I-ps
-Luca	I-ps
+Athos	I-1
+De	I-1
+Luca	I-1
 upozorňuje	_
 ,	_
 že	_
@@ -1046,7 +1046,7 @@ vyřešit	_
 zápletku	_
 "	_
 kolem	_
-Havlovy	I-ps
+Havlovy	I-1
 složky	_
 k	_
 BR	_
@@ -1067,7 +1067,7 @@ v	_
 roce	_
 1990	I-2
 s	_
-Havlem	I-ps
+Havlem	I-1
 setkali	_
 .	_
 
@@ -1117,7 +1117,7 @@ blechy	_
 ,	_
 "	_
 uvedl	_
-Zrůbek	I-ps
+Zrůbek	I-1
 .	_
 
 Sebe	_
@@ -1157,7 +1157,7 @@ a	_
 vy	_
 ,	_
 miss	_
-April	I-pf
+April	I-1
 ,	_
 vzdušnou	_
 drahou	_
@@ -1207,7 +1207,7 @@ střílel	_
 si	_
 z	_
 chudáka	_
-Franze	I-pf
+Franze	I-1
 a	_
 zkoušel	_
 ho	_
@@ -1313,7 +1313,7 @@ událostí	_
 ,	_
 všimla	_
 poprvé	_
-Aleka	I-pf
+Aleka	I-1
 .	_
 
 za	_
@@ -1346,7 +1346,7 @@ slzách	_
 odjel	_
 by	_
 s	_
-Editou	I-pf
+Editou	I-1
 ,	_
 celou	_
 dychtivou	_
@@ -1400,12 +1400,12 @@ pouze	_
 ona	_
 ,	_
 jediná	_
-Aglaja	I-pf
+Aglaja	I-1
 se	_
 takto	_
 dívala	_
 na	_
-Nastasju	I-pf
+Nastasju	I-1
 Filippovnu	I-pm
 .	_
 
@@ -1434,8 +1434,8 @@ stav	_
 rozbitý	_
 .	_
 
-Hercule	I-pf
-Poirot	I-ps
+Hercule	I-1
+Poirot	I-1
 2010	_
 Z	_
 magazínů	_
@@ -1586,15 +1586,15 @@ posledních	_
 letech	_
 příležitost	_
 ilustrovat	_
-Taufrův	I-ps
+Taufrův	I-1
 překlad	_
-Chlebnikova	I-ps
+Chlebnikova	I-1
 a	_
 básnickou	_
 sbírku	_
-B	I-pf
-.	I-pf
-Sluckého	I-ps
+B	I-1
+.	I-1
+Sluckého	I-1
 .	_
 
 Odepnul	_
@@ -1611,7 +1611,7 @@ dolů	_
 )	_
 Odtud	_
 pro	_
-Klímu	I-ps
+Klímu	I-1
 vyplývá	_
 jeho	_
 "	_
@@ -1926,31 +1926,31 @@ Tehdy	_
 se	_
 teprve	_
 čtrnáctiletí	_
-Mickey	I-pf
-Melchiondo	I-ps
+Mickey	I-1
+Melchiondo	I-1
 a	_
-Aaron	I-pf
-Freeman	I-ps
+Aaron	I-1
+Freeman	I-1
 prohlásili	_
 za	_
 bratry	_
 a	_
 přijali	_
 jméno	_
-Gene	I-pf
+Gene	I-1
 a	_
-Dean	I-pf
-Weenovi	I-ps
+Dean	I-1
+Weenovi	I-1
 .	_
 
 Při	_
 obřadu	_
 zazpívali	_
-Marta	I-pf
-Kubišová	I-ps
+Marta	I-1
+Kubišová	I-1
 a	_
-Dan	I-pf
-Bárta	I-ps
+Dan	I-1
+Bárta	I-1
 .	_
 
 Nejlepší	_
@@ -2063,7 +2063,7 @@ tohoto	_
 světa	_
 .	_
 
-Jana	I-pf
+Jana	I-1
 Nepomuckého	_
 na	_
 Karlově	I-3
@@ -2134,8 +2134,8 @@ Co	I-oa
 týden	I-oa
 dal	I-oa
 pan	_
-Dušan	I-pf
-Slobodník	I-ps
+Dušan	I-1
+Slobodník	I-1
 řekl	_
 ,	_
 že	_
@@ -2144,8 +2144,8 @@ náměstka	_
 ministra	_
 financí	_
 SR	I-4
-Mariana	I-pf
-Tkáče	I-ps
+Mariana	I-1
+Tkáče	I-1
 by	_
 případný	_
 poměr	_
@@ -2160,7 +2160,7 @@ koruny	_
 .	_
 
 Mexičan	I-pc
-Chavez	I-ps
+Chavez	I-1
 zvítězil	_
 v	_
 exhibičním	_
@@ -2173,7 +2173,7 @@ Las	I-4
 Vegas	I-4
 nad	_
 Američanem	I-pc
-Jakubowským	I-ps
+Jakubowským	I-1
 r	_
 .	_
 s	_
@@ -2190,19 +2190,19 @@ do	_
 klubu	_
 přicházel	_
 i	_
-J	I-pf
-.	I-pf
+J	I-1
+.	I-1
 S	I-pm
 .	I-pm
-Machar	I-ps
+Machar	I-1
 ,	_
 ale	_
 také	_
-Ivan	I-pf
-Olbracht	I-ps
+Ivan	I-1
+Olbracht	I-1
 a	_
-Helena	I-pf
-Malířová	I-ps
+Helena	I-1
+Malířová	I-1
 ,	_
 redigující	_
 tehdy	_
@@ -2228,10 +2228,10 @@ V	_
 poslední	_
 třetině	_
 využil	_
-Čikl	I-ps
+Čikl	I-1
 přesilovku	_
 a	_
-Konečný	I-ps
+Konečný	I-1
 pečetil	_
 .	_
 
@@ -2246,9 +2246,9 @@ prokurátor	_
 ,	_
 "	_
 byl	_
-Ján	I-pf
-T	I-ps
-.	I-ps
+Ján	I-1
+T	I-1
+.	I-1
 zcela	_
 jistě	_
 trestně	_
@@ -2314,8 +2314,8 @@ tajemníka	_
 SPR	I-io
 -	I-io
 RSČ	I-io
-Jana	I-pf
-Vika	I-ps
+Jana	I-1
+Vika	I-1
 republikání	_
 v	_
 úterý	_
@@ -2344,15 +2344,15 @@ soše	_
 svatého	I-1
 Václava	I-1
 prezidenta	_
-Havla	I-ps
+Havla	I-1
 .	_
 
 Sarajevo	I-4
 -	_
 Srbský	_
 voják	_
-Borislav	I-pf
-Herak	I-ps
+Borislav	I-1
+Herak	I-1
 ,	_
 který	_
 je	_
@@ -2425,7 +2425,7 @@ Jedním	_
 z	_
 nich	_
 byl	_
-Antonín	I-pf
+Antonín	I-1
 .	_
 
 Přitáhnu	_
@@ -2479,7 +2479,7 @@ náčelníkem	_
 vojenské	_
 mise	_
 generálem	_
-Hasalem	I-ps
+Hasalem	I-1
 .	_
 
 Podle	_
@@ -2489,14 +2489,14 @@ zaslal	_
 ruský	_
 ministr	_
 zahraničí	_
-Andrej	I-pf
-Kozyrev	I-ps
+Andrej	I-1
+Kozyrev	I-1
 generálnímu	_
 tajemníku	_
 OSN	I-io
-B	I-pf
-.	I-pf
-Ghali	I-ps
+B	I-1
+.	I-1
+Ghali	I-1
 dopis	_
 ,	_
 ve	_
@@ -2604,7 +2604,7 @@ do	_
 Sampdorie	I-ic
 inicioval	_
 sám	_
-Gullit	I-ps
+Gullit	I-1
 a	_
 během	_
 pár	_
@@ -2653,8 +2653,8 @@ trestního	_
 stíhání	_
 čečenského	_
 prezidenta	_
-Džochara	I-pf
-Dudajeva	I-ps
+Džochara	I-1
+Dudajeva	I-1
 a	_
 vydala	_
 příkaz	_
@@ -2680,8 +2680,8 @@ zprávy	_
 že	_
 středový	_
 hráč	_
-Paul	I-pf
-Gascoigne	I-ps
+Paul	I-1
+Gascoigne	I-1
 přestoupil	_
 z	_
 Lazia	I-ic
@@ -2773,8 +2773,8 @@ HN	I-mn
 uvedl	_
 mluvčí	_
 PP	I-if
-Jaroslav	I-pf
-Pomp	I-ps
+Jaroslav	I-1
+Pomp	I-1
 .	_
 
 Cítil	_
@@ -2795,20 +2795,20 @@ varhany	_
 Bezcílně	_
 tápající	_
 Trofimov	I-oa
-Milana	I-pf
-Mikulčíka	I-ps
+Milana	I-1
+Mikulčíka	I-1
 ,	_
 vykolejená	_
 Charlota	I-oa
-Božidary	I-pf
-Turzonovové	I-ps
+Božidary	I-1
+Turzonovové	I-1
 ,	_
 prázdno	_
 v	_
 duši	_
 Piščika	I-oa
-Dušana	I-pf
-Tarageľa	I-ps
+Dušana	I-1
+Tarageľa	I-1
 .	_
 .	_
 .	_
@@ -2869,8 +2869,8 @@ jak	_
 se	_
 to	_
 podle	_
-Olgy	I-pf
-Rozehnalové	I-ps
+Olgy	I-1
+Rozehnalové	I-1
 dělá	_
 v	_
 OMV	I-if
@@ -2891,8 +2891,8 @@ komedie	_
 absolventa	_
 pražské	_
 FAMU	I-ic
-Emira	I-pf
-Kusturici	I-ps
+Emira	I-1
+Kusturici	I-1
 Underground	I-oa
 ,	_
 se	_
@@ -2978,8 +2978,8 @@ cestujících	_
 ,	_
 "	_
 uvedl	_
-Petr	I-pf
-Šťáhlavský	I-ps
+Petr	I-1
+Šťáhlavský	I-1
 z	_
 tiskového	_
 oddělení	_
@@ -3071,7 +3071,7 @@ ročník	_
 ,	_
 "	_
 vysvětluje	_
-Zeithammer	I-ps
+Zeithammer	I-1
 .	_
 
 Potom	_
@@ -3267,8 +3267,8 @@ a	_
 .	_
 
 Dramatizace	_
-Břetislav	I-pf
-Rychlík	I-ps
+Břetislav	I-1
+Rychlík	I-1
 .	_
 
 Komisaři	_
@@ -3351,8 +3351,8 @@ unie	I-io
 ,	_
 "	_
 tvrdí	_
-Marie	I-pf
-Krauseová	I-ps
+Marie	I-1
+Krauseová	I-1
 z	_
 pražské	_
 pobočky	_
@@ -3361,8 +3361,8 @@ TÜV	I-if
 .	_
 Její	_
 spolupracovník	_
-Jaroslav	I-pf
-Metra	I-ps
+Jaroslav	I-1
+Metra	I-1
 však	_
 soudí	_
 ,	_
@@ -3382,7 +3382,7 @@ brzy	_
 málo	_
 .	_
 
-Boubínová	I-ps
+Boubínová	I-1
 se	_
 stala	_
 v	_
@@ -3395,8 +3395,8 @@ Bystroušky	I-1
 ve	_
 stejnojmenné	_
 opeře	_
-Leoše	I-pf
-Janáčka	I-ps
+Leoše	I-1
+Janáčka	I-1
 .	_
 
 Už	_
@@ -3463,8 +3463,8 @@ pro	_
 nového	_
 majitele	_
 Mníšku	I-4
-Serváce	I-pf
-Engela	I-ps
+Serváce	I-1
+Engela	I-1
 z	_
 Engelsflusu	I-4
 .	_
@@ -3482,8 +3482,8 @@ sídle	_
 OSN	I-io
 český	_
 velvyslanec	_
-Vladimír	I-pf
-Galuška	I-ps
+Vladimír	I-1
+Galuška	I-1
 a	_
 za	_
 OSN	I-io
@@ -3492,8 +3492,8 @@ generálního	_
 tajemníka	_
 OSN	I-io
 generál	_
-Manfred	I-pf
-Eisele	I-ps
+Manfred	I-1
+Eisele	I-1
 .	_
 
 Zamířil	_
@@ -3510,7 +3510,7 @@ Po	_
 v	_
 USA	I-4
 byl	_
-Matthäus	I-ps
+Matthäus	I-1
 pro	_
 reprezentaci	_
 mrtvý	_
@@ -3556,7 +3556,7 @@ hrál	_
 ,	_
 "	_
 přiznal	_
-Matthäus	I-ps
+Matthäus	I-1
 a	_
 dodal	_
 ,	_
@@ -3603,25 +3603,25 @@ pole	_
 odpoutala	_
 desítka	_
 jezdců	_
-Kejval	I-ps
+Kejval	I-1
 ,	_
-Kadlec	I-ps
+Kadlec	I-1
 ,	_
-Sosenka	I-ps
+Sosenka	I-1
 ,	_
-Míka	I-ps
+Míka	I-1
 ,	_
-Benčík	I-ps
+Benčík	I-1
 ,	_
-Pitoňák	I-ps
+Pitoňák	I-1
 ,	_
-Pavlíček	I-ps
+Pavlíček	I-1
 ,	_
-Faltýnek	I-ps
+Faltýnek	I-1
 ,	_
-Pučelík	I-ps
+Pučelík	I-1
 a	_
-Krotký	I-ps
+Krotký	I-1
 .	_
 
 Pak	_
@@ -3640,8 +3640,8 @@ Sněmovny	I-io
 reprezentantů	I-io
 amerického	_
 Kongresu	I-io
-Bob	I-pf
-Livingston	I-ps
+Bob	I-1
+Livingston	I-1
 (	_
 55	_
 )	_
@@ -3654,8 +3654,8 @@ sesazovací	_
 procedury	_
 vůči	_
 prezidentu	_
-Billu	I-pf
-Clintonovi	I-ps
+Billu	I-1
+Clintonovi	I-1
 ,	_
 se	_
 v	_
@@ -3692,8 +3692,8 @@ týden	_
 odstoupil	_
 bývalý	_
 prezident	_
-Michal	I-pf
-Kováč	I-ps
+Michal	I-1
+Kováč	I-1
 .	_
 
 Když	_
@@ -3768,8 +3768,8 @@ hlavních	_
 představitelů	_
 srbské	_
 opozice	_
-Zoran	I-pf
-Djindjic	I-ps
+Zoran	I-1
+Djindjic	I-1
 slíbil	_
 průlom	_
 v	_
@@ -3782,8 +3782,8 @@ opozice	_
 .	_
 
 Když	_
-Krenz	I-ps
-Honeckerovi	B-ps
+Krenz	I-1
+Honeckerovi	B-1
 zmíněný	_
 papír	_
 předal	_
@@ -3794,7 +3794,7 @@ tajemník	_
 do	_
 textu	_
 k	_
-Schabowského	I-ps
+Schabowského	I-1
 překvapení	_
 dodal	_
 ,	_
@@ -3804,8 +3804,8 @@ jako	_
 nástupce	_
 je	_
 navržen	_
-Egon	I-pf
-Krenz	I-ps
+Egon	I-1
+Krenz	I-1
 "	_
 .	_
 
@@ -3857,8 +3857,8 @@ může	_
 cítit	_
 hokejový	_
 brankář	_
-Pavel	I-pf
-Maláč	I-ps
+Pavel	I-1
+Maláč	I-1
 .	_
 
 Ostrava	I-4
@@ -3963,11 +3963,11 @@ Jen	I-ic
 tak	I-ic
 tak	I-ic
 ,	_
-Pepa	I-pf
-Štross	I-ps
+Pepa	I-1
+Štross	I-1
 a	_
-Jarda	I-pf
-Matějů	I-ps
+Jarda	I-1
+Matějů	I-1
 .	_
 
 Zlomil	_
@@ -4011,8 +4011,8 @@ a	_
 angličtiny	_
 .	_
 
-Miroslava	I-pf
-Vodrážková	I-ps
+Miroslava	I-1
+Vodrážková	I-1
 1978194	_
 pivotmanka	_
 K	I-ic
@@ -4026,7 +4026,7 @@ den	_
 .	_
 
 Slávista	_
-Matějovský	I-ps
+Matějovský	I-1
 sebral	_
 puk	_
 u	_
@@ -4053,8 +4053,8 @@ rozjet	_
 ,	_
 "	_
 vysvětlil	_
-Václav	I-pf
-Topol	I-ps
+Václav	I-1
+Topol	I-1
 z	_
 Lyžařského	I-ic
 areálu	I-ic
@@ -4125,8 +4125,8 @@ vyhlazovacího	_
 tábora	_
 .	_
 
-Juraj	I-pf
-Stern	I-ps
+Juraj	I-1
+Stern	I-1
 ,	_
 rektor	_
 slovenské	_
@@ -4185,7 +4185,7 @@ pozornost	_
 hudebního	_
 tisku	_
 právě	_
-Winwoodovou	I-ps
+Winwoodovou	I-1
 účastí	_
 a	_
 zahájila	_
@@ -4248,8 +4248,8 @@ Doubravník	I-4
 
 Loňský	_
 trenér	_
-Ivo	I-pf
-Horák	I-ps
+Ivo	I-1
+Horák	I-1
 byl	_
 povolán	_
 k	_
@@ -4260,14 +4260,14 @@ dorostenecký	_
 celek	_
 povede	_
 letos	_
-Jan	I-pf
-Směták	I-ps
+Jan	I-1
+Směták	I-1
 společně	_
 s	_
 vedoucím	_
 družstva	_
-Josefem	I-pf
-Kutmonem	I-ps
+Josefem	I-1
+Kutmonem	I-1
 .	_
 
 Ale	_
@@ -4381,8 +4381,8 @@ provdána	_
 za	_
 rockového	_
 budebníka	_
-Dana	I-pf
-Clarka	I-ps
+Dana	I-1
+Clarka	I-1
 (	_
 27	_
 )	_
@@ -4396,14 +4396,14 @@ využít	_
 když	_
 po	_
 centru	_
-Valenty	I-ps
+Valenty	I-1
 tak	_
 trochu	_
 se	_
 štěstím	_
 srovnal	_
 skóre	_
-Fiala	I-ps
+Fiala	I-1
 .	_
 
 Zatím	_
@@ -4478,7 +4478,7 @@ na	_
 rozdíl	_
 od	_
 pana	_
-Praga	I-ps
+Praga	I-1
 .	_
 .	_
 .	_
@@ -4500,8 +4500,8 @@ pootevřely	_
 
 Kontaktní	_
 osoby	_
-Dobroslav	I-pf
-Bořík	I-ps
+Dobroslav	I-1
+Bořík	I-1
 –	_
 majitel	_
 +420	I-at
@@ -4509,8 +4509,8 @@ majitel	_
 225 351	I-at
 dybs@dybs.cz	I-me
 Ing.	I-pd
-Petr	I-pf
-Kudrnovský	I-ps
+Petr	I-1
+Kudrnovský	I-1
 -	_
 vedení	_
 společnosti	_
@@ -4518,16 +4518,16 @@ společnosti	_
 737	I-at
 225 353	I-at
 kudrnovsky@dybs.cz	I-me
-Michal	I-pf
-Hofrichter	I-ps
+Michal	I-1
+Hofrichter	I-1
 –	_
 stavbyvedoucí	_
 +420	I-at
 737	I-at
 225 354	I-at
 hofrichter@dybs.cz	I-me
-Pavel	I-pf
-Koubek	I-ps
+Pavel	I-1
+Koubek	I-1
 ,	_
 DiS	I-pd
 –	_
@@ -4536,16 +4536,16 @@ stavbyvedoucí	_
 731	I-at
 679 926	I-at
 koubek@dybs.cz	I-me
-Pavla	I-pf
-Hauerová	I-ps
+Pavla	I-1
+Hauerová	I-1
 -	_
 asistentka	_
 +420	I-at
 737	I-at
 225 378	I-at
 asist@dybs.cz	I-me
-Vladimír	I-pf
-Finna	I-ps
+Vladimír	I-1
+Finna	I-1
 -	_
 vedoucí	_
 dílny,	_
@@ -4557,8 +4557,8 @@ dilna@dybs.cz	I-me
 
 Postava	_
 rebela	_
-Dylana	I-pf
-McKaye	I-ps
+Dylana	I-1
+McKaye	I-1
 přestala	_
 být	_
 černobílá	_
@@ -4635,7 +4635,7 @@ Rabenschlacht	_
 v	_
 pověsti	_
 o	_
-Dětřichovi	I-pf
+Dětřichovi	I-1
 z	_
 Bernu	I-4
 )	_
@@ -4676,11 +4676,11 @@ císaře	_
 .	_
 
 .	_
-Josef	I-pf
-Braťka	I-ps
+Josef	I-1
+Braťka	I-1
 a	_
-Manfred	I-pf
-Kucklick	I-ps
+Manfred	I-1
+Kucklick	I-1
 ze	_
 SRN	I-4
 ,	_
@@ -4688,21 +4688,21 @@ malé	_
 pole	_
 posuzovali	_
 páni	_
-Jaroslav	I-pf
-Hofman	I-ps
+Jaroslav	I-1
+Hofman	I-1
 a	_
-Jiří	I-pf
-Potužák	I-ps
+Jiří	I-1
+Potužák	I-1
 ,	_
 u	_
 vody	_
 posuzovali	_
 páni	_
-Jaroslav	I-pf
-Krušina	I-ps
+Jaroslav	I-1
+Krušina	I-1
 a	_
-Berhard	I-pf
-Wielage	I-ps
+Berhard	I-1
+Wielage	I-1
 ze	_
 SRN	I-4
 ,	_
@@ -4710,14 +4710,14 @@ na	_
 barvách	_
 posuzovali	_
 páni	_
-Alois	I-pf
-Grmolenský	I-ps
+Alois	I-1
+Grmolenský	I-1
 ,	_
-Stanislav	I-pf
-Kostka	I-ps
+Stanislav	I-1
+Kostka	I-1
 a	_
-Anton	I-pf
-Lager	I-ps
+Anton	I-1
+Lager	I-1
 z	_
 Rakouska	I-4
 ,	_
@@ -4725,22 +4725,22 @@ na	_
 vlečkách	_
 posuzovali	_
 páni	_
-Ladislav	I-pf
-Ježek	I-ps
+Ladislav	I-1
+Ježek	I-1
 a	_
-Miroslav	I-pf
-Aldorf	I-ps
+Miroslav	I-1
+Aldorf	I-1
 ,	_
 na	_
 drobných	_
 disciplínách	_
 posuzovali	_
 páni	_
-Vratislav	I-pf
-Bulíček	I-ps
+Vratislav	I-1
+Bulíček	I-1
 a	_
-Josef	I-pf
-Bartoška	I-ps
+Josef	I-1
+Bartoška	I-1
 .	_
 
 Měl	_
@@ -4767,8 +4767,8 @@ k	_
 tradici	_
 hannoverského	_
 dadaisty	_
-Kurta	I-pf
-Schwitterse	I-ps
+Kurta	I-1
+Schwitterse	I-1
 .	_
 
 Ale	_
@@ -4843,10 +4843,10 @@ dopis	_
 "	_
 věřící	_
 katoličky	_
-R	I-pf
-.	I-pf
-D	I-ps
-.	I-ps
+R	I-1
+.	I-1
+D	I-1
+.	I-1
 z	_
 Velkého	I-4
 Meziříčí	I-4
@@ -4869,7 +4869,7 @@ Německý	_
 badatel	_
 dr	I-pd
 .	I-pd
-Krumbheim	I-ps
+Krumbheim	I-1
 nyní	_
 objasnil	_
 ony	_
@@ -4900,8 +4900,8 @@ Osobnost	_
 skvělého	_
 českého	_
 jazzmana	_
-Karla	I-pf
-Krautgartnera	I-ps
+Karla	I-1
+Krautgartnera	I-1
 připomněl	_
 střihový	_
 pořad	_
@@ -5089,9 +5089,9 @@ pořadu	_
 Co	I-oa
 týden	I-oa
 dal	I-oa
-J	I-pf
-.	I-pf
-Bobovnický	I-ps
+J	I-1
+.	I-1
+Bobovnický	I-1
 ,	_
 poslanec	_
 FS	I-io
@@ -5134,13 +5134,13 @@ nezapomíná	_
 ,	_
 zakončila	_
 čtyřhra	_
-Korda	I-ps
+Korda	I-1
 ,	_
-Ivaniševič	I-ps
+Ivaniševič	I-1
 -	_
-Connors	I-ps
+Connors	I-1
 ,	_
-Siemerink	I-ps
+Siemerink	I-1
 s	_
 poněkud	_
 zvláštním	_
@@ -5150,18 +5150,18 @@ výsledkem	_
 3	_
 .	_
 
-Ireny	I-pf
-Ráčkové	I-ps
+Ireny	I-1
+Ráčkové	I-1
 ,	_
 inspirovaných	_
 poezií	_
-Jana	I-pf
-Skácela	I-ps
+Jana	I-1
+Skácela	I-1
 a	_
 Keltskými	I-oa
 pohádkami	I-oa
-Jana	I-pf
-Vladislava	I-ps
+Jana	I-1
+Vladislava	I-1
 ,	_
 byla	_
 včera	_
@@ -5229,9 +5229,9 @@ krku	I-oa
 ,	_
 záznam	_
 hry	_
-G	I-pf
-.	I-pf
-Feydeaua	I-ps
+G	I-1
+.	I-1
+Feydeaua	I-1
 z	_
 Divadla	I-ic
 SKN	I-ic
@@ -5283,10 +5283,10 @@ Z	_
 nových	_
 videokazet	_
 Rockový	_
-Raymond	I-pf
-Chandler	I-ps
-Lou	I-pf
-Reed	I-ps
+Raymond	I-1
+Chandler	I-1
+Lou	I-1
+Reed	I-1
 ,	_
 zakladatel	_
 legendárních	_
@@ -5598,8 +5598,8 @@ mise	_
 USA	I-4
 v	_
 Ženevě	I-4
-Andrew	I-pf
-Stolet	I-ps
+Andrew	I-1
+Stolet	I-1
 se	_
 měl	_
 údajně	_
@@ -5669,8 +5669,8 @@ pravicového	_
 Hnutí	I-io
 pro	I-io
 republiku	I-io
-Romualda	I-pf
-Szeremetiewa	I-ps
+Romualda	I-1
+Szeremetiewa	I-1
 ,	_
 jehož	_
 případná	_
@@ -5713,22 +5713,22 @@ za	_
 přítomnosti	_
 premiéra	_
 ČR	I-4
-V	I-pf
-.	I-pf
-Klause	I-ps
+V	I-1
+.	I-1
+Klause	I-1
 ,	_
 ministra	_
 průmyslu	_
 a	_
 obchodu	_
-V	I-pf
-.	I-pf
-Dlouhého	I-ps
+V	I-1
+.	I-1
+Dlouhého	I-1
 a	_
 bavorského	_
 ministra	_
-Otto	I-pf
-Wiesheue	I-ps
+Otto	I-1
+Wiesheue	I-1
 .	_
 
 E-mailem	_
@@ -5753,8 +5753,8 @@ Praha	I-4
 Republikánský	_
 po	_
 slanec	_
-Josef	I-pf
-Krejsa	I-ps
+Josef	I-1
+Krejsa	I-1
 řekl	_
 ,	_
 že	_
@@ -5917,26 +5917,26 @@ pět	_
 osob	_
 -	_
 podnikatele	_
-Aleše	I-pf
-Katovského	I-ps
+Aleše	I-1
+Katovského	I-1
 ,	_
 majitelku	_
 sadomasochistického	_
 salonu	_
 a	_
-Kunovu	I-ps
+Kunovu	I-1
 matku	_
-Annu	I-pf
-Medkovou	I-ps
+Annu	I-1
+Medkovou	I-1
 ,	_
 číšníka	_
-Leorenta	I-pf
-Lipoveciho	I-ps
+Leorenta	I-1
+Lipoveciho	I-1
 a	_
 manžela	_
-Meierové	I-ps
-Jaroslava	I-pf
-Meiera	I-ps
+Meierové	I-1
+Jaroslava	I-1
+Meiera	I-1
 .	_
 
 Nepronikal	_
@@ -5980,17 +5980,17 @@ z	_
 vyjížďky	_
 ,	_
 trojice	_
-Cipljakov	I-ps
+Cipljakov	I-1
 ,	_
-Kudrna	I-ps
+Kudrna	I-1
 a	_
-Hejduk	I-ps
+Hejduk	I-1
 si	_
 pošpásovala	_
 s	_
 osamoceným	_
 obráncem	_
-Kuntošem	I-ps
+Kuntošem	I-1
 a	_
 Pardubice	I-4
 vedly	_
@@ -6005,8 +6005,8 @@ Kč	I-om
 3065	_
 Předseda	_
 představenstva	_
-Miloslav	I-pf
-Soldát	I-ps
+Miloslav	I-1
+Soldát	I-1
 Sídlo	I-ic
 penzijního	I-ic
 fondu	I-ic
@@ -6068,8 +6068,8 @@ přikáže	_
 ,	_
 "	_
 říká	_
-Evžen	I-pf
-Hart	I-ps
+Evžen	I-1
+Hart	I-1
 ,	_
 ředitel	_
 reklamní	_
@@ -6119,7 +6119,7 @@ změnám	_
 ,	_
 "	_
 uvedl	_
-Nevrlý	I-ps
+Nevrlý	I-1
 .	_
 
 "	_
@@ -6146,7 +6146,7 @@ kvalitní	_
 ,	_
 "	_
 řekla	_
-Mutolaová	I-ps
+Mutolaová	I-1
 ,	_
 které	_
 pořadatelé	_
@@ -6186,8 +6186,8 @@ zapisovatelka	_
 místní	_
 volební	_
 komise	_
-Petra	I-pf
-Berná	I-ps
+Petra	I-1
+Berná	I-1
 v	_
 nejmenší	_
 východočeské	_
@@ -6209,10 +6209,10 @@ dva	_
 fotbalisté	_
 ,	_
 záložník	_
-Ulich	I-ps
+Ulich	I-1
 a	_
 útočník	_
-Kučera	I-ps
+Kučera	I-1
 .	_
 
 V	_
@@ -6291,7 +6291,7 @@ před	_
 slavnostním	_
 zasedáním	_
 vyzdvihl	_
-Clinton	I-ps
+Clinton	I-1
 "	_
 historický	_
 význam	_
@@ -6380,9 +6380,9 @@ tam	_
 viděl	_
 "	_
 Pusťte	_
-Rumla	I-ps
+Rumla	I-1
 a	_
-Zemana	I-ps
+Zemana	I-1
 !	_
 "	_
 .	_
@@ -6427,7 +6427,7 @@ Varech	I-4
 ,	_
 "	_
 vysvětluje	_
-Králík	I-ps
+Králík	I-1
 .	_
 
 Zdálo	_
@@ -6500,8 +6500,8 @@ uprchlíky	_
 ,	_
 "	_
 míní	_
-Jaroslav	I-pf
-Mareš	I-ps
+Jaroslav	I-1
+Mareš	I-1
 ,	_
 který	_
 sedí	_
@@ -6530,7 +6530,7 @@ jídelníčku	_
 ,	_
 "	_
 vysvětluje	_
-Krčmář	I-ps
+Krčmář	I-1
 .	_
 
 Nadekretovat	_
@@ -6674,8 +6674,8 @@ muminín	_
 .	_
 
 Paní	_
-Věra	I-pf
-Kintrová	I-ps
+Věra	I-1
+Kintrová	I-1
 pracuje	_
 v	_
 naší	_
@@ -6712,9 +6712,9 @@ jejich	_
 vyobrazeními	_
 .	_
 
-I	I-pf
-.	I-pf
-Vraníková	I-ps
+I	I-1
+.	I-1
+Vraníková	I-1
 ,	_
 Trojanovice	I-4
 812	I-ah
@@ -6725,8 +6725,8 @@ Frenštát	I-4
 p	_
 .	_
 
-Jarmily	I-pf
-JEŽKOVÉ	I-ps
+Jarmily	I-1
+JEŽKOVÉ	I-1
 
 Lihový	_
 kahan	_
@@ -6746,8 +6746,8 @@ největších	_
 favoritů	_
 celé	_
 soutěže	_
-Petr	I-pf
-Kůrka	I-ps
+Petr	I-1
+Kůrka	I-1
 závod	_
 psychicky	_
 nezvládl	_
@@ -6819,7 +6819,7 @@ krámy	_
 ,	_
 "	_
 řekla	_
-Alice	I-pf
+Alice	I-1
 ,	_
 "	_
 a	_
@@ -6853,7 +6853,7 @@ kterou	_
 zahlédl	_
 nad	_
 skalisky	_
-Phil	I-pf
+Phil	I-1
 ,	_
 jsem	_
 nikde	_
@@ -6999,12 +6999,12 @@ občane	_
 !	_
 
 Toho	_
-Jan	I-pf
-Saudek	I-ps
+Jan	I-1
+Saudek	I-1
 fotografoval	_
 pro	_
 obal	_
-Müllerova	I-ps
+Müllerova	I-1
 nového	_
 alba	_
 a	_
@@ -7034,8 +7034,8 @@ Strasse	I-3
 pracuje	_
 i	_
 prodavačka	_
-Sabine	I-pf
-Schmidtová	I-ps
+Sabine	I-1
+Schmidtová	I-1
 .	_
 
 Jste	_
@@ -7107,11 +7107,11 @@ tam	_
 
 Jistě	_
 ,	_
-Silvio	I-pf
-Berlusconi	I-ps
+Silvio	I-1
+Berlusconi	I-1
 není	_
-Mirek	I-pf
-Dušín	I-ps
+Mirek	I-1
+Dušín	I-1
 ,	_
 ale	_
 přese	_
@@ -7588,8 +7588,8 @@ knihy	_
 .	_
 
 Francouz	I-pc
-Louis	I-pf
-Braille	I-ps
+Louis	I-1
+Braille	I-1
 jej	_
 vymyslel	_
 kolem	_
@@ -7897,8 +7897,8 @@ kontrolním	_
 závodě	_
 žen	_
 zvítězila	_
-Martina	I-pf
-Štěpánková	I-ps
+Martina	I-1
+Štěpánková	I-1
 výkonem	_
 327,91	I-nc
 bodu	_
@@ -8070,8 +8070,8 @@ režisérem	_
 této	_
 doby	_
 byl	_
-Friedrich	I-pf
-Haase	I-ps
+Friedrich	I-1
+Haase	I-1
 (	_
 1825	I-2
 -	_
@@ -8688,7 +8688,7 @@ autě	_
 přes	_
 12	I-4
 kilogramů	_
-marihuany	I-dr
+marihuany	I-11
 .	_
 
 2	I-ni
@@ -8710,8 +8710,8 @@ olejotisk	_
 ,	_
 původní	_
 kontakt	_
-Františka	I-pf
-Drtikola	I-ps
+Františka	I-1
+Drtikola	I-1
 .	_
 
 Proč	_
@@ -8740,9 +8740,9 @@ retrospektiva	_
 filmů	_
 dánského	_
 režiséra	_
-Larse	I-pf
-von	I-ps
-Triera	I-ps
+Larse	I-1
+von	I-1
+Triera	I-1
 .	_
 
 Od	_
@@ -8987,7 +8987,7 @@ módy	_
 
 Byl	_
 připraven	_
-Janákovým	I-ps
+Janákovým	I-1
 hlubokým	_
 vzděláním	_
 ,	_
@@ -9008,8 +9008,8 @@ kde	_
 kromě	_
 úcty	_
 k	_
-Otto	I-pf
-Wagnerovi	I-ps
+Otto	I-1
+Wagnerovi	I-1
 nemohla	_
 na	_
 něj	_
@@ -9023,12 +9023,12 @@ historické	_
 školy	_
 ,	_
 především	_
-Aloise	I-pf
-Riegla	I-ps
+Aloise	I-1
+Riegla	I-1
 a	_
 následně	_
-Maxe	I-pf
-Dvořáka	I-ps
+Maxe	I-1
+Dvořáka	I-1
 ,	_
 jehož	_
 pojetí	_
@@ -9065,9 +9065,9 @@ celý	_
 život	_
 bojovala	_
 s	_
-alkoholem	I-dr
+alkoholem	I-11
 a	_
-kokainem	I-dr
+kokainem	I-11
 .	_
 
 Svrchní	_
@@ -9111,8 +9111,8 @@ podzim	_
 roku	_
 1973	I-2
 dokončil	_
-Bohumil	I-pf
-Hrabal	I-ps
+Bohumil	I-1
+Hrabal	I-1
 (	_
 teď	_
 by	_
@@ -9180,7 +9180,7 @@ nezávadných	_
 plastů	_
 .	_
 
-Mejerchold	I-ps
+Mejerchold	I-1
 svoje	_
 biomechanické	_
 a	_
@@ -9347,15 +9347,15 @@ pouze	_
 cm	I-oe
 .	_
 
-Jan	I-pf
-Kasl	I-ps
+Jan	I-1
+Kasl	I-1
 (	_
 49	I-na
 )	_
 s	_
 přítelkyní	_
-Terezií	I-pf
-Jungrovou	I-ps
+Terezií	I-1
+Jungrovou	I-1
 (	_
 45	I-na
 )	_
@@ -9370,16 +9370,16 @@ síni	I-oa
 ,	_
 také	_
 režisér	_
-Jiří	I-pf
-Menzel	I-ps
+Jiří	I-1
+Menzel	I-1
 (	_
 62	I-na
 )	_
 a	_
 studentka	_
 žurnalistiky	_
-Olga	I-pf
-Kelymanová	I-ps
+Olga	I-1
+Kelymanová	I-1
 (	_
 22	I-na
 )	_
@@ -9508,10 +9508,10 @@ Kateřiny	I-oa
 dílo	_
 německého	_
 monogramisty	_
-I	I-pf
-.	I-pf
-M	I-ps
-.	I-ps
+I	I-1
+.	I-1
+M	I-1
+.	I-1
 z	_
 roku	_
 1514	I-2
@@ -9520,8 +9520,8 @@ a	_
 zátiší	_
 holandské	_
 malířky	_
-Rachel	I-pf
-Ruysch	I-ps
+Rachel	I-1
+Ruysch	I-1
 z	_
 doby	_
 kolem	_
@@ -9743,8 +9743,8 @@ rok	_
 Jinak	_
 vejde	_
 princ	_
-WILLEM	I-pf
-ALEXANDER	I-ps
+WILLEM	I-1
+ALEXANDER	I-1
 (	_
 32	I-na
 )	_
@@ -10147,10 +10147,10 @@ zachytil	_
 na	_
 ilustraci	_
 knihy	_
-Liška	I-ps
+Liška	I-1
 .	_
 29	I-n_
-Braun	I-ps
+Braun	I-1
 naopak	_
 znázornil	_
 předchozí	_
@@ -10478,13 +10478,13 @@ africké	_
 prostředí	_
 .	_
 
-E	I-pf
-.	I-pf
-T	B-pf
-.	I-pf
-A	B-pf
-.	I-pf
-Hoffmann	I-ps
+E	I-1
+.	I-1
+T	B-1
+.	I-1
+A	B-1
+.	I-1
+Hoffmann	I-1
 (	_
 1776	I-2
 -	_
@@ -10494,7 +10494,7 @@ Hoffmann	I-ps
 Königsberg	I-4
 ,	_
 žák	_
-Reichardta	I-ps
+Reichardta	I-1
 v	_
 Berlíně	I-4
 ,	_
@@ -10683,7 +10683,7 @@ která	_
 je	_
 parabolou	_
 k	_
-Hitlerově	I-ps
+Hitlerově	I-1
 mocenském	_
 vzestupu	_
 ,	_
@@ -10869,8 +10869,8 @@ se	_
 synem	_
 svých	_
 zachránců	_
-Janem	I-pf
-Peckou	I-ps
+Janem	I-1
+Peckou	I-1
 se	_
 stýká	_
 dodnes	_
@@ -10886,7 +10886,7 @@ v	_
 min	I-2
 .	_
 -	_
-Pleško	I-ps
+Pleško	I-1
 utekl	_
 po	_
 levé	_
@@ -10896,8 +10896,8 @@ jeho	_
 centr	_
 přiťukl	_
 hlavou	_
-Žemlík	I-ps
-Souradovi	B-ps
+Žemlík	I-1
+Souradovi	B-1
 ,	_
 a	_
 ten	_
@@ -10959,7 +10959,7 @@ rozpočet	_
 nezatíží	_
 ,	_
 vicepremiér	_
-Rychetský	I-ps
+Rychetský	I-1
 však	_
 v	_
 této	_
@@ -11098,8 +11098,8 @@ v	_
 roce	_
 1931	I-2
 získal	_
-Howie	I-pf
-Morenz	I-ps
+Howie	I-1
+Morenz	I-1
 z	_
 týmu	_
 vítěze	_
@@ -11107,8 +11107,8 @@ Stanley	I-ia
 Cupu	I-ia
 .	_
 
-Willy	I-pf
-Brandt	I-ps
+Willy	I-1
+Brandt	I-1
 ,	_
 exkancléř	_
 ,	_
@@ -11278,8 +11278,8 @@ jednou	_
 
 Kontakty	_
 Firma:	_
-Monika	I-pf
-Špičáková	I-ps
+Monika	I-1
+Špičáková	I-1
 ič:	_
 75830787	I-n_
 dič:	_
@@ -11289,8 +11289,8 @@ Adresa	_
 Výrobna	_
 Odpovědný	_
 vedoucí:	_
-Michal	I-pf
-Vožda	I-ps
+Michal	I-1
+Vožda	I-1
 Rynk	I-3
 133	I-ah
 79841	I-az
@@ -11415,8 +11415,8 @@ vytvořené	_
 pod	_
 dojmem	_
 dřevořezeb	_
-Paula	I-pf
-Gauguina	I-ps
+Paula	I-1
+Gauguina	I-1
 .	_
 
 Exploze	_
@@ -11425,7 +11425,7 @@ růstu	_
 měst	_
 ,	_
 píše	_
-Lerner	I-ps
+Lerner	I-1
 (	_
 1968	I-2
 ,	_
@@ -11525,7 +11525,7 @@ za	_
 to	_
 ,	_
 že	_
-Shakespeare	I-ps
+Shakespeare	I-1
 se	_
 obrátil	_
 k	_
@@ -11546,9 +11546,9 @@ druhý	_
 a	_
 třetí	_
 díl	_
-Jindřicha	I-pf
-VI	I-pf
-.	I-pf
+Jindřicha	I-1
+VI	I-1
+.	I-1
 ,	_
 i	_
 když	_
@@ -11587,9 +11587,9 @@ kolem	_
 Slunce	I-g_
 ,	_
 papež	_
-Řehoř	I-pf
-XIII	I-pf
-.	I-pf
+Řehoř	I-1
+XIII	I-1
+.	I-1
 nařídil	_
 ,	_
 že	_
@@ -11712,7 +11712,7 @@ diplomatické	_
 4	I-ni
 .	I-ni
 INTERPRETACE	_
-TYRŠOVA	I-ps
+TYRŠOVA	I-1
 DÍLA	_
 "	_
 NÁŠ	I-oa
@@ -11867,7 +11867,7 @@ v	_
 únoru	I-2
 1982	I-2
 ,	_
-Chamberlainovi	I-ps
+Chamberlainovi	I-1
 se	_
 museli	_
 zodpovídat	_
@@ -11907,9 +11907,9 @@ různé	_
 transkripce	_
 .	_
 
-Josef	I-pf
-Bohuslav	B-pf
-Foerster	I-ps
+Josef	I-1
+Bohuslav	B-1
+Foerster	I-1
 (	_
 1859	I-2
 -	_
@@ -11931,8 +11931,8 @@ u	_
 sv	I-1
 .	I-1
 Vojtěcha	I-1
-Josefa	I-pf
-Foerstera	I-ps
+Josefa	I-1
+Foerstera	I-1
 (	_
 1833	I-2
 -	_
@@ -11950,9 +11950,9 @@ Hamburku	I-4
 (	_
 přátelství	_
 s	_
-G	I-pf
-.	I-pf
-Mahlerem	I-ps
+G	I-1
+.	I-1
+Mahlerem	I-1
 )	_
 a	_
 ve	_
@@ -12002,8 +12002,8 @@ IČO:	_
 Ředitel	_
 školy:	_
 PaedDr.	I-pd
-Jiří	I-pf
-Tomášek	I-ps
+Jiří	I-1
+Tomášek	I-1
 ,	_
 tel.	_
 465	I-at
@@ -12012,8 +12012,8 @@ tel.	_
 jiri.tomasek@zusuo.cz	I-me
 Zástupci	_
 ředitele:	_
-Petr	I-pf
-Poslušný	I-ps
+Petr	I-1
+Poslušný	I-1
 ,	_
 tel.	_
 465	I-at
@@ -12021,8 +12021,8 @@ tel.	_
 ,	_
 petr.poslusny@zusuo.cz	I-me
 PaedDr.	I-pd
-Daniela	I-pf
-Boušková	I-ps
+Daniela	I-1
+Boušková	I-1
 ,	_
 tel.	_
 465	I-at
@@ -12031,8 +12031,8 @@ tel.	_
 danielabouskova@seznam.cz	I-me
 Kancelář	_
 školy:	_
-Hana	I-pf
-Lavičková	I-ps
+Hana	I-1
+Lavičková	I-1
 -	_
 ekonomický	_
 referent,	_
@@ -12063,7 +12063,7 @@ Kurdové	I-pc
 ,	_
 kteří	_
 proti	_
-Saddámově	I-ps
+Saddámově	I-1
 diktatuře	_
 dlouhá	_
 léta	_
@@ -12074,8 +12074,8 @@ Knihy	_
 Dar	I-oa
 proroctví	I-oa
 od	_
-Jeane	I-pf
-Dixonové	I-ps
+Jeane	I-1
+Dixonové	I-1
 ,	_
 vydané	_
 roku	_
@@ -12349,8 +12349,8 @@ byl	_
 například	_
 zlatokorunský	_
 kantor	_
-Antonín	I-pf
-Borový	I-ps
+Antonín	I-1
+Borový	I-1
 (	_
 1755	I-2
 -	_
@@ -12706,8 +12706,8 @@ ve	_
 stanici	_
 .	_
 
-George	I-pf
-Trofimoff	I-ps
+George	I-1
+Trofimoff	I-1
 je	_
 ruského	_
 původu	_
@@ -12782,7 +12782,7 @@ Napoleonova	_
 manželka	_
 ,	_
 císařovna	_
-JOSEFÍNA	I-pf
+JOSEFÍNA	I-1
 (	_
 1763	I-2
 -	_
@@ -12982,8 +12982,8 @@ Keňa	I-4
 5	I-no
 .	I-no
 a	_
-Kenneth	I-pf
-Eriksson	I-ps
+Kenneth	I-1
+Eriksson	I-1
 nedokončil	_
 
 Na	_
@@ -13003,17 +13003,17 @@ kruhu	_
 .	_
 
 hraje	_
-Apolena	I-pf
-Veldová	I-ps
+Apolena	I-1
+Veldová	I-1
 ,	_
-Tomáš	I-pf
-Jirman	I-ps
+Tomáš	I-1
+Jirman	I-1
 ,	_
-David	I-pf
-Viktora	I-ps
+David	I-1
+Viktora	I-1
 ,	_
-Alexandra	I-pf
-Gasnárková	I-ps
+Alexandra	I-1
+Gasnárková	I-1
 předpremiéra	_
 29	I-2
 .	I-2
@@ -13057,8 +13057,8 @@ festivalu	_
 DIVADLO	_
 soubor	_
 Katona	I-ic
-József	I-pf
-Színház	I-ps
+József	I-1
+Színház	I-1
 z	_
 Budapešti	I-4
 .	_
@@ -13147,8 +13147,8 @@ legendárního	_
 prvního	_
 spolkového	_
 kancléře	_
-Konrada	I-pf
-Adenauera	I-ps
+Konrada	I-1
+Adenauera	I-1
 .	_
 
 Na	_
@@ -13333,7 +13333,7 @@ a	_
 procenty	_
 ,	_
 zatímco	_
-Kerryho	I-ps
+Kerryho	I-1
 zisky	_
 probíhaly	_
 mezi	_
@@ -13351,8 +13351,8 @@ regulace	_
 finančního	_
 sektoru	_
 (	_
-Karel	I-pf
-Machala	I-ps
+Karel	I-1
+Machala	I-1
 )	_
 48	I-n_
 
@@ -13666,10 +13666,10 @@ směru	_
 V	I-oe
 ;	_
 
-W.	I-pf
+W.	I-1
 L	I-pm
 .	I-pm
-Barry	I-ps
+Barry	I-1
 ,	_
 současný	_
 předseda	_
@@ -13719,7 +13719,7 @@ nepřímo	_
 vyjadřují	_
 .	_
 
-Milota	I-pf
+Milota	I-1
 se	_
 podílel	_
 na	_
@@ -13727,7 +13727,7 @@ stížnosti	_
 proti	_
 uvěznění	_
 Mistra	I-p_
-Jana	I-pf
+Jana	I-1
 Husa	I-p_
 adresované	_
 kostnickému	_
@@ -13887,16 +13887,16 @@ Ukaž	_
 !	_
 "	_
 prosil	_
-Kudla	I-ps
+Kudla	I-1
 ,	_
 a	_
 když	_
 ji	_
-Jeníček	I-ps
+Jeníček	I-1
 znovu	_
 nastavil	_
 ,	_
-Kudla	I-ps
+Kudla	I-1
 se	_
 mu	_
 na	_
@@ -13907,7 +13907,7 @@ vyplil	_
 
 Roku	_
 1938	I-2
-Newton	I-ps
+Newton	I-1
 ,	_
 muž	_
 židovské	_
@@ -13938,7 +13938,7 @@ sloužil	_
 Když	_
 polský	_
 generál	_
-Anders	I-ps
+Anders	I-1
 dostal	_
 úkol	_
 dobýt	_
@@ -13982,8 +13982,8 @@ Programu	_
 WHO	I-io
 proti	_
 závislostem	_
-Hans	I-pf
-Emblad	I-ps
+Hans	I-1
+Emblad	I-1
 nechal	_
 vytroubit	_
 do	_
@@ -14141,16 +14141,16 @@ trojice	_
 -	_
 okruhový	_
 závodník	_
-Páral	I-ps
+Páral	I-1
 ,	_
 soutěžní	_
 jezdec	_
-Trajbold	I-ps
+Trajbold	I-1
 ml	I-p_
 .	I-p_
 a	_
 motokárista	_
-Capík	I-ps
+Capík	I-1
 ,	_
 kterým	_
 vydatně	_
@@ -14158,16 +14158,16 @@ konkurovali	_
 otec	_
 a	_
 syn	_
-Josef	I-pf
+Josef	I-1
 a	_
-Jan	I-pf
-Kopeckých	I-ps
+Jan	I-1
+Kopeckých	I-1
 ,	_
 doplněni	_
 o	_
 dalšího	_
 motokáristu	_
-Bartáka	I-ps
+Bartáka	I-1
 .	_
 
 Pražanům	I-pc
@@ -14235,8 +14235,8 @@ rok	_
 "	_
 řekl	_
 nám	_
-Jaromír	I-pf
-Pařil	I-ps
+Jaromír	I-1
+Pařil	I-1
 a	_
 ke	_
 dvěma	_
@@ -14337,7 +14337,7 @@ v	_
 klubu	_
 Akropolis	I-if
 a	_
-Mozartovy	I-ps
+Mozartovy	I-1
 skladby	_
 v	_
 hotelu	_
@@ -14385,16 +14385,16 @@ sad	I-oa
 )	_
 -	_
 Drama	_
-A	I-pf
-.	I-pf
+A	I-1
+.	I-1
 P	I-pm
 .	I-pm
-Čechova	I-ps
+Čechova	I-1
 v	_
 režii	_
-I	I-pf
-.	I-pf
-Rajmonta	I-ps
+I	I-1
+.	I-1
+Rajmonta	I-1
 .	_
 
 Když	_
@@ -14539,8 +14539,8 @@ opilosti	_
 Bývalá	_
 světová	_
 jednička	_
-Steffi	I-pf
-Grafová	I-ps
+Steffi	I-1
+Grafová	I-1
 odřekla	_
 svou	_
 účast	_
@@ -14637,7 +14637,7 @@ odejít	_
 dnes	_
 s	_
 úsměvem	_
-Hrdlička	I-ps
+Hrdlička	I-1
 ,	_
 jehož	_
 klub	_
@@ -14669,11 +14669,11 @@ vyvěsily	_
 do	_
 kanceláře	_
 portréty	_
-Petra	I-pf
-Weisse	I-ps
+Petra	I-1
+Weisse	I-1
 a	_
-Vladimíra	I-pf
-Mečiara	I-ps
+Vladimíra	I-1
+Mečiara	I-1
 .	_
 
 Nevím	_
@@ -14712,8 +14712,8 @@ sálu	_
 macajského	_
 soudu	_
 soudce	_
-Ferdinand	I-pf
-Estrela	I-ps
+Ferdinand	I-1
+Estrela	I-1
 ,	_
 který	_
 poté	_
@@ -14879,9 +14879,9 @@ Kč	I-om
 dosáhne	_
 ČP	I-if
 podle	_
-J	I-pf
-.	I-pf
-Novotného	I-ps
+J	I-1
+.	I-1
+Novotného	I-1
 do	_
 konce	_
 roku	_
@@ -14903,8 +14903,8 @@ laureátům	_
 český	_
 ministr	_
 školství	_
-Eduard	I-pf
-Zeman	I-ps
+Eduard	I-1
+Zeman	I-1
 spolu	_
 s	_
 generálním	_
@@ -14921,8 +14921,8 @@ kulturu	I-io
 (	_
 UNESCO	I-io
 )	_
-Federikem	I-pf
-Mayorem	I-ps
+Federikem	I-1
+Mayorem	I-1
 .	_
 
 A	_
@@ -14980,8 +14980,8 @@ musí	_
 zahodit	_
 .	_
 
-Lester	I-pf
-Young	I-ps
+Lester	I-1
+Young	I-1
 držel	_
 nástroj	_
 šikmo	_
@@ -15014,8 +15014,8 @@ smrti	_
 unikl	_
 včera	_
 Čech	I-pc
-Radek	I-pf
-Hanykovič	I-ps
+Radek	I-1
+Hanykovič	I-1
 v	_
 thajském	_
 Bangkoku	I-4
@@ -15162,7 +15162,7 @@ závěrečným	_
 stoupáním	_
 mně	_
 pomohl	_
-Andrle	I-ps
+Andrle	I-1
 ,	_
 pak	_
 se	_
@@ -15192,8 +15192,8 @@ záležitostí	_
 
 Dosavadní	_
 trenér	_
-Lumír	I-pf
-Fikes	I-ps
+Lumír	I-1
+Fikes	I-1
 už	_
 v	_
 utkání	_
@@ -15207,11 +15207,11 @@ v	_
 Chrudimi	I-4
 ho	_
 zaskočili	_
-Alexandr	I-pf
-Bokij	I-ps
+Alexandr	I-1
+Bokij	I-1
 s	_
-Ivo	I-pf
-Gottwaldem	I-ps
+Ivo	I-1
+Gottwaldem	I-1
 .	_
 
 Vítězové	_
@@ -15223,7 +15223,7 @@ Plzni	I-4
 dvojice	_
 žáků	_
 :	_
-Karel	I-pf
+Karel	I-1
 
 V	_
 roce	_
@@ -15376,8 +15376,8 @@ Jak	_
 uvedl	_
 předseda	_
 představenstva	_
-Pavel	I-pf
-Richter	I-ps
+Pavel	I-1
+Richter	I-1
 ve	_
 zdůvodnění	_
 návrhu	_
@@ -15411,8 +15411,8 @@ porota	_
 udělila	_
 hlavní	_
 cenu	_
-Michalu	I-pf
-Justovi	I-ps
+Michalu	I-1
+Justovi	I-1
 za	_
 fejeton	_
 Praha	I-oa
@@ -15421,20 +15421,20 @@ a	_
 dále	_
 ocenila	_
 práce	_
-Jiřího	I-pf
-Kratochvila	I-ps
+Jiřího	I-1
+Kratochvila	I-1
 ,	_
-Lenky	I-pf
-Procházkové	I-ps
+Lenky	I-1
+Procházkové	I-1
 ,	_
-Michala	I-pf
-Ogórka	I-ps
+Michala	I-1
+Ogórka	I-1
 ,	_
-Matyáse	I-pf
-Sarköziho	I-ps
+Matyáse	I-1
+Sarköziho	I-1
 a	_
-Rogera	I-pf
-Scrutona	I-ps
+Rogera	I-1
+Scrutona	I-1
 .	_
 
 Mhouřím	_
@@ -15454,18 +15454,18 @@ mnoho	_
 jasu	_
 .	_
 
-H	I-pf
-.	I-pf
-Lutz	I-ps
+H	I-1
+.	I-1
+Lutz	I-1
 (	_
 FRG	I-4
 )	_
 4	I-n_
 :	_
 50.80	I-n_
-T	I-pf
-.	I-pf
-Huschke	I-ps
+T	I-1
+.	I-1
+Huschke	I-1
 (	_
 GDR	I-4
 )	_
@@ -15523,8 +15523,8 @@ ve	I-ic
 Zlíně	I-ic
 včera	_
 navštívil	_
-Tomáš	I-pf
-Baťa	I-ps
+Tomáš	I-1
+Baťa	I-1
 .	_
 
 Naprosto	_
@@ -15569,7 +15569,7 @@ představenstva	_
 společnosti	_
 ing	I-pd
 .	I-pd
-Běnčík	I-ps
+Běnčík	I-1
 .	_
 
 Starý	_
@@ -15640,7 +15640,7 @@ nepozastavuje	_
 .	_
 MUDr	I-pd
 .	I-pd
-Čermák	I-ps
+Čermák	I-1
 k	_
 tomu	_
 s	_
@@ -15671,8 +15671,8 @@ však	_
 připomíná	_
 doc	I-pd
 .	I-pd
-Václav	I-pf
-Smetana	I-ps
+Václav	I-1
+Smetana	I-1
 ,	_
 přednosta	_
 ortopedie	_
@@ -15708,11 +15708,11 @@ souvislosti	_
 nebyly	_
 tedy	_
 pobyty	_
-Mistra	I-ps
+Mistra	I-1
 ,	_
-Bergra	I-ps
+Bergra	I-1
 a	_
-Šmicera	I-ps
+Šmicera	I-1
 v	_
 německých	_
 rehabilitačních	_
@@ -15736,7 +15736,7 @@ Rwandy	I-4
 ,	_
 si	_
 s	_
-Lucasem	I-pf
+Lucasem	I-1
 hraje	_
 pořád	_
 ,	_
@@ -15973,24 +15973,24 @@ minulý	_
 týden	_
 prosadili	_
 vedle	_
-Michálkova	I-ps
+Michálkova	I-1
 filmu	_
 i	_
 Knoflíkáři	I-oa
-Petra	I-pf
-Zelenky	I-ps
+Petra	I-1
+Zelenky	I-1
 ,	_
 Pasti	I-oa
 ,	I-oa
 pasti	I-oa
 ,	I-oa
 pastičky	I-oa
-Věry	I-pf
-Chytilové	I-ps
+Věry	I-1
+Chytilové	I-1
 a	_
 Postel	I-oa
-Oskara	I-pf
-Reifa	I-ps
+Oskara	I-1
+Reifa	I-1
 .	_
 
 Basketbalová	_
@@ -16059,8 +16059,8 @@ radování	_
 Od	_
 zpravodaje	_
 LN	I-mn
-Tomáše	I-pf
-Pudila	I-ps
+Tomáše	I-1
+Pudila	I-1
 z	_
 Helsinek	I-4
 
@@ -16145,8 +16145,8 @@ dvou	_
 osmiletých	_
 obětí	_
 pedofila	_
-Marka	I-pf
-Dutrouxe	I-ps
+Marka	I-1
+Dutrouxe	I-1
 .	_
 
 S	_
@@ -16184,8 +16184,8 @@ nejvíce	_
 světla	_
 .	_
 
-Pavel	I-pf
-HRUBES	B-pf
+Pavel	I-1
+HRUBES	B-1
 ml	_
 .	_
 
@@ -16207,7 +16207,7 @@ vytváření	_
 kolaborantské	_
 vlády	_
 generála	_
-Nedi	I-ps
+Nedi	I-1
 %	_
 e	_
 a	_
@@ -16226,8 +16226,8 @@ Praha	I-4
 :	_
 Český	_
 chodec	_
-Miloš	I-pf
-Holuša	I-ps
+Miloš	I-1
+Holuša	I-1
 ,	_
 který	_
 se	_
@@ -16270,8 +16270,8 @@ pro	_
 to	_
 všechno	_
 našel	_
-Ludvík	I-pf
-Šváb	I-ps
+Ludvík	I-1
+Šváb	I-1
 čas	_
 při	_
 náročné	_
@@ -16341,28 +16341,28 @@ dresu	_
 už	_
 asi	_
 neuvidíme	_
-Vosátku	I-ps
+Vosátku	I-1
 ,	_
-Pilaře	I-ps
+Pilaře	I-1
 ,	_
-Vaněčka	I-ps
+Vaněčka	I-1
 ,	_
-Lipinu	I-ps
+Lipinu	I-1
 ,	_
-Hozu	I-ps
+Hozu	I-1
 ,	_
-Jana	I-pf
+Jana	I-1
 a	_
-Ivana	I-pf
-Vasilevovy	I-ps
+Ivana	I-1
+Vasilevovy	I-1
 ani	_
-Pitla	I-ps
+Pitla	I-1
 ,	_
 "	_
 vypočetl	_
 odchody	_
-Ladislav	I-pf
-Kolda	I-ps
+Ladislav	I-1
+Kolda	I-1
 .	_
 
 Zaujala	_
@@ -16390,13 +16390,13 @@ odletěly	_
 i	_
 s	_
 delegátem	_
-Konicarem	I-ps
+Konicarem	I-1
 a	_
 s	_
 rozhodčími	_
-Poláčkem	I-ps
+Poláčkem	I-1
 a	_
-Peškem	I-ps
+Peškem	I-1
 ,	_
 kteří	_
 měli	_
@@ -16426,8 +16426,8 @@ s	_
 přítelem	_
 jihoslovanského	_
 původu	_
-Chrisem	I-pf
-Novoselicem	I-ps
+Chrisem	I-1
+Novoselicem	I-1
 .	_
 
 Při	_
@@ -16525,7 +16525,7 @@ v	_
 týmu	_
 je	_
 Brazilec	I-pc
-Gerson	I-ps
+Gerson	I-1
 ,	_
 který	_
 přišel	_
@@ -16543,8 +16543,8 @@ nastoupí	_
 v	_
 brance	_
 Keramiky	I-ic
-Dušan	I-pf
-Salfický	I-ps
+Dušan	I-1
+Salfický	I-1
 ,	_
 náhradníkem	_
 bude	_
@@ -16553,14 +16553,14 @@ juniorského	_
 týmu	_
 ,	_
 neboť	_
-Petr	I-pf
-Jež	I-ps
+Petr	I-1
+Jež	I-1
 ,	_
 stejně	_
 jako	_
 trenér	_
-Radim	I-pf
-Rulík	I-ps
+Radim	I-1
+Rulík	I-1
 jsou	_
 s	_
 českou	_
@@ -16745,63 +16745,63 @@ Voličům	_
 se	_
 představili	_
 kandidáti	_
-Václav	I-pf
-Benda	I-ps
+Václav	I-1
+Benda	I-1
 (	_
 Praha	I-4
 1	I-n_
 )	_
 ,	_
-Vladimír	I-pf
-Zeman	I-ps
+Vladimír	I-1
+Zeman	I-1
 (	_
 2	I-n_
 )	_
 ,	_
-Zdeněk	I-pf
-Klausner	I-ps
+Zdeněk	I-1
+Klausner	I-1
 (	_
 4	I-n_
 )	_
 ,	_
-Petr	I-pf
-Bratský	I-ps
+Petr	I-1
+Bratský	I-1
 (	_
 5	I-n_
 )	_
 ,	_
-Jan	I-pf
-Koukal	I-ps
+Jan	I-1
+Koukal	I-1
 (	_
 6	I-n_
 )	_
 ,	_
-Alena	I-pf
-Palečková	I-ps
+Alena	I-1
+Palečková	I-1
 (	_
 8	I-n_
 )	_
 ,	_
-Josef	I-pf
-Pavlata	I-ps
+Josef	I-1
+Pavlata	I-1
 (	_
 9	I-n_
 )	_
 ,	_
-Milan	I-pf
-Kondr	I-ps
+Milan	I-1
+Kondr	I-1
 (	_
 10	I-n_
 )	_
 ,	_
-Václav	I-pf
-Mencl	I-ps
+Václav	I-1
+Mencl	I-1
 (	_
 11	I-n_
 )	_
 a	_
-Jan	I-pf
-Krámek	I-ps
+Jan	I-1
+Krámek	I-1
 (	_
 12	I-n_
 )	_
@@ -16813,8 +16813,8 @@ předseda	_
 a	_
 šéf	_
 ODS	I-io
-Václav	I-pf
-Klaus	I-ps
+Václav	I-1
+Klaus	I-1
 11	I-2
 .	I-2
 února	I-2
@@ -16863,7 +16863,7 @@ nijak	_
 trvalý	_
 ,	_
 ale	_
-Adelaida	I-pf
+Adelaida	I-1
 byla	_
 tímto	_
 skandálním	_
@@ -16909,8 +16909,8 @@ zodpovědné	_
 plánování	_
 .	_
 
-Helan	I-ps
-Petr	I-pf
+Helan	I-1
+Petr	I-1
 ,	_
 Veveří	I-3
 106	I-ah
@@ -17022,7 +17022,7 @@ rozdělily	_
 Polsko	I-4
 ,	_
 avšak	_
-Stalin	I-ps
+Stalin	I-1
 přesto	_
 kázal	_
 hnát	_
@@ -17162,16 +17162,16 @@ portrétů	_
 natočila	_
 manželská	_
 dvojice	_
-Jan	I-pf
-Špáta	I-ps
+Jan	I-1
+Špáta	I-1
 a	_
-Olga	I-pf
-Sommerová	I-ps
+Olga	I-1
+Sommerová	I-1
 
 Americký	_
 rezident	_
-Bill	I-pf
-Clinton	I-ps
+Bill	I-1
+Clinton	I-1
 se	_
 v	_
 minulých	_
@@ -17206,14 +17206,14 @@ s	_
 minimální	_
 ztrátou	_
 obsadila	_
-Iveta	I-pf
-Zelingerová	I-ps
+Iveta	I-1
+Zelingerová	I-1
 před	_
 vítězkou	_
 pátečního	_
 sprintu	_
-Janou	I-pf
-Šaldovou	I-ps
+Janou	I-1
+Šaldovou	I-1
 .	_
 
 Podle	_
@@ -17256,8 +17256,8 @@ Branky	_
 18	I-ns
 .	_
 
-Viktor	I-pf
-Hollmann	I-ps
+Viktor	I-1
+Hollmann	I-1
 
 Konečné	_
 posouzení	_
@@ -17300,14 +17300,14 @@ vyšel	_
 rozhovor	_
 právě	_
 s	_
-Dienstbierem	I-ps
+Dienstbierem	I-1
 .	_
 
 Podle	_
 výsledků	_
 voleb	_
 získal	_
-Body	I-ps
+Body	I-1
 kolem	_
 1300	I-nc
 preferenčních	_
@@ -17457,8 +17457,8 @@ dlužníka	_
 společnost	_
 žižkovského	_
 podnikatele	_
-Vratislava	I-pf
-Čekana	I-ps
+Vratislava	I-1
+Čekana	I-1
 Intercom	I-if
 .	_
 
@@ -17493,8 +17493,8 @@ do	_
 konce	_
 sezony	_
 záložníka	_
-Josefa	I-pf
-Jinocha	I-ps
+Josefa	I-1
+Jinocha	I-1
 z	_
 Příbrami	I-4
 a	_
@@ -17503,8 +17503,8 @@ na	_
 hostování	_
 pouštějí	_
 záložníka	_
-Petra	I-pf
-Hrušku	I-ps
+Petra	I-1
+Hrušku	I-1
 do	_
 Teplic	I-4
 .	_
@@ -17527,7 +17527,7 @@ napoleonských	_
 válkách	_
 a	_
 jemuž	_
-Metternich	I-ps
+Metternich	I-1
 předsedal	_
 ,	_
 dosáhlo	_
@@ -17617,7 +17617,7 @@ zralého	_
 mistra	_
 ,	_
 přichází	_
-Verdiho	I-ps
+Verdiho	I-1
 nejslavnější	_
 opera	_
 Aida	I-oa
@@ -17700,8 +17700,8 @@ který	_
 si	_
 nárokuje	_
 hraběnka	_
-Alžběta	I-pf
-Petzoldová	I-ps
+Alžběta	I-1
+Petzoldová	I-1
 ,	_
 je	_
 podle	_
@@ -17709,8 +17709,8 @@ pondělního	_
 vyjádření	_
 ředitele	_
 léčebny	_
-Václava	I-pf
-Protivy	I-ps
+Václava	I-1
+Protivy	I-1
 pro	_
 Právo	I-mn
 reálné	_
@@ -17850,14 +17850,14 @@ nevěříme	_
 říká	_
 předseda	_
 LOK	I-ic
-David	I-pf
-Rath	I-ps
+David	I-1
+Rath	I-1
 Autor	_
 obrázku	_
 :	_
 Foto	_
-Ondřej	I-pf
-Němec	I-ps
+Ondřej	I-1
+Němec	I-1
 -	_
 LN	I-mn
 
@@ -17871,8 +17871,8 @@ největších	_
 favoritů	_
 celé	_
 soutěže	_
-Petr	I-pf
-Kůrka	I-ps
+Petr	I-1
+Kůrka	I-1
 závod	_
 psychicky	_
 nezvládl	_
@@ -17896,7 +17896,7 @@ moc	_
 neláká	_
 ,	_
 ale	_
-Masaříkův	I-ps
+Masaříkův	I-1
 výtečný	_
 výsledek	_
 se	_
@@ -17912,8 +17912,8 @@ předseda	_
 České	I-ic
 biatlonové	I-ic
 unie	I-ic
-Václav	I-pf
-Fiřtík	I-ps
+Václav	I-1
+Fiřtík	I-1
 ,	_
 kterého	_
 zarmoutily	_
@@ -18054,7 +18054,7 @@ sálu	_
 Na	_
 vedoucí	_
 gól	_
-Šulce	I-ps
+Šulce	I-1
 ze	_
 4	I-no
 .	I-no
@@ -18072,8 +18072,8 @@ jeden	_
 dotek	_
 a	_
 přihrávce	_
-Jančiara	I-ps
-Frýbort	B-ps
+Jančiara	I-1
+Frýbort	B-1
 .	_
 
 12:30	I-6
@@ -18126,8 +18126,8 @@ již	_
 na	_
 rozdíl	_
 od	_
-Jeana	I-pf
-Valjeana	I-ps
+Jeana	I-1
+Valjeana	I-1
 nezabloudili	_
 .	_
 
@@ -18168,7 +18168,7 @@ dalších	_
 Východoevropanů	I-pc
 sloužilo	_
 v	_
-Hitlerových	I-ps
+Hitlerových	I-1
 SS	I-io
 ,	_
 "	_
@@ -18190,9 +18190,9 @@ málo	_
 .	_
 
 Podle	_
-J	I-pf
-.	I-pf
-Havelky	I-ps
+J	I-1
+.	I-1
+Havelky	I-1
 v	_
 podnikatelských	_
 kruzích	_
@@ -18238,8 +18238,8 @@ basista	_
 zpěvák	_
 a	_
 skladatel	_
-Mejla	I-pf
-Hlavsa	I-ps
+Mejla	I-1
+Hlavsa	I-1
 .	_
 a	_
 básník	_
@@ -18247,8 +18247,8 @@ básník	_
 sochař	_
 a	_
 malíř	_
-Pavel	I-pf
-Zajíček	I-ps
+Pavel	I-1
+Zajíček	I-1
 .	_
 
 Když	_
@@ -18287,10 +18287,10 @@ pro	_
 Českou	I-4
 republiku	I-4
 nahrazuje	_
-Jiří	I-pf
-Donát	I-ps
-Mirka	I-pf
-Chochola	I-ps
+Jiří	I-1
+Donát	I-1
+Mirka	I-1
+Chochola	I-1
 ,	_
 který	_
 přešel	_
@@ -18381,7 +18381,7 @@ vzácným	_
 .	_
 
 Doporučuje	_
-Rušovi	I-ps
+Rušovi	I-1
 řešit	_
 zveřejnění	_
 nezdůvodněných	_
@@ -18389,8 +18389,8 @@ domněnek	_
 redaktora	_
 deníku	_
 Sport	I-mn
-Vladimíra	I-pf
-Koláře	I-ps
+Vladimíra	I-1
+Koláře	I-1
 v	_
 tisku	_
 občanskoprávní	_
@@ -18445,8 +18445,8 @@ včera	_
 vedoucí	_
 Kanceláře	I-io
 sněmovny	I-io
-Petr	I-pf
-Kynštetr	I-ps
+Petr	I-1
+Kynštetr	I-1
 .	_
 
 Kontaktní	_
@@ -18504,7 +18504,7 @@ předseda	_
 Evropského	I-io
 parla	I-io
 mentu	I-io
-Hänsch	I-ps
+Hänsch	I-1
 .	_
 
 Přišla	_
@@ -18530,8 +18530,8 @@ roku	_
 1709	I-2
 ,	_
 kdy	_
-Abraham	I-pf
-Darby	I-ps
+Abraham	I-1
+Darby	I-1
 z	_
 Coalbrookdale	I-gl
 zdokonalil	_
@@ -18749,8 +18749,8 @@ OSN	I-io
 (	_
 UNPROFOR	I-io
 )	_
-Alexandra	I-pf
-Ivanka	I-ps
+Alexandra	I-1
+Ivanka	I-1
 se	_
 od	_
 sobotního	_
@@ -18787,8 +18787,8 @@ muslimský	_
 pře	_
 -	_
 dák	_
-Fikret	I-pf
-Abdič	I-ps
+Fikret	I-1
+Abdič	I-1
 ,	_
 podporovaný	_
 Srby	I-pc
@@ -18823,7 +18823,7 @@ mě	_
 vyhodili	_
 .	_
 
-Milan	I-pf
+Milan	I-1
 žije	_
 nadále	_
 v	_
@@ -18862,8 +18862,8 @@ to	_
 včera	_
 bosenský	_
 prezident	_
-Alija	I-pf
-Izetbegovi	I-ps
+Alija	I-1
+Izetbegovi	I-1
 %	_
 .	_
 
@@ -18880,8 +18880,8 @@ před	_
 časem	_
 .	_
 
-Eamon	I-pf
-Farrell	I-ps
+Eamon	I-1
+Farrell	I-1
 ,	_
 muž	_
 středního	_
@@ -18975,14 +18975,14 @@ rolích	_
 se	_
 večer	_
 představí	_
-Magda	I-pf
-Kirchnerová	I-ps
+Magda	I-1
+Kirchnerová	I-1
 ,	_
-Jana	I-pf
-Hlaváčková	I-ps
+Jana	I-1
+Hlaváčková	I-1
 či	_
-Igor	I-pf
-Bareš	I-ps
+Igor	I-1
+Bareš	I-1
 .	_
 
 Na	_
@@ -19004,8 +19004,8 @@ dobrodružstvím	_
 
 Mluvčí	_
 ministerstva	_
-Slavomil	I-pf
-Hubálek	I-ps
+Slavomil	I-1
+Hubálek	I-1
 :	_
 "	_
 Naše	_
@@ -19018,13 +19018,13 @@ bychom	_
 jednat	_
 s	_
 panem	_
-Marečkem	I-ps
+Marečkem	I-1
 živým	_
 a	_
 ne	_
 nad	_
 panem	_
-Marečkem	I-ps
+Marečkem	I-1
 mrtvým	_
 .	_
 
@@ -19045,8 +19045,8 @@ později	_
 slyšíme	_
 saxofonová	_
 sóla	_
-Charlieho	I-pf
-Parkera	I-ps
+Charlieho	I-1
+Parkera	I-1
 jako	_
 kulisu	_
 v	_
@@ -19056,8 +19056,8 @@ skladba	_
 Round	I-oa
 Midnight	I-oa
 od	_
-Theloniouse	I-pf
-Monka	I-ps
+Theloniouse	I-1
+Monka	I-1
 je	_
 ke	_
 slyšení	_
@@ -19078,7 +19078,7 @@ zákonem	_
 .	I-2
 ledna	I-2
 odradil	_
-Lewinskou	I-ps
+Lewinskou	I-1
 ,	_
 aby	_
 si	_
@@ -19097,7 +19097,7 @@ výměnou	_
 za	_
 spolupráci	_
 proti	_
-Clintonovi	I-ps
+Clintonovi	I-1
 ;	_
 
 (	_
@@ -19108,8 +19108,8 @@ se	_
 stal	_
 hrdinou	_
 -	_
-Edmund	I-pf
-Campion	I-ps
+Edmund	I-1
+Campion	I-1
 )	_
 
 Snažím	_
@@ -19226,7 +19226,7 @@ ve	_
 španělské	_
 hře	_
 dvojsečný	_
-Jänischův	I-ps
+Jänischův	I-1
 gambit	_
 (	_
 1	_
@@ -19305,8 +19305,8 @@ strany	_
 neodpovídá	_
 podle	_
 vyjádření	_
-Vladimíra	I-pf
-Mečiara	I-ps
+Vladimíra	I-1
+Mečiara	I-1
 tomu	_
 ,	_
 že	_
@@ -19328,12 +19328,12 @@ státy	_
 Je	_
 tu	_
 houslák	_
-Jimmy	I-pf
+Jimmy	I-1
 a	_
 je	_
 tu	_
 basák	_
-Ben	I-pf
+Ben	I-1
 ,	_
 
 Jeho	_
@@ -19352,8 +19352,8 @@ Pedagogické	I-ic
 fakulty	I-ic
 Masarykovy	I-ic
 univerzity	I-ic
-Josefa	I-pf
-Budiše	I-ps
+Josefa	I-1
+Budiše	I-1
 přitom	_
 do	_
 škol	_
@@ -19421,7 +19421,7 @@ příkrov	_
 
 Za	_
 pravděpodobného	_
-Marčukova	I-ps
+Marčukova	I-1
 nástupce	_
 byl	_
 v	_
@@ -19436,8 +19436,8 @@ dosavadní	_
 první	_
 místopředseda	_
 vlády	_
-Pavlo	I-pf
-Lazarenko	I-ps
+Pavlo	I-1
+Lazarenko	I-1
 (	_
 43	I-na
 )	_
@@ -19449,18 +19449,18 @@ přestávce	_
 přišli	_
 :	_
 brankář	_
-Oudran	I-ps
+Oudran	I-1
 ,	_
 obránce	_
-Petr	I-ps
+Petr	I-1
 ,	_
 záložník	_
-Fíla	I-ps
+Fíla	I-1
 ,	_
 útočníci	_
-Vondrák	I-ps
+Vondrák	I-1
 a	_
-Homola	I-ps
+Homola	I-1
 .	_
 
 Kostelec	I-4
@@ -19498,12 +19498,12 @@ nových	_
 bankovek	_
 .	_
 
-Radek	I-pf
-Bureš	I-ps
+Radek	I-1
+Bureš	I-1
 /	_
 foto	_
-Martin	I-pf
-Siebert	I-ps
+Martin	I-1
+Siebert	I-1
 Budeme	_
 -	_
 li	_
@@ -19566,7 +19566,7 @@ doplňují	_
 Kuba	I-4
 -	_
 Francie	I-4
-Castro	I-ps
+Castro	I-1
 se	_
 vyhne	_
 soudnímu	_
@@ -19576,8 +19576,8 @@ Generální	_
 ředitel	_
 TV	I-ms
 Nova	I-ms
-Vladimír	I-pf
-Železný	I-ps
+Vladimír	I-1
+Železný	I-1
 je	_
 připraven	_
 využít	_
@@ -19770,17 +19770,17 @@ zkoušel	_
 v	_
 Chebu	I-4
 s	_
-Milošem	I-pf
-Horanským	I-ps
-Albeeho	I-pf
-George	I-ps
+Milošem	I-1
+Horanským	I-1
+Albeeho	I-1
+George	I-1
 .	_
 
 Mluvčí	_
 pardubické	_
 policie	_
-Hana	I-pf
-Fojtíková	I-ps
+Hana	I-1
+Fojtíková	I-1
 tvrdí	_
 ,	_
 že	_
@@ -19806,11 +19806,11 @@ polemiku	_
 mezi	_
 jejím	_
 autorem	_
-Sergem	I-pf
-Lemoinem	I-ps
+Sergem	I-1
+Lemoinem	I-1
 a	_
-Jeanem	I-pf
-Clairem	I-ps
+Jeanem	I-1
+Clairem	I-1
 ,	_
 kurátorem	_
 minulého	_
@@ -19820,8 +19820,8 @@ a	_
 spoluautorem	_
 loňské	_
 retrospektivy	_
-Ivana	I-pf
-Theimera	I-ps
+Ivana	I-1
+Theimera	I-1
 v	_
 Belvedéru	I-oa
 ,	_
@@ -19951,9 +19951,9 @@ pelotonu	_
 Kromě	_
 již	_
 jmenovaných	_
-Kwasniewského	I-ps
+Kwasniewského	I-1
 a	_
-Walesy	I-ps
+Walesy	I-1
 se	_
 tento	_
 problém	_
@@ -19967,8 +19967,8 @@ roku	_
 ,	_
 bývalého	_
 premiéra	_
-Tadeusze	I-pf
-Mazowieckého	I-ps
+Tadeusze	I-1
+Mazowieckého	I-1
 ,	_
 u	_
 dalších	_
@@ -20016,29 +20016,29 @@ se	_
 k	_
 názoru	_
 pana	_
-Miroslava	I-pf
-Macka	I-ps
+Miroslava	I-1
+Macka	I-1
 a	_
 myslím	_
 si	_
 ,	_
 že	_
 pánové	_
-Lux	I-ps
+Lux	I-1
 ,	_
-Zeman	I-ps
+Zeman	I-1
 a	_
-Zieleniec	I-ps
+Zieleniec	I-1
 jedou	_
 po	_
-Václavu	I-pf
-Klausovi	I-ps
+Václavu	I-1
+Klausovi	I-1
 ,	_
 protože	_
 nesnesou	_
 ,	_
 že	_
-Klaus	I-ps
+Klaus	I-1
 je	_
 daleko	_
 pracovitější	_
@@ -20079,9 +20079,9 @@ Los	I-io
 Angeles	I-io
 .	_
 
-Martin	I-pf
-K	I-ps
-.	I-ps
+Martin	I-1
+K	I-1
+.	I-1
 se	_
 ostatně	_
 vrátil	_
@@ -20131,40 +20131,40 @@ a	_
 Slovenské	I-4
 republiky	I-4
 sólisté	_
-Suchý	I-ps
+Suchý	I-1
 ,	_
-Vnučko	I-ps
+Vnučko	I-1
 ,	_
-Kulovaná	I-ps
+Kulovaná	I-1
 ,	_
-Zemanová	I-ps
+Zemanová	I-1
 ,	_
 sportovní	_
 dvojice	_
-Kovaříková	I-ps
+Kovaříková	I-1
 -	_
-Novotný	I-ps
+Novotný	I-1
 a	_
 taneční	_
 páry	_
-Mrázková	I-ps
+Mrázková	I-1
 -	_
-Šimeček	I-ps
+Šimeček	I-1
 a	_
-Chroboková	I-ps
+Chroboková	I-1
 -	_
-Brzý	I-ps
+Brzý	I-1
 .	_
 
-Weiss	I-ps
+Weiss	I-1
 :	_
 Jednání	_
 HZDS	I-io
 přesáhlo	_
 přijatelnou	_
 hranici	_
-Vladimír	I-pf
-Mišauer	I-ps
+Vladimír	I-1
+Mišauer	I-1
 ,	_
 Bratislava	I-4
 Výkonný	_
@@ -20253,7 +20253,7 @@ změnila	_
 .	_
 
 Čtyřiatřicetiletý	_
-Klíma	I-ps
+Klíma	I-1
 ,	_
 jenž	_
 v	_
@@ -20266,11 +20266,11 @@ spolu	_
 s	_
 ruskými	_
 hokejisty	_
-Igorem	I-pf
-Larionovem	I-ps
+Igorem	I-1
+Larionovem	I-1
 a	_
-Vjačeslavem	I-pf
-Kozlovem	I-ps
+Vjačeslavem	I-1
+Kozlovem	I-1
 ,	_
 v	_
 Detroitu	I-4
@@ -20297,8 +20297,8 @@ výrazně	_
 promluvil	_
 střídající	_
 záložník	_
-Tomáš	I-pf
-Kuchař	I-ps
+Tomáš	I-1
+Kuchař	I-1
 ,	_
 který	_
 přestoupil	_
@@ -20363,7 +20363,7 @@ využil	_
 školácké	_
 chyby	_
 stopera	_
-Krauta	I-ps
+Krauta	I-1
 a	_
 dal	_
 gól	_
@@ -20434,9 +20434,9 @@ ho	_
 cvičenci	_
 brněnských	_
 žup	_
-Máchalovy	I-ps
+Máchalovy	I-1
 a	_
-Vaníčkovy	I-ps
+Vaníčkovy	I-1
 ,	_
 dále	_
 krále	I-ic
@@ -20444,7 +20444,7 @@ Jiřího	I-ic
 z	_
 Boskovic	I-4
 ,	_
-Bukovského	I-ps
+Bukovského	I-1
 z	_
 Vyškova	I-4
 a	_
@@ -20494,8 +20494,8 @@ povídek	_
 z	_
 Divokého	I-oa
 západu	I-oa
-O	I-ps
-Henryho	I-ps
+O	I-1
+Henryho	I-1
 .	_
 
 Na	_
@@ -20603,8 +20603,8 @@ jedině	_
 velký	_
 tenisový	_
 herec	_
-Petr	I-pf
-Korda	I-ps
+Petr	I-1
+Korda	I-1
 umí	_
 vymyslet	_
 ,	_
@@ -20658,8 +20658,8 @@ Velitelství	_
 vojska	_
 územní	_
 obrany	_
-Petr	I-pf
-Svatoš	I-ps
+Petr	I-1
+Svatoš	I-1
 .	_
 
 Krátce	_
@@ -20668,12 +20668,12 @@ PRAHA	I-4
 Předseda	_
 odborové	_
 komory	_
-Richard	I-pf
-Falbr	I-ps
+Richard	I-1
+Falbr	I-1
 uvítal	_
 navržení	_
-Stanislava	I-pf
-Voláka	I-ps
+Stanislava	I-1
+Voláka	I-1
 (	_
 ODS	I-io
 )	_
@@ -20719,8 +20719,8 @@ např	_
 DJ	_
 Cam	_
 ,	_
-Carl	I-pf
-Craig	I-ps
+Carl	I-1
+Craig	I-1
 a	_
 Nightmares	I-ic
 On	I-ic
@@ -20790,11 +20790,11 @@ nového	_
 trenéra	_
 českobudějovických	_
 fotbalistů	_
-Zdeňka	I-pf
-Procházky	I-ps
+Zdeňka	I-1
+Procházky	I-1
 obsadí	_
-Petr	I-pf
-Skála	I-ps
+Petr	I-1
+Skála	I-1
 ,	_
 bývalý	_
 gólman	_
@@ -20811,7 +20811,7 @@ Proti	_
 vrácení	_
 zákona	_
 ministru	_
-Pilipovi	I-ps
+Pilipovi	I-1
 byli	_
 všichni	_
 poslanci	_
@@ -20852,8 +20852,8 @@ dost	_
 "	_
 řekl	_
 skromně	_
-Martin	I-pf
-Rousek	I-ps
+Martin	I-1
+Rousek	I-1
 ,	_
 který	_
 v	_
@@ -20870,15 +20870,15 @@ Chtěl	_
 prodat	_
 5	_
 gramů	_
-marihuany	I-dr
+marihuany	I-11
 .	_
 
 Koupil	_
 od	_
 dealera	_
 spoustu	_
-LSD	I-dr
+LSD	I-11
 a	_
-kokainu	I-dr
+kokainu	I-11
 .	_
 

@@ -17,16 +17,17 @@ import java.util.List;
 @Service
 public class NamedEntityRecognizerService {
     private final IDocumentTableDAO documentTableDAO;
-    private NameTagServices nts;
+    private final NameTagServices nameTagServices;
     /**
      * Instantiates a new Named entity recognizer service.
      *
      * @param documentTableDAO the document table dAO
      */
     @Autowired
-    public NamedEntityRecognizerService(IDocumentTableDAO documentTableDAO) {
+    public NamedEntityRecognizerService(IDocumentTableDAO documentTableDAO, NameTagServices nameTagServices) {
         this.documentTableDAO = documentTableDAO;
-        nts = new NameTagServices("../../NameTagIntegration/models/czech-cnec2.0-140304.ner");
+        this.nameTagServices = nameTagServices;
+        this.nameTagServices.BindModel("../../NameTagIntegration/models/czech-cnec2.0-140304.ner");
     }
 
     /**
@@ -37,7 +38,7 @@ public class NamedEntityRecognizerService {
      * @return the list of entities found in the text
      */
     public List<Entity> getEntities(String text, EditingTicket editingTicket) {
-        return nts.TagText(text);
+        return nameTagServices.TagText(text);
     }
 
     /**
@@ -55,16 +56,6 @@ public class NamedEntityRecognizerService {
             throw new IdNotFoundException("documentId", documentId);
         }
 
-        return nts.TagText(documentTable.getText());
+        return nameTagServices.TagText(documentTable.getText());
     }
-
-    /**
-     *
-     * @param input text to tag
-     * @return List of recognized entities
-     */
-
-
-
-
 }

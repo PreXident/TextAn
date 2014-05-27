@@ -1,20 +1,17 @@
 package cz.cuni.mff.ufal.textan.server.nametagIntegration;
 
 import cz.cuni.mff.ufal.nametag.*;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.ObjectTypeTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
+import cz.cuni.mff.ufal.textan.server.models.ObjectType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import cz.cuni.mff.ufal.textan.server.models.ObjectType;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by Jakub Vlcek on 29. 4. 2014.
@@ -22,47 +19,49 @@ import org.slf4j.LoggerFactory;
 public class NameTagServices {
     private Ner ner;
     private static final Logger LOG = LoggerFactory.getLogger(NameTagServices.class);
-    Hashtable<String, ObjectType> idTempTable;
-    ObjectTypeTableDAO idTable;
+    Hashtable<Long, ObjectType> idTempTable;
+    IObjectTypeTableDAO objectTypeTableDAO;
 
-    public NameTagServices(String model) {
-        ner = Ner.load(model);
+
+    public NameTagServices(IObjectTypeTableDAO objectTypeTableDAO) {
+        this.objectTypeTableDAO = objectTypeTableDAO;
+    }
+
+    public void BindModel(String pathToModel) {
+        ner = Ner.load(pathToModel);
         if (ner == null) {
             LOG.error("Model wasn't found!");
         }
         idTempTable = new Hashtable<>();
-        idTable = new ObjectTypeTableDAO();
-//        idTempTable.put("P", new ObjectType(1L, "Osoba")); //osoba
-//        idTempTable.put("PS", new ObjectType(1L, "Osoba")); //osoba
-//        idTempTable.put("PF", new ObjectType(1L, "Osoba")); //osoba
-//        idTempTable.put("T", new ObjectType(2L, "Datum")); //datum
-//        idTempTable.put("TD", new ObjectType(2L, "Datum")); //datum
-//        idTempTable.put("TM", new ObjectType(2L, "Datum")); //datum
-//        idTempTable.put("TY", new ObjectType(2L, "Datum")); //datum
-//        idTempTable.put("GS", new ObjectType(3L, "Ulice")); //ulice
-//        idTempTable.put("GC", new ObjectType(4L, "Město")); //mesto
-//        idTempTable.put("GU", new ObjectType(4L, "Město")); //mesto
-//        idTempTable.put("GQ", new ObjectType(4L, "Město")); //mestska cast
-//        //translationTable.put("", 5L); //zbran
-//        idTempTable.put("TH", new ObjectType(6L, "Čas")); //cas
-//        //translationTable.put("", 7L); //automobil
-//        //translationTable.put("", 8L); //SPZ
-//        //translationTable.put("", 9L); //Podnik
-//        //translationTable.put("", 10L); //Zakon
-
     }
 
     ObjectType translateEntity(String entityType) {
         ObjectType value = new ObjectType(-1L, "");
-        if (idTempTable.containsKey(entityType.toUpperCase())) {
-            value = idTempTable.get(entityType.toUpperCase());
+        Long id = -1L;
+        try {
+            id = Long.parseLong(entityType);
+        }
+        catch (NumberFormatException nfe) {
+            // log outside of method
+        }
+        if (id == -1L) {
+            return null;
+        }
+        if (idTempTable.containsKey(id)) {
+            value = idTempTable.get(id);
+            LOG.debug("Using CACHED entity " + value.getName());
         } else {
             try {
-                ObjectTypeTable tableObject = idTable.find(Long.parseLong(entityType));
-                value = new ObjectType(tableObject.getId(), tableObject.getName());
-                idTempTable.put(entityType, value);
-            } catch (NumberFormatException nfe) {
-                LOG.warn("Entity type " + entityType + " wasn't recognized.", nfe);
+                ObjectTypeTable tableObject = objectTypeTableDAO.find(id);
+                if (tableObject != null) {
+                    value = new ObjectType(tableObject.getId(), tableObject.getName());
+                    idTempTable.put(id, value);
+                    LOG.debug("Using DATABASE entity " + value.getName());
+                } else {
+                    LOG.warn("Entity type " + entityType + " recognized, but is not stored in database.");
+                }
+            } catch (Exception ex) {
+                LOG.warn("Exceptin occured when trying translate entity.", ex.getMessage());
             }
         }
         return value;
@@ -128,7 +127,8 @@ public class NameTagServices {
         command.append(" <cnec2.0-all" + pathSplitter + "train.txt");
         // model file OUTPUT
         SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
-        command.append(" >." + pathSplitter + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner");
+        String modelLocation = "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner";
+        command.append(" >." + pathSplitter + modelLocation);
         result[result.length - 1] = command.toString();
         return result;
     }
@@ -144,21 +144,21 @@ public class NameTagServices {
             Runtime rt = Runtime.getRuntime();
             File dir = new File(Paths.get("../NameTagIntegration/training").toAbsolutePath().toString());
             Process ps;
+            //String modelPath;
             ps = rt.exec(prepareLearningArguments(), null, dir);
 
-            /*BufferedReader bes = new BufferedReader(new InputStreamReader(ps.getErrorStream())); //Dont't know why, but output is in error stream
+            BufferedReader bes = new BufferedReader(new InputStreamReader(ps.getErrorStream())); //Dont't know why, but output is in error stream
             String lineerr;
             while ((lineerr = bes.readLine()) != null) {
                 LOG.info(lineerr);
-            }*/
+            }
         } catch (IOException e) {
             LOG.error("Training failed " + sdf.format(cal.getTime()), e);
         }
 
         LOG.info("Training done at " + sdf.format(cal.getTime()));
         LOG.info("Changing ner.");
-        Ner tmpNer = Ner.load("../../NameTagIntegration/training/czech-140205-cnec2.0.ner");
-        ner = tmpNer;
+        this.BindModel("../../NameTagIntegration/training/czech-140205-cnec2.0.ner");
         LOG.info("Ner changed.");
     }
 
@@ -167,10 +167,9 @@ public class NameTagServices {
     {
         LOG.debug(input);
         if (ner == null) {
-            LOG.error("NameTag wasn't initialized!");
+            LOG.error("NameTag hasn't model!");
             return new ArrayList<Entity>();
         }
-        Tokenizer tokenizer = ner.newTokenizer();
         Forms forms = new Forms();
         TokenRanges tokens = new TokenRanges();
         NamedEntities entities = new NamedEntities();
@@ -178,6 +177,7 @@ public class NameTagServices {
         Scanner reader = new Scanner(input);
         List<Entity> entitiesList = new ArrayList<>();
         Stack<NamedEntity> openEntities = new Stack<>();
+        Tokenizer tokenizer = ner.newTokenizer();
         boolean not_eof = true;
         while(not_eof)
         {
@@ -199,54 +199,30 @@ public class NameTagServices {
                 ner.recognize(forms, entities);
                 sortEntities(entities, sortedEntities);
 
-                for (int i = 0, e = 0; i < entities.size(); i++) {
+                for (int i = 0, e = 0; i < tokens.size(); i++) {
                     TokenRange token = tokens.get(i);
-                    //int token_start = (int) token.getStart();
-                    //int token_end = (int) token.getStart() + (int) token.getLength();
-                    //if (unprinted < token_start) System.out.print(encodeEntities(text.substring(unprinted, token_start)));
 
                     for (; e < sortedEntities.size() && sortedEntities.get(e).getStart() == i; e++) {
                         openEntities.push(sortedEntities.get(e));
                     }
-                    // pridat zjisteni id entity
-                    //Entity ent = new Entity(text.substring(token_start, token_end), token_start, token_end, 0);
-                    //entitiesList.add(ent);
 
                     while (!openEntities.empty() && (openEntities.peek().getStart() + openEntities.peek().getLength() - 1) == i) {
                         NamedEntity endingEntity = openEntities.peek();
                         int entity_start = (int) tokens.get((int) (i - endingEntity.getLength() + 1)).getStart();
                         int entity_end = (int) (tokens.get(i).getStart() + tokens.get(i).getLength());
-                        LOG.debug(entity_start + ":" + (entity_end - entity_start) + "-" + endingEntity.getType());
                         if (openEntities.size() == 1) {
-                            entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end - entity_start - 1, translateEntity(endingEntity.getType())));
+                            ObjectType recognized_entity = translateEntity(endingEntity.getType());
+                            if (recognized_entity != null) {
+                                entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end - entity_start - 1, recognized_entity));
+                            }
+                            else {
+                                LOG.warn("Type " + endingEntity.getType() + " of entity " + encodeEntities(text.substring(entity_start, entity_end)) + " recognized by NameTag, but is not in database.");
+                            }
 
                         }
                         openEntities.pop();
                     }
-
-                        /*
-                        // Close entities that end sooned than current entity
-                        while (!openEntities.empty() && openEntities.peek() < entity_start) {
-                            if (unprinted < openEntities.peek()) System.out.print(encodeEntities(text.substring(unprinted, openEntities.peek())));
-                            unprinted = openEntities.pop();
-                            System.out.print("</ne>");
-                        }
-
-                        // Print text just before the entity, open it and add end to the stack
-                        if (unprinted < entity_start) System.out.print(encodeEntities(text.substring(unprinted, entity_start)));
-                        unprinted = entity_start;
-                        System.out.printf("<ne type=\"%s\">", entity.getType());
-                        openEntities.push(entity_end);
-                        */
                 }
-        /*
-                    // Close unclosed entities
-                    while (!openEntities.empty()) {
-                        if (unprinted < openEntities.peek()) System.out.print(encodeEntities(text.substring(unprinted, openEntities.peek())));
-                        unprinted = openEntities.pop();
-                        System.out.print("</ne>");
-                    }
-                    */
             }
         }
 

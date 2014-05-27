@@ -32,9 +32,9 @@ a	_
 bezprostřední	_
 ;	_
 
-Alkohol	I-dr
+Alkohol	I-11
 a	_
-marihuana	I-dr
+marihuana	I-11
 patří	_
 mezi	_
 nejběžnější	_
@@ -85,7 +85,7 @@ myslím	_
 .	_
 
 Zabavení	_
-alkoholu	I-dr
+alkoholu	I-11
 proběhlo	_
 hladce	_
 .	_
@@ -15412,7 +15412,7 @@ na	_
 velký	_
 igelitový	_
 pytel	_
-marihuany	I-dr
+marihuany	I-11
 ,	_
 který	_
 vyplňoval	_
@@ -56628,7 +56628,7 @@ krvi	_
 měl	_
 2,7	_
 promile	_
-alkoholu	I-dr
+alkoholu	I-11
 ,	_
 "	_
 upřesnil	_
@@ -58216,7 +58216,7 @@ chránit	_
 S	_
 větším	_
 množstvím	_
-marihuany	I-dr
+marihuany	I-11
 roste	_
 výška	_
 .	_
@@ -80832,7 +80832,7 @@ prokazatelně	_
 až	_
 1,63	I-nc
 promile	_
-alkoholu	I-dr
+alkoholu	I-11
 .	_
 
 Nepořádek	_
@@ -84779,7 +84779,7 @@ z	_
 ovocného	_
 želé	_
 ,	_
-alkohol	I-dr
+alkohol	I-11
 anebo	_
 "	_
 staromládenecká	_
@@ -109845,7 +109845,7 @@ pro	I-io
 lidská	I-io
 práva	I-io
 
-Marihuanu	I-dr
+Marihuanu	I-11
 našli	_
 na	_
 náměstí	I-4
@@ -110607,7 +110607,7 @@ auta	_
 se	_
 dvěma	_
 promile	_
-alkoholu	I-dr
+alkoholu	I-11
 v	_
 krvi	_
 minulý	_
@@ -124851,7 +124851,7 @@ víme	_
 kdo	_
 je	_
 příjemcem	_
-alkoholu	I-dr
+alkoholu	I-11
 ,	_
 který	_
 je	_
@@ -131824,7 +131824,7 @@ zbožím	_
 od	_
 cigaret	_
 přes	_
-alkohol	I-dr
+alkohol	I-11
 a	_
 elektroniku	_
 po	_
@@ -162728,7 +162728,7 @@ jsou	_
 prostituce	_
 a	_
 prodej	_
-alkoholu	I-dr
+alkoholu	I-11
 obchodem	_
 nejvýnosnějším	_
 .	_
@@ -167052,11 +167052,11 @@ Gregor	I-1
 !	_
 
 Kouřil	_
-marihuanu	I-dr
+marihuanu	I-11
 a	_
 také	_
 užíval	_
-kokain	I-dr
+kokain	I-11
 .	_
 
 Při	_
@@ -167065,14 +167065,14 @@ prohlídce	_
 bylo	_
 nalezeno	_
 množství	_
-heroinu	I-dr
+heroinu	I-11
 ,	_
-kokainu	I-dr
+kokainu	I-11
 a	_
-LSD	I-dr
+LSD	I-11
 .	_
 
-Marihuany	I-dr
+Marihuany	I-11
 je	_
 všude	_
 dostatek	_
