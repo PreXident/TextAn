@@ -13,6 +13,7 @@ INSERT INTO `objecttype`(`id_object_type`,`name`) VALUES(7, "Typ automobilu");
 INSERT INTO `objecttype`(`id_object_type`,`name`) VALUES(8, "SPZ");
 INSERT INTO `objecttype`(`id_object_type`,`name`) VALUES(9, "Podnik");
 INSERT INTO `objecttype`(`id_object_type`,`name`) VALUES(10, "Zákon");
+INSERT INTO `objecttype`(`id_object_type`,`name`) VALUES(11, "Droga");
 
 -- TODO: better names for relation types
 INSERT INTO `relationtype`(`id_relation_type`,`name`) VALUES(1, "narozen");
