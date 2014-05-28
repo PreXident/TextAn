@@ -47,10 +47,6 @@ public class Client {
 
     private static final QName USERNAME_TOKEN_HEADER = new QName("http://models.commons.textan.ufal.mff.cuni.cz", "usernameToken");
 
-    {
-        System.setProperty( "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
-    }
-
     /**
      * Settings of the application. Handle with care, they're shared.
      */

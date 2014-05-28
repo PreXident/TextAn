@@ -12,6 +12,7 @@ repositories {
 }
 
 def springVersion = '4.0.3.RELEASE'
+def cxfVersion = '3.0.0'
 
 dependencies {
     //web servers
@@ -27,8 +28,8 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-web', version: springVersion
 
     //web services
-    compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: '2.7.10'
-    compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: '2.7.10'
+    compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: cxfVersion
+    compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: cxfVersion
 
     //logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
