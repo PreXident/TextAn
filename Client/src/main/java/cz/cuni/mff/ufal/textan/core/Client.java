@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
+import cz.cuni.mff.ufal.textan.commons.models.UsernameToken;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
@@ -12,9 +13,20 @@ import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPHeader;
+import javax.xml.ws.Binding;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
+import javax.xml.ws.handler.Handler;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPHandler;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,17 +47,24 @@ public class Client {
 
     private static final QName USERNAME_TOKEN_HEADER = new QName("http://models.commons.textan.ufal.mff.cuni.cz", "usernameToken");
 
-    /** Settings of the application. Handle with care, they're shared. */
+    /**
+     * Settings of the application. Handle with care, they're shared.
+     */
     final protected Properties settings;
 
-    /** Instance of data provider. */
+    /**
+     * Instance of data provider.
+     */
     protected IDataProvider dataProvider = null;
 
-    /** Instance of document processor. */
+    /**
+     * Instance of document processor.
+     */
     protected IDocumentProcessor documentProcessor = null;
 
     /**
      * Only constructor
+     *
      * @param settings application settings
      */
     public Client(final Properties settings) {
@@ -66,6 +85,7 @@ public class Client {
 
     /**
      * Returns {@link #documentProcessor}, it is created if needed.
+     *
      * @return document processor
      */
     //TODO: configurable wsdl location!
@@ -78,6 +98,53 @@ public class Client {
                 // Add a port to the Service
                 service.addPort(DOCUMENT_PROCESSOR_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 documentProcessor = service.getPort(IDocumentProcessor.class);
+
+                UsernameToken token = new UsernameToken();
+                token.setUsername(settings.getProperty("username"));
+
+                Binding binding = ((BindingProvider) documentProcessor).getBinding();
+
+                List<Handler> handlers = new ArrayList<Handler>(1);
+                handlers.add(new SOAPHandler<SOAPMessageContext>() {
+
+                    @Override
+                    public boolean handleMessage(SOAPMessageContext context) {
+                        System.out.println("----> Handler");
+                        try {
+
+                            Boolean outbound = (Boolean) context.get("javax.xml.ws.handler.message.outbound");
+                            if (outbound != null && outbound) {
+
+                                Marshaller marshaller = JAXBContext.newInstance(UsernameToken.class).createMarshaller();
+                                SOAPHeader soapHeader = context.getMessage().getSOAPPart().getEnvelope().addHeader();
+                                marshaller.marshal(token, soapHeader);
+                            }
+                        } catch (JAXBException e) {
+                            e.printStackTrace();
+                        } catch (SOAPException e) {
+                            e.printStackTrace();
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean handleFault(SOAPMessageContext context) {
+                        return true;
+                    }
+
+                    @Override
+                    public void close(MessageContext context) {
+
+                    }
+
+                    @Override
+                    public Set<QName> getHeaders() {
+                        return null;
+                    }
+                });
+
+                binding.setHandlerChain(handlers);
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new WebServiceException("Malformed URL!", e);
@@ -88,10 +155,13 @@ public class Client {
 
     /**
      * Returns {@link #dataProvider}, it is created if needed.
+     *
      * @return data provider
      */
     //TODO: configurable wsdl location!
     private IDataProvider getDataProvider() throws WebServiceException { //FIXME: declared runtime exception?
+        System.out.printf("----> Provider");
+
         if (dataProvider == null) {
             try {
                 Service service = Service.create(new URL("http://localhost:9100/soap/data?wsdl"), DATA_PROVIDER_SERVICE);
@@ -100,6 +170,54 @@ public class Client {
                 // Add a port to the Service
                 service.addPort(DATA_PROVIDER_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 dataProvider = service.getPort(IDataProvider.class);
+
+                UsernameToken token = new UsernameToken();
+                token.setUsername(settings.getProperty("username"));
+
+                Binding binding = ((BindingProvider) dataProvider).getBinding();
+
+                List<Handler> handlers = new ArrayList<Handler>(1);
+                handlers.add(new SOAPHandler<SOAPMessageContext>() {
+
+                    @Override
+                    public boolean handleMessage(SOAPMessageContext context) {
+                        System.out.println("----> Handler");
+                        try {
+
+                            Boolean outbound = (Boolean) context.get("javax.xml.ws.handler.message.outbound");
+                            if (outbound != null && outbound) {
+
+                                Marshaller marshaller = JAXBContext.newInstance(UsernameToken.class).createMarshaller();
+                                SOAPHeader soapHeader = context.getMessage().getSOAPPart().getEnvelope().addHeader();
+                                marshaller.marshal(token, soapHeader);
+                            }
+                        } catch (JAXBException e) {
+                            e.printStackTrace();
+                        } catch (SOAPException e) {
+                            e.printStackTrace();
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean handleFault(SOAPMessageContext context) {
+                        return true;
+                    }
+
+                    @Override
+                    public void close(MessageContext context) {
+
+                    }
+
+                    @Override
+                    public Set<QName> getHeaders() {
+                        return null;
+                    }
+                });
+
+                binding.setHandlerChain(handlers);
+
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new WebServiceException("Malformed URL!", e);
@@ -110,8 +228,9 @@ public class Client {
 
     /**
      * Returns entities identified in text.
+     *
      * @param ticket editing ticket
-     * @param text text to process
+     * @param text   text to process
      * @return entities identified in text
      * @see IDocumentProcessor#getEntitiesFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
      */
@@ -128,6 +247,7 @@ public class Client {
 
     /**
      * Returns centered graph with limited distance.
+     *
      * @param centerId center object id
      * @param distance maximal distance from center
      * @return centered graph with limited distance
@@ -149,8 +269,9 @@ public class Client {
 
     /**
      * Fills candidates of entities.
-     * @param ticket editing ticket
-     * @param text report to process
+     *
+     * @param ticket   editing ticket
+     * @param text     report to process
      * @param entities where to store candidates
      * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
      */
@@ -181,6 +302,7 @@ public class Client {
 
     /**
      * Returns list of all objects in the system with specified type.
+     *
      * @param typeId type id to filter
      * @return list of all objects in the system with specified type
      * @throws IdNotFoundException if id was not found
@@ -203,6 +325,7 @@ public class Client {
 
     /**
      * Returns list of all objects in the system.
+     *
      * @return list of all objects in the system
      * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
      */
@@ -216,6 +339,7 @@ public class Client {
 
     /**
      * Returns set of all objects in the system.
+     *
      * @return set of all objects in the system
      * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
      */
@@ -229,6 +353,7 @@ public class Client {
 
     /**
      * Returns list of all object types in the system.
+     *
      * @return list of all object types in the system
      * @see IDataProvider#getObjectTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
      */
@@ -242,6 +367,7 @@ public class Client {
 
     /**
      * Returns set of all object types in the system.
+     *
      * @return set of all object types in the system
      * @see IDataProvider#getObjectTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
      */
@@ -255,6 +381,7 @@ public class Client {
 
     /**
      * Returns set of all relation types in the system.
+     *
      * @return set of all relation types in the system
      * @see IDataProvider#getRelationTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
      */
@@ -268,6 +395,7 @@ public class Client {
 
     /**
      * Returns settings of the application. Handle with care, their shared.
+     *
      * @return settings of the application
      */
     public Properties getSettings() {
@@ -276,6 +404,7 @@ public class Client {
 
     /**
      * Returns ticket for document processing.
+     *
      * @param username user login
      * @return ticket for document processing
      * @see IDocumentProcessor#getEditingTicket(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketRequest)
@@ -293,6 +422,7 @@ public class Client {
 
     /**
      * Creates new grapher for providing graph information.
+     *
      * @return new grapher for providing graph information
      */
     public Grapher createGrapher() {
@@ -301,6 +431,7 @@ public class Client {
 
     /**
      * Creates new pipeline for processing new report.
+     *
      * @return new pipeline for processing new report
      */
     public ProcessReportPipeline createNewReportPipeline() {
@@ -309,14 +440,15 @@ public class Client {
 
     /**
      * Saves processed documents.
-     * @param ticket editing ticket
-     * @param text report text
-     * @param reportEntities report entities
+     *
+     * @param ticket          editing ticket
+     * @param text            report text
+     * @param reportEntities  report entities
      * @param reportRelations report relations
      */
     public boolean saveProcessedDocument(final Ticket ticket,
-            final String text, final List<Entity> reportEntities,
-            final List<RelationBuilder> reportRelations) throws IdNotFoundException{
+                                         final String text, final List<Entity> reportEntities,
+                                         final List<RelationBuilder> reportRelations) throws IdNotFoundException {
         final SaveProcessedDocumentFromStringRequest request =
                 new SaveProcessedDocumentFromStringRequest();
 
@@ -339,15 +471,15 @@ public class Client {
             final RelationOccurrence occ = relation.toRelationOccurrence();
             relationOccurrences.add(occ);
         }
-        
+
         request.setText(text);
         request.setForce(false);
 
         try {
             final SaveProcessedDocumentFromStringResponse response =
                     getDocumentProcessor().saveProcessedDocumentFromString(
-                        request, //TODO handle save document error
-                        ticket.toTicket());
+                            request, //TODO handle save document error
+                            ticket.toTicket());
             return response.isResult();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
