@@ -47,6 +47,10 @@ public class Client {
 
     private static final QName USERNAME_TOKEN_HEADER = new QName("http://models.commons.textan.ufal.mff.cuni.cz", "usernameToken");
 
+    {
+        System.setProperty( "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
+    }
+
     /**
      * Settings of the application. Handle with care, they're shared.
      */
@@ -98,7 +102,6 @@ public class Client {
                 // Add a port to the Service
                 service.addPort(DOCUMENT_PROCESSOR_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 documentProcessor = service.getPort(IDocumentProcessor.class);
-
                 UsernameToken token = new UsernameToken();
                 token.setUsername(settings.getProperty("username"));
 
