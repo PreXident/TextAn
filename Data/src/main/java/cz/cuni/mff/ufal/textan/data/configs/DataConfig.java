@@ -180,11 +180,11 @@ public class DataConfig {
         private LogInterceptor interceptor;
 
         @Autowired
-        private IAuditTableDAO auditTableDAO;
+        private SessionFactory sessionFactory;
 
         @PostConstruct
         public void inject() {
-            interceptor.setAudit(auditTableDAO);
+            interceptor.setSessionFactory(sessionFactory);
         }
     }
 }

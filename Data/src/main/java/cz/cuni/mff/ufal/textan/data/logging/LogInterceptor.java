@@ -17,6 +17,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Václav Pernička
@@ -25,21 +28,21 @@ public class LogInterceptor extends EmptyInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(LogInterceptor.class);
 
-    private Set inserts = new HashSet();
-    private Set updates = new HashSet();
-    private Set deletes = new HashSet();
+    private final Set<Object> inserts = new HashSet();
+    private final Set<Object> updates = new HashSet();
+    private final Set<Object> deletes = new HashSet();
 
-    private IAuditTableDAO audit;
 
+    private SessionFactory sessionFactory;
+     
     private String username;
 
     public LogInterceptor(String username) {
         this.username = username;
     }
 
-    public void setAudit(IAuditTableDAO audit) {
-        LOG.debug("Inject AuditTableDao: {}", audit);
-        this.audit = audit;
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     @Override
@@ -58,6 +61,9 @@ public class LogInterceptor extends EmptyInterceptor {
         LOG.debug("Executing onFlushDirty");
 //        System.out.println(username + ": update: " + entity);
         //audit.add(new AuditTable(username, AuditTable.AuditType.Update, entity.toString()));
+        if (!(entity instanceof AuditTable)) {
+            updates.add(entity);
+        }
         return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -66,6 +72,9 @@ public class LogInterceptor extends EmptyInterceptor {
         LOG.debug("Executing onDelete");
 //        System.out.println(username + ": delete: " + entity);
         //audit.add(new AuditTable(username, AuditTable.AuditType.Delete, entity.toString()));
+        if (!(entity instanceof AuditTable)) {
+            deletes.add(entity);
+        }
         super.onDelete(entity, id, state, propertyNames, types); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -74,14 +83,31 @@ public class LogInterceptor extends EmptyInterceptor {
         LOG.debug("Executing postFlush");
         super.postFlush(iterator);
 
+        Session session = sessionFactory.openSession();
         try {
 
-            for (Iterator it = inserts.iterator(); it.hasNext(); ) {
+            for (Iterator<Object> it = inserts.iterator(); it.hasNext(); ) {
                 Object entity = it.next();
-                System.out.println("postFlush - insert");
-                //Session session = sessionFactory.getCurrentSession();
-
-                audit.add(new AuditTable(username, AuditTable.AuditType.Insert, entity == null ? "NULL" : entity.toString()));
+                //System.out.println("postFlush - insert");
+                
+                AuditTable newAudit = new AuditTable(username, AuditTable.AuditType.Insert, entity == null ? "NULL" : entity.toString());
+                session.save(newAudit);
+            }
+            
+            for (Iterator<Object> it = updates.iterator(); it.hasNext(); ) {
+                Object entity = it.next();
+                //System.out.println("postFlush - update");
+                
+                AuditTable newAudit = new AuditTable(username, AuditTable.AuditType.Update, entity == null ? "NULL" : entity.toString());
+                session.save(newAudit);
+            }
+            
+            for (Iterator<Object> it = deletes.iterator(); it.hasNext(); ) {
+                Object entity = it.next();
+                //System.out.println("postFlush - delete");
+                
+                AuditTable newAudit = new AuditTable(username, AuditTable.AuditType.Delete, entity == null ? "NULL" : entity.toString());
+                session.save(newAudit);
             }
 
 
@@ -89,6 +115,7 @@ public class LogInterceptor extends EmptyInterceptor {
             inserts.clear();
             updates.clear();
             deletes.clear();
+            session.close();
         }
     }
 }

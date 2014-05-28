@@ -21,7 +21,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)

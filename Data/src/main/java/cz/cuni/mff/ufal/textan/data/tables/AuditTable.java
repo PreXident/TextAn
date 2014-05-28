@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import cz.cuni.mff.ufal.textan.data.repositories.common.EnumUserType;
 import java.util.Objects;
 
 /**
