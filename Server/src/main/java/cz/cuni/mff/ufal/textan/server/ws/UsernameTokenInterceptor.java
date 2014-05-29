@@ -31,13 +31,13 @@ public class UsernameTokenInterceptor extends AbstractSoapInterceptor {
      */
     public UsernameTokenInterceptor() {
 
-        //Ticket interceptor must be processed before CXF converts soap to java calls
-        super(Phase.UNMARSHAL);
+        //UsernameToken interceptor must be processed before CXF converts soap to java calls
+        super(Phase.PRE_INVOKE);
         getBefore().add(SoapHeaderInterceptor.class.getName());
     }
 
     /**
-     * Searches tickets in SOAP message and sets username.
+     * Searches a UsernameToken in SOAP message and sets username.
      *
      * @param message
      * @throws Fault
@@ -63,11 +63,10 @@ public class UsernameTokenInterceptor extends AbstractSoapInterceptor {
             LOG.debug("Username: {}", username);
 
         } else {
-            //TODO: better exception
             Fault exception = new Fault(new Exception("Did not find UsernameToken header"));
             exception.setFaultCode(Fault.FAULT_CODE_SERVER);
 
-            LOG.warn("Did not find any header with Ticket!", exception);
+            LOG.warn("Did not find any header with UsernameToken!", exception);
             throw exception;
         }
     }

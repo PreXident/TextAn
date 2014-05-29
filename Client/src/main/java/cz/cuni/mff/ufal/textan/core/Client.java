@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
+import cz.cuni.mff.ufal.textan.commons.models.UsernameToken;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
@@ -12,9 +13,21 @@ import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPHeader;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.ws.Binding;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
+import javax.xml.ws.handler.Handler;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPHandler;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,21 +46,13 @@ public class Client {
     private static final QName DATA_PROVIDER_SERVICE = new QName("http://ws.commons.textan.ufal.mff.cuni.cz", "DataProviderService");
     private static final QName DATA_PROVIDER_PORT = new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService", "DataProviderPort");
 
-    private static final QName USERNAME_TOKEN_HEADER = new QName("http://models.commons.textan.ufal.mff.cuni.cz", "usernameToken");
-
-    /**
-     * Settings of the application. Handle with care, they're shared.
-     */
+    /** Settings of the application. Handle with care, they're shared. */
     final protected Properties settings;
 
-    /**
-     * Instance of data provider.
-     */
+    /** Instance of data provider. */
     protected IDataProvider dataProvider = null;
 
-    /**
-     * Instance of document processor.
-     */
+    /** Instance of document processor. */
     protected IDocumentProcessor documentProcessor = null;
 
     /**
@@ -60,16 +65,52 @@ public class Client {
     }
 
     /**
-     * Creates ticket with username specified in settings.
-     * @return ticket with username specified in settings
+     * Adds JAX-WS Handler which adds UsernameToken header into SOAP message.
+     *
+     * @param binding JAW-WS bindings (from web service port)
      */
-    //fixme
-//    private cz.cuni.mff.ufal.textan.commons.models.Ticket createTicket() {
-//        final cz.cuni.mff.ufal.textan.commons.models.Ticket ticket =
-//                new cz.cuni.mff.ufal.textan.commons.models.Ticket();
-//        ticket.setUsername(settings.getProperty("username"));
-//        return ticket;
-//    }
+    private void addSOAPHandler(Binding binding) {
+
+        UsernameToken token = new UsernameToken();
+        token.setUsername(settings.getProperty("username"));
+
+        List<Handler> handlers = new ArrayList<>(1);
+        handlers.add(new SOAPHandler<SOAPMessageContext>() {
+
+            @Override
+            public boolean handleMessage(SOAPMessageContext context) {
+                try {
+                    Boolean outbound = (Boolean) context.get("javax.xml.ws.handler.message.outbound");
+                    if (outbound != null && outbound) {
+
+                        SOAPMessage message = context.getMessage();
+                        SOAPHeader header = message.getSOAPHeader();
+                        if (header == null) {
+                            header = message.getSOAPPart().getEnvelope().addHeader();
+                        }
+
+                        Marshaller marshaller = JAXBContext.newInstance(UsernameToken.class).createMarshaller();
+                        marshaller.marshal(token, header);
+                    }
+                } catch (JAXBException | SOAPException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean handleFault(SOAPMessageContext context) { return true; }
+
+            @Override
+            public void close(MessageContext context) { }
+
+            @Override
+            public Set<QName> getHeaders() { return null; }
+        });
+
+        binding.setHandlerChain(handlers);
+    }
 
     /**
      * Returns {@link #documentProcessor}, it is created if needed.
@@ -87,6 +128,9 @@ public class Client {
                 service.addPort(DOCUMENT_PROCESSOR_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 documentProcessor = service.getPort(IDocumentProcessor.class);
 
+                Binding documentProcessorBinding = ((BindingProvider) documentProcessor).getBinding();
+                addSOAPHandler(documentProcessorBinding);
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new WebServiceException("Malformed URL!", e);
@@ -101,9 +145,7 @@ public class Client {
      * @return data provider
      */
     //TODO: configurable wsdl location!
-    private IDataProvider getDataProvider() throws WebServiceException { //FIXME: declared runtime exception?
-        System.out.printf("----> Provider");
-
+    private IDataProvider getDataProvider() {
         if (dataProvider == null) {
             try {
                 Service service = Service.create(new URL("http://localhost:9100/soap/data?wsdl"), DATA_PROVIDER_SERVICE);
@@ -112,6 +154,9 @@ public class Client {
                 // Add a port to the Service
                 service.addPort(DATA_PROVIDER_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 dataProvider = service.getPort(IDataProvider.class);
+
+                Binding dataProviderBinding = ((BindingProvider) dataProvider).getBinding();
+                addSOAPHandler(dataProviderBinding);
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
