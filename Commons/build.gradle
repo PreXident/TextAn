@@ -33,7 +33,7 @@ configurations { cxf }
 ext {
 
     //CXF version
-    cxfVersion = '3.0.0'
+    cxfVersion = '2.7.10'
 
     cxfArtifacts = [
             'cxf-tools-wsdlto-frontend-jaxws',

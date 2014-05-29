@@ -1,7 +1,6 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
-import cz.cuni.mff.ufal.textan.commons.models.UsernameToken;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
@@ -13,20 +12,9 @@ import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPHeader;
-import javax.xml.ws.Binding;
-import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
-import javax.xml.ws.handler.Handler;
-import javax.xml.ws.handler.MessageContext;
-import javax.xml.ws.handler.soap.SOAPHandler;
-import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -98,51 +86,6 @@ public class Client {
                 // Add a port to the Service
                 service.addPort(DOCUMENT_PROCESSOR_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 documentProcessor = service.getPort(IDocumentProcessor.class);
-                UsernameToken token = new UsernameToken();
-                token.setUsername(settings.getProperty("username"));
-
-                Binding binding = ((BindingProvider) documentProcessor).getBinding();
-
-                List<Handler> handlers = new ArrayList<Handler>(1);
-                handlers.add(new SOAPHandler<SOAPMessageContext>() {
-
-                    @Override
-                    public boolean handleMessage(SOAPMessageContext context) {
-                        System.out.println("----> Handler");
-                        try {
-
-                            Boolean outbound = (Boolean) context.get("javax.xml.ws.handler.message.outbound");
-                            if (outbound != null && outbound) {
-
-                                Marshaller marshaller = JAXBContext.newInstance(UsernameToken.class).createMarshaller();
-                                SOAPHeader soapHeader = context.getMessage().getSOAPPart().getEnvelope().addHeader();
-                                marshaller.marshal(token, soapHeader);
-                            }
-                        } catch (JAXBException e) {
-                            e.printStackTrace();
-                        } catch (SOAPException e) {
-                            e.printStackTrace();
-                        }
-                        return true;
-                    }
-
-                    @Override
-                    public boolean handleFault(SOAPMessageContext context) {
-                        return true;
-                    }
-
-                    @Override
-                    public void close(MessageContext context) {
-
-                    }
-
-                    @Override
-                    public Set<QName> getHeaders() {
-                        return null;
-                    }
-                });
-
-                binding.setHandlerChain(handlers);
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -169,53 +112,6 @@ public class Client {
                 // Add a port to the Service
                 service.addPort(DATA_PROVIDER_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 dataProvider = service.getPort(IDataProvider.class);
-
-                UsernameToken token = new UsernameToken();
-                token.setUsername(settings.getProperty("username"));
-
-                Binding binding = ((BindingProvider) dataProvider).getBinding();
-
-                List<Handler> handlers = new ArrayList<Handler>(1);
-                handlers.add(new SOAPHandler<SOAPMessageContext>() {
-
-                    @Override
-                    public boolean handleMessage(SOAPMessageContext context) {
-                        System.out.println("----> Handler");
-                        try {
-
-                            Boolean outbound = (Boolean) context.get("javax.xml.ws.handler.message.outbound");
-                            if (outbound != null && outbound) {
-
-                                Marshaller marshaller = JAXBContext.newInstance(UsernameToken.class).createMarshaller();
-                                SOAPHeader soapHeader = context.getMessage().getSOAPPart().getEnvelope().addHeader();
-                                marshaller.marshal(token, soapHeader);
-                            }
-                        } catch (JAXBException e) {
-                            e.printStackTrace();
-                        } catch (SOAPException e) {
-                            e.printStackTrace();
-                        }
-                        return true;
-                    }
-
-                    @Override
-                    public boolean handleFault(SOAPMessageContext context) {
-                        return true;
-                    }
-
-                    @Override
-                    public void close(MessageContext context) {
-
-                    }
-
-                    @Override
-                    public Set<QName> getHeaders() {
-                        return null;
-                    }
-                });
-
-                binding.setHandlerChain(handlers);
-
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();

@@ -12,7 +12,7 @@ repositories {
 }
 
 def springVersion = '4.0.3.RELEASE'
-def cxfVersion = '3.0.0'
+def cxfVersion = '2.7.10'
 
 dependencies {
     //web servers
@@ -30,6 +30,7 @@ dependencies {
     //web services
     compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: cxfVersion
     compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: cxfVersion
+    //compile group: 'org.apache.cxf', name:'cxf-rt-wsdl', version: cxfVersion //new boudle in cxf 3.0.0
 
     //logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
