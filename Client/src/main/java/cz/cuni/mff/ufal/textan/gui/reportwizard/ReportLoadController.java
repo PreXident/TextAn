@@ -36,11 +36,6 @@ public class ReportLoadController extends ReportWizardController {
     ResourceBundle resourceBundle;
 
     @FXML
-    private void cancel() {
-        closeContainer();
-    }
-
-    @FXML
     private void next() {
         final Toggle toggled = loadToggleGroup.getSelectedToggle();
         try {

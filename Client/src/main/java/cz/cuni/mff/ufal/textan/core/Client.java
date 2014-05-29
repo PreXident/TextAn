@@ -121,7 +121,7 @@ public class Client {
      * @return entities identified in text
      * @see IDocumentProcessor#getEntitiesFromString(GetEntitiesFromString, EditingTicket)
      */
-    public List<Entity> getEntities(final Ticket ticket, final String text) {
+    public synchronized List<Entity> getEntities(final Ticket ticket, final String text) {
         final GetEntitiesFromString request = new GetEntitiesFromString();
         request.setText(text);
         final IDocumentProcessor docProc = getDocumentProcessor();
@@ -139,7 +139,7 @@ public class Client {
      * @return centered graph with limited distance
      * @throws IdNotFoundException if object id is not found
      */
-    public Graph getGraph(final long centerId, final int distance)
+    public synchronized Graph getGraph(final long centerId, final int distance)
             throws IdNotFoundException {
         final GetGraphById request = new GetGraphById();
         request.setDistance(distance);
@@ -160,7 +160,7 @@ public class Client {
      * @param entities where to store candidates
      * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromString, cz.cuni.mff.ufal.textan.commons.models.EditingTicket)
      */
-    public void getObjects(final Ticket ticket, final String text, final List<Entity> entities) {
+    public synchronized void getObjects(final Ticket ticket, final String text, final List<Entity> entities) {
         final Entities ents = new Entities();
         final Map<Integer, Entity> map = new HashMap<>();
         for (Entity entity : entities) {
@@ -192,7 +192,7 @@ public class Client {
      * @throws IdNotFoundException if id was not found
      * @see IDataProvider#getObjectsByTypeId(cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeId, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
-    public List<Object> getObjectsListByTypeId(final long typeId)
+    public synchronized List<Object> getObjectsListByTypeId(final long typeId)
             throws IdNotFoundException {
         try {
             final GetObjectsByTypeId request = new GetObjectsByTypeId();
@@ -212,7 +212,7 @@ public class Client {
      * @return list of all objects in the system
      * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
-    public List<Object> getObjectsList() {
+    public synchronized List<Object> getObjectsList() {
         final GetObjectsResponse response =
                 getDataProvider().getObjects(new Void(), createTicket());
         return response.getObjects().stream()
@@ -225,7 +225,7 @@ public class Client {
      * @return set of all objects in the system
      * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
-    public Set<Object> getObjectsSet() {
+    public synchronized Set<Object> getObjectsSet() {
         final GetObjectsResponse response =
                 getDataProvider().getObjects(new Void(), createTicket());
         return response.getObjects().stream()
@@ -238,7 +238,7 @@ public class Client {
      * @return list of all object types in the system
      * @see IDataProvider#getObjectTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
-    public List<ObjectType> getObjectTypesList() {
+    public synchronized List<ObjectType> getObjectTypesList() {
         final GetObjectTypesResponse response =
                 getDataProvider().getObjectTypes(new Void(), createTicket());
         return response.getObjectTypes().stream()
@@ -251,7 +251,7 @@ public class Client {
      * @return set of all object types in the system
      * @see IDataProvider#getObjectTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
-    public Set<ObjectType> getObjectTypesSet() {
+    public synchronized Set<ObjectType> getObjectTypesSet() {
         final GetObjectTypesResponse response =
                 getDataProvider().getObjectTypes(new Void(), createTicket());
         return response.getObjectTypes().stream()
@@ -264,7 +264,7 @@ public class Client {
      * @return set of all relation types in the system
      * @see IDataProvider#getRelationTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
-    public List<RelationType> getRelationTypesList() {
+    public synchronized List<RelationType> getRelationTypesList() {
         final GetRelationTypesResponse response =
                 getDataProvider().getRelationTypes(new Void(), createTicket());
         return response.getRelationTypes().stream()
@@ -286,7 +286,7 @@ public class Client {
      * @return ticket for document processing
      * @see IDocumentProcessor#getEditingTicket(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicket, cz.cuni.mff.ufal.textan.commons.models.Ticket)
      */
-    public Ticket getTicket(final String username) {
+    public synchronized Ticket getTicket(final String username) {
         final GetEditingTicket request = new GetEditingTicket();
         final cz.cuni.mff.ufal.textan.commons.models.Ticket ticket =
                 new cz.cuni.mff.ufal.textan.commons.models.Ticket();
@@ -319,8 +319,10 @@ public class Client {
      * @param text report text
      * @param reportEntities report entities
      * @param reportRelations report relations
+     * @return true if saving was successfull, false otherwise
+     * @throws IdNotFoundException if id error occurs
      */
-    public boolean saveProcessedDocument(final Ticket ticket,
+    public synchronized boolean saveProcessedDocument(final Ticket ticket,
             final String text, final List<Entity> reportEntities,
             final List<RelationBuilder> reportRelations) throws IdNotFoundException{
         final SaveProcessedDocumentFromString request =

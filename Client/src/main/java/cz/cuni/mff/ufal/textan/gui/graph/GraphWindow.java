@@ -39,11 +39,11 @@ public class GraphWindow extends InnerWindow {
             setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("ObjectList.fxml"), resourceBundle);
             final Parent loadedRoot = (Parent) loader.load();
+            getContentPane().getChildren().add(loadedRoot);
             GraphController controller = loader.getController();
+            controller.setWindow(this);
             controller.setSettings(settings);
             controller.setGrapher(grapher);
-            controller.setWindow(this);
-            getContentPane().getChildren().add(loadedRoot);
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

@@ -4,7 +4,6 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
@@ -22,11 +21,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
@@ -34,6 +35,7 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -60,6 +62,9 @@ public class ReportObjectsController extends ReportWizardController {
 
     @FXML
     TextFlow textFlow;
+
+    @FXML
+    Slider slider;
 
     /** Localization controller. */
     ResourceBundle resourceBundle;
@@ -102,34 +107,38 @@ public class ReportObjectsController extends ReportWizardController {
 
     @FXML
     public void back() {
-        pipeline.back();
-    }
-
-    @FXML
-    private void cancel() {
-        closeContainer();
+        if (pipeline.lock.tryAcquire()) {
+            pipeline.back();
+        }
     }
 
     @FXML
     private void next() {
-        for (Entity ent : pipeline.getReportEntities()) {
-            if (ent.getCandidate() == null) {
-                callWithContentBackup(() ->
-                    createDialog()
-                            .owner(getDialogOwner(root))
-                            .title(Utils.localize(resourceBundle, "error.objects.unassigned"))
-                            .message(Utils.localize(resourceBundle, "error.objects.unassigned.detail"))
-                            .showInformation());
-                return;
+        if (pipeline.lock.tryAcquire()) {
+            for (Entity ent : pipeline.getReportEntities()) {
+                if (ent.getCandidate() == null) {
+                    callWithContentBackup(() ->
+                        createDialog()
+                                .owner(getDialogOwner(root))
+                                .title(Utils.localize(resourceBundle, "error.objects.unassigned"))
+                                .message(Utils.localize(resourceBundle, "error.objects.unassigned.detail"))
+                                .showInformation());
+                    pipeline.lock.release();
+                    return;
+                }
             }
+            getMainNode().setCursor(Cursor.WAIT);
+            new Thread(() -> {
+                pipeline.setReportObjects(pipeline.getReportEntities());
+            }, "FromObjectsState").start();
         }
-        pipeline.setReportObjects(pipeline.getReportEntities());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
+        slider.addEventFilter(EventType.ROOT, e -> e.consume());
         //create popup
         BorderPane border = new BorderPane();
         final SplitPane splitVert = new SplitPane();

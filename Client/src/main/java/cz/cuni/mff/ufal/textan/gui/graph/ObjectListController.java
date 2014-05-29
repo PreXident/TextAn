@@ -3,17 +3,20 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import java.net.URL;
+import java.util.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-
-import java.net.URL;
-import java.util.*;
 
 /**
  * Controls selecting object to be displayed in the graph.
@@ -31,11 +34,6 @@ public class ObjectListController extends GraphController {
 
     /** Localization container. */
     protected ResourceBundle resourceBundle;
-
-    @FXML
-    private void cancel() {
-        closeContainer();
-    }
 
     @FXML
     private void next() {
@@ -99,11 +97,30 @@ public class ObjectListController extends GraphController {
     @Override
     public void setGrapher(final Grapher grapher) {
         super.setGrapher(grapher);
-        final Set<Object> set = grapher.getObjects();
-        final List<Object> list = new ArrayList<>(set);
-        //FIXME: is the comparison right?
-        list.sort((obj1, obj2) -> Long.compare(obj1.getId(), obj2.getId()));
-
-        listView.setItems(FXCollections.observableList(list));
+        final Node node = getMainNode();
+        node.setCursor(Cursor.WAIT);
+        final Task<List<Object>> task = new Task<List<Object>>() {
+            @Override
+            protected List<Object> call() throws Exception {
+                final List<Object> list = grapher.getObjectsList();
+                //FIXME: is the comparison right?
+                list.sort((obj1, obj2) -> Long.compare(obj1.getId(), obj2.getId()));
+                return list;
+            }
+        };
+        task.setOnSucceeded(e -> {
+            listView.setItems(FXCollections.observableList(task.getValue()));
+            node.setCursor(Cursor.DEFAULT);
+        });
+        task.setOnFailed(e -> {
+            node.setCursor(Cursor.DEFAULT);
+            callWithContentBackup(() -> {
+                createDialog()
+                        .owner(getDialogOwner(root))
+                        .title(Utils.localize(resourceBundle, "page.load.error"))
+                        .showException(task.getException());
+            });
+        });
+        new Thread(task, "Grapher").start();
     }
 }

@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
 
 /**
  * Represents pipeline handling processing documents.
@@ -42,6 +43,9 @@ public class ProcessReportPipeline {
 
     /** Ticket for document processing. */
     protected final Ticket ticket;
+
+    /** Simple synchronization. Indented to be used by UI. */
+    public final Semaphore lock = new Semaphore(1);
 
     /**
      * Counter of number of steps back.

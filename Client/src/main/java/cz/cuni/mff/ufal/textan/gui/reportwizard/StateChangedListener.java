@@ -131,42 +131,45 @@ public class StateChangedListener implements IStateChangedListener {
 
     @Override
     public void stateChanged(State newState) {
-        if (newState.getType() == StateType.DONE) {
-            if (window != null) {
-                window.close();
-            } else /*if (stage != null) */ {
-                stage.close();
+        Platform.runLater(() -> {
+            if (newState.getType() == StateType.DONE) {
+                if (window != null) {
+                    window.close();
+                } else /*if (stage != null) */ {
+                    stage.close();
+                }
+                return;
             }
-            return;
-        }
-        try {
-            final StateInfo stateInfo = fxmlMapping.get(newState.getType());
-            final ResourceBundle rb = ResourceBundle.getBundle(stateInfo.rb);
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource(stateInfo.fxml), rb);
-            final Parent loadedRoot = (Parent) loader.load();
-            ReportWizardController controller = loader.getController();
-            controller.setSettings(settings);
-            controller.setPipeline(pipeline);
-            final String title = Utils.localize(resourceBundle, stateInfo.title);
-            if (window != null) {
-                window.getContentPane().getChildren().clear();
-                controller.setWindow(window);
-                window.getContentPane().getChildren().add(loadedRoot);
-                window.setTitle(title);
-                hackFixTextFlowMouseEvents(window);
-            } else /* if (stage != null) */ {
-                controller.setStage(stage);
-                stage.getInnerWindow().getContentPane().getChildren().clear();
-                stage.getInnerWindow().getContentPane().getChildren().add(loadedRoot);
-                stage.getInnerWindow().setTitle(title);
-                hackFixTextFlowMouseEvents(stage.getInnerWindow());
+            try {
+                final StateInfo stateInfo = fxmlMapping.get(newState.getType());
+                final ResourceBundle rb = ResourceBundle.getBundle(stateInfo.rb);
+                final FXMLLoader loader = new FXMLLoader(getClass().getResource(stateInfo.fxml), rb);
+                final Parent loadedRoot = (Parent) loader.load();
+                ReportWizardController controller = loader.getController();
+                controller.setSettings(settings);
+                controller.setPipeline(pipeline);
+                final String title = Utils.localize(resourceBundle, stateInfo.title);
+                if (window != null) {
+                    window.getContentPane().getChildren().clear();
+                    controller.setWindow(window);
+                    window.getContentPane().getChildren().add(loadedRoot);
+                    window.setTitle(title);
+                    hackFixTextFlowMouseEvents(window);
+                } else /* if (stage != null) */ {
+                    controller.setStage(stage);
+                    stage.getInnerWindow().getContentPane().getChildren().clear();
+                    stage.getInnerWindow().getContentPane().getChildren().add(loadedRoot);
+                    stage.getInnerWindow().setTitle(title);
+                    hackFixTextFlowMouseEvents(stage.getInnerWindow());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Dialogs.create()
+                        .title(Utils.localize(resourceBundle, "error.next.page"))
+                        .showException(e);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Dialogs.create()
-                    .title(Utils.localize(resourceBundle, "error.next.page"))
-                    .showException(e);
-        }
+            pipeline.lock.release();
+        });
     }
 
     /**
