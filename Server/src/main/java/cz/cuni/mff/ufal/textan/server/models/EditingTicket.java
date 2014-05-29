@@ -8,39 +8,35 @@ import java.util.Date;
  *
  * @author Petr Fanta
  */
-public class EditingTicket extends Ticket {
+public class EditingTicket{
 
     private final Date timestamp;
 
     /**
      * Instantiates a new Editing ticket.
      *
-     * @param username the username
      */
-    public EditingTicket(String username) {
-        super(username);
+    public EditingTicket() {
         timestamp = new Date();
     }
 
     /**
      * Instantiates a new Editing ticket.
      *
-     * @param username the username
      * @param timestamp the timestamp
      */
-    public EditingTicket(String username, Date timestamp) {
-        super(username);
+    public EditingTicket(Date timestamp) {
         this.timestamp = timestamp;
     }
 
     /**
-     * Converts a {@link cz.cuni.mff.ufal.textan.commons.models.EditingTicket} to {@link cz.cuni.mff.ufal.textan.server.models.Entity}
+     * Converts a {@link cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket} to {@link cz.cuni.mff.ufal.textan.server.models.Entity}
      *
      * @param commonsEditingTicket the commons editing ticket
      * @return the editing ticket
      */
-    public static EditingTicket fromCommonsEditingTicket(cz.cuni.mff.ufal.textan.commons.models.EditingTicket commonsEditingTicket) {
-        return new EditingTicket(commonsEditingTicket.getUsername(), commonsEditingTicket.getTimestamp());
+    public static EditingTicket fromCommonsEditingTicket(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket commonsEditingTicket) {
+        return new EditingTicket(commonsEditingTicket.getTimestamp());
     }
 
     /**

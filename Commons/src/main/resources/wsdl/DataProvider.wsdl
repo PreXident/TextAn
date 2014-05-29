@@ -14,28 +14,28 @@
         </xs:schema>
     </wsdl:types>
         
-    <wsdl:message name="ticket">
-        <wsdl:part name="ticket" element="cms:ticket"/>
+    <wsdl:message name="usernameToken">
+        <wsdl:part name="usernameToken" element="cms:usernameToken"/>
     </wsdl:message>
     
-    <wsdl:message name="getObjectTypes">
-        <wsdl:part name="getObjectTypes" element="tns:getObjectTypes"/>
+    <wsdl:message name="getObjectTypesRequest">
+        <wsdl:part name="getObjectTypesRequest" element="tns:getObjectTypesRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getObjectTypesResponse">
         <wsdl:part name="getObjectTypesResponse" element="tns:getObjectTypesResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getObject">
-        <wsdl:part name="getObject" element="tns:getObject"/>
+    <wsdl:message name="getObjectRequest">
+        <wsdl:part name="getObjectRequest" element="tns:getObjectRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getObjectResponse">
         <wsdl:part name="getObjectResponse" element="tns:getObjectResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getObjects">
-        <wsdl:part name="getObjects" element="tns:getObjects"/>
+    <wsdl:message name="getObjectsRequest">
+        <wsdl:part name="getObjectsRequest" element="tns:getObjectsRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getObjectsResponse">
@@ -50,24 +50,24 @@
         <!--<wsdl:part name="getObjectsByTypeResponse" element="tns:getObjectsByTypeResponse"/>-->
     <!--</wsdl:message>-->
     
-    <wsdl:message name="getObjectsByTypeId">
-        <wsdl:part name="getObjectsByTypeId" element="tns:getObjectsByTypeId"/>
+    <wsdl:message name="getObjectsByTypeIdRequest">
+        <wsdl:part name="getObjectsByTypeIdRequest" element="tns:getObjectsByTypeIdRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getObjectsByTypeIdResponse">
         <wsdl:part name="getObjectsByTypeIdResponse" element="tns:getObjectsByTypeIdResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getRelationTypes">
-        <wsdl:part name="getRelationTypes" element="tns:getRelationTypes"/>
+    <wsdl:message name="getRelationTypesRequest">
+        <wsdl:part name="getRelationTypesRequest" element="tns:getRelationTypesRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getRelationTypesResponse">
         <wsdl:part name="getRelationTypesResponse" element="tns:getRelationTypesResponse"/>
     </wsdl:message>
 
-    <wsdl:message name="getRelations">
-        <wsdl:part name="getRelations" element="tns:getRelations"/>
+    <wsdl:message name="getRelationsRequest">
+        <wsdl:part name="getRelationsRequest" element="tns:getRelationsRequest"/>
     </wsdl:message>
 
     <wsdl:message name="getRelationsResponse">
@@ -82,80 +82,80 @@
         <!--<wsdl:part name="getRelationsByTypeResponse" element="tns:getRelationsByTypeResponse"/>-->
     <!--</wsdl:message>-->
     
-    <wsdl:message name="getRelationsByTypeId">
-        <wsdl:part name="getRelationsByTypeId" element="tns:getRelationsByTypeId"/>
+    <wsdl:message name="getRelationsByTypeIdRequest">
+        <wsdl:part name="getRelationsByTypeIdRequest" element="tns:getRelationsByTypeIdRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getRelationsByTypeIdResponse">
         <wsdl:part name="getRelationsByTypeIdResponse" element="tns:getRelationsByTypeIdResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getGraphById">
-        <wsdl:part name="getGraphById" element="tns:getGraphById"/>
+    <wsdl:message name="getGraphByIdRequest">
+        <wsdl:part name="getGraphByIdRequest" element="tns:getGraphByIdRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getGraphByIdResponse">
         <wsdl:part name="getGraphByIdResponse" element="tns:getGraphByIdResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getRelatedObjectsById">
-        <wsdl:part name="getRelatedObjectsById" element="tns:getRelatedObjectsById"/>
+    <wsdl:message name="getRelatedObjectsByIdRequest">
+        <wsdl:part name="getRelatedObjectsByIdRequest" element="tns:getRelatedObjectsByIdRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getRelatedObjectsByIdResponse">
         <wsdl:part name="getRelatedObjectsByIdResponse" element="tns:getRelatedObjectsByIdResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getPathById">
-        <wsdl:part name="getPathById" element="tns:getPathById"/>
+    <wsdl:message name="getPathByIdRequest">
+        <wsdl:part name="getPathByIdRequest" element="tns:getPathByIdRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getPathByIdResponse">
         <wsdl:part name="getPathByIdResponse" element="tns:getPathByIdResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="mergeObjects">
-        <wsdl:part name="mergeObjects" element="tns:mergeObjects"/>
+    <wsdl:message name="mergeObjectsRequest">
+        <wsdl:part name="mergeObjectsRequest" element="tns:mergeObjectsRequest"/>
     </wsdl:message>
     
     <wsdl:message name="mergeObjectsResponse">
         <wsdl:part name="mergeObjectsResponse" element="tns:mergeObjectsResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="splitObject">
-        <wsdl:part name="splitObject" element="tns:splitObject"/>
+    <wsdl:message name="splitObjectRequest">
+        <wsdl:part name="splitObjectRequest" element="tns:splitObjectRequest"/>
     </wsdl:message>
     
     <wsdl:message name="splitObjectResponse">
         <wsdl:part name="splitObjectResponse" element="tns:splitObjectResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getDocuments">
-        <wsdl:part name="getDocuments" element="tns:getDocuments"/>
+    <wsdl:message name="getDocumentsRequest">
+        <wsdl:part name="getDocumentsRequest" element="tns:getDocumentsRequest"/>
     </wsdl:message>    
     
     <wsdl:message name="getDocumentsResponse">
         <wsdl:part name="getDocumentsResponse" element="tns:getDocumentsResponse"/>
     </wsdl:message>
 
-    <wsdl:message name="addDocument">
-        <wsdl:part name="addDocument" element="tns:addDocument"/>
+    <wsdl:message name="addDocumentRequest">
+        <wsdl:part name="addDocumentRequest" element="tns:addDocumentRequest"/>
     </wsdl:message>
 
     <wsdl:message name="addDocumentResponse">
         <wsdl:part name="addDocumentResponse" element="tns:addDocumentResponse"/>
     </wsdl:message>
         
-    <wsdl:message name="updateDocument">
-        <wsdl:part name="updateDocument" element="tns:updateDocument"/>
+    <wsdl:message name="updateDocumentRequest">
+        <wsdl:part name="updateDocumentRequest" element="tns:updateDocumentRequest"/>
     </wsdl:message>
     
     <wsdl:message name="updateDocumentResponse">
         <wsdl:part name="updateDocumentResponse" element="tns:updateDocumentResponse"/>
     </wsdl:message>
         
-    <wsdl:message name="getDocumentById">
-        <wsdl:part name="getDocumentById" element="tns:getDocumentById"/>        
+    <wsdl:message name="getDocumentByIdRequest">
+        <wsdl:part name="getDocumentByIdRequest" element="tns:getDocumentByIdRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getDocumentByIdResponse">
@@ -169,18 +169,18 @@
     <wsdl:portType name="DataProvider">
         
         <wsdl:operation name="getObjectTypes">
-            <wsdl:input message="ws:getObjectTypes"/>
+            <wsdl:input message="ws:getObjectTypesRequest"/>
             <wsdl:output message="ws:getObjectTypesResponse"/>
         </wsdl:operation>
         
         <wsdl:operation name="getObject">
-            <wsdl:input message="ws:getObject"/>
+            <wsdl:input message="ws:getObjectRequest"/>
             <wsdl:output message="ws:getObjectResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
                 
         <wsdl:operation name="getObjects">
-            <wsdl:input message="ws:getObjects"/>
+            <wsdl:input message="ws:getObjectsRequest"/>
             <wsdl:output message="ws:getObjectsResponse"/>
         </wsdl:operation>
         
@@ -190,18 +190,18 @@
         <!--</wsdl:operation>-->
                 
         <wsdl:operation name="getObjectsByTypeId">
-            <wsdl:input message="ws:getObjectsByTypeId"/>
+            <wsdl:input message="ws:getObjectsByTypeIdRequest"/>
             <wsdl:output message="ws:getObjectsByTypeIdResponse"/>            
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
     
         <wsdl:operation name="getRelationTypes">
-            <wsdl:input message="ws:getRelationTypes"/>
+            <wsdl:input message="ws:getRelationTypesRequest"/>
             <wsdl:output message="ws:getRelationTypesResponse"/>
         </wsdl:operation>
 
         <wsdl:operation name="getRelations">
-            <wsdl:input message="ws:getRelations"/>
+            <wsdl:input message="ws:getRelationsRequest"/>
             <wsdl:output message="ws:getRelationsResponse"/>
         </wsdl:operation>
         
@@ -211,73 +211,73 @@
         <!--</wsdl:operation>-->
         
         <wsdl:operation name="getRelationsByTypeId">
-            <wsdl:input message="ws:getRelationsByTypeId"/>
+            <wsdl:input message="ws:getRelationsByTypeIdRequest"/>
             <wsdl:output message="ws:getRelationsByTypeIdResponse"/>            
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="getGraphById">
-            <wsdl:input message="ws:getGraphById"/>
+            <wsdl:input message="ws:getGraphByIdRequest"/>
             <wsdl:output message="ws:getGraphByIdResponse"/>            
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="getRelatedObjectsById">
-            <wsdl:input message="ws:getRelatedObjectsById"/>
+            <wsdl:input message="ws:getRelatedObjectsByIdRequest"/>
             <wsdl:output message="ws:getRelatedObjectsByIdResponse"/>            
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="getPathById">
-            <wsdl:input message="ws:getPathById"/>
+            <wsdl:input message="ws:getPathByIdRequest"/>
             <wsdl:output message="ws:getPathByIdResponse"/>            
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
     
         <wsdl:operation name="mergeObjects">
-            <wsdl:input message="ws:mergeObjects"/>
+            <wsdl:input message="ws:mergeObjectsRequest"/>
             <wsdl:output message="ws:mergeObjectsResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="splitObject">
-            <wsdl:input message="ws:splitObject"/>
+            <wsdl:input message="ws:splitObjectRequest"/>
             <wsdl:output message="ws:splitObjectResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="addDocument">
-            <wsdl:input message="ws:addDocument"/>
+            <wsdl:input message="ws:addDocumentRequest"/>
             <wsdl:output message="ws:addDocumentResponse"/>
         </wsdl:operation>
         
         <wsdl:operation name="updateDocument">
-            <wsdl:input message="ws:updateDocument"/>
+            <wsdl:input message="ws:updateDocumentRequest"/>
             <wsdl:output message="ws:updateDocumentResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
                 
         <wsdl:operation name="getDocuments">
-            <wsdl:input message="ws:getDocuments"/>
+            <wsdl:input message="ws:getDocumentsRequest"/>
             <wsdl:output message="ws:getDocumentsResponse"/>
         </wsdl:operation>
         
         <wsdl:operation name="getDocumentById">
-            <wsdl:input message="ws:getDocumentById"/>
+            <wsdl:input message="ws:getDocumentByIdRequest"/>
             <wsdl:output message="ws:getDocumentByIdResponse"/>            
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
     </wsdl:portType>
     
-    <wsdl:binding name="DataProvider" type="ws:DataProvider">
+    <wsdl:binding name="DataProviderBinging" type="ws:DataProvider">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         
         <wsdl:operation name="getObjectTypes">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectTypes"/>
             <wsdl:input>
-                <soap:body parts="getObjectTypes" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>         
+                <soap:body parts="getObjectTypesRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectTypesResponse" use="literal"/>
@@ -287,8 +287,8 @@
         <wsdl:operation name="getObjects">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjects"/>
             <wsdl:input>
-                <soap:body parts="getObjects" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getObjectsRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectsResponse" use="literal"/>
@@ -298,8 +298,8 @@
         <wsdl:operation name="getObject">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObject"/>
             <wsdl:input>
-                <soap:body parts="getObject" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getObjectRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectResponse" use="literal"/>
@@ -313,7 +313,7 @@
             <!--<soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsByType"/>-->
             <!--<wsdl:input>-->
                 <!--<soap:body parts="getObjectsByType" use="literal"/>-->
-                <!--<soap:header message="ws:ticket" use="literal" part="ticket"/>-->
+                <!--<soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>-->
             <!--</wsdl:input>-->
             <!--<wsdl:output>-->
                 <!--<soap:body parts="getObjectsByTypeResponse" use="literal"/>-->
@@ -323,8 +323,8 @@
         <wsdl:operation name="getObjectsByTypeId">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsByTypeId"/>
             <wsdl:input>
-                <soap:body parts="getObjectsByTypeId" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getObjectsByTypeIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectsByTypeIdResponse" use="literal"/>
@@ -337,8 +337,8 @@
         <wsdl:operation name="getRelationTypes">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationTypes"/>
             <wsdl:input>
-                <soap:body parts="getRelationTypes" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getRelationTypesRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelationTypesResponse" use="literal"/>
@@ -348,8 +348,8 @@
         <wsdl:operation name="getRelations">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelations"/>
             <wsdl:input>
-                <soap:body parts="getRelations" use="literal"/>
-                <soap:header message="ws:ticket" part="ticket" use="literal"/>
+                <soap:body parts="getRelationsRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" part="usernameToken" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelationsResponse" use="literal"/>
@@ -360,7 +360,7 @@
             <!--<soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationsByType"/>-->
             <!--<wsdl:input>-->
                 <!--<soap:body parts="getRelationsByType" use="literal"/>-->
-                <!--<soap:header message="ws:ticket" use="literal" part="ticket"/>-->
+                <!--<soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>-->
             <!--</wsdl:input>-->
             <!--<wsdl:output>-->
                 <!--<soap:body parts="getRelationsByTypeResponse" use="literal"/>-->
@@ -370,8 +370,8 @@
         <wsdl:operation name="getRelationsByTypeId">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelationsByTypeId"/>
             <wsdl:input>
-                <soap:body parts="getRelationsByTypeId" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getRelationsByTypeIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelationsByTypeIdResponse" use="literal"/>
@@ -384,8 +384,8 @@
         <wsdl:operation name="getGraphById">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getGraphById"/>
             <wsdl:input>
-                <soap:body parts="getGraphById" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getGraphByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getGraphByIdResponse" use="literal"/>
@@ -398,8 +398,8 @@
         <wsdl:operation name="getRelatedObjectsById">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRelatedObjectsById"/>
             <wsdl:input>
-                <soap:body parts="getRelatedObjectsById" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getRelatedObjectsByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getRelatedObjectsByIdResponse" use="literal"/>
@@ -412,8 +412,8 @@
         <wsdl:operation name="getPathById">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getPathById"/>
             <wsdl:input>
-                <soap:body parts="getPathById" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getPathByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getPathByIdResponse" use="literal"/>
@@ -426,8 +426,8 @@
         <wsdl:operation name="mergeObjects">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/mergeObjects"/>
             <wsdl:input>
-                <soap:body parts="mergeObjects" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="mergeObjectsRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="mergeObjectsResponse" use="literal"/>
@@ -440,8 +440,8 @@
         <wsdl:operation name="splitObject">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/splitObject"/>
             <wsdl:input>
-                <soap:body parts="splitObject" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="splitObjectRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="splitObjectResponse" use="literal"/>
@@ -454,8 +454,8 @@
         <wsdl:operation name="addDocument">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/addDocument"/>
             <wsdl:input>
-                <soap:body parts="addDocument" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="addDocumentRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="addDocumentResponse" use="literal"/>
@@ -465,8 +465,8 @@
         <wsdl:operation name="updateDocument">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/updateDocument"/>
             <wsdl:input>
-                <soap:body parts="updateDocument" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="updateDocumentRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="updateDocumentResponse" use="literal"/>
@@ -479,8 +479,8 @@
         <wsdl:operation name="getDocuments">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getDocuments"/>
             <wsdl:input>
-                <soap:body parts="getDocuments" use="literal"/>                
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getDocumentsRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getDocumentsResponse" use="literal"/>
@@ -490,8 +490,8 @@
         <wsdl:operation name="getDocumentById">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getDocumentById"/>
             <wsdl:input>
-                <soap:body parts="getDocumentById" use="literal"/>                
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getDocumentByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getDocumentByIdResponse" use="literal"/>
@@ -503,7 +503,7 @@
     </wsdl:binding>
     
     <wsdl:service name="DataProviderService">
-        <wsdl:port name="DataProviderWS" binding="ws:DataProvider">
+        <wsdl:port name="DataProviderPort" binding="ws:DataProviderBinging">
             <soap:address location="http://localhost:9100/soap/DataProvider"/>
         </wsdl:port>
     </wsdl:service>

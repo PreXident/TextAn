@@ -10,9 +10,8 @@ repositories {
 
 dependencies {
 
-    //required from jaxb cxf extension
-    compile group: 'org.apache.cxf', name: 'cxf-tools-common', version: '2.7.10'
     compile group: 'org.apache.cxf.xjc-utils', name: 'cxf-xjc-runtime', version: '2.7.0'
+    compile 'commons-lang:commons-lang:2.6'
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
 }
@@ -76,12 +75,12 @@ task wsdl2java {
                 '-b', file("$projectDir/src/main/resources/customizations/documentProcessorBindings.xml"),
                 '-b', file("$projectDir/src/main/resources/customizations/dataProviderBindings.xml"),
 
-                '-exsh', 'true', //provide header as method parameter,not portable to other jax-ws providers!
+                //'-exsh', 'true', //provide header as method parameter,not portable to other jax-ws providers!
 
                 '-xjc-Xts', //generate toString methods
                 '-xjc-Xdv' //initialize fields with default value
 
-                //args '-all' //uncomment for generate sample client, sever, ant etc.
+                //'-all' //uncomment for generate sample client, sever, ant etc.
         ]
     }
 
