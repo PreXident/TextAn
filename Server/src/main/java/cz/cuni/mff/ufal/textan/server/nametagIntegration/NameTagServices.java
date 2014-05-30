@@ -27,10 +27,10 @@ public class NameTagServices {
         this.objectTypeTableDAO = objectTypeTableDAO;
     }
 
-    public void BindModel(String pathToModel) {
+    public void bindModel(String pathToModel) {
         ner = Ner.load(pathToModel);
         if (ner == null) {
-            LOG.error("Model wasn't found!");
+            LOG.error("Model wasn't found!"); //TODO: throw some exception, what it returns if model exists, bud...
         }
         idTempTable = new Hashtable<>();
     }
@@ -136,7 +136,7 @@ public class NameTagServices {
     /**
      * Learn new model
      */
-    void Learn() {
+    void learn() { //TODO: add visibility modifier
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         LOG.info("Started training at " + sdf.format(cal.getTime()));
@@ -158,12 +158,12 @@ public class NameTagServices {
 
         LOG.info("Training done at " + sdf.format(cal.getTime()));
         LOG.info("Changing ner.");
-        this.BindModel("../../NameTagIntegration/training/czech-140205-cnec2.0.ner");
+        this.bindModel("../../NameTagIntegration/training/czech-140205-cnec2.0.ner");
         LOG.info("Ner changed.");
     }
 
 
-    public List<Entity> TagText(String input)
+    public List<Entity> tagText(String input)
     {
         LOG.debug(input);
         if (ner == null) {

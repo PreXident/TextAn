@@ -18,6 +18,7 @@ import java.util.List;
 public class NamedEntityRecognizerService {
     private final IDocumentTableDAO documentTableDAO;
     private final NameTagServices nameTagServices;
+
     /**
      * Instantiates a new Named entity recognizer service.
      *
@@ -27,7 +28,6 @@ public class NamedEntityRecognizerService {
     public NamedEntityRecognizerService(IDocumentTableDAO documentTableDAO, NameTagServices nameTagServices) {
         this.documentTableDAO = documentTableDAO;
         this.nameTagServices = nameTagServices;
-        this.nameTagServices.BindModel("../../NameTagIntegration/models/czech-cnec2.0-140304.ner");
     }
 
     /**
@@ -38,7 +38,7 @@ public class NamedEntityRecognizerService {
      * @return the list of entities found in the text
      */
     public List<Entity> getEntities(String text, EditingTicket editingTicket) {
-        return nameTagServices.TagText(text);
+        return nameTagServices.tagText(text);
     }
 
     /**
@@ -56,6 +56,6 @@ public class NamedEntityRecognizerService {
             throw new IdNotFoundException("documentId", documentId);
         }
 
-        return nameTagServices.TagText(documentTable.getText());
+        return nameTagServices.tagText(documentTable.getText());
     }
 }

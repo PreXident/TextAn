@@ -55,6 +55,15 @@ task copyNametagLib(type: Copy) {
     into new File(buildDir, 'lib')
 }
 
+task copyNametagModel(type: Copy) {
+    run.dependsOn name
+
+    from (new File('../Samples/models')) {
+        include '**/*.ner'
+    }
+    into new File(buildDir, 'models')
+}
+
 /*
  * Apache shade plugin for Gradle -> Shadow plugin
  * More on: https://github.com/johnrengelman/shadow
@@ -130,4 +139,13 @@ task shadowCopyNametagLib(type: Copy) {
         include System.mapLibraryName("nametag_java")
     }
     into new File(shadow.destinationDir, 'lib')
+}
+
+task shadowCopyNametagModel(type: Copy) {
+    shadowJar.dependsOn name
+
+    from (new File('../Samples/models')) {
+        include '**/*.net'
+    }
+    into new File(shadow.destinationDir, 'models')
 }
