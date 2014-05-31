@@ -22,7 +22,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class LogInterceptor extends EmptyInterceptor {
 
@@ -99,6 +99,7 @@ public class LogInterceptor extends EmptyInterceptor {
             Session session = sessionFactory.openSession();
             try {
 
+                //session.save(new AuditTable(username, AuditTable.AuditType.Insert, "NEW TRANSACTION"));
                 for (Iterator<Object> it = inserts.iterator(); it.hasNext(); ) {
                     Object entity = it.next();
                     //System.out.println("postFlush - insert");

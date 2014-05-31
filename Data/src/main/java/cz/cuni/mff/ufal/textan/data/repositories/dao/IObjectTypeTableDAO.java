@@ -11,7 +11,7 @@ import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public interface IObjectTypeTableDAO extends IOperations<ObjectTypeTable, Long> {
     

@@ -11,7 +11,7 @@ import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public interface IJoinedObjectsTableDAO extends IOperations<JoinedObjectsTable, Long> {
     

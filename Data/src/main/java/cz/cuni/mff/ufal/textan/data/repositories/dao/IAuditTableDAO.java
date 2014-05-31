@@ -11,7 +11,7 @@ import cz.cuni.mff.ufal.textan.data.tables.AuditTable;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public interface IAuditTableDAO extends IOperations<AuditTable, Long> {
     

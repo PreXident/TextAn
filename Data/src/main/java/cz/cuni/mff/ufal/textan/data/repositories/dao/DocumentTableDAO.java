@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 @Repository
 @Transactional

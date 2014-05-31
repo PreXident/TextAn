@@ -5,7 +5,7 @@ import java.util.Objects;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class AuditTable extends AbstractTable {
     public enum AuditType {
