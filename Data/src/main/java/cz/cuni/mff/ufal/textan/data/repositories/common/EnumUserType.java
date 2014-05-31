@@ -28,6 +28,7 @@ public class EnumUserType<E extends Enum<E>> implements UserType {
     }   
    
     @Override
+    @SuppressWarnings("rawtypes")
     public Class returnedClass() {   
         return clazz;   
     }   

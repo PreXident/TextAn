@@ -28,9 +28,11 @@ public class LogInterceptor extends EmptyInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(LogInterceptor.class);
 
-    private final Set<Object> inserts = new HashSet();
-    private final Set<Object> updates = new HashSet();
-    private final Set<Object> deletes = new HashSet();
+    private static boolean enabled = true;
+
+    private final Set<Object> inserts = new HashSet<Object>();
+    private final Set<Object> updates = new HashSet<Object>();
+    private final Set<Object> deletes = new HashSet<Object>();
 
 
     private SessionFactory sessionFactory;
@@ -45,12 +47,19 @@ public class LogInterceptor extends EmptyInterceptor {
         this.sessionFactory = sessionFactory;
     }
 
+    public static boolean isEnabled() {
+        return enabled;
+    }
+    public static void setEnabled(boolean enabled) {
+        LogInterceptor.enabled = enabled;
+    }
+
     @Override
     public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
         LOG.debug("Executing onSave");
 //        System.out.println(username + ": save: " + entity);
         //audit.add(new AuditTable(username, AuditTable.AuditType.Insert, entity.toString()));
-        if (!(entity instanceof AuditTable)) {
+        if (!(entity instanceof AuditTable) && enabled) {
             inserts.add(entity);
         }
         return super.onSave(entity, id, state, propertyNames, types); //To change body of generated methods, choose Tools | Templates.
@@ -61,7 +70,7 @@ public class LogInterceptor extends EmptyInterceptor {
         LOG.debug("Executing onFlushDirty");
 //        System.out.println(username + ": update: " + entity);
         //audit.add(new AuditTable(username, AuditTable.AuditType.Update, entity.toString()));
-        if (!(entity instanceof AuditTable)) {
+        if (!(entity instanceof AuditTable) && enabled) {
             updates.add(entity);
         }
         return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types); //To change body of generated methods, choose Tools | Templates.
@@ -72,50 +81,56 @@ public class LogInterceptor extends EmptyInterceptor {
         LOG.debug("Executing onDelete");
 //        System.out.println(username + ": delete: " + entity);
         //audit.add(new AuditTable(username, AuditTable.AuditType.Delete, entity.toString()));
-        if (!(entity instanceof AuditTable)) {
+        if (!(entity instanceof AuditTable) && enabled) {
             deletes.add(entity);
         }
         super.onDelete(entity, id, state, propertyNames, types); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void postFlush(Iterator iterator) {
         LOG.debug("Executing postFlush");
         super.postFlush(iterator);
-
-        Session session = sessionFactory.openSession();
+        
+        if (!enabled) return;
+        
         try {
+            Session session = sessionFactory.openSession();
+            try {
 
-            for (Iterator<Object> it = inserts.iterator(); it.hasNext(); ) {
-                Object entity = it.next();
-                //System.out.println("postFlush - insert");
-                
-                AuditTable newAudit = new AuditTable(username, AuditTable.AuditType.Insert, entity == null ? "NULL" : entity.toString());
-                session.save(newAudit);
-            }
-            
-            for (Iterator<Object> it = updates.iterator(); it.hasNext(); ) {
-                Object entity = it.next();
-                //System.out.println("postFlush - update");
-                
-                AuditTable newAudit = new AuditTable(username, AuditTable.AuditType.Update, entity == null ? "NULL" : entity.toString());
-                session.save(newAudit);
-            }
-            
-            for (Iterator<Object> it = deletes.iterator(); it.hasNext(); ) {
-                Object entity = it.next();
-                //System.out.println("postFlush - delete");
-                
-                AuditTable newAudit = new AuditTable(username, AuditTable.AuditType.Delete, entity == null ? "NULL" : entity.toString());
-                session.save(newAudit);
-            }
+                for (Iterator<Object> it = inserts.iterator(); it.hasNext(); ) {
+                    Object entity = it.next();
+                    //System.out.println("postFlush - insert");
+
+                    AuditTable newAudit = new AuditTable(username, AuditTable.AuditType.Insert, entity == null ? "NULL" : entity.toString());
+                    session.save(newAudit);
+                }
+
+                for (Iterator<Object> it = updates.iterator(); it.hasNext(); ) {
+                    Object entity = it.next();
+                    //System.out.println("postFlush - update");
+
+                    AuditTable newAudit = new AuditTable(username, AuditTable.AuditType.Update, entity == null ? "NULL" : entity.toString());
+                    session.save(newAudit);
+                }
+
+                for (Iterator<Object> it = deletes.iterator(); it.hasNext(); ) {
+                    Object entity = it.next();
+                    //System.out.println("postFlush - delete");
+
+                    AuditTable newAudit = new AuditTable(username, AuditTable.AuditType.Delete, entity == null ? "NULL" : entity.toString());
+                    session.save(newAudit);
+                }
 
 
+            } finally {
+                session.close();
+            }
         } finally {
             inserts.clear();
             updates.clear();
             deletes.clear();
-            session.close();
         }
     }
 }

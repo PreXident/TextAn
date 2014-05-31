@@ -100,7 +100,7 @@ public class DataConfig {
         sessionFactory.setMappingLocations(mappings);
         sessionFactory.afterPropertiesSet();
 
-        sessionFactory.getConfiguration().setInterceptor(logInterceptor());
+        //sessionFactory.getConfiguration().setInterceptor(logInterceptor());
 
         return sessionFactory.getObject();
     }
@@ -124,7 +124,9 @@ public class DataConfig {
     @SuppressWarnings("unused")
     @Bean
     public PlatformTransactionManager transactionManager() throws PropertyVetoException, IOException {
-        return new HibernateTransactionManager(sessionFactory());
+        HibernateTransactionManager result = new HibernateTransactionManager(sessionFactory());
+        result.setEntityInterceptor(logInterceptor());
+        return result;
     }
 
     /**

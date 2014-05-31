@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
+@SuppressWarnings("unchecked")
 public class Data {
 
     private final SessionFactory sessionFactory;
