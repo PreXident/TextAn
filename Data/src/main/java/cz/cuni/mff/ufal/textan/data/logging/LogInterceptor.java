@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class LogInterceptor extends EmptyInterceptor {
 
+    private static final long serialVersionUID = 20156489756123L;
     private static final Logger LOG = LoggerFactory.getLogger(LogInterceptor.class);
 
     private static boolean enabled = true;
