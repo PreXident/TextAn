@@ -56,6 +56,8 @@ import javafx.util.Callback;
  */
 public class ReportObjectsController extends ReportWizardController {
 
+    static final String TEXT_HIGHLIGHT_CLASS = "text-no-object";
+
     @FXML
     BorderPane root;
 
@@ -201,13 +203,13 @@ public class ReportObjectsController extends ReportWizardController {
                 final EntityBuilder entity = word.getEntity();
                 final long entityId = entity.getType().getId();
                 final int entityIndex = entity.getIndex();
+                final Entity ent = pipeline.getReportEntities().get(entityIndex);
                 Utils.styleText(text, "ENTITY", entityId);
 
                 EntityInfo entityInfo = entityLists.get(word.getEntity());
                 if (entityInfo == null) {
                     entityInfo = new EntityInfo();
                     entityInfo.index = entityIndex;
-                    final Entity ent = pipeline.getReportEntities().get(entityIndex);
                     entityInfo.type = ent.getType().getId();
                     final List<Pair<Double, Object>> candidates = ent.getCandidates();
                     Collections.sort(candidates, Entity.COMPARATOR);
@@ -217,6 +219,10 @@ public class ReportObjectsController extends ReportWizardController {
                     if (cand != null && cand.isNew() && !newObjects.contains(cand)) {
                         newObjects.add(cand);
                     }
+                }
+                if (ent.getCandidate() == null) {
+                    text.getStyleClass().add(TEXT_HIGHLIGHT_CLASS);
+                    entityInfo.texts.add(text);
                 }
                 final EntityInfo ei = entityInfo;
 
@@ -368,6 +374,9 @@ public class ReportObjectsController extends ReportWizardController {
                 newObjects.remove(prev);
             }
         }
+        for (Text text : selectedEntity.texts) {
+            text.getStyleClass().remove(TEXT_HIGHLIGHT_CLASS);
+        }
         entity.setCandidate(object);
         pipeline.resetStepsBack();
         return entity;
@@ -472,6 +481,12 @@ public class ReportObjectsController extends ReportWizardController {
 
         /** List of all suitable candidates fot this entity. */
         ObservableList<Object> all;
+
+        /**
+         * List of texts that must be unhighlighted when object is assigned to
+         * the entity.
+         */
+        List<Text> texts = new ArrayList<>();
     }
 
     /**
