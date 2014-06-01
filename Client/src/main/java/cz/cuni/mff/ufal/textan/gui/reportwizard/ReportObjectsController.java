@@ -8,6 +8,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +49,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  * Controls editing objects.
@@ -114,23 +117,36 @@ public class ReportObjectsController extends ReportWizardController {
 
     @FXML
     private void next() {
-        if (pipeline.lock.tryAcquire()) {
-            for (Entity ent : pipeline.getReportEntities()) {
-                if (ent.getCandidate() == null) {
-                    callWithContentBackup(() ->
-                        createDialog()
-                                .owner(getDialogOwner(root))
-                                .title(Utils.localize(resourceBundle, "error.objects.unassigned"))
-                                .message(Utils.localize(resourceBundle, "error.objects.unassigned.detail"))
-                                .showInformation());
-                    pipeline.lock.release();
-                    return;
-                }
+        StringBuilder builder = new StringBuilder();
+        for (Entity ent : pipeline.getReportEntities()) {
+            if (ent.getCandidate() == null) {
+                builder.append(ent.getValue()).append('\n');
             }
-            getMainNode().setCursor(Cursor.WAIT);
-            new Thread(() -> {
-                pipeline.setReportObjects(pipeline.getReportEntities());
-            }, "FromObjectsState").start();
+        }
+        if (pipeline.lock.tryAcquire()) {
+            if (builder.length() != 0) {
+                callWithContentBackup(() ->
+                    createDialog()
+                            .owner(getDialogOwner(root))
+                            .title(Utils.localize(resourceBundle, "error.objects.unassigned"))
+                            .showException(new Throwable() {
+                                @Override
+                                public String getMessage() {
+                                    return Utils.localize(resourceBundle, "error.objects.unassigned.detail");
+                                }
+
+                                @Override
+                                public void printStackTrace(PrintWriter s) {
+                                    s.write(builder.toString());
+                                }
+                            }));
+                pipeline.lock.release();
+            } else {
+                getMainNode().setCursor(Cursor.WAIT);
+                new Thread(() -> {
+                    pipeline.setReportObjects(pipeline.getReportEntities());
+                }, "FromObjectsState").start();
+            }
         }
     }
 
