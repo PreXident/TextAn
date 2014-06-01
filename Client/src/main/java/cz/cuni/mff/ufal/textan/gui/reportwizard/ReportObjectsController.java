@@ -49,7 +49,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 
 /**
@@ -62,9 +61,6 @@ public class ReportObjectsController extends ReportWizardController {
 
     @FXML
     ScrollPane scrollPane;
-
-    @FXML
-    TextFlow textFlow;
 
     @FXML
     Slider slider;
@@ -153,7 +149,7 @@ public class ReportObjectsController extends ReportWizardController {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         resourceBundle = rb;
-        textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
+        textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
         //create popup
         BorderPane border = new BorderPane();
