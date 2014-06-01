@@ -645,11 +645,17 @@ public class ReportRelationsController extends ReportWizardController {
                             cell.setOnMouseEntered(e -> {
                                 final RelationType type = selectedRelation.getType();
                                 final long id = type.getId();
-                                objectWords.get(cell.getItem()).stream()
-                                    .forEach(t -> Utils.styleTextBackground(t, id));
+                                Object item = cell.getItem();
+                                if (item != null) {
+                                    objectWords.get(item).stream()
+                                        .forEach(t -> Utils.styleTextBackground(t, id));
+                                }
                             });
                             cell.setOnMouseExited(e -> {
                                 final Object obj = cell.getItem();
+                                if (obj == null) {
+                                    return;
+                                }
                                 boolean found = selectedRelation.getData().stream()
                                         .anyMatch(rel -> rel.getObject() == obj);
                                 if (!found) {
