@@ -20,3 +20,11 @@ hypergraphs=false
 locale.language=en
 #clear filter fields after selection?
 clear.filters=false
+#url of the document processor
+url.document=http://localhost:9100/soap/document
+#url of the document processor wsdl
+url.document.wsdl=http://localhost:9100/soap/document?wsdl
+#url of the data provider
+url.data=http://localhost:9100/soap/data
+#url of the data provider
+url.data.wsdl=http://localhost:9100/soap/data?wsdl

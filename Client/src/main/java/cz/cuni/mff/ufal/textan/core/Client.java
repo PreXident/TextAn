@@ -66,11 +66,11 @@ public class Client {
         if (documentProcessor == null) {
             try {
                 Service service = Service.create(
-                        new URL("http://localhost:9100/soap/document?wsdl"),
+                        new URL(settings.getProperty("url.document.wsdl", "http://localhost:9100/soap/document?wsdl")),
                         new QName("http://ws.commons.textan.ufal.mff.cuni.cz",
                                 "DocumentProcessorService"));
                 // Endpoint Address
-                String endpointAddress = "http://localhost:9100/soap/document";
+                String endpointAddress = settings.getProperty("url.document", "http://localhost:9100/soap/document");
                 // Add a port to the Service
                 service.addPort(
                         new QName("http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessorService",
@@ -94,11 +94,11 @@ public class Client {
         if (dataProvider == null) {
             try {
                 Service service = Service.create(
-                        new URL("http://localhost:9100/soap/data?wsdl"),
+                        new URL(settings.getProperty("url.data.wsdl", "http://localhost:9100/soap/data?wsdl")),
                         new QName("http://ws.commons.textan.ufal.mff.cuni.cz",
                                 "DataProviderService"));
                 // Endpoint Address
-                String endpointAddress = "http://localhost:9100/soap/data";
+                String endpointAddress = settings.getProperty("url.data", "http://localhost:9100/soap/data");
                 // Add a port to the Service
                 service.addPort(
                         new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService",
