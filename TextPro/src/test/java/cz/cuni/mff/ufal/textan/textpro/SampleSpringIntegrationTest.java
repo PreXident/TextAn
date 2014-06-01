@@ -59,4 +59,6 @@ public class SampleSpringIntegrationTest {
         Assert.assertNotNull(relationTableDAO);
         Assert.assertNotNull(typeTableDAO);
     }
+    
+    
 }

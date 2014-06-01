@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author  Petr Fanta
  */
 public class SampleUnitTest {
-
+/*
     Mockery context = new Mockery();
 
     IAliasOccurrenceTableDAO aliasOccurrenceTableDAO;
@@ -47,7 +47,7 @@ public class SampleUnitTest {
         textPro.recognizedEntity("");
     }
 
-
+*/      
 
 
 

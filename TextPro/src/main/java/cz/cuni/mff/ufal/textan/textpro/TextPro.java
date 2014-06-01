@@ -107,7 +107,7 @@ public class TextPro implements ITextPro {
         Map<Entity, Map<Long, Double>> eMap = new HashMap<>();
         for (int id = 0; id < eList.size(); id++) {
             Entity e = eList.get(id);
-            List<ObjectTable> oList = getCloseObject(e);
+            List<ObjectTable> oList = getCloseObject(e); // List of object closed to the entity
             List<Long> oListID = getCloseObjectID(e);
                 
             //List<Double> score = new ArrayList<Double>();
@@ -146,9 +146,12 @@ public class TextPro implements ITextPro {
                 Double[] sort_score= score.clone();
                 minscore = sort_score[topK];
             }
+            /* Get the test list */
             
+            Test test = new Test(oList, oListID, score, minscore);
             
             /* Assign value */
+            /*
             Map <Long,Double> entityScore = new HashMap <Long,Double>();
             for (int i = 0; i < size; i++){
                 if(score[i] >= minscore) {
@@ -156,7 +159,7 @@ public class TextPro implements ITextPro {
                 }
             }
             eMap.put(e, entityScore);
-            
+            */
         }
         // Return the value
         return eMap;
@@ -177,5 +180,5 @@ public class TextPro implements ITextPro {
         }
         return ID;
     }
-        
+    
 }

@@ -23,7 +23,7 @@ public class FeaturesComputeValue {
     * Compare the extity text and alias of object
     * Word with one alias only
     */
-    private double EntityTextAndObjectAlias(String stringA, String stringB) {
+    public double EntityTextAndObjectAlias(String stringA, String stringB) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         //JaroWinkler algorithm = new JaroWinkler();
         //return algorithm.getSimilarity(stringA, stringB);

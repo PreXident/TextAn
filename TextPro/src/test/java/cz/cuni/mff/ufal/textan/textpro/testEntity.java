@@ -16,10 +16,8 @@ public class testEntity {
 
     //TODO: in this directory must be only JUnit or NGUnit tests!
 
-//    public static void main(String[] args) {
-//        ITextPro ner = new Running();
-//        String doc = "This is not a test actually";
-//        List<Entity> ls = ner.recognizedEntity(doc);
-//        System.out.print(ls.get(0).getText());
-//    }
+    public static void main(String[] args) {
+        ITextPro ner = new Running();
+        System.out.println("Test here");
+    }
 }
