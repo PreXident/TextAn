@@ -5,9 +5,10 @@ import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Map;
+import net.sf.javaml.classification.Classifier;
+import net.sf.javaml.core.Instance;
 
 /**
  * A simple example of an implementation of the ITextPro interface as a Spring bean.
@@ -103,9 +104,11 @@ public class TextPro implements ITextPro {
         /*
          * Assign value to the mapping
          */
+        /********************** REGULAR RANKING **************************/
         // Initialize the eMap - final result
         Map<Entity, Map<Long, Double>> eMap = new HashMap<>();
         for (int id = 0; id < eList.size(); id++) {
+            /********************** REGULAR RANKING **************************/
             Entity e = eList.get(id);
             List<ObjectTable> oList = getCloseObject(e); // List of object closed to the entity
             List<Long> oListID = getCloseObjectID(e);
@@ -146,20 +149,27 @@ public class TextPro implements ITextPro {
                 Double[] sort_score= score.clone();
                 minscore = sort_score[topK];
             }
+            /********************** MACHINE LEARNING **************************/
+            Train train = new Train();
+            Classifier ml = train.doTraining();
+            
             /* Get the test list */
             
-            Test test = new Test(oList, oListID, score, minscore);
-            
+            Test test = new Test(e, oList, oListID, score, minscore);
+            List<Instance> instances = test.CreateTestSet(e, aliasTableDAO);
+            for(Instance in:instances){
+                Object predictedClassValue = ml.classify(in);
+                
+                System.out.println("Predict: " + predictedClassValue.toString());
+            }
             /* Assign value */
-            /*
+            
             Map <Long,Double> entityScore = new HashMap <Long,Double>();
-            for (int i = 0; i < size; i++){
-                if(score[i] >= minscore) {
-                    entityScore.put(oListID.get(id), score[i]);
-                }
+            for (int i = 0; i < test.getObjectListID().size(); i++){
+                entityScore.put(test.getObjectListID().get(id), test.getObjectListScore().get(id));
             }
             eMap.put(e, entityScore);
-            */
+            
         }
         // Return the value
         return eMap;

@@ -13,6 +13,7 @@ import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import cz.cuni.mff.ufal.textan.textpro.data.FeaturesComputeValue;
 import java.util.List;
+import libsvm.LibSVM;
 import net.sf.javaml.classification.Classifier;
 import net.sf.javaml.classification.KNearestNeighbors;
 import net.sf.javaml.core.Dataset;
@@ -35,9 +36,13 @@ public class Train {
     
     public Classifier doTraining(){
         Dataset data = new DefaultDataset();
-        Classifier knn = new KNearestNeighbors(5);
-        knn.buildClassifier(data);
-        return knn;
+        /*
+         * Get data from database
+        */
+        
+        Classifier svm = new LibSVM();
+        svm.buildClassifier(data);
+        return svm;
     }
     // Load dataset
     // target = 0 for no, 1 for yes 

@@ -22,7 +22,21 @@ import net.sf.javaml.core.Instance;
 public class Test {
 
     List<ObjectTable> objectList;
+
+    public List<ObjectTable> getObjectList() {
+        return objectList;
+    }
+
+    public List<Long> getObjectListID() {
+        return objectListID;
+    }
     List<Long> objectListID;
+    
+    List<Double> objectListScore;
+
+    public List<Double> getObjectListScore() {
+        return objectListScore;
+    }
     /*
     * Constructor
     */
@@ -35,6 +49,7 @@ public class Test {
             if (score[i] >= minscore) {
                 this.objectList.add(oList.get(i));
                 this.objectListID.add(oListID.get(i));
+                this.objectListScore.add(score[i]);
             }
         }
     }
@@ -59,11 +74,13 @@ public class Test {
         Instance instance = new DenseInstance(values, target);
         return instance;
     }
-    public List<Instance> CreateTestSet(){
-        List<Instance> result = new List<Instance>();
+    public List<Instance> CreateTestSet(Entity e, IAliasTableDAO aliasTableDAO){
+        List<Instance> result = new ArrayList<Instance>();
         for (ObjectTable ot:this.objectList){
-            
+            Instance ins = CreateInstance(e, ot, aliasTableDAO, 1);
+            result.add(ins);
         }
+        return result;
     }
     
     
