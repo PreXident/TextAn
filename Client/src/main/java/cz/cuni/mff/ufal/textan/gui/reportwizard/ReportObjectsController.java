@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
+import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
@@ -12,6 +13,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,8 +51,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
 
 /**
  * Controls editing objects.
@@ -169,7 +169,7 @@ public class ReportObjectsController extends ReportWizardController {
             contextMenu.hide();
             final Entity ent =
                     pipeline.getReportEntities().get(selectedEntity.index);
-            final Object newObject = new Object(-newObjects.size() - 1, ent.getType(), Arrays.asList(ent.getValue()));
+            final NewObject newObject = new NewObject(ent.getType(), Arrays.asList(ent.getValue()));
             newObjects.add(newObject);
             setNewObjectAsSelectedEntityCandidate(newObject);
         });
@@ -347,6 +347,9 @@ public class ReportObjectsController extends ReportWizardController {
      * @param object new candidate
      */
     private void setNewObjectAsSelectedEntityCandidate(final Object object) {
+        if (object instanceof NewObject) {
+            ++((NewObject) object).refCount;
+        }
         final Entity ent = setObjectAsSelectedEntityCandidate(object);
         object.getAliases().add(ent.getValue());
     }
@@ -364,6 +367,10 @@ public class ReportObjectsController extends ReportWizardController {
         final String alias = entity.getValue();
         if (prev != null && prev.isNew()) {
             prev.getAliases().remove(alias);
+            if (prev instanceof NewObject && --((NewObject) prev).refCount == 0) {
+                newListView.setItems(null); //we need to get rid of the filtered list, or we get exception on removing
+                newObjects.remove(prev);
+            }
         }
         entity.setCandidate(object);
         pipeline.resetStepsBack();
@@ -439,8 +446,8 @@ public class ReportObjectsController extends ReportWizardController {
         final Entity ent = pipeline.getReportEntities().get(entityInfo.index);
         if (ent.getCandidate() != null) {
             final Object candidate = ent.getCandidate();
-            if (candidate.isNew()) {
-                newListView.getSelectionModel().select(candidate);
+            if (candidate.isNew() && candidate instanceof NewObject) {
+                newListView.getSelectionModel().select((NewObject) candidate);
                 dbListView.getSelectionModel().select(-1);
             } else {
                 newListView.getSelectionModel().select(-1);
@@ -469,5 +476,29 @@ public class ReportObjectsController extends ReportWizardController {
 
         /** List of all suitable candidates fot this entity. */
         ObservableList<Object> all;
+    }
+
+    /**
+     * Simple extension of Object to count references.
+     */
+    static class NewObject extends Object {
+
+        /** Sequence generating object ids. */
+        static long id = 0;
+
+        /**
+         * Number of entities that have this object assigned.
+         * When hits 0, the object should be removed fromm {@link #newObjects}.
+         */
+        int refCount = 0;
+
+        /**
+         * Only constructor
+         * @param type object type
+         * @param aliases object aliases
+         */
+        public NewObject(ObjectType type, Collection<String> aliases) {
+            super(--id, type, aliases);
+        }
     }
 }
