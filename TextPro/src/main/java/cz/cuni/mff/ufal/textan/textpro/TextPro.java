@@ -166,7 +166,11 @@ public class TextPro implements ITextPro {
             /***************** ASSIGN VALUE *********************************/
             Map <Long,Double> entityScore = new HashMap <Long,Double>();
             for (int i = 0; i < test.getObjectListID().size(); i++){
-                entityScore.put(test.getObjectListID().get(id), test.getObjectListScore().get(id));
+                Instance in = instances.get(id);
+                Object predictedClassValue = ml.classify(in);
+                if(predictedClassValue.toString().equalsIgnoreCase("1")) {
+                    entityScore.put(test.getObjectListID().get(id), test.getObjectListScore().get(id));
+                }
             }
             eMap.put(e, entityScore);
             
