@@ -163,7 +163,7 @@ public class TextPro implements ITextPro {
                 System.out.println("Predict: " + predictedClassValue.toString());
             }
             /* Assign value */
-            
+            /***************** ASSIGN VALUE *********************************/
             Map <Long,Double> entityScore = new HashMap <Long,Double>();
             for (int i = 0; i < test.getObjectListID().size(); i++){
                 entityScore.put(test.getObjectListID().get(id), test.getObjectListScore().get(id));

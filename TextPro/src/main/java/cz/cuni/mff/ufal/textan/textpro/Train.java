@@ -39,6 +39,12 @@ public class Train {
         /*
          * Get data from database
         */
+        data.add(new DenseInstance(new double[] {1},1));
+        data.add(new DenseInstance(new double[] {0},0));
+        data.add(new DenseInstance(new double[] {0.75},1));
+        data.add(new DenseInstance(new double[] {0.25},0));
+        data.add(new DenseInstance(new double[] {0.85},1));
+        data.add(new DenseInstance(new double[] {0.15},0));
         
         Classifier svm = new LibSVM();
         svm.buildClassifier(data);
