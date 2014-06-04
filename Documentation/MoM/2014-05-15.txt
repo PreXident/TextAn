@@ -1,0 +1,43 @@
+All here!
+
+Adam:
+All homework done! (Only pipeline progress indicator wasn't done.)
+
+Venca:
+Done all homework (about which he knows)
+
+Kuba:
+Tesed indexes of returned entitities.
+Found problem int entities types.
+
+Petr and Venca:
+Interceptors
+
+Tam:
+Feature evalution in progress
+
+HWK:
+  Adam:
+    - add pipeline progress indicator
+    - change order of information about object to relation assigment (alias, id, type)
+    - higlight object's text while selecting object to be assigned to relation (if possible)
+    - add wait cursor when connecting to server
+
+  Venca:
+    - read latest MoM (because of assigned HWK)
+    - finish interceptors
+    
+  Petr:
+    - add adding interceptors in hibernate
+    
+  Tam:
+    - finish feature value, calculators
+    - implement server adn SQL database
+    
+  Kuba:
+    - write Milan about entity IDs
+    - finish testing because of merging nametagintegration to master
+
+  Adam and Peter:
+    - result of saving document: document processed, document changed, added objects or relations, objects joined/split
+Next meeting as usual.

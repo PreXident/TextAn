@@ -1,13 +1,11 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
+import cz.cuni.mff.ufal.textan.commons.models.UsernameToken;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromString.Entities;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.ObjectOccurrence;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RelationOccurrence;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest.Entities;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
@@ -15,9 +13,21 @@ import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPHeader;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.ws.Binding;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
+import javax.xml.ws.handler.Handler;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPHandler;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,6 +39,12 @@ import java.util.stream.Collectors;
  * Handles all communicatioin with the server.
  */
 public class Client {
+
+    private static final QName DOCUMENT_PROCESSOR_SERVICE = new QName("http://ws.commons.textan.ufal.mff.cuni.cz", "DocumentProcessorService");
+    private static final QName DOCUMENT_PROCESSOR_PORT = new QName("http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessorService", "DocumentProcessorPort");
+
+    private static final QName DATA_PROVIDER_SERVICE = new QName("http://ws.commons.textan.ufal.mff.cuni.cz", "DataProviderService");
+    private static final QName DATA_PROVIDER_PORT = new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService", "DataProviderPort");
 
     /** Settings of the application. Handle with care, they're shared. */
     final protected Properties settings;
@@ -48,14 +64,51 @@ public class Client {
     }
 
     /**
-     * Creates ticket with username specified in settings.
-     * @return ticket with username specified in settings
+     * Adds JAX-WS Handler which adds UsernameToken header into SOAP message.
+     *
+     * @param binding JAW-WS bindings (from web service port)
      */
-    private cz.cuni.mff.ufal.textan.commons.models.Ticket createTicket() {
-        final cz.cuni.mff.ufal.textan.commons.models.Ticket ticket =
-                new cz.cuni.mff.ufal.textan.commons.models.Ticket();
-        ticket.setUsername(settings.getProperty("username"));
-        return ticket;
+    private void addSOAPHandler(Binding binding) {
+
+        UsernameToken token = new UsernameToken();
+        token.setUsername(settings.getProperty("username"));
+
+        List<Handler> handlers = new ArrayList<>(1);
+        handlers.add(new SOAPHandler<SOAPMessageContext>() {
+
+            @Override
+            public boolean handleMessage(SOAPMessageContext context) {
+                try {
+                    Boolean outbound = (Boolean) context.get("javax.xml.ws.handler.message.outbound");
+                    if (outbound != null && outbound) {
+
+                        SOAPMessage message = context.getMessage();
+                        SOAPHeader header = message.getSOAPHeader();
+                        if (header == null) {
+                            header = message.getSOAPPart().getEnvelope().addHeader();
+                        }
+
+                        Marshaller marshaller = JAXBContext.newInstance(UsernameToken.class).createMarshaller();
+                        marshaller.marshal(token, header);
+                    }
+                } catch (JAXBException | SOAPException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean handleFault(SOAPMessageContext context) { return true; }
+
+            @Override
+            public void close(MessageContext context) { }
+
+            @Override
+            public Set<QName> getHeaders() { return null; }
+        });
+
+        binding.setHandlerChain(handlers);
     }
 
     /**
@@ -67,17 +120,16 @@ public class Client {
             try {
                 Service service = Service.create(
                         new URL(settings.getProperty("url.document.wsdl", "http://localhost:9100/soap/document?wsdl")),
-                        new QName("http://ws.commons.textan.ufal.mff.cuni.cz",
-                                "DocumentProcessorService"));
+                        DOCUMENT_PROCESSOR_SERVICE);
                 // Endpoint Address
                 String endpointAddress = settings.getProperty("url.document", "http://localhost:9100/soap/document");
                 // Add a port to the Service
-                service.addPort(
-                        new QName("http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessorService",
-                                "DocumentProcessorPort"),
-                        SOAPBinding.SOAP11HTTP_BINDING,
-                        endpointAddress);
+                service.addPort(DOCUMENT_PROCESSOR_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 documentProcessor = service.getPort(IDocumentProcessor.class);
+
+                Binding documentProcessorBinding = ((BindingProvider) documentProcessor).getBinding();
+                addSOAPHandler(documentProcessorBinding);
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new WebServiceException("Malformed URL!", e);
@@ -90,22 +142,22 @@ public class Client {
      * Returns {@link #dataProvider}, it is created if needed.
      * @return data provider
      */
-    private IDataProvider getDataProvider() throws WebServiceException {
+    //TODO: configurable wsdl location!
+    private IDataProvider getDataProvider() {
         if (dataProvider == null) {
             try {
                 Service service = Service.create(
                         new URL(settings.getProperty("url.data.wsdl", "http://localhost:9100/soap/data?wsdl")),
-                        new QName("http://ws.commons.textan.ufal.mff.cuni.cz",
-                                "DataProviderService"));
+                        DATA_PROVIDER_SERVICE);
                 // Endpoint Address
                 String endpointAddress = settings.getProperty("url.data", "http://localhost:9100/soap/data");
                 // Add a port to the Service
-                service.addPort(
-                        new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService",
-                                "DataProviderPort"),
-                        SOAPBinding.SOAP11HTTP_BINDING,
-                        endpointAddress);
+                service.addPort(DATA_PROVIDER_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 dataProvider = service.getPort(IDataProvider.class);
+
+                Binding dataProviderBinding = ((BindingProvider) dataProvider).getBinding();
+                addSOAPHandler(dataProviderBinding);
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new WebServiceException("Malformed URL!", e);
@@ -117,12 +169,12 @@ public class Client {
     /**
      * Returns entities identified in text.
      * @param ticket editing ticket
-     * @param text text to process
+     * @param text   text to process
      * @return entities identified in text
-     * @see IDocumentProcessor#getEntitiesFromString(GetEntitiesFromString, EditingTicket)
+     * @see IDocumentProcessor#getEntitiesFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
      */
     public synchronized List<Entity> getEntities(final Ticket ticket, final String text) {
-        final GetEntitiesFromString request = new GetEntitiesFromString();
+        final GetEntitiesFromStringRequest request = new GetEntitiesFromStringRequest();
         request.setText(text);
         final IDocumentProcessor docProc = getDocumentProcessor();
         final GetEntitiesFromStringResponse response =
@@ -141,12 +193,12 @@ public class Client {
      */
     public synchronized Graph getGraph(final long centerId, final int distance)
             throws IdNotFoundException {
-        final GetGraphById request = new GetGraphById();
+        final GetGraphByIdRequest request = new GetGraphByIdRequest();
         request.setDistance(distance);
         request.setObjectId(centerId);
         try {
             final GetGraphByIdResponse response =
-                    getDataProvider().getGraphById(request, createTicket());
+                    getDataProvider().getGraphById(request);
             return new Graph(response.getGraph());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
@@ -155,10 +207,11 @@ public class Client {
 
     /**
      * Fills candidates of entities.
-     * @param ticket editing ticket
-     * @param text report to process
+     *
+     * @param ticket   editing ticket
+     * @param text     report to process
      * @param entities where to store candidates
-     * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromString, cz.cuni.mff.ufal.textan.commons.models.EditingTicket)
+     * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
      */
     public synchronized void getObjects(final Ticket ticket, final String text, final List<Entity> entities) {
         final Entities ents = new Entities();
@@ -168,7 +221,7 @@ public class Client {
             map.put(entity.getPosition(), entity);
         }
 
-        final GetAssignmentsFromString request = new GetAssignmentsFromString();
+        final GetAssignmentsFromStringRequest request = new GetAssignmentsFromStringRequest();
         request.setText(text);
         request.setEntities(ents);
 
@@ -190,15 +243,15 @@ public class Client {
      * @param typeId type id to filter
      * @return list of all objects in the system with specified type
      * @throws IdNotFoundException if id was not found
-     * @see IDataProvider#getObjectsByTypeId(cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeId, cz.cuni.mff.ufal.textan.commons.models.Ticket)
+     * @see IDataProvider#getObjectsByTypeId(cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdRequest)
      */
     public synchronized List<Object> getObjectsListByTypeId(final long typeId)
             throws IdNotFoundException {
         try {
-            final GetObjectsByTypeId request = new GetObjectsByTypeId();
+            final GetObjectsByTypeIdRequest request = new GetObjectsByTypeIdRequest();
             request.setObjectTypeId(typeId);
             final GetObjectsByTypeIdResponse response =
-                    getDataProvider().getObjectsByTypeId(request, createTicket());
+                    getDataProvider().getObjectsByTypeId(request);
             return response.getObjects().stream()
                     .map(Object::new)
                     .collect(Collectors.toCollection(ArrayList::new));
@@ -210,11 +263,11 @@ public class Client {
     /**
      * Returns list of all objects in the system.
      * @return list of all objects in the system
-     * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
+     * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
      */
     public synchronized List<Object> getObjectsList() {
         final GetObjectsResponse response =
-                getDataProvider().getObjects(new Void(), createTicket());
+                getDataProvider().getObjects(new Void());
         return response.getObjects().stream()
                 .map(Object::new)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -223,11 +276,11 @@ public class Client {
     /**
      * Returns set of all objects in the system.
      * @return set of all objects in the system
-     * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
+     * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
      */
     public synchronized Set<Object> getObjectsSet() {
         final GetObjectsResponse response =
-                getDataProvider().getObjects(new Void(), createTicket());
+                getDataProvider().getObjects(new Void());
         return response.getObjects().stream()
                 .map(Object::new)
                 .collect(Collectors.toCollection(HashSet::new));
@@ -236,11 +289,11 @@ public class Client {
     /**
      * Returns list of all object types in the system.
      * @return list of all object types in the system
-     * @see IDataProvider#getObjectTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
+     * @see IDataProvider#getObjectTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
      */
     public synchronized List<ObjectType> getObjectTypesList() {
         final GetObjectTypesResponse response =
-                getDataProvider().getObjectTypes(new Void(), createTicket());
+                getDataProvider().getObjectTypes(new Void());
         return response.getObjectTypes().stream()
                 .map(ObjectType::new)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -249,11 +302,11 @@ public class Client {
     /**
      * Returns set of all object types in the system.
      * @return set of all object types in the system
-     * @see IDataProvider#getObjectTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
+     * @see IDataProvider#getObjectTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
      */
     public synchronized Set<ObjectType> getObjectTypesSet() {
         final GetObjectTypesResponse response =
-                getDataProvider().getObjectTypes(new Void(), createTicket());
+                getDataProvider().getObjectTypes(new Void());
         return response.getObjectTypes().stream()
                 .map(ObjectType::new)
                 .collect(Collectors.toCollection(HashSet::new));
@@ -262,11 +315,11 @@ public class Client {
     /**
      * Returns set of all relation types in the system.
      * @return set of all relation types in the system
-     * @see IDataProvider#getRelationTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void, cz.cuni.mff.ufal.textan.commons.models.Ticket)
+     * @see IDataProvider#getRelationTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
      */
     public synchronized List<RelationType> getRelationTypesList() {
         final GetRelationTypesResponse response =
-                getDataProvider().getRelationTypes(new Void(), createTicket());
+                getDataProvider().getRelationTypes(new Void());
         return response.getRelationTypes().stream()
                 .map(RelationType::new)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -284,16 +337,13 @@ public class Client {
      * Returns ticket for document processing.
      * @param username user login
      * @return ticket for document processing
-     * @see IDocumentProcessor#getEditingTicket(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicket, cz.cuni.mff.ufal.textan.commons.models.Ticket)
+     * @see IDocumentProcessor#getEditingTicket(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketRequest)
      */
-    public synchronized Ticket getTicket(final String username) {
-        final GetEditingTicket request = new GetEditingTicket();
-        final cz.cuni.mff.ufal.textan.commons.models.Ticket ticket =
-                new cz.cuni.mff.ufal.textan.commons.models.Ticket();
-        ticket.setUsername(username);
+    public synchronized Ticket getTicket(final String username) { //TODO: remove username parameter
+        final GetEditingTicketRequest request = new GetEditingTicketRequest();
         final IDocumentProcessor docProc = getDocumentProcessor();
         final GetEditingTicketResponse response =
-                docProc.getEditingTicket(request, ticket);
+                docProc.getEditingTicket(request);
         return new Ticket(response.getEditingTicket());
     }
 
@@ -315,19 +365,20 @@ public class Client {
 
     /**
      * Saves processed documents.
-     * @param ticket editing ticket
-     * @param text report text
-     * @param reportEntities report entities
+     *
+     * @param ticket          editing ticket
+     * @param text            report text
+     * @param reportEntities  report entities
      * @param reportRelations report relations
      * @return true if saving was successfull, false otherwise
      * @throws IdNotFoundException if id error occurs
      */
     public synchronized boolean saveProcessedDocument(final Ticket ticket,
-            final String text, final List<Entity> reportEntities,
-            final List<RelationBuilder> reportRelations) throws IdNotFoundException{
-        final SaveProcessedDocumentFromString request =
-                new SaveProcessedDocumentFromString();
-        //
+                                         final String text, final List<Entity> reportEntities,
+                                         final List<RelationBuilder> reportRelations) throws IdNotFoundException {
+        final SaveProcessedDocumentFromStringRequest request =
+                new SaveProcessedDocumentFromStringRequest();
+
         final List<cz.cuni.mff.ufal.textan.commons.models.Object> objects =
                 request.getObjects();
         final List<ObjectOccurrence> objectOccurrences =
@@ -338,7 +389,7 @@ public class Client {
                 objectOccurrences.add(ent.toObjectOccurrence());
             }
         }
-        //
+
         final List<Relation> relations = request.getRelations();
         final List<RelationOccurrence> relationOccurrences =
                 request.getRelationOccurrences();
@@ -347,15 +398,15 @@ public class Client {
             final RelationOccurrence occ = relation.toRelationOccurrence();
             relationOccurrences.add(occ);
         }
-        //
+
         request.setText(text);
         request.setForce(false);
 
         try {
             final SaveProcessedDocumentFromStringResponse response =
                     getDocumentProcessor().saveProcessedDocumentFromString(
-                        request, //TODO handle save document error
-                        ticket.toTicket());
+                            request, //TODO handle save document error
+                            ticket.toTicket());
             return response.isResult();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);

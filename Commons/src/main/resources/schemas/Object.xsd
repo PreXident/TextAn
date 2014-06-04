@@ -20,6 +20,7 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="isJoined" type="xs:boolean"/>
         </xs:sequence>
         <xs:attribute name="isNew" type="xs:boolean" default="false" /> 
     </xs:complexType>

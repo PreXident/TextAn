@@ -1,0 +1,12 @@
+#Nametag learning configuration
+ner_identifier=czech
+tagger=morphodita:czech-131112-pos_only.tagger
+featuresFile=features-tsd13.txt
+stages=2
+iterations=30
+missing_weight=-0.1
+initial_learning_rage=0.1
+final_learning_rage=0.01
+gaussian=0.5
+hidden_layer=0
+heldout_data=

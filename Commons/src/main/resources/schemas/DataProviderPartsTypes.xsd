@@ -6,58 +6,58 @@
         
     <xs:import namespace="http://models.commons.textan.ufal.mff.cuni.cz" schemaLocation="CommonTypes.xsd"/>
     
-    <xs:element name="getObjectTypes" type="Void"/>    
+    <xs:element name="getObjectTypesRequest" type="Void"/>
     <xs:element name="getObjectTypesResponse" type="GetObjectTypesResponse"/>
     
-    <xs:element name="getObject" type="GetObject"/>
+    <xs:element name="getObjectRequest" type="GetObjectRequest"/>
     <xs:element name="getObjectResponse" type="GetObjectResponse"/>
     
-    <xs:element name="getObjects" type="Void"/>
+    <xs:element name="getObjectsRequest" type="Void"/>
     <xs:element name="getObjectsResponse" type="GetObjectsResponse"/>
     
     <!--<xs:element name="getObjectsByType" type="GetObjectsByType"/>-->
     <!--<xs:element name="getObjectsByTypeResponse" type="GetObjectsByTypeResponse"/>-->
     
-    <xs:element name="getObjectsByTypeId" type="GetObjectsByTypeId"/>
+    <xs:element name="getObjectsByTypeIdRequest" type="GetObjectsByTypeIdRequest"/>
     <xs:element name="getObjectsByTypeIdResponse" type="GetObjectsByTypeIdResponse"/>
     
-    <xs:element name="getRelationTypes" type="Void"/>
+    <xs:element name="getRelationTypesRequest" type="Void"/>
     <xs:element name="getRelationTypesResponse" type="GetRelationTypesResponse"/>
 
-    <xs:element name="getRelations" type="Void"/>
+    <xs:element name="getRelationsRequest" type="Void"/>
     <xs:element name="getRelationsResponse" type="GetRelationsResponse"/>
     
     <!--<xs:element name="getRelationsByType" type="GetRelationsByType"/>-->
     <!--<xs:element name="getRelationsByTypeResponse" type="GetRelationsByTypeResponse"/>-->
     
-    <xs:element name="getRelationsByTypeId" type="GetRelationsByTypeId"/>
+    <xs:element name="getRelationsByTypeIdRequest" type="GetRelationsByTypeIdRequest"/>
     <xs:element name="getRelationsByTypeIdResponse" type="GetRelationsByTypeIdResponse"/>
     
-    <xs:element name="getGraphById" type="GetGraphById"/>
+    <xs:element name="getGraphByIdRequest" type="GetGraphByIdRequest"/>
     <xs:element name="getGraphByIdResponse" type="GetGraphByIdResponse"/>
     
-    <xs:element name="getRelatedObjectsById" type="GetRelatedObjectsById"/>
+    <xs:element name="getRelatedObjectsByIdRequest" type="GetRelatedObjectsByIdRequest"/>
     <xs:element name="getRelatedObjectsByIdResponse" type="GetRelatedObjectsByIdResponse"/>
     
-    <xs:element name="getPathById" type="GetPathById"/>
+    <xs:element name="getPathByIdRequest" type="GetPathByIdRequest"/>
     <xs:element name="getPathByIdResponse" type="GetPathByIdResponse"/>
     
-    <xs:element name="mergeObjects" type="MergeObjects"/>
+    <xs:element name="mergeObjectsRequest" type="MergeObjectsRequest"/>
     <xs:element name="mergeObjectsResponse" type="MergeObjectsResponse"/>
     
-    <xs:element name="splitObject" type="SplitObject"/>
+    <xs:element name="splitObjectRequest" type="SplitObjectRequest"/>
     <xs:element name="splitObjectResponse" type="SplitObjectResponse"/>    
     
-    <xs:element name="addDocument" type="AddDocument"/>
+    <xs:element name="addDocumentRequest" type="AddDocumentRequest"/>
     <xs:element name="addDocumentResponse" type="AddDocumentResponse"/>
     
-    <xs:element name="updateDocument" type="UpdateDocument"/>
+    <xs:element name="updateDocumentRequest" type="UpdateDocumentRequest"/>
     <xs:element name="updateDocumentResponse" type="UpdateDocumentResponse"/>
     
-    <xs:element name="getDocuments" type="Void"/>
+    <xs:element name="getDocumentsRequest" type="Void"/>
     <xs:element name="getDocumentsResponse" type="GetDocumentsResponse"/>
     
-    <xs:element name="getDocumentById" type="GetDocumentById"/>
+    <xs:element name="getDocumentByIdRequest" type="GetDocumentByIdRequest"/>
     <xs:element name="getDocumentByIdResponse" type="GetDocumentByIdResponse"/>
 
     <!-- type for messages without parameters -->
@@ -71,7 +71,7 @@
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="GetObject">
+    <xs:complexType name="GetObjectRequest">
         <xs:sequence>
             <xs:element name="objectId" type="xs:long" />
         </xs:sequence>
@@ -101,7 +101,7 @@
         </xs:sequence>
     </xs:complexType>-->
     
-    <xs:complexType name="GetObjectsByTypeId">
+    <xs:complexType name="GetObjectsByTypeIdRequest">
         <xs:sequence>
             <xs:element name="objectTypeId" type="xs:long"/>
         </xs:sequence>
@@ -137,7 +137,7 @@
         </xs:sequence>
     </xs:complexType>-->
     
-    <xs:complexType name="GetRelationsByTypeId">
+    <xs:complexType name="GetRelationsByTypeIdRequest">
         <xs:sequence>
             <xs:element name="relationTypeId" type="xs:long"/>
         </xs:sequence>
@@ -149,7 +149,7 @@
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="GetGraphById">
+    <xs:complexType name="GetGraphByIdRequest">
         <xs:sequence>
             <xs:element name="objectId" type="xs:long"/>
             <xs:element name="distance" type="xs:int"/>
@@ -162,7 +162,7 @@
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="GetRelatedObjectsById">
+    <xs:complexType name="GetRelatedObjectsByIdRequest">
         <xs:sequence>
             <xs:element name="objectId" type="xs:long"/>
         </xs:sequence>
@@ -174,7 +174,7 @@
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="GetPathById">
+    <xs:complexType name="GetPathByIdRequest">
         <xs:sequence>
             <xs:element name="startObjectId" type="xs:long"/>
             <xs:element name="targetObjectId" type="xs:long"/>
@@ -187,7 +187,7 @@
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="MergeObjects">
+    <xs:complexType name="MergeObjectsRequest">
         <xs:sequence>
             <xs:element name="object1Id" type="xs:long"/>
             <xs:element name="object2Id" type="xs:long"/>
@@ -201,7 +201,7 @@
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="SplitObject">
+    <xs:complexType name="SplitObjectRequest">
         <xs:sequence>
             <xs:element name="objectId" type="xs:long"/>
         </xs:sequence>
@@ -213,7 +213,7 @@
         </xs:sequence>
     </xs:complexType>  
 
-    <xs:complexType name="AddDocument">
+    <xs:complexType name="AddDocumentRequest">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
         </xs:sequence>
@@ -225,7 +225,7 @@
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="UpdateDocument">
+    <xs:complexType name="UpdateDocumentRequest">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
             <xs:element name="documentId" type="xs:long"/>
@@ -244,7 +244,7 @@
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="GetDocumentById">
+    <xs:complexType name="GetDocumentByIdRequest">
         <xs:sequence>
             <xs:element name="documentId" type="xs:long"/>
         </xs:sequence>

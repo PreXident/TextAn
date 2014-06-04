@@ -1,7 +1,9 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
+import cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -35,6 +37,9 @@ public class AppConfig {
 
     @Autowired
     private DataConfig dataConfig;
+
+    @Autowired
+    private IObjectTypeTableDAO objectTypeTableDAO;
 
     /**
      * Creates a pre-configured Jetty server.
@@ -91,5 +96,10 @@ public class AppConfig {
     @Bean(destroyMethod = "stop")
     public CommandInvoker commandInvoker() {
         return new CommandInvoker();
+    }
+
+    @Bean
+    public NameTagServices nametagServices() {
+        return new NameTagServices(objectTypeTableDAO);
     }
 }
