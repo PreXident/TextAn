@@ -1,4 +1,4 @@
-Venca is missing! Because he overslept.
+Venca arrived 2 hours later! Because he overslept. Unfortunately no one else was here.
 
 Adam:
 - client and master branch synchronized
