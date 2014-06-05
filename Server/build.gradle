@@ -42,17 +42,18 @@ dependencies {
 
     compile project(':Commons')
     compile project(':Data')
-    compile project(':NameTagIntegration')
+    compile project(':Lingustics')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
 }
 
-task copyNametagLib(type: Copy) {
+task copyLingusticsLibs(type: Copy) {
     run.dependsOn name
 
-    from (new File(project(':NameTagIntegration').projectDir, 'lib')) {
+    from (new File(project(':Lingustics').projectDir, 'lib')) {
         include System.mapLibraryName("nametag_java")
+        include System.mapLibraryName("morphodita_java")
     }
     into new File(buildDir, 'lib')
 }
@@ -62,6 +63,15 @@ task copyNametagModel(type: Copy) {
 
     from (new File('../Samples/models')) {
         include '**/*.ner'
+    }
+    into new File(buildDir, 'models')
+}
+
+task copyMorphoditaTagger(type: Copy) {
+    run.dependsOn name
+
+    from (new File(project(':Lingustics').projectDir, 'training')) {
+        include '**/*.tagger'
     }
     into new File(buildDir, 'models')
 }
@@ -134,11 +144,12 @@ shadow {
 //    }
 }
 
-task shadowCopyNametagLib(type: Copy) {
+task shadowLingusticsLibs(type: Copy) {
     shadowJar.dependsOn name
 
-    from (new File(project(':NameTagIntegration').projectDir, 'lib')) {
+    from (new File(project(':Lingustics').projectDir, 'lib')) {
         include System.mapLibraryName("nametag_java")
+        include System.mapLibraryName("morphodita_java")
     }
     into new File(shadow.destinationDir, 'lib')
 }
@@ -147,7 +158,16 @@ task shadowCopyNametagModel(type: Copy) {
     shadowJar.dependsOn name
 
     from (new File('../Samples/models')) {
-        include '**/*.net'
+        include '**/*.ner'
+    }
+    into new File(shadow.destinationDir, 'models')
+}
+
+task shadowCopyMorphoditaTagger(type: Copy) {
+    shadowJar.dependsOn name
+
+    from (new File(project(':Lingustics').projectDir, 'training')) {
+        include '**/*.tagger'
     }
     into new File(shadow.destinationDir, 'models')
 }
