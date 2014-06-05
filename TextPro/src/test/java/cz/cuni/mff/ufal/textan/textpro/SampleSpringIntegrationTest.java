@@ -18,7 +18,6 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(classes = {TextProConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class SampleSpringIntegrationTest {
 
-
     @Autowired
     IAliasOccurrenceTableDAO aliasOccurrenceTableDAO;
 

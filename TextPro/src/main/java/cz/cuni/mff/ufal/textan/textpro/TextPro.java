@@ -96,7 +96,10 @@ public class TextPro implements ITextPro {
     }
     
     /**
-     *
+     * Double ranking is the main function of TextPro
+     * It takes the input as a documents, a list of entity and the number of wanted result
+     * It produces the output as a Map between the entity and the id of object, along with it scores
+     * MAP<Entity, Map<Object ID, Score>>
      * @param document
      * @param eList
      * @return the result of DoubleRank
@@ -180,8 +183,6 @@ public class TextPro implements ITextPro {
         // Return the value
         return eMap;
         
-        //throw new UnsupportedOperationException("Not implemented yet");
-        /// waiting for the double rank
     }
     
     public List<ObjectTable> getCloseObject(Entity e){
