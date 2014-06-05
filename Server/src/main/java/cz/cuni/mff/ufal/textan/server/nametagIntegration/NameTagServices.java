@@ -12,6 +12,7 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Jakub Vlcek on 29. 4. 2014.
@@ -25,14 +26,19 @@ public class NameTagServices {
 
     public NameTagServices(IObjectTypeTableDAO objectTypeTableDAO) {
         this.objectTypeTableDAO = objectTypeTableDAO;
+        idTempTable =  new Hashtable<Long, ObjectType>();
     }
 
-    public void bindModel(String pathToModel) {
-        ner = Ner.load(pathToModel);
-        if (ner == null) {
-            LOG.error("Model wasn't found!"); //TODO: throw some exception, what it returns if model exists, bud...
+    public void bindModel(File pathToModel) {
+        LOG.info("Changing model");
+        Ner tempNer = Ner.load(pathToModel.getAbsolutePath());
+        if (tempNer == null) {
+            LOG.error("Model " + pathToModel.getAbsolutePath() + " wasn't found!"); //TODO: throw some exception, what it returns if model exists, bud...
         }
-        idTempTable = new Hashtable<>();
+        else {
+            ner = tempNer;
+            LOG.info("Model changed");
+        }
     }
 
     ObjectType translateEntity(String entityType) {
@@ -71,21 +77,17 @@ public class NameTagServices {
      * Function that creates commands for learning new nametag model.
      * @return string array with commands
      */
-    String[] prepareLearningArguments() {
+    private String[] prepareLearningArguments(File outputFilePath) {
         String[] configValues = {"czech", "morphodita:czech-131112-pos_only.tagger", "features-tsd13.txt", "2","30", "-0.1", "0.1", "0.01", "0.5", "0", ""};
         String[] configNames = {"ner_identifier", "tagger", "featuresFile", "stages", "iterations", "missing_weight", "initial_learning_rage", "final_learning_rage", "gaussian", "hidden_layer", "heldout_data"};
         StringBuilder command = new StringBuilder();
         String[] result;
-        // binary and setting splitter
-        String pathSplitter;
         if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
             result = new String[]{"cmd","/C", ""};
             command.append(".\\train_ner.exe");
-            pathSplitter = "\\";
         } else {
             result = new String[]{""};
             command.append("./train_ner");
-            pathSplitter = "/";
         }
         try {
             InputStream configFileStream = NameTagServices.class.getResource("/NametagLearningConfiguration.cnf").openStream();
@@ -114,21 +116,10 @@ public class NameTagServices {
             }
         }
 
-        /*
-        // taggger
-        result.append(" czech morphodita:czech-131112-pos_only.tagger");
-        // features
-        result.append(" features-tsd13.txt");
-        // training parameters
-        result.append(" 2 30 -0.1 0.1 0.01 0.5 0");
-        // test file
-        result.append(" cnec2.0-all" + pathSplitter + "dtest.txt"); */
         // learning data INPUT
-        command.append(" <cnec2.0-all" + pathSplitter + "train.txt");
+        command.append(" <cnec2.0-all" + File.separator + "train.txt");
         // model file OUTPUT
-        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
-        String modelLocation = "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner";
-        command.append(" >." + pathSplitter + modelLocation);
+        command.append(" >" + outputFilePath);
         result[result.length - 1] = command.toString();
         return result;
     }
@@ -136,30 +127,46 @@ public class NameTagServices {
     /**
      * Learn new model
      */
-    void learn() { //TODO: add visibility modifier
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        LOG.info("Started training at " + sdf.format(cal.getTime()));
+    public void learn(boolean waitForModel) { //TODO: add visibility modifier
+        LOG.info("Started training new nametag model");
         try {
             Runtime rt = Runtime.getRuntime();
-            File dir = new File(Paths.get("../NameTagIntegration/training").toAbsolutePath().toString());
-            Process ps;
-            //String modelPath;
-            ps = rt.exec(prepareLearningArguments(), null, dir);
+            File dir = new File(Paths.get("../../NameTagIntegration/training").toAbsolutePath().toString());
+            SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
+            File modelLocation = new File(dir.getAbsolutePath() + File.separator + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner").getAbsoluteFile();
+            LOG.debug("New model path: " + modelLocation);
 
-            BufferedReader bes = new BufferedReader(new InputStreamReader(ps.getErrorStream())); //Dont't know why, but output is in error stream
-            String lineerr;
-            while ((lineerr = bes.readLine()) != null) {
-                LOG.info(lineerr);
+            String[] learningCommand = prepareLearningArguments(modelLocation);
+            LOG.debug("Executing learning command: " + learningCommand[learningCommand.length - 1]);
+            Process ps = rt.exec(learningCommand, null, dir);
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
+            String lineErr;
+            String linePrev = null;
+            while ((lineErr = bufferedReader.readLine()) != null) {
+                linePrev = lineErr;
+                //LOG.info(lineerr);  logging is useless, whole output is available after learning
             }
-        } catch (IOException e) {
-            LOG.error("Training failed " + sdf.format(cal.getTime()), e);
-        }
 
-        LOG.info("Training done at " + sdf.format(cal.getTime()));
-        LOG.info("Changing ner.");
-        this.bindModel("../../NameTagIntegration/training/czech-140205-cnec2.0.ner");
-        LOG.info("Ner changed.");
+            boolean correctRun = true;
+            if (waitForModel) {
+                LOG.info("Waiting for training process");
+                correctRun = ps.waitFor(5, TimeUnit.MINUTES);
+            }
+
+            if ((correctRun) && ((linePrev != null) && (linePrev.endsWith("Recognizer saved.")))) {
+                LOG.info("Training done");
+                this.bindModel(modelLocation);
+            }
+            else {
+                LOG.error("Training failed");
+            }
+
+        } catch (IOException e) {
+            LOG.error("Training failed", e);
+        } catch (InterruptedException e) {
+            LOG.error("Training interrupted", e);
+        }
     }
 
 
