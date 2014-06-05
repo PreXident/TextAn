@@ -90,7 +90,7 @@ public class NameTagServices {
             command.append("./train_ner");
         }
         try {
-            InputStream configFileStream = NameTagServices.class.getResource("/NametagLearningConfiguration.cnf").openStream();
+            InputStream configFileStream = NameTagServices.class.getResource("/NametagLearningConfiguration.properties").openStream();
             Properties p = new Properties();
             p.load(configFileStream);
             configFileStream.close();
