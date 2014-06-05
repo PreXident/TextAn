@@ -162,11 +162,13 @@ public class TextPro implements ITextPro {
             
             Test test = new Test(e, oList, oListID, score, minscore);
             List<Instance> instances = test.CreateTestSet(e, aliasTableDAO);
+            
+            /* Running the classifier, but it is included in the assigning value already
             for(Instance in:instances){
                 Object predictedClassValue = ml.classify(in);
-                
                 System.out.println("Predict: " + predictedClassValue.toString());
             }
+            */
             /* Assign value */
             /***************** ASSIGN VALUE *********************************/
             Map <Long,Double> entityScore = new HashMap <Long,Double>();
