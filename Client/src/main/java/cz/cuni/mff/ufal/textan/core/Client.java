@@ -125,11 +125,12 @@ public class Client {
                 String endpointAddress = settings.getProperty("url.document", "http://localhost:9100/soap/document");
                 // Add a port to the Service
                 service.addPort(DOCUMENT_PROCESSOR_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
-                documentProcessor = service.getPort(IDocumentProcessor.class);
+                final IDocumentProcessor processor =
+                        service.getPort(IDocumentProcessor.class);
 
-                Binding documentProcessorBinding = ((BindingProvider) documentProcessor).getBinding();
+                Binding documentProcessorBinding = ((BindingProvider) processor).getBinding();
                 addSOAPHandler(documentProcessorBinding);
-
+                documentProcessor = new SynchronizedDocumentProcessor(processor);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new WebServiceException("Malformed URL!", e);
@@ -153,10 +154,11 @@ public class Client {
                 String endpointAddress = settings.getProperty("url.data", "http://localhost:9100/soap/data");
                 // Add a port to the Service
                 service.addPort(DATA_PROVIDER_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
-                dataProvider = service.getPort(IDataProvider.class);
+                final IDataProvider provider = service.getPort(IDataProvider.class);
 
-                Binding dataProviderBinding = ((BindingProvider) dataProvider).getBinding();
+                Binding dataProviderBinding = ((BindingProvider) provider).getBinding();
                 addSOAPHandler(dataProviderBinding);
+                dataProvider = new SynchronizedDataProvider(provider);
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
