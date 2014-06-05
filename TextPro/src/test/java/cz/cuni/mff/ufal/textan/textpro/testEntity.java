@@ -5,7 +5,6 @@ package cz.cuni.mff.ufal.textan.textpro;/*
 
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import cz.cuni.mff.ufal.textan.textpro.ITextPro;
-import cz.cuni.mff.ufal.textan.textpro.Running;
 import java.util.List;
 
 /**
@@ -15,9 +14,4 @@ import java.util.List;
 public class testEntity {
 
     //TODO: in this directory must be only JUnit or NGUnit tests!
-
-    public static void main(String[] args) {
-        ITextPro ner = new Running();
-        System.out.println("Test here");
-    }
 }

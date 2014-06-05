@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package cz.cuni.mff.ufal.textan.textpro;
+package cz.cuni.mff.ufal.textan.textpro.learning;
 
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;

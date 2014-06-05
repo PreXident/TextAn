@@ -43,30 +43,4 @@ public class FeaturesComputeValue {
         return 0;
     }
     
-    
-    public static void main(String[] args) throws Exception {
-        Entity e1 = new Entity("John", 0, 0, 1); // e.g 1 = person
-        Entity e2 = new Entity("12.03.2013", 0, 0, 2); // e.g 2 = date
-        Entity e3 = new Entity("Mary", 0, 0, 1); // e.g 1 = person
-        
-        /*
-        * Get a database object, get all alias which it has
-        * Test the similarity between object and entity
-        * Waiting for the database
-        */
-        
-        FeaturesComputeValue fcv = new FeaturesComputeValue();
-
-        String group1 = "Mary Peter John 12.03.2014";
-        String group2 = "John Mary";
-        
-        System.out.println("Test 0");
-        double d = fcv.EntityTextAndObjectAlias("12.03", e2.getText());
-        System.out.println("Similarity " + d);
-        
-        System.out.println("Test 1");
-        double d2 = fcv.EntityTextAndObjectAlias(group1, group2);
-        System.out.println("Similarity " + d2);
-        
-    }    
 }

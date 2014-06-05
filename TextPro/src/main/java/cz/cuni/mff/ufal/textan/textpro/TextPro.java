@@ -1,5 +1,7 @@
 package cz.cuni.mff.ufal.textan.textpro;
 
+import cz.cuni.mff.ufal.textan.textpro.learning.Test;
+import cz.cuni.mff.ufal.textan.textpro.learning.Train;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
