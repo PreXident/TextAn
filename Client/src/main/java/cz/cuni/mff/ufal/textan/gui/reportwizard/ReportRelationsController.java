@@ -54,7 +54,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
@@ -102,9 +101,6 @@ public class ReportRelationsController extends ReportWizardController {
 
     @FXML
     BorderPane root;
-
-    @FXML
-    TextFlow textFlow;
 
     @FXML
     ScrollPane scrollPane;
@@ -251,7 +247,7 @@ public class ReportRelationsController extends ReportWizardController {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.resourceBundle = rb;
-        textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
+        textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
         table.setEditable(true);
         objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().multiply(-1).add(-2)));
@@ -645,11 +641,17 @@ public class ReportRelationsController extends ReportWizardController {
                             cell.setOnMouseEntered(e -> {
                                 final RelationType type = selectedRelation.getType();
                                 final long id = type.getId();
-                                objectWords.get(cell.getItem()).stream()
-                                    .forEach(t -> Utils.styleTextBackground(t, id));
+                                Object item = cell.getItem();
+                                if (item != null) {
+                                    objectWords.get(item).stream()
+                                        .forEach(t -> Utils.styleTextBackground(t, id));
+                                }
                             });
                             cell.setOnMouseExited(e -> {
                                 final Object obj = cell.getItem();
+                                if (obj == null) {
+                                    return;
+                                }
                                 boolean found = selectedRelation.getData().stream()
                                         .anyMatch(rel -> rel.getObject() == obj);
                                 if (!found) {

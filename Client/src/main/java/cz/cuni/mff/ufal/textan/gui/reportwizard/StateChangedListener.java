@@ -5,17 +5,15 @@ import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.State;
 import cz.cuni.mff.ufal.textan.core.processreport.State.StateType;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import jfxtras.labs.scene.control.window.Window;
-import org.controlsfx.dialog.Dialogs;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  * Implementation of IStateChangedListener.
@@ -23,33 +21,17 @@ import java.util.ResourceBundle;
 public class StateChangedListener implements IStateChangedListener {
 
     /**
-     * Ugly hack to prevent mouse events for TextFlow to be ignored.
-     * If width is not bound, call {@link #hackFixTextFlowMouseEvents(Window)}.
+     * Ugly hack to prevent mouse events for TextFlow to be ignored
+     * and some display errors.
      * TODO more systematic solution
-     * @param window report wizard window containing the textflow
+     * @param controller controller that possible holds textflow
      */
-    static private void hackFixTextFlowMouseEvents(final ReportWizardWindow window) {
-        final boolean widthBound = window.prefWidthProperty().isBound();
-        if (!widthBound) {
-            hackFixTextFlowMouseEvents((Window) window);
-            return;
+    static private void hackFixTextFlow(final ReportWizardController controller) {
+        if (controller.textFlow != null) {
+            runFXlater(() -> {
+                controller.textFlow.layoutChildren();
+            });
         }
-        window.prefWidthProperty().unbind();
-        window.setPrefWidth(window.getPrefWidth() - 1);
-        runFXlater(() -> {
-            window.prefWidthProperty().bind(window.boundWidth);
-        });
-    }
-
-    /**
-     * Ugly hack to prevent mouse events for TextFlow to be ignored.
-     * Does not support bound width!
-     * TODO more systematic solution
-     * @param window window containing the textflow
-     */
-    static private void hackFixTextFlowMouseEvents(final Window window) {
-        window.setPrefWidth(window.getPrefWidth() - 1);
-        runFXlater(() -> window.setPrefWidth(window.getPrefWidth() + 1));
     }
 
     /**
@@ -154,14 +136,13 @@ public class StateChangedListener implements IStateChangedListener {
                     controller.setWindow(window);
                     window.getContentPane().getChildren().add(loadedRoot);
                     window.setTitle(title);
-                    hackFixTextFlowMouseEvents(window);
                 } else /* if (stage != null) */ {
                     controller.setStage(stage);
                     stage.getInnerWindow().getContentPane().getChildren().clear();
                     stage.getInnerWindow().getContentPane().getChildren().add(loadedRoot);
                     stage.getInnerWindow().setTitle(title);
-                    hackFixTextFlowMouseEvents(stage.getInnerWindow());
                 }
+                hackFixTextFlow(controller);
             } catch (IOException e) {
                 e.printStackTrace();
                 Dialogs.create()
@@ -175,7 +156,7 @@ public class StateChangedListener implements IStateChangedListener {
     /**
      * Simple holder of information about states.
      */
-    private static class StateInfo {
+    protected static class StateInfo {
 
         /** Fxml containing the state's view. */
         public final String fxml;

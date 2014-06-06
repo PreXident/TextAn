@@ -115,20 +115,22 @@ public class Client {
      * Returns {@link #documentProcessor}, it is created if needed.
      * @return document processor
      */
-    //TODO: configurable wsdl location!
     private IDocumentProcessor getDocumentProcessor() {
         if (documentProcessor == null) {
             try {
-                Service service = Service.create(new URL("http://localhost:9100/soap/document?wsdl"), DOCUMENT_PROCESSOR_SERVICE);
+                Service service = Service.create(
+                        new URL(settings.getProperty("url.document.wsdl", "http://localhost:9100/soap/document?wsdl")),
+                        DOCUMENT_PROCESSOR_SERVICE);
                 // Endpoint Address
-                String endpointAddress = "http://localhost:9100/soap/document";
+                String endpointAddress = settings.getProperty("url.document", "http://localhost:9100/soap/document");
                 // Add a port to the Service
                 service.addPort(DOCUMENT_PROCESSOR_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
-                documentProcessor = service.getPort(IDocumentProcessor.class);
+                final IDocumentProcessor processor =
+                        service.getPort(IDocumentProcessor.class);
 
-                Binding documentProcessorBinding = ((BindingProvider) documentProcessor).getBinding();
+                Binding documentProcessorBinding = ((BindingProvider) processor).getBinding();
                 addSOAPHandler(documentProcessorBinding);
-
+                documentProcessor = new SynchronizedDocumentProcessor(processor);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new WebServiceException("Malformed URL!", e);
@@ -145,15 +147,18 @@ public class Client {
     private IDataProvider getDataProvider() {
         if (dataProvider == null) {
             try {
-                Service service = Service.create(new URL("http://localhost:9100/soap/data?wsdl"), DATA_PROVIDER_SERVICE);
+                Service service = Service.create(
+                        new URL(settings.getProperty("url.data.wsdl", "http://localhost:9100/soap/data?wsdl")),
+                        DATA_PROVIDER_SERVICE);
                 // Endpoint Address
-                String endpointAddress = "http://localhost:9100/soap/data";
+                String endpointAddress = settings.getProperty("url.data", "http://localhost:9100/soap/data");
                 // Add a port to the Service
                 service.addPort(DATA_PROVIDER_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
-                dataProvider = service.getPort(IDataProvider.class);
+                final IDataProvider provider = service.getPort(IDataProvider.class);
 
-                Binding dataProviderBinding = ((BindingProvider) dataProvider).getBinding();
+                Binding dataProviderBinding = ((BindingProvider) provider).getBinding();
                 addSOAPHandler(dataProviderBinding);
+                dataProvider = new SynchronizedDataProvider(provider);
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
