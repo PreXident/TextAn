@@ -19,7 +19,7 @@ public class MorphoditaServices {
 
     public MorphoditaServices() {
         LOG.info("Loading tagger");
-        tagger = Tagger.load("C:\\NametagTest\\czech-131112-pos_only.tagger");
+        tagger = Tagger.load("models/czech-131112-pos_only.tagger");
         if (tagger == null) {
             LOG.error("Cannot load tagger from file 'czech-131112-pos_only.tagger'");
         }
