@@ -35,8 +35,8 @@ public class AppEntry {
             NameTagServices nameTagServices = context.getBean(NameTagServices.class);
 
             LOG.info("Initialize named entity recognizer");
-            //nameTagServices.learn(true);
-            nameTagServices.bindModel(NAMETAG_MODEL);
+            nameTagServices.init();
+            //nameTagServices.bindModel(NAMETAG_MODEL);
 
             LOG.info("Start server");
             server.start();

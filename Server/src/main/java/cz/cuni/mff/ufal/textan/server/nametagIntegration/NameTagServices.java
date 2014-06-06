@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -29,48 +30,76 @@ public class NameTagServices {
         idTempTable =  new Hashtable<Long, ObjectType>();
     }
 
-    public void bindModel(File pathToModel) {
-        LOG.info("Changing model");
-        Ner tempNer = Ner.load(pathToModel.getAbsolutePath());
-        if (tempNer == null) {
-            LOG.error("Model " + pathToModel.getAbsolutePath() + " wasn't found!"); //TODO: throw some exception, what it returns if model exists, bud...
-        }
-        else {
-            ner = tempNer;
-            LOG.info("Model changed");
+    /**
+     * Initialize nametag
+     * if there are existing models, than use newest one, else train new
+     */
+    public void init() {
+        LOG.info("Initializing nametag");
+        LOG.info("Looking for models");
+        File modelsDir = new File("models");
+        if (modelsDir.exists() && modelsDir.isDirectory()) {
+            FilenameFilter modelsFilter = new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    if(name.lastIndexOf('.')>0)
+                    {
+                        // get last index for '.' char
+                        int lastIndex = name.lastIndexOf('.');
+
+                        // get extension
+                        String str = name.substring(lastIndex);
+
+                        // match path name extension
+                        if(str.equals(".ner"))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            };
+            File[] models = modelsDir.listFiles(modelsFilter);
+            if (models.length > 0) {
+                Arrays.sort(models, new ModelsComparator());
+                LOG.info("Existing model(s) found)");
+                int i = 0;
+                while ((i < models.length) && (!bindModel(models[i]))) {
+                    ++i;
+                }
+                if (i >= models.length) {
+                    LOG.info("Found models are corrupted, learning");
+                    learn(true);
+                }
+            } else {
+                LOG.info("No models found");
+                learn(true);
+            }
+
         }
     }
 
-    ObjectType translateEntity(String entityType) {
-        ObjectType value = new ObjectType(-1L, "");
-        Long id = -1L;
-        try {
-            id = Long.parseLong(entityType);
+    /**
+     * changing model of nametag
+     * @param pathToModel path to *.ner file
+     * @return true if change was successful, else false
+     */
+    private boolean bindModel(File pathToModel) {
+        if (!pathToModel.exists()) {
+            LOG.error("Model " + pathToModel.getAbsolutePath() + " wasn't found");
+            return false;
         }
-        catch (NumberFormatException nfe) {
-            // log outside of method
+        LOG.info("Changing model");
+        Ner tempNer = Ner.load(pathToModel.getAbsolutePath());
+        if (tempNer == null) {
+            LOG.error("Model " + pathToModel.getAbsolutePath() + " is corrupted");
+            return false;
         }
-        if (id == -1L) {
-            return null;
+        else {
+            ner = tempNer;
+            LOG.info("Model changed to " + pathToModel.getAbsolutePath());
         }
-        if (idTempTable.containsKey(id)) {
-            value = idTempTable.get(id);
-            LOG.debug("Using CACHED entity " + value.getName());
-        } else {
-            try {
-                ObjectTypeTable tableObject = objectTypeTableDAO.find(id);
-                if (tableObject != null) {
-                    value = new ObjectType(tableObject.getId(), tableObject.getName());
-                    idTempTable.put(id, value);
-                    LOG.debug("Using DATABASE entity " + value.getName());
-                } else {
-                    LOG.warn("Entity type " + entityType + " recognized, but is not stored in database.");
-                }
-            } catch (Exception ex) {
-                LOG.warn("Exceptin occured when trying translate entity.", ex.getMessage());
-            }
-        }
-        return value;
+        return true;
     }
 
     /**
@@ -126,14 +155,15 @@ public class NameTagServices {
 
     /**
      * Learn new model
+     * @param waitForModel true when learning is tu be blocking, else false
      */
     public void learn(boolean waitForModel) { //TODO: add visibility modifier
         LOG.info("Started training new nametag model");
         try {
             Runtime rt = Runtime.getRuntime();
-            File dir = new File(Paths.get("../../NameTagIntegration/training").toAbsolutePath().toString());
+            File dir = new File(Paths.get("../../Lingustics/training").toAbsolutePath().toString());
             SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
-            File modelLocation = new File(dir.getAbsolutePath() + File.separator + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner").getAbsoluteFile();
+            File modelLocation = new File("models" + File.separator + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner").getAbsoluteFile();
             LOG.debug("New model path: " + modelLocation);
 
             String[] learningCommand = prepareLearningArguments(modelLocation);
@@ -159,7 +189,7 @@ public class NameTagServices {
                 this.bindModel(modelLocation);
             }
             else {
-                LOG.error("Training failed");
+                LOG.error("Training failed: " + linePrev);
             }
 
         } catch (IOException e) {
@@ -169,6 +199,42 @@ public class NameTagServices {
         }
     }
 
+    /**
+     * Translate entity type from string to Object Type
+     * @param entityType entity type decoded by nametag
+     * @return translated entity type
+     */
+    ObjectType translateEntity(String entityType) {
+        ObjectType value = new ObjectType(-1L, "");
+        Long id = -1L;
+        try {
+            id = Long.parseLong(entityType);
+        }
+        catch (NumberFormatException nfe) {
+            // log outside of method
+        }
+        if (id == -1L) {
+            return null;
+        }
+        if (idTempTable.containsKey(id)) {
+            value = idTempTable.get(id);
+            LOG.debug("Using CACHED entity " + value.getName());
+        } else {
+            try {
+                ObjectTypeTable tableObject = objectTypeTableDAO.find(id);
+                if (tableObject != null) {
+                    value = new ObjectType(tableObject.getId(), tableObject.getName());
+                    idTempTable.put(id, value);
+                    LOG.debug("Using DATABASE entity " + value.getName());
+                } else {
+                    LOG.warn("Entity type " + entityType + " recognized, but is not stored in database.");
+                }
+            } catch (Exception ex) {
+                LOG.warn("Exceptin occured when trying translate entity.", ex.getMessage());
+            }
+        }
+        return value;
+    }
 
     public List<Entity> tagText(String input)
     {
@@ -258,5 +324,12 @@ public class NameTagServices {
 
     private String encodeEntities(String text) {
         return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
+    }
+}
+
+class ModelsComparator implements Comparator<File> {
+    @Override
+    public int compare(File a, File b) {
+        return a.lastModified() < b.lastModified() ? 1 : a.lastModified() > b.lastModified() ? -1 : 0;
     }
 }
