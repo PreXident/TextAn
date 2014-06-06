@@ -153,6 +153,9 @@ public class ReportObjectsController extends ReportWizardController {
         resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        scrollPane.vvalueProperty().addListener(e -> {
+            textFlow.layoutChildren();
+        });
         //create popup
         BorderPane border = new BorderPane();
         final SplitPane splitVert = new SplitPane();

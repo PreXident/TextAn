@@ -249,6 +249,9 @@ public class ReportRelationsController extends ReportWizardController {
         this.resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        scrollPane.vvalueProperty().addListener(e -> {
+            textFlow.layoutChildren();
+        });
         table.setEditable(true);
         objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().multiply(-1).add(-2)));
         orderColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Number> p) -> p.getValue().order);

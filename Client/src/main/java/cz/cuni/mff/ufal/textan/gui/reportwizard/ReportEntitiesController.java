@@ -134,6 +134,9 @@ public class ReportEntitiesController extends ReportWizardController {
         resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        scrollPane.vvalueProperty().addListener(e -> {
+            textFlow.layoutChildren();
+        });
         //create popup
         BorderPane border = new BorderPane();
         listView = new ListView<>();
