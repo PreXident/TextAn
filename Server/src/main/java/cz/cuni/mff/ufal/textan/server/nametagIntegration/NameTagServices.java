@@ -192,7 +192,8 @@ public class NameTagServices {
             String line;
 
             // Read block
-            while ((not_eof = reader.hasNextLine()) && !(line = reader.nextLine()).isEmpty()) {
+            while (not_eof = reader.hasNextLine()) {
+                line = reader.nextLine();
                 textBuilder.append(line);
                 textBuilder.append('\n');
             }
@@ -220,6 +221,7 @@ public class NameTagServices {
                         if (openEntities.size() == 1) {
                             ObjectType recognized_entity = translateEntity(endingEntity.getType());
                             if (recognized_entity != null) {
+                                LOG.warn("Recognized entity: " + encodeEntities(text.substring(entity_start, entity_end)));
                                 entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end - entity_start - 1, recognized_entity));
                             }
                             else {
