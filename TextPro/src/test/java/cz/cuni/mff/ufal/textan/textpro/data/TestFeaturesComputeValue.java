@@ -26,6 +26,14 @@ public class TestFeaturesComputeValue {
       int x  = 1 ; int y = 1;
       assertEquals("test sum, nothing else", 2, x+y);
     }
+    /*
+    Test assertTrue
+    */
+    @Test
+    public void testAssertTrue() 
+    {
+      assertTrue("Test something true", true);
+    }
     
     /*
      Test the similarity metrics between two strings
@@ -36,8 +44,21 @@ public class TestFeaturesComputeValue {
       String entityText = "John Jr.";
       String objectAlias = "John";
       double sim = FeaturesComputeValue.EntityTextAndObjectAlias(entityText, objectAlias);
-      boolean check = (sim > 1);
+      boolean check = (sim < 100);
       assertTrue("The similarity is smaller than 1", check);
     }
-
+    
+    
+    /*
+     Test if an entity and an object have the same type
+    */
+    @Test
+    public void testEntityTypeAndObjectType() 
+    {
+      String entityType = "Person";
+      String objectType = "Person";
+      double sim = FeaturesComputeValue.EntityTypeAndObjectType(entityType, objectType);
+      boolean check = (sim == 1);
+      assertTrue("Two types are the same", check);
+    }
 }
