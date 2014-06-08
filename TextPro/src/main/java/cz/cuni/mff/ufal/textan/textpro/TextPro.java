@@ -89,11 +89,6 @@ public class TextPro implements ITextPro {
     public List<Entity> recognizedEntity(String document) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
-
-    @Override
-    public List<Entity> SimpleRanking(String TestDir, String DataDir) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
     
     /**
      * Double ranking is the main function of TextPro

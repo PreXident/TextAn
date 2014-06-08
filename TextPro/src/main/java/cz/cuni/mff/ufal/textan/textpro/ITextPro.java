@@ -17,10 +17,10 @@ public interface ITextPro {
      */
     
     public void init(List<String> objectlist);
+    
     //  Output a list of entity after processing
     public List<Entity> recognizedEntity(String document);
     
-    public List<Entity> SimpleRanking(String TestDir, String DataDir);
     
     // The main class of TextPro
     // The result of double ranking is a map from entity to the id value of 
