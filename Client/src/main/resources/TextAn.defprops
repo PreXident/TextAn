@@ -1,13 +1,13 @@
 #use native windows instead of inner jfxtras windows
 windows.independent=false
 #width of main application window
-window.width=800
+application.width=800
 #height of main application window
-window.height=600
+application.height=600
 #width of report wizard
-report.wizard.width=300
+report.wizard.width=450
 #height of report wizard
-report.wizard.height=200
+report.wizard.height=300
 #x position of report wizard
 report.wizard.x=0
 #y position of report wizard
@@ -18,3 +18,13 @@ report.wizard.maximized=false
 hypergraphs=false
 #default localization
 locale.language=en
+#clear filter fields after selection?
+clear.filters=false
+#url of the document processor
+url.document=http://localhost:9100/soap/document
+#url of the document processor wsdl
+url.document.wsdl=http://localhost:9100/soap/document?wsdl
+#url of the data provider
+url.data=http://localhost:9100/soap/data
+#url of the data provider
+url.data.wsdl=http://localhost:9100/soap/data?wsdl

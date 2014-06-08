@@ -9,9 +9,11 @@ import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,11 +24,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
@@ -34,6 +38,7 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -44,7 +49,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 
 /**
@@ -52,21 +56,7 @@ import javafx.util.Callback;
  */
 public class ReportObjectsController extends ReportWizardController {
 
-    /**
-     * Sets the entity candidate to object.
-     * Removes previous object's alias if needed, adds new alias to the new object.
-     * @param entity entity to add alias to
-     * @param object new candidate
-     */
-    static private void setNewObjectAsCandidate(final Entity entity, final Object object) {
-        final Object prev = entity.getCandidate();
-        final String alias = entity.getValue();
-        if (prev != null && prev.getId() < 0) {
-            prev.getAliases().remove(alias);
-        }
-        entity.setCandidate(object);
-        object.getAliases().add(alias);
-    }
+    static final String TEXT_HIGHLIGHT_CLASS = "text-no-object";
 
     @FXML
     BorderPane root;
@@ -75,7 +65,7 @@ public class ReportObjectsController extends ReportWizardController {
     ScrollPane scrollPane;
 
     @FXML
-    TextFlow textFlow;
+    Slider slider;
 
     /** Localization controller. */
     ResourceBundle resourceBundle;
@@ -118,34 +108,51 @@ public class ReportObjectsController extends ReportWizardController {
 
     @FXML
     public void back() {
-        pipeline.back();
-    }
-
-    @FXML
-    private void cancel() {
-        closeContainer();
+        if (pipeline.lock.tryAcquire()) {
+            pipeline.back();
+        }
     }
 
     @FXML
     private void next() {
+        StringBuilder builder = new StringBuilder();
         for (Entity ent : pipeline.getReportEntities()) {
             if (ent.getCandidate() == null) {
+                builder.append(ent.getValue()).append('\n');
+            }
+        }
+        if (pipeline.lock.tryAcquire()) {
+            if (builder.length() != 0) {
                 callWithContentBackup(() ->
                     createDialog()
                             .owner(getDialogOwner(root))
                             .title(Utils.localize(resourceBundle, "error.objects.unassigned"))
-                            .message(Utils.localize(resourceBundle, "error.objects.unassigned.detail"))
-                            .showInformation());
-                return;
+                            .showException(new Throwable() {
+                                @Override
+                                public String getMessage() {
+                                    return Utils.localize(resourceBundle, "error.objects.unassigned.detail");
+                                }
+
+                                @Override
+                                public void printStackTrace(PrintWriter s) {
+                                    s.write(builder.toString());
+                                }
+                            }));
+                pipeline.lock.release();
+            } else {
+                getMainNode().setCursor(Cursor.WAIT);
+                new Thread(() -> {
+                    pipeline.setReportObjects(pipeline.getReportEntities());
+                }, "FromObjectsState").start();
             }
         }
-        pipeline.setReportObjects(pipeline.getReportEntities());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         resourceBundle = rb;
-        textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
+        textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
+        slider.addEventFilter(EventType.ROOT, e -> e.consume());
         //create popup
         BorderPane border = new BorderPane();
         final SplitPane splitVert = new SplitPane();
@@ -158,10 +165,11 @@ public class ReportObjectsController extends ReportWizardController {
         final Button add = new Button("+");
         add.setOnAction(e -> {
             contextMenu.hide();
-            final Entity ent = pipeline.getReportEntities().get(selectedEntity.index);
-            final Object newObject = new Object(-newObjects.size() - 1, new ObjectType(ent.getType(), ""), Arrays.asList(ent.getValue()));
+            final Entity ent =
+                    pipeline.getReportEntities().get(selectedEntity.index);
+            final NewObject newObject = new NewObject(ent.getType(), Arrays.asList(ent.getValue()));
             newObjects.add(newObject);
-            setNewObjectAsCandidate(ent, newObject);
+            setNewObjectAsSelectedEntityCandidate(newObject);
         });
         allObjectsCheckBox = new CheckBox();
         allObjectsCheckBox.setText(Utils.localize(resourceBundle, "include.all.objects"));
@@ -193,20 +201,28 @@ public class ReportObjectsController extends ReportWizardController {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
                 final EntityBuilder entity = word.getEntity();
-                final long entityId = entity.getId();
+                final long entityId = entity.getType().getId();
                 final int entityIndex = entity.getIndex();
+                final Entity ent = pipeline.getReportEntities().get(entityIndex);
                 Utils.styleText(text, "ENTITY", entityId);
 
                 EntityInfo entityInfo = entityLists.get(word.getEntity());
                 if (entityInfo == null) {
                     entityInfo = new EntityInfo();
                     entityInfo.index = entityIndex;
-                    final Entity ent = pipeline.getReportEntities().get(entityIndex);
-                    entityInfo.type = ent.getType();
+                    entityInfo.type = ent.getType().getId();
                     final List<Pair<Double, Object>> candidates = ent.getCandidates();
                     Collections.sort(candidates, Entity.COMPARATOR);
                     entityInfo.ranked = FXCollections.observableArrayList(candidates);
                     entityLists.put(entity, entityInfo);
+                    final Object cand = ent.getCandidate();
+                    if (cand != null && cand.isNew() && !newObjects.contains(cand)) {
+                        newObjects.add(cand);
+                    }
+                }
+                if (ent.getCandidate() == null) {
+                    text.getStyleClass().add(TEXT_HIGHLIGHT_CLASS);
+                    entityInfo.texts.add(text);
                 }
                 final EntityInfo ei = entityInfo;
 
@@ -244,8 +260,7 @@ public class ReportObjectsController extends ReportWizardController {
             if (ev.getCode() == KeyCode.ENTER) {
                 contextMenu.hide();
                 final Pair<Double, Object> p = dbListView.getSelectionModel().getSelectedItem();
-                final Entity e = pipeline.getReportEntities().get(selectedEntity.index);
-                e.setCandidate(p.getSecond());
+                setObjectAsSelectedEntityCandidate(p.getSecond());
             }
         });
         dbListView.setCellFactory(new Callback<ListView<Pair<Double, Object>>, ListCell<Pair<Double, Object>>>() {
@@ -257,7 +272,7 @@ public class ReportObjectsController extends ReportWizardController {
                             contextMenu.hide();
                             @SuppressWarnings("unchecked")
                             final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
-                            pipeline.getReportEntities().get(selectedEntity.index).setCandidate(p.getSecond());
+                            setObjectAsSelectedEntityCandidate(p.getSecond());
                         });
                         this.setOnMouseEntered(e -> {
                             @SuppressWarnings("unchecked")
@@ -298,8 +313,7 @@ public class ReportObjectsController extends ReportWizardController {
                             contextMenu.hide();
                             @SuppressWarnings("unchecked")
                             final Object obj = ((ListCell<Object>) t.getSource()).getItem();
-                            final Entity entity = pipeline.getReportEntities().get(selectedEntity.index);
-                            setNewObjectAsCandidate(entity, obj);
+                            setNewObjectAsSelectedEntityCandidate(obj);
                         });
                         this.setOnMouseEntered(e -> {
                             @SuppressWarnings("unchecked")
@@ -327,6 +341,45 @@ public class ReportObjectsController extends ReportWizardController {
                 };
             }
         });
+    }
+
+    /**
+     * Sets the entity candidate to new object.
+     * Removes previous object's alias if needed, adds new alias to the new object.
+     * @param object new candidate
+     */
+    private void setNewObjectAsSelectedEntityCandidate(final Object object) {
+        if (object instanceof NewObject) {
+            ++((NewObject) object).refCount;
+        }
+        final Entity ent = setObjectAsSelectedEntityCandidate(object);
+        object.getAliases().add(ent.getValue());
+    }
+
+    /**
+     * Sets the selected entity candidate to object.
+     * Removes previous object's alias if needed.
+     * @param object new candidate
+     * @return Entity behind selectedEntity
+     */
+    private Entity setObjectAsSelectedEntityCandidate(final Object object) {
+        final Entity entity =
+                pipeline.getReportEntities().get(selectedEntity.index);
+        final Object prev = entity.getCandidate();
+        final String alias = entity.getValue();
+        if (prev != null && prev.isNew()) {
+            prev.getAliases().remove(alias);
+            if (prev instanceof NewObject && --((NewObject) prev).refCount == 0) {
+                newListView.setItems(null); //we need to get rid of the filtered list, or we get exception on removing
+                newObjects.remove(prev);
+            }
+        }
+        for (Text text : selectedEntity.texts) {
+            text.getStyleClass().remove(TEXT_HIGHLIGHT_CLASS);
+        }
+        entity.setCandidate(object);
+        pipeline.resetStepsBack();
+        return entity;
     }
 
     /**
@@ -395,6 +448,21 @@ public class ReportObjectsController extends ReportWizardController {
         newListView.setItems(newObjects.filtered((Object o) -> {
             return o.getType().getId() == selectedEntity.type;
         }));
+        final Entity ent = pipeline.getReportEntities().get(entityInfo.index);
+        if (ent.getCandidate() != null) {
+            final Object candidate = ent.getCandidate();
+            if (candidate.isNew() && candidate instanceof NewObject) {
+                newListView.getSelectionModel().select((NewObject) candidate);
+                dbListView.getSelectionModel().select(-1);
+            } else {
+                newListView.getSelectionModel().select(-1);
+                for (Pair<Double, Object> p : dbListView.getItems()) {
+                    if (p.getSecond() == candidate) {
+                        dbListView.getSelectionModel().select(p);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -413,5 +481,35 @@ public class ReportObjectsController extends ReportWizardController {
 
         /** List of all suitable candidates fot this entity. */
         ObservableList<Object> all;
+
+        /**
+         * List of texts that must be unhighlighted when object is assigned to
+         * the entity.
+         */
+        List<Text> texts = new ArrayList<>();
+    }
+
+    /**
+     * Simple extension of Object to count references.
+     */
+    static class NewObject extends Object {
+
+        /** Sequence generating object ids. */
+        static long id = 0;
+
+        /**
+         * Number of entities that have this object assigned.
+         * When hits 0, the object should be removed fromm {@link #newObjects}.
+         */
+        int refCount = 0;
+
+        /**
+         * Only constructor
+         * @param type object type
+         * @param aliases object aliases
+         */
+        public NewObject(ObjectType type, Collection<String> aliases) {
+            super(--id, type, aliases);
+        }
     }
 }

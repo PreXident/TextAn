@@ -1,6 +1,8 @@
 package cz.cuni.mff.ufal.textan.server.models;
 
 /**
+ * Represents a subset of a text.
+ *
  * @author Petr Fanta
  */
 public class Occurrence {
@@ -8,11 +10,23 @@ public class Occurrence {
     private final String value;
     private final int position;
 
+    /**
+     * Instantiates a new Occurrence.
+     *
+     * @param value the value
+     * @param position the position
+     */
     public Occurrence(String value, int position) {
         this.position = position;
         this.value = value;
     }
 
+    /**
+     * Concerts a {@link cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence} to a {@link cz.cuni.mff.ufal.textan.server.models.Occurrence}
+     *
+     * @param commonsOccurrence the commons occurrence
+     * @return the occurrence
+     */
     public static Occurrence fromCommonsOccurrence(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence commonsOccurrence) {
         if (commonsOccurrence != null) {
             return new Occurrence(commonsOccurrence.getValue(), commonsOccurrence.getPosition());
@@ -21,10 +35,20 @@ public class Occurrence {
         }
     }
 
+    /**
+     * Gets value.
+     *
+     * @return the value
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Gets position.
+     *
+     * @return the position
+     */
     public int getPosition() {
         return position;
     }

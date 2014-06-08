@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,7 +33,15 @@ public class Grapher {
      * Returns all objects in the db.
      * @return all object in the db
      */
-    public Set<Object> getObjects() {
+    public List<Object> getObjectsList() {
+        return client.getObjectsList();
+    }
+
+    /**
+     * Returns all objects in the db.
+     * @return all object in the db
+     */
+    public Set<Object> getObjectsSet() {
         return client.getObjectsSet();
     }
 

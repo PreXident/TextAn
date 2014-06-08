@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
 /**
@@ -37,6 +37,14 @@ public abstract class WindowController implements Initializable {
     }
 
     /**
+     * Returns content Pane of window or stage's InnerWindow.
+     * @return content Pane of window or stage's InnerWindow
+     */
+    protected Node getMainNode() {
+        return stage == null ? window.getContentPane() : stage.getInnerWindow().getContentPane();
+    }
+
+    /**
      * Set settings.
      * @param settings new settings
      */
@@ -50,6 +58,8 @@ public abstract class WindowController implements Initializable {
      */
     public void setWindow(final Window window) {
         this.window = window;
+        window.getContentPane().setCursor(Cursor.DEFAULT);
+        window.setContainerCloser(() -> closeContainer());
     }
 
     /**
@@ -58,10 +68,13 @@ public abstract class WindowController implements Initializable {
      */
     public void setStage(final OuterStage stage) {
         this.stage = stage;
+        stage.getInnerWindow().getContentPane().setCursor(Cursor.DEFAULT);
+        stage.getInnerWindow().setContainerCloser(() -> closeContainer());
     }
 
     /**
      * Closes the {@link #window} or {@link #stage}.
+     * Gets called on close button click.
      */
     protected void closeContainer() {
         if (window != null) {

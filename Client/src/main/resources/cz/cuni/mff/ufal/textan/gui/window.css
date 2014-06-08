@@ -26,6 +26,14 @@
 	-fx-border-color: rgb(148, 148, 148);
 }
 
+.window-close-icon:hover {
+	-fx-border-color: rgb(255, 255, 255);
+}
+
+.window-close-icon {
+	-fx-border-color: rgb(148, 148, 148);
+}
+
 .window {
 	-fx-glass-color: #f4f4f4;
 }

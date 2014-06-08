@@ -1,0 +1,28 @@
+Venca arrived 2 hours later! Because he overslept. Unfortunately no one else was here.
+
+Adam:
+- client and master branch synchronized
+- IDocumentProcessor and IDataProvider wrapped to get safe synchronization
+
+Kuba:
+- learning works
+- learning time 2 minutes
+- nametag integration branch only
+- morphodita support for Tam
+
+Tam:
+- added comments and refactored code a bit
+
+Peter:
+- nothing from Sunday except for managing
+
+HWK:
+- Adam: when context menu is shown in object assignment step, the first click only hides the context menu and another click is needed to show the context menu for another object; it is similar to other context menus in other steps too
+- Adam: listing objects as it may need changes in webservices
+- Kuba: rename configuration to .properties
+- Kuba: add morphodita integration to server
+- Kuba: extract entity/object and relation types from schemas provided by the Police
+- Tam: write some unit tests for TextPro
+- Peter: enjoy your weekend :-)
+
+Next meeting Thursday from 11:00. There should be meeting with Ondrej soon.

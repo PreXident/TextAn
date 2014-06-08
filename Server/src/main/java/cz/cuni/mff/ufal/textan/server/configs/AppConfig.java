@@ -1,7 +1,9 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
+import cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -14,13 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 /**
  * The root spring configuration.
- *
  * @author Petr Fanta
  */
 @Configuration
@@ -37,6 +39,9 @@ public class AppConfig implements ApplicationContextAware {
 
     @Autowired
     private DataConfig dataConfig;
+
+    @Autowired
+    private IObjectTypeTableDAO objectTypeTableDAO;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -97,5 +102,10 @@ public class AppConfig implements ApplicationContextAware {
     @Bean(destroyMethod = "stop")
     public CommandInvoker commandInvoker() {
         return new CommandInvoker();
+    }
+
+    @Bean
+    public NameTagServices nametagServices() {
+        return new NameTagServices(objectTypeTableDAO);
     }
 }

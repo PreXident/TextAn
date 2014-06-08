@@ -57,10 +57,9 @@ public class DirectDataAccessService {
      * Adds a new document document into the system.
      *
      * @param text the text of the new document
-     * @param ticket the ticket with information about a user
      * @return the identifier of the new document
      */
-    public long addDocument(String text, Ticket ticket) {
+    public long addDocument(String text) {
 
         DocumentTable documentTable = new DocumentTable(text);
 
@@ -71,10 +70,9 @@ public class DirectDataAccessService {
      * Gets the document with the given id from the system.
      *
      * @param documentId the document id
-     * @param ticket the ticket with information about a user
      * @return the document
      */
-    public Document getDocument(long documentId, Ticket ticket) throws IdNotFoundException{
+    public Document getDocument(long documentId) throws IdNotFoundException{
 
         DocumentTable documentTable = documentTableDAO.find(documentId);
         if (documentTable == null) {
@@ -87,10 +85,9 @@ public class DirectDataAccessService {
     /**
      * Gets all documents from the system.
      *
-     * @param ticket the ticket with information about a user
      * @return the documents
      */
-    public List<Document> getDocuments(Ticket ticket) {
+    public List<Document> getDocuments() {
         return documentTableDAO.findAll().stream()
                 .map(cz.cuni.mff.ufal.textan.server.models.Document::fromDocumentTable)
                 .collect(Collectors.toList());
@@ -101,10 +98,9 @@ public class DirectDataAccessService {
      *
      * @param documentId the document id
      * @param text the new text of the document
-     * @param ticket the ticket with information about a user
      * @return the indicates if document was updated
      */
-    public boolean updateDocument(long documentId, String text, Ticket ticket) throws IdNotFoundException {
+    public boolean updateDocument(long documentId, String text) throws IdNotFoundException {
 
         DocumentTable documentTable = documentTableDAO.find(documentId);
         if (documentTable == null) {
@@ -120,10 +116,9 @@ public class DirectDataAccessService {
     /**
      * Gets all object types.
      *
-     * @param ticket the ticket with information about a user
      * @return the object types
      */
-    public List<ObjectType> getObjectTypes(Ticket ticket) {
+    public List<ObjectType> getObjectTypes() {
 
         return objectTypeTableDAO.findAll().stream()
                 .map(ObjectType::fromObjectTypeTable)
@@ -135,10 +130,9 @@ public class DirectDataAccessService {
      * Gets the object with given id.
      *
      * @param objectId the object id
-     * @param ticket the ticket with information about a user
      * @return the object
      */
-    public Object getObject(long objectId, Ticket ticket) throws IdNotFoundException {
+    public Object getObject(long objectId) throws IdNotFoundException {
 
         ObjectTable objectTable = objectTableDAO.find(objectId);
         if (objectTable == null) {
@@ -151,10 +145,9 @@ public class DirectDataAccessService {
     /**
      * Gets all objects.
      *
-     * @param ticket the ticket with information about a user
      * @return the objects
      */
-    public List<Object> getObjects(Ticket ticket) {
+    public List<Object> getObjects() {
 
         return objectTableDAO.findAll().stream()
                 .map(Object::fromObjectTable)
@@ -166,10 +159,9 @@ public class DirectDataAccessService {
      * Gets all objects of the given type id.
      *
      * @param objectTypeId the object type id
-     * @param ticket the ticket with information about a user
      * @return the objects
      */
-    public List<Object> getObjects(long objectTypeId, Ticket ticket) {
+    public List<Object> getObjects(long objectTypeId) {
         return objectTableDAO.findAllByObjectType(objectTypeId).stream()
                 .map(Object::fromObjectTable)
                 .collect(Collectors.toList());
@@ -180,10 +172,9 @@ public class DirectDataAccessService {
      *
      * @param object1Id the identifier of the first object
      * @param object2Id the identifier of the second object
-     * @param ticket the ticket with information about a user
      * @return the identifier of the new objects
      */
-    public long mergeObjects(long object1Id, long object2Id, Ticket ticket) throws IdNotFoundException {
+    public long mergeObjects(long object1Id, long object2Id) throws IdNotFoundException {
         //TODO: implement
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -192,10 +183,9 @@ public class DirectDataAccessService {
      * Splits merged object.
      *
      * @param objectId the identifier of merged object
-     * @param ticket the ticket with information about a user
      * @return true if object was split, false otherwise
      */
-    public boolean splitObject(long objectId, Ticket ticket) throws IdNotFoundException {
+    public boolean splitObject(long objectId) throws IdNotFoundException {
         //TODO: implement
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -204,10 +194,9 @@ public class DirectDataAccessService {
     /**
      * Gets all relation types.
      *
-     * @param ticket the ticket with information about a user
      * @return the relation types
      */
-    public List<RelationType> getRelationTypes(Ticket ticket) {
+    public List<RelationType> getRelationTypes() {
 
         return relationTypeTableDAO.findAll().stream()
                 .map(RelationType::fromRelationTypeTable)
@@ -218,10 +207,9 @@ public class DirectDataAccessService {
     /**
      * Gets all relations.
      *
-     * @param ticket the ticket with information about a user
      * @return the relations
      */
-    public List<Relation> getRelations(Ticket ticket) {
+    public List<Relation> getRelations() {
 
         return relationTableDAO.findAll().stream()
                 .map(Relation::fromRelationTable)
@@ -232,10 +220,9 @@ public class DirectDataAccessService {
      * Gets all relations of the given type.
      *
      * @param relationTypeId the relation type id
-     * @param ticket the ticket with information about a user
      * @return the relations
      */
-    public List<Relation> getRelations(long relationTypeId, Ticket ticket) {
+    public List<Relation> getRelations(long relationTypeId) {
 
         return relationTableDAO.findAllByRelationType(relationTypeId).stream()
                 .map(Relation::fromRelationTable)

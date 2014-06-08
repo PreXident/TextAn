@@ -1,14 +1,16 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
 import cz.cuni.mff.ufal.textan.core.Graph;
-import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 
@@ -26,6 +28,12 @@ public class GraphViewController extends GraphController {
     @FXML
     private StackPane stackPane;
 
+    @FXML
+    private ToggleButton transformButton;
+
+    @FXML
+    private ToggleButton pickButton;
+
     /** Localization container. */
     ResourceBundle resourceBundle;
 
@@ -33,18 +41,21 @@ public class GraphViewController extends GraphController {
     GraphView graphView;
 
     @FXML
-    private void cancel() {
-        closeContainer();
-    }
-
-    @FXML
     private void pick() {
-        graphView.pick();
+        if (graphView != null) {
+            graphView.pick();
+            pickButton.setSelected(true);
+        } else {
+            transformButton.setSelected(true);
+        }
     }
 
     @FXML
     private void transform() {
-        graphView.transform();
+        if (graphView != null) {
+            graphView.transform();
+        }
+        transformButton.setSelected(true);
     }
 
     @Override
@@ -62,28 +73,32 @@ public class GraphViewController extends GraphController {
     @Override
     public void setGrapher(final Grapher grapher) {
         super.setGrapher(grapher);
-        try {
-            final Graph g = grapher.getGraph();
+        final Node node = getMainNode();
+        node.setCursor(Cursor.WAIT);
+        final Task<Graph> task = new Task<Graph>() {
+            @Override
+            protected Graph call() throws Exception {
+                return grapher.getGraph();
+            }
+        };
+        task.setOnSucceeded(e -> {
+            final Graph g = task.getValue();
             graphView = new GraphView(settings,
                     g.getNodes(), g.getEdges(), grapher.getRootId());
             stackPane.getChildren().add(graphView);
-        } catch (IdNotFoundException e) {
-            e.printStackTrace();
-            callWithContentBackup(() -> {
-                createDialog()
-                        .owner(getDialogOwner(root))
-                        .title("This should have never happened!")
-                        .showException(e);
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            Platform.runLater(() ->
+            graphView.requestFocus();
+            node.setCursor(Cursor.DEFAULT);
+            scrollPane.requestFocus();
+        });
+        task.setOnFailed(e -> {
+            node.setCursor(Cursor.DEFAULT);
             callWithContentBackup(() -> {
                 createDialog()
                         .owner(getDialogOwner(root))
                         .title(Utils.localize(resourceBundle, "page.load.error"))
-                        .showException(e);
-            }));
-        }
+                        .showException(task.getException());
+            });
+        });
+        new Thread(task, "Grapher").start();
     }
 }

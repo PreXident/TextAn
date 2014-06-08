@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
 
 /**
  * Represents pipeline handling processing documents.
@@ -43,6 +44,21 @@ public class ProcessReportPipeline {
     /** Ticket for document processing. */
     protected final Ticket ticket;
 
+    /** Simple synchronization. Indented to be used by UI. */
+    public final Semaphore lock = new Semaphore(1);
+
+    /**
+     * Counter of number of steps back.
+     * This indicates how many steps forward can be made before contacting
+     * server again. States are responsible to increase it on back()
+     * and decrease on skipping communication with server. Set to zero when
+     * any change is made.
+     */
+    protected int stepsBack = 0;
+
+    /** Flag indicating whether the document was successfully saved. */
+    protected boolean result = false;
+
     /**
      * Only constructor. Do not use directly!
      * TODO think of a design preventing users from calling this constructor directly
@@ -52,6 +68,35 @@ public class ProcessReportPipeline {
         this.client = client;
         final String username = client.getSettings().getProperty("username");
         ticket = client.getTicket(username);
+    }
+
+    /**
+     * Decreases {@link #stepsBack} by one.
+     */
+    public void decStepsBack() {
+        --stepsBack;
+    }
+
+    /**
+     * Returns {@link #stepsBack}.
+     * @return {@link #stepsBack}
+     */
+    public int getStepsBack() {
+        return stepsBack;
+    }
+
+    /**
+     * Increases {@link #stepsBack} by one.
+     */
+    public void incStepsBack() {
+        ++stepsBack;
+    }
+
+    /**
+     * Resets {@link #stepsBack} to zero.
+     */
+    public void resetStepsBack() {
+        stepsBack = 0;
     }
 
     /**

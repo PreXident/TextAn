@@ -13,24 +13,47 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
-			fx:controller="cz.cuni.mff.ufal.textan.gui.graph.GraphViewController" styleClass="root" >
+			fx:controller="cz.cuni.mff.ufal.textan.gui.graph.GraphViewController">
 	<stylesheets >
 		<URL value="@GraphView.css" />
 	</stylesheets>
 	<top>
-		<HBox>
-			<Button text="%transform" onAction="#transform" />
-			<Button text="%pick" onAction="#pick" />
-		</HBox>
+		<ToolBar>
+			<fx:define>
+				<ToggleGroup fx:id="graphModeToggleGroup"/>
+			</fx:define>
+			<ToggleButton fx:id="transformButton" selected="true"
+						toggleGroup="$graphModeToggleGroup"
+						onAction="#transform">
+				<graphic>
+					<ImageView>
+						<Image url="@cursor-move.png"/>
+					</ImageView>
+				</graphic>
+				<tooltip>
+					<Tooltip text="%transform" />
+				</tooltip>
+			</ToggleButton>
+			<ToggleButton fx:id="pickButton" toggleGroup="$graphModeToggleGroup"
+						onAction="#pick">
+				<graphic>
+					<ImageView>
+						<Image url="@cursor-hand.png"/>
+					</ImageView>
+				</graphic>
+				<tooltip>
+					<Tooltip text="%pick" />
+				</tooltip>
+			</ToggleButton>
+		</ToolBar>
 	</top>
 	<center>
-		<ScrollPane fx:id="scrollPane" vbarPolicy="NEVER" hbarPolicy="NEVER" >
-			<StackPane fx:id="stackPane" />
-		</ScrollPane>
+		<BorderPane styleClass="root" >
+			<center>
+				<ScrollPane fx:id="scrollPane" vbarPolicy="NEVER" hbarPolicy="NEVER" >
+					<StackPane fx:id="stackPane" />
+				</ScrollPane>
+			</center>
+		</BorderPane>
 	</center>
-	<bottom>
-		<HBox alignment="CENTER_RIGHT" >
-			<Button text="%cancel" onAction="#cancel"/>
-		</HBox>
-	</bottom>
 </BorderPane>

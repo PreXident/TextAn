@@ -1,0 +1,109 @@
+@startuml
+!define table(x) class x << (T,#FFAAAA) >>
+!define primary_key(x) <u><<PK>> x</u>
+!define foreign_key(x) <i><<FK>> x</i>
+hide methods
+hide stereotypes
+
+table(Object) {
+	primary_key(id_object)
+	foreign_key(id_object_type)
+	alreadyJoined: Boolean
+	data
+}
+
+table(ObjectType) {
+	primary_key(id_object_type)
+	name
+}
+
+table(Relation) {
+	primary_key(id_relation)
+	foreign_key(id_relation_type)
+}
+
+table(RelationType) {
+	primary_key(id_relation_type)
+	name
+}
+
+table(IsInRelation) {
+	primary_key(id_is_in_relation)
+	foreign_key(id_relation)
+	foreign_key(id_object)
+	order
+}
+
+table(JoinedObjects) {
+	primary_key(id_new_object)
+	foreign_key(id_old_object1)
+	foreign_key(id_old_object2)
+	from: Date
+	to: Date
+}
+
+table(Document) {
+	primary_key(id_document)
+	added: Date
+	processed: Date
+	text
+}
+
+table(RelationOccurrence) {
+	primary_key(id_relation_occurrence)
+	foreign_key(id_relation)
+	foreign_key(id_documet)
+	anchor: String
+	position
+}
+
+table(Alias) {
+	primary_key(id_alias)
+	foreign_key(id_object)
+	alias
+}
+
+table(AliasOccurrence) {
+	primary_key(id_alias_occurrence)
+	foreign_key(id_alias)
+	foreign_key(id_documet)
+	position
+}
+
+Document <- AliasOccurrence
+AliasOccurrence -> Alias
+Alias --> Object
+Object <- JoinedObjects
+Object <- JoinedObjects
+Object <- JoinedObjects
+Object --> ObjectType
+RelationOccurrence -> Document
+RelationOccurrence --> Relation
+IsInRelation -> Object
+Relation <- IsInRelation
+Relation --> RelationType
+
+note top of AliasOccurrence
+	Alias se muze v jednom
+	dokumentu vyskytovat
+	na vice mistech
+end note
+
+note top of RelationOccurrence
+	Vzah se muze v jednom
+	dokumentu vyskytovat
+	na vice mistech
+end note
+
+note bottom of IsInRelation
+	Teoreticky mohou existovat vztahy
+	objektu se sebou samym
+end note
+
+note as N1
+	Plus ke kazde tabulce logovaci tabulka,
+	ktera navic obsahuje:
+	kdo, kdy a co (I/U/D) udelal
+end note
+
+@enduml

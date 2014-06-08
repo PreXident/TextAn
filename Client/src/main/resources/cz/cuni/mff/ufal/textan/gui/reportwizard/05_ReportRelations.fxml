@@ -2,6 +2,7 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import cz.cuni.mff.ufal.textan.gui.reportwizard.TextFlow?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -24,46 +25,54 @@
 				<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
 					<TextFlow fx:id="textFlow" styleClass="text-flow" />
 				</ScrollPane>
-				<BorderPane>
-					<center>
-						<TableView fx:id="table">
-							<columns>
-								<TableColumn fx:id="orderColumn" text="%order" resizable="false" />
-								<TableColumn fx:id="objectColumn" text="%object" resizable="false" />
-							</columns>
-							<placeholder>
-								<Label text="%nothing" />
-							</placeholder>
-						</TableView>
-					</center>
-					<bottom>
-						<HBox>
-							<Button text="%add" onAction="#add" />
-							<Button text="%remove" onAction="#remove" />
-						</HBox>
-					</bottom>
-					<right>
+				<SplitPane dividerPositions="0.65" >
+					<items>
 						<BorderPane>
-							<top>
+							<center>
+								<TableView fx:id="table">
+									<columns>
+										<TableColumn fx:id="orderColumn" text="%order" resizable="false" />
+										<TableColumn fx:id="objectColumn" text="%object" resizable="false" />
+									</columns>
+									<placeholder>
+										<Label text="%nothing" />
+									</placeholder>
+								</TableView>
+							</center>
+							<bottom>
+								<HBox>
+									<Button text="%add" onAction="#add" />
+									<Button text="%remove" onAction="#remove" />
+								</HBox>
+							</bottom>
+						</BorderPane>
+						<BorderPane>
+							<bottom>
 								<HBox>
 									<Button text="%add" onAction="#addRelation" />
 									<Button text="%remove" onAction="#removeRelation" />
 								</HBox>
-							</top>
+							</bottom>
 							<center>
 								<ListView fx:id="relationsListView" />
 							</center>
 						</BorderPane>
-					</right>
-				</BorderPane>
+					</items>
+				</SplitPane>
 			</items>
 		</SplitPane>
 	</center>
 	<bottom>
-		<HBox alignment="CENTER_RIGHT" >
-			<Button text="%back" onAction="#back"/>
-			<Button text="%cancel" onAction="#cancel"/>
-			<Button text="%continue" onAction="#next"/>
-		</HBox>
+		<BorderPane>
+			<left>
+				<Button text="%back" onAction="#back"/>
+			</left>
+			<center>
+				<Slider fx:id="slider" min="1" max="4" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="4" majorTickUnit="1" minorTickCount="0" />
+			</center>
+			<right>
+				<Button text="%continue" onAction="#next"/>
+			</right>
+		</BorderPane>
 	</bottom>
 </BorderPane>

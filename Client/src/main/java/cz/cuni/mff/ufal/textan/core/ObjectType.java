@@ -72,4 +72,9 @@ public class ObjectType {
         result.setName(name);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

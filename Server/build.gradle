@@ -7,11 +7,15 @@ defaultTasks 'run'
 
 mainClassName = 'cz.cuni.mff.ufal.textan.server.AppEntry'
 
+run {workingDir = 'build'}
+test {workingDir = 'build'}
+
 repositories {
     mavenCentral()
 }
 
 def springVersion = '4.0.5.RELEASE'
+def cxfVersion = '2.7.10'
 
 dependencies {
     //web servers
@@ -27,8 +31,9 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-web', version: springVersion
 
     //web services
-    compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: '2.7.10'
-    compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: '2.7.10'
+    compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: cxfVersion
+    compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: cxfVersion
+    //compile group: 'org.apache.cxf', name:'cxf-rt-wsdl', version: cxfVersion //new boudle in cxf 3.0.0
 
     //logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
@@ -37,9 +42,28 @@ dependencies {
 
     compile project(':Commons')
     compile project(':Data')
+    compile project(':NameTagIntegration')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+}
+
+task copyNametagLib(type: Copy) {
+    run.dependsOn name
+
+    from (new File(project(':NameTagIntegration').projectDir, 'lib')) {
+        include System.mapLibraryName("nametag_java")
+    }
+    into new File(buildDir, 'lib')
+}
+
+task copyNametagModel(type: Copy) {
+    run.dependsOn name
+
+    from (new File('../Samples/models')) {
+        include '**/*.ner'
+    }
+    into new File(buildDir, 'models')
 }
 
 /*
@@ -108,4 +132,22 @@ shadow {
 //    transformer(XmlAppendingTransformer) {
 //        resource = 'META-INF/cxf/java2wsbeans.xml'
 //    }
+}
+
+task shadowCopyNametagLib(type: Copy) {
+    shadowJar.dependsOn name
+
+    from (new File(project(':NameTagIntegration').projectDir, 'lib')) {
+        include System.mapLibraryName("nametag_java")
+    }
+    into new File(shadow.destinationDir, 'lib')
+}
+
+task shadowCopyNametagModel(type: Copy) {
+    shadowJar.dependsOn name
+
+    from (new File('../Samples/models')) {
+        include '**/*.net'
+    }
+    into new File(shadow.destinationDir, 'models')
 }

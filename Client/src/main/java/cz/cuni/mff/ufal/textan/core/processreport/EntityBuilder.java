@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
+import cz.cuni.mff.ufal.textan.core.ObjectType;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
 public class EntityBuilder extends AbstractBuilder {
 
     /** Cleaner for cleaning entity builders from words. */
-    private static final EntityBuilder CLEANER = new EntityBuilder(-1);
+    private static final EntityBuilder CLEANER = new EntityBuilder(null);
 
     /**
      * Cleans entities from words.
@@ -26,22 +27,22 @@ public class EntityBuilder extends AbstractBuilder {
     }
 
     /** Type Id. */
-    protected final long id;
+    protected final ObjectType type;
 
     /**
      * Only constructor.
-     * @param id entity type id
+     * @param type entity type
      */
-    public EntityBuilder(final long id) {
-        this.id = id;
+    public EntityBuilder(final ObjectType type) {
+        this.type = type;
     }
 
     /**
-     * Returns entity id.
-     * @return entity id
+     * Returns entity type.
+     * @return entity type
      */
-    public long getId() {
-        return id;
+    public ObjectType getType() {
+        return type;
     }
 
     @Override
