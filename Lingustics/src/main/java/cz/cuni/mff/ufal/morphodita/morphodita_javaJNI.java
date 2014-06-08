@@ -129,7 +129,7 @@ public class morphodita_javaJNI {
   public final static native long TagsetConverter_newStripLemmaIdConverter(long jarg1, Morpho jarg1_);
 
   static {
-    java.io.File localMorphodita = new java.io.File(System.mapLibraryName("lib/morphodita_java"));
+    java.io.File localMorphodita = new java.io.File("lib/" + System.mapLibraryName("morphodita_java"));
 
     if (localMorphodita.exists())
       System.load(localMorphodita.getAbsolutePath());
