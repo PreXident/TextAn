@@ -11,7 +11,10 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.env.Environment;
@@ -27,10 +30,9 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 @PropertySource(value = "file:./server.properties", ignoreResourceNotFound = true)
 @Import(DataConfig.class)
 @ComponentScan("cz.cuni.mff.ufal.textan.server.services")
-public class AppConfig {
+public class AppConfig implements ApplicationContextAware {
 
-    @Autowired
-    private AbstractApplicationContext context;
+    private ApplicationContext context;
 
     @Autowired
     private Environment serverProperties;
@@ -40,6 +42,11 @@ public class AppConfig {
 
     @Autowired
     private IObjectTypeTableDAO objectTypeTableDAO;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
 
     /**
      * Creates a pre-configured Jetty server.
@@ -85,7 +92,6 @@ public class AppConfig {
 
         return server;
     }
-
 
     /**
      * Creates a command invoker.

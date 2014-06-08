@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public interface IDocumentTableDAO extends IOperations<DocumentTable, Long> {
     

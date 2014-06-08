@@ -12,7 +12,7 @@ import java.util.Set;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class AliasTable extends AbstractTable {
     public static final String PROPERTY_NAME_ALIAS = "alias";

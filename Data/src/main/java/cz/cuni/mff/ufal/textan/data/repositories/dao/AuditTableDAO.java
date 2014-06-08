@@ -7,7 +7,7 @@
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
+import cz.cuni.mff.ufal.textan.data.tables.AuditTable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class ObjectTypeTableDAO extends AbstractHibernateDAO<ObjectTypeTable, Long> implements IObjectTypeTableDAO {
+public class AuditTableDAO extends AbstractHibernateDAO<AuditTable, Long> implements IAuditTableDAO {
 
     /**
      *  constructor
      */
-    public ObjectTypeTableDAO() {
-        super(ObjectTypeTable.class);
+    public AuditTableDAO() {
+        super(AuditTable.class);
     }
     
 }

@@ -10,7 +10,7 @@ import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class RelationNode extends Node {
     long relationTypeId;

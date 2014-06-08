@@ -11,7 +11,7 @@ import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public interface IAliasOccurrenceTableDAO extends IOperations<AliasOccurrenceTable, Long> {
     

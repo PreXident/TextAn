@@ -8,7 +8,7 @@ CREATE TABLE GlobalVersion (
   version int DEFAULT 0 NOT NULL
 );
 
-INSERT INTO  `globalversion` (  `version` ) 
+INSERT INTO  `GlobalVersion` (  `version` )
 VALUES ( 0 );
 
 CREATE TABLE Audit (

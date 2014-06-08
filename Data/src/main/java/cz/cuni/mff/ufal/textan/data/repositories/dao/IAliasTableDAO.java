@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public interface IAliasTableDAO extends IOperations<AliasTable, Long> {
     

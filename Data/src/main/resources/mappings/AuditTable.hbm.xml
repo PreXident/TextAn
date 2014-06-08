@@ -16,7 +16,8 @@
          <generator class="native" />
       </id>  
        <property name="username" column="username" type="string"/>
-       <property name="type" column="edittype" type="string"/>
+       <property name="type" column="edittype" type="cz.cuni.mff.ufal.textan.data.tables.usertypes.AuditEnumUserType" not-null="true">
+        </property>
        <property name="edit" column="edit" type="string"/>
     </class>
     
