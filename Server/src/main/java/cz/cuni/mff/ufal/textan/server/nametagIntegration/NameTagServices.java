@@ -161,7 +161,7 @@ public class NameTagServices {
         LOG.info("Started training new nametag model");
         try {
             Runtime rt = Runtime.getRuntime();
-            File dir = new File(Paths.get("../../Lingustics/training").toAbsolutePath().toString());
+            File dir = new File(Paths.get("../../Lingustics/training").toAbsolutePath().toRealPath().toString());
             SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
             File modelLocation = new File("models" + File.separator + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner").getAbsoluteFile();
             LOG.debug("New model path: " + modelLocation);
