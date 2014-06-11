@@ -32,20 +32,20 @@ import java.util.Properties;
  * The root spring configuration.
  *
  * @author Petr Fanta
+ * @author Jakub Vlček
  */
 @Configuration
 @Import(DataConfig.class)
 @ComponentScan("cz.cuni.mff.ufal.textan.server.services")
 public class AppConfig implements ApplicationContextAware {
 
+    /** Path to a default server property file (inside jar). */
     private static final String DEFAULT_SERVER_PROPERTIES = "server-default.properties";
+    /** Path to an user server property file. The file should be relative to working directory. */
     private static final String USER_SERVER_PROPERTIES = "server.properties";
 
+    /** A Spring application context in which a instance of this config lives. */
     private ApplicationContext context;
-
-    @SuppressWarnings("unused")
-    @Autowired
-    private DataConfig dataConfig;
 
     @SuppressWarnings("unused")
     @Autowired
@@ -138,6 +138,11 @@ public class AppConfig implements ApplicationContextAware {
         return new CommandInvoker();
     }
 
+    /**
+     * Creates a named entity recognizer
+     * @return the recognizer
+     * @see cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices
+     */
     @Bean
     public NameTagServices nametagServices() {
         return new NameTagServices(objectTypeTableDAO);

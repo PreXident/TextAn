@@ -37,7 +37,9 @@ import java.util.Properties;
 @ComponentScan(basePackages = {"cz.cuni.mff.ufal.textan.data.repositories.dao"})
 public class DataConfig {
 
+    /** Path to a default server property file (inside jar). */
     private static final String DEFAULT_DATA_PROPERTIES = "data-default.properties";
+    /** Path to an user server property file. The file should be relative to working directory. */
     private static final String USER_DATA_PROPERTIES = "data.properties";
 
     /**
@@ -175,20 +177,6 @@ public class DataConfig {
         return new GraphFactory(sessionFactory());
     }
 
-    /**
-     * BeanFactoryPostProcessor which resolve the cyclic dependency between AuditDao, LogInterceptor and SessionFactory.
-     *
-     * @return the bean factory post processor
-     */
-//    public static BeanFactoryPostProcessor logInterceptorHackBeanFactoryPostProcessor() {
-//        return new BeanFactoryPostProcessor() {
-//            @Override
-//            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-//                LogInterceptor interceptor = beanFactory.getBean(LogInterceptor.class);
-//                interceptor.setAudit(beanFactory.getBean(IAuditTableDAO.class));
-//            }
-//        };
-//    }
 
     @Bean
     public LogInterceptorHack logInterceptorHack() {
