@@ -3,15 +3,11 @@ package cz.cuni.mff.ufal.textan.data.configs;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.logging.LogInterceptor;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IAuditTableDAO;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -23,7 +19,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -34,17 +33,37 @@ import java.util.Properties;
  * @author Petr Fanta
  */
 @Configuration
-@PropertySource("classpath:data-default.properties")
-@PropertySource(value = "file:./data.properties", ignoreResourceNotFound = true)
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"cz.cuni.mff.ufal.textan.data.repositories.dao"})
 public class DataConfig {
 
-    BeanFactory factory;
+    private static final String DEFAULT_DATA_PROPERTIES = "data-default.properties";
+    private static final String USER_DATA_PROPERTIES = "data.properties";
 
-    @SuppressWarnings("unused")
-    @Autowired
-    private Environment env;
+    /**
+     * Loads properties from property files.
+     *
+     * @return a combination of the default and a user properties, if a user define some, otherwise default properties
+     * @throws IOException thrown when loading fails
+     */
+    @Bean
+    public Properties dataProperties() throws IOException{
+
+        //load default properties from jar
+        Properties defaults = new Properties();
+        defaults.load(getClass().getClassLoader().getResourceAsStream(DEFAULT_DATA_PROPERTIES));
+
+        //load user properties
+        Properties properties = new Properties(defaults);
+        File userPropertiesFile = new File(USER_DATA_PROPERTIES);
+        if (userPropertiesFile.exists()) {
+            try (InputStream stream = new FileInputStream(userPropertiesFile)) {
+                properties.load(stream);
+            }
+        }
+
+        return properties;
+    }
 
     /**
      * Creates JDBC connection to the database.
@@ -54,24 +73,24 @@ public class DataConfig {
      */
     @SuppressWarnings("WeakerAccess")
     @Bean(destroyMethod = "close")
-    public DataSource dataSource() throws PropertyVetoException {
+    public DataSource dataSource() throws PropertyVetoException, IOException {
 
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setDriverClass(env.getProperty("jdbc.driverClassName"));
-        dataSource.setJdbcUrl(env.getProperty("jdbc.url"));
-        dataSource.setUser(env.getProperty("jdbc.user"));
-        dataSource.setPassword(env.getProperty("jdbc.pass"));
+        dataSource.setDriverClass(dataProperties().getProperty("jdbc.driverClassName"));
+        dataSource.setJdbcUrl(dataProperties().getProperty("jdbc.url"));
+        dataSource.setUser(dataProperties().getProperty("jdbc.user"));
+        dataSource.setPassword(dataProperties().getProperty("jdbc.pass"));
 
-        dataSource.setMaxPoolSize(env.getProperty("c3p0.maxPoolSize", int.class));
-        dataSource.setInitialPoolSize(env.getProperty("c3p0.initialPoolSize", int.class));
-        dataSource.setMinPoolSize(env.getProperty("c3p0.minPoolSize", int.class));
-        dataSource.setAcquireIncrement(env.getProperty("c3p0.acquireIncrement", int.class));
-        dataSource.setMaxIdleTime(env.getProperty("c3p0.maxIdleTime", int.class));
-        dataSource.setCheckoutTimeout(env.getProperty("c3p0.checkoutTimeout", int.class));
+        dataSource.setMaxPoolSize(Integer.parseInt(dataProperties().getProperty("c3p0.maxPoolSize")));
+        dataSource.setInitialPoolSize(Integer.parseInt(dataProperties().getProperty("c3p0.initialPoolSize")));
+        dataSource.setMinPoolSize(Integer.parseInt(dataProperties().getProperty("c3p0.minPoolSize")));
+        dataSource.setAcquireIncrement(Integer.parseInt(dataProperties().getProperty("c3p0.acquireIncrement")));
+        dataSource.setMaxIdleTime(Integer.parseInt(dataProperties().getProperty("c3p0.maxIdleTime")));
+        dataSource.setCheckoutTimeout(Integer.parseInt(dataProperties().getProperty("c3p0.checkoutTimeout")));
 
-        dataSource.setMaxStatements(env.getProperty("c3p0.maxStatements", int.class));
-        dataSource.setMaxStatementsPerConnection(env.getProperty("c3p0.maxStatementsPerConnection", int.class));
-        dataSource.setIdleConnectionTestPeriod(env.getProperty("c3p0.idleConnectionTestPeriod", int.class));
+        dataSource.setMaxStatements(Integer.parseInt(dataProperties().getProperty("c3p0.maxStatements")));
+        dataSource.setMaxStatementsPerConnection(Integer.parseInt(dataProperties().getProperty("c3p0.maxStatementsPerConnection")));
+        dataSource.setIdleConnectionTestPeriod(Integer.parseInt(dataProperties().getProperty("c3p0.idleConnectionTestPeriod")));
 
         return dataSource;
     }
@@ -135,12 +154,12 @@ public class DataConfig {
      * @return the translated properties
      */
     @SuppressWarnings("serial")
-    private Properties hibernateProperties() {
+    private Properties hibernateProperties() throws IOException {
         return new Properties() {
             {
 //                setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-                setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
-                setProperty("show_sql", env.getProperty("hibernate.show_sql"));
+                setProperty("hibernate.dialect", dataProperties().getProperty("hibernate.dialect"));
+                setProperty("show_sql", dataProperties().getProperty("hibernate.show_sql"));
                 setProperty("hibernate.globally_quoted_identifiers", "true");
             }
         };
