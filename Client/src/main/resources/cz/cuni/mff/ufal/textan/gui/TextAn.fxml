@@ -32,7 +32,7 @@
 						<MenuItem text="%report.wizard" onAction="#reportWizard" />
 						<MenuItem text="%graph.wizard" onAction="#graph" />
 					</Menu>
-					<Menu text="%settings" >
+					<Menu fx:id="settingsMenu" text="%settings" >
 						<CheckMenuItem fx:id="menuItemIndependentWindows" text="%independent.windows" onAction="#independentWindows" />
 						<CheckMenuItem fx:id="menuItemHypergraphs" text="%hypergraphs" onAction="#hypergraphs" />
 						<CheckMenuItem fx:id="menuItemClearFilters" text="%clear.filters" onAction="#clearFilters" />

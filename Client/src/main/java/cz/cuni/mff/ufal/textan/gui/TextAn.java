@@ -110,6 +110,7 @@ public class TextAn extends Application {
         final Parent root = (Parent) loader.load();
         controller = loader.getController();
         controller.setSettings(settings);
+        controller.setStage(stage);
         final Scene scene = new Scene(root);
         Utils.prepareStage(stage, "application", settings);
         //

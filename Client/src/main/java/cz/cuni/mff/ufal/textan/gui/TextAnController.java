@@ -21,6 +21,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -68,8 +69,14 @@ public class TextAnController implements Initializable {
     @FXML
     private ComboBox<String> localizationCombo;
 
+    @FXML
+    private Menu settingsMenu;
+
     /** Properties with application settings. */
     protected Properties settings = null;
+
+    /** Stage controlled by this controller. */
+    protected Stage stage;
 
     /** Property binded to stage titleProperty. */
     StringProperty titleProperty = new SimpleStringProperty(TITLE);
@@ -147,7 +154,8 @@ public class TextAnController implements Initializable {
         } catch (WebServiceException e) {
             e.printStackTrace();
             Dialogs.create()
-                    .owner(null)
+                    .owner(stage)
+                    .lightweight()
                     .title(Utils.localize(resourceBundle, "webservice.error"))
                     .showException(e);
         }
@@ -187,12 +195,25 @@ public class TextAnController implements Initializable {
         localizationCombo.valueProperty().addListener(
             (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
                 Platform.runLater(
-                        () -> Dialogs.create()
+                        () -> {
+                            settingsMenu.hide();
+                            Dialogs.create()
+                                .owner(stage)
+                                .lightweight()
                                 .message(Utils.localize(resourceBundle,"locale.changed"))
-                                .showWarning());
+                                .showWarning();
+                            });
                 settings.setProperty("locale.language", newVal);
         });
         client = new Client(settings);
+    }
+
+    /**
+     * Sets stage controlled by this controller.
+     * @param stage controlled stage
+     */
+    public void setStage(final Stage stage) {
+        this.stage = stage;
     }
 
     /**
