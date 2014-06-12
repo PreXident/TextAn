@@ -11,6 +11,7 @@
 <?import javafx.scene.web.WebView?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.text.*?>
+<?import jfxtras.labs.scene.control.BigDecimalField?>
 
 <BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
 			fx:controller="cz.cuni.mff.ufal.textan.gui.graph.GraphViewController">
@@ -18,33 +19,40 @@
 		<URL value="@GraphView.css" />
 	</stylesheets>
 	<top>
-		<ToolBar>
-			<fx:define>
-				<ToggleGroup fx:id="graphModeToggleGroup"/>
-			</fx:define>
-			<ToggleButton fx:id="transformButton" selected="true"
+		<ToolBar fx:id="toolbar">
+			<HBox fx:id="leftToolbar">
+				<fx:define>
+					<ToggleGroup fx:id="graphModeToggleGroup"/>
+				</fx:define>
+				<ToggleButton fx:id="transformButton" selected="true"
 						toggleGroup="$graphModeToggleGroup"
 						onAction="#transform">
-				<graphic>
-					<ImageView>
-						<Image url="@cursor-move.png"/>
-					</ImageView>
-				</graphic>
-				<tooltip>
-					<Tooltip text="%transform" />
-				</tooltip>
-			</ToggleButton>
-			<ToggleButton fx:id="pickButton" toggleGroup="$graphModeToggleGroup"
+					<graphic>
+						<ImageView>
+							<Image url="@cursor-move.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%transform" />
+					</tooltip>
+				</ToggleButton>
+				<ToggleButton fx:id="pickButton" toggleGroup="$graphModeToggleGroup"
 						onAction="#pick">
-				<graphic>
-					<ImageView>
-						<Image url="@cursor-hand.png"/>
-					</ImageView>
-				</graphic>
-				<tooltip>
-					<Tooltip text="%pick" />
-				</tooltip>
-			</ToggleButton>
+					<graphic>
+						<ImageView>
+							<Image url="@cursor-hand.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%pick" />
+					</tooltip>
+				</ToggleButton>
+			</HBox>
+			<HBox fx:id="rightToolbar" alignment="CENTER_RIGHT" >
+				<Label text="%distance" />
+				<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="80" />
+				<Button alignment="CENTER_RIGHT" text="%go" onAction="#newDistance" />
+			</HBox>
 		</ToolBar>
 	</top>
 	<center>
