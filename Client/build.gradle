@@ -51,7 +51,9 @@ debug {
 	workingDir = 'build'
 }
 
-jar {
+task megaJar (type: Jar) {
+	appendix = "mega"
+	from sourceSets.main.output
 	from(configurations.compile
 			.filter({ !it.toString().endsWith("jfxrt.jar") })
 			.collect { it.isDirectory() ? it : zipTree(it) }) {
@@ -59,7 +61,10 @@ jar {
 		exclude "META-INF/*.DSA"
 		exclude "META-INF/*.RSA"
 	}
+}
 
+configure([jar, megaJar]) {
+	entryCompression = "DEFLATED"
 	manifest {
 		attributes 'Main-Class': mainClassName
 	}
