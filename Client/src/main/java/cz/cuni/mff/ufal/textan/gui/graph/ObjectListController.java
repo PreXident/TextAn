@@ -119,6 +119,7 @@ public class ObjectListController extends GraphController {
                         .owner(getDialogOwner(root))
                         .title(Utils.localize(resourceBundle, "page.load.error"))
                         .showException(task.getException());
+                closeContainer();
             });
         });
         new Thread(task, "Grapher").start();
