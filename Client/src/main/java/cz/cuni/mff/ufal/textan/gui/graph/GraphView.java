@@ -6,6 +6,7 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
+import cz.cuni.mff.ufal.textan.gui.Utils;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -51,6 +52,9 @@ import org.apache.commons.collections15.Transformer;
  * TODO PretopoLib licensing!
  */
 public class GraphView extends SwingNode {
+
+    /** Color for vertices representing relations. */
+    final Color RELATION_OBJECT_COLOR = new Color(238, 238, 238);
 
     /**
      * Properties containing application settings.
@@ -98,7 +102,7 @@ public class GraphView extends SwingNode {
                         final Object obj = pair.getFirst();
                         if (order < 0) {
                             g.addEdge(dummyRel, Arrays.asList(obj, dummy), EdgeType.DIRECTED);
-                        } else if (order % 2 == 0) {
+                        } else if (order % 2 == 1) {
                             g.addEdge(dummyRel, Arrays.asList(dummy, obj), EdgeType.DIRECTED);
                         } else {
                             g.addEdge(dummyRel, Arrays.asList(obj, dummy), EdgeType.UNDIRECTED);
@@ -127,7 +131,8 @@ public class GraphView extends SwingNode {
                 hypergraphs ? new PseudoHypergraph<>(g) : (Graph<Object, Relation>) g
         );
         //
-        Transformer<Object, Paint> vertexPaint = (Object obj) -> Color.GREEN;
+        final Transformer<Object, Paint> vertexPaint =
+                obj -> obj instanceof RelationObject ? RELATION_OBJECT_COLOR : Utils.idToAWTColor(obj.getType().getId());
         float dash[] = {10.0f};
         final Stroke edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
         Transformer<Relation, Stroke> edgeStrokeTransformer = (Relation s) -> edgeStroke;
