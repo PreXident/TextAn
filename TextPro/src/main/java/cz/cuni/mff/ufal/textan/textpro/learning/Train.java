@@ -39,12 +39,12 @@ public class Train {
         /*
          * Get data from database
         */
-        data.add(new DenseInstance(new double[] {1},1));
-        data.add(new DenseInstance(new double[] {0},0));
-        data.add(new DenseInstance(new double[] {0.75},1));
-        data.add(new DenseInstance(new double[] {0.25},0));
-        data.add(new DenseInstance(new double[] {0.85},1));
-        data.add(new DenseInstance(new double[] {0.15},0));
+        data.add(new DenseInstance(new double[] {1, 1},1));
+        data.add(new DenseInstance(new double[] {0, 1},0));
+        data.add(new DenseInstance(new double[] {0.75, 1},1));
+        data.add(new DenseInstance(new double[] {0.25, 1},0));
+        data.add(new DenseInstance(new double[] {0.85, 1},1));
+        data.add(new DenseInstance(new double[] {0.15, 1},0));
         
         Classifier svm = new LibSVM();
         svm.buildClassifier(data);
@@ -54,7 +54,7 @@ public class Train {
     // target = 0 for no, 1 for yes 
     static Instance CreateInstance(Entity e, ObjectTable obj, IAliasTableDAO aliasTableDAO, int target) {
         // Feature 1: The similarity between entity text and object alias
-        double[] values = new double[]{0};
+        double[] values = new double[]{0,0};
         FeaturesComputeValue fcv = new FeaturesComputeValue();
         
         // Get all alias
@@ -70,6 +70,11 @@ public class Train {
             }
         }
         values[0] = highestSim;
+
+        // The type comparison
+        double typeSim = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getName());
+        values[1] = typeSim;
+        
         Instance instance = new DenseInstance(values, target);
         return instance;
     }

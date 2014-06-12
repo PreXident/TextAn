@@ -6,7 +6,7 @@ package cz.cuni.mff.ufal.textan.textpro.data;
 
 public class Entity{
 
-    public Entity(String text, int offset, int position, int type) {
+    public Entity(String text, int offset, int position, String type) {
         this.text = text;
         this.offset = offset;
         this.position = position;
@@ -54,11 +54,11 @@ public class Entity{
     /*
      * type of the entity
      */
-    int type;
-    public int getType() {
+    String type;
+    public String getType() {
         return type;
     }
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }    
     public boolean equals (Entity e2) {

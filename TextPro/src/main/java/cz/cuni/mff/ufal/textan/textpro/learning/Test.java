@@ -55,7 +55,7 @@ public class Test {
     }
     Instance CreateInstance(Entity e, ObjectTable obj, IAliasTableDAO aliasTableDAO, int target) {
         // Feature 1: The similarity between entity text and object alias
-        double[] values = new double[]{0};
+        double[] values = new double[]{0,0};
         FeaturesComputeValue fcv = new FeaturesComputeValue();
         
         // Get all alias
@@ -71,6 +71,11 @@ public class Test {
             }
         }
         values[0] = highestSim;
+        
+        // Find the type similarity
+        double typeSim = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getName());
+        values[1] = typeSim;
+        
         Instance instance = new DenseInstance(values, target);
         return instance;
     }
