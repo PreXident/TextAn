@@ -11,7 +11,7 @@ import cz.cuni.mff.ufal.textan.data.tables.InRelationTable;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public interface IInRelationTableDAO extends IOperations<InRelationTable, Long> {
     

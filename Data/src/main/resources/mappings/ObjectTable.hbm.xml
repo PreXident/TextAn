@@ -18,13 +18,13 @@
        <property name="data" column="data" type="string"/>
        <many-to-one name="objectType" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable" 
                     column="id_object_type" not-null="true" lazy="false" cascade="save-update" />
-       <set name="aliases" table="alias" inverse="true" cascade="delete, delete-orphan">
+       <set name="aliases" table="Alias" inverse="true" cascade="delete, delete-orphan">
             <key>
                 <column name="id_object"></column>
             </key>
             <one-to-many class="cz.cuni.mff.ufal.textan.data.tables.AliasTable"></one-to-many>
         </set>
-        <set name="relations" table="isinrelation" inverse="true" cascade="delete, delete-orphan">
+        <set name="relations" table="IsInRelation" inverse="true" cascade="delete, delete-orphan">
             <key>
                 <column name="id_object"></column>
             </key>

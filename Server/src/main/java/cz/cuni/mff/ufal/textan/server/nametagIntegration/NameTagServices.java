@@ -14,7 +14,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created by Jakub Vlcek on 29. 4. 2014.
+ * A named entity recognizer.
+ * Internally use NameTag tool.
+ * @author Jakub Vlček
+ * @see <a href="http://ufal.mff.cuni.cz/nametag">NameTag page</a>
  */
 public class NameTagServices {
     private Ner ner;

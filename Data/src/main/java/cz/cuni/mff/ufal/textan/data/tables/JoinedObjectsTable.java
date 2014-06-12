@@ -12,7 +12,7 @@ import java.util.Objects;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class JoinedObjectsTable extends AbstractTable {
     private long id;

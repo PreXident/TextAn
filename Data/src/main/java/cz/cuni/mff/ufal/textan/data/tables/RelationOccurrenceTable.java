@@ -10,7 +10,7 @@ import java.util.Objects;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class RelationOccurrenceTable extends AbstractTable {
     public static final String PROPERTY_NAME_ANCHOR = "anchor";

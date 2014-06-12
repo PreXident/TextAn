@@ -8,7 +8,7 @@ package cz.cuni.mff.ufal.textan.data.repositories.common;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class DAOUtils {
 

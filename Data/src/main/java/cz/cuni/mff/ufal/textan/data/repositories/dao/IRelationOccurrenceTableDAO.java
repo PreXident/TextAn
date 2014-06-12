@@ -11,7 +11,7 @@ import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public interface IRelationOccurrenceTableDAO extends IOperations<RelationOccurrenceTable, Long> {
     

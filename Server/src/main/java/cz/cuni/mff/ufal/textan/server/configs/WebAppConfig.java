@@ -48,15 +48,15 @@ public class WebAppConfig {
         SpringBus bus = new SpringBus();
         bus.getInInterceptors().add(new UsernameTokenInterceptor());
 
-        LoggingInInterceptor loggingIn = new LoggingInInterceptor();
-        loggingIn.setPrettyLogging(true);
-        LoggingOutInterceptor loggingOut = new LoggingOutInterceptor();
-        loggingOut.setPrettyLogging(true);
-
-        bus.getInInterceptors().add(loggingIn);
-        bus.getInFaultInterceptors().add(loggingIn);
-        bus.getOutInterceptors().add(loggingOut);
-        bus.getOutFaultInterceptors().add(loggingOut);
+//        LoggingInInterceptor loggingIn = new LoggingInInterceptor();
+//        loggingIn.setPrettyLogging(true);
+//        LoggingOutInterceptor loggingOut = new LoggingOutInterceptor();
+//        loggingOut.setPrettyLogging(true);
+//
+//        bus.getInInterceptors().add(loggingIn);
+//        bus.getInFaultInterceptors().add(loggingIn);
+//        bus.getOutInterceptors().add(loggingOut);
+//        bus.getOutFaultInterceptors().add(loggingOut);
 
         return bus;
     }

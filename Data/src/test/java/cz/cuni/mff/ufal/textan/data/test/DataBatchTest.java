@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)

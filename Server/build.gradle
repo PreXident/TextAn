@@ -14,7 +14,7 @@ repositories {
     mavenCentral()
 }
 
-def springVersion = '4.0.3.RELEASE'
+def springVersion = '4.0.5.RELEASE'
 def cxfVersion = '2.7.10'
 
 dependencies {
