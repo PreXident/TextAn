@@ -194,6 +194,7 @@ public class ReportObjectsController extends ReportWizardController {
         HBox.setHgrow(filterField, Priority.ALWAYS);
         border.setTop(top);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
+        contextMenu.setConsumeAutoHidingEvents(false);
     }
 
     @Override

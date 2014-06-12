@@ -322,6 +322,7 @@ public class ReportRelationsController extends ReportWizardController {
         });
         border.setTop(filterField);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
+        contextMenu.setConsumeAutoHidingEvents(false);
         //
         relationsListView.setItems(FXCollections.observableArrayList(
                 (FXRelationBuilder p) -> new Observable[] { p.stringRepresentation }));
