@@ -42,16 +42,16 @@ dependencies {
 
     compile project(':Commons')
     compile project(':Data')
-    compile project(':Lingustics')
+    compile project(':Linguistics')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
 }
 
-task copyLingusticsLibs(type: Copy) {
+task copyLinguisticsLibs(type: Copy) {
     run.dependsOn name
 
-    from (new File(project(':Lingustics').projectDir, 'lib')) {
+    from (new File(project(':Linguistics').projectDir, 'lib')) {
         include System.mapLibraryName("nametag_java")
         include System.mapLibraryName("morphodita_java")
     }
@@ -70,7 +70,7 @@ task copyNametagModel(type: Copy) {
 task copyMorphoditaTagger(type: Copy) {
     run.dependsOn name
 
-    from (new File(project(':Lingustics').projectDir, 'training')) {
+    from (new File(project(':Linguistics').projectDir, 'training')) {
         include '**/*.tagger'
     }
     into new File(buildDir, 'models')
@@ -144,10 +144,10 @@ shadow {
 //    }
 }
 
-task shadowLingusticsLibs(type: Copy) {
+task shadowLinguisticsLibs(type: Copy) {
     shadowJar.dependsOn name
 
-    from (new File(project(':Lingustics').projectDir, 'lib')) {
+    from (new File(project(':Linguistics').projectDir, 'lib')) {
         include System.mapLibraryName("nametag_java")
         include System.mapLibraryName("morphodita_java")
     }
@@ -166,7 +166,7 @@ task shadowCopyNametagModel(type: Copy) {
 task shadowCopyMorphoditaTagger(type: Copy) {
     shadowJar.dependsOn name
 
-    from (new File(project(':Lingustics').projectDir, 'training')) {
+    from (new File(project(':Linguistics').projectDir, 'training')) {
         include '**/*.tagger'
     }
     into new File(shadow.destinationDir, 'models')

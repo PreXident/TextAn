@@ -1,2 +1,2 @@
 
-include "Commons", "Data", "Server", "Client", "Lingustics"
+include "Commons", "Data", "Server", "Client", "Linguistics"
