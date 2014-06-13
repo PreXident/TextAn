@@ -1,4 +1,4 @@
 /**
  * This package contains classes related to a named entity recognition.
  */
-package cz.cuni.mff.ufal.textan.server.linguisticsIntegration;
+package cz.cuni.mff.ufal.textan.server.linguistics;

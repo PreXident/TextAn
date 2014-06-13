@@ -2,14 +2,11 @@ package cz.cuni.mff.ufal.textan.server;
 
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.configs.AppConfig;
-import cz.cuni.mff.ufal.textan.server.linguisticsIntegration.NameTagServices;
 import org.eclipse.jetty.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-
-import java.io.File;
 
 /**
  * Server entry point.
@@ -20,9 +17,6 @@ public class AppEntry {
 
     private static final Logger LOG = LoggerFactory.getLogger(AppEntry.class);
 
-    //TODO: just for testing
-    private static final File NAMETAG_MODEL = new File("models/czech-cnec2.0-140304.ner");
-
     public static void main(String[] args) {
 
         try {
@@ -32,11 +26,6 @@ public class AppEntry {
 
             Server server = context.getBean(Server.class);
             CommandInvoker invoker = context.getBean(CommandInvoker.class);
-            NameTagServices nameTagServices = context.getBean(NameTagServices.class);
-
-            LOG.info("Initialize named entity recognizer");
-            nameTagServices.init();
-            //nameTagServices.bindModel(NAMETAG_MODEL);
 
             LOG.info("Start server");
             server.start();

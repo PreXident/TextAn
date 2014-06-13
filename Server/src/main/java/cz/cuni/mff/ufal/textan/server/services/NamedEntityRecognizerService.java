@@ -4,7 +4,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
-import cz.cuni.mff.ufal.textan.server.linguisticsIntegration.NameTagServices;
+import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class NamedEntityRecognizerService {
     private final IDocumentTableDAO documentTableDAO;
-    private final NameTagServices nameTagServices;
+    private final NamedEntityRecognizer namedEntityRecognizer;
 
     /**
      * Instantiates a new Named entity recognizer service.
@@ -25,9 +25,9 @@ public class NamedEntityRecognizerService {
      * @param documentTableDAO the document table dAO
      */
     @Autowired
-    public NamedEntityRecognizerService(IDocumentTableDAO documentTableDAO, NameTagServices nameTagServices) {
+    public NamedEntityRecognizerService(IDocumentTableDAO documentTableDAO, NamedEntityRecognizer namedEntityRecognizer) {
         this.documentTableDAO = documentTableDAO;
-        this.nameTagServices = nameTagServices;
+        this.namedEntityRecognizer = namedEntityRecognizer;
     }
 
     /**
@@ -38,7 +38,7 @@ public class NamedEntityRecognizerService {
      * @return the list of entities found in the text
      */
     public List<Entity> getEntities(String text, EditingTicket editingTicket) {
-        return nameTagServices.tagText(text);
+        return namedEntityRecognizer.tagText(text);
     }
 
     /**
@@ -56,6 +56,6 @@ public class NamedEntityRecognizerService {
             throw new IdNotFoundException("documentId", documentId);
         }
 
-        return nameTagServices.tagText(documentTable.getText());
+        return namedEntityRecognizer.tagText(documentTable.getText());
     }
 }

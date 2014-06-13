@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.server.linguisticsIntegration;
+package cz.cuni.mff.ufal.textan.server.linguistics;
 
 import cz.cuni.mff.ufal.nametag.*;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
@@ -17,49 +17,47 @@ import java.util.concurrent.TimeUnit;
 /**
  * A named entity recognizer.
  * Internally use NameTag tool.
+ *
  * @author Jakub Vlček
  * @see <a href="http://ufal.mff.cuni.cz/nametag">NameTag page</a>
  */
-public class NameTagServices {
+public class NamedEntityRecognizer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NamedEntityRecognizer.class);
+
+    private final IObjectTypeTableDAO objectTypeTableDAO;
+    private final Hashtable<Long, ObjectType> idTempTable;
+
     private Ner ner;
-    private static final Logger LOG = LoggerFactory.getLogger(NameTagServices.class);
-    Hashtable<Long, ObjectType> idTempTable;
-    IObjectTypeTableDAO objectTypeTableDAO;
 
-
-    public NameTagServices(IObjectTypeTableDAO objectTypeTableDAO) {
+    public NamedEntityRecognizer(IObjectTypeTableDAO objectTypeTableDAO) {
         this.objectTypeTableDAO = objectTypeTableDAO;
-        idTempTable =  new Hashtable<Long, ObjectType>();
+        idTempTable = new Hashtable<>();
     }
 
     /**
-     * Initialize nametag
+     * Initialize NameTag
      * if there are existing models, than use newest one, else train new
      */
     public void init() {
-        LOG.info("Initializing nametag");
+        LOG.info("Initializing NameTag");
         LOG.info("Looking for models");
         File modelsDir = new File("models");
         if (modelsDir.exists() && modelsDir.isDirectory()) {
-            FilenameFilter modelsFilter = new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    if(name.lastIndexOf('.')>0)
-                    {
-                        // get last index for '.' char
-                        int lastIndex = name.lastIndexOf('.');
+            FilenameFilter modelsFilter = (dir, name) -> {
+                if (name.lastIndexOf('.') > 0) {
+                    // get last index for '.' char
+                    int lastIndex = name.lastIndexOf('.');
 
-                        // get extension
-                        String str = name.substring(lastIndex);
+                    // get extension
+                    String str = name.substring(lastIndex);
 
-                        // match path name extension
-                        if(str.equals(".ner"))
-                        {
-                            return true;
-                        }
+                    // match path name extension
+                    if (str.equals(".ner")) {
+                        return true;
                     }
-                    return false;
                 }
+                return false;
             };
             File[] models = modelsDir.listFiles(modelsFilter);
             if (models.length > 0) {
@@ -82,7 +80,8 @@ public class NameTagServices {
     }
 
     /**
-     * changing model of nametag
+     * changing model of NameTag
+     *
      * @param pathToModel path to *.ner file
      * @return true if change was successful, else false
      */
@@ -96,8 +95,7 @@ public class NameTagServices {
         if (tempNer == null) {
             LOG.error("Model " + pathToModel.getAbsolutePath() + " is corrupted");
             return false;
-        }
-        else {
+        } else {
             ner = tempNer;
             LOG.info("Model changed to " + pathToModel.getAbsolutePath());
         }
@@ -105,28 +103,29 @@ public class NameTagServices {
     }
 
     /**
-     * Function that creates commands for learning new nametag model.
+     * Function that creates commands for learning new NameTag model.
+     *
      * @return string array with commands
      */
     private List<String> prepareLearningArguments(File workingDirectory) {
-        String[] configValues = {"czech", "morphodita:czech-131112-pos_only.tagger", "features-tsd13.txt", "2","30", "-0.1", "0.1", "0.01", "0.5", "0", ""};
+        String[] configValues = {"czech", "morphodita:czech-131112-pos_only.tagger", "features-tsd13.txt", "2", "30", "-0.1", "0.1", "0.01", "0.5", "0", ""};
         String[] configNames = {"ner_identifier", "tagger", "featuresFile", "stages", "iterations", "missing_weight", "initial_learning_rage", "final_learning_rage", "gaussian", "hidden_layer", "heldout_data"};
-        List<String> result = new LinkedList<String>();
+        List<String> result = new LinkedList<>();
 
-        if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
             result.add(workingDirectory.toString() + File.separator + "train_ner.exe");
         } else {
             result.add(workingDirectory.toString() + File.separator + "train_ner");
         }
         try {
-            InputStream configFileStream = NameTagServices.class.getResource("/NametagLearningConfiguration.properties").openStream();
+            InputStream configFileStream = NamedEntityRecognizer.class.getResource("/NametagLearningConfiguration.properties").openStream();
             Properties p = new Properties();
             p.load(configFileStream);
             configFileStream.close();
             for (int i = 0; i < configNames.length; ++i) {
                 try {
-                    String value = (String)p.get(configNames[i]);
-                    if ( value != null) {
+                    String value = (String) p.get(configNames[i]);
+                    if (value != null) {
                         configValues[i] = value;
                     } else {
                         LOG.warn("Config value " + configNames[i] + " wasn't set, using default value.");
@@ -139,8 +138,7 @@ public class NameTagServices {
                     }
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOG.warn("Config file for NameTag wasn't found, using default values.", e);
             for (int i = 0; i < configNames.length; ++i) {
                 if (!configValues[i].isEmpty()) {
@@ -154,13 +152,13 @@ public class NameTagServices {
 
     /**
      * Learn new model
+     *
      * @param waitForModel true when learning is tu be blocking, else false
      */
     private void learn(boolean waitForModel) {
-        LOG.info("Started training new nametag model");
+        LOG.info("Started training new NameTag model");
         try {
-            Runtime rt = Runtime.getRuntime();
-            File dir = new File(Paths.get("../../Lingustics/training").toAbsolutePath().toRealPath().toString());
+            File dir = new File(Paths.get("../../Linguistics/training").toAbsolutePath().toRealPath().toString());
             SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
             File modelLocation = new File("models" + File.separator + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner").getAbsoluteFile();
             LOG.debug("New model path: " + modelLocation);
@@ -172,7 +170,7 @@ public class NameTagServices {
             ProcessBuilder pb = new ProcessBuilder(learningCommand);
             File trainingDataFile = new File(dir.getAbsolutePath() + File.separator + "cnec2.0-all" + File.separator + "train.txt");
             pb.directory(dir);
-            // IO redirections
+            // IO redirection
             pb.redirectInput(trainingDataFile);
             pb.redirectOutput(modelLocation);
             pb.redirectErrorStream(false);
@@ -184,7 +182,6 @@ public class NameTagServices {
             String linePrev = null;
             while ((lineErr = bufferedReader.readLine()) != null) {
                 linePrev = lineErr;
-                //LOG.info(lineerr);  logging is useless, whole output is available after learning
             }
 
             boolean correctRun = true;
@@ -196,8 +193,7 @@ public class NameTagServices {
             if ((correctRun) && ((linePrev != null) && (linePrev.endsWith("Recognizer saved.")))) {
                 LOG.info("Training done");
                 this.bindModel(modelLocation);
-            }
-            else {
+            } else {
                 LOG.error("Training failed: " + linePrev);
             }
 
@@ -210,7 +206,8 @@ public class NameTagServices {
 
     /**
      * Translate entity type from string to Object Type
-     * @param entityType entity type decoded by nametag
+     *
+     * @param entityType entity type decoded by NameTag
      * @return translated entity type
      */
     ObjectType translateEntity(String entityType) {
@@ -218,8 +215,7 @@ public class NameTagServices {
         Long id = -1L;
         try {
             id = Long.parseLong(entityType);
-        }
-        catch (NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
             // log outside of method
         }
         if (id == -1L) {
@@ -239,18 +235,17 @@ public class NameTagServices {
                     LOG.warn("Entity type " + entityType + " recognized, but is not stored in database.");
                 }
             } catch (Exception ex) {
-                LOG.warn("Exceptin occured when trying translate entity.", ex.getMessage());
+                LOG.warn("Exception occurred when trying translate entity.", ex.getMessage());
             }
         }
         return value;
     }
 
-    public List<Entity> tagText(String input)
-    {
+    public List<Entity> tagText(String input) {
         LOG.debug(input);
         if (ner == null) {
             LOG.error("NameTag hasn't model!");
-            return new ArrayList<Entity>();
+            return new ArrayList<>();
         }
         Forms forms = new Forms();
         TokenRanges tokens = new TokenRanges();
@@ -260,30 +255,28 @@ public class NameTagServices {
         List<Entity> entitiesList = new ArrayList<>();
         Stack<NamedEntity> openEntities = new Stack<>();
         Tokenizer tokenizer = ner.newTokenizer();
-        boolean not_eof = true;
-        while(not_eof)
-        {
+        boolean notEof = true;
+        while (notEof) {
             StringBuilder textBuilder = new StringBuilder();
             String line;
 
             // Read block
-            while (not_eof = reader.hasNextLine()) {
+            while (notEof = reader.hasNextLine()) {
                 line = reader.nextLine();
                 textBuilder.append(line);
                 textBuilder.append('\n');
             }
-            if (not_eof) textBuilder.append('\n');
+            textBuilder.append('\n');
 
             // Tokenize and recognize
             String text = textBuilder.toString();
             tokenizer.setText(text);
-            int unprinted = 0;
+
             while (tokenizer.nextSentence(forms, tokens)) {
                 ner.recognize(forms, entities);
                 sortEntities(entities, sortedEntities);
 
                 for (int i = 0, e = 0; i < tokens.size(); i++) {
-                    TokenRange token = tokens.get(i);
 
                     for (; e < sortedEntities.size() && sortedEntities.get(e).getStart() == i; e++) {
                         openEntities.push(sortedEntities.get(e));
@@ -291,16 +284,15 @@ public class NameTagServices {
 
                     while (!openEntities.empty() && (openEntities.peek().getStart() + openEntities.peek().getLength() - 1) == i) {
                         NamedEntity endingEntity = openEntities.peek();
-                        int entity_start = (int) tokens.get((int) (i - endingEntity.getLength() + 1)).getStart();
-                        int entity_end = (int) (tokens.get(i).getStart() + tokens.get(i).getLength());
+                        int entityStart = (int) tokens.get((int) (i - endingEntity.getLength() + 1)).getStart();
+                        int entityEnd = (int) (tokens.get(i).getStart() + tokens.get(i).getLength());
                         if (openEntities.size() == 1) {
-                            ObjectType recognized_entity = translateEntity(endingEntity.getType());
-                            if (recognized_entity != null) {
-                                LOG.debug("Recognized entity: " + encodeEntities(text.substring(entity_start, entity_end)));
-                                entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end - entity_start - 1, recognized_entity));
-                            }
-                            else {
-                                LOG.debug("Type " + endingEntity.getType() + " of entity " + encodeEntities(text.substring(entity_start, entity_end)) + " recognized by NameTag, but is not in database.");
+                            ObjectType recognizedEntity = translateEntity(endingEntity.getType());
+                            if (recognizedEntity != null) {
+                                LOG.debug("Recognized entity: " + encodeEntities(text.substring(entityStart, entityEnd)));
+                                entitiesList.add(new Entity(encodeEntities(text.substring(entityStart, entityEnd)), entityStart, entityEnd - entityStart - 1, recognizedEntity));
+                            } else {
+                                LOG.debug("Type " + endingEntity.getType() + " of entity " + encodeEntities(text.substring(entityStart, entityEnd)) + " recognized by NameTag, but is not in database.");
                             }
 
                         }

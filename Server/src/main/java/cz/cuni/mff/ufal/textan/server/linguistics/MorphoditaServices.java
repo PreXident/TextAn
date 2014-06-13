@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.server.linguisticsIntegration;
+package cz.cuni.mff.ufal.textan.server.linguistics;
 
 import cz.cuni.mff.ufal.morphodita.*;
 
