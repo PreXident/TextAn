@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -106,17 +105,16 @@ public class NameTagServices {
      * Function that creates commands for learning new nametag model.
      * @return string array with commands
      */
-    private String[] prepareLearningArguments(File outputFilePath) {
+    private List<String> prepareLearningArguments(File workingDirectory) {
         String[] configValues = {"czech", "morphodita:czech-131112-pos_only.tagger", "features-tsd13.txt", "2","30", "-0.1", "0.1", "0.01", "0.5", "0", ""};
         String[] configNames = {"ner_identifier", "tagger", "featuresFile", "stages", "iterations", "missing_weight", "initial_learning_rage", "final_learning_rage", "gaussian", "hidden_layer", "heldout_data"};
-        StringBuilder command = new StringBuilder();
-        String[] result;
+        //StringBuilder command = new StringBuilder();
+        List<String> result = new LinkedList<String>();
+        //String[] result;
         if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
-            result = new String[]{"cmd","/C", ""};
-            command.append(".\\train_ner.exe");
+            result.add(workingDirectory.toString() + File.separator + "train_ner.exe");
         } else {
-            result = new String[]{""};
-            command.append("./train_ner");
+            result.add(workingDirectory.toString() + File.separator + "train_ner");
         }
         try {
             InputStream configFileStream = NameTagServices.class.getResource("/NametagLearningConfiguration.properties").openStream();
@@ -134,22 +132,21 @@ public class NameTagServices {
                 } catch (Exception e) {
                     LOG.warn("Config value " + configNames[i] + " wasn't set, using default value.", e);
                 } finally {
-                    command.append( configValues[i].isEmpty() ? "" : " " + configValues[i]);
+                    if (!configValues[i].isEmpty()) {
+                        result.add(configValues[i]);
+                    }
                 }
             }
         }
         catch (Exception e) {
             LOG.warn("Config file for NameTag wasn't found, using default values.", e);
             for (int i = 0; i < configNames.length; ++i) {
-                command.append(configValues[i].length() > 0 ? " " + configValues[i] : "");
+                if (!configValues[i].isEmpty()) {
+                    result.add(configValues[i]);
+                }
             }
         }
-
-        // learning data INPUT
-        command.append(" <cnec2.0-all" + File.separator + "train.txt");
-        // model file OUTPUT
-        command.append(" >" + outputFilePath);
-        result[result.length - 1] = command.toString();
+        //result[result.length - 1] = command.toString();
         return result;
     }
 
@@ -157,7 +154,7 @@ public class NameTagServices {
      * Learn new model
      * @param waitForModel true when learning is tu be blocking, else false
      */
-    public void learn(boolean waitForModel) { //TODO: add visibility modifier
+    private void learn(boolean waitForModel) {
         LOG.info("Started training new nametag model");
         try {
             Runtime rt = Runtime.getRuntime();
@@ -166,10 +163,20 @@ public class NameTagServices {
             File modelLocation = new File("models" + File.separator + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner").getAbsoluteFile();
             LOG.debug("New model path: " + modelLocation);
 
-            String[] learningCommand = prepareLearningArguments(modelLocation);
-            LOG.debug("Executing learning command: " + learningCommand[learningCommand.length - 1]);
-            Process ps = rt.exec(learningCommand, null, dir);
+            List<String> learningCommand = prepareLearningArguments(dir);
+            LOG.debug("Executing learning command: " + String.join(" ", learningCommand));
 
+            // build process
+            ProcessBuilder pb = new ProcessBuilder(learningCommand);
+            File trainingDataFile = new File(dir.getAbsolutePath() + File.separator + "cnec2.0-all" + File.separator + "train.txt");
+            pb.directory(dir);
+            // IO redirections
+            pb.redirectInput(trainingDataFile);
+            pb.redirectOutput(modelLocation);
+            pb.redirectErrorStream(false);
+            Process ps = pb.start();
+
+            // read error stream
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
             String lineErr;
             String linePrev = null;
@@ -195,7 +202,7 @@ public class NameTagServices {
         } catch (IOException e) {
             LOG.error("Training failed", e);
         } catch (InterruptedException e) {
-            LOG.error("Training interrupted", e);
+            LOG.error("Training takes too long", e);
         }
     }
 
@@ -287,11 +294,11 @@ public class NameTagServices {
                         if (openEntities.size() == 1) {
                             ObjectType recognized_entity = translateEntity(endingEntity.getType());
                             if (recognized_entity != null) {
-                                LOG.warn("Recognized entity: " + encodeEntities(text.substring(entity_start, entity_end)));
+                                LOG.debug("Recognized entity: " + encodeEntities(text.substring(entity_start, entity_end)));
                                 entitiesList.add(new Entity(encodeEntities(text.substring(entity_start, entity_end)), entity_start, entity_end - entity_start - 1, recognized_entity));
                             }
                             else {
-                                LOG.warn("Type " + endingEntity.getType() + " of entity " + encodeEntities(text.substring(entity_start, entity_end)) + " recognized by NameTag, but is not in database.");
+                                LOG.debug("Type " + endingEntity.getType() + " of entity " + encodeEntities(text.substring(entity_start, entity_end)) + " recognized by NameTag, but is not in database.");
                             }
 
                         }
