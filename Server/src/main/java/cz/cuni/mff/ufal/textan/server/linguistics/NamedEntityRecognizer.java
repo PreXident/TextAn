@@ -87,17 +87,17 @@ public class NamedEntityRecognizer {
      */
     private boolean bindModel(File pathToModel) {
         if (!pathToModel.exists()) {
-            LOG.error("Model " + pathToModel.getAbsolutePath() + " wasn't found");
+            LOG.error("Model {} wasn't found", pathToModel.getAbsolutePath());
             return false;
         }
         LOG.info("Changing model");
         Ner tempNer = Ner.load(pathToModel.getAbsolutePath());
         if (tempNer == null) {
-            LOG.error("Model " + pathToModel.getAbsolutePath() + " is corrupted");
+            LOG.error("Model {} is corrupted", pathToModel.getAbsolutePath());
             return false;
         } else {
             ner = tempNer;
-            LOG.info("Model changed to " + pathToModel.getAbsolutePath());
+            LOG.info("Model changed to {}", pathToModel.getAbsolutePath());
         }
         return true;
     }
@@ -128,7 +128,7 @@ public class NamedEntityRecognizer {
                     if (value != null) {
                         configValues[i] = value;
                     } else {
-                        LOG.warn("Config value " + configNames[i] + " wasn't set, using default value.");
+                        LOG.warn("Config value {} wasn't set, using default value.", configNames[i]);
                     }
                 } catch (Exception e) {
                     LOG.warn("Config value " + configNames[i] + " wasn't set, using default value.", e);
@@ -164,7 +164,7 @@ public class NamedEntityRecognizer {
             LOG.debug("New model path: " + modelLocation);
 
             List<String> learningCommand = prepareLearningArguments(dir);
-            LOG.debug("Executing learning command: " + String.join(" ", learningCommand));
+            LOG.debug("Executing learning command: {}", String.join(" ", learningCommand));
 
             // build process
             ProcessBuilder pb = new ProcessBuilder(learningCommand);
@@ -175,6 +175,7 @@ public class NamedEntityRecognizer {
             pb.redirectOutput(modelLocation);
             pb.redirectErrorStream(false);
             Process ps = pb.start();
+
 
             // read error stream
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
@@ -194,7 +195,7 @@ public class NamedEntityRecognizer {
                 LOG.info("Training done");
                 this.bindModel(modelLocation);
             } else {
-                LOG.error("Training failed: " + linePrev);
+                LOG.error("Training failed: {}", linePrev);
             }
 
         } catch (IOException e) {
@@ -223,19 +224,19 @@ public class NamedEntityRecognizer {
         }
         if (idTempTable.containsKey(id)) {
             value = idTempTable.get(id);
-            LOG.debug("Using CACHED entity " + value.getName());
+            LOG.debug("Using CACHED entity {}", value.getName());
         } else {
             try {
                 ObjectTypeTable tableObject = objectTypeTableDAO.find(id);
                 if (tableObject != null) {
                     value = new ObjectType(tableObject.getId(), tableObject.getName());
                     idTempTable.put(id, value);
-                    LOG.debug("Using DATABASE entity " + value.getName());
+                    LOG.debug("Using DATABASE entity {}", value.getName());
                 } else {
-                    LOG.warn("Entity type " + entityType + " recognized, but is not stored in database.");
+                    LOG.warn("Entity type {} recognized, but is not stored in database.", entityType);
                 }
             } catch (Exception ex) {
-                LOG.warn("Exception occurred when trying translate entity.", ex.getMessage());
+                LOG.warn("Exception occurred when trying translate entity.", ex);
             }
         }
         return value;
@@ -289,10 +290,10 @@ public class NamedEntityRecognizer {
                         if (openEntities.size() == 1) {
                             ObjectType recognizedEntity = translateEntity(endingEntity.getType());
                             if (recognizedEntity != null) {
-                                LOG.debug("Recognized entity: " + encodeEntities(text.substring(entityStart, entityEnd)));
+                                LOG.debug("Recognized entity: {}", encodeEntities(text.substring(entityStart, entityEnd)));
                                 entitiesList.add(new Entity(encodeEntities(text.substring(entityStart, entityEnd)), entityStart, entityEnd - entityStart - 1, recognizedEntity));
                             } else {
-                                LOG.debug("Type " + endingEntity.getType() + " of entity " + encodeEntities(text.substring(entityStart, entityEnd)) + " recognized by NameTag, but is not in database.");
+                                LOG.debug("Type {} of entity {} recognized by NameTag, but is not in database.", endingEntity.getType(), encodeEntities(text.substring(entityStart, entityEnd)));
                             }
 
                         }
