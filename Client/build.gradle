@@ -6,6 +6,8 @@ defaultTasks 'run'
 
 sourceCompatibility=1.8
 
+ext.mainClassName = 'cz.cuni.mff.ufal.textan.gui.TextAn'
+
 repositories {
 	mavenCentral() //controlsfx
 	maven {
@@ -26,11 +28,11 @@ dependencies {
 
 //exclude resources in ! directories
 sourceSets {
-    main {
-        resources {
+	main {
+		resources {
 			exclude '**/!/'
-        }
-    }
+		}
+	}
 }
 
 cssToBin {
@@ -38,7 +40,7 @@ cssToBin {
 }
 
 javafx {
-	mainClass = 'cz.cuni.mff.ufal.textan.gui.TextAn'
+	mainClass = mainClassName
 }
 
 run {
@@ -47,4 +49,23 @@ run {
 
 debug {
 	workingDir = 'build'
+}
+
+task megaJar (type: Jar) {
+	appendix = "mega"
+	from sourceSets.main.output
+	from(configurations.compile
+			.filter { !it.toString().endsWith("jfxrt.jar") }
+			.collect { it.isDirectory() ? it : zipTree(it) }) {
+		exclude "META-INF/*.SF"
+		exclude "META-INF/*.DSA"
+		exclude "META-INF/*.RSA"
+	}
+}
+
+configure([jar, megaJar]) {
+	entryCompression = "DEFLATED"
+	manifest {
+		attributes 'Main-Class': mainClassName
+	}
 }

@@ -15,7 +15,10 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Jakub Vlcek on 29. 4. 2014.
+ * A named entity recognizer.
+ * Internally use NameTag tool.
+ * @author Jakub Vlček
+ * @see <a href="http://ufal.mff.cuni.cz/nametag">NameTag page</a>
  */
 public class NameTagServices {
     private Ner ner;

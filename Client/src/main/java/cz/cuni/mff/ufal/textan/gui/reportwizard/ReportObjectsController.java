@@ -153,6 +153,9 @@ public class ReportObjectsController extends ReportWizardController {
         resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        scrollPane.vvalueProperty().addListener(e -> {
+            textFlow.layoutChildren();
+        });
         //create popup
         BorderPane border = new BorderPane();
         final SplitPane splitVert = new SplitPane();
@@ -191,6 +194,7 @@ public class ReportObjectsController extends ReportWizardController {
         HBox.setHgrow(filterField, Priority.ALWAYS);
         border.setTop(top);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
+        contextMenu.setConsumeAutoHidingEvents(false);
     }
 
     @Override
