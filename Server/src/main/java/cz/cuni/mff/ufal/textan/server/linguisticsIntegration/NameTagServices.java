@@ -60,7 +60,7 @@ public class NameTagServices {
             };
             File[] models = modelsDir.listFiles(modelsFilter);
             if (models.length > 0) {
-                Arrays.sort(models, new ModelsComparator());
+                Arrays.sort(models, (File a, File b) -> Long.signum(b.lastModified() - a.lastModified()));
                 LOG.info("Existing model(s) found)");
                 int i = 0;
                 while ((i < models.length) && (!bindModel(models[i]))) {
@@ -330,12 +330,5 @@ public class NameTagServices {
 
     private String encodeEntities(String text) {
         return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
-    }
-}
-
-class ModelsComparator implements Comparator<File> {
-    @Override
-    public int compare(File a, File b) {
-        return a.lastModified() < b.lastModified() ? 1 : a.lastModified() > b.lastModified() ? -1 : 0;
     }
 }
