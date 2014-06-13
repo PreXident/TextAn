@@ -8,9 +8,9 @@ NumericTimeValue/1
 
 CzechLemmaTerm/2
 
-BrownClusters/2 clusters\wiki-1000-3
+BrownClusters/2 clusters/wiki-1000-3
 
-Gazetteers/2 gazetteers\cities.txt gazetteers\clubs.txt gazetteers\countries.txt gazetteers\drugs.txt gazetteers\feasts.txt gazetteers\institutions.txt gazetteers\months.txt gazetteers\objects.txt gazetteers\psc.txt gazetteers\streets.txt
+Gazetteers/2 gazetteers/cities.txt gazetteers/clubs.txt gazetteers/countries.txt gazetteers/drugs.txt gazetteers/feasts.txt gazetteers/institutions.txt gazetteers/months.txt gazetteers/objects.txt gazetteers/psc.txt gazetteers/streets.txt
 
 PreviousStage/5
 
