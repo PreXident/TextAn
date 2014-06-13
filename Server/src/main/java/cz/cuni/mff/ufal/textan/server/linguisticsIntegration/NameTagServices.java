@@ -1,4 +1,4 @@
-package cz.cuni.mff.ufal.textan.server.nametagIntegration;
+package cz.cuni.mff.ufal.textan.server.linguisticsIntegration;
 
 import cz.cuni.mff.ufal.nametag.*;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
@@ -108,9 +108,8 @@ public class NameTagServices {
     private List<String> prepareLearningArguments(File workingDirectory) {
         String[] configValues = {"czech", "morphodita:czech-131112-pos_only.tagger", "features-tsd13.txt", "2","30", "-0.1", "0.1", "0.01", "0.5", "0", ""};
         String[] configNames = {"ner_identifier", "tagger", "featuresFile", "stages", "iterations", "missing_weight", "initial_learning_rage", "final_learning_rage", "gaussian", "hidden_layer", "heldout_data"};
-        //StringBuilder command = new StringBuilder();
         List<String> result = new LinkedList<String>();
-        //String[] result;
+
         if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
             result.add(workingDirectory.toString() + File.separator + "train_ner.exe");
         } else {

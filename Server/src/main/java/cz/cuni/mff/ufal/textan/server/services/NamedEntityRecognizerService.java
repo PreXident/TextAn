@@ -4,7 +4,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
-import cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices;
+import cz.cuni.mff.ufal.textan.server.linguisticsIntegration.NameTagServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,7 @@ package cz.cuni.mff.ufal.textan.server;
 
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.configs.AppConfig;
-import cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices;
+import cz.cuni.mff.ufal.textan.server.linguisticsIntegration.NameTagServices;
 import org.eclipse.jetty.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
