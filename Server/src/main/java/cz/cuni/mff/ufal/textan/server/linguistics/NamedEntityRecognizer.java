@@ -25,6 +25,12 @@ public class NamedEntityRecognizer {
 
     private static final Logger LOG = LoggerFactory.getLogger(NamedEntityRecognizer.class);
 
+    private static final String TRAIN_NER = "train_ner"; //TODO: move binaries into bin directory?
+
+    private static final String MODELS_DIR = "models";
+    private static final String MODEL_FILE_EXTENSION = ".ner";
+    private static final String MODEL_FILE_PREFIX = "model";
+
     private final IObjectTypeTableDAO objectTypeTableDAO;
     private final Hashtable<Long, ObjectType> idTempTable;
 
@@ -41,25 +47,14 @@ public class NamedEntityRecognizer {
      */
     public void init() {
         LOG.info("Initializing NameTag");
+
         LOG.info("Looking for models");
-        File modelsDir = new File("models");
+        File modelsDir = new File(MODELS_DIR);
         if (modelsDir.exists() && modelsDir.isDirectory()) {
-            FilenameFilter modelsFilter = (dir, name) -> {
-                if (name.lastIndexOf('.') > 0) {
-                    // get last index for '.' char
-                    int lastIndex = name.lastIndexOf('.');
 
-                    // get extension
-                    String str = name.substring(lastIndex);
-
-                    // match path name extension
-                    if (str.equals(".ner")) {
-                        return true;
-                    }
-                }
-                return false;
-            };
+            FilenameFilter modelsFilter = (dir, name) -> (name.length() > MODEL_FILE_EXTENSION.length()) && (name.endsWith(MODEL_FILE_EXTENSION));
             File[] models = modelsDir.listFiles(modelsFilter);
+
             if (models.length > 0) {
                 Arrays.sort(models, (File a, File b) -> Long.signum(b.lastModified() - a.lastModified()));
                 LOG.info("Existing model(s) found)");
@@ -75,8 +70,10 @@ public class NamedEntityRecognizer {
                 LOG.info("No models found");
                 learn(true);
             }
-
+        } else {
+            LOG.warn("Directory {} not exists", modelsDir); //FIXME
         }
+
     }
 
     /**
@@ -90,6 +87,7 @@ public class NamedEntityRecognizer {
             LOG.error("Model {} wasn't found", pathToModel.getAbsolutePath());
             return false;
         }
+
         LOG.info("Changing model");
         Ner tempNer = Ner.load(pathToModel.getAbsolutePath());
         if (tempNer == null) {
@@ -99,6 +97,7 @@ public class NamedEntityRecognizer {
             ner = tempNer;
             LOG.info("Model changed to {}", pathToModel.getAbsolutePath());
         }
+
         return true;
     }
 
@@ -108,20 +107,16 @@ public class NamedEntityRecognizer {
      * @return string array with commands
      */
     private List<String> prepareLearningArguments(File workingDirectory) {
-        String[] configValues = {"czech", "morphodita:czech-131112-pos_only.tagger", "features-tsd13.txt", "2", "30", "-0.1", "0.1", "0.01", "0.5", "0", ""};
+        String[] configValues = {"czech", "morphodita:czech-131112-pos_only.tagger", "features-tsd13.txt", "2", "30", "-0.1", "0.1", "0.01", "0.5", "0", ""}; //TODO: move to default property file?
         String[] configNames = {"ner_identifier", "tagger", "featuresFile", "stages", "iterations", "missing_weight", "initial_learning_rage", "final_learning_rage", "gaussian", "hidden_layer", "heldout_data"};
-        List<String> result = new LinkedList<>();
 
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            result.add(workingDirectory.toString() + File.separator + "train_ner.exe");
-        } else {
-            result.add(workingDirectory.toString() + File.separator + "train_ner");
-        }
-        try {
-            InputStream configFileStream = NamedEntityRecognizer.class.getResource("/NametagLearningConfiguration.properties").openStream();
+        List<String> result = new LinkedList<>();
+        result.add(new File(workingDirectory, mapBinaryName(TRAIN_NER)).toString()); //TODO: test if file exists? (IOException?)
+
+        try (InputStream configFileStream = NamedEntityRecognizer.class.getResource("/NametagLearning.properties").openStream()){ //TODO: default(inside jar) and user properties?
             Properties p = new Properties();
             p.load(configFileStream);
-            configFileStream.close();
+
             for (int i = 0; i < configNames.length; ++i) {
                 try {
                     String value = (String) p.get(configNames[i]);
@@ -160,15 +155,15 @@ public class NamedEntityRecognizer {
         try {
             File dir = new File(Paths.get("../../Linguistics/training").toAbsolutePath().toRealPath().toString());
             SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
-            File modelLocation = new File("models" + File.separator + "model" + sdf.format(Calendar.getInstance().getTime()) + ".ner").getAbsoluteFile();
-            LOG.debug("New model path: " + modelLocation);
+            File modelLocation = new File(MODELS_DIR, MODEL_FILE_PREFIX + sdf.format(Calendar.getInstance().getTime()) + MODEL_FILE_EXTENSION).getAbsoluteFile();
+            LOG.debug("New model path: {}", modelLocation);
 
             List<String> learningCommand = prepareLearningArguments(dir);
             LOG.debug("Executing learning command: {}", String.join(" ", learningCommand));
 
             // build process
             ProcessBuilder pb = new ProcessBuilder(learningCommand);
-            File trainingDataFile = new File(dir.getAbsolutePath() + File.separator + "cnec2.0-all" + File.separator + "train.txt");
+            File trainingDataFile = new File(dir.getAbsolutePath() + File.separator + "cnec2.0-all" + File.separator + "train.txt"); //TODO: move to config, why the restriction for the dir?
             pb.directory(dir);
             // IO redirection
             pb.redirectInput(trainingDataFile);
@@ -188,7 +183,7 @@ public class NamedEntityRecognizer {
             boolean correctRun = true;
             if (waitForModel) {
                 LOG.info("Waiting for training process");
-                correctRun = ps.waitFor(5, TimeUnit.MINUTES);
+                correctRun = ps.waitFor(5, TimeUnit.MINUTES); //TODO: timeout in configuration?
             }
 
             if ((correctRun) && ((linePrev != null) && (linePrev.endsWith("Recognizer saved.")))) {
@@ -217,7 +212,7 @@ public class NamedEntityRecognizer {
         try {
             id = Long.parseLong(entityType);
         } catch (NumberFormatException nfe) {
-            // log outside of method
+            // log outside of method FIXME
         }
         if (id == -1L) {
             return null;
@@ -226,7 +221,7 @@ public class NamedEntityRecognizer {
             value = idTempTable.get(id);
             LOG.debug("Using CACHED entity {}", value.getName());
         } else {
-            try {
+//            try { FIXME: try block? why? catching Exception is too strong!
                 ObjectTypeTable tableObject = objectTypeTableDAO.find(id);
                 if (tableObject != null) {
                     value = new ObjectType(tableObject.getId(), tableObject.getName());
@@ -235,9 +230,9 @@ public class NamedEntityRecognizer {
                 } else {
                     LOG.warn("Entity type {} recognized, but is not stored in database.", entityType);
                 }
-            } catch (Exception ex) {
-                LOG.warn("Exception occurred when trying translate entity.", ex);
-            }
+//            } catch (Exception ex) {
+//                LOG.warn("Exception occurred when trying translate entity.", ex);
+//            }
         }
         return value;
     }
@@ -326,5 +321,13 @@ public class NamedEntityRecognizer {
 
     private String encodeEntities(String text) {
         return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
+    }
+
+    private static String mapBinaryName(String binName) {
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            return binName + ".exe";
+        } else {
+            return binName;
+        }
     }
 }
