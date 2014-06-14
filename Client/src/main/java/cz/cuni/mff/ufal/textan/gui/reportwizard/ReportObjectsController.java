@@ -37,6 +37,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
@@ -105,6 +106,12 @@ public class ReportObjectsController extends ReportWizardController {
 
     /** CheckBox for adding all objects from db to {@link #dbListView}. */
     CheckBox allObjectsCheckBox;
+
+    /** Context menu for objects. */
+    ContextMenu objectContextMenu;
+
+    /** Object to display graph for. */
+    Object objectForGraph;
 
     @FXML
     public void back() {
@@ -195,6 +202,14 @@ public class ReportObjectsController extends ReportWizardController {
         border.setTop(top);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
         contextMenu.setConsumeAutoHidingEvents(false);
+        objectContextMenu = new ContextMenu();
+        objectContextMenu.setConsumeAutoHidingEvents(false);
+        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
+        graphMI.setOnAction(e -> {
+            contextMenu.hide();
+            textAnController.displayGraph(objectForGraph.getId());
+        });
+        objectContextMenu.getItems().add(graphMI);
     }
 
     @Override
@@ -232,9 +247,16 @@ public class ReportObjectsController extends ReportWizardController {
 
                 text.setOnMousePressed(e -> {
                     selectedEntity = ei;
-                    filterObjects(ei);
-                    contextMenu.show(text, Side.BOTTOM, 0, 0);
-                    filterField.requestFocus();
+                    if (e.isPrimaryButtonDown()) {
+                        filterObjects(ei);
+                        contextMenu.show(text, Side.BOTTOM, 0, 0);
+                        filterField.requestFocus();
+                    } else {
+                        if (ent.getCandidate() != null) {
+                            objectForGraph = ent.getCandidate();
+                            objectContextMenu.show(text, Side.BOTTOM, 0, 0);
+                        }
+                    }
                 });
             }
             text.setOnMouseEntered((MouseEvent t) -> {
@@ -273,10 +295,14 @@ public class ReportObjectsController extends ReportWizardController {
                 return new ListCell<Pair<Double, Object>>() {
                     {
                         this.setOnMouseClicked((MouseEvent e) -> {
-                            contextMenu.hide();
-                            @SuppressWarnings("unchecked")
-                            final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
-                            setObjectAsSelectedEntityCandidate(p.getSecond());
+                            if (e.isPrimaryButtonDown()) {
+                                contextMenu.hide();
+                                @SuppressWarnings("unchecked")
+                                final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
+                                setObjectAsSelectedEntityCandidate(p.getSecond());
+                            } else {
+                                objectForGraph = this.getItem().getSecond();
+                            }
                         });
                         this.setOnMouseEntered(e -> {
                             @SuppressWarnings("unchecked")
@@ -303,6 +329,9 @@ public class ReportObjectsController extends ReportWizardController {
                                 prefix = p.getFirst().toString() + ": ";
                             }
                             setText(shorter(prefix + p.getSecond().toString()));
+                            setContextMenu(objectContextMenu);
+                        } else {
+                            setContextMenu(null);
                         }
                     }
                 };

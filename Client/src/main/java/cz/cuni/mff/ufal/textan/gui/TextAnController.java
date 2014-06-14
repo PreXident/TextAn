@@ -8,6 +8,7 @@ import cz.cuni.mff.ufal.textan.gui.graph.GraphWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javax.xml.ws.WebServiceException;
+import jfxtras.labs.scene.control.BigDecimalField;
 import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
@@ -72,6 +74,9 @@ public class TextAnController implements Initializable {
     @FXML
     private Menu settingsMenu;
 
+    @FXML
+    private BigDecimalField distanceField;
+
     /** Properties with application settings. */
     protected Properties settings = null;
 
@@ -104,20 +109,7 @@ public class TextAnController implements Initializable {
 
     @FXML
     private void graph() {
-        final Grapher grapher = client.createGrapher();
-        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-            final GraphWindow graphWindow = new GraphWindow(settings, grapher);
-            content.getChildren().add(graphWindow);
-        } else {
-            final GraphStage stage = new GraphStage(settings, grapher);
-            children.add(stage);
-            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
-                if (!newVal) {
-                    children.remove(stage);
-                }
-            });
-            stage.show();
-        }
+        displayGraph(-1, -1);
     }
 
     @FXML
@@ -138,7 +130,7 @@ public class TextAnController implements Initializable {
             if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
                 final ReportWizardWindow wizard = new ReportWizardWindow(settings);
                 content.getChildren().add(wizard);
-                listener = new StateChangedListener(resourceBundle, settings, pipeline, wizard);
+                listener = new StateChangedListener(this, resourceBundle, settings, pipeline, wizard);
             } else {
                 final ReportWizardStage stage = new ReportWizardStage(settings);
                 children.add(stage);
@@ -147,7 +139,7 @@ public class TextAnController implements Initializable {
                         children.remove(stage);
                     }
                 });
-                listener = new StateChangedListener(resourceBundle, settings, pipeline, stage);
+                listener = new StateChangedListener(this, resourceBundle, settings, pipeline, stage);
                 stage.show();
             }
             pipeline.addStateChangedListener(listener);
@@ -171,6 +163,9 @@ public class TextAnController implements Initializable {
             }
         });
         resourceBundle = rb;
+        distanceField.numberProperty().addListener((ov, oldVal, newVal) -> {
+            settings.setProperty("graph.distance", newVal.toString());
+        });
     }
 
     /**
@@ -205,6 +200,7 @@ public class TextAnController implements Initializable {
                             });
                 settings.setProperty("locale.language", newVal);
         });
+        distanceField.setNumber(new BigDecimal(settings.getProperty("graph.distance", "5")));
         client = new Client(settings);
     }
 
@@ -222,6 +218,44 @@ public class TextAnController implements Initializable {
      */
     public StringProperty titleProperty() {
         return titleProperty;
+    }
+
+    /**
+     * Creates and displays graph with default distance.
+     * @param centerId root object id
+     */
+    public void displayGraph(final long centerId) {
+        int distance;
+        try {
+            distance = Integer.parseInt(settings.getProperty("graph.distance", "5"));
+        } catch (NumberFormatException e) {
+            distance = 5;
+        }
+        displayGraph(centerId, distance);
+    }
+
+    /**
+     * Creates and displays graph.
+     * @param centerId root object id
+     * @param distance graph distance
+     */
+    public void displayGraph(final long centerId, final int distance) {
+        final Grapher grapher = client.createGrapher();
+        grapher.setRootId(centerId);
+        grapher.setDistance(distance);
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final GraphWindow graphWindow = new GraphWindow(this, settings, grapher);
+            content.getChildren().add(graphWindow);
+        } else {
+            final GraphStage stage = new GraphStage(this, settings, grapher);
+            children.add(stage);
+            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(stage);
+                }
+            });
+            stage.show();
+        }
     }
 
     /**

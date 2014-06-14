@@ -17,19 +17,7 @@
 	<stylesheets >
 		<URL value="@ObjectList.css" />
 	</stylesheets>
-	<top>
-			<VBox>
-				<Label text="%distance"/>
-				<TextField fx:id="distanceTextField" text="0"/>
-				<Label text="%source"/>
-			</VBox>
-	</top>
 	<center>
 		<ListView fx:id="listView" minHeight="30" />
 	</center>
-	<bottom>
-		<HBox alignment="CENTER_RIGHT" >
-			<Button text="%next" onAction="#next"/>
-		</HBox>
-	</bottom>
 </BorderPane>

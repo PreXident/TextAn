@@ -51,9 +51,6 @@ public class GraphViewController extends GraphController {
     @FXML
     private HBox rightToolbar;
 
-    /** Localization container. */
-    ResourceBundle resourceBundle;
-
     /** Graph container. */
     GraphView graphView;
 
@@ -89,8 +86,7 @@ public class GraphViewController extends GraphController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //localization
-        this.resourceBundle = rb;
+        super.initialize(url, rb);
         stackPane.prefWidthProperty().bind(scrollPane.widthProperty());
         stackPane.prefHeightProperty().bind(scrollPane.heightProperty());
         leftToolbar.prefWidthProperty().bind(toolbar.widthProperty().add(-25).divide(2));

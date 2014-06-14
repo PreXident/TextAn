@@ -5,7 +5,6 @@ import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
 import java.util.*;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -13,8 +12,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 
@@ -32,8 +33,7 @@ public class ObjectListController extends GraphController {
     @FXML
     private ListView<Object> listView;
 
-    /** Localization container. */
-    protected ResourceBundle resourceBundle;
+    protected ContextMenu contextMenu = new ContextMenu();
 
     @FXML
     private void next() {
@@ -80,7 +80,15 @@ public class ObjectListController extends GraphController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        resourceBundle = rb;
+        super.initialize(url, rb);
+        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
+        graphMI.setOnAction(e -> {
+            final Object obj = listView.getSelectionModel().getSelectedItem();
+            if (obj != null) {
+                textAnController.displayGraph(obj.getId());
+            }
+        });
+        contextMenu.getItems().add(graphMI);
         listView.setCellFactory((ListView<Object> p) -> {
             return new ListCell<Object>() {
                 @Override
@@ -88,6 +96,9 @@ public class ObjectListController extends GraphController {
                     super.updateItem(obj, bln);
                     if (obj != null) {
                         setText(obj.getId() + " - " + String.join(",", obj.getAliases()));
+                        setContextMenu(contextMenu);
+                    } else {
+                        setContextMenu(null);
                     }
                 }
             };

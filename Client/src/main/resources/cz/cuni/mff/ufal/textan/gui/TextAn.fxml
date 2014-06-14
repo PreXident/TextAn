@@ -10,6 +10,7 @@
 <?import java.net.URL ?>
 <?import javafx.scene.web.WebView?>
 <?import javafx.collections.FXCollections?>
+<?import jfxtras.labs.scene.control.BigDecimalField?>
 
 <BorderPane fx:id="appRoot" prefHeight="600" prefWidth="800" xmlns:fx="http://javafx.com/fxml"
 			fx:controller="cz.cuni.mff.ufal.textan.gui.TextAnController" styleClass="root" >
@@ -32,11 +33,11 @@
 						<MenuItem text="%report.wizard" onAction="#reportWizard" />
 						<MenuItem text="%graph.wizard" onAction="#graph" />
 					</Menu>
-					<Menu fx:id="settingsMenu" text="%settings" >
+					<Menu fx:id="settingsMenu" text="%settings" style="-fx-skin: 'cz.cuni.mff.ufal.textan.gui.MyMenuButtonSkin';" >
 						<CheckMenuItem fx:id="menuItemIndependentWindows" text="%independent.windows" onAction="#independentWindows" />
 						<CheckMenuItem fx:id="menuItemHypergraphs" text="%hypergraphs" onAction="#hypergraphs" />
 						<CheckMenuItem fx:id="menuItemClearFilters" text="%clear.filters" onAction="#clearFilters" />
-						<CustomMenuItem hideOnClick="false" text="%localization">
+						<CustomMenuItem hideOnClick="false" text="%localization" style="-fx-background-color: red">
 							<content>
 								<HBox alignment="CENTER_LEFT" spacing="10" >
 									<Label text="%localization" styleClass="menu-item-label"/>
@@ -54,6 +55,14 @@
 								</HBox>
 							</content>
 						</CustomMenuItem>
+                                                <CustomMenuItem hideOnClick="false" text="%graph.distance">
+							<content>
+								<HBox alignment="CENTER_LEFT" spacing="10" >
+									<Label text="%graph.distance" styleClass="menu-item-label"/>
+									<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="65" />
+								</HBox>
+                                                        </content>
+                                                </CustomMenuItem>
 						<CustomMenuItem hideOnClick="false" text="Login">
 							<content>
 								<HBox alignment="CENTER_LEFT" spacing="10" >

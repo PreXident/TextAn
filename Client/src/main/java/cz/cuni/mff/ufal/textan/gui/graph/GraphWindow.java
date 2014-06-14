@@ -1,11 +1,12 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.InnerWindow;
+import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import org.controlsfx.dialog.Dialogs;
 
@@ -23,24 +24,25 @@ public class GraphWindow extends InnerWindow {
     /** Graph information provider. */
     final protected Grapher grapher;
 
-    /** Localization container. */
-    protected ResourceBundle resourceBundle;
-
     /**
      * Only constructor.
+     * If grapher is initialized by distance and center, graph is displayed,
+     * otherwise the object list is displayed.
+     * @param textAnController parent controller
      * @param settings properties with settings
      * @param grapher graph information provider
      */
-    public GraphWindow(final Properties settings, final Grapher grapher) {
+    public GraphWindow(final TextAnController textAnController, final Properties settings, final Grapher grapher) {
         super(TITLE, PROPERTY_ID, settings);
         this.grapher = grapher;
+        ResourceBundle resourceBundle = null;
         try {
-            resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.graph.ObjectList");
+            final Pair<Parent, GraphController> loaded = GraphController.loadFXML(grapher);
+            getContentPane().getChildren().add(loaded.getFirst());
+            final GraphController controller = loaded.getSecond();
+            resourceBundle = controller.resourceBundle;
             setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("ObjectList.fxml"), resourceBundle);
-            final Parent loadedRoot = (Parent) loader.load();
-            getContentPane().getChildren().add(loadedRoot);
-            GraphController controller = loader.getController();
+            controller.setTextAnController(textAnController);
             controller.setWindow(this);
             controller.setSettings(settings);
             controller.setGrapher(grapher);
