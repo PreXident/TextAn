@@ -150,7 +150,8 @@ public class NamedEntityRecognizer {
      *
      * @param waitForModel true when learning is tu be blocking, else false
      */
-    private void learn(boolean waitForModel) {
+    //TODO: only package private and move the "learn" command class into this package?
+    public void learn(boolean waitForModel) {
         LOG.info("Started training new NameTag model");
         try {
             File dir = new File(Paths.get("../../Linguistics/training").toAbsolutePath().toRealPath().toString());

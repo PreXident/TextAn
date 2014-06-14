@@ -3,6 +3,9 @@ package cz.cuni.mff.ufal.textan.server.services;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.*;
+import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
+import cz.cuni.mff.ufal.textan.server.commands.NamedEntityRecognizerLearnCommand;
+import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.models.Occurrence;
@@ -36,9 +39,11 @@ public class SaveService {
 
     private final IInRelationTableDAO inRelationTableDAO;
 
+    private final CommandInvoker invoker;
+    private final NamedEntityRecognizer recognizer;
+
     /**
      * Instantiates a new Save service.
-     *
      * @param documentTableDAO the document table dAO
      * @param objectTypeTableDAO the object type table dAO
      * @param objectTableDAO the object table dAO
@@ -48,6 +53,8 @@ public class SaveService {
      * @param relationTableDAO the relation table dAO
      * @param relationOccurrenceTableDAO the relation occurrence table dAO
      * @param inRelationTableDAO the in relation table dAO
+     * @param invoker
+     * @param recognizer
      */
     @Autowired
     public SaveService(
@@ -56,7 +63,8 @@ public class SaveService {
             IAliasTableDAO aliasTableDAO,
             IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
             IRelationTypeTableDAO relationTypeTableDAO, IRelationTableDAO relationTableDAO,
-            IRelationOccurrenceTableDAO relationOccurrenceTableDAO, IInRelationTableDAO inRelationTableDAO) {
+            IRelationOccurrenceTableDAO relationOccurrenceTableDAO, IInRelationTableDAO inRelationTableDAO,
+            CommandInvoker invoker, NamedEntityRecognizer recognizer) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
@@ -67,6 +75,8 @@ public class SaveService {
         this.relationTableDAO = relationTableDAO;
         this.relationOccurrenceTableDAO = relationOccurrenceTableDAO;
         this.inRelationTableDAO = inRelationTableDAO;
+        this.invoker = invoker;
+        this.recognizer = recognizer;
     }
 
     /*
@@ -299,6 +309,9 @@ public class SaveService {
             }
             relationOccurrenceTableDAO.add(relationOccurrenceTable);
         }
+
+        //register re-learn command for named entity recognizer
+        invoker.register(new NamedEntityRecognizerLearnCommand(recognizer));
 
         return true;
     }
