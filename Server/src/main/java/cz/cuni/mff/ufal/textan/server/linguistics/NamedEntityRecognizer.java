@@ -171,26 +171,26 @@ public class NamedEntityRecognizer {
             pb.redirectErrorStream(false);
             Process ps = pb.start();
 
-
-            // read error stream
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
-            String lineErr;
-            String linePrev = null;
-            while ((lineErr = bufferedReader.readLine()) != null) {
-                linePrev = lineErr;
-            }
-
-            boolean correctRun = true;
+            boolean notTimeout= true;
             if (waitForModel) {
                 LOG.info("Waiting for training process");
-                correctRun = ps.waitFor(5, TimeUnit.MINUTES); //TODO: timeout in configuration?
+                notTimeout = ps.waitFor(5, TimeUnit.MINUTES); //TODO: timeout in configuration?
             }
 
-            if ((correctRun) && ((linePrev != null) && (linePrev.endsWith("Recognizer saved.")))) {
+            if ((notTimeout) && (ps.exitValue() == 0)) {
                 LOG.info("Training done");
                 this.bindModel(modelLocation);
             } else {
-                LOG.error("Training failed: {}", linePrev);
+                //FIXME is error only last line?
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
+                String errorMsg = null;
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    errorMsg = line;
+                }
+
+                //TODO: throw some error?
+                LOG.error("Training failed: exit code: {}, error message: {}", ps.exitValue(), errorMsg);
             }
 
         } catch (IOException e) {
