@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -565,8 +566,11 @@ public class ReportRelationsController extends ReportWizardController {
     protected void clearSelectedRelationBackground() {
         if (selectedRelation != null) {
              selectedRelation.getData().stream()
-                     .flatMap(relInfo -> objectWords.get(relInfo.object.get()).stream())
-                     .forEach(Utils::unstyleTextBackground);
+                    .flatMap(relInfo -> {
+                        final List<Text> words = objectWords.get(relInfo.object.get());
+                        return words != null ? words.stream() : Stream.empty();
+                    })
+                    .forEach(Utils::unstyleTextBackground);
          }
     }
 
@@ -593,7 +597,10 @@ public class ReportRelationsController extends ReportWizardController {
         final RelationType type = selectedRelation.getType();
         final long id = type.getId();
         selectedRelation.getData().stream()
-                .flatMap(relInfo -> objectWords.get(relInfo.object.get()).stream())
+                .flatMap(relInfo -> {
+                    final List<Text> words = objectWords.get(relInfo.object.get());
+                    return words != null ? words.stream() : Stream.empty();
+                })
                 .forEach(t -> Utils.styleTextBackground(t, id));
         table.setItems(selectedRelation.getData());
     }
