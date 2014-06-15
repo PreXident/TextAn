@@ -294,7 +294,7 @@ public class ReportObjectsController extends ReportWizardController {
             public ListCell<Pair<Double, Object>> call(ListView<Pair<Double, Object>> p) {
                 return new ListCell<Pair<Double, Object>>() {
                     {
-                        this.setOnMouseClicked((MouseEvent e) -> {
+                        this.setOnMousePressed((MouseEvent e) -> {
                             if (e.isPrimaryButtonDown()) {
                                 contextMenu.hide();
                                 @SuppressWarnings("unchecked")
