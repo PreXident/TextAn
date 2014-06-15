@@ -71,7 +71,7 @@ public class NamedEntityRecognizer {
                 learn(true);
             }
         } else {
-            LOG.warn("Directory {} not exists", modelsDir); //FIXME
+            LOG.warn("Directory {} not exists", modelsDir);
         }
 
     }
