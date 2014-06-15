@@ -25,8 +25,6 @@ public class NamedEntityRecognizer {
 
     private static final Logger LOG = LoggerFactory.getLogger(NamedEntityRecognizer.class);
 
-    private static final String TRAIN_NER = "train_ner"; //TODO: move binaries into bin directory?
-
     private static final String MODELS_DIR = "models";
     private static final String MODEL_FILE_EXTENSION = ".ner";
     private static final String MODEL_FILE_PREFIX = "model";
@@ -102,50 +100,6 @@ public class NamedEntityRecognizer {
     }
 
     /**
-     * Function that creates commands for learning new NameTag model.
-     *
-     * @return string array with commands
-     */
-    private List<String> prepareLearningArguments(File workingDirectory) {
-        String[] configValues = {"czech", "morphodita:czech-131112-pos_only.tagger", "features-tsd13.txt", "2", "30", "-0.1", "0.1", "0.01", "0.5", "0", ""}; //TODO: move to default property file?
-        String[] configNames = {"ner_identifier", "tagger", "featuresFile", "stages", "iterations", "missing_weight", "initial_learning_rage", "final_learning_rage", "gaussian", "hidden_layer", "heldout_data"};
-
-        List<String> result = new LinkedList<>();
-        result.add(new File(workingDirectory, mapBinaryName(TRAIN_NER)).toString()); //TODO: test if file exists? (IOException?)
-
-        try (InputStream configFileStream = NamedEntityRecognizer.class.getResource("/NametagLearning.properties").openStream()){ //TODO: default(inside jar) and user properties?
-            Properties p = new Properties();
-            p.load(configFileStream);
-
-            for (int i = 0; i < configNames.length; ++i) {
-                try {
-                    String value = (String) p.get(configNames[i]);
-                    if (value != null) {
-                        configValues[i] = value;
-                    } else {
-                        LOG.warn("Config value {} wasn't set, using default value.", configNames[i]);
-                    }
-                } catch (Exception e) {
-                    LOG.warn("Config value " + configNames[i] + " wasn't set, using default value.", e);
-                } finally {
-                    if (!configValues[i].isEmpty()) {
-                        result.add(configValues[i]);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            LOG.warn("Config file for NameTag wasn't found, using default values.", e);
-            for (int i = 0; i < configNames.length; ++i) {
-                if (!configValues[i].isEmpty()) {
-                    result.add(configValues[i]);
-                }
-            }
-        }
-        //result[result.length - 1] = command.toString();
-        return result;
-    }
-
-    /**
      * Learn new model
      *
      * @param waitForModel true when learning is tu be blocking, else false
@@ -159,38 +113,37 @@ public class NamedEntityRecognizer {
             File modelLocation = new File(MODELS_DIR, MODEL_FILE_PREFIX + sdf.format(Calendar.getInstance().getTime()) + MODEL_FILE_EXTENSION).getAbsoluteFile();
             LOG.debug("New model path: {}", modelLocation);
 
-            List<String> learningCommand = prepareLearningArguments(dir);
-            LOG.debug("Executing learning command: {}", String.join(" ", learningCommand));
+            LearningParameters learningParameters = new LearningParameters(dir);
+            LOG.debug("Executing learning command: {}", String.join(" ", learningParameters.getCommand()));
 
             // build process
-            ProcessBuilder pb = new ProcessBuilder(learningCommand);
-            File trainingDataFile = new File(dir.getAbsolutePath() + File.separator + "cnec2.0-all" + File.separator + "train.txt"); //TODO: move to config, why the restriction for the dir?
+            ProcessBuilder pb = new ProcessBuilder(learningParameters.getCommand());
+            File trainingDataFile = learningParameters.getTrainingData();
             pb.directory(dir);
+
             // IO redirection
             pb.redirectInput(trainingDataFile);
             pb.redirectOutput(modelLocation);
             pb.redirectErrorStream(false);
             Process ps = pb.start();
 
+            BufferedReader reader = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
+            StringBuilder errorMsg = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                errorMsg.append(line + '\n');
+            }
+
             boolean notTimeout= true;
             if (waitForModel) {
                 LOG.info("Waiting for training process");
-                notTimeout = ps.waitFor(5, TimeUnit.MINUTES); //TODO: timeout in configuration?
+                notTimeout = ps.waitFor(learningParameters.getWaitingTime(), TimeUnit.MILLISECONDS);
             }
 
             if ((notTimeout) && (ps.exitValue() == 0)) {
                 LOG.info("Training done");
                 this.bindModel(modelLocation);
             } else {
-                //FIXME is error only last line?
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
-                String errorMsg = null;
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    errorMsg = line;
-                }
-
-                //TODO: throw some error?
                 LOG.error("Training failed: exit code: {}, error message: {}", ps.exitValue(), errorMsg);
             }
 
@@ -213,27 +166,20 @@ public class NamedEntityRecognizer {
         try {
             id = Long.parseLong(entityType);
         } catch (NumberFormatException nfe) {
-            // log outside of method FIXME
-        }
-        if (id == -1L) {
             return null;
         }
         if (idTempTable.containsKey(id)) {
             value = idTempTable.get(id);
             LOG.debug("Using CACHED entity {}", value.getName());
         } else {
-//            try { FIXME: try block? why? catching Exception is too strong!
-                ObjectTypeTable tableObject = objectTypeTableDAO.find(id);
-                if (tableObject != null) {
-                    value = new ObjectType(tableObject.getId(), tableObject.getName());
-                    idTempTable.put(id, value);
-                    LOG.debug("Using DATABASE entity {}", value.getName());
-                } else {
-                    LOG.warn("Entity type {} recognized, but is not stored in database.", entityType);
-                }
-//            } catch (Exception ex) {
-//                LOG.warn("Exception occurred when trying translate entity.", ex);
-//            }
+            ObjectTypeTable tableObject = objectTypeTableDAO.find(id);
+            if (tableObject != null) {
+                value = new ObjectType(tableObject.getId(), tableObject.getName());
+                idTempTable.put(id, value);
+                LOG.debug("Using DATABASE entity {}", value.getName());
+            } else {
+                LOG.warn("Entity type {} recognized, but is not stored in database.", entityType);
+            }
         }
         return value;
     }
@@ -322,13 +268,5 @@ public class NamedEntityRecognizer {
 
     private String encodeEntities(String text) {
         return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
-    }
-
-    private static String mapBinaryName(String binName) {
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            return binName + ".exe";
-        } else {
-            return binName;
-        }
     }
 }
