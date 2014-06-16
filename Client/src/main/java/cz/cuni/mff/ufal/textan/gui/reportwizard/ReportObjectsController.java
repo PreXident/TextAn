@@ -263,13 +263,14 @@ public class ReportObjectsController extends ReportWizardController {
                 if (word.getEntity() != null) {
                     final int entityIndex = word.getEntity().getIndex();
                     final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
+                    String newTip = word.getEntity().getType().getName();
                     if (obj != null) {
-                        final String newTip = obj.toString();
-                        tooltip.setText(newTip);
-                        Bounds bounds = text.getLayoutBounds();
-                        final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
-                        tooltip.show(text, p.getX(), p.getY());
+                        newTip = newTip + " - " + obj.toString();
                     }
+                    tooltip.setText(newTip);
+                    Bounds bounds = text.getLayoutBounds();
+                    final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
+                    tooltip.show(text, p.getX(), p.getY());
                 } else {
                     tooltip.hide();
                 }
