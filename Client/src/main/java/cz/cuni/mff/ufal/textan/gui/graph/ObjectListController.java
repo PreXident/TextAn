@@ -160,13 +160,8 @@ public class ObjectListController extends GraphController {
                 }
             };
         });
-        filterField.textProperty().addListener((ov, oldVal, newVal) -> {
-            settings.setProperty("filter.alias", newVal);
-        });
         typeComboBox.valueProperty().addListener((ov, oldVal, newVal) -> {
             pageNo = 0;
-            final String typeId = newVal == null ? "-1" : String.valueOf(newVal.getId());
-            settings.setProperty("filter.type", typeId);
         });
     }
 
@@ -201,7 +196,6 @@ public class ObjectListController extends GraphController {
     @Override
     public void setSettings(final Properties settings) {
         super.setSettings(settings);
-        filterField.setText(settings.getProperty("filter.alias", ""));
         perPageComboBox.setValue(Integer.parseInt(settings.getProperty("objects.per.page", "25")));
         perPageComboBox.valueProperty().addListener((ov, oldVal, newVal) -> {
             pageNo = 0;
@@ -227,17 +221,6 @@ public class ObjectListController extends GraphController {
             types = grapher.getClient().getObjectTypesList();
             final Collator collator = Collator.getInstance();
             types.sort((type1, type2) -> collator.compare(type1.getName(), type2.getName()));
-            try {
-                final long selectedTypeId = Long.parseLong(settings.getProperty("filter.type", "-1"));
-                if (selectedTypeId > 0) {
-                    final Optional<ObjectType> t = types.stream()
-                            .filter(type -> type.getId() == selectedTypeId)
-                            .findFirst();
-                    if (t.isPresent()) {
-                        selectedType = t.get();
-                    }
-                }
-            } catch (NumberFormatException e) { }
             return null;
         }
     }
