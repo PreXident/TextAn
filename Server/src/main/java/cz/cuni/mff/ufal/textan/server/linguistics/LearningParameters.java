@@ -21,8 +21,10 @@ public class LearningParameters {
     private static final String TRAIN_NER = "train_ner";
     private static final String WAITING_TIME = "waiting_time";
     private static final String TRAINING_DATA = "training_data";
+    private static final String MAXIMUM_STORED_MODELS = "maximum_stored_models";
     private static final String DEFAULT_TRAINING_DATA_PATH = "cnec2.0-all" + File.separator + "train.txt";
-    private static final Long DEFAULT_WAITING_TIME = 300000L;
+    private static final int DEFAULT_WAITING_TIME = 300000;
+    private static final int DEFAULT_MAXIMUM_STORED_MODELS = 5;
     private static final String DEFAULT_NER_IDENTIFIER = "czech";
     private static final String DEFAULT_TAGGER = "morphodita:czech-131112-pos_only.tagger";
     private static final String DEFAULT_FEATURES_FILE = "features-tsd13.txt";
@@ -37,7 +39,7 @@ public class LearningParameters {
 
     private static final Logger LOG = LoggerFactory.getLogger(LearningParameters.class);
 
-    private String[] configValues = { DEFAULT_NER_IDENTIFIER,
+    private static final String[] DEFAULT_CONFIG_VALUES = { DEFAULT_NER_IDENTIFIER,
                                       DEFAULT_TAGGER,
                                       DEFAULT_FEATURES_FILE,
                                       DEFAULT_STAGES,
@@ -48,11 +50,12 @@ public class LearningParameters {
                                       DEFAULT_GAUSSIAN,
                                       DEFAULT_HIDDEN_LAYER,
                                       DEFAULT_HELDOUT_DATA };
-    private String[] configNames = {"ner_identifier", "tagger", "featuresFile", "stages", "iterations", "missing_weight", "initial_learning_rage", "final_learning_rage", "gaussian", "hidden_layer", "heldout_data"};
+    private static final String[] LEARNING_PARAM_NAMES = {"ner_identifier", "tagger", "featuresFile", "stages", "iterations", "missing_weight", "initial_learning_rage", "final_learning_rage", "gaussian", "hidden_layer", "heldout_data"};
 
     private List<String> command;
 
-    private Long waitingTime;
+    private int waitingTime;
+    private int maximumStoredModels;
     private File trainingDataFile;
 
     public LearningParameters(File workingDirectory) {
@@ -63,41 +66,20 @@ public class LearningParameters {
         try (InputStream configFileStream = NamedEntityRecognizer.class.getResource("/NametagLearning.properties").openStream()){
             Properties p = new Properties();
             p.load(configFileStream);
-
-            for (int i = 0; i < configNames.length; ++i) {
-                try {
-                    String value = (String) p.get(configNames[i]);
-                    if (value != null) {
-                        configValues[i] = value;
-                    } else {
-                        LOG.warn("Config value {} wasn't set, using default value.", configNames[i]);
-                    }
-                } catch (Exception e) {
-                    LOG.warn("Config value " + configNames[i] + " wasn't set, using default value.", e);
-                } finally {
-                    if (!configValues[i].isEmpty()) {
-                        command.add(configValues[i]);
-                    }
+            String value;
+            for (int i = 0; i < LEARNING_PARAM_NAMES.length; ++i) {
+                value = getStringProperty(p, LEARNING_PARAM_NAMES[i], DEFAULT_CONFIG_VALUES[i]);
+                if (!value.isEmpty()) {
+                    command.add(value);
                 }
             }
 
             try {
-                String value = (String)p.get(TRAINING_DATA);
-                if (value != null) {
-                    if (new File(workingDirectory.toString() + File.separator + value).exists()) {
-                        trainingDataFile = new File(workingDirectory + File.separator + value).getCanonicalFile();
-                    }
-                    else {
-                        LOG.warn("Training data file {} not exists, using default value.", TRAINING_DATA);
-                    }
-                } else {
-                    LOG.warn("Config value {} wasn't set, using default value.", TRAINING_DATA);
-                }
+                trainingDataFile = new File(workingDirectory.getAbsolutePath() + File.separator + getStringProperty(p, TRAINING_DATA, DEFAULT_TRAINING_DATA_PATH)).getCanonicalFile();
             }
-            catch (Exception e) {
+            catch (IOException e) {
                 LOG.warn("Config value {} wasn't set, using default value.", TRAINING_DATA);
-            }
-            finally {
+            } finally {
                 if (trainingDataFile == null) {
                     try {
                         trainingDataFile = new File(workingDirectory.getAbsolutePath() + File.separator + DEFAULT_TRAINING_DATA_PATH).getCanonicalFile();
@@ -107,30 +89,68 @@ public class LearningParameters {
                 }
             }
 
-            try {
-                Long valueL  = Long.parseLong((String)p.get(WAITING_TIME));
-                if (valueL != null) {
-                    waitingTime = valueL;
-                } else {
-                    waitingTime = DEFAULT_WAITING_TIME;
-                    LOG.warn("Config value {} wasn't set, using default value.", WAITING_TIME);
-                }
-            }
-            catch (NumberFormatException nfe) {
-                LOG.warn("Could not parse config value {}, using default value.", WAITING_TIME);
-            }
-            catch (Exception e) {
-                LOG.warn("Config value {} wasn't set, using default value.", WAITING_TIME);
-            }
+            waitingTime = getIntegerProperty(p, WAITING_TIME, DEFAULT_WAITING_TIME);
+
+            maximumStoredModels = getIntegerProperty(p, MAXIMUM_STORED_MODELS, DEFAULT_MAXIMUM_STORED_MODELS);
 
         } catch (Exception e) {
-            LOG.warn("Config file for NameTag wasn't found, using default values.", e);
-            for (int i = 0; i < configNames.length; ++i) {
-                if (!configValues[i].isEmpty()) {
-                    command.add(configValues[i]);
+            LOG.warn("Config file for NameTag wasn't found, using default values.", e.getMessage());
+            for (int i = 0; i < LEARNING_PARAM_NAMES.length; ++i) {
+                if (!DEFAULT_CONFIG_VALUES[i].isEmpty()) {
+                    command.add(DEFAULT_CONFIG_VALUES[i]);
                 }
             }
+
+            try {
+                trainingDataFile = new File(workingDirectory.getAbsolutePath() + File.separator + DEFAULT_TRAINING_DATA_PATH).getCanonicalFile();
+            }
+            catch (IOException ioe) {
+                LOG.warn("Config value {} wasn't set, using default value.", TRAINING_DATA);
+            } finally {
+                if (trainingDataFile == null) {
+                    try {
+                        trainingDataFile = new File(workingDirectory.getAbsolutePath() + File.separator + DEFAULT_TRAINING_DATA_PATH).getCanonicalFile();
+                    } catch (IOException ioe) {
+                        LOG.error("Default learning data file not exists.", ioe);
+                    }
+                }
+            }
+
+            waitingTime = DEFAULT_WAITING_TIME;
+            maximumStoredModels = DEFAULT_MAXIMUM_STORED_MODELS;
         }
+    }
+
+    private String getStringProperty(Properties p, String propertyName, String defaultValue) {
+        String value = defaultValue;
+        try {
+            value = (String) p.get(propertyName);
+            if (value == null) {
+                LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
+                value = defaultValue;
+            }
+        } catch (Exception e) {
+            LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
+        }
+        return value;
+    }
+
+    private int getIntegerProperty(Properties p, String propertyName, int defaultValue) {
+        Integer value = defaultValue;
+        try {
+            value  = Integer.parseInt((String)p.get(propertyName));
+            if (value == null) {
+                value = defaultValue;
+                LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
+            }
+        }
+        catch (NumberFormatException nfe) {
+            LOG.warn("Could not parse config value {}, using default value {}.", propertyName, defaultValue);
+        }
+        catch (Exception e) {
+            LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
+        }
+        return value;
     }
 
     /**
@@ -143,9 +163,17 @@ public class LearningParameters {
     /**
      * @return maximum waiting time for learning
      */
-    public Long getWaitingTime() {
+    public int getWaitingTime() {
         return waitingTime;
     }
+
+    /**
+     * @return maximum stored models on disk
+     */
+    public int getMaximumStoredModels() {
+        return maximumStoredModels;
+    }
+
 
     /**
      * @return file with training data

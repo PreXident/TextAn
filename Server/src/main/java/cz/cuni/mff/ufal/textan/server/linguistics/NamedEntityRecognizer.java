@@ -39,6 +39,18 @@ public class NamedEntityRecognizer {
         idTempTable = new Hashtable<>();
     }
 
+    private File[] getSortedModels(File modelsDir) {
+        if (modelsDir.exists() && modelsDir.isDirectory()) {
+            FilenameFilter modelsFilter = (dir, name) -> (name.length() > MODEL_FILE_EXTENSION.length()) && (name.endsWith(MODEL_FILE_EXTENSION));
+            File[] models = modelsDir.listFiles(modelsFilter);
+            Arrays.sort(models, (File a, File b) -> Long.signum(b.lastModified() - a.lastModified()));
+            return models;
+        } else {
+            LOG.warn("Directory {} not exists", modelsDir);
+            return null;
+        }
+    }
+
     /**
      * Initialize NameTag
      * if there are existing models, than use newest one, else train new
@@ -47,29 +59,20 @@ public class NamedEntityRecognizer {
         LOG.info("Initializing NameTag");
 
         LOG.info("Looking for models");
-        File modelsDir = new File(MODELS_DIR);
-        if (modelsDir.exists() && modelsDir.isDirectory()) {
-
-            FilenameFilter modelsFilter = (dir, name) -> (name.length() > MODEL_FILE_EXTENSION.length()) && (name.endsWith(MODEL_FILE_EXTENSION));
-            File[] models = modelsDir.listFiles(modelsFilter);
-
-            if (models.length > 0) {
-                Arrays.sort(models, (File a, File b) -> Long.signum(b.lastModified() - a.lastModified()));
-                LOG.info("Existing model(s) found)");
-                int i = 0;
-                while ((i < models.length) && (!bindModel(models[i]))) {
-                    ++i;
-                }
-                if (i >= models.length) {
-                    LOG.info("Found models are corrupted, learning");
-                    learn(true);
-                }
-            } else {
-                LOG.info("No models found");
+        File[] models = getSortedModels(new File(MODELS_DIR));
+        if (models != null || models.length > 0) {
+            LOG.info("Existing model(s) found)");
+            int i = 0;
+            while ((i < models.length) && (!bindModel(models[i]))) {
+                ++i;
+            }
+            if (i >= models.length) {
+                LOG.info("Found models are corrupted, learning new model");
                 learn(true);
             }
         } else {
-            LOG.warn("Directory {} not exists", modelsDir);
+            LOG.info("No models found");
+            learn(true);
         }
 
     }
@@ -108,7 +111,7 @@ public class NamedEntityRecognizer {
     public void learn(boolean waitForModel) {
         LOG.info("Started training new NameTag model");
         try {
-            File dir = new File(Paths.get("../../Linguistics/training").toAbsolutePath().toRealPath().toString());
+            File dir = new File("../../Linguistics/training").getCanonicalFile();
             SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
             File modelLocation = new File(MODELS_DIR, MODEL_FILE_PREFIX + sdf.format(Calendar.getInstance().getTime()) + MODEL_FILE_EXTENSION).getAbsoluteFile();
             LOG.debug("New model path: {}", modelLocation);
@@ -145,6 +148,11 @@ public class NamedEntityRecognizer {
                 this.bindModel(modelLocation);
             } else {
                 LOG.error("Training failed: exit code: {}, error message: {}", ps.exitValue(), errorMsg);
+            }
+            File[] models = getSortedModels(new File(MODELS_DIR));
+            for (int i = learningParameters.getMaximumStoredModels(); i < models.length; ++i) {
+                LOG.info("Maximum models count exceeded, deleting model {}", models[i].toString());
+                models[i].delete();
             }
 
         } catch (IOException e) {
