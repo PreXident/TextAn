@@ -30,6 +30,14 @@ public class Grapher {
     }
 
     /**
+     * Returns client for connecting to webservices.
+     * @return client for connection to webservices
+     */
+    public Client getClient() {
+        return client;
+    }
+
+    /**
      * Returns all objects in the db.
      * @return all object in the db
      */

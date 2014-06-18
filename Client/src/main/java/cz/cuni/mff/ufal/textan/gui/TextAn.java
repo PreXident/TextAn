@@ -105,30 +105,12 @@ public class TextAn extends Application {
 
         resetDefaultLocale(settings.getProperty("locale.language"));
 
-        //ask for login if needed
-        if (settings.getProperty("username", "").isEmpty()) {
-            final String login = Dialogs.create()
-                    .title(TextAnController.TITLE)
-                    .masthead(localize("username.prompt"))
-                    .message(localize("username.login.label"))
-                    .showTextInput(System.getProperty("user.name", ""));
-            if (login == null) {
-                Dialogs.create()
-                        .title(TextAnController.TITLE)
-                        .masthead(localize("username.error.title"))
-                        .message(localize("username.error.text"))
-                        .showError();
-                Platform.exit();
-            } else {
-                settings.setProperty("username", login);
-            }
-        }
-
         //create javafx controls
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("TextAn.fxml"), resourceBundle);
         final Parent root = (Parent) loader.load();
         controller = loader.getController();
         controller.setSettings(settings);
+        controller.setStage(stage);
         final Scene scene = new Scene(root);
         Utils.prepareStage(stage, "application", settings);
         //
@@ -140,6 +122,29 @@ public class TextAn extends Application {
         stage.setOnCloseRequest(e -> Platform.exit());
         stage.show();
         stage.toFront();
+
+        //ask for login if needed
+        if (settings.getProperty("username", "").isEmpty()) {
+            final String login = Dialogs.create()
+                    .owner(stage)
+                    .title(TextAnController.TITLE)
+                    .masthead(localize("username.prompt"))
+                    .message(localize("username.login.label"))
+                    .lightweight()
+                    .showTextInput(System.getProperty("user.name", ""));
+            if (login == null) {
+                Dialogs.create()
+                        .owner(stage)
+                        .title(TextAnController.TITLE)
+                        .masthead(localize("username.error.title"))
+                        .message(localize("username.error.text"))
+                        .lightweight()
+                        .showError();
+                Platform.exit();
+            } else {
+                settings.setProperty("username", login);
+            }
+        }
     }
 
     /**

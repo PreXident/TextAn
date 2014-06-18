@@ -12,7 +12,11 @@ import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
-
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -29,10 +33,6 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Main class controlling core manipulations with reports.
@@ -273,6 +273,40 @@ public class Client {
         return response.getObjects().stream()
                 .map(Object::new)
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Returns filtered list of objects in the system.
+     * @param type filter object type
+     * @param filter filter aliases
+     * @param first index of the first object
+     * @param size maximal number of objects
+     * @return list of filtered objects in the system
+     */
+    public synchronized Pair<List<Object>, Integer> getObjectsList(final ObjectType type,
+            final String filter, final int first, final int size) {
+        //TODO: call proper method when it's ready
+        final GetObjectsResponse response =
+                getDataProvider().getObjects(new Void());
+        Stream<Object> objects = response.getObjects().stream()
+            .map(Object::new);
+        //TODO: remove emulation
+        final int actualSize = response.getObjects().size();
+        if (type != null) {
+            objects = objects.filter(obj -> obj.getType().getId() == type.getId());
+        }
+        if (filter != null && !filter.isEmpty()) {
+            final String f = filter.toLowerCase();
+            objects = objects.filter(obj -> {
+                final String aliases = String.join(",", obj.getAliases()).toLowerCase();
+                return aliases.contains(f);
+            });
+        }
+        final ArrayList<Object> list = objects
+                .skip(first)
+                .limit(size)
+                .collect(Collectors.toCollection(ArrayList::new));
+        return new Pair<>(list, actualSize);
     }
 
     /**

@@ -28,3 +28,5 @@ url.document.wsdl=http://localhost:9100/soap/document?wsdl
 url.data=http://localhost:9100/soap/data
 #url of the data provider
 url.data.wsdl=http://localhost:9100/soap/data?wsdl
+#default distance for displaying graphs
+graph.distance=5
