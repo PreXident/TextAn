@@ -104,6 +104,13 @@ public class Utils {
         }).start();
     }
 
+    /**
+     * Replaces text's styleclasses by clazz, stores fill color to user data and
+     * fills text with color created from id.
+     * @param text text to style
+     * @param clazz class to add
+     * @param id id to color
+     */
     static public void styleText(final Text text, final String clazz, final long id) {
         text.getStyleClass().clear();
         text.getStyleClass().add(clazz);
@@ -111,6 +118,11 @@ public class Utils {
         text.setFill(idToFXColor(id));
     }
 
+    /**
+     * Adds background to text created from id.
+     * @param text text to style
+     * @param id id to color
+     */
     static public void styleTextBackground(final Text text, final long id) {
         final DropShadow dropShadow = new DropShadow();
         dropShadow.setRadius(4d);
@@ -121,6 +133,11 @@ public class Utils {
         text.setEffect(dropShadow);
     }
 
+    /**
+     * Clears text's style classes and tries to restore fill color from user
+     * data.
+     * @param text text to unstyle
+     */
     static public void unstyleText(final Text text) {
         text.getStyleClass().clear();
         Object color = text.getUserData();
@@ -131,6 +148,10 @@ public class Utils {
         }
     }
 
+    /**
+     * Clears text's background.
+     * @param text text to unstyle
+     */
     static public void unstyleTextBackground(final Text text) {
         text.setEffect(null);
     }
