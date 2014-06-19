@@ -66,7 +66,7 @@ public class TextAnController implements Initializable {
     private CheckMenuItem menuItemClearFilters;
 
     @FXML
-    private TextField loginTextField;
+    protected TextField loginTextField;
 
     @FXML
     private ComboBox<String> localizationCombo;
@@ -181,11 +181,16 @@ public class TextAnController implements Initializable {
         menuItemClearFilters.setSelected(
                 settings.getProperty(CLEAR_FILTERS, "false").equals("true"));
         loginTextField.setText(settings.getProperty("username", System.getProperty("user.name")));
-        loginTextField.textProperty().addListener(
-            (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
-                settings.setProperty("username", newVal);
+        loginTextField.focusedProperty().addListener((ov, oldVal, newVal) -> {
+            if (oldVal) {
+                final String login = loginTextField.getText();
+                if (login == null || login.isEmpty() || login.trim().isEmpty()) {
+                    loginTextField.setText(settings.getProperty("username"));
+                } else {
+                    settings.setProperty("username", login);
+                }
             }
-        );
+        });
         localizationCombo.getSelectionModel().select(settings.getProperty("locale.language", "cs"));
         localizationCombo.valueProperty().addListener(
             (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {

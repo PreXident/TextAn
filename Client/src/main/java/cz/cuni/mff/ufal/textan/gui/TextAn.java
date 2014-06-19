@@ -132,7 +132,7 @@ public class TextAn extends Application {
                     .message(localize("username.login.label"))
                     .lightweight()
                     .showTextInput(System.getProperty("user.name", ""));
-            if (login == null) {
+            if (login == null || login.isEmpty() || login.trim().isEmpty()) {
                 Dialogs.create()
                         .owner(stage)
                         .title(TextAnController.TITLE)
@@ -142,7 +142,9 @@ public class TextAn extends Application {
                         .showError();
                 Platform.exit();
             } else {
-                settings.setProperty("username", login);
+                final String trimmed = login.trim();
+                controller.loginTextField.setText(trimmed);
+                settings.setProperty("username", trimmed);
             }
         }
     }
