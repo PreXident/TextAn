@@ -43,7 +43,6 @@ import java.util.stream.Stream;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections15.Transformer;
 
@@ -65,8 +64,11 @@ public class GraphView extends SwingNode {
     /** Graph visualizator. */
     final VisualizationViewer<Object, Relation> visualizator;
 
-    /** Graph context menu. */
-    final ContextMenu contextMenu;
+    /** Object context menu. */
+    ContextMenu objectContextMenu;
+
+    /** Object to display graph for. */
+    Object objectForGraph;
 
     /** Mouse handler. */
     final DefaultModalGraphMouse<Integer,String> graphMouse;
@@ -152,9 +154,19 @@ public class GraphView extends SwingNode {
         graphMouse = new DefaultModalGraphMouse<>();
         graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
         graphMouse.add(new AbstractPopupGraphMousePlugin() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (objectContextMenu != null && objectContextMenu.isShowing()) {
+                    Platform.runLater(() -> {
+                        objectContextMenu.hide();
+                    });
+                }
+                super.mousePressed(e);
+            }
+
             @Override
             protected void handlePopup(MouseEvent e) {
-                System.out.println("[" + new Date().getTime() + "] HANDLING!");
                 @SuppressWarnings("unchecked")
                 final VisualizationViewer<Object, Relation> vv =
                         (VisualizationViewer<Object, Relation>) e.getSource();
@@ -164,35 +176,24 @@ public class GraphView extends SwingNode {
                 if(pickSupport != null) {
                     final Point s = MouseInfo.getPointerInfo().getLocation(); //e.getLocationOnScreen() is not good enough
                     final Object v = pickSupport.getVertex(vv.getGraphLayout(), p.getX(), p.getY());
-                    if(v != null) {
-                        System.out.println("Vertex " + v + " was right clicked");
+                    objectForGraph = v;
+                    if (v != null && objectContextMenu != null) {
                         Platform.runLater(() -> {
-                            contextMenu.show(GraphView.this, s.getX(), s.getY());
+                            objectContextMenu.show(GraphView.this, s.getX(), s.getY());
                         });
-                    } else {
+                    }/* else {
                         final Relation edge = pickSupport.getEdge(vv.getGraphLayout(), p.getX(), p.getY());
-                        if(edge != null) {
-                            System.out.println("Edge " + edge + " was right clicked");
+                        if (edge != null ) {
                             Platform.runLater(() -> {
                                 contextMenu.show(GraphView.this, s.getX(), s.getY());
                             });
                         }
-                    }
+                    }*/
                 }
             }
         });
         visualizator.setGraphMouse(graphMouse);
         visualizator.addKeyListener(new DefaultModalGraphMouse.ModeKeyAdapter(graphMouse)); //press t and p to change modes!
-        //
-        contextMenu = new ContextMenu();
-        final MenuItem mi = new MenuItem("Yes!");
-        mi.setOnAction(e -> { });
-        contextMenu.getItems().add(mi);
-        this.setOnMousePressed(e -> {
-            if (contextMenu.isShowing()) {
-                contextMenu.hide();
-            }
-        });
         //
         try {
             SwingUtilities.invokeAndWait(() -> {
@@ -216,6 +217,22 @@ public class GraphView extends SwingNode {
                 layout2.translate(deltaX, deltaY);
             });
         }).start();
+    }
+
+    /**
+     * Returns context menu for nodes.
+     * @return context menu for nodes
+     */
+    public ContextMenu getObjectContextMenu() {
+        return objectContextMenu;
+    }
+
+    /**
+     * Sets context menu for nodes.
+     * @param objectContextMenu new object context menu
+     */
+    public void setObjectContextMenu(final ContextMenu objectContextMenu) {
+        this.objectContextMenu = objectContextMenu;
     }
 
     /**
