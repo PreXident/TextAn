@@ -29,23 +29,10 @@ public class StateChangedListener implements IStateChangedListener {
      */
     static private void hackFixTextFlow(final ReportWizardController controller) {
         if (controller.textFlow != null) {
-            runFXlater(() -> {
+            Utils.runFXlater(() -> {
                 controller.textFlow.layoutChildren();
             });
         }
-    }
-
-    /**
-     * Runs finalizer in FX thread after 100 ms sleep in other thread.
-     * @param finalizer runnable to be run
-     */
-    static private void runFXlater(final Runnable finalizer) {
-        new Thread(() -> {
-            try {
-                Thread.sleep(100);
-            } catch (Exception e) { }
-            Platform.runLater(finalizer);
-        }).start();
     }
 
     /** Contains fxml and resource bundle for each StateType. */

@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.gui;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
@@ -88,6 +89,19 @@ public class Utils {
         stage.heightProperty().addListener(sizeListener);
         stage.xProperty().addListener(sizeListener);
         stage.yProperty().addListener(sizeListener);
+    }
+
+    /**
+     * Runs finalizer in FX thread after 100 ms sleep in other thread.
+     * @param finalizer runnable to be run
+     */
+    static public void runFXlater(final Runnable finalizer) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) { }
+            Platform.runLater(finalizer);
+        }).start();
     }
 
     static public void styleText(final Text text, final String clazz, final long id) {
