@@ -53,3 +53,5 @@ HWK deadline evening:
 
 Improvements
 - changes in client recorded and replayed when possible on return to the step (warning if not possible)
+
+Next meeting on Thursday at 13:00
