@@ -80,18 +80,16 @@ public class StateChangedListener implements IStateChangedListener {
     /**
      * Main constructor with all parameters.
      * @param textAnController parent controller
-     * @param resourceBundle localization
      * @param settings application settings
      * @param pipeline pipeline
      * @param stage wizard's stage
      * @param window wizard's window
      */
     private StateChangedListener(final TextAnController textAnController,
-            final ResourceBundle resourceBundle, final Properties settings,
-            final ProcessReportPipeline pipeline, final ReportWizardStage stage,
-            final ReportWizardWindow window) {
+            final Properties settings, final ProcessReportPipeline pipeline,
+            final ReportWizardStage stage, final ReportWizardWindow window) {
         this.textAnController = textAnController;
-        this.resourceBundle = resourceBundle;
+        this.resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizard");
         this.settings = settings;
         this.pipeline = pipeline;
         this.stage = stage;
@@ -101,29 +99,27 @@ public class StateChangedListener implements IStateChangedListener {
     /**
      * Wizard is contained in a stage. Window property will be null.
      * @param textAnController parent controller
-     * @param resourceBundle localization
      * @param settings application settings
      * @param pipeline pipeline
      * @param stage wizard's stage
      */
     public StateChangedListener(final TextAnController textAnController,
-            final ResourceBundle resourceBundle, final Properties settings,
-            final ProcessReportPipeline pipeline, final ReportWizardStage stage) {
-        this(textAnController, resourceBundle, settings, pipeline, stage, null);
+            final Properties settings, final ProcessReportPipeline pipeline,
+            final ReportWizardStage stage) {
+        this(textAnController, settings, pipeline, stage, null);
     }
 
     /**
      * Wizard is contained in a window. Stage property will be null.
      * @param textAnController parent controller
-     * @param resourceBundle localization
      * @param settings application settings
      * @param pipeline pipeline
      * @param window wizard's window
      */
     public StateChangedListener(final TextAnController textAnController,
-            final ResourceBundle resourceBundle, final Properties settings,
-            final ProcessReportPipeline pipeline, final ReportWizardWindow window) {
-        this(textAnController, resourceBundle, settings, pipeline, null, window);
+            final Properties settings, final ProcessReportPipeline pipeline,
+            final ReportWizardWindow window) {
+        this(textAnController, settings, pipeline, null, window);
     }
 
     @Override
@@ -146,7 +142,10 @@ public class StateChangedListener implements IStateChangedListener {
                 controller.setTextAnController(textAnController);
                 controller.setSettings(settings);
                 controller.setPipeline(pipeline);
-                final String title = Utils.localize(resourceBundle, stateInfo.title);
+                final String title = String.format(
+                        Utils.localize(resourceBundle, "report.wizard.title.format"),
+                        Utils.localize(resourceBundle, "report.wizard"),
+                        Utils.localize(resourceBundle, stateInfo.title));
                 if (window != null) {
                     window.getContentPane().getChildren().clear();
                     controller.setWindow(window);

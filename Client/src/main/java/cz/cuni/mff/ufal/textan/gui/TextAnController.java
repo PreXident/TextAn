@@ -130,7 +130,7 @@ public class TextAnController implements Initializable {
             if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
                 final ReportWizardWindow wizard = new ReportWizardWindow(settings);
                 content.getChildren().add(wizard);
-                listener = new StateChangedListener(this, resourceBundle, settings, pipeline, wizard);
+                listener = new StateChangedListener(this, settings, pipeline, wizard);
             } else {
                 final ReportWizardStage stage = new ReportWizardStage(settings);
                 children.add(stage);
@@ -139,7 +139,7 @@ public class TextAnController implements Initializable {
                         children.remove(stage);
                     }
                 });
-                listener = new StateChangedListener(this, resourceBundle, settings, pipeline, stage);
+                listener = new StateChangedListener(this, settings, pipeline, stage);
                 stage.show();
             }
             pipeline.addStateChangedListener(listener);
