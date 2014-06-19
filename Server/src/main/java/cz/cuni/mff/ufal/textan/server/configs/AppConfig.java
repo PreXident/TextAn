@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
@@ -50,6 +51,10 @@ public class AppConfig implements ApplicationContextAware {
     @SuppressWarnings("unused")
     @Autowired
     private IObjectTypeTableDAO objectTypeTableDAO;
+
+    @SuppressWarnings("unused")
+    @Autowired
+    private IDocumentTableDAO documentTableDAO;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -145,6 +150,6 @@ public class AppConfig implements ApplicationContextAware {
      */
     @Bean(initMethod = "init")
     public NamedEntityRecognizer namedEntityRecognizer() {
-        return new NamedEntityRecognizer(objectTypeTableDAO);
+        return new NamedEntityRecognizer(objectTypeTableDAO, documentTableDAO);
     }
 }

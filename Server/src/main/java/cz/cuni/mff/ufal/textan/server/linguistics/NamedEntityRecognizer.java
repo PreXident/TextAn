@@ -1,7 +1,11 @@
 package cz.cuni.mff.ufal.textan.server.linguistics;
 
 import cz.cuni.mff.ufal.nametag.*;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
+import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
 import cz.cuni.mff.ufal.textan.server.models.ObjectType;
@@ -30,12 +34,14 @@ public class NamedEntityRecognizer {
     private static final String MODEL_FILE_PREFIX = "model";
 
     private final IObjectTypeTableDAO objectTypeTableDAO;
+    private final IDocumentTableDAO documentTableDAO;
     private final Hashtable<Long, ObjectType> idTempTable;
 
     private Ner ner;
 
-    public NamedEntityRecognizer(IObjectTypeTableDAO objectTypeTableDAO) {
+    public NamedEntityRecognizer(IObjectTypeTableDAO objectTypeTableDAO, IDocumentTableDAO documentTableDAO) {
         this.objectTypeTableDAO = objectTypeTableDAO;
+        this.documentTableDAO = documentTableDAO;
         idTempTable = new Hashtable<>();
     }
 
@@ -100,6 +106,27 @@ public class NamedEntityRecognizer {
         }
 
         return true;
+    }
+
+    private void prepareLearningData() {
+        LOG.info("Creating data from database started");
+        List<DocumentTable> documentTables = documentTableDAO.findAll();
+        for (DocumentTable document : documentTables) {
+            LOG.info("Tagging document {}", document.toString());
+            Set<AliasOccurrenceTable> aliasOccurrenceTables = document.getAliasOccurrences();
+            long offset = 0;
+            StringBuilder taggedDocument = new StringBuilder(document.getText());
+            for (AliasOccurrenceTable aliasOccurrence : aliasOccurrenceTables) {
+                long objectID = aliasOccurrence.getAlias().getObject().getObjectType().getId();
+                String beginTag = "<id=" + objectID + ">";
+                String endTag = "</id>";
+                taggedDocument.insert((int)offset + aliasOccurrence.getPosition(), beginTag);
+                offset += beginTag.length();
+                taggedDocument.insert((int)offset + aliasOccurrence.getPosition() + aliasOccurrence.getAlias().getAlias().length(), endTag);
+                offset += endTag.length();
+            }
+            LOG.info("Tagged document: {}", taggedDocument.toString());
+        }
     }
 
     /**
@@ -193,6 +220,7 @@ public class NamedEntityRecognizer {
     }
 
     public List<Entity> tagText(String input) {
+        prepareLearningData();
         LOG.debug(input);
         if (ner == null) {
             LOG.error("NameTag hasn't model!");
