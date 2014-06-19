@@ -1,0 +1,24 @@
+Dears, 
+short summary as usual:
+
+Jakub:
+I haven't done so much work, because I have exam on Tuesday.First thing is, that I try improve learning of new models,
+second was trying run tagger from morphodita (it works, but I think, that calling morphodita functions through nametag will be better than make other bindings to morphodita).
+
+Adam:
+i solved issues created by peter:
+- you get the information which entities do not have assigned objects in error dialog and they are even highlighted
+- urls are no longer hardcoded but can now be specified in property file
+- window fix hack should no longer cause window resizing
+
+Vaclav:
+Working on threadsafe interceptor. Dunno why session-scoped one is not working.
+
+Tam:
+I commit the first pre-beta of Machine learning which the feature is the similarity between entity text and object alias, learning method: SVM. It work with my fake input added to the source code, I have not tested the fake input from database.
+
+Me:
+I finally finished refactoring of web services (without ugly hacks), I hope everything works. I also merge everything that works, so nametag is now available in master branch (but only with static model), and I made some changes in project structure, because I want to separate the training / demo data from the final distribution of Textan.
+
+See you on Thursday at 11:00 in the lab as we agreed at last meeting, if no one is against,
+Petr
