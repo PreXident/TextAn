@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.IStateChangedListener;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.State;
 import cz.cuni.mff.ufal.textan.core.processreport.State.StateType;
+import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.io.IOException;
 import java.util.HashMap;
@@ -65,6 +66,9 @@ public class StateChangedListener implements IStateChangedListener {
     /** Localization container. */
     private final ResourceBundle resourceBundle;
 
+    /** Parent controller. */
+    protected final TextAnController textAnController;
+
     {
         fxmlMapping.put(StateType.LOAD, new StateInfo("01_ReportLoad.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01_ReportLoad", "report.wizard.load.title"));
         fxmlMapping.put(StateType.EDIT_REPORT, new StateInfo("02_ReportEdit.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.02_ReportEdit", "report.wizard.edit.title"));
@@ -75,13 +79,18 @@ public class StateChangedListener implements IStateChangedListener {
 
     /**
      * Main constructor with all parameters.
+     * @param textAnController parent controller
      * @param resourceBundle localization
      * @param settings application settings
      * @param pipeline pipeline
      * @param stage wizard's stage
      * @param window wizard's window
      */
-    private StateChangedListener(final ResourceBundle resourceBundle, final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage, final ReportWizardWindow window) {
+    private StateChangedListener(final TextAnController textAnController,
+            final ResourceBundle resourceBundle, final Properties settings,
+            final ProcessReportPipeline pipeline, final ReportWizardStage stage,
+            final ReportWizardWindow window) {
+        this.textAnController = textAnController;
         this.resourceBundle = resourceBundle;
         this.settings = settings;
         this.pipeline = pipeline;
@@ -91,24 +100,30 @@ public class StateChangedListener implements IStateChangedListener {
 
     /**
      * Wizard is contained in a stage. Window property will be null.
+     * @param textAnController parent controller
      * @param resourceBundle localization
      * @param settings application settings
      * @param pipeline pipeline
      * @param stage wizard's stage
      */
-    public StateChangedListener(final ResourceBundle resourceBundle, final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage) {
-        this(resourceBundle, settings, pipeline, stage, null);
+    public StateChangedListener(final TextAnController textAnController,
+            final ResourceBundle resourceBundle, final Properties settings,
+            final ProcessReportPipeline pipeline, final ReportWizardStage stage) {
+        this(textAnController, resourceBundle, settings, pipeline, stage, null);
     }
 
     /**
      * Wizard is contained in a window. Stage property will be null.
+     * @param textAnController parent controller
      * @param resourceBundle localization
      * @param settings application settings
      * @param pipeline pipeline
      * @param window wizard's window
      */
-    public StateChangedListener(final ResourceBundle resourceBundle, final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardWindow window) {
-        this(resourceBundle, settings, pipeline, null, window);
+    public StateChangedListener(final TextAnController textAnController,
+            final ResourceBundle resourceBundle, final Properties settings,
+            final ProcessReportPipeline pipeline, final ReportWizardWindow window) {
+        this(textAnController, resourceBundle, settings, pipeline, null, window);
     }
 
     @Override
@@ -128,6 +143,7 @@ public class StateChangedListener implements IStateChangedListener {
                 final FXMLLoader loader = new FXMLLoader(getClass().getResource(stateInfo.fxml), rb);
                 final Parent loadedRoot = (Parent) loader.load();
                 ReportWizardController controller = loader.getController();
+                controller.setTextAnController(textAnController);
                 controller.setSettings(settings);
                 controller.setPipeline(pipeline);
                 final String title = Utils.localize(resourceBundle, stateInfo.title);

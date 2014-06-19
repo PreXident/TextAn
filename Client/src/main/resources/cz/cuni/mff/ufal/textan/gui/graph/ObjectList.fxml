@@ -11,6 +11,7 @@
 <?import javafx.scene.web.WebView?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.text.*?>
+<?import jfxtras.labs.scene.control.BigDecimalField?>
 
 <BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
 			fx:controller="cz.cuni.mff.ufal.textan.gui.graph.ObjectListController" styleClass="root" >
@@ -18,18 +19,60 @@
 		<URL value="@ObjectList.css" />
 	</stylesheets>
 	<top>
-			<VBox>
-				<Label text="%distance"/>
-				<TextField fx:id="distanceTextField" text="0"/>
-				<Label text="%source"/>
-			</VBox>
+		<VBox>
+			<HBox>
+				<Label text="%type"/>
+				<ComboBox fx:id="typeComboBox" prefWidth="150" />
+			</HBox>
+			<HBox>
+				<Label text="%filter" />
+				<TextField fx:id="filterField" />
+			</HBox>
+			<Button text="%filter.execute" onAction="#filter" />
+			<!--<HBox>
+				<Label text="%distance" />
+				<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="100" />
+			</HBox>-->
+		</VBox>
 	</top>
 	<center>
 		<ListView fx:id="listView" minHeight="30" />
 	</center>
 	<bottom>
-		<HBox alignment="CENTER_RIGHT" >
-			<Button text="%next" onAction="#next"/>
-		</HBox>
+		<BorderPane>
+			<left>
+				<HBox>
+					<Button text="|&lt;&lt;" onAction="#fastRewind" />
+					<Button text="&lt;" onAction="#rewind" />
+				</HBox>
+			</left>
+			<center>
+				<VBox alignment="CENTER">
+					<Label text="Dummy"/>
+					<HBox alignment="CENTER">
+						<Label text="%page.size" />
+						<ComboBox fx:id="perPageComboBox">
+							<items>
+								<FXCollections fx:factory="observableArrayList">
+									<Integer fx:value="10" />
+									<Integer fx:value="25" />
+									<Integer fx:value="50" />
+									<Integer fx:value="100" />
+								</FXCollections>
+							</items>
+							<value>
+								<Integer fx:value="25" />
+							</value>
+						</ComboBox>
+					</HBox>
+				</VBox>
+			</center>
+			<right>
+				<HBox>
+					<Button text="&gt;" onAction="#forward" />
+					<Button text="&gt;&gt;|" onAction="#fastForward" />
+				</HBox>
+			</right>
+		</BorderPane>
 	</bottom>
 </BorderPane>

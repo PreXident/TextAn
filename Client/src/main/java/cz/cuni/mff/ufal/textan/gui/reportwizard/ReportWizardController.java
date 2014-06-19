@@ -2,10 +2,10 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
+import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Window;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 
 /**
  * Common ancestor of controllers in this package.
@@ -18,6 +18,8 @@ public abstract class ReportWizardController extends WindowController {
     @FXML
     TextFlow textFlow;
 
+    /** Parent controller. */
+    protected TextAnController textAnController;
 
     @Override
     public void setWindow(final Window window) {
@@ -45,5 +47,13 @@ public abstract class ReportWizardController extends WindowController {
      */
     public void setPipeline(final ProcessReportPipeline pipeline) {
         this.pipeline = pipeline;
+    }
+
+    /**
+     * Sets parent controller
+     * @param textAnController new parent controller
+     */
+    public void setTextAnController(final TextAnController textAnController) {
+        this.textAnController = textAnController;
     }
 }

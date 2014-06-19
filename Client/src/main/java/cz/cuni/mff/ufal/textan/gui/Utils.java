@@ -20,13 +20,33 @@ public class Utils {
      * @param id long to covert
      * @return Color created from id hash
      */
-    static public Color idToColor(long id) {
+    static public int idToColor(long id) {
         id += 0x892405;
         int result = (int) id; //(int) (id >> 32 ^ id);
         result = ((result >>> 16) ^ result) * 0x45d9f3b;
         result = ((result >>> 16) ^ result) * 0x45d9f3b;
         result = ((result >>> 16) ^ result);
-        return Color.rgb((result & 0xFF0000) >> 16, (result & 0x00FF00) >> 8, result & 0x0000FF);
+        return result;
+    }
+
+    /**
+     * Converts id to Color.
+     * @param id long to covert
+     * @return Color created from id hash
+     */
+    static public Color idToFXColor(long id) {
+        final int color = idToColor(id);
+        return Color.rgb((color & 0xFF0000) >> 16, (color & 0x00FF00) >> 8, color & 0x0000FF);
+    }
+
+    /**
+     * Converts id to Color.
+     * @param id long to covert
+     * @return Color created from id hash
+     */
+    static public java.awt.Color idToAWTColor(long id) {
+        final int color = idToColor(id);
+        return new java.awt.Color(color);
     }
 
     /**
@@ -74,7 +94,7 @@ public class Utils {
         text.getStyleClass().clear();
         text.getStyleClass().add(clazz);
         text.setUserData(text.getFill());
-        text.setFill(idToColor(id));
+        text.setFill(idToFXColor(id));
     }
 
     static public void styleTextBackground(final Text text, final long id) {
@@ -83,7 +103,7 @@ public class Utils {
         dropShadow.setSpread(4d);
         dropShadow.setOffsetX(0d);
         dropShadow.setOffsetY(0d);
-        dropShadow.setColor(idToColor(~id));
+        dropShadow.setColor(idToFXColor(~id));
         text.setEffect(dropShadow);
     }
 
