@@ -44,7 +44,10 @@ public class TextPro implements ITextPro {
 
     /** Provides access to RelationType table in database */
     IRelationTypeTableDAO typeTableDAO;
-
+    
+    /** Training model **/
+    Classifier model ;
+    
     /**
      * Instantiates a new TextPro.
      * Uses a constructor injection for an initialization of data access object ({@link cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig#textPro()}
@@ -76,6 +79,10 @@ public class TextPro implements ITextPro {
         this.objectTypeTableDAO = objectTypeTableDAO;
         this.relationOccurrenceTableDAO = relationOccurrenceTableDAO;
         this.relationTableDAO = relationTableDAO;
+        
+        /*** Init the train model**/
+        Train train = new Train();
+        model = train.doTraining();
     }
 
     //TODO: implement or change interface method
@@ -150,8 +157,6 @@ public class TextPro implements ITextPro {
                 minscore = sort_score[topK];
             }
             /********************** MACHINE LEARNING **************************/
-            Train train = new Train();
-            Classifier ml = train.doTraining();
             
             /* Get the test list */
             
@@ -169,7 +174,7 @@ public class TextPro implements ITextPro {
             Map <Long,Double> entityScore = new HashMap <Long,Double>();
             for (int i = 0; i < test.getObjectListID().size(); i++){
                 Instance in = instances.get(id);
-                Object predictedClassValue = ml.classify(in);
+                Object predictedClassValue = this.model.classify(in);
                 if(predictedClassValue.toString().equalsIgnoreCase("1")) {
                     entityScore.put(test.getObjectListID().get(id), test.getObjectListScore().get(id));
                 }
