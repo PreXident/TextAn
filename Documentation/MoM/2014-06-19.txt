@@ -1,0 +1,57 @@
+No one is missing, Ondrej is here too.
+
+Adam
+- fixed Peters objections
+- removed remembering of previous filter for object list
+- type is now displayed for objects in objects editing pipeline step
+- aligned filter controls for object list
+
+Peter
+- prepared virtual server
+- administration and paperwork
+
+Venca
+- nothing
+
+Kuba
+- prepared data extraction from db for machine learning
+- configuration changed to property files
+
+Tam
+- finished features for machine learning, output still needs conversion from map to pair (WiP)
+- 4-5 features needed
+
+Honza Horinek can access our virtual server.
+
+Start userdoc for Honza, so he can install the client and setup it. Documentation should mention that entities of different types can have the same format, moreover the date can represent multiple types (birth date, report date, ...). Documentation should contain the name of the schema and description how to use/create it (list of object types and relation types) - there can be less object types and the relation could make distinction OR there are more types which might not have different format.
+
+Merge simplified police ontology and our types to make a demo (to not confuse anyone not familiar with the domain). The schema can be make more specific later by configuration.
+
+Start with documentation for installing and connecting client, how to insert new report (recognize entities, edit them, assign to objects, edit relation, save document) and retraining (warn him about not complete training and planned changes in order/roles). Logical gaps in documentation should be marked as special symbol.
+
+For Honza prepare only brief intro in Czech.
+
+HWK:
+- Adam, graph context menu for vertices
+- Adam, object list context menu to display document list containing the object (listing some occurences).
+- Adam, objects from db should display newly assigned aliases the same way new objects do
+- Adam, hide numbers in progress bar OR better names of steps
+- Adam, "pokračovat" on last pipeline step should read "save"
+- Adam, think of a way to warn users when editing state in previous steps OR dirty and clean operations
+- Adam, add padding to filter controls
+- Adam, relation should not contain null objects!
+- Kuba, write issue for Venca about adding a view
+- Venca, export db to RDF
+- Venca, PAGINATION and FILTERING (contains total count of objects)
+- All, change order from number to string called now role
+  - Adam, during the assigned objects to relation prefill the roles from db, sort by count
+HWK deadline evening:
+- Venca, annotate some police reports
+- Peter, write howto for Honza Horinek
+- Adam, default properties to connect to virtual server
+- Adam, write bat to start the client
+
+Improvements
+- changes in client recorded and replayed when possible on return to the step (warning if not possible)
+
+Next meeting on Thursday at 13:00
