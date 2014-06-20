@@ -186,6 +186,14 @@ public class TextAnController implements Initializable {
                 final String login = loginTextField.getText();
                 if (login == null || login.isEmpty() || login.trim().isEmpty()) {
                     loginTextField.setText(settings.getProperty("username"));
+                    settingsMenu.hide();
+                    Dialogs.create()
+                            .owner(stage)
+                            .title(TextAnController.TITLE)
+                            .masthead(Utils.localize(resourceBundle, "username.error.title"))
+                            .message(Utils.localize(resourceBundle, "username.error.text"))
+                            .lightweight()
+                            .showError();
                 } else {
                     settings.setProperty("username", login);
                 }
