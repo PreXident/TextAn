@@ -16,6 +16,9 @@
 
 \usepackage{graphicx}
 
+\usepackage{framed}
+\usepackage{footmisc}
+
 %TODO select color coresponding to logo
 \definecolor{titlepagecolor}{cmyk}{1,.60,0,.40}
 
@@ -34,7 +37,7 @@ contents={
 
 \usepackage[unicode,colorlinks=true]{hyperref}
 \hypersetup{pdftitle=TextAn - user documentation}
-\hypersetup{pdfauthor={Petr Fanta}}
+\hypersetup{pdfauthor={Petr Fanta, Adam Huječek}}
 \hypersetup{linkcolor=black, citecolor=black, urlcolor=black, filecolor=black}
 
 \makeatletter
@@ -79,11 +82,12 @@ contents={
 \vspace*{2cm}\par
 \noindent
 \begin{minipage}{0.35\linewidth}
-\textbf{Author}
+\textbf{Authors}
 
-Petr Fanta\vspace{40pt} \\
+Petr Fanta\\
+Adam Huječek\vspace{40pt} \\
 \textbf{Version} \\
-0.1.0\vspace{40pt} \\
+0.1.1\vspace{40pt} \\
 \textbf{Date} \\
 \today \\
 \end{minipage}
@@ -106,10 +110,27 @@ Petr Fanta\vspace{40pt} \\
 \section{Instalace}
 
 \subsection{Prerekvizity}
-Klient \textan u vyžaduje pro spuštění prostředí \emph{Java 8}, konkrétně JRE\footnote{Doporučuje použití JRE od firmy \emph{Oracle} dostupné na: http://\url{www.oracle.com/technetwork/java/javase/downloads/index.html}}.
+Klient \textan u vyžaduje pro spuštění prostředí \emph{Java 8}, konkrétně JRE\footnote{Doporučujeme použití JRE od firmy \emph{Oracle} dostupné na: http://\url{www.oracle.com/technetwork/java/javase/downloads/index.html}}.
 
-\subsection{Instalace a spuštění}
-K instalaci klienta stačí rozbalit archiv obsahující .jar soubor a spouštěcí skripty pro jednotlivé operační systémy\footnote{run.bat pro operační systém Windows a run.sh pro linuxové operační systémy.}. Jar soubor je spustitelný, ale doporučujeme spuštění pomocí skriptů.
+\subsection{Instalace}
+K instalaci klienta stačí rozbalit archiv obsahující .jar soubor a spouštěcí skripty pro jednotlivé operační systémy\footnote{run.bat pro operační systém Windows a run.sh pro linuxové operační systémy.\label{runscript_note}} do libovolného adresáře.
+
+\subsection{Konfigurace}
+Jestliže se klient nemá připojovat na výchozí server \textan u, je třeba provést jeho konfiguraci. Ta se defaultně nachází v souboru \emph{TextAn.properties}\footnote{popis formátu .properties souborů např. zde: http://en.wikipedia.org/wiki/.properties} v adresáři s .jar souborem klienta. Stačí otevřít tento soubor v textovém editoru (případně ho předtím vytvořit) a přidat následující řádky s URL cílového serveru místo adres serveru výchozího:
+\begin{framed}
+\noindent
+\#url of the document processor\\
+url.document=http://textan.ms.mff.cuni.cz:9500/soap/document\\
+\#url of the document processor wsdl\\
+url.document.wsdl=http://textan.ms.mff.cuni.cz:9500/soap/document?wsdl\\
+\#url of the data provider\\
+url.data=http://textan.ms.mff.cuni.cz:9500/soap/data\\
+\#url of the data provider\\
+url.data.wsdl=http://textan.ms.mff.cuni.cz:9500/soap/data?wsdl
+\end{framed}
+
+\subsection{Spuštění}
+Jar soubor z instalačního archivu je spustitelný, ale přesto doporučujeme ke spouštění používat přiložené skripty pro příslušný operační systém\footref{runscript_note}.
 
 %\section{Kompilace}
 %TODO
@@ -117,9 +138,9 @@ K instalaci klienta stačí rozbalit archiv obsahující .jar soubor a spouště
 \section{Použití}
 
 \subsection{První spuštění}
-Při prvním spuštění klienta je uživatel nejdříve vyzván k zadání uživatelského jmény (viz obr. \ref{fig:First}), které je v systému využíváno k identifikaci uživatele. Uživatelské jméno je poté uloženo a při dalším spuštění aplikace již není znovu vyžadováno. Uživatelské jméno je později možné změnit v nastavení (viz sekce \ref{sec:Nastaveni}).
+Při prvním spuštění klienta je uživatel nejdříve vyzván k zadání uživatelského jména (viz obr. \ref{fig:First}), které je v systému využíváno k identifikaci uživatelů. Toto jméno se ukládá a při dalším spuštění aplikace již není znovu vyžadováno, ale lze ho později změnit v nastavení (viz sekce \ref{sec:Nastaveni}).
 
-Je vyžadováno validní uživatelské jméno, tedy neprázdné a neobsahující pouze bílé znaky. Pokud uživatel jméno nezadá, nebo není validní, je upozorněn a může jméno zadat znovu, případně je aplikace ukončena.
+Klient požaduje validní uživatelské jméno, tedy neprázdné a neobsahující pouze bílé znaky. Pokud uživatel zadá jméno nevalidní, je na tuto skutečnost upozorněn a může jméno zadat znovu, případně se aplikace ukončí.
 
 \begin{figure}[!htb]
 	\centering
@@ -129,7 +150,7 @@ Je vyžadováno validní uživatelské jméno, tedy neprázdné a neobsahující
 \end{figure}
 
 \subsection{Popis prostředí}
-Základní prostředí v této verzi \textan u je velice jednoduché, skládá se prostoru pro vnitřní okna a hlavního menu. Menu obsahuje rozbalovací položky, které umožňují spuštění průvodců a nastavení programu.
+Základní prostředí v této verzi \textan u je velice jednoduché, skládá se z prostoru pro vnitřní okna a hlavního menu, které obsahuje rozbalovací položky, jež umožňují změnu nastavení programu a spouštění průvodců.
 
 %TODO OBRAZEK S NABIDKAMA / PRAZDNE PROSTREDI
 
@@ -137,9 +158,9 @@ Základní prostředí v této verzi \textan u je velice jednoduché, skládá s
 \label{sec:Nastaveni}
 Pomocí rozbalovací položky \emph{Nastavení} v hlavním menu si uživatel může přizpůsobit prostředí programu. Dále jsou popsané jednotlivé možnosti nastavení.
 
-\paragraph{Samostatná okna.} Při označení této možnosti budou použita samostatná systémová okna místo oken vložených do okna klienta. 
+\paragraph{Samostatná okna.} Při označení této možnosti budou použita samostatná systémová okna místo oken vložených do hlavního okna klienta. 
 
-\paragraph{Hypergrafy.} Tato volba v nastavení ovlivňuje způsob jakým budou vykreslovány hyperhrany\footnote{Hyperhrana je hrana v hypergrafu. Jedná se o zobecnění pojmu graf. Rozdíl je v tom, že hrany hypergrafu (hyperhrany) mohou spojovat libovolný počet vrcholů, zatímco u grafu spojují hrany vždy dva vrcholy.} v grafech (viz obrázek \ref{fig:Grafy}). Výchozí způsob vykreslování hyperhran je převod na hypergrafu na graf pomocí přidání vrcholu. Při zaškrtnutí této volby budou hrany znázorněny pomocí pozadí grafu.
+\paragraph{Hypergrafy.} Tato volba v nastavení ovlivňuje způsob, jakým budou vykreslovány hyperhrany\footnote{Hyperhrana je hrana v hypergrafu. Jedná se o zobecnění pojmu graf. Rozdíl je v tom, že hrany hypergrafu (hyperhrany) mohou spojovat libovolný počet vrcholů, zatímco u grafu spojují hrany vždy dva vrcholy.} v grafech (viz obrázek \ref{fig:Grafy}). Výchozí způsob vykreslování hyperhran je převod hypergrafu na graf pomocí přidání pomocného vrcholu čtvercového tvaru. Při zaškrtnutí této volby budou hrany znázorněny pomocí pozadí grafu.
 
 \begin{figure}[!htb]
 	\centering
@@ -149,22 +170,22 @@ Pomocí rozbalovací položky \emph{Nastavení} v hlavním menu si uživatel mů
 \end{figure}
 
 \paragraph{Vymazávat filtry.}
-Volba určuje zda se bude zachovávat hodnota filtrů po zavření okna, které prochází záznamy uložené v databázi.
+Volba určuje, zda se bude zachovávat hodnota filtrů po zavření okna, které prochází záznamy uložené v databázi.
 
 \paragraph{Lokalizace.}
-Přizpůsobí prostředí programu pro daný jazyk. V základní verzi \textan u jsou dostupná česká a anglická lokalizace, která je výchozí.
+Přizpůsobí prostředí programu pro daný jazyk. V základní verzi \textan u jsou dostupná česká a anglická lokalizace, která je výchozí. Změna jazyka se projeví až po restartování aplikace.
 
 \paragraph{Vzdálenost v grafech.}
-Vzdálenost v grafech určuje maximální délku cesty v grafu od středového vrcholu. 
+Vzdálenost v grafech určuje výchozí maximální délku cesty v grafu od středového vrcholu. 
 
 \paragraph{Login.}
-Tato volba umožňuje změnu aktuálního uživatele. Změna se projeví pouze u nově započatých akcí.
+Tato volba umožňuje změnu aktuálního uživatele. Změna se projeví pouze u nově započatých akcí. Doporučujeme proto následný restart programu.
 
 \subsection{Zpracování dokumentu}
-Ke zpracování dokumentů slouží průvodce \emph{Zpráva} dostupný v hlavním menu v sekci \emph{Průvodci}. Při zpracování dokumentu musí uživatel projí jednotlivými fázemi, které obsahují jednotlivé činnosti při zpracování. Jednotlivé fáze jsou:
+Ke zpracování dokumentů slouží průvodce \emph{Zpráva} dostupný v hlavním menu v sekci \emph{Průvodci}. Při zpracování dokumentu musí uživatel projít postupně fázemi, které obsahují jednotlivé činnosti při zpracování dokumentu. Tyto fáze jsou:
 
 \paragraph{Načtení.}
-Umožňuje výběr zdroje dokumentů. Možné zdroje\footnote{V současné verzi \textan u je dostupná pouze možnost \emph{Prázdná správa}} jsou databáze systému (uložené nezpracované dokumenty), textový soubor, prázdná zpráva, či uložená rozpracovaná zpráva. Po výběru zdroje zprávy se uživatel dostane do jedné z následujících fází zpracování dokumentu, typicky do fáze \emph{Zpracování textu}.
+Umožňuje výběr zdroje dokumentů. Možné zdroje\footnote{V současné verzi \textan u je dostupná pouze možnost \emph{Prázdná správa}} jsou databáze systému (uložené nezpracované dokumenty), textový soubor, prázdná zpráva, či uložená rozpracovaná zpráva. Po výběru zdroje zprávy se uživatel dostane do jedné z následujících fází zpracování dokumentu, typicky do fáze \emph{Editace textu}.
 
 \paragraph{Editace textu.}
 V této fázi má uživatel možnost zadat, či změnit text dokumentu. Po této fázi následuje fáze \emph{Editace entit}.
@@ -186,23 +207,23 @@ Na tuto fázi zpracování navazuje fáze \emph{Editace objektů}.
 \paragraph{Editace objektů}
 Cílem této fáze je přiřazení entit k reálným objektům. Před vstupem do této fáze se systém pokusí sám přiřadit\footnote{V současné verzi \textan u tato funkčnost není implementována, proto je přiřazen jakýkoliv objekt stejného typu jako je entita.} k entitám objekty, které jsou v databázi, nebo najít objekty, které by daná entita mohla reprezentovat. Pokud entita nemá přiřazený žádný objekt, je její text zvýrazněn pomocí oranžového pozadí.
 
-Pro zjištění typu entity, či přiřazeného objektu opět stačí najetí myší na text objektu. Přiřazení objektu k entitě je možné provést pomocí kliknutí levým tlačítkem myši na text entity a následně zobrazené nabídky (viz obrázek \ref{fig:Objekty}). Pomocí kliknutí pravým tlačítkem myši na text entity s přiřazeným objektem lze získat více informací o přiřazeném objektu, například zobrazit graf s okolím daného objektu.
+Pro zjištění přiřazeného objektu či typu entity opět stačí najet myší na text objektu. Přiřazení objektu k entitě je možné provést pomocí kliknutí levým tlačítkem myši na text entity a následně zobrazené nabídky (viz obrázek \ref{fig:Objekty}). Pomocí kliknutí pravým tlačítkem myši na text entity s přiřazeným objektem lze získat více informací o přiřazeném objektu, například zobrazit graf s okolím daného objektu.
 
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\textwidth]{objekty}
-	\caption{Nabídka pro výběr objektu. 1) Filtrování objektů z databáze, 2) Seznam doporučených objektů, při zaškrtnuté 6) seznam všech objektů daného typu v databázi, 3) Seznam nových objektů stejného typu jako má entita vytvořených při editaci, 4) Tlačítko pro vytvoření nového objektu, 5) Nabídka pro získání informací o objektu z databáze.}
+	\caption{Nabídka pro výběr objektu. 1) Filtrování objektů z databáze, 2) Seznam doporučených objektů, při zaškrtnuté 6) seznam všech objektů daného typu v databázi, 3) Seznam nových objektů vytvořených během editace a stejného typu, jako má entita, 4) Tlačítko pro vytvoření nového objektu, 5) Nabídka pro získání informací o objektu z databáze.}
 	\label{fig:Objekty}
 \end{figure}
 
-Po přiřazení objektu všem entitám je možné přejít do poslední povinné fáze zpracování dokumentu a to \emph{Editace vztahů}.
+Po přiřazení objektu všem entitám je možné přejít do poslední povinné fáze zpracování dokumentu, a to \emph{Editace vztahů}.
 
 \paragraph{Editace vztahů}
-Poslední fází zpracování dokumentu je označení vztahů mezi objekty v dokumentu. Vztahy mohou být dvou typu: s kotvou\footnote{Kotva je nějaké slovo, či slovní spojení v textu, které určuje vztah, typicky přísudek ve větě.} v textu a bez kotvy.
+Poslední fází zpracování dokumentu je označení vztahů mezi objekty v dokumentu. Vztahy mohou být dvou typů: s kotvou\footnote{Kotva je nějaké slovo, či slovní spojení v textu, které určuje vztah, typicky přísudek ve větě.} v textu a bez kotvy.
 
-Vztah s kotvou je možné vytvořit pomocí výběru kotvy v textu pomocí myši a následného výběru typu vztahu. Prázdný vztah s danou kotvou a typem je poté přidán do seznamu vztahů. Do seznamu vztahů lze přidat i  pomocí tlačítka pod seznamem vztahů, čímž vznikne prázdný vztah bez kotvy.
+Vztah s kotvou je možné vytvořit pomocí výběru kotvy v textu pomocí myši a následného výběru typu vztahu. Prázdný vztah s danou kotvou a typem je poté přidán do seznamu vztahů. Prázdný vztah bez kotvy lze přidat do seznamu pomocí tlačítka pod seznamem vztahů.
 
-Pro přidání objektů do vztahů je nutné nejprve vybrat vztah v seznamu vztahů a následně je možné přidávat objekty pomocí seznamu objektů ve vztahu.
+Pro přidání objektů do vztahů je nutné nejprve vybrat vztah v seznamu vztahů a následně se objekty přidávají pomocí seznamu objektů ve vztahu.
 
 Po dokončení editace vztahů je možné zpracovaný dokument uložit do databáze systému.
 
@@ -214,7 +235,7 @@ Po dokončení editace vztahů je možné zpracovaný dokument uložit do datab�
 \end{figure}
 
 \paragraph{}
-Během editace dokumentu je možné se vracet k předchozím fázím zpracování. Pokud jsou však provedeny nějaké změny po návratu, všechny následující fáze jsou zahozeny.
+Během editace dokumentu je možné se vracet k předchozím fázím zpracování. Pokud jsou však po návratu provedeny nějaké změny, všechny následující fáze jsou zahozeny.
 
 \subsection{Procházení objektů}
 Procházení objektů v databázi možné pomocí průvodce \emph{Objekty}, který je dostupný z hlavního menu. Průvodce obsahuje výpis objektů, které je možné filtrovat podle typů a aliasů objektů.
@@ -224,7 +245,7 @@ Pomocí pravého tlačítka myši je možné zobrazit podrobnější informace o
 \subsection{Manipulace s grafy}
 Okno s grafem je možné zobrazit z mnoha míst v programu, typicky kliknutím pravým tlačítkem na nějakou reprezentaci objektu.
 
-V horní části okna s grafem se nachází lišta umožnující jedna změnu velikosti okolí středového vrcholu, jednak výběr nástrojů pro manipulaci s grafem. Nástroj \emph{Transformace} složí k transformaci grafu jako celku, například posunutí celého plátna s grafem, či rotace grafu pomocí stisku \emph{CTRL} a tažením myší. Naopak nástroj \emph{Výběr} slouží k manipulaci s jednotlivými vrcholy a hranami. Graf je také možné přibližovat pomocí kolečka myši.
+V horní části okna s grafem se nachází lišta umožnující jednak změnu velikosti okolí středového vrcholu, jednak výběr nástrojů pro manipulaci s grafem. Nástroj \emph{Transformace} složí k transformaci grafu jako celku, například posunutí celého plátna s grafem, či rotace grafu pomocí stisku \emph{CTRL} a tažením myší. Naopak nástroj \emph{Výběr} slouží k manipulaci s jednotlivými vrcholy a hranami. Graf je také možné přibližovat a oddalovat pomocí kolečka myši.
 
 Na vrcholy reprezentující objekty lze opět kliknout pomocí pravého tlačítka myši a získat další informace o objektu.
 
