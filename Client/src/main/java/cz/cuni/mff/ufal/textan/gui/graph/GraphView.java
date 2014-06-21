@@ -28,8 +28,10 @@ import java.awt.Color;
 import java.awt.MouseInfo;
 import java.awt.Paint;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Date;
@@ -146,6 +148,9 @@ public class GraphView extends SwingNode {
         }
         //
         visualizator.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
+        visualizator.getRenderContext().setVertexShapeTransformer(v -> {
+            return v instanceof RelationObject ? new Rectangle(-10, -10, 20, 20) : new Ellipse2D.Float(-10, -10, 20, 20);
+        });
         visualizator.getRenderContext().setEdgeStrokeTransformer(edgeStrokeTransformer);
         visualizator.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<>());
         visualizator.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<>());
