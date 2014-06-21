@@ -1,0 +1,26 @@
+Dears,
+ short summary...
+
+Petr:
+So, I didn't do as much as I wanted... as usual. :/ I added a pooling for a database connections, so communication with a database is parallel now, and a support for executing commands in main thread (and some minor things). I wanted to add a saving of processed documents to the database too, but the data from pipeline are more complex than I thought before, so I'll have to think of a better transfer format. The last question: Do we want a nametag native library in a jar file, or next to the jar with Textan? I still can not choose, which way is better, every way has some pros and cons. (a file size, horrible java relative paths etc.)
+
+Adam:
+same problem here, but some progress was achieved:
+- graph should be centered after showing, but it was more difficult that expected because timing apparently matters :-/
+- when typing a filter for entities pressing enter selects the entity if there's only one left
+- adding objects is almost done, it should be ready on wednesday i hope
+
+Tam:
+This is what I have done so far:
++ Update topK for ranking
++ Commit last version to git (even it is still stupid)
++ Think about a method for automatically generate features, values and learning method. I will ask Ondrej to validate this method since he is teaching me machine learning. This is the new chapter of my report.
+
+Jakub:
+Nothing big, just playing with binaries from java and updating nametag in textan
+
+Venca: (didn't send anything as usual, but...)
+I explore Hibernate Envers and its Possibility for a logging. I was thinking how to check changes in the database before a processed document is saved. I realized that a timestamp is far enough for this, but the "real" time isn't sufficiently accurate, so I decide to implement something like "logic clock", e.g. something like clock in distributed systems. I'm really happy that I can implement something like this!
+
+See you on Wednesday,
+Petr
