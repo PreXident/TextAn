@@ -52,6 +52,7 @@ debug {
 }
 
 task megaJar (type: Jar) {
+	duplicatesStrategy = 'exclude'
 	from sourceSets.main.output
 	from(configurations.compile
 			.filter { !it.toString().endsWith("jfxrt.jar") }
