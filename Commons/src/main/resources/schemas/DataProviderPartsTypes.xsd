@@ -63,6 +63,9 @@
     <xs:element name="getDocumentByIdRequest" type="GetDocumentByIdRequest"/>
     <xs:element name="getDocumentByIdResponse" type="GetDocumentByIdResponse"/>
 
+    <xs:element name="getDocumentsContainsObjectByIdRequest" type="GetDocumentsContainsObjectByIdRequest"/>
+    <xs:element name="getDocumentsContainsObjectByIdResponse" type="GetDocumentsContainsObjectByIdResponse"/>
+
     <!-- type for messages without parameters -->
     <xs:complexType name="Void">
         <xs:sequence/>
@@ -269,6 +272,18 @@
     <xs:complexType name="GetDocumentByIdResponse">
         <xs:sequence>
             <xs:element ref="cms:document"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetDocumentsContainsObjectByIdRequest">
+        <xs:sequence>
+            <xs:element name="objectId" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetDocumentsContainsObjectByIdResponse">
+        <xs:sequence>
+            <xs:element ref="cms:document" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

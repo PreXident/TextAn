@@ -95,6 +95,22 @@ public class DirectDataAccessService {
     }
 
     /**
+     * Gets documents which contain object with given id.
+     * @param objectId the object id
+     * @return a list of documents
+     * @throws IdNotFoundException thrown when object with given id not exists
+     */
+    public List<Document> getDocumentsContainsObject(long objectId) throws IdNotFoundException {
+
+        ObjectTable objectTable = objectTableDAO.find(objectId);
+        if (objectTable == null) {
+            throw new IdNotFoundException("objectId", objectId);
+        }
+
+        return new ArrayList<>(); //TODO: implement
+    }
+
+    /**
      * Update the document with the given.
      *
      * @param documentId the document id
@@ -237,4 +253,6 @@ public class DirectDataAccessService {
     public List<String> getRolesForRelationType(long relationTypeId) throws IdNotFoundException {
         return new ArrayList<>(); //TODO: implement
     }
+
+
 }

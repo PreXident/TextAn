@@ -169,6 +169,14 @@
     <wsdl:message name="getDocumentByIdResponse">
         <wsdl:part name="getDocumentByIdResponse" element="tns:getDocumentByIdResponse"/>        
     </wsdl:message>
+
+    <wsdl:message name="getDocumentsContainsObjectByIdRequest">
+        <wsdl:part name="getDocumentsContainsObjectByIdRequest" element="tns:getDocumentsContainsObjectByIdRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getDocumentsContainsObjectByIdResponse">
+        <wsdl:part name="getDocumentsContainsObjectByIdResponse" element="tns:getDocumentsContainsObjectByIdResponse"/>
+    </wsdl:message>
     
     <wsdl:message name="idNotFoundException">
         <wsdl:part name="idNotFoundException" element="cms:idNotFoundException"/>
@@ -278,7 +286,13 @@
         
         <wsdl:operation name="getDocumentById">
             <wsdl:input message="ws:getDocumentByIdRequest"/>
-            <wsdl:output message="ws:getDocumentByIdResponse"/>            
+            <wsdl:output message="ws:getDocumentByIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getDocumentsContainsObjectById">
+            <wsdl:input message="ws:getDocumentsContainsObjectByIdRequest"/>
+            <wsdl:output message="ws:getDocumentsContainsObjectByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
@@ -523,6 +537,20 @@
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getDocumentByIdResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getDocumentsContainsObjectById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getDocumentsContainsObjectById"/>
+            <wsdl:input>
+                <soap:body parts="getDocumentsContainsObjectByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getDocumentsContainsObjectByIdResponse" use="literal"/>
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>
