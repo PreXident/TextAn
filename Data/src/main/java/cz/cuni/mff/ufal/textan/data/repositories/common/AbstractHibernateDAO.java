@@ -125,6 +125,22 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     }
 
     /**
+     * Finds all entities in a repository.
+     *
+     * @return the list of entities
+     * @see org.hibernate.Session#createCriteria(Class)
+     */
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<E> findAll(int firstResult, int pageSize) {
+        return currentSession().createCriteria(type)
+                .setFirstResult(firstResult)
+                .setMaxResults(pageSize)
+                .list();
+    }    
+    
+    /**
      * Finds all entities in a repository which have specified value in some column.
      * Equals to "SELECT * WHERE columnName = columnValue" sql query
      *
