@@ -237,6 +237,30 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
+    public GetRolesForRelationTypeByIdResponse getRolesForRelationTypeById(
+            @WebParam(partName = "getRolesForRelationTypeByIdRequest", name = "getRolesForRelationTypeByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetRolesForRelationTypeByIdRequest getRolesForRelationTypeByIdRequest) throws IdNotFoundException {
+
+        LOG.debug("Executing operation getRolesForRelationTypeById: {}", getRolesForRelationTypeByIdRequest);
+
+        try {
+
+            List<String> roles = dbService.getRolesForRelationType(getRolesForRelationTypeByIdRequest.getRelationTypeId());
+            GetRolesForRelationTypeByIdResponse response = new GetRolesForRelationTypeByIdResponse();
+            response.getRoles().addAll(roles);
+
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
     public GetPathByIdResponse getPathById(
             @WebParam(partName = "getPathById", name = "getPathById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetPathByIdRequest getPathByIdRequest) throws IdNotFoundException {

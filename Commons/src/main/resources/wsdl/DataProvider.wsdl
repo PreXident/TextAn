@@ -66,6 +66,14 @@
         <wsdl:part name="getRelationTypesResponse" element="tns:getRelationTypesResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="getRolesForRelationTypeByIdRequest">
+        <wsdl:part name="getRolesForRelationTypeByIdRequest" element="tns:getRolesForRelationTypeByIdRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getRolesForRelationTypeByIdResponse">
+        <wsdl:part name="getRolesForRelationTypeByIdResponse" element="tns:getRolesForRelationTypeByIdResponse"/>
+    </wsdl:message>
+
     <wsdl:message name="getRelationsRequest">
         <wsdl:part name="getRelationsRequest" element="tns:getRelationsRequest"/>
     </wsdl:message>
@@ -198,6 +206,12 @@
         <wsdl:operation name="getRelationTypes">
             <wsdl:input message="ws:getRelationTypesRequest"/>
             <wsdl:output message="ws:getRelationTypesResponse"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getRolesForRelationTypeById">
+            <wsdl:input message="ws:getRolesForRelationTypeByIdRequest"/>
+            <wsdl:output message="ws:getRolesForRelationTypeByIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
 
         <wsdl:operation name="getRelations">
@@ -343,6 +357,20 @@
             <wsdl:output>
                 <soap:body parts="getRelationTypesResponse" use="literal"/>
             </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getRolesForRelationTypeById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getRolesForRelationTypeById"/>
+            <wsdl:input>
+                <soap:body parts="getRolesForRelationTypeByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getRolesForRelationTypeByIdResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
 
         <wsdl:operation name="getRelations">

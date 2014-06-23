@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -162,6 +163,8 @@ public class DirectDataAccessService {
      * @return the objects
      */
     public List<Object> getObjects(long objectTypeId) {
+        //TODO: add test if id exists
+
         return objectTableDAO.findAllByObjectType(objectTypeId).stream()
                 .map(Object::fromObjectTable)
                 .collect(Collectors.toList());
@@ -224,8 +227,14 @@ public class DirectDataAccessService {
      */
     public List<Relation> getRelations(long relationTypeId) {
 
+        //TODO: add test if id exists!
+
         return relationTableDAO.findAllByRelationType(relationTypeId).stream()
                 .map(Relation::fromRelationTable)
                 .collect(Collectors.toList());
+    }
+
+    public List<String> getRolesForRelationType(long relationTypeId) throws IdNotFoundException {
+        return new ArrayList<>(); //TODO: implement
     }
 }

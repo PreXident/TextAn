@@ -24,6 +24,9 @@
     <xs:element name="getRelationTypesRequest" type="Void"/>
     <xs:element name="getRelationTypesResponse" type="GetRelationTypesResponse"/>
 
+    <xs:element name="getRolesForRelationTypeByIdRequest" type="GetRolesForRelationTypeByIdRequest"/>
+    <xs:element name="getRolesForRelationTypeByIdResponse" type="GetRolesForRelationTypeByIdResponse"/>
+
     <xs:element name="getRelationsRequest" type="Void"/>
     <xs:element name="getRelationsResponse" type="GetRelationsResponse"/>
     
@@ -118,12 +121,25 @@
             <xs:element ref="cms:relationType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:complexType name="GetRolesForRelationTypeByIdRequest">
+        <xs:sequence>
+            <xs:element name="relationTypeId" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetRolesForRelationTypeByIdResponse">
+        <xs:sequence>
+            <xs:element name="role" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
     
     <xs:complexType name="GetRelationsResponse">
         <xs:sequence>
             <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
+
     
     <!--<xs:complexType name="GetRelationsByType">
         <xs:sequence>

@@ -15,7 +15,7 @@ public class Relation {
 
     private final long id;
     private final RelationType type;
-    private final List<Pair<Long, Integer>> objectsInRelation;
+    private final List<Pair<Long, Pair<String,Integer>>> objectsInRelation;
     private final List<String> anchors;
     private final boolean isNew;
 
@@ -28,7 +28,7 @@ public class Relation {
      * @param anchors
      * @param isNew the is new
      */
-    public Relation(long id, RelationType type, List<Pair<Long, Integer>> objectsInRelation, List<String> anchors, boolean isNew) {
+    public Relation(long id, RelationType type, List<Pair<Long, Pair<String,Integer>>> objectsInRelation, List<String> anchors, boolean isNew) {
         this.id = id;
         this.type = type;
         this.objectsInRelation = objectsInRelation;
@@ -44,8 +44,8 @@ public class Relation {
      */
     public static Relation fromRelationTable(RelationTable relationTable) {
 
-        List<Pair<Long, Integer>> objectsInRelation = relationTable.getObjectsInRelation().stream()
-                .map(inRelation -> new Pair<Long, Integer>(inRelation.getObject().getId(), inRelation.getOrder()))
+        List<Pair<Long, Pair<String,Integer>>> objectsInRelation = relationTable.getObjectsInRelation().stream()
+                .map(inRelation -> new Pair<>(inRelation.getObject().getId(), new Pair<>(inRelation.getRole(), inRelation.getOrder())))
                 .collect(Collectors.toList());
 
         List<String> anchors = relationTable.getOccurrences().stream()
@@ -65,7 +65,7 @@ public class Relation {
         return new Relation(
                 commonsRelation.getId(),
                 RelationType.fromCommonsRelationType(commonsRelation.getRelationType()),
-                commonsRelation.getObjectInRelationIds().getInRelations().stream().map(x -> new Pair<Long, Integer>(x.getObjectId(), x.getOrder())).collect(Collectors.toList()),
+                commonsRelation.getObjectInRelationIds().getInRelations().stream().map(x -> new Pair<>(x.getObjectId(), new Pair<>(x.getRole(), x.getOrder()))).collect(Collectors.toList()),
                 commonsRelation.getAnchors(),
                 commonsRelation.isIsNew()
         );
@@ -94,7 +94,7 @@ public class Relation {
      *
      * @return the objects in relation
      */
-    public List<Pair<Long, Integer>> getObjectsInRelation() {
+    public List<Pair<Long, Pair<String,Integer>>> getObjectsInRelation() {
         return objectsInRelation;
     }
 
@@ -129,10 +129,11 @@ public class Relation {
         commonsRelation.setRelationType(type.toCommonsRelationType());
 
         cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds objectInRelationIds = new cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds();
-        for (Pair<Long, Integer> inRelation : objectsInRelation) {
+        for (Pair<Long, Pair<String,Integer>> inRelation : objectsInRelation) {
             cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation commonsInRelation = new cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation();
             commonsInRelation.setObjectId(inRelation.getFirst());
-            commonsInRelation.setOrder(inRelation.getSecond());
+            commonsInRelation.setRole(inRelation.getSecond().getFirst());
+            commonsInRelation.setOrder(inRelation.getSecond().getSecond());
 
             objectInRelationIds.getInRelations().add(commonsInRelation);
         }
