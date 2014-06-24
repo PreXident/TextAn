@@ -58,6 +58,14 @@
         <wsdl:part name="getObjectsByTypeIdResponse" element="tns:getObjectsByTypeIdResponse"/>
     </wsdl:message>
     
+    <wsdl:message name="getFilteredObjectsRequest">
+        <wsdl:part name="getFilteredObjectsRequest" element="tns:getFilteredObjectsRequest"/>
+    </wsdl:message>
+    
+    <wsdl:message name="getFilteredObjectsResponse">
+        <wsdl:part name="getFilteredObjectsResponse" element="tns:getFilteredObjectsResponse"/>
+    </wsdl:message>
+    
     <wsdl:message name="getRelationTypesRequest">
         <wsdl:part name="getRelationTypesRequest" element="tns:getRelationTypesRequest"/>
     </wsdl:message>
@@ -218,7 +226,13 @@
             <wsdl:output message="ws:getObjectsByTypeIdResponse"/>            
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
-    
+
+        <wsdl:operation name="getFilteredObjects">
+            <wsdl:input message="ws:getFilteredObjectsRequest"/>
+            <wsdl:output message="ws:getFilteredObjectsResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+        </wsdl:operation>
+                    
         <wsdl:operation name="getRelationTypes">
             <wsdl:input message="ws:getRelationTypesRequest"/>
             <wsdl:output message="ws:getRelationTypesResponse"/>
@@ -361,7 +375,7 @@
                 <!--<soap:body parts="getObjectsByTypeResponse" use="literal"/>-->
             <!--</wsdl:output>-->
         <!--</wsdl:operation>-->
-        
+
         <wsdl:operation name="getObjectsByTypeId">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsByTypeId"/>
             <wsdl:input>
@@ -370,6 +384,20 @@
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectsByTypeIdResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getFilteredObjects">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getFilteredObjects"/>
+            <wsdl:input>
+                <soap:body parts="getFilteredObjectsRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getFilteredObjectsResponse" use="literal"/>
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>

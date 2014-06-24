@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,6 +186,20 @@ public class DirectDataAccessService {
         return objectTableDAO.findAllByObjectType(objectTypeId).stream()
                 .map(Object::fromObjectTable)
                 .collect(Collectors.toList());
+    }
+
+
+    public Pair<List<Object>,Integer> getFilteredObjects(Long objectTypeId, String aliasFilter, int firstResult, int maxResults) throws IdNotFoundException {
+
+        //TODO:implement
+        if (objectTypeId != null) {
+            ObjectTypeTable objectType = objectTypeTableDAO.find(objectTypeId);
+            if (objectType == null) {
+                throw new IdNotFoundException("objectTypeId", objectTypeId);
+            }
+        }
+
+        return new Pair<>(new ArrayList<>(), 0);
     }
 
     public Pair<List<Object>, List<Pair<Long, Occurrence>>> getObjectsWithOccurrences(long documentId) throws IdNotFoundException { //TODO:implement

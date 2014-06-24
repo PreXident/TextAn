@@ -21,6 +21,9 @@
     <xs:element name="getObjectsByTypeIdRequest" type="GetObjectsByTypeIdRequest"/>
     <xs:element name="getObjectsByTypeIdResponse" type="GetObjectsByTypeIdResponse"/>
     
+    <xs:element name="getFilteredObjectsRequest" type="GetFilteredObjectsRequest"/>
+    <xs:element name="getFilteredObjectsResponse" type="GetFilteredObjectsResponse"/>
+    
     <xs:element name="getRelationTypesRequest" type="Void"/>
     <xs:element name="getRelationTypesResponse" type="GetRelationTypesResponse"/>
 
@@ -118,6 +121,22 @@
     
     <xs:complexType name="GetObjectsByTypeIdResponse">
         <xs:sequence>
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetFilteredObjectsRequest">
+        <xs:sequence>
+            <xs:element name="objectTypeId" type="xs:long" nillable="true"/>
+            <xs:element name="aliasFilter" type="xs:string" nillable="true"/>
+            <xs:element name="firstResult" type="xs:int"/>
+            <xs:element name="maxResults" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetFilteredObjectsResponse">
+        <xs:sequence>
+            <xs:element name="totalNumberOfResults" type="xs:int"/>
             <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>

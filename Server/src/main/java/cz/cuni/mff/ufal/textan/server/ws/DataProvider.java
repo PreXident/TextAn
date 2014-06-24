@@ -141,6 +141,39 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
+    public GetFilteredObjectsResponse getFilteredObjects(
+            @WebParam(partName = "getFilteredObjectsRequest", name = "getFilteredObjectsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetFilteredObjectsRequest getFilteredObjectsRequest) throws IdNotFoundException {
+
+        LOG.debug("Executing operation getFilteredObjectsRequest: {}", getFilteredObjectsRequest);
+
+        try {
+            
+            Pair<List<Object>, Integer> results = dbService.getFilteredObjects(
+                    getFilteredObjectsRequest.getObjectTypeId(),
+                    getFilteredObjectsRequest.getAliasFilter(),
+                    getFilteredObjectsRequest.getFirstResult(),
+                    getFilteredObjectsRequest.getMaxResults()
+            );
+            
+            GetFilteredObjectsResponse response = new GetFilteredObjectsResponse();
+            for (Object object : results.getFirst()) {
+                response.getObjects().add(object.toCommonsObject());
+            }
+            response.setTotalNumberOfResults(results.getSecond());
+
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
     public GetRelationTypesResponse getRelationTypes(
             @WebParam(partName = "getRelationTypes", name = "getRelationTypes", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             Void getRelationTypes) {
