@@ -122,9 +122,9 @@
         <xs:sequence>
             <xs:element name="documentId" type="xs:long"/>
             <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="objectOccurrence" type="ObjectOccurrence" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="objectOccurrence" type="cms:ObjectOccurrence" minOccurs="0" maxOccurs="unbounded" />
             <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="relationOccurrence" type="RelationOccurrence" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="relationOccurrence" type="cms:RelationOccurrence" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="force" type="xs:boolean"/>
         </xs:sequence>
     </xs:complexType>
@@ -139,9 +139,9 @@
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
             <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="objectOccurrence" type="ObjectOccurrence" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="objectOccurrence" type="cms:ObjectOccurrence" minOccurs="0" maxOccurs="unbounded" />
             <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="relationOccurrence" type="RelationOccurrence" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="relationOccurrence" type="cms:RelationOccurrence" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="force" type="xs:boolean"/>
         </xs:sequence>
     </xs:complexType>
@@ -195,28 +195,6 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="Occurrence">
-        <xs:sequence>
-            <xs:element name="value" type="xs:string"/>
-            <xs:element name="position" type="xs:int"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="ObjectOccurrence">
-        <xs:sequence>
-            <xs:element name="objectId" type="xs:long"/>
-            <xs:element name="alias" type="Occurrence"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="RelationOccurrence">
-        <xs:sequence>
-            <!-- TODO: make sure if it's all -->
-            <xs:element name="relationId" type="xs:long" />
-            <xs:element name="anchor" type="Occurrence" nillable="true"/>
         </xs:sequence>
     </xs:complexType>
 

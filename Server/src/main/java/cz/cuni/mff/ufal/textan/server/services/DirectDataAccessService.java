@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.server.services;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
@@ -186,6 +187,15 @@ public class DirectDataAccessService {
                 .collect(Collectors.toList());
     }
 
+    public Pair<List<Object>, List<Pair<Long, Occurrence>>> getObjectsWithOccurrences(long documentId) throws IdNotFoundException { //TODO:implement
+        DocumentTable documentTable = documentTableDAO.find(documentId);
+        if (documentTable == null) {
+            throw new IdNotFoundException("documentId", documentId);
+        }
+
+        return new Pair<>(new ArrayList<Object>(), new ArrayList<Pair<Long, Occurrence>>());
+    }
+
     /**
      * Merges two objects into one.
      *
@@ -248,6 +258,15 @@ public class DirectDataAccessService {
         return relationTableDAO.findAllByRelationType(relationTypeId).stream()
                 .map(Relation::fromRelationTable)
                 .collect(Collectors.toList());
+    }
+
+    public Pair<List<Relation>, List<Pair<Long, Occurrence>>> getRelationsWithOccurrences(long documentId) throws IdNotFoundException{ //TODO:implement
+        DocumentTable documentTable = documentTableDAO.find(documentId);
+        if (documentTable == null) {
+            throw new IdNotFoundException("documentId", documentId);
+        }
+
+        return new Pair<>(new ArrayList<Relation>(), new ArrayList<Pair<Long, Occurrence>>());
     }
 
     public List<String> getRolesForRelationType(long relationTypeId) throws IdNotFoundException {

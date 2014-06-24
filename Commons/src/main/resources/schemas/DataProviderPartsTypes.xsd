@@ -66,6 +66,9 @@
     <xs:element name="getDocumentsContainsObjectByIdRequest" type="GetDocumentsContainsObjectByIdRequest"/>
     <xs:element name="getDocumentsContainsObjectByIdResponse" type="GetDocumentsContainsObjectByIdResponse"/>
 
+    <xs:element name="getObjectsAndRelationsOccurringInDocumentRequest" type="GetObjectsAndRelationsOccurringInDocumentRequest"/>
+    <xs:element name="getObjectsAndRelationsOccurringInDocumentResponse" type="GetObjectsAndRelationsOccurringInDocumentResponse"/>
+
     <!-- type for messages without parameters -->
     <xs:complexType name="Void">
         <xs:sequence/>
@@ -284,6 +287,21 @@
     <xs:complexType name="GetDocumentsContainsObjectByIdResponse">
         <xs:sequence>
             <xs:element ref="cms:document" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetObjectsAndRelationsOccurringInDocumentRequest">
+        <xs:sequence>
+            <xs:element name="documentId" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetObjectsAndRelationsOccurringInDocumentResponse">
+        <xs:sequence>
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="objectOccurrence" type="cms:ObjectOccurrence" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="relationOccurrence" type="cms:RelationOccurrence" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

@@ -177,11 +177,19 @@
     <wsdl:message name="getDocumentsContainsObjectByIdResponse">
         <wsdl:part name="getDocumentsContainsObjectByIdResponse" element="tns:getDocumentsContainsObjectByIdResponse"/>
     </wsdl:message>
+
+    <wsdl:message name="getObjectsAndRelationsOccurringInDocumentRequest">
+        <wsdl:part name="getObjectsAndRelationsOccurringInDocumentRequest" element="tns:getObjectsAndRelationsOccurringInDocumentRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getObjectsAndRelationsOccurringInDocumentResponse">
+        <wsdl:part name="getObjectsAndRelationsOccurringInDocumentResponse" element="tns:getObjectsAndRelationsOccurringInDocumentResponse"/>
+    </wsdl:message>
     
     <wsdl:message name="idNotFoundException">
         <wsdl:part name="idNotFoundException" element="cms:idNotFoundException"/>
     </wsdl:message>
-    
+
     <wsdl:portType name="DataProvider">
         
         <wsdl:operation name="getObjectTypes">
@@ -293,6 +301,12 @@
         <wsdl:operation name="getDocumentsContainsObjectById">
             <wsdl:input message="ws:getDocumentsContainsObjectByIdRequest"/>
             <wsdl:output message="ws:getDocumentsContainsObjectByIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getObjectsAndRelationsOccurringInDocument">
+            <wsdl:input message="ws:getObjectsAndRelationsOccurringInDocumentRequest"/>
+            <wsdl:output message="ws:getObjectsAndRelationsOccurringInDocumentResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
@@ -551,6 +565,20 @@
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getDocumentsContainsObjectByIdResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getObjectsAndRelationsOccurringInDocument">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsAndRelationsOccurringInDocument"/>
+            <wsdl:input>
+                <soap:body parts="getObjectsAndRelationsOccurringInDocumentRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getObjectsAndRelationsOccurringInDocumentResponse" use="literal"/>
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>
