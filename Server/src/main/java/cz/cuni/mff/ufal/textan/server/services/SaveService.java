@@ -266,11 +266,12 @@ public class SaveService {
                         .map(x -> x.getObject().getId())
                         .collect(Collectors.toSet());
 
-                for (Pair<Long, Pair<String, Integer>> objectInRelation : relation.getObjectsInRelation()) {
+                //for (Pair<Long, Pair<String, Integer>> objectInRelation : relation.getObjectsInRelation()) {
+                for (Pair<Long, Integer> objectInRelation : relation.getObjectsInRelation()) {
 
                     long objectInRelationId = objectInRelation.getFirst();
-                    String role = objectInRelation.getSecond().getFirst();
-                    int order = objectInRelation.getSecond().getSecond();
+                    //String role = objectInRelation.getSecond().getFirst();
+                    int order = objectInRelation.getSecond();//.getSecond();
 
                     ObjectTable objectInRelationTable = objectIdMapping.get(objectInRelationId);
                     if (objectInRelationTable == null) {
@@ -284,7 +285,8 @@ public class SaveService {
 //                    relationTable.getObjectsInRelation().add(new InRelationTable(order, relationTable, objectInRelationTable));
                     //todo: add test: can be object in relation more than once?
                     if (!alreadyInRelation.contains(objectInRelationTable.getId())) {
-                        inRelationTableDAO.add(new InRelationTable(role, order, relationTable, objectInRelationTable));
+                        //inRelationTableDAO.add(new InRelationTable(role, order, relationTable, objectInRelationTable));
+                        inRelationTableDAO.add(new InRelationTable(order, relationTable, objectInRelationTable));
                         alreadyInRelation.add(objectInRelationTable.getId());
                     }
                 }
