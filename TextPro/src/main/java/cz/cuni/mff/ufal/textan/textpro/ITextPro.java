@@ -16,10 +16,8 @@ public interface ITextPro {
      *
      */
     
-    public void init(List<String> objectlist);
-    
-    //  Output a list of entity after processing
-    public List<Entity> recognizedEntity(String document);
+    //  Output a list of token after processing
+    public List<String> TokenizeDoc(String document);
     
     
     // The main class of TextPro

@@ -52,9 +52,12 @@ public class Train {
     }
     // Load dataset
     // target = 0 for no, 1 for yes 
-    static Instance CreateInstance(Entity e, ObjectTable obj, IAliasTableDAO aliasTableDAO, int target) {
+    static Instance CreateInstance
+        (String doc, Entity e, List<Entity> eList, ObjectTable obj, 
+        IAliasTableDAO aliasTableDAO, IObjectTableDAO objectTableDAO, 
+        int target) {
         // Feature 1: The similarity between entity text and object alias
-        double[] values = new double[]{0,0};
+        double[] values = new double[]{1,1,1,1};
         FeaturesComputeValue fcv = new FeaturesComputeValue();
         
         // Get all alias
@@ -74,6 +77,15 @@ public class Train {
         // The type comparison
         double typeSim = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getName());
         values[1] = typeSim;
+        
+        
+        // The mutual object
+        double mutual = fcv.EntityAndObjectMutual(doc, eList, e, obj, objectTableDAO);
+        values[2] = mutual;
+        
+        // Popularity of object
+        double components = fcv.NumberOfComponentObject(obj);
+        values[3] = components;
         
         Instance instance = new DenseInstance(values, target);
         return instance;

@@ -87,13 +87,9 @@ public class TextPro implements ITextPro {
 
     //TODO: implement or change interface method
 
-    @Override
-    public void init(List<String> objectlist) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
 
     @Override
-    public List<Entity> recognizedEntity(String document) {
+    public List<String> TokenizeDoc(String document) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
     
