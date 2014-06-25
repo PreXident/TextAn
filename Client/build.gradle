@@ -26,6 +26,12 @@ dependencies {
 	compile name: 'PretopoLib'
 }
 
+gradle.projectsEvaluated {
+		tasks.withType(Compile) {
+			options.compilerArgs << "-Xlint:unchecked"
+		}
+}
+
 //exclude resources in ! directories
 sourceSets {
 	main {
