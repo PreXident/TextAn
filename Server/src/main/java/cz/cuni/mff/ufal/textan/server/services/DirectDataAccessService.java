@@ -109,7 +109,9 @@ public class DirectDataAccessService {
             throw new IdNotFoundException("objectId", objectId);
         }
 
-        return new ArrayList<>(); //TODO: implement
+        return documentTableDAO.findAllDocumentsWithObject(objectId).stream()  //TODO: test if dao returns only distinct documents
+                .map(Document::fromDocumentTable)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -208,6 +210,7 @@ public class DirectDataAccessService {
             throw new IdNotFoundException("documentId", documentId);
         }
 
+        //TODO:implement
         return new Pair<>(new ArrayList<Object>(), new ArrayList<Pair<Long, Occurrence>>());
     }
 
@@ -281,6 +284,7 @@ public class DirectDataAccessService {
             throw new IdNotFoundException("documentId", documentId);
         }
 
+        //TODO:implement
         return new Pair<>(new ArrayList<Relation>(), new ArrayList<Pair<Long, Occurrence>>());
     }
 
