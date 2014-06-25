@@ -2,9 +2,7 @@ package cz.cuni.mff.ufal.textan.server.services;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
-import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
+import cz.cuni.mff.ufal.textan.data.tables.*;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -109,7 +109,7 @@ public class DirectDataAccessService {
             throw new IdNotFoundException("objectId", objectId);
         }
 
-        return documentTableDAO.findAllDocumentsWithObject(objectId).stream()  //TODO: test if dao returns only distinct documents
+        return documentTableDAO.findAllDocumentsWithObject(objectId).stream()
                 .map(Document::fromDocumentTable)
                 .collect(Collectors.toList());
     }
@@ -204,14 +204,31 @@ public class DirectDataAccessService {
         return new Pair<>(new ArrayList<>(), 0);
     }
 
-    public Pair<List<Object>, List<Pair<Long, Occurrence>>> getObjectsWithOccurrences(long documentId) throws IdNotFoundException { //TODO:implement
+    /**
+     * Finds all objects and their occurrences for a given document.
+     * @param documentId the document id
+     * @return the pair with the list of object and the list of their occurrences in the document
+     * @throws IdNotFoundException thrown when the document identifier not exists
+     */
+    public Pair<List<Object>, List<Pair<Long, Occurrence>>> getObjectsWithOccurrences(long documentId) throws IdNotFoundException {
         DocumentTable documentTable = documentTableDAO.find(documentId);
         if (documentTable == null) {
             throw new IdNotFoundException("documentId", documentId);
         }
 
-        //TODO:implement
-        return new Pair<>(new ArrayList<Object>(), new ArrayList<Pair<Long, Occurrence>>());
+        Set<Object> objects = new HashSet<>();
+        List<Pair<Long, Occurrence>> objectOccurrences = new ArrayList<>();
+
+        for (AliasOccurrenceTable aliasOccurrence : documentTable.getAliasOccurrences()) {
+
+            AliasTable alias = aliasOccurrence.getAlias();
+            ObjectTable object = alias.getObject();
+
+            objects.add(Object.fromObjectTable(object));
+            objectOccurrences.add(new Pair<>(object.getId(), new Occurrence(alias.getAlias(), aliasOccurrence.getPosition())));
+        }
+
+        return new Pair<>(new ArrayList<>(objects), objectOccurrences);
     }
 
     /**
@@ -278,14 +295,30 @@ public class DirectDataAccessService {
                 .collect(Collectors.toList());
     }
 
-    public Pair<List<Relation>, List<Pair<Long, Occurrence>>> getRelationsWithOccurrences(long documentId) throws IdNotFoundException{ //TODO:implement
+    /**
+     * Finds all relations and their occurrences for a given document.
+     * @param documentId the document id
+     * @return the pair with the list of relations and the list of their occurrences in the document
+     * @throws IdNotFoundException thrown when the document identifier not exists
+     */
+    public Pair<List<Relation>, List<Pair<Long, Occurrence>>> getRelationsWithOccurrences(long documentId) throws IdNotFoundException{
         DocumentTable documentTable = documentTableDAO.find(documentId);
         if (documentTable == null) {
             throw new IdNotFoundException("documentId", documentId);
         }
 
-        //TODO:implement
-        return new Pair<>(new ArrayList<Relation>(), new ArrayList<Pair<Long, Occurrence>>());
+        Set<Relation> relations = new HashSet<>();
+        List<Pair<Long, Occurrence>> relationOccurrences = new ArrayList<>();
+
+        for (RelationOccurrenceTable relationOccurrence : documentTable.getRelationOccurrences()) {
+
+            RelationTable relation = relationOccurrence.getRelation();
+
+            relations.add(Relation.fromRelationTable(relation));
+            relationOccurrences.add(new Pair<>(relation.getId(), new Occurrence(relationOccurrence.getAnchor(), relationOccurrence.getPosition())));
+        }
+
+        return new Pair<>(new ArrayList<>(relations), relationOccurrences);
     }
 
     public List<String> getRolesForRelationType(long relationTypeId) throws IdNotFoundException {
