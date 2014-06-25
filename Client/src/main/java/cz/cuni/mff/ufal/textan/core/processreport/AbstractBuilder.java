@@ -121,25 +121,25 @@ public abstract class AbstractBuilder {
         //clear whites before from
         for (int i = from - 1; i >= 0 && ignore(words.get(i)); --i) {
             final Word w = words.get(i);
-            unregister(w);
+            unregisterOldBuilder(w);
             clearer.clear(i);
         }
         //clear leading whites
         for (; from <= to && ignore(words.get(from)); ++from) {
             final Word w = words.get(from);
-            unregister(w);
+            unregisterOldBuilder(w);
             clearer.clear(from);
         }
         //clear whites after to
         for (int i = to + 1; i < words.size() && ignore(words.get(i)); ++i) {
             final Word w = words.get(i);
-            unregister(w);
+            unregisterOldBuilder(w);
             clearer.clear(i);
         }
         //clear trailing whites
         for (; to > from && ignore(words.get(to)); --to) {
             final Word w = words.get(to);
-            unregister(w);
+            unregisterOldBuilder(w);
             clearer.clear(to);
         }
         return new Pair<>(from, to);
@@ -150,6 +150,17 @@ public abstract class AbstractBuilder {
      * @param word  Word to unregister from
      */
     protected abstract void unregister(Word word);
+
+    /**
+     * Unregisters the word from its old Builder
+     * @param word word to unregister
+     */
+    protected void unregisterOldBuilder(final Word word) {
+        final AbstractBuilder old = extract(word);
+        if (old != null) {
+            old.unregister(word);
+        }
+    }
 
     /**
      * Thrown when splitting would occur.

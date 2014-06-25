@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.gui;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
@@ -20,13 +21,33 @@ public class Utils {
      * @param id long to covert
      * @return Color created from id hash
      */
-    static public Color idToColor(long id) {
+    static public int idToColor(long id) {
         id += 0x892405;
         int result = (int) id; //(int) (id >> 32 ^ id);
         result = ((result >>> 16) ^ result) * 0x45d9f3b;
         result = ((result >>> 16) ^ result) * 0x45d9f3b;
         result = ((result >>> 16) ^ result);
-        return Color.rgb((result & 0xFF0000) >> 16, (result & 0x00FF00) >> 8, result & 0x0000FF);
+        return result;
+    }
+
+    /**
+     * Converts id to Color.
+     * @param id long to covert
+     * @return Color created from id hash
+     */
+    static public Color idToFXColor(long id) {
+        final int color = idToColor(id);
+        return Color.rgb((color & 0xFF0000) >> 16, (color & 0x00FF00) >> 8, color & 0x0000FF);
+    }
+
+    /**
+     * Converts id to Color.
+     * @param id long to covert
+     * @return Color created from id hash
+     */
+    static public java.awt.Color idToAWTColor(long id) {
+        final int color = idToColor(id);
+        return new java.awt.Color(color);
     }
 
     /**
@@ -70,23 +91,53 @@ public class Utils {
         stage.yProperty().addListener(sizeListener);
     }
 
+    /**
+     * Runs finalizer in FX thread after 100 ms sleep in other thread.
+     * @param finalizer runnable to be run
+     */
+    static public void runFXlater(final Runnable finalizer) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) { }
+            Platform.runLater(finalizer);
+        }).start();
+    }
+
+    /**
+     * Replaces text's styleclasses by clazz, stores fill color to user data and
+     * fills text with color created from id.
+     * @param text text to style
+     * @param clazz class to add
+     * @param id id to color
+     */
     static public void styleText(final Text text, final String clazz, final long id) {
         text.getStyleClass().clear();
         text.getStyleClass().add(clazz);
         text.setUserData(text.getFill());
-        text.setFill(idToColor(id));
+        text.setFill(idToFXColor(id));
     }
 
+    /**
+     * Adds background to text created from id.
+     * @param text text to style
+     * @param id id to color
+     */
     static public void styleTextBackground(final Text text, final long id) {
         final DropShadow dropShadow = new DropShadow();
         dropShadow.setRadius(4d);
         dropShadow.setSpread(4d);
         dropShadow.setOffsetX(0d);
         dropShadow.setOffsetY(0d);
-        dropShadow.setColor(idToColor(~id));
+        dropShadow.setColor(idToFXColor(~id));
         text.setEffect(dropShadow);
     }
 
+    /**
+     * Clears text's style classes and tries to restore fill color from user
+     * data.
+     * @param text text to unstyle
+     */
     static public void unstyleText(final Text text) {
         text.getStyleClass().clear();
         Object color = text.getUserData();
@@ -97,6 +148,10 @@ public class Utils {
         }
     }
 
+    /**
+     * Clears text's background.
+     * @param text text to unstyle
+     */
     static public void unstyleTextBackground(final Text text) {
         text.setEffect(null);
     }

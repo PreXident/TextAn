@@ -1,0 +1,54 @@
+Dears,
+ so, here we go.
+
+Jakub:
+I try unite nametag entities with database (where i found bug with encoding...issue reported and fixed in my branch).
+Then I get some problem with nametag, because it uses strings as IDs and working hierarchically (characters with higher indexes refining previous), so now I'm using dictionary.
+Now I'm trying debug nametag integration, because I found a bug (different indexes in textan and nametag).
+I was playing with learning part too, I made a config file with parameters for learning new models and integrate it in my part.
+
+Adam:
+i am sorry, but i am too tired to try to write this summary, so i just send commit messages:
+
+- Graph modes buttons are now toggable, embedded in toolbar and have (placeholder) icons instead of text.
+- Added tooltips to graph mode buttons.
+- When going back to editing objects new objects should no longer be forgotten
+- Unanchored relations now have their RelationOccurrence with null Anchor when document is sent to server to be saved
+- Continue immediately after back no longer discards user changes. Also a few preparations for handling document collisions
+- Added option to clear filter fields after selection
+- Unanchored relations now have their RelationOccurrence and its Anchor with null alias and -1 position when document is sent to server to be saved
+- InnerWindows and OuterStages now have minimal size
+- OuterStages now have proper icon too
+- Minor layout changes in object list for graph
+- New objects now loses aliases even if they are replaced as candidates by db objects
+- Relation list view now shows relation alias too
+- When assigning objects to relations, objects have their type displayed
+- When selecting object the current selection is displayed (not as a label but as selected record in list)
+- Fixed object type name for new objects in Relation Step
+- Buttons in Relation Step are now all at the bottom
+- Added/enhanced tooltips to Entity and Relation step
+
+i know i am lazy, but i do not think i could express it better anyway
+
+Tam:
+I am programming the preparation for feature selection in Machine Learning. It include:
+
++ Levenshtein distance for two words to compare the similarity between Object alias and entity text
++ Levenshtein distance for two array to compare the similarity between two long strings from two different docs
++ Matching object type and entity type (1 for match, 0 for non-match)
++ Neighbor computing (not finished yet)
+
+If you want me to do anything, pls do not hesitate to tell me. I often forgot what I intend to do at the first place.
+
+Vaclav:
+ - Encoding should be ok now
+ - Working on logging & object concurrency
+
+Me:
+I researched Interceptors in CXF and in Hibernate, because I think it can be use to log changes in a database, and I done some changes in web service API.
+I also reorganized directories in repository. I added Documentation directory, moved all documentation related things in the directory and added placeholders for a user documentation and a developmnet documentation, which are in requirements for the sw project.
+
+And the last thing, what do we do with the next meeting? The best time for you (us) is Thursday after 15:40, but Jakub probably can't come. So, we could meet at this time, or is it problem for someone?
+
+Regards,
+Petr

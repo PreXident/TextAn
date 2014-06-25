@@ -54,10 +54,7 @@ public class FXRelationBuilder extends RelationBuilder {
 
     @Override
     protected void register(Word word) {
-        final RelationBuilder old = word.getRelation();
-        if (old != null && old instanceof FXRelationBuilder) {
-            ((FXRelationBuilder) old).unregister(word);
-        }
+        unregisterOldBuilder(word);
         words.add(word);
         super.register(word);
         updateStringRepresentation();

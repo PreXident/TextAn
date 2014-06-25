@@ -1,3 +1,7 @@
 .root {
 	-fx-padding: 10 10 10 10
 }
+
+.slider {
+	-fx-padding: 10 10 10 10;
+}

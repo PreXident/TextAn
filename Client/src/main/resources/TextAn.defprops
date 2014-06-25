@@ -21,10 +21,12 @@ locale.language=en
 #clear filter fields after selection?
 clear.filters=false
 #url of the document processor
-url.document=http://localhost:9100/soap/document
+url.document=http://textan.ms.mff.cuni.cz:9500/soap/document
 #url of the document processor wsdl
-url.document.wsdl=http://localhost:9100/soap/document?wsdl
+url.document.wsdl=http://textan.ms.mff.cuni.cz:9500/soap/document?wsdl
 #url of the data provider
-url.data=http://localhost:9100/soap/data
+url.data=http://textan.ms.mff.cuni.cz:9500/soap/data
 #url of the data provider
-url.data.wsdl=http://localhost:9100/soap/data?wsdl
+url.data.wsdl=http://textan.ms.mff.cuni.cz:9500/soap/data?wsdl
+#default distance for displaying graphs
+graph.distance=5

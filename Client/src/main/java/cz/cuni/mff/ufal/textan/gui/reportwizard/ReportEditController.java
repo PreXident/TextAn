@@ -29,7 +29,7 @@ public class ReportEditController extends ReportWizardController {
         if (pipeline.lock.tryAcquire()) {
             getMainNode().setCursor(Cursor.WAIT);
             new Thread(() -> {
-                pipeline.setReportText(textArea.getText());
+                pipeline.setReportText(textArea.getText().replace("\r", ""));
             }, "FromEditState").start();
         }
     }
@@ -37,12 +37,13 @@ public class ReportEditController extends ReportWizardController {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        slider.setLabelFormatter(new SliderLabelFormatter());
     }
 
     @Override
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
-        textArea.setText(pipeline.getReportText());
+        textArea.setText(pipeline.getReportText().replace("\r", ""));
         textArea.textProperty().addListener(e -> pipeline.resetStepsBack());
     }
 }

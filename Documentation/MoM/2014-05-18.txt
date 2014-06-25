@@ -1,0 +1,19 @@
+Dears,
+ Sorry, that I didn't send a reminder, I lost somehow track of time, but some of us didn't forget.
+
+Tam:
+I have not finished my homework. I found a library for string comparison (which throwed all my implementation of Kullback–Leibler divergence into trash because it is indeed better). I implemented the class to compute the feature value, succeed to test, but failed to integrate it into project with gradle 
+
+org.gradle.tooling.BuildException: Could not execute build using Gradle distribution 'http://services.gradle.org/distributions/gradle-1.11-bin.zip'.
+) 
+
+Jakub:
+I finished tearing nametag integration, think it's working fine. I had problem with date in number format(e.g. 4.12.) because it's recognized as time (but if you use month name, it works fine). I checked and repaired learning data but haven't fixed this bug jet (and I think that this is nametag bug).
+Second strange thing occurs when I use nametag in Textan, it finds just part of entities (it doesn't find some types of entities) and I don't know why. I test it on same message with same model and same bindings and if it's run externally, it finds all expected entities. I haven't idea why this happens.
+And last thing (which planning for this evening/night) is writing to Milan Straka because of type of entity type ;-)(and problem with date/time).
+
+Me:
+I only fixed problem with cyclic dependency in DataConfig, I hope it's works now, and refactored web services, which mean adding "getProblems" operation, too.
+
+See you on Wednesday and good luck with the first exams,
+Petr

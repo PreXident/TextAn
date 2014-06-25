@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -39,6 +40,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableCell;
@@ -165,6 +167,12 @@ public class ReportRelationsController extends ReportWizardController {
     /** Content of {@link #textFlow}. */
     List<Text> texts;
 
+    /** Context menu for objects. */
+    ContextMenu objectContextMenu;
+
+    /** Object to display graph for. */
+    Object objectForGraph;
+
     @FXML
     private void add() {
         if (selectedRelation != null) {
@@ -249,6 +257,10 @@ public class ReportRelationsController extends ReportWizardController {
         this.resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        slider.setLabelFormatter(new SliderLabelFormatter());
+        scrollPane.vvalueProperty().addListener(e -> {
+            textFlow.layoutChildren();
+        });
         table.setEditable(true);
         objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().multiply(-1).add(-2)));
         orderColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Number> p) -> p.getValue().order);
@@ -319,11 +331,21 @@ public class ReportRelationsController extends ReportWizardController {
         });
         border.setTop(filterField);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
+        contextMenu.setConsumeAutoHidingEvents(false);
         //
         relationsListView.setItems(FXCollections.observableArrayList(
                 (FXRelationBuilder p) -> new Observable[] { p.stringRepresentation }));
         relationsListView.getSelectionModel().selectedItemProperty().addListener(
                 (ov, oldVal, newVal) -> { selectRelation(newVal); });
+        //
+        objectContextMenu = new ContextMenu();
+        objectContextMenu.setConsumeAutoHidingEvents(false);
+        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
+        graphMI.setOnAction(e -> {
+            contextMenu.hide();
+            textAnController.displayGraph(objectForGraph.getId());
+        });
+        objectContextMenu.getItems().add(graphMI);
     }
 
     @Override
@@ -401,6 +423,14 @@ public class ReportRelationsController extends ReportWizardController {
                     selectedRelation = null;
                     table.setItems(null);
                 }
+                if (e.isSecondaryButtonDown() && word.getEntity() != null) {
+                    final int entityIndex = word.getEntity().getIndex();
+                    final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
+                    if (obj != null) {
+                        objectForGraph = obj;
+                        objectContextMenu.show(text, Side.BOTTOM, 0, 0);
+                    }
+                }
             });
             text.setOnDragDetected(e -> {
                 text.startFullDrag();
@@ -408,7 +438,10 @@ public class ReportRelationsController extends ReportWizardController {
             text.setOnMouseDragEntered(e -> {
                 if (dragging) {
                     boolean overEntity = false;
-                    for (int i = firstSelectedIndex; i <= word.getIndex(); ++i) {
+                    final int myIndex = word.getIndex();
+                    final int min = Math.min(firstDragged, myIndex);
+                    final int max = Math.max(firstDragged, myIndex);
+                    for (int i = min; i <= max; ++i) {
                         if (words.get(i).getEntity() != null) {
                             overEntity = true;
                             break;
@@ -422,9 +455,6 @@ public class ReportRelationsController extends ReportWizardController {
                         return;
                     }
                     removeSelectedClass(texts);
-                    final int myIndex = texts.indexOf(text);
-                    final int min = Math.min(firstDragged, myIndex);
-                    final int max = Math.max(firstDragged, myIndex);
                     addSelectedClass(texts.subList(min, max + 1));
                     firstSelectedIndex = min;
                     lastSelectedIndex = max;
@@ -495,19 +525,34 @@ public class ReportRelationsController extends ReportWizardController {
                         .collect(Collectors.toList())
         );
         final Callback<TableColumn<RelationInfo, Object>, TableCell<RelationInfo, Object>> cellFactory =
-                (TableColumn<RelationInfo, Object> param) -> new ObjectTableCell(new StringConverter<Object>() {
-                    @Override
-                    public String toString(Object o) {
-                        if (o == null) {
-                            return "";
+                (TableColumn<RelationInfo, Object> param) -> {
+                    final ObjectTableCell cell = new ObjectTableCell(new StringConverter<Object>() {
+                        @Override
+                        public String toString(Object o) {
+                            if (o == null) {
+                                return "";
+                            }
+                            return String.join(", ", o.getAliases()) + " (" + o.getId() + ") - " + o.getType().getName();
                         }
-                        return String.join(", ", o.getAliases()) + " (" + o.getId() + ") - " + o.getType().getName();
-                    }
-                    @Override
-                    public Object fromString(String string) {
-                        throw new UnsupportedOperationException("This should not be needed!");
-                    }
-                }, candidates);
+                        @Override
+                        public Object fromString(String string) {
+                            throw new UnsupportedOperationException("This should not be needed!");
+                        }
+                    }, candidates);
+                    cell.itemProperty().addListener((ov, oldVal, newVal) -> {
+                        if (newVal != null) {
+                            cell.setContextMenu(objectContextMenu);
+                        } else {
+                            cell.setContextMenu(null);
+                        }
+                    });
+                    cell.setOnMousePressed(e -> {
+                        if (e.isSecondaryButtonDown() && cell.getItem() != null) {
+                            objectForGraph = cell.getItem();
+                        }
+                    });
+                    return cell;
+                };
         objectColumn.setCellFactory(cellFactory);
     }
 
@@ -561,8 +606,11 @@ public class ReportRelationsController extends ReportWizardController {
     protected void clearSelectedRelationBackground() {
         if (selectedRelation != null) {
              selectedRelation.getData().stream()
-                     .flatMap(relInfo -> objectWords.get(relInfo.object.get()).stream())
-                     .forEach(Utils::unstyleTextBackground);
+                    .flatMap(relInfo -> {
+                        final List<Text> words = objectWords.get(relInfo.object.get());
+                        return words != null ? words.stream() : Stream.empty();
+                    })
+                    .forEach(Utils::unstyleTextBackground);
          }
     }
 
@@ -589,7 +637,10 @@ public class ReportRelationsController extends ReportWizardController {
         final RelationType type = selectedRelation.getType();
         final long id = type.getId();
         selectedRelation.getData().stream()
-                .flatMap(relInfo -> objectWords.get(relInfo.object.get()).stream())
+                .flatMap(relInfo -> {
+                    final List<Text> words = objectWords.get(relInfo.object.get());
+                    return words != null ? words.stream() : Stream.empty();
+                })
                 .forEach(t -> Utils.styleTextBackground(t, id));
         table.setItems(selectedRelation.getData());
     }

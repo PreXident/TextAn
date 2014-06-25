@@ -8,6 +8,7 @@ import cz.cuni.mff.ufal.textan.gui.graph.GraphWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +22,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javax.xml.ws.WebServiceException;
+import jfxtras.labs.scene.control.BigDecimalField;
 import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
@@ -63,13 +66,22 @@ public class TextAnController implements Initializable {
     private CheckMenuItem menuItemClearFilters;
 
     @FXML
-    private TextField loginTextField;
+    protected TextField loginTextField;
 
     @FXML
     private ComboBox<String> localizationCombo;
 
+    @FXML
+    private Menu settingsMenu;
+
+    @FXML
+    private BigDecimalField distanceField;
+
     /** Properties with application settings. */
     protected Properties settings = null;
+
+    /** Stage controlled by this controller. */
+    protected Stage stage;
 
     /** Property binded to stage titleProperty. */
     StringProperty titleProperty = new SimpleStringProperty(TITLE);
@@ -97,20 +109,7 @@ public class TextAnController implements Initializable {
 
     @FXML
     private void graph() {
-        final Grapher grapher = client.createGrapher();
-        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-            final GraphWindow graphWindow = new GraphWindow(settings, grapher);
-            content.getChildren().add(graphWindow);
-        } else {
-            final GraphStage stage = new GraphStage(settings, grapher);
-            children.add(stage);
-            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
-                if (!newVal) {
-                    children.remove(stage);
-                }
-            });
-            stage.show();
-        }
+        displayGraph(-1, -1);
     }
 
     @FXML
@@ -131,7 +130,7 @@ public class TextAnController implements Initializable {
             if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
                 final ReportWizardWindow wizard = new ReportWizardWindow(settings);
                 content.getChildren().add(wizard);
-                listener = new StateChangedListener(resourceBundle, settings, pipeline, wizard);
+                listener = new StateChangedListener(this, settings, pipeline, wizard);
             } else {
                 final ReportWizardStage stage = new ReportWizardStage(settings);
                 children.add(stage);
@@ -140,14 +139,15 @@ public class TextAnController implements Initializable {
                         children.remove(stage);
                     }
                 });
-                listener = new StateChangedListener(resourceBundle, settings, pipeline, stage);
+                listener = new StateChangedListener(this, settings, pipeline, stage);
                 stage.show();
             }
             pipeline.addStateChangedListener(listener);
         } catch (WebServiceException e) {
             e.printStackTrace();
             Dialogs.create()
-                    .owner(null)
+                    .owner(stage)
+                    .lightweight()
                     .title(Utils.localize(resourceBundle, "webservice.error"))
                     .showException(e);
         }
@@ -163,6 +163,9 @@ public class TextAnController implements Initializable {
             }
         });
         resourceBundle = rb;
+        distanceField.numberProperty().addListener((ov, oldVal, newVal) -> {
+            settings.setProperty("graph.distance", newVal.toString());
+        });
     }
 
     /**
@@ -178,21 +181,48 @@ public class TextAnController implements Initializable {
         menuItemClearFilters.setSelected(
                 settings.getProperty(CLEAR_FILTERS, "false").equals("true"));
         loginTextField.setText(settings.getProperty("username", System.getProperty("user.name")));
-        loginTextField.textProperty().addListener(
-            (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
-                settings.setProperty("username", newVal);
+        loginTextField.focusedProperty().addListener((ov, oldVal, newVal) -> {
+            if (oldVal) {
+                final String login = loginTextField.getText();
+                if (login == null || login.isEmpty() || login.trim().isEmpty()) {
+                    loginTextField.setText(settings.getProperty("username"));
+                    settingsMenu.hide();
+                    Dialogs.create()
+                            .owner(stage)
+                            .title(TextAnController.TITLE)
+                            .masthead(Utils.localize(resourceBundle, "username.error.title"))
+                            .message(Utils.localize(resourceBundle, "username.error.text"))
+                            .lightweight()
+                            .showError();
+                } else {
+                    settings.setProperty("username", login);
+                }
             }
-        );
+        });
         localizationCombo.getSelectionModel().select(settings.getProperty("locale.language", "cs"));
         localizationCombo.valueProperty().addListener(
             (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
                 Platform.runLater(
-                        () -> Dialogs.create()
+                        () -> {
+                            settingsMenu.hide();
+                            Dialogs.create()
+                                .owner(stage)
+                                .lightweight()
                                 .message(Utils.localize(resourceBundle,"locale.changed"))
-                                .showWarning());
+                                .showWarning();
+                            });
                 settings.setProperty("locale.language", newVal);
         });
+        distanceField.setNumber(new BigDecimal(settings.getProperty("graph.distance", "5")));
         client = new Client(settings);
+    }
+
+    /**
+     * Sets stage controlled by this controller.
+     * @param stage controlled stage
+     */
+    public void setStage(final Stage stage) {
+        this.stage = stage;
     }
 
     /**
@@ -201,6 +231,44 @@ public class TextAnController implements Initializable {
      */
     public StringProperty titleProperty() {
         return titleProperty;
+    }
+
+    /**
+     * Creates and displays graph with default distance.
+     * @param centerId root object id
+     */
+    public void displayGraph(final long centerId) {
+        int distance;
+        try {
+            distance = Integer.parseInt(settings.getProperty("graph.distance", "5"));
+        } catch (NumberFormatException e) {
+            distance = 5;
+        }
+        displayGraph(centerId, distance);
+    }
+
+    /**
+     * Creates and displays graph.
+     * @param centerId root object id
+     * @param distance graph distance
+     */
+    public void displayGraph(final long centerId, final int distance) {
+        final Grapher grapher = client.createGrapher();
+        grapher.setRootId(centerId);
+        grapher.setDistance(distance);
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final GraphWindow graphWindow = new GraphWindow(this, settings, grapher);
+            content.getChildren().add(graphWindow);
+        } else {
+            final GraphStage stage = new GraphStage(this, settings, grapher);
+            children.add(stage);
+            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(stage);
+                }
+            });
+            stage.show();
+        }
     }
 
     /**

@@ -15,8 +15,8 @@ public class Entity {
      * Instantiates a new Entity.
      *
      * @param value the value
-     * @param position the position
-     * @param length the length
+     * @param position the position of the first character of the value in the related document
+     * @param length the length of value
      * @param type the type
      */
     public Entity(String value, int position, int length, ObjectType type) {
@@ -37,7 +37,7 @@ public class Entity {
     }
 
     /**
-     * Gets value.
+     * Gets a value which represents an entity in a document.
      *
      * @return the value
      */
@@ -46,7 +46,7 @@ public class Entity {
     }
 
     /**
-     * Gets position.
+     * Gets a position of the first character of a value.
      *
      * @return the position
      */
