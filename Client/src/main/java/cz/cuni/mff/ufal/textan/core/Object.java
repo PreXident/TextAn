@@ -10,6 +10,9 @@ import java.util.Set;
  */
 public class Object {
 
+    /** Alias delimiter for toString() method. */
+    static private final String ALIAS_DELIMITER = ", ";
+
     /** Object ID. */
     private final long id;
 
@@ -21,6 +24,9 @@ public class Object {
 
     /** Flag indicating whether the object was fetched from db or created by client. */
     private final boolean isNew;
+
+    /** Set of new aliases obtained during report processing. */
+    private final Set<String> newAliases = new HashSet<>();
 
     /**
      * Creates Object from object blue print.
@@ -78,6 +84,16 @@ public class Object {
         return type;
     }
 
+    /**
+     * Adds new alias if not already in aliases.
+     * @param newAlias new alias to add
+     */
+    public void addNewAlias(final String newAlias) {
+        if (!aliases.contains(newAlias)) {
+            newAliases.add(newAlias);
+        }
+    }
+
     @Override
     public boolean equals(java.lang.Object other) {
         if (other instanceof Object) {
@@ -94,9 +110,25 @@ public class Object {
         return hash;
     }
 
+    /**
+     * Removes newAlias from list of new aliases.
+     * @param newAlias new alias to remove
+     */
+    public void removeNewAlias(final String newAlias) {
+        newAliases.remove(newAlias);
+    }
+
     @Override
     public String toString() {
-        return id + ": " + String.join(", ", aliases);
+        final StringBuilder s = new StringBuilder();
+        s.append(id);
+        s.append(": ");
+        s.append(String.join(ALIAS_DELIMITER, aliases));
+        if (!aliases.isEmpty() && !newAliases.isEmpty()) {
+            s.append(ALIAS_DELIMITER);
+        }
+        s.append(String.join(ALIAS_DELIMITER, newAliases));
+        return s.toString();
     }
 
     /**
