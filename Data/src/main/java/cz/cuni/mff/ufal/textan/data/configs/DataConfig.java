@@ -3,6 +3,8 @@ package cz.cuni.mff.ufal.textan.data.configs;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.logging.LogInterceptor;
+import cz.cuni.mff.ufal.textan.data.views.INameTagView;
+import cz.cuni.mff.ufal.textan.data.views.NameTagView;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -175,6 +177,11 @@ public class DataConfig {
     @Bean
     public GraphFactory graphFactory() throws PropertyVetoException, IOException {
         return new GraphFactory(sessionFactory());
+    }
+    
+    @Bean
+    public INameTagView nameTagView() throws PropertyVetoException, IOException {
+        return new NameTagView(sessionFactory());
     }
 
 

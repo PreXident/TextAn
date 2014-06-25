@@ -7,4 +7,6 @@
     <import class="cz.cuni.mff.ufal.textan.data.graph.Edge" />
     <import class="cz.cuni.mff.ufal.textan.data.graph.ObjectNode" />
     <import class="cz.cuni.mff.ufal.textan.data.graph.RelationNode" />
+    
+    <import class="cz.cuni.mff.ufal.textan.data.views.NameTagRecord" />
 </hibernate-mapping>
