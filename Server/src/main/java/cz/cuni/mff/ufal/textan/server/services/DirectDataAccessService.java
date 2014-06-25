@@ -32,14 +32,16 @@ public class DirectDataAccessService {
     private final IRelationTypeTableDAO relationTypeTableDAO;
     private final IRelationTableDAO relationTableDAO;
 
+    private final IInRelationTableDAO inRelationTableDAO;
+
     /**
      * Instantiates a new Direct data access service.
-     *
      * @param documentTableDAO the document table dAO
      * @param objectTypeTableDAO the object type table dAO
      * @param objectTableDAO the object table dAO
      * @param relationTypeTableDAO the relation type table dAO
      * @param relationTableDAO the relation table dAO
+     * @param inRelationTableDAO
      */
     @Autowired
     public DirectDataAccessService(
@@ -47,13 +49,14 @@ public class DirectDataAccessService {
             IObjectTypeTableDAO objectTypeTableDAO,
             IObjectTableDAO objectTableDAO,
             IRelationTypeTableDAO relationTypeTableDAO,
-            IRelationTableDAO relationTableDAO) {
+            IRelationTableDAO relationTableDAO, IInRelationTableDAO inRelationTableDAO) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
         this.objectTableDAO = objectTableDAO;
         this.relationTypeTableDAO = relationTypeTableDAO;
         this.relationTableDAO = relationTableDAO;
+        this.inRelationTableDAO = inRelationTableDAO;
     }
 
     /**
@@ -322,7 +325,13 @@ public class DirectDataAccessService {
     }
 
     public List<String> getRolesForRelationType(long relationTypeId) throws IdNotFoundException {
-        return new ArrayList<>(); //TODO: implement
+
+        RelationTypeTable relationType = relationTypeTableDAO.find(relationTypeId);
+        if (relationType == null) {
+            throw new IdNotFoundException("relationTypeId", relationTypeId);
+        }
+
+        return inRelationTableDAO.getRolesForRelationType(relationTypeId);
     }
 
 

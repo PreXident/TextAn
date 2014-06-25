@@ -17,7 +17,8 @@
       </id>  
        
        <property name="order" column="order_in_relation" type="integer"/>
-       
+       <property name="role" column="role" type="string"/>
+
        <many-to-one name="relation" class="cz.cuni.mff.ufal.textan.data.tables.RelationTable" 
                     column="id_relation" not-null="true" lazy="false" cascade="save-update" />
        <many-to-one name="object" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" 
