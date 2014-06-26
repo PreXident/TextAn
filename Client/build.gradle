@@ -6,6 +6,8 @@ defaultTasks 'run'
 
 sourceCompatibility=1.8
 
+ext.mainClassName = 'cz.cuni.mff.ufal.textan.gui.TextAn'
+
 repositories {
 	mavenCentral() //controlsfx
 	maven {
@@ -24,13 +26,19 @@ dependencies {
 	compile name: 'PretopoLib'
 }
 
+gradle.projectsEvaluated {
+		tasks.withType(Compile) {
+			options.compilerArgs << "-Xlint:unchecked"
+		}
+}
+
 //exclude resources in ! directories
 sourceSets {
-    main {
-        resources {
+	main {
+		resources {
 			exclude '**/!/'
-        }
-    }
+		}
+	}
 }
 
 cssToBin {
@@ -38,7 +46,7 @@ cssToBin {
 }
 
 javafx {
-	mainClass = 'cz.cuni.mff.ufal.textan.gui.TextAn'
+	mainClass = mainClassName
 }
 
 run {
@@ -47,4 +55,35 @@ run {
 
 debug {
 	workingDir = 'build'
+}
+
+task megaJar (type: Jar) {
+	duplicatesStrategy = 'exclude'
+	from sourceSets.main.output
+	from(configurations.compile
+			.filter { !it.toString().endsWith("jfxrt.jar") }
+			.collect { it.isDirectory() ? it : zipTree(it) }) {
+		exclude "META-INF/*.SF"
+		exclude "META-INF/*.DSA"
+		exclude "META-INF/*.RSA"
+	}
+	destinationDir = file('build/dist')
+}
+
+configure([jar, megaJar]) {
+	entryCompression = "DEFLATED"
+	manifest {
+		attributes 'Main-Class': mainClassName
+	}
+}
+
+task dist(type: Copy, dependsOn: 'megaJar') {
+	from 'dist'
+	into 'build/dist'
+}
+
+task zip(type: Zip, dependsOn: 'dist') {
+	from 'build/dist'
+	exclude "*.zip"
+	destinationDir = file('build/dist')
 }

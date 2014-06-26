@@ -6,6 +6,7 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
+import cz.cuni.mff.ufal.textan.gui.Utils;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -27,8 +28,10 @@ import java.awt.Color;
 import java.awt.MouseInfo;
 import java.awt.Paint;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Date;
@@ -42,7 +45,6 @@ import java.util.stream.Stream;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections15.Transformer;
 
@@ -51,6 +53,12 @@ import org.apache.commons.collections15.Transformer;
  * TODO PretopoLib licensing!
  */
 public class GraphView extends SwingNode {
+
+    /** Color for vertices representing relations. */
+    final Color RELATION_OBJECT_COLOR = new Color(238, 238, 238);
+
+    /** Color for vetex border. */
+    final Color VERTEX_BORDER_COLOR = new Color(0, 0, 0, 0);
 
     /**
      * Properties containing application settings.
@@ -61,12 +69,22 @@ public class GraphView extends SwingNode {
     /** Graph visualizator. */
     final VisualizationViewer<Object, Relation> visualizator;
 
-    /** Graph context menu. */
-    final ContextMenu contextMenu;
+    /** Object context menu. */
+    ContextMenu objectContextMenu;
+
+    /** Object to display graph for. */
+    Object objectForGraph;
 
     /** Mouse handler. */
     final DefaultModalGraphMouse<Integer,String> graphMouse;
 
+    /**
+     * Only constructor.
+     * @param settings application settings
+     * @param objects graph verteces
+     * @param relations graph edges
+     * @param rootId center vertex id
+     */
     public GraphView(final Properties settings, final Map<Long, Object> objects,
             final Set<Relation> relations, final long rootId) {
         this.settings = settings;
@@ -98,7 +116,7 @@ public class GraphView extends SwingNode {
                         final Object obj = pair.getFirst();
                         if (order < 0) {
                             g.addEdge(dummyRel, Arrays.asList(obj, dummy), EdgeType.DIRECTED);
-                        } else if (order % 2 == 0) {
+                        } else if (order % 2 == 1) {
                             g.addEdge(dummyRel, Arrays.asList(dummy, obj), EdgeType.DIRECTED);
                         } else {
                             g.addEdge(dummyRel, Arrays.asList(obj, dummy), EdgeType.UNDIRECTED);
@@ -127,7 +145,7 @@ public class GraphView extends SwingNode {
                 hypergraphs ? new PseudoHypergraph<>(g) : (Graph<Object, Relation>) g
         );
         //
-        Transformer<Object, Paint> vertexPaint = (Object obj) -> Color.GREEN;
+        final Transformer<Object, Paint> vertexPaint = obj -> Utils.idToAWTColor(obj.getType().getId());
         float dash[] = {10.0f};
         final Stroke edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
         Transformer<Relation, Stroke> edgeStrokeTransformer = (Relation s) -> edgeStroke;
@@ -139,6 +157,10 @@ public class GraphView extends SwingNode {
         }
         //
         visualizator.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
+        visualizator.getRenderContext().setVertexDrawPaintTransformer(obj -> VERTEX_BORDER_COLOR);
+        visualizator.getRenderContext().setVertexShapeTransformer(v -> {
+            return v instanceof RelationObject ? new Rectangle(-10, -10, 20, 20) : new Ellipse2D.Float(-10, -10, 20, 20);
+        });
         visualizator.getRenderContext().setEdgeStrokeTransformer(edgeStrokeTransformer);
         visualizator.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<>());
         visualizator.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<>());
@@ -147,9 +169,19 @@ public class GraphView extends SwingNode {
         graphMouse = new DefaultModalGraphMouse<>();
         graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
         graphMouse.add(new AbstractPopupGraphMousePlugin() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (objectContextMenu != null && objectContextMenu.isShowing()) {
+                    Platform.runLater(() -> {
+                        objectContextMenu.hide();
+                    });
+                }
+                super.mousePressed(e);
+            }
+
             @Override
             protected void handlePopup(MouseEvent e) {
-                System.out.println("[" + new Date().getTime() + "] HANDLING!");
                 @SuppressWarnings("unchecked")
                 final VisualizationViewer<Object, Relation> vv =
                         (VisualizationViewer<Object, Relation>) e.getSource();
@@ -159,35 +191,24 @@ public class GraphView extends SwingNode {
                 if(pickSupport != null) {
                     final Point s = MouseInfo.getPointerInfo().getLocation(); //e.getLocationOnScreen() is not good enough
                     final Object v = pickSupport.getVertex(vv.getGraphLayout(), p.getX(), p.getY());
-                    if(v != null) {
-                        System.out.println("Vertex " + v + " was right clicked");
+                    objectForGraph = v;
+                    if (v != null && objectContextMenu != null) {
                         Platform.runLater(() -> {
-                            contextMenu.show(GraphView.this, s.getX(), s.getY());
+                            objectContextMenu.show(GraphView.this, s.getX(), s.getY());
                         });
-                    } else {
+                    }/* else {
                         final Relation edge = pickSupport.getEdge(vv.getGraphLayout(), p.getX(), p.getY());
-                        if(edge != null) {
-                            System.out.println("Edge " + edge + " was right clicked");
+                        if (edge != null ) {
                             Platform.runLater(() -> {
                                 contextMenu.show(GraphView.this, s.getX(), s.getY());
                             });
                         }
-                    }
+                    }*/
                 }
             }
         });
         visualizator.setGraphMouse(graphMouse);
         visualizator.addKeyListener(new DefaultModalGraphMouse.ModeKeyAdapter(graphMouse)); //press t and p to change modes!
-        //
-        contextMenu = new ContextMenu();
-        final MenuItem mi = new MenuItem("Yes!");
-        mi.setOnAction(e -> { });
-        contextMenu.getItems().add(mi);
-        this.setOnMousePressed(e -> {
-            if (contextMenu.isShowing()) {
-                contextMenu.hide();
-            }
-        });
         //
         try {
             SwingUtilities.invokeAndWait(() -> {
@@ -211,6 +232,22 @@ public class GraphView extends SwingNode {
                 layout2.translate(deltaX, deltaY);
             });
         }).start();
+    }
+
+    /**
+     * Returns context menu for nodes.
+     * @return context menu for nodes
+     */
+    public ContextMenu getObjectContextMenu() {
+        return objectContextMenu;
+    }
+
+    /**
+     * Sets context menu for nodes.
+     * @param objectContextMenu new object context menu
+     */
+    public void setObjectContextMenu(final ContextMenu objectContextMenu) {
+        this.objectContextMenu = objectContextMenu;
     }
 
     /**

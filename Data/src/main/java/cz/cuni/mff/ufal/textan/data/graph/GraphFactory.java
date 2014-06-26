@@ -20,7 +20,7 @@ import java.util.Set;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 
 

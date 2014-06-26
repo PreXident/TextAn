@@ -1,1 +1,2 @@
-include "Commons", "Data", "Server", "Client", "TextPro"
+
+include "Commons", "Data", "Server", "Client", "NameTagIntegration", "TextPro"

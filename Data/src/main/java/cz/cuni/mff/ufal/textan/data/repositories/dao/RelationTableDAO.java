@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 @Repository
 @Transactional
@@ -43,10 +43,24 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
                 .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", RelationTypeTable.PROPERTY_NAME_ID), relationTypeId))
                 .list();
     }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<RelationTable> findAllByRelationType(Long relationTypeId, int firstResult, int pageSize) {
+        return findAllCriteria()
+                .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_RELATION_TYPE_ID), "objType", JoinType.INNER_JOIN)
+                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", RelationTypeTable.PROPERTY_NAME_ID), relationTypeId))
+                .setFirstResult(firstResult)
+                .setMaxResults(pageSize)
+                .list();
+    }
 
     @Override
     public List<RelationTable> findAllByRelationType(RelationTypeTable relationType) {
         return findAllByRelationType(relationType.getId());
+    }
+    @Override
+    public List<RelationTable> findAllByRelationType(RelationTypeTable relationType, int firstResult, int pageSize) {
+        return findAllByRelationType(relationType.getId(), firstResult, pageSize);
     }
 
     @Override
@@ -57,6 +71,16 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
                 .add(Restrictions.eq(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_ANCHOR), alias))
                 .list();
     }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<RelationTable> findAllByAliasEqualTo(String alias, int firstResult, int pageSize) {
+        return findAllCriteria()
+                .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
+                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_ANCHOR), alias))
+                .setFirstResult(firstResult)
+                .setMaxResults(pageSize)
+                .list();
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -65,6 +89,17 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
                 .add(Restrictions.like(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_ANCHOR),
                                        DAOUtils.getLikeSubstring(aliasSubstring)))
+                .list();
+    }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<RelationTable> findAllByAliasSubstring(String aliasSubstring, int firstResult, int pageSize) {
+        return findAllCriteria()
+                .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
+                .add(Restrictions.like(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_ANCHOR),
+                                       DAOUtils.getLikeSubstring(aliasSubstring)))
+                .setFirstResult(firstResult)
+                .setMaxResults(pageSize)
                 .list();
     }
 
@@ -79,9 +114,26 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
                                      documentId))
                 .list();
     }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<RelationTable> findAllByDocumentOccurrence(Long documentId, int firstResult, int pageSize) {
+        return findAllCriteria()
+                .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
+                .createAlias(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_DOCUMENT),
+                             "document", JoinType.INNER_JOIN)
+                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("document", DocumentTable.PROPERTY_NAME_ID),
+                                     documentId))
+                .setFirstResult(firstResult)
+                .setMaxResults(pageSize)
+                .list();
+    }
 
     @Override
     public List<RelationTable> findAllByDocumentOccurrence(DocumentTable document) {
         return findAllByDocumentOccurrence(document.getId());
+    }
+    @Override
+    public List<RelationTable> findAllByDocumentOccurrence(DocumentTable document, int firstResult, int pageSize) {
+        return findAllByDocumentOccurrence(document.getId(), firstResult, pageSize);
     }
 }

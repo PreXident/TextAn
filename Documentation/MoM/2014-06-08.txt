@@ -1,0 +1,26 @@
+Hi guys,
+ ...another bit boring summary :) : 
+
+Jakub:
+I reworked model loading and learning (when server starts, it looks for nametag model and if find some, than use it, else start training new one).
+Also I included morpohodita and text tagging (but I'm not sure if I didn't mention it later ;) )
+
+Adam:
+
+as expected there was not enough time during our company teambuilding to do some serious work on the project
+so except for some incomplete fixing of text rendering, i have not much to report
+
+i hope i will be more productive now as examination term is over for me
+
+Tam:
+
+I am writing the test for machine learning. Nothing special, getting familiar with jUnit test.
+
+Me:
+I mainly tested different parts of Textan. The good news is that master branch works on linux. But there is still a lot of things that needs to "fine-tune" (e.g. https://github.com/PreXident/TextAn/issues/46).
+
+I also got a documentation of Petr Skoda's software project, so I add it to drive for inspiration (http://goo.gl/wU0XO0), and I sent an email to Ondrej about the next meeting, but he hasn't answered yet.
+
+
+See you on Thursday in the Lab,
+Petr

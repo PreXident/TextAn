@@ -9,7 +9,6 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
 import cz.cuni.mff.ufal.textan.server.models.Graph;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.models.Relation;
-import cz.cuni.mff.ufal.textan.server.models.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,19 +36,19 @@ public class GraphService {
         this.relationTableDAO = relationTableDAO;
     }
 
-    public Graph getPath(long startObjectId, long targetObjectId, Ticket serverTicket) throws IdNotFoundException {
+    public Graph getPath(long startObjectId, long targetObjectId) throws IdNotFoundException {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public Graph getGraph(long objectId, int distance, Ticket serverTicket) throws IdNotFoundException {
-        return getGraph(objectId, distance);
+    public Graph getGraph(long objectId, int distance) throws IdNotFoundException {
+        return getGraphInner(objectId, distance);
     }
 
-    public Graph getRelatedObjects(long objectId, Ticket serverTicket) throws IdNotFoundException {
-        return getGraph(objectId, 1);
+    public Graph getRelatedObjects(long objectId) throws IdNotFoundException {
+        return getGraphInner(objectId, 1);
     }
 
-    private Graph getGraph(long objectId, int distance) throws IdNotFoundException {
+    private Graph getGraphInner(long objectId, int distance) throws IdNotFoundException {
 
         //TODO implement properly
 

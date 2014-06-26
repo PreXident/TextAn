@@ -12,7 +12,7 @@ import java.util.Set;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class Graph {
     Set<Node> nodes = new HashSet<>();

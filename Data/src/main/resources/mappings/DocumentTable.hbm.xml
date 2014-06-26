@@ -4,7 +4,7 @@
  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
 
 <hibernate-mapping>
-    <class name="cz.cuni.mff.ufal.textan.data.tables.DocumentTable" table="document">
+    <class name="cz.cuni.mff.ufal.textan.data.tables.DocumentTable" table="Document">
         <meta attribute="class-description">
             Document - Report - Text writen by policemen
         </meta>

@@ -23,9 +23,16 @@
 		<!--</ScrollPane>-->
 	</center>
 	<bottom>
-		<HBox alignment="CENTER_RIGHT" >
-			<Button text="%cancel" onAction="#cancel"/>
-			<Button text="%continue" onAction="#next"/>
-		</HBox>
+		<BorderPane>
+			<left>
+				<Button text="%back" onAction="#next" visible="false" />
+			</left>
+			<center>
+				<Slider fx:id="slider" min="1" max="4" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="0" majorTickUnit="1" minorTickCount="0" />
+			</center>
+			<right>
+				<Button text="%continue" onAction="#next"/>
+			</right>
+		</BorderPane>
 	</bottom>
 </BorderPane>

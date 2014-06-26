@@ -10,7 +10,7 @@ import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class ObjectNode extends Node {
     public static final String UNKNOWN_OBJECT_NAME = "Unknown Object";

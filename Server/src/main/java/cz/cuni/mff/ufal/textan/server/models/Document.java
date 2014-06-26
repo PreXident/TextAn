@@ -43,7 +43,7 @@ public class Document {
      * @return the document
      */
     public static Document fromDocumentTable(DocumentTable documentTable) {
-        return new Document(documentTable.getId(), documentTable.getText(), false,
+        return new Document(documentTable.getId(), documentTable.getText(), documentTable.isProcessed(),
                 documentTable.getAddedDate(), null, documentTable.getProcessedDate());
         //TODO: solve problem with "processed" and "last change"
     }

@@ -3,7 +3,8 @@
            xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
            targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz" elementFormDefault="qualified">
 
-    <xs:include schemaLocation="Ticket.xsd"/>
+    <xs:include schemaLocation="UsernameToken.xsd"/>
+
     <xs:include schemaLocation="Document.xsd"/>
     <xs:include schemaLocation="Entity.xsd"/>
     <xs:include schemaLocation="ObjectType.xsd"/>
@@ -11,6 +12,7 @@
     <xs:include schemaLocation="RelationType.xsd"/>
     <xs:include schemaLocation="Relation.xsd"/>
     <xs:include schemaLocation="Graph.xsd"/>
+    <xs:include schemaLocation="JoinedObject.xsd"/>
 
     <!--idNotFoundException-->
     <xs:element name="idNotFoundException" type="IdNotFoundException"/>
@@ -19,6 +21,28 @@
             <!--<xs:element name="message" nillable="true" type="xs:string"/>-->
             <xs:element name="fieldName" nillable="true" type="xs:string"/>
             <xs:element name="fieldValue" nillable="true" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Occurrence">
+        <xs:sequence>
+            <xs:element name="value" type="xs:string"/>
+            <xs:element name="position" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ObjectOccurrence">
+        <xs:sequence>
+            <xs:element name="objectId" type="xs:long"/>
+            <xs:element name="alias" type="Occurrence"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RelationOccurrence">
+        <xs:sequence>
+            <!-- TODO: make sure if it's all -->
+            <xs:element name="relationId" type="xs:long" />
+            <xs:element name="anchor" type="Occurrence" nillable="true"/>
         </xs:sequence>
     </xs:complexType>
 

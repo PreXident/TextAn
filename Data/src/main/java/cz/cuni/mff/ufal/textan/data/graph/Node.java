@@ -10,7 +10,7 @@ import java.util.Objects;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class Node {
     public static final long UNKNOWN_NODE_ID = -1;

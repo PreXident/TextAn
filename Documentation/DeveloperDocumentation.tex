@@ -1,0 +1,122 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage[some]{background}
+
+
+%TODO select color coresponding to logo
+\definecolor{titlepagecolor}{cmyk}{1,.60,0,.40}
+
+\backgroundsetup{
+scale=1,
+angle=0,
+opacity=1,
+contents={
+\begin{tikzpicture}[remember picture,overlay]
+  \path [fill=titlepagecolor] (current page.west)rectangle (current page.north east); 
+  \draw [color=white, very thick] (5,0)--(5,0.5\paperheight);
+ \end{tikzpicture}}
+}
+
+\DeclareFixedFont{\bigsf}{T1}{phv}{b}{n}{1.5cm}
+
+\usepackage[unicode,colorlinks=true]{hyperref}
+\hypersetup{pdftitle=TextAn - developer documentation}
+\hypersetup{pdfauthor={Petr Fanta, Duc Tam Hoang, Adam Huječek, Václav Pernička, Jakub Vlček}}
+\hypersetup{linkcolor=black, citecolor=black, urlcolor=black, filecolor=black}
+
+\makeatletter
+\def\@makechapterhead#1{
+  {\parindent \z@ \raggedright \normalfont
+   \Huge\bfseries \thechapter. #1
+   \par\nobreak
+   \vskip 20\p@
+}}
+\def\@makeschapterhead#1{
+  {\parindent \z@ \raggedright \normalfont
+   \Huge\bfseries #1
+   \par\nobreak
+   \vskip 20\p@
+}}
+\makeatother
+
+\def\chapwithtoc#1{
+\chapter*{#1}
+\addcontentsline{toc}{chapter}{#1}
+}
+
+\setkeys{Gin}{resolution=96}
+
+\begin{document}
+
+%TODO better titlepage
+\begin{titlepage}
+\BgThispage
+
+\newgeometry{left=2cm,right=6cm,bottom=2cm}
+\vspace*{0.3\textheight}
+\noindent
+\textcolor{white}{\bigsf TextAn}
+
+\vspace*{1cm}
+\noindent
+\textcolor{white}{\Huge\textbf{\textsf{Developer Documentation}}}
+
+\vspace*{2cm}\par
+\noindent
+\begin{minipage}{0.35\linewidth}
+\textbf{Authors} \\
+Petr Fanta \\
+Duc Tam Hoang \\
+Adam Huječek \\
+Václav Pernička \\
+Jakub Vlček\vspace{40pt} \\
+\textbf{Supervisor} \\
+Ondřej Bojar\vspace{40pt} \\
+\textbf{Version} \\
+0.1\vspace{40pt} \\
+\textbf{Date} \\
+\today \\
+\end{minipage}
+
+%TODO add logo
+
+\end{titlepage}
+\restoregeometry
+
+\pagenumbering{roman}
+\tableofcontents
+
+%\chapter*{Intro}
+%\addcontentsline{toc}{chapter}{Intro}
+
+
+\chapter{Introduction}
+\pagenumbering{arabic}
+
+\section{Introduction to the project}
+\section{Work on the project}
+\section{Adopted solutions and decisions}
+\section{Related work}
+%..
+\section{Conventions}
+\section{Glossary}
+%...
+
+\chapter{Requirement specification}
+
+\chapter{Architecture}
+
+\chapter{Developer notes}
+
+\chapter{Possibilities of future extensions}
+
+
+
+
+\end{document}

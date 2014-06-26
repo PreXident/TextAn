@@ -1,0 +1,35 @@
+Everyone here!
+
+Kuba:
+- rename configuration file
+- add morphodita integration to server
+- solving problems with learning nametag on linux
+- havn't done last hwk! (extract entity/object and relation types from schemas provided by the Police)
+
+Venca:
+- all homework from last meeting done (which meens nothing)
+
+Tam:
+- added one more feature to machine learning (TextPro)
+- write tests for computing featrure value
+
+Adam:
+- prepared gradle task megajar to pack the client and all its depencecies to one jar
+- context menus now no longer consumes evenets leading to their closing
+
+Petr:
+- don't know what to do, so tetsing everithing
+- started with documentation
+
+HWK:
+- Tam: convert from map to pair on the output of learning
+- Tam: working on next feature
+- Kuba: extract entity/object and relation types from schemas provided by the Police
+- Kuba: reworked nametag learning config
+- Petr: explore creating sessions in hibernate
+- Adam: rework new line handling on client
+- Adam: rework graph wizard to object list viewer
+- Venca: db - findAll limit (from, to) support
+- Petr: review graphs
+
+Next meeting: Same time, same place (Thursday, 11 o'clock)

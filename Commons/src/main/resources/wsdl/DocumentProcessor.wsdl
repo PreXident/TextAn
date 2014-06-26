@@ -14,77 +14,92 @@
         </xs:schema>
     </wsdl:types>
     
-    <wsdl:message name="ticket">
-        <wsdl:part name="ticket" element="cms:ticket"/>
+    <wsdl:message name="usernameToken">
+        <wsdl:part name="usernameToken" element="cms:usernameToken"/>
     </wsdl:message>
     
-    <wsdl:message name="editingTicket">
-        <wsdl:part name="editingTicket" element="cms:editingTicket"/>
-    </wsdl:message>    
+    <!--<wsdl:message name="editingTicket">
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
+    </wsdl:message> -->
     
-    <wsdl:message name="getEditingTicket">
-        <wsdl:part name="getEditingTicket" element="tns:getEditingTicket"/>
+    <wsdl:message name="getEditingTicketRequest">
+        <wsdl:part name="getEditingTicketRequest" element="tns:getEditingTicketRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getEditingTicketResponse">
         <wsdl:part name="getEditingTicketResponse" element="tns:getEditingTicketResponse"/>
     </wsdl:message>
          
-    <wsdl:message name="getEntitiesFromString">
-        <wsdl:part name="getEntitiesFromString" element="tns:getEntitiesFromString"/>
+    <wsdl:message name="getEntitiesFromStringRequest">
+        <wsdl:part name="getEntitiesFromStringRequest" element="tns:getEntitiesFromStringRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getEntitiesFromStringResponse">
         <wsdl:part name="getEntitiesFromStringResponse" element="tns:getEntitiesFromStringResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getEntitiesById">
-        <wsdl:part name="getEntitiesById" element="tns:getEntitiesById"/>
+    <wsdl:message name="getEntitiesByIdRequest">
+        <wsdl:part name="getEntitiesByIdRequest" element="tns:getEntitiesByIdRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getEntitiesByIdResponse">
         <wsdl:part name="getEntitiesByIdResponse" element="tns:getEntitiesByIdResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getAssignmentsFromString">
-        <wsdl:part name="getAssignmentsFromString" element="tns:getAssignmentsFromString"/>
+    <wsdl:message name="getAssignmentsFromStringRequest">
+        <wsdl:part name="getAssignmentsFromStringRequest" element="tns:getAssignmentsFromStringRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getAssignmentsFromStringResponse">
         <wsdl:part name="getAssignmentsFromStringResponse" element="tns:getAssignmentsFromStringResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getAssignmentsById">
-        <wsdl:part name="getAssignmentsById" element="tns:getAssignmentsById"/>
+    <wsdl:message name="getAssignmentsByIdRequest">
+        <wsdl:part name="getAssignmentsByIdRequest" element="tns:getAssignmentsByIdRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getAssignmentsByIdResponse">
         <wsdl:part name="getAssignmentsByIdResponse" element="tns:getAssignmentsByIdResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="saveProcessedDocumentById">
-        <wsdl:part name="saveProcessedDocumentById" element="tns:saveProcessedDocumentById"/>
+    <wsdl:message name="saveProcessedDocumentByIdRequest">
+        <wsdl:part name="saveProcessedDocumentByIdRequest" element="tns:saveProcessedDocumentByIdRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentByIdResponse">
         <wsdl:part name="saveProcessedDocumentByIdResponse" element="tns:saveProcessedDocumentByIdResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="saveProcessedDocumentFromString">
-        <wsdl:part name="saveProcessedDocumentFromString" element="tns:saveProcessedDocumentFromString"/>
+    <wsdl:message name="saveProcessedDocumentFromStringRequest">
+        <wsdl:part name="saveProcessedDocumentFromStringRequest" element="tns:saveProcessedDocumentFromStringRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentFromStringResponse">
         <wsdl:part name="saveProcessedDocumentFromStringResponse" element="tns:saveProcessedDocumentFromStringResponse"/>
     </wsdl:message>
 
-    <!-- TODO: Add getProblemsFromString or something like that -->
-    <wsdl:message name="getProblems">
-        <wsdl:part name="getProblems" element="tns:getProblems"/>
+    <wsdl:message name="getProblemsByIdRequest">
+        <wsdl:part name="getProblemsByIdRequest" element="tns:getProblemsByIdRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
-    <wsdl:message name="getProblemsResponse">
-        <wsdl:part name="getProblemsResponse" element="tns:getProblemsResponse"/>
+    <wsdl:message name="getProblemsByIdResponse">
+        <wsdl:part name="getProblemsByIdResponse" element="tns:getProblemsByIdResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getProblemsFromStringRequest">
+        <wsdl:part name="getProblemsFromStringRequest" element="tns:getProblemsFromStringRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
+    </wsdl:message>
+
+    <wsdl:message name="getProblemsFromStringResponse">
+        <wsdl:part name="getProblemsFromStringResponse" element="tns:getProblemsFromStringResponse"/>
     </wsdl:message>
 
     <wsdl:message name="idNotFoundException">
@@ -94,59 +109,65 @@
     <wsdl:portType name="DocumentProcessor">
         
         <wsdl:operation name="getEditingTicket">            
-            <wsdl:input message="ws:getEditingTicket"/>
+            <wsdl:input message="ws:getEditingTicketRequest"/>
             <wsdl:output message="ws:getEditingTicketResponse"/>
         </wsdl:operation>
 
         <wsdl:operation name="getEntitiesFromString">
-            <wsdl:input message="ws:getEntitiesFromString"/>
+            <wsdl:input message="ws:getEntitiesFromStringRequest"/>
             <wsdl:output message="ws:getEntitiesFromStringResponse"/>
         </wsdl:operation>
         
         <wsdl:operation name="getEntitiesById">
-            <wsdl:input message="ws:getEntitiesById"/>
+            <wsdl:input message="ws:getEntitiesByIdRequest"/>
             <wsdl:output message="ws:getEntitiesByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="getAssignmentsFromString">
-            <wsdl:input message="ws:getAssignmentsFromString"/>
+            <wsdl:input message="ws:getAssignmentsFromStringRequest"/>
             <wsdl:output message="ws:getAssignmentsFromStringResponse"/>
         </wsdl:operation>
         
         <wsdl:operation name="getAssignmentsById">
-            <wsdl:input message="ws:getAssignmentsById"/>
+            <wsdl:input message="ws:getAssignmentsByIdRequest"/>
             <wsdl:output message="ws:getAssignmentsByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="saveProcessedDocumentFromString">
-            <wsdl:input message="ws:saveProcessedDocumentFromString"/>
+            <wsdl:input message="ws:saveProcessedDocumentFromStringRequest"/>
             <wsdl:output message="ws:saveProcessedDocumentFromStringResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="saveProcessedDocumentById">
-            <wsdl:input message="ws:saveProcessedDocumentById"/>
+            <wsdl:input message="ws:saveProcessedDocumentByIdRequest"/>
             <wsdl:output message="ws:saveProcessedDocumentByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
-        <wsdl:operation name="getProblems">
-            <wsdl:input message="ws:getProblems"/>
-            <wsdl:output message="ws:getProblemsResponse"/>
+        <wsdl:operation name="getProblemsById">
+            <wsdl:input message="ws:getProblemsByIdRequest"/>
+            <wsdl:output message="ws:getProblemsByIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProblemsFromString">
+            <wsdl:input message="ws:getProblemsFromStringRequest"/>
+            <wsdl:output message="ws:getProblemsFromStringResponse"/>
         </wsdl:operation>
         
     </wsdl:portType>
     
-    <wsdl:binding name="DocumentProcessor" type="ws:DocumentProcessor">
+    <wsdl:binding name="DocumentProcessorBinging" type="ws:DocumentProcessor">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         
         <wsdl:operation name="getEditingTicket">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getTicket"/>
             <wsdl:input>
-                <soap:body parts="getEditingTicket" use="literal"/>
-                <soap:header message="ws:ticket" use="literal" part="ticket"/>
+                <soap:body parts="getEditingTicketRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getEditingTicketResponse" use="literal"/>
@@ -156,8 +177,9 @@
         <wsdl:operation name="getEntitiesFromString">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getEntitiesFromString"/>
             <wsdl:input>
-                <soap:body parts="getEntitiesFromString" use="literal"/>                
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:body parts="getEntitiesFromStringRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:getEntitiesFromStringRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getEntitiesFromStringResponse" use="literal"/>
@@ -167,8 +189,9 @@
         <wsdl:operation name="getEntitiesById">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getEntitiesById"/>
             <wsdl:input>
-                <soap:body parts="getEntitiesById" use="literal"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:body parts="getEntitiesByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:getEntitiesByIdRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getEntitiesByIdResponse" use="literal"/>
@@ -181,8 +204,9 @@
         <wsdl:operation name="getAssignmentsFromString">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getAssignmentsFromString"/>
             <wsdl:input>
-                <soap:body parts="getAssignmentsFromString" use="literal"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:body parts="getAssignmentsFromStringRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:getAssignmentsFromStringRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getAssignmentsFromStringResponse" use="literal"/>
@@ -192,8 +216,9 @@
         <wsdl:operation name="getAssignmentsById">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getAssignmentsById"/>
             <wsdl:input>
-                <soap:body parts="getAssignmentsById" use="literal"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:body parts="getAssignmentsByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:getAssignmentsByIdRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getAssignmentsByIdResponse" use="literal"/>
@@ -206,8 +231,9 @@
         <wsdl:operation name="saveProcessedDocumentFromString">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/saveProcessedDocumentFromString"/>
             <wsdl:input>
-                <soap:body parts="saveProcessedDocumentFromString" use="literal"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:body parts="saveProcessedDocumentFromStringRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:saveProcessedDocumentFromStringRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="saveProcessedDocumentFromStringResponse" use="literal"/>
@@ -220,8 +246,9 @@
         <wsdl:operation name="saveProcessedDocumentById">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/saveProcessedDocumentById"/>
             <wsdl:input>
-                <soap:body parts="saveProcessedDocumentById" use="literal"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:body parts="saveProcessedDocumentByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:saveProcessedDocumentByIdRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="saveProcessedDocumentByIdResponse" use="literal"/>
@@ -231,20 +258,36 @@
             </wsdl:fault>
         </wsdl:operation>
     
-        <wsdl:operation name="getProblems">
+        <wsdl:operation name="getProblemsById">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getProblems"/>
             <wsdl:input>
-                <soap:body parts="getProblems" use="literal"/>
-                <soap:header message="ws:editingTicket" part="editingTicket" use="literal"/>
+                <soap:body parts="getProblemsByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:getProblemsByIdRequest" part="editingTicket" use="literal"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body parts="getProblemsResponse" use="literal"/>
+                <soap:body parts="getProblemsByIdResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal" />
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProblemsFromString">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getProblems"/>
+            <wsdl:input>
+                <soap:body parts="getProblemsFromStringRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:getProblemsFromStringRequest" part="editingTicket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getProblemsFromStringResponse" use="literal"/>
             </wsdl:output>
         </wsdl:operation>
     </wsdl:binding>
     
     <wsdl:service name="DocumentProcessorService">
-        <wsdl:port name="DocumentProcessor" binding="ws:DocumentProcessor">
+        <wsdl:port name="DocumentProcessorPort" binding="ws:DocumentProcessorBinging">
             <soap:address location="http://localhost/soap/DocumentProvider"/>
         </wsdl:port>
     </wsdl:service>

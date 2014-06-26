@@ -1,0 +1,22 @@
+Venca is missing, but hard-working!
+
+Adam
+- thought about synchronization, WiP
+
+Tam
+- nothing from Sunday
+
+Peter
+- experimenting with headers in client
+
+Kuba
+- reworked to beans
+
+HWK:
+- Tam, prepare machine learning part with feature  "distance between aliases"
+- Venca, see issues
+- Adam, filtering of comboboxes
+- Adam, window fix without hack
+- Adam, report save problem screen
+
+Next meeting Thursday at 11:00, to be confirmed, watch this file :-)

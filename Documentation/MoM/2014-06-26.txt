@@ -1,0 +1,33 @@
+Venca is late, because of bad bed that does not force him to leave it.
+
+Adam:
+- objects from db display newly assigned aliases the same way new objects do
+- added client task for zipping the distribution
+- added -Xlint:unchecked to compile arguments
+
+Kuba:
+- machine learning, formatting of the output
+
+Venca:
+- basic pagination done
+- nametag view for Kuba done
+- export to rdf is postponed because it's not needed and not in requirements
+
+HWKs:
+- Adam, pipeline progress indicator needs margin, as well as other controls
+- Adam, graph window title should contain center object
+- Adam, when window is (de)maximized call layoutchildren for textflows
+- Adam, italic for relation anchors in relation editing step
+- Adam, list documents for objects
+- Adam, distance field in graph ignored
+- Adam, think about differentiate colors for objects/relations (hsv, ...)
+- Kuba, prepare virtual server for oracle virtual box
+- Kuba, test Venca's new view
+- Kuba, linux binaries to git
+- Venca, filtering is still missing
+- Venca, improve view
+- Peter, merge various changes to master
+- Tam, try to integrate textpro and data from db (connect from textpro to database, generate training data from db)
+
+Adam will be missing next time (until 6.7.), due to vacation!
+Next meeting on Thursday from 17:00.

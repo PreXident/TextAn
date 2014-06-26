@@ -1,6 +1,8 @@
 package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.tables.AbstractTable;
+import cz.cuni.mff.ufal.textan.data.test.TableAction;
+
 import java.io.Serializable;
 
 import org.hibernate.*;
@@ -9,10 +11,11 @@ import org.springframework.stereotype.Component;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
-@Deprecated // for tests only. Use DAOs.
+
 @Component
+@SuppressWarnings("unchecked")
 public class Data {
 
     private final SessionFactory sessionFactory;
@@ -34,7 +37,6 @@ public class Data {
      * @return null iff there is no record with specified id. Otherwise returns
      *          an instance of specified class (clazz)     *
      */
-    @Deprecated
     public <Table extends AbstractTable> Table getRecordById(final Class<Table> clazz, final Serializable id) {
         Session session = sessionFactory.openSession();
         try {

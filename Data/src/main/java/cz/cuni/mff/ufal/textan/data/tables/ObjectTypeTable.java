@@ -12,7 +12,7 @@ import java.util.Set;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 
 public class ObjectTypeTable extends AbstractTable {

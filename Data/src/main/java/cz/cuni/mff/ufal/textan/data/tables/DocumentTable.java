@@ -15,7 +15,7 @@ import javax.persistence.TemporalType;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class DocumentTable extends AbstractTable {
     

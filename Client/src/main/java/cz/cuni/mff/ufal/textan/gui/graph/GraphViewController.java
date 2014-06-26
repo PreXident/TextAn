@@ -1,17 +1,25 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
 import cz.cuni.mff.ufal.textan.core.Graph;
-import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.application.Platform;
+import java.util.concurrent.Semaphore;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import jfxtras.labs.scene.control.BigDecimalField;
 
 /**
  * Controls GraphView.
@@ -33,35 +41,70 @@ public class GraphViewController extends GraphController {
     @FXML
     private ToggleButton pickButton;
 
-    /** Localization container. */
-    ResourceBundle resourceBundle;
+    @FXML
+    private BigDecimalField distanceField;
+
+    @FXML
+    private ToolBar toolbar;
+
+    @FXML
+    private HBox leftToolbar;
+
+    @FXML
+    private HBox rightToolbar;
 
     /** Graph container. */
     GraphView graphView;
 
+    /** Synchronization lock. */
+    final Semaphore lock = new Semaphore(1);
+
+    /** Context menu for nodes and edges. */
+    ContextMenu contextMenu;
+
     @FXML
-    private void cancel() {
-        closeContainer();
+    private void newDistance() {
+        if (lock.tryAcquire()) {
+            final Node node = getMainNode();
+            node.setCursor(Cursor.WAIT);
+            grapher.setDistance(distanceField.getNumber().intValue());
+            new Thread(new GraphGetter(), "GraphGetter").start();
+        }
     }
 
     @FXML
     private void pick() {
-        graphView.pick();
-        pickButton.setSelected(true);
+        if (graphView != null) {
+            graphView.pick();
+            pickButton.setSelected(true);
+        } else {
+            transformButton.setSelected(true);
+        }
     }
 
     @FXML
     private void transform() {
-        graphView.transform();
+        if (graphView != null) {
+            graphView.transform();
+        }
         transformButton.setSelected(true);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //localization
-        this.resourceBundle = rb;
+        super.initialize(url, rb);
         stackPane.prefWidthProperty().bind(scrollPane.widthProperty());
         stackPane.prefHeightProperty().bind(scrollPane.heightProperty());
+        leftToolbar.prefWidthProperty().bind(toolbar.widthProperty().add(-25).divide(2));
+        rightToolbar.prefWidthProperty().bind(toolbar.widthProperty().add(-25).divide(2));
+        contextMenu = new ContextMenu();
+        contextMenu.setConsumeAutoHidingEvents(false);
+        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
+        graphMI.setOnAction(e -> {
+            contextMenu.hide();
+            textAnController.displayGraph(graphView.objectForGraph.getId(), distanceField.getNumber().intValue());
+        });
+        contextMenu.getItems().add(graphMI);
     }
 
     /**
@@ -71,28 +114,48 @@ public class GraphViewController extends GraphController {
     @Override
     public void setGrapher(final Grapher grapher) {
         super.setGrapher(grapher);
-        try {
-            final Graph g = grapher.getGraph();
-            graphView = new GraphView(settings,
-                    g.getNodes(), g.getEdges(), grapher.getRootId());
-            stackPane.getChildren().add(graphView);
-        } catch (IdNotFoundException e) {
-            e.printStackTrace();
-            callWithContentBackup(() -> {
-                createDialog()
-                        .owner(getDialogOwner(root))
-                        .title("This should have never happened!")
-                        .showException(e);
+        distanceField.setNumber(new BigDecimal(grapher.getDistance()));
+        final Node node = getMainNode();
+        node.setCursor(Cursor.WAIT);
+        new Thread(new GraphGetter(), "GraphGetter").start();
+    }
+
+    /**
+     * Task for getting graph from server.
+     */
+    protected class GraphGetter extends Task<Graph> {
+
+        /**
+         * Only constructor.
+         */
+        public GraphGetter() {
+            setOnSucceeded(e -> {
+                final Graph g = getValue();
+                graphView = new GraphView(settings,
+                        g.getNodes(), g.getEdges(), grapher.getRootId());
+                stackPane.getChildren().clear();
+                stackPane.getChildren().add(graphView);
+                graphView.requestFocus();
+                getMainNode().setCursor(Cursor.DEFAULT);
+                scrollPane.requestFocus();
+                graphView.setObjectContextMenu(contextMenu);
+                lock.release();
             });
-        } catch (Exception e) {
-            e.printStackTrace();
-            Platform.runLater(() ->
-            callWithContentBackup(() -> {
-                createDialog()
-                        .owner(getDialogOwner(root))
-                        .title(Utils.localize(resourceBundle, "page.load.error"))
-                        .showException(e);
-            }));
+            setOnFailed(e -> {
+                getMainNode().setCursor(Cursor.DEFAULT);
+                callWithContentBackup(() -> {
+                    createDialog()
+                            .owner(getDialogOwner(root))
+                            .title(Utils.localize(resourceBundle, "page.load.error"))
+                            .showException(getException());
+                });
+                lock.release();
+            });
+        }
+
+        @Override
+        protected Graph call() throws Exception {
+            return grapher.getGraph();
         }
     }
 }

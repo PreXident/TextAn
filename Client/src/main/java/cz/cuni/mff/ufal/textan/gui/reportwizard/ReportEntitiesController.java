@@ -16,25 +16,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 
 /**
@@ -69,7 +73,7 @@ public class ReportEntitiesController extends ReportWizardController {
     ScrollPane scrollPane;
 
     @FXML
-    TextFlow textFlow;
+    Slider slider;
 
     /** Index of the first selected {@link Text} node. */
     int firstDragged = -1;
@@ -112,23 +116,30 @@ public class ReportEntitiesController extends ReportWizardController {
 
     @FXML
     private void back() {
-        pipeline.back();
-    }
-
-    @FXML
-    private void cancel() {
-        closeContainer();
+        if (pipeline.lock.tryAcquire()) {
+            pipeline.back();
+        }
     }
 
     @FXML
     private void next() {
-        pipeline.setReportWords(words);
+        if (pipeline.lock.tryAcquire()) {
+            getMainNode().setCursor(Cursor.WAIT);
+            new Thread(() -> {
+                pipeline.setReportWords(words);
+            }, "FromEntitiesState").start();
+        }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         resourceBundle = rb;
-        textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
+        textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
+        slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        slider.setLabelFormatter(new SliderLabelFormatter());
+        scrollPane.vvalueProperty().addListener(e -> {
+            textFlow.layoutChildren();
+        });
         //create popup
         BorderPane border = new BorderPane();
         listView = new ListView<>();
@@ -150,6 +161,7 @@ public class ReportEntitiesController extends ReportWizardController {
         });
         border.setTop(filterField);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
+        contextMenu.setConsumeAutoHidingEvents(false);
     }
 
     @Override

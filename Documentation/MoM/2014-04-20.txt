@@ -1,0 +1,7 @@
+hi,
+not much work from my side, i am planning to do much more tomorrow:
+- tooltips should now appear immediately without delay
+- playing a bit with adding objects (not ready for a commit though)
+
+see ya on wednesday
+adam

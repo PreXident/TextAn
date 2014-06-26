@@ -1,7 +1,9 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
+import cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -9,32 +11,76 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.core.env.Environment;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  * The root spring configuration.
+ *
  * @author Petr Fanta
+ * @author Jakub Vlček
  */
 @Configuration
-@PropertySource("classpath:server-default.properties")
-@PropertySource(value = "file:./server.properties", ignoreResourceNotFound = true)
 @Import(DataConfig.class)
 @ComponentScan("cz.cuni.mff.ufal.textan.server.services")
-public class AppConfig {
+public class AppConfig implements ApplicationContextAware {
 
-    @Autowired
-    private AbstractApplicationContext context;
+    /** Path to a default server property file (inside jar). */
+    private static final String DEFAULT_SERVER_PROPERTIES = "server-default.properties";
+    /** Path to an user server property file. The file should be relative to working directory. */
+    private static final String USER_SERVER_PROPERTIES = "server.properties";
 
-    @Autowired
-    private Environment serverProperties;
+    /** A Spring application context in which a instance of this config lives. */
+    private ApplicationContext context;
 
+    @SuppressWarnings("unused")
     @Autowired
-    private DataConfig dataConfig;
+    private IObjectTypeTableDAO objectTypeTableDAO;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
+
+    /**
+     * Loads properties from property files.
+     *
+     * @return a combination of the default and a user properties, if a user define some, otherwise default properties
+     * @throws IOException thrown when loading fails
+     */
+    @Bean
+    public Properties serverProperties() throws IOException {
+
+        //load default properties from jar
+        Properties defaults = new Properties();
+        defaults.load(getClass().getClassLoader().getResourceAsStream(DEFAULT_SERVER_PROPERTIES));
+
+
+        //load user properties
+        Properties properties = new Properties(defaults);
+        File userPropertiesFile = new File(USER_SERVER_PROPERTIES);
+        if (userPropertiesFile.exists()) {
+            try (InputStream stream = new FileInputStream(userPropertiesFile)) {
+                properties.load(stream);
+            }
+        }
+
+        return properties;
+    }
 
     /**
      * Creates a pre-configured Jetty server.
@@ -43,20 +89,20 @@ public class AppConfig {
      * @see org.eclipse.jetty.server.Server
      */
     @Bean(destroyMethod = "stop")
-    public Server server() {
+    public Server server() throws IOException {
 
         Server server = new Server(
                 new QueuedThreadPool(
-                        serverProperties.getProperty("server.threadPool.maxThreads", int.class),
-                        serverProperties.getProperty("server.threadPool.minThreads", int.class),
-                        serverProperties.getProperty("server.threadPool.idleTimeout", int.class)
+                        Integer.parseInt(serverProperties().getProperty("server.threadPool.maxThreads")),
+                        Integer.parseInt(serverProperties().getProperty("server.threadPool.minThreads")),
+                        Integer.parseInt(serverProperties().getProperty("server.threadPool.idleTimeout"))
                 )
         );
 
         //TODO: what about SSL connector?
         ServerConnector connector = new ServerConnector(server);
-        connector.setPort(serverProperties.getProperty("server.connector.port", int.class));
-        connector.setHost(serverProperties.getProperty("server.connector.host", String.class));
+        connector.setPort(Integer.parseInt(serverProperties().getProperty("server.connector.port")));
+        connector.setHost(serverProperties().getProperty("server.connector.host"));
 
         server.setConnectors(new Connector[]{connector});
 
@@ -81,7 +127,6 @@ public class AppConfig {
         return server;
     }
 
-
     /**
      * Creates a command invoker.
      *
@@ -91,5 +136,15 @@ public class AppConfig {
     @Bean(destroyMethod = "stop")
     public CommandInvoker commandInvoker() {
         return new CommandInvoker();
+    }
+
+    /**
+     * Creates a named entity recognizer
+     * @return the recognizer
+     * @see cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices
+     */
+    @Bean
+    public NameTagServices nametagServices() {
+        return new NameTagServices(objectTypeTableDAO);
     }
 }

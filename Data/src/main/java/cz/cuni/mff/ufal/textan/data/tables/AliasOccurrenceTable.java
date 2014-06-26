@@ -2,7 +2,7 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 public class AliasOccurrenceTable extends AbstractTable {
     /**

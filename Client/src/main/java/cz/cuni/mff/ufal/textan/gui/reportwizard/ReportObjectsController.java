@@ -9,9 +9,12 @@ import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import cz.cuni.mff.ufal.textan.gui.Window;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,18 +25,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -44,13 +51,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 
 /**
  * Controls editing objects.
  */
 public class ReportObjectsController extends ReportWizardController {
+
+    static final String TEXT_HIGHLIGHT_CLASS = "text-no-object";
 
     @FXML
     BorderPane root;
@@ -59,7 +67,7 @@ public class ReportObjectsController extends ReportWizardController {
     ScrollPane scrollPane;
 
     @FXML
-    TextFlow textFlow;
+    Slider slider;
 
     /** Localization controller. */
     ResourceBundle resourceBundle;
@@ -100,36 +108,63 @@ public class ReportObjectsController extends ReportWizardController {
     /** CheckBox for adding all objects from db to {@link #dbListView}. */
     CheckBox allObjectsCheckBox;
 
-    @FXML
-    public void back() {
-        pipeline.back();
-    }
+    /** Context menu for objects. */
+    ContextMenu objectContextMenu;
+
+    /** Object to display graph for. */
+    Object objectForGraph;
 
     @FXML
-    private void cancel() {
-        closeContainer();
+    public void back() {
+        if (pipeline.lock.tryAcquire()) {
+            pipeline.back();
+        }
     }
 
     @FXML
     private void next() {
+        StringBuilder builder = new StringBuilder();
         for (Entity ent : pipeline.getReportEntities()) {
             if (ent.getCandidate() == null) {
+                builder.append(ent.getValue()).append('\n');
+            }
+        }
+        if (pipeline.lock.tryAcquire()) {
+            if (builder.length() != 0) {
                 callWithContentBackup(() ->
                     createDialog()
                             .owner(getDialogOwner(root))
                             .title(Utils.localize(resourceBundle, "error.objects.unassigned"))
-                            .message(Utils.localize(resourceBundle, "error.objects.unassigned.detail"))
-                            .showInformation());
-                return;
+                            .showException(new Throwable() {
+                                @Override
+                                public String getMessage() {
+                                    return Utils.localize(resourceBundle, "error.objects.unassigned.detail");
+                                }
+
+                                @Override
+                                public void printStackTrace(PrintWriter s) {
+                                    s.write(builder.toString());
+                                }
+                            }));
+                pipeline.lock.release();
+            } else {
+                getMainNode().setCursor(Cursor.WAIT);
+                new Thread(() -> {
+                    pipeline.setReportObjects(pipeline.getReportEntities());
+                }, "FromObjectsState").start();
             }
         }
-        pipeline.setReportObjects(pipeline.getReportEntities());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         resourceBundle = rb;
-        textFlow.prefWidthProperty().bind(scrollPane.widthProperty());
+        textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
+        slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        slider.setLabelFormatter(new SliderLabelFormatter());
+        scrollPane.vvalueProperty().addListener(e -> {
+            textFlow.layoutChildren();
+        });
         //create popup
         BorderPane border = new BorderPane();
         final SplitPane splitVert = new SplitPane();
@@ -144,7 +179,7 @@ public class ReportObjectsController extends ReportWizardController {
             contextMenu.hide();
             final Entity ent =
                     pipeline.getReportEntities().get(selectedEntity.index);
-            final Object newObject = new Object(-newObjects.size() - 1, ent.getType(), Arrays.asList(ent.getValue()));
+            final NewObject newObject = new NewObject(ent.getType(), Collections.emptyList());
             newObjects.add(newObject);
             setNewObjectAsSelectedEntityCandidate(newObject);
         });
@@ -168,6 +203,15 @@ public class ReportObjectsController extends ReportWizardController {
         HBox.setHgrow(filterField, Priority.ALWAYS);
         border.setTop(top);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
+        contextMenu.setConsumeAutoHidingEvents(false);
+        objectContextMenu = new ContextMenu();
+        objectContextMenu.setConsumeAutoHidingEvents(false);
+        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
+        graphMI.setOnAction(e -> {
+            contextMenu.hide();
+            textAnController.displayGraph(objectForGraph.getId());
+        });
+        objectContextMenu.getItems().add(graphMI);
     }
 
     @Override
@@ -180,13 +224,13 @@ public class ReportObjectsController extends ReportWizardController {
                 final EntityBuilder entity = word.getEntity();
                 final long entityId = entity.getType().getId();
                 final int entityIndex = entity.getIndex();
+                final Entity ent = pipeline.getReportEntities().get(entityIndex);
                 Utils.styleText(text, "ENTITY", entityId);
 
                 EntityInfo entityInfo = entityLists.get(word.getEntity());
                 if (entityInfo == null) {
                     entityInfo = new EntityInfo();
                     entityInfo.index = entityIndex;
-                    final Entity ent = pipeline.getReportEntities().get(entityIndex);
                     entityInfo.type = ent.getType().getId();
                     final List<Pair<Double, Object>> candidates = ent.getCandidates();
                     Collections.sort(candidates, Entity.COMPARATOR);
@@ -197,26 +241,38 @@ public class ReportObjectsController extends ReportWizardController {
                         newObjects.add(cand);
                     }
                 }
+                if (ent.getCandidate() == null) {
+                    text.getStyleClass().add(TEXT_HIGHLIGHT_CLASS);
+                    entityInfo.texts.add(text);
+                }
                 final EntityInfo ei = entityInfo;
 
                 text.setOnMousePressed(e -> {
                     selectedEntity = ei;
-                    filterObjects(ei);
-                    contextMenu.show(text, Side.BOTTOM, 0, 0);
-                    filterField.requestFocus();
+                    if (e.isPrimaryButtonDown()) {
+                        filterObjects(ei);
+                        contextMenu.show(text, Side.BOTTOM, 0, 0);
+                        filterField.requestFocus();
+                    } else {
+                        if (ent.getCandidate() != null) {
+                            objectForGraph = ent.getCandidate();
+                            objectContextMenu.show(text, Side.BOTTOM, 0, 0);
+                        }
+                    }
                 });
             }
             text.setOnMouseEntered((MouseEvent t) -> {
                 if (word.getEntity() != null) {
                     final int entityIndex = word.getEntity().getIndex();
                     final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
+                    String newTip = word.getEntity().getType().getName();
                     if (obj != null) {
-                        final String newTip = obj.toString();
-                        tooltip.setText(newTip);
-                        Bounds bounds = text.getLayoutBounds();
-                        final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
-                        tooltip.show(text, p.getX(), p.getY());
+                        newTip = newTip + " - " + obj.toString();
                     }
+                    tooltip.setText(newTip);
+                    Bounds bounds = text.getLayoutBounds();
+                    final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
+                    tooltip.show(text, p.getX(), p.getY());
                 } else {
                     tooltip.hide();
                 }
@@ -241,11 +297,15 @@ public class ReportObjectsController extends ReportWizardController {
             public ListCell<Pair<Double, Object>> call(ListView<Pair<Double, Object>> p) {
                 return new ListCell<Pair<Double, Object>>() {
                     {
-                        this.setOnMouseClicked((MouseEvent e) -> {
-                            contextMenu.hide();
-                            @SuppressWarnings("unchecked")
-                            final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
-                            setObjectAsSelectedEntityCandidate(p.getSecond());
+                        this.setOnMousePressed((MouseEvent e) -> {
+                            if (e.isPrimaryButtonDown()) {
+                                contextMenu.hide();
+                                @SuppressWarnings("unchecked")
+                                final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
+                                setObjectAsSelectedEntityCandidate(p.getSecond());
+                            } else {
+                                objectForGraph = this.getItem().getSecond();
+                            }
                         });
                         this.setOnMouseEntered(e -> {
                             @SuppressWarnings("unchecked")
@@ -272,6 +332,9 @@ public class ReportObjectsController extends ReportWizardController {
                                 prefix = p.getFirst().toString() + ": ";
                             }
                             setText(shorter(prefix + p.getSecond().toString()));
+                            setContextMenu(objectContextMenu);
+                        } else {
+                            setContextMenu(null);
                         }
                     }
                 };
@@ -322,8 +385,11 @@ public class ReportObjectsController extends ReportWizardController {
      * @param object new candidate
      */
     private void setNewObjectAsSelectedEntityCandidate(final Object object) {
-        final Entity ent = setObjectAsSelectedEntityCandidate(object);
-        object.getAliases().add(ent.getValue());
+        if (object instanceof NewObject) {
+            ++((NewObject) object).refCount;
+        }
+        /*final Entity ent = */setObjectAsSelectedEntityCandidate(object);
+        //object.getAliases().add(ent.getValue());
     }
 
     /**
@@ -337,8 +403,14 @@ public class ReportObjectsController extends ReportWizardController {
                 pipeline.getReportEntities().get(selectedEntity.index);
         final Object prev = entity.getCandidate();
         final String alias = entity.getValue();
-        if (prev != null && prev.isNew()) {
-            prev.getAliases().remove(alias);
+        if (prev != null) {
+            if (prev instanceof NewObject && --((NewObject) prev).refCount == 0) {
+                newListView.setItems(null); //we need to get rid of the filtered list, or we get exception on removing
+                newObjects.remove(prev);
+            }
+        }
+        for (Text text : selectedEntity.texts) {
+            text.getStyleClass().remove(TEXT_HIGHLIGHT_CLASS);
         }
         entity.setCandidate(object);
         pipeline.resetStepsBack();
@@ -414,8 +486,8 @@ public class ReportObjectsController extends ReportWizardController {
         final Entity ent = pipeline.getReportEntities().get(entityInfo.index);
         if (ent.getCandidate() != null) {
             final Object candidate = ent.getCandidate();
-            if (candidate.isNew()) {
-                newListView.getSelectionModel().select(candidate);
+            if (candidate.isNew() && candidate instanceof NewObject) {
+                newListView.getSelectionModel().select((NewObject) candidate);
                 dbListView.getSelectionModel().select(-1);
             } else {
                 newListView.getSelectionModel().select(-1);
@@ -426,6 +498,14 @@ public class ReportObjectsController extends ReportWizardController {
                 }
             }
         }
+    }
+
+    @Override
+    public void setWindow(final Window window) {
+        super.setWindow(window);
+        window.getScene().getWindow().widthProperty().addListener(e -> {
+            Utils.runFXlater(() -> { textFlow.layoutChildren(); });
+        });
     }
 
     /**
@@ -444,5 +524,35 @@ public class ReportObjectsController extends ReportWizardController {
 
         /** List of all suitable candidates fot this entity. */
         ObservableList<Object> all;
+
+        /**
+         * List of texts that must be unhighlighted when object is assigned to
+         * the entity.
+         */
+        List<Text> texts = new ArrayList<>();
+    }
+
+    /**
+     * Simple extension of Object to count references.
+     */
+    static class NewObject extends Object {
+
+        /** Sequence generating object ids. */
+        static long id = 0;
+
+        /**
+         * Number of entities that have this object assigned.
+         * When hits 0, the object should be removed fromm {@link #newObjects}.
+         */
+        int refCount = 0;
+
+        /**
+         * Only constructor
+         * @param type object type
+         * @param aliases object aliases
+         */
+        public NewObject(ObjectType type, Collection<String> aliases) {
+            super(--id, type, aliases);
+        }
     }
 }

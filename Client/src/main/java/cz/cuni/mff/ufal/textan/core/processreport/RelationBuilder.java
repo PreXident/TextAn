@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RelationOccurrence;
+import cz.cuni.mff.ufal.textan.commons.models.Occurrence;
+import cz.cuni.mff.ufal.textan.commons.models.RelationOccurrence;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
@@ -99,7 +99,9 @@ public abstract class RelationBuilder extends AbstractBuilder {
     public cz.cuni.mff.ufal.textan.commons.models.Relation toRelation() {
         final Relation relation = new Relation(-index, type);
         for (IRelationInfo relInfo : data) {
-            relation.getObjects().add(new Pair<>(relInfo.getObject(), relInfo.getOrder()));
+            if (relInfo.getObject() != null) {
+                relation.getObjects().add(new Pair<>(relInfo.getObject(), relInfo.getOrder()));
+            }
         }
         return relation.toRelation();
     }

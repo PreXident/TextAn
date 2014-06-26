@@ -1,12 +1,12 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
+import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import java.io.IOException;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import org.controlsfx.dialog.Dialogs;
 
@@ -24,27 +24,28 @@ public class GraphStage extends OuterStage {
     /** Graph information provider. */
     final protected Grapher grapher;
 
-    /** Localization container. */
-    protected ResourceBundle resourceBundle;
-
     /**
      * Only constructor.
+     * If grapher is initialized by distance and center, graph is displayed,
+     * otherwise the object list is displayed.
+     * @param textAnController parent controller
      * @param settings properties with settings
      * @param grapher graph information provider
      */
-    public GraphStage(final Properties settings, final Grapher grapher) {
+    public GraphStage(final TextAnController textAnController, final Properties settings, final Grapher grapher) {
         super(TITLE, PROPERTY_ID, settings);
         this.grapher = grapher;
+        ResourceBundle resourceBundle = null;
         try {
-            resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.graph.ObjectList");
-            setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("ObjectList.fxml"), resourceBundle);
-            final Parent loadedRoot = (Parent) loader.load();
-            ObjectListController controller = loader.getController();
+            final Pair<Parent, GraphController> loaded = GraphController.loadFXML(grapher);
+            getInnerWindow().getContentPane().getChildren().add(loaded.getFirst());
+            final GraphController controller = loaded.getSecond();
+            controller.setTextAnController(textAnController);
+            resourceBundle = controller.resourceBundle;
+            controller.setStage(this);
             controller.setSettings(settings);
             controller.setGrapher(grapher);
-            controller.setStage(this);
-            getInnerWindow().getContentPane().getChildren().add(loadedRoot);
+            setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

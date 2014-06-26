@@ -1,0 +1,30 @@
+Hi,
+ i'm sending summary as always.
+
+Adam:
+most of my homework from last meeting is done:
+- adapted client for changed webservices
+- down arrow now switches focus to list below
+- only one list in selecting objects
+- pipeline now supports going back (changes are lost though, even if you go immediatelly forward again)
+- graph now contain buttons to switch modes
+- and a little bugfix: it is no longer possible to create split entity/relation by clearing entity/relation
+
+Vaclav:
+nothing (It is the content of his email.)
+
+Jakub:
+I haven't done as much as I planned, but was studying how to ran binaries from java. I can run learning, but now I'm in state, when i can learn new model, but i can't get info about progress (but it's in separate thread ;) )
+And was figuring out linking libraries ;)
+
+Tam:
+I have studied with machine learning to validate my prototype. I try some method on python, not java.
+
+I am still waiting for Ondrej's reply. I would need him Ondrej on next meeting.
+
+Me:
+I'm a little ashamed that I didn't do anything on the project. I only try to run nametag, but the last commit from Jakub seems to work.
+
+I sent an email about next meeting to Ondrej, so I let you know the result.
+See you on Wednesday,
+Petr

@@ -4,18 +4,17 @@ import cz.cuni.mff.ufal.textan.core.processreport.IStateChangedListener;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.State;
 import cz.cuni.mff.ufal.textan.core.processreport.State.StateType;
+import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import jfxtras.labs.scene.control.window.Window;
-import org.controlsfx.dialog.Dialogs;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  * Implementation of IStateChangedListener.
@@ -23,46 +22,17 @@ import java.util.ResourceBundle;
 public class StateChangedListener implements IStateChangedListener {
 
     /**
-     * Ugly hack to prevent mouse events for TextFlow to be ignored.
-     * If width is not bound, call {@link #hackFixTextFlowMouseEvents(Window)}.
+     * Ugly hack to prevent mouse events for TextFlow to be ignored
+     * and some display errors.
      * TODO more systematic solution
-     * @param window report wizard window containing the textflow
+     * @param controller controller that possible holds textflow
      */
-    static private void hackFixTextFlowMouseEvents(final ReportWizardWindow window) {
-        final boolean widthBound = window.prefWidthProperty().isBound();
-        if (!widthBound) {
-            hackFixTextFlowMouseEvents((Window) window);
-            return;
+    static private void hackFixTextFlow(final ReportWizardController controller) {
+        if (controller.textFlow != null) {
+            Utils.runFXlater(() -> {
+                controller.textFlow.layoutChildren();
+            });
         }
-        window.prefWidthProperty().unbind();
-        window.setPrefWidth(window.getPrefWidth() - 1);
-        runFXlater(() -> {
-            window.prefWidthProperty().bind(window.boundWidth);
-        });
-    }
-
-    /**
-     * Ugly hack to prevent mouse events for TextFlow to be ignored.
-     * Does not support bound width!
-     * TODO more systematic solution
-     * @param window window containing the textflow
-     */
-    static private void hackFixTextFlowMouseEvents(final Window window) {
-        window.setPrefWidth(window.getPrefWidth() - 1);
-        runFXlater(() -> window.setPrefWidth(window.getPrefWidth() + 1));
-    }
-
-    /**
-     * Runs finalizer in FX thread after 100 ms sleep in other thread.
-     * @param finalizer runnable to be run
-     */
-    static private void runFXlater(final Runnable finalizer) {
-        new Thread(() -> {
-            try {
-                Thread.sleep(100);
-            } catch (Exception e) { }
-            Platform.runLater(finalizer);
-        }).start();
     }
 
     /** Contains fxml and resource bundle for each StateType. */
@@ -83,6 +53,9 @@ public class StateChangedListener implements IStateChangedListener {
     /** Localization container. */
     private final ResourceBundle resourceBundle;
 
+    /** Parent controller. */
+    protected final TextAnController textAnController;
+
     {
         fxmlMapping.put(StateType.LOAD, new StateInfo("01_ReportLoad.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01_ReportLoad", "report.wizard.load.title"));
         fxmlMapping.put(StateType.EDIT_REPORT, new StateInfo("02_ReportEdit.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.02_ReportEdit", "report.wizard.edit.title"));
@@ -93,14 +66,17 @@ public class StateChangedListener implements IStateChangedListener {
 
     /**
      * Main constructor with all parameters.
-     * @param resourceBundle localization
+     * @param textAnController parent controller
      * @param settings application settings
      * @param pipeline pipeline
      * @param stage wizard's stage
      * @param window wizard's window
      */
-    private StateChangedListener(final ResourceBundle resourceBundle, final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage, final ReportWizardWindow window) {
-        this.resourceBundle = resourceBundle;
+    private StateChangedListener(final TextAnController textAnController,
+            final Properties settings, final ProcessReportPipeline pipeline,
+            final ReportWizardStage stage, final ReportWizardWindow window) {
+        this.textAnController = textAnController;
+        this.resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizard");
         this.settings = settings;
         this.pipeline = pipeline;
         this.stage = stage;
@@ -109,70 +85,80 @@ public class StateChangedListener implements IStateChangedListener {
 
     /**
      * Wizard is contained in a stage. Window property will be null.
-     * @param resourceBundle localization
+     * @param textAnController parent controller
      * @param settings application settings
      * @param pipeline pipeline
      * @param stage wizard's stage
      */
-    public StateChangedListener(final ResourceBundle resourceBundle, final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardStage stage) {
-        this(resourceBundle, settings, pipeline, stage, null);
+    public StateChangedListener(final TextAnController textAnController,
+            final Properties settings, final ProcessReportPipeline pipeline,
+            final ReportWizardStage stage) {
+        this(textAnController, settings, pipeline, stage, null);
     }
 
     /**
      * Wizard is contained in a window. Stage property will be null.
-     * @param resourceBundle localization
+     * @param textAnController parent controller
      * @param settings application settings
      * @param pipeline pipeline
      * @param window wizard's window
      */
-    public StateChangedListener(final ResourceBundle resourceBundle, final Properties settings, final ProcessReportPipeline pipeline, final ReportWizardWindow window) {
-        this(resourceBundle, settings, pipeline, null, window);
+    public StateChangedListener(final TextAnController textAnController,
+            final Properties settings, final ProcessReportPipeline pipeline,
+            final ReportWizardWindow window) {
+        this(textAnController, settings, pipeline, null, window);
     }
 
     @Override
     public void stateChanged(State newState) {
-        if (newState.getType() == StateType.DONE) {
-            if (window != null) {
-                window.close();
-            } else /*if (stage != null) */ {
-                stage.close();
+        Platform.runLater(() -> {
+            if (newState.getType() == StateType.DONE) {
+                if (window != null) {
+                    window.close();
+                } else /*if (stage != null) */ {
+                    stage.close();
+                }
+                return;
             }
-            return;
-        }
-        try {
-            final StateInfo stateInfo = fxmlMapping.get(newState.getType());
-            final ResourceBundle rb = ResourceBundle.getBundle(stateInfo.rb);
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource(stateInfo.fxml), rb);
-            final Parent loadedRoot = (Parent) loader.load();
-            ReportWizardController controller = loader.getController();
-            controller.setSettings(settings);
-            controller.setPipeline(pipeline);
-            final String title = Utils.localize(resourceBundle, stateInfo.title);
-            if (window != null) {
-                window.getContentPane().getChildren().clear();
-                controller.setWindow(window);
-                window.getContentPane().getChildren().add(loadedRoot);
-                window.setTitle(title);
-                hackFixTextFlowMouseEvents(window);
-            } else /* if (stage != null) */ {
-                controller.setStage(stage);
-                stage.getInnerWindow().getContentPane().getChildren().clear();
-                stage.getInnerWindow().getContentPane().getChildren().add(loadedRoot);
-                stage.getInnerWindow().setTitle(title);
-                hackFixTextFlowMouseEvents(stage.getInnerWindow());
+            try {
+                final StateInfo stateInfo = fxmlMapping.get(newState.getType());
+                final ResourceBundle rb = ResourceBundle.getBundle(stateInfo.rb);
+                final FXMLLoader loader = new FXMLLoader(getClass().getResource(stateInfo.fxml), rb);
+                final Parent loadedRoot = (Parent) loader.load();
+                ReportWizardController controller = loader.getController();
+                controller.setTextAnController(textAnController);
+                controller.setSettings(settings);
+                controller.setPipeline(pipeline);
+                final String title = String.format(
+                        Utils.localize(resourceBundle, "report.wizard.title.format"),
+                        Utils.localize(resourceBundle, "report.wizard"),
+                        Utils.localize(resourceBundle, stateInfo.title));
+                if (window != null) {
+                    window.getContentPane().getChildren().clear();
+                    controller.setWindow(window);
+                    window.getContentPane().getChildren().add(loadedRoot);
+                    window.setTitle(title);
+                } else /* if (stage != null) */ {
+                    controller.setStage(stage);
+                    stage.getInnerWindow().getContentPane().getChildren().clear();
+                    stage.getInnerWindow().getContentPane().getChildren().add(loadedRoot);
+                    stage.getInnerWindow().setTitle(title);
+                }
+                hackFixTextFlow(controller);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Dialogs.create()
+                        .title(Utils.localize(resourceBundle, "error.next.page"))
+                        .showException(e);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Dialogs.create()
-                    .title(Utils.localize(resourceBundle, "error.next.page"))
-                    .showException(e);
-        }
+            pipeline.lock.release();
+        });
     }
 
     /**
      * Simple holder of information about states.
      */
-    private static class StateInfo {
+    protected static class StateInfo {
 
         /** Fxml containing the state's view. */
         public final String fxml;

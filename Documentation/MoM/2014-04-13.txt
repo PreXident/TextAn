@@ -1,0 +1,33 @@
+Dears,
+ short summary as usual...
+
+Venca:
+I tried to find what I dont have to do because its in optional requirements :D
+Im looking how to set log4j logging only sql queries. (before spring it logged only sql. Now there is some garbage)
+
+(Venca will write the development documentation, so this kind of a report is ok. :))
+
+Adam:
+i did not have much time, but managed to changed displaying colors so they are no longer hardcoded in css files but generated from ids
+there is no user customization yet, however
+
+ps: i will bring my netbook but i am not sure it would handle the whole system
+
+Jakub:
+I returned from France on saturday and reached PC hour ago, so i didn't have much tu report.
+I will integrate my code (nametag integration) to master by Wednesday, i hope.
+Now I´m looking for integration learning part (running executable binary from java).
+
+Tam:
+ - Tam sent me a long report in pdf (attachment). I hope it isn't due to misunderstanding. :)
+
+Me:
+ I added service layer in Server side. This layer is between web services and rest of server. At this time, there is a service, which provide access to db, a graph service (not implemented yet, because Venca's Graph factory has some bugs), a named entity recognizer service, which will use nametag one day, and object assignment service. 
+ I also added the sql script, which fill the database with some sample data.
+ (I also made ​​a few minor changes, for example change all identifiers to long type.)
+Now I want to clean some unfinished tasks in server...
+
+See you on Wednesday,
+Petr
+
+PS: Please write to me who can take the notebook.

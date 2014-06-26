@@ -1,0 +1,39 @@
+Hi guys,
+ so, firstly summary:
+
+Adam:
+- dialog for userlogin is shown after main window is displayed, so default icon is not visible
+- if first connection to server fails, the object list window closes
+- vertex colors are now determined by object id
+- dialogs in main window made lightweight
+- client removes carriage return from reports
+- graph window now contains spinner for changing distance
+- prevented some NPEs when adding object to relation, but this still needs to think it over
+- you can use context menus on various places to display graphs
+- pagination and filtering on object list window is ready
+
+Jakub:
+-started with auto-generating training data from database
+-go through reworked code, repaired error handling and work in your comments (mainly reworked learning parameters handling)
+
+Tam:
+Last week, I worked on changing the return value of DoubleRanking from Map to Pair ArrayList and adding another feature (the mutual relation object) of ML (unfinished)
+
+Me:
+I mainly did revision of nametag integration code, tested textan on linux and fixed some bug with encoding in DB. I know nothing special, but now Jakub and I know new crazy things about Java and Windows...
+
+
+Further something about the next meeting:
+I finally got the answer from Ondrej, it will be nice to have the next meeting with him. Unfortunately, he can't come to our meeting on Thursday. Possible dates are:
+
+- on Tuesday 14-16
+- on Wdnesday afternoon (say 15-18)
+- on Friday at any time 9-16?
+
+I vote for Wednesday, but I can any time, and you? It might be better to create some issue in github.
+
+And finally the last thing... 
+We probably will get some virtual machine from school, where we can run TextAn server and maybe DB, so it will be good to prepare final set of object/relation types based on information from Honza Horinek.
+
+Please watch issues on gihub, or send me email about next meeting (see above),
+Petr

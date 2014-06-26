@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
- * @author Václav Pernička
+ * @author Vaclav Pernicka
  */
 @Repository
 @Transactional
