@@ -542,7 +542,7 @@ public class ReportRelationsController extends ReportWizardController {
                             if (o == null) {
                                 return "";
                             }
-                            return String.join(", ", o.getAliases()) + " (" + o.getId() + ") - " + o.getType().getName();
+                            return o.getAliasString() + " (" + o.getId() + ") - " + o.getType().getName();
                         }
                         @Override
                         public Object fromString(String string) {
