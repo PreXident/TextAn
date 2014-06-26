@@ -1,15 +1,18 @@
 package cz.cuni.mff.ufal.textan.server.services;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
-import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
+import cz.cuni.mff.ufal.textan.data.tables.*;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -29,14 +32,16 @@ public class DirectDataAccessService {
     private final IRelationTypeTableDAO relationTypeTableDAO;
     private final IRelationTableDAO relationTableDAO;
 
+    private final IInRelationTableDAO inRelationTableDAO;
+
     /**
      * Instantiates a new Direct data access service.
-     *
      * @param documentTableDAO the document table dAO
      * @param objectTypeTableDAO the object type table dAO
      * @param objectTableDAO the object table dAO
      * @param relationTypeTableDAO the relation type table dAO
      * @param relationTableDAO the relation table dAO
+     * @param inRelationTableDAO
      */
     @Autowired
     public DirectDataAccessService(
@@ -44,13 +49,14 @@ public class DirectDataAccessService {
             IObjectTypeTableDAO objectTypeTableDAO,
             IObjectTableDAO objectTableDAO,
             IRelationTypeTableDAO relationTypeTableDAO,
-            IRelationTableDAO relationTableDAO) {
+            IRelationTableDAO relationTableDAO, IInRelationTableDAO inRelationTableDAO) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
         this.objectTableDAO = objectTableDAO;
         this.relationTypeTableDAO = relationTypeTableDAO;
         this.relationTableDAO = relationTableDAO;
+        this.inRelationTableDAO = inRelationTableDAO;
     }
 
     /**
@@ -90,6 +96,24 @@ public class DirectDataAccessService {
     public List<Document> getDocuments() {
         return documentTableDAO.findAll().stream()
                 .map(cz.cuni.mff.ufal.textan.server.models.Document::fromDocumentTable)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets documents which contain object with given id.
+     * @param objectId the object id
+     * @return a list of documents
+     * @throws IdNotFoundException thrown when object with given id not exists
+     */
+    public List<Document> getDocumentsContainsObject(long objectId) throws IdNotFoundException {
+
+        ObjectTable objectTable = objectTableDAO.find(objectId);
+        if (objectTable == null) {
+            throw new IdNotFoundException("objectId", objectId);
+        }
+
+        return documentTableDAO.findAllDocumentsWithObject(objectId).stream()
+                .map(Document::fromDocumentTable)
                 .collect(Collectors.toList());
     }
 
@@ -162,9 +186,52 @@ public class DirectDataAccessService {
      * @return the objects
      */
     public List<Object> getObjects(long objectTypeId) {
+        //TODO: add test if id exists
+
         return objectTableDAO.findAllByObjectType(objectTypeId).stream()
                 .map(Object::fromObjectTable)
                 .collect(Collectors.toList());
+    }
+
+
+    public Pair<List<Object>,Integer> getFilteredObjects(Long objectTypeId, String aliasFilter, int firstResult, int maxResults) throws IdNotFoundException {
+
+        //TODO:implement
+        if (objectTypeId != null) {
+            ObjectTypeTable objectType = objectTypeTableDAO.find(objectTypeId);
+            if (objectType == null) {
+                throw new IdNotFoundException("objectTypeId", objectTypeId);
+            }
+        }
+
+        return new Pair<>(new ArrayList<>(), 0);
+    }
+
+    /**
+     * Finds all objects and their occurrences for a given document.
+     * @param documentId the document id
+     * @return the pair with the list of object and the list of their occurrences in the document
+     * @throws IdNotFoundException thrown when the document identifier not exists
+     */
+    public Pair<List<Object>, List<Pair<Long, Occurrence>>> getObjectsWithOccurrences(long documentId) throws IdNotFoundException {
+        DocumentTable documentTable = documentTableDAO.find(documentId);
+        if (documentTable == null) {
+            throw new IdNotFoundException("documentId", documentId);
+        }
+
+        Set<Object> objects = new HashSet<>();
+        List<Pair<Long, Occurrence>> objectOccurrences = new ArrayList<>();
+
+        for (AliasOccurrenceTable aliasOccurrence : documentTable.getAliasOccurrences()) {
+
+            AliasTable alias = aliasOccurrence.getAlias();
+            ObjectTable object = alias.getObject();
+
+            objects.add(Object.fromObjectTable(object));
+            objectOccurrences.add(new Pair<>(object.getId(), new Occurrence(alias.getAlias(), aliasOccurrence.getPosition())));
+        }
+
+        return new Pair<>(new ArrayList<>(objects), objectOccurrences);
     }
 
     /**
@@ -224,8 +291,48 @@ public class DirectDataAccessService {
      */
     public List<Relation> getRelations(long relationTypeId) {
 
+        //TODO: add test if id exists!
+
         return relationTableDAO.findAllByRelationType(relationTypeId).stream()
                 .map(Relation::fromRelationTable)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Finds all relations and their occurrences for a given document.
+     * @param documentId the document id
+     * @return the pair with the list of relations and the list of their occurrences in the document
+     * @throws IdNotFoundException thrown when the document identifier not exists
+     */
+    public Pair<List<Relation>, List<Pair<Long, Occurrence>>> getRelationsWithOccurrences(long documentId) throws IdNotFoundException{
+        DocumentTable documentTable = documentTableDAO.find(documentId);
+        if (documentTable == null) {
+            throw new IdNotFoundException("documentId", documentId);
+        }
+
+        Set<Relation> relations = new HashSet<>();
+        List<Pair<Long, Occurrence>> relationOccurrences = new ArrayList<>();
+
+        for (RelationOccurrenceTable relationOccurrence : documentTable.getRelationOccurrences()) {
+
+            RelationTable relation = relationOccurrence.getRelation();
+
+            relations.add(Relation.fromRelationTable(relation));
+            relationOccurrences.add(new Pair<>(relation.getId(), new Occurrence(relationOccurrence.getAnchor(), relationOccurrence.getPosition())));
+        }
+
+        return new Pair<>(new ArrayList<>(relations), relationOccurrences);
+    }
+
+    public List<String> getRolesForRelationType(long relationTypeId) throws IdNotFoundException {
+
+        RelationTypeTable relationType = relationTypeTableDAO.find(relationTypeId);
+        if (relationType == null) {
+            throw new IdNotFoundException("relationTypeId", relationTypeId);
+        }
+
+        return inRelationTableDAO.getRolesForRelationType(relationTypeId);
+    }
+
+
 }

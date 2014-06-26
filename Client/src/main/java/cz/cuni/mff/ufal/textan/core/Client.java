@@ -1,6 +1,8 @@
 package cz.cuni.mff.ufal.textan.core;
 
+import cz.cuni.mff.ufal.textan.commons.models.ObjectOccurrence;
 import cz.cuni.mff.ufal.textan.commons.models.Relation;
+import cz.cuni.mff.ufal.textan.commons.models.RelationOccurrence;
 import cz.cuni.mff.ufal.textan.commons.models.UsernameToken;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
