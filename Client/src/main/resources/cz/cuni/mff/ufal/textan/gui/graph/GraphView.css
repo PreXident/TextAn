@@ -7,3 +7,7 @@
 	-fx-border-color: black;
 	-fx-border-width: 2;
 }
+
+.distance-box {
+	-fx-spacing: 10;
+}
