@@ -114,6 +114,9 @@ public class ReportRelationsController extends ReportWizardController {
     TableColumn<RelationInfo, Number> orderColumn;
 
     @FXML
+    TableColumn<RelationInfo, String> roleColumn;
+
+    @FXML
     TableColumn<RelationInfo, Object> objectColumn;
 
     @FXML
@@ -262,7 +265,7 @@ public class ReportRelationsController extends ReportWizardController {
             textFlow.layoutChildren();
         });
         table.setEditable(true);
-        objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().multiply(-1).add(-2)));
+        objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().add(roleColumn.prefWidthProperty()) .multiply(-1).add(-2)));
         orderColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Number> p) -> p.getValue().order);
         orderColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {
             @Override
@@ -278,6 +281,13 @@ public class ReportRelationsController extends ReportWizardController {
             (CellEditEvent<RelationInfo, Number> t) -> {
                 t.getTableView().getItems().get(
                         t.getTablePosition().getRow()).order.setValue(t.getNewValue());
+        });
+        roleColumn.setCellValueFactory((CellDataFeatures<RelationInfo, String> p) -> p.getValue().role);
+        roleColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        roleColumn.setOnEditCommit(
+            (CellEditEvent<RelationInfo, String> t) -> {
+                t.getTableView().getItems().get(
+                        t.getTablePosition().getRow()).role.setValue(t.getNewValue());
         });
         objectColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Object> p) -> p.getValue().object);
         objectColumn.setOnEditCommit(

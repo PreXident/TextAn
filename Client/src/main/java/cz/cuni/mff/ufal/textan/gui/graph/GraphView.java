@@ -2,7 +2,7 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 
 import PretopoVisual.Jung.BasicHypergraphRenderer;
 import PretopoVisual.Jung.PseudoHypergraph;
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
@@ -34,7 +34,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -101,8 +100,8 @@ public class GraphView extends SwingNode {
         // Add edges
         if (hypergraphs) {
             for (Relation rel : relations) {
-                final Stream<Pair<Object, Integer>> relatedIDs = rel.getObjects().stream();
-                final List<Object> related = relatedIDs.map(pair -> pair.getFirst()).collect(Collectors.toList());
+                final Stream<Triple<Integer, String, Object>> relatedIDs = rel.getObjects().stream();
+                final List<Object> related = relatedIDs.map(triple -> triple.getThird()).collect(Collectors.toList());
                 g.addEdge(rel, related);
             }
         } else {
@@ -110,10 +109,10 @@ public class GraphView extends SwingNode {
                 if (rel.getObjects().size() > 2) {
                     final Object dummy = new RelationObject(rel);
                     g.addVertex(dummy);
-                    for (Pair<Object, Integer> pair : rel.getObjects()) {
-                        final Relation dummyRel = new DummyRelation(rel.getType(), pair);
-                        final int order = pair.getSecond();
-                        final Object obj = pair.getFirst();
+                    for (Triple<Integer, String, Object> triple : rel.getObjects()) {
+                        final Relation dummyRel = new DummyRelation(rel.getType(), triple);
+                        final int order = triple.getFirst();
+                        final Object obj = triple.getThird();
                         if (order < 0) {
                             g.addEdge(dummyRel, Arrays.asList(obj, dummy), EdgeType.DIRECTED);
                         } else if (order % 2 == 1) {
@@ -123,19 +122,19 @@ public class GraphView extends SwingNode {
                         }
                     }
                 } else if (rel.getObjects().size() == 2) {
-                    Iterator<Pair<Object, Integer>> it = rel.getObjects().iterator();
-                    final Pair<Object, Integer> first = it.next();
-                    final Pair<Object, Integer> second = it.next();
-                    if (first.getSecond() < 0 && second.getSecond() >= 0) {
-                        g.addEdge(rel, Arrays.asList(first.getFirst(), second.getFirst()), EdgeType.DIRECTED);
-                    } else if (second.getSecond() < 0 && first.getSecond() >= 0) {
-                        g.addEdge(rel, Arrays.asList(second.getFirst(), first.getFirst()), EdgeType.DIRECTED);
+                    Iterator<Triple<Integer, String, Object>> it = rel.getObjects().iterator();
+                    final Triple<Integer, String, Object> first = it.next();
+                    final Triple<Integer, String, Object> second = it.next();
+                    if (first.getFirst() < 0 && second.getFirst() >= 0) {
+                        g.addEdge(rel, Arrays.asList(first.getThird(), second.getThird()), EdgeType.DIRECTED);
+                    } else if (second.getFirst() < 0 && first.getFirst() >= 0) {
+                        g.addEdge(rel, Arrays.asList(second.getThird(), first.getThird()), EdgeType.DIRECTED);
                     } else {
-                        g.addEdge(rel, Arrays.asList(first.getFirst(), second.getFirst()), EdgeType.UNDIRECTED);
+                        g.addEdge(rel, Arrays.asList(first.getThird(), second.getThird()), EdgeType.UNDIRECTED);
                     }
                 } else {
                     final List<Object> related = rel.getObjects().stream()
-                            .map(pair -> pair.getFirst())
+                            .map(triple -> triple.getThird())
                             .collect(Collectors.toList());
                     g.addEdge(rel, related);
                 }

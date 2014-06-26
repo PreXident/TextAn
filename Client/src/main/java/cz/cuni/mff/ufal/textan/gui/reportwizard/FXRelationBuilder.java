@@ -102,6 +102,9 @@ public class FXRelationBuilder extends RelationBuilder {
         public SimpleObjectProperty<Object> object =
                 new SimpleObjectProperty<>();
 
+        /** Object's role. */
+        public SimpleStringProperty role = new SimpleStringProperty();
+
         /**
          * Only constructor.
          * @param order object's order
@@ -120,6 +123,11 @@ public class FXRelationBuilder extends RelationBuilder {
         @Override
         public Object getObject() {
             return object.get();
+        }
+
+        @Override
+        public String getRole() {
+            return role.get();
         }
     }
 }

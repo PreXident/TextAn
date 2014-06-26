@@ -2,7 +2,7 @@ package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds;
 import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation;
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -19,8 +19,8 @@ public class Relation {
     /** Relation type. */
     private final RelationType type;
 
-    /** Objects and their order in relation. */
-    private final Set<Pair<Object, Integer>> objects;
+    /** Objects (and their order and role) in relation. */
+    private final Set<Triple<Integer, String, Object>> objects;
 
     /** Flag indicating whether the relation was fetched from db or created by client. */
     private final boolean isNew;
@@ -34,7 +34,7 @@ public class Relation {
         id = relation.getId();
         type = new RelationType(relation.getRelationType());
         this.objects = relation.getObjectInRelationIds().getInRelations().stream()
-                .map(inRel -> new Pair<>(objects.get(inRel.getObjectId()), inRel.getOrder()))
+                .map(inRel -> new Triple<>(inRel.getOrder(), inRel.getRole(), objects.get(inRel.getObjectId())))
                 .collect(Collectors.toCollection(HashSet::new));
         isNew = relation.isIsNew();
     }
@@ -66,7 +66,7 @@ public class Relation {
      * Returns objects in relation.
      * @return objects in relation
      */
-    public Set<Pair<Object, Integer>> getObjects() {
+    public Set<Triple<Integer, String, Object>> getObjects() {
         return objects;
     }
 
@@ -81,10 +81,11 @@ public class Relation {
         result.setRelationType(type.toRelationType());
         result.setIsNew(Boolean.TRUE); //TODO add relation feature
         final ObjectInRelationIds ids = new ObjectInRelationIds();
-        for (Pair<Object, Integer> pair : objects) {
+        for (Triple<Integer, String, Object> triple : objects) {
             final InRelation inRelation = new InRelation();
-            inRelation.setObjectId(pair.getFirst().getId());
-            inRelation.setOrder(pair.getSecond());
+            inRelation.setOrder(triple.getFirst());
+            inRelation.setRole(triple.getSecond());
+            inRelation.setObjectId(triple.getThird().getId());
             ids.getInRelations().add(inRelation);
         }
         result.setObjectInRelationIds(ids);
