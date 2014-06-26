@@ -28,6 +28,15 @@ public interface IOperations<E, K extends Serializable> {
      * @return the list of entities
      */
     List<E> findAll();
+    
+    /**
+     * Finds all entities in a repository with pagination support.
+     *
+     * @param firstResult number of the first returned result indexed from 0.
+     * @param pageSize maximum count of returned results
+     * @return the list of entities
+     */
+    List<E> findAll(int firstResult, int pageSize);
 
     /**
      * Adds an entity into a repository.

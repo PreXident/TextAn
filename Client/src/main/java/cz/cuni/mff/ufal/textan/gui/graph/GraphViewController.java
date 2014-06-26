@@ -11,6 +11,8 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
@@ -54,7 +56,11 @@ public class GraphViewController extends GraphController {
     /** Graph container. */
     GraphView graphView;
 
+    /** Synchronization lock. */
     final Semaphore lock = new Semaphore(1);
+
+    /** Context menu for nodes and edges. */
+    ContextMenu contextMenu;
 
     @FXML
     private void newDistance() {
@@ -91,6 +97,14 @@ public class GraphViewController extends GraphController {
         stackPane.prefHeightProperty().bind(scrollPane.heightProperty());
         leftToolbar.prefWidthProperty().bind(toolbar.widthProperty().add(-25).divide(2));
         rightToolbar.prefWidthProperty().bind(toolbar.widthProperty().add(-25).divide(2));
+        contextMenu = new ContextMenu();
+        contextMenu.setConsumeAutoHidingEvents(false);
+        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
+        graphMI.setOnAction(e -> {
+            contextMenu.hide();
+            textAnController.displayGraph(graphView.objectForGraph.getId());
+        });
+        contextMenu.getItems().add(graphMI);
     }
 
     /**
@@ -124,6 +138,7 @@ public class GraphViewController extends GraphController {
                 graphView.requestFocus();
                 getMainNode().setCursor(Cursor.DEFAULT);
                 scrollPane.requestFocus();
+                graphView.setObjectContextMenu(contextMenu);
                 lock.release();
             });
             setOnFailed(e -> {

@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.gui;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
@@ -90,6 +91,26 @@ public class Utils {
         stage.yProperty().addListener(sizeListener);
     }
 
+    /**
+     * Runs finalizer in FX thread after 100 ms sleep in other thread.
+     * @param finalizer runnable to be run
+     */
+    static public void runFXlater(final Runnable finalizer) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) { }
+            Platform.runLater(finalizer);
+        }).start();
+    }
+
+    /**
+     * Replaces text's styleclasses by clazz, stores fill color to user data and
+     * fills text with color created from id.
+     * @param text text to style
+     * @param clazz class to add
+     * @param id id to color
+     */
     static public void styleText(final Text text, final String clazz, final long id) {
         text.getStyleClass().clear();
         text.getStyleClass().add(clazz);
@@ -97,6 +118,11 @@ public class Utils {
         text.setFill(idToFXColor(id));
     }
 
+    /**
+     * Adds background to text created from id.
+     * @param text text to style
+     * @param id id to color
+     */
     static public void styleTextBackground(final Text text, final long id) {
         final DropShadow dropShadow = new DropShadow();
         dropShadow.setRadius(4d);
@@ -107,6 +133,11 @@ public class Utils {
         text.setEffect(dropShadow);
     }
 
+    /**
+     * Clears text's style classes and tries to restore fill color from user
+     * data.
+     * @param text text to unstyle
+     */
     static public void unstyleText(final Text text) {
         text.getStyleClass().clear();
         Object color = text.getUserData();
@@ -117,6 +148,10 @@ public class Utils {
         }
     }
 
+    /**
+     * Clears text's background.
+     * @param text text to unstyle
+     */
     static public void unstyleTextBackground(final Text text) {
         text.setEffect(null);
     }

@@ -19,6 +19,16 @@ public interface IRelationTableDAO extends IObjectRelationDAO<RelationTable> {
      * @return 
      */
     List<RelationTable> findAllByRelationType(Long relationTypeId);
+        /**
+     * finds all relations of specified type
+     * 
+     * @param relationTypeId id of the relation type
+     * @param firstResult
+     * @param pageSize
+     * @return 
+     */
+    List<RelationTable> findAllByRelationType(Long relationTypeId, int firstResult, int pageSize);
+    
     /**
      * finds all relations of specified type
      * 
@@ -26,5 +36,12 @@ public interface IRelationTableDAO extends IObjectRelationDAO<RelationTable> {
      * @return 
      */
     List<RelationTable> findAllByRelationType(RelationTypeTable type);
+    /**
+     * finds all relations of specified type
+     * 
+     * @param type
+     * @return 
+     */
+    List<RelationTable> findAllByRelationType(RelationTypeTable type, int firstResult, int pageSize);
 
 }

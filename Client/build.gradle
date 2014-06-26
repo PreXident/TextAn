@@ -52,7 +52,7 @@ debug {
 }
 
 task megaJar (type: Jar) {
-	appendix = "mega"
+	duplicatesStrategy = 'exclude'
 	from sourceSets.main.output
 	from(configurations.compile
 			.filter { !it.toString().endsWith("jfxrt.jar") }
@@ -61,6 +61,7 @@ task megaJar (type: Jar) {
 		exclude "META-INF/*.DSA"
 		exclude "META-INF/*.RSA"
 	}
+	destinationDir = file('build/dist')
 }
 
 configure([jar, megaJar]) {
@@ -68,4 +69,9 @@ configure([jar, megaJar]) {
 	manifest {
 		attributes 'Main-Class': mainClassName
 	}
+}
+
+task dist(type: Copy, dependsOn: 'megaJar') {
+	from 'dist'
+	into 'build/dist'
 }

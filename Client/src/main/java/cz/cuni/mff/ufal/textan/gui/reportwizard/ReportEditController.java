@@ -37,6 +37,7 @@ public class ReportEditController extends ReportWizardController {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        slider.setLabelFormatter(new SliderLabelFormatter());
     }
 
     @Override

@@ -2,6 +2,7 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -19,21 +20,16 @@
 		<URL value="@ObjectList.css" />
 	</stylesheets>
 	<top>
-		<VBox>
-			<HBox>
-				<Label text="%type"/>
-				<ComboBox fx:id="typeComboBox" prefWidth="150" />
-			</HBox>
-			<HBox>
-				<Label text="%filter" />
-				<TextField fx:id="filterField" />
-			</HBox>
-			<Button text="%filter.execute" onAction="#filter" />
-			<!--<HBox>
-				<Label text="%distance" />
-				<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="100" />
-			</HBox>-->
-		</VBox>
+		<GridPane alignment="CENTER_LEFT" hgap="10" vgap="10">
+			<padding><Insets top="0" right="0" bottom="10" left="0"/></padding>
+			<Label text="%type" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+			<ComboBox fx:id="typeComboBox" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+			<Label text="%filter" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+			<TextField fx:id="filterField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+			<!--<Label text="%distance" />
+			<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="100" />-->
+			<Button text="%filter.execute" onAction="#filter" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+		</GridPane>
 	</top>
 	<center>
 		<ListView fx:id="listView" minHeight="30" />

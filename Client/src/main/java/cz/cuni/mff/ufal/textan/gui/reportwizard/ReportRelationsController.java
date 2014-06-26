@@ -257,6 +257,7 @@ public class ReportRelationsController extends ReportWizardController {
         this.resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        slider.setLabelFormatter(new SliderLabelFormatter());
         scrollPane.vvalueProperty().addListener(e -> {
             textFlow.layoutChildren();
         });
@@ -437,7 +438,10 @@ public class ReportRelationsController extends ReportWizardController {
             text.setOnMouseDragEntered(e -> {
                 if (dragging) {
                     boolean overEntity = false;
-                    for (int i = firstSelectedIndex; i <= word.getIndex(); ++i) {
+                    final int myIndex = word.getIndex();
+                    final int min = Math.min(firstDragged, myIndex);
+                    final int max = Math.max(firstDragged, myIndex);
+                    for (int i = min; i <= max; ++i) {
                         if (words.get(i).getEntity() != null) {
                             overEntity = true;
                             break;
@@ -451,9 +455,6 @@ public class ReportRelationsController extends ReportWizardController {
                         return;
                     }
                     removeSelectedClass(texts);
-                    final int myIndex = texts.indexOf(text);
-                    final int min = Math.min(firstDragged, myIndex);
-                    final int max = Math.max(firstDragged, myIndex);
                     addSelectedClass(texts.subList(min, max + 1));
                     firstSelectedIndex = min;
                     lastSelectedIndex = max;
