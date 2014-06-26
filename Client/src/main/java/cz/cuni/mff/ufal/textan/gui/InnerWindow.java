@@ -20,7 +20,7 @@ public class InnerWindow extends Window {
     static final int MIN_WIDTH = 450;
 
     /** Minimal height of inner widows. */
-    static final int MIN_HEIGHT = 450;
+    static final int MIN_HEIGHT = 300;
 
     /**
      * Settings of the application.

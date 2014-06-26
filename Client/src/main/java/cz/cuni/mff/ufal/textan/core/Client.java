@@ -231,12 +231,20 @@ public class Client {
 
         final GetAssignmentsFromStringResponse response = getDocumentProcessor().getAssignmentsFromString(request, ticket.toTicket());
 
+        final Map<Long, Object> objects = new HashMap<>();
         for (Assignment assignment : response.getAssignments()) {
             final Entity ent = map.get(assignment.getEntity().getPosition());
             ent.getCandidates().clear();
             for (Assignment.RatedObject rating : assignment.getRatedObjects()) {
                 final double r = rating.getScore();
-                final Object obj = new Object(rating.getObject());
+                final Long objId = rating.getObject().getId();
+                Object obj;
+                if (objects.containsKey(objId)) {
+                    obj = objects.get(objId);
+                } else {
+                    obj = new Object(rating.getObject());
+                    objects.put(objId, obj);
+                }
                 ent.getCandidates().add(new Pair<>(r, obj));
             }
         }

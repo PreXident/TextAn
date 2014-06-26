@@ -73,7 +73,11 @@ public class Entity {
      * @param candidate new selected candidate
      */
     public void setCandidate(Object candidate) {
+        if (this.candidate != null) {
+            this.candidate.removeNewAlias(this.value);
+        }
         this.candidate = candidate;
+        candidate.addNewAlias(this.value);
     }
 
     /**

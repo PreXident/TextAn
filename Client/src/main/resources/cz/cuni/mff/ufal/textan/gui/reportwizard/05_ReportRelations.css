@@ -15,8 +15,9 @@
 
 .RELATION {
 	-fx-underline: true;
+	-fx-font-style: italic;
 }
 
 .slider {
-	-fx-padding: 10 10 10 10;
+	-fx-padding: 5 25 0 25;
 }
