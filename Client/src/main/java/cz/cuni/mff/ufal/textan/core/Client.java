@@ -292,10 +292,27 @@ public class Client {
      * @param first index of the first object
      * @param size maximal number of objects
      * @return list of filtered objects in the system
+     * @throws IdNotFoundException if id error occurs
      */
     public synchronized Pair<List<Object>, Integer> getObjectsList(final ObjectType type,
-            final String filter, final int first, final int size) {
-        //TODO: call proper method when it's ready
+            final String filter, final int first, final int size) throws IdNotFoundException {
+//        final GetFilteredObjectsRequest request =
+//                new GetFilteredObjectsRequest();
+//        request.setObjectTypeId(type != null ? type.getId() : null);
+//        request.setAliasFilter(filter);
+//        request.setFirstResult(first);
+//        request.setMaxResults(size);
+//        try {
+//            final GetFilteredObjectsResponse response =
+//                    getDataProvider().getFilteredObjects(request);
+//            final List<Object> objects = response.getObjects().stream()
+//                    .map(Object::new)
+//                    .collect(Collectors.toList());
+//            return new Pair<>(objects, response.getTotalNumberOfResults());
+//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+//            throw new IdNotFoundException(e);
+//        }
+//        //TODO: call proper method when it's ready
         final GetObjectsResponse response =
                 getDataProvider().getObjects(new Void());
         Stream<Object> objects = response.getObjects().stream()
