@@ -153,6 +153,14 @@ public class TextAnController implements Initializable {
         }
     }
 
+    @FXML
+    private void resetSizePos() {
+        stage.setX(0);
+        stage.setY(0);
+        stage.setWidth(800);
+        stage.setHeight(600);
+    }
+
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
         content.addEventFilter(MouseEvent.ANY, (MouseEvent t) -> {
