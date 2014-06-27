@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.utils.Ref;
+import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.IClearer;
@@ -180,7 +181,7 @@ public class ReportRelationsController extends ReportWizardController {
     private void add() {
         if (selectedRelation != null) {
             pipeline.resetStepsBack();
-            selectedRelation.getData().add(new RelationInfo(0, null));
+            selectedRelation.getData().add(new RelationInfo(0, "", null));
         }
     }
 
@@ -196,7 +197,8 @@ public class ReportRelationsController extends ReportWizardController {
         });
         if (relation.val != null) {
             pipeline.resetStepsBack();
-            selectedRelation = new FXRelationBuilder(relation.val, relationsListView.getItems());
+            final List<String> roles = fetchRoles(relation.val);
+            selectedRelation = new FXRelationBuilder(relation.val, relationsListView.getItems(), roles);
             table.setItems(selectedRelation.getData());
             relationsListView.getSelectionModel().select(selectedRelation);
         }
@@ -582,7 +584,9 @@ public class ReportRelationsController extends ReportWizardController {
                 selectRelation(selectedRelation);
                 return;
             }
-            final FXRelationBuilder builder = new FXRelationBuilder(relation, relationsListView.getItems());
+            final List<String> roles = fetchRoles(relation);
+            final FXRelationBuilder builder = new FXRelationBuilder(relation,
+                    relationsListView.getItems(), roles);
             final Pair<Integer, Integer> bounds =
                     builder.add(words, firstSelectedIndex, lastSelectedIndex, clearer);
             for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
@@ -622,6 +626,20 @@ public class ReportRelationsController extends ReportWizardController {
                     })
                     .forEach(Utils::unstyleTextBackground);
          }
+    }
+
+    /**
+     * Fetches roles for given relation type.
+     * @param type relation type
+     * @return roles for given relation type
+     */
+    protected List<String> fetchRoles(final RelationType type) {
+        try {
+            return pipeline.getClient().getRolesForRelationType(type);
+        } catch (IdNotFoundException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 
     /**

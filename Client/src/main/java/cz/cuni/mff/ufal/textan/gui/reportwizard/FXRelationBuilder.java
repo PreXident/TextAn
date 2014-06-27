@@ -34,12 +34,18 @@ public class FXRelationBuilder extends RelationBuilder {
      * Only constructor.
      * @param type relation type
      * @param list {@link #list}
+     * @param roles most common roles
      */
-    public FXRelationBuilder(final RelationType type, final List<FXRelationBuilder> list) {
+    public FXRelationBuilder(final RelationType type,
+            final List<FXRelationBuilder> list, final List<String> roles) {
         super(type);
         this.list = list;
         list.add(this);
         updateStringRepresentation();
+        for (String role : roles) {
+            final RelationInfo relationInfo = new RelationInfo(0, role, null);
+            getData().add(relationInfo);
+        }
     }
 
     @Override
@@ -108,10 +114,12 @@ public class FXRelationBuilder extends RelationBuilder {
         /**
          * Only constructor.
          * @param order object's order
+         * @param role object's role
          * @param object object itself
          */
-        public RelationInfo(int order, Object object) {
+        public RelationInfo(final int order, final String role, final Object object) {
             this.order.set(order);
+            this.role.set(role);
             this.object.set(object);
         }
 

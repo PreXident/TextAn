@@ -372,6 +372,24 @@ public class Client {
     }
 
     /**
+     * Returns list of role for given relation type.
+     * @param type relation type
+     * @return list of role for given relation type
+     * @throws IdNotFoundException if id error occurs
+     */
+    public synchronized List<String> getRolesForRelationType(
+            final RelationType type) throws IdNotFoundException {
+        try {
+            final GetRolesForRelationTypeByIdRequest request =
+                    new GetRolesForRelationTypeByIdRequest();
+            request.setRelationTypeId(type.getId());
+            return getDataProvider().getRolesForRelationTypeById(request).getRoles();
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
+    }
+
+    /**
      * Returns settings of the application. Handle with care, their shared.
      * @return settings of the application
      */
