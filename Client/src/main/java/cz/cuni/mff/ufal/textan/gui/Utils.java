@@ -105,6 +105,29 @@ public class Utils {
     }
 
     /**
+     * If string is too long, returns its shortened variant that ends with ...
+     * @param string string to shorter
+     * @return shorter string
+     */
+    static public String shortString(final String string) {
+        return shortString(string, 35, "...");
+    }
+
+    /**
+     * If string is too long, returns its shortened variant that ends with
+     * ellipse.
+     * @param string string to shorter
+     * @param maxLength maximal string length
+     * @param ellipse ellipse to mark missing content
+     * @return shorter string
+     */
+    static public String shortString(final String string, final int maxLength, final String ellipse) {
+        return string.length() > maxLength ?
+                string.substring(0, maxLength - ellipse.length()) + ellipse
+                : string;
+    }
+
+    /**
      * Replaces text's styleclasses by clazz, stores fill color to user data and
      * fills text with color created from id.
      * @param text text to style

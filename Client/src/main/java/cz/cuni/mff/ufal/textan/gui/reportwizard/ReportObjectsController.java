@@ -331,7 +331,7 @@ public class ReportObjectsController extends ReportWizardController {
                             if (p.getFirst() != null) {
                                 prefix = p.getFirst().toString() + ": ";
                             }
-                            setText(shorter(prefix + p.getSecond().toString()));
+                            setText(Utils.shortString(prefix + p.getSecond().toString()));
                             setContextMenu(objectContextMenu);
                         } else {
                             setContextMenu(null);
@@ -371,7 +371,7 @@ public class ReportObjectsController extends ReportWizardController {
                             return;
                         }
                         if (o != null) {
-                            setText(shorter(o.toString()));
+                            setText(Utils.shortString(o.toString()));
                         }
                     }
                 };
@@ -415,17 +415,6 @@ public class ReportObjectsController extends ReportWizardController {
         entity.setCandidate(object);
         pipeline.resetStepsBack();
         return entity;
-    }
-
-    /**
-     * If string is too long, returns its shortened variant that ends with ...
-     * @param string string to shorter
-     * @return shorter string
-     */
-    private String shorter(final String string) {
-        return string.length() > 35 ?
-                string.substring(0, 32) + "..."
-                : string;
     }
 
     /**

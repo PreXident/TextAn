@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import cz.cuni.mff.ufal.textan.gui.Window;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -139,6 +140,9 @@ public class GraphViewController extends GraphController {
                 getMainNode().setCursor(Cursor.DEFAULT);
                 scrollPane.requestFocus();
                 graphView.setObjectContextMenu(contextMenu);
+                final Object center = g.getNodes().get(grapher.getRootId());
+                final Window w = window == null ? stage.getInnerWindow() : window;
+                w.setTitle(w.getTitle() + " - " + Utils.shortString(center.toString()));
                 lock.release();
             });
             setOnFailed(e -> {
