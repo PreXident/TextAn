@@ -9,6 +9,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -17,9 +19,12 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import jfxtras.labs.internal.scene.control.skin.BigDecimalFieldSkin;
 import jfxtras.labs.scene.control.BigDecimalField;
 
 /**
@@ -64,6 +69,11 @@ public class GraphViewController extends GraphController {
     ContextMenu contextMenu;
 
     @FXML
+    private void home() {
+        graphView.home();
+    }
+
+    @FXML
     private void newDistance() {
         if (lock.tryAcquire()) {
             final Node node = getMainNode();
@@ -106,6 +116,14 @@ public class GraphViewController extends GraphController {
             textAnController.displayGraph(graphView.objectForGraph.getId(), distanceField.getNumber().intValue());
         });
         contextMenu.getItems().add(graphMI);
+        //ugly shortcut for centering by HOME key
+        root.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent t) -> {
+            if (t.getCode() == KeyCode.HOME
+                    && !(t.getTarget() instanceof BigDecimalFieldSkin.NumberTextField)) {
+                t.consume();
+                home();
+            }
+        });
     }
 
     /**

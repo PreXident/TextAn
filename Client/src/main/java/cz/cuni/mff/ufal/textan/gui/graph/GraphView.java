@@ -74,6 +74,12 @@ public class GraphView extends SwingNode {
     /** Object to display graph for. */
     Object objectForGraph;
 
+    /** Central object. */
+    Object center;
+
+    /** Vizualizator's layout. */
+    Layout<Object, Relation> layout;
+
     /** Mouse handler. */
     final DefaultModalGraphMouse<Integer,String> graphMouse;
 
@@ -89,12 +95,11 @@ public class GraphView extends SwingNode {
         this.settings = settings;
         final boolean hypergraphs = settings.getProperty(TextAnController.HYPER_GRAPHS, "false").equals("true");
         final Hypergraph<Object, Relation> g = hypergraphs ? new SetHypergraph<>() : new SparseMultigraph<>();
-        Object root = null;
         // Add vertices
         for (Object obj : objects.values()) {
             g.addVertex(obj);
             if (obj.getId() == rootId) {
-                root = obj;
+                center = obj;
             }
         }
         // Add edges
@@ -140,7 +145,7 @@ public class GraphView extends SwingNode {
                 }
             }
         }
-        final Layout<Object, Relation> layout = new FRLayout<>(
+        layout = new FRLayout<>(
                 hypergraphs ? new PseudoHypergraph<>(g) : (Graph<Object, Relation>) g
         );
         //
@@ -216,20 +221,11 @@ public class GraphView extends SwingNode {
         } catch (Exception e) { }
 
         //center to the graph root, for some reason we must wait a bit
-        final Object r = root;
         new Thread(() -> {
             try {
                 Thread.sleep(50);
             } catch (Exception e) { }
-            SwingUtilities.invokeLater(() -> {
-                Point2D p = layout.transform(r);
-                MutableTransformer layout2 = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT);
-                Point2D ctr = visualizator.getCenter();
-                double scale = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW).getScale();
-                double deltaX = (ctr.getX() - p.getX())*1/scale;
-                double deltaY = (ctr.getY() - p.getY())*1/scale;
-                layout2.translate(deltaX, deltaY);
-            });
+            home();
         }).start();
     }
 
@@ -247,6 +243,38 @@ public class GraphView extends SwingNode {
      */
     public void setObjectContextMenu(final ContextMenu objectContextMenu) {
         this.objectContextMenu = objectContextMenu;
+    }
+
+    /**
+     * Center to the graph root.
+     */
+    public void home() {
+        SwingUtilities.invokeLater(() -> {
+            Point2D p = layout.transform(center);
+            MutableTransformer layout2 = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT);
+            Point2D ctr = visualizator.getCenter();
+            double scale = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW).getScale();
+            ctr = visualizator.getRenderContext().getMultiLayerTransformer().inverseTransform(visualizator.getCenter());
+            double deltaX = (ctr.getX() - p.getX())*1/scale;
+            double deltaY = (ctr.getY() - p.getY())*1/scale;
+            layout2.translate(deltaX, deltaY);
+            visualizator.repaint();
+
+//            VisualizationViewer<Object, Relation> vv = visualizator;
+//            MutableTransformer view = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW);
+//            MutableTransformer layout = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT);
+//
+//            Point2D ctr = vv.getCenter();
+//            Point2D pnt = view.inverseTransform(ctr);
+//
+//            double scale = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW).getScale();
+//
+//            double deltaX = (ctr.getX() - p.getX())*1/scale;
+//            double deltaY = (ctr.getY() - p.getY())*1/scale;
+//            Point2D delta = new Point2D.Double(deltaX, deltaY);
+//
+//            layout.translate(deltaX, deltaY);
+        });
     }
 
     /**
