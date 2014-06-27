@@ -18,6 +18,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
@@ -46,6 +47,9 @@ public class ObjectListController extends GraphController {
 
     @FXML
     private ComboBox<Integer> perPageComboBox;
+
+    @FXML
+    private Label paginationLabel;
 
     /** Context menu for objects. */
     protected ContextMenu contextMenu = new ContextMenu();
@@ -100,7 +104,8 @@ public class ObjectListController extends GraphController {
                 listView.getItems().addAll(FXCollections.observableList(pair.getFirst()));
                 objectCount = pair.getSecond();
                 pageCount = (int) Math.ceil(1.0 * pair.getSecond() / size);
-
+                final String format = Utils.localize(resourceBundle, "pagination.label");
+                paginationLabel.setText(String.format(format, pageNo + 1, pageCount));
                 node.setCursor(Cursor.DEFAULT);
                 lock.release();
             });
