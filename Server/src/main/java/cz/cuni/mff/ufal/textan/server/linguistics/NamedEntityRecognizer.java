@@ -15,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +38,9 @@ public class NamedEntityRecognizer {
     private static final String MODELS_DIR = "models";
     private static final String MODEL_FILE_EXTENSION = ".ner";
     private static final String MODEL_FILE_PREFIX = "model";
+    private static final String TRAINING_DIR = "training";
+    private static final String TRAINING_DATA_EXTENSION = ".txt";
+    private static final String TRAINING_DATA_PREFIX = "temporaryTrainingData";
 
     private static final String SPACE_REPLACE_REGEX = "\\s";
     private static final String BEFORE_PUNCT_NEWLINE_REGEX = "([^\\n])(\\p{Punct})";
@@ -47,9 +53,7 @@ public class NamedEntityRecognizer {
 
     private static final Pattern spaceReplacePattern = Pattern.compile(SPACE_REPLACE_REGEX);
     private static final Pattern beforePunctPattern = Pattern.compile(BEFORE_PUNCT_NEWLINE_REGEX);
-    private static final Pattern beforePunctReplacePattern = Pattern.compile(BEFORE_PUNCT_REPLACE_REGEX);
     private static final Pattern afterPunctPattern = Pattern.compile(AFTER_PUNCT_NEWLINE_REGEX);
-    private static final Pattern afterPunctReplacePattern = Pattern.compile(AFTER_PUNCT_REPLACE_REGEX);
     private static final Pattern addTagPattern = Pattern.compile(ADD_TAG_REGEX);
     private static final Pattern continuingEntityPattern = Pattern.compile(CONTINUING_ENTITY_REGEX);
 
@@ -132,14 +136,12 @@ public class NamedEntityRecognizer {
         return true;
     }
 
-
-    private void prepareLearningData() {
+    private void prepareLearningData(File fileWithTrainingData) {
         LOG.info("Creating data from database started");
         try {
-            PrintStream output = new PrintStream(new FileOutputStream("test.txt"));
+            PrintWriter output = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileWithTrainingData, true), "UTF-8"));
 
             List<NameTagRecord> documents = nameTagView.findAll();
-            LOG.info("Found documents:  {}", documents.size());
             Collections.sort(documents, (
                     NameTagRecord a, NameTagRecord b) ->
                     a.getDocumentID() != b.getDocumentID()
@@ -170,13 +172,15 @@ public class NamedEntityRecognizer {
             output.print(taggedDocument.toString());
             taggedDocument.delete(0, taggedDocument.length());
             output.close();
+            LOG.info("Creating data from database finished");
         } catch (FileNotFoundException e) {
-            LOG.error("Can't open file for generated input data {}", e);
+            LOG.error("File for training data not found {}", fileWithTrainingData.getPath(), e);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 
-    String formatAliasForTraining(String alias, Long id, boolean continuingEntity) {
-        LOG.info("Preparing text: {}", alias);
+    private String formatAliasForTraining(String alias, Long id, boolean continuingEntity) {
         String tagRegex = id != null ? "$1\tI-" + id +"\n" : "$1\t_\n";
 
         alias = alias.trim();
@@ -199,18 +203,20 @@ public class NamedEntityRecognizer {
             m = continuingEntityPattern.matcher(alias);
             alias = m.replaceAll(CONTINUING_ENTITY_REPLACE_REGEX);
         }
-
-//        alias = alias.replaceAll("\\s","\n");
-//        alias = alias.replaceAll("([^\\n])(\\p{Punct})", "$1\n$2");
-//        alias = alias.replaceAll("\\n(\\p{Punct})(.+)", "\n$1\n$2");
-//        alias += '\n';
-//        alias = alias.replaceAll("(.+)\\n", tagRegex);
-//        if (continuingEntity) {
-//            alias = alias.replaceFirst("I-", "B-");
-//        }
-//        LOG.info("Prepared text: {}", alias);
-//        return alias.trim().length() > 0 ? alias : "";
         return alias;
+    }
+
+    private void copyFile(File source, File dest) throws IOException {
+        FileChannel inputChannel = null;
+        FileChannel outputChannel = null;
+        try {
+            inputChannel = new FileInputStream(source).getChannel();
+            outputChannel = new FileOutputStream(dest).getChannel();
+            outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+        } finally {
+            inputChannel.close();
+            outputChannel.close();
+        }
     }
 
 
@@ -221,20 +227,36 @@ public class NamedEntityRecognizer {
      */
     //TODO: only package private and move the "learn" command class into this package?
     public void learn(boolean waitForModel) {
-        prepareLearningData();
         LOG.info("Started training new NameTag model");
         try {
             File dir = new File("../../Linguistics/training").getCanonicalFile();
             SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
-            File modelLocation = new File(MODELS_DIR, MODEL_FILE_PREFIX + sdf.format(Calendar.getInstance().getTime()) + MODEL_FILE_EXTENSION).getAbsoluteFile();
+            Date date = Calendar.getInstance().getTime();
+            File modelLocation = new File(MODELS_DIR, MODEL_FILE_PREFIX + sdf.format(date) + MODEL_FILE_EXTENSION).getAbsoluteFile();
             LOG.debug("New model path: {}", modelLocation);
 
             LearningParameters learningParameters = new LearningParameters(dir);
+            File trainingDataFile = new File(TRAINING_DIR, TRAINING_DATA_PREFIX + sdf.format(date) + TRAINING_DATA_EXTENSION).getAbsoluteFile();
+            if (new File(TRAINING_DIR).mkdir()) {
+                if (learningParameters.useDefaultTrainingData()) {
+                    LOG.info("Copiing default training data from {}", learningParameters.getTrainingData().getPath());
+                    try {
+                        Files.copy(learningParameters.getTrainingData().toPath(), trainingDataFile.toPath());
+                        copyFile(learningParameters.getTrainingData(), trainingDataFile);
+                    } catch (IOException e) {
+                        LOG.error("Can't copy default training data from {} to {}: {}", learningParameters.getTrainingData().getPath(), trainingDataFile.getPath(), e);
+                    }
+                }
+                prepareLearningData(trainingDataFile);
+            } else {
+                LOG.error("Can't create training data folder");
+            }
+
             LOG.debug("Executing learning command: {}", String.join(" ", learningParameters.getCommand()));
+            LOG.debug("Training data file: {}", trainingDataFile.getPath());
 
             // build process
             ProcessBuilder pb = new ProcessBuilder(learningParameters.getCommand());
-            File trainingDataFile = learningParameters.getTrainingData();
             pb.directory(dir);
 
             // IO redirection
