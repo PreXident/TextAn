@@ -7,16 +7,19 @@ import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
+import cz.cuni.mff.ufal.textan.data.views.INameTagView;
+import cz.cuni.mff.ufal.textan.data.views.NameTagRecord;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
 import cz.cuni.mff.ufal.textan.server.models.ObjectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A named entity recognizer.
@@ -33,16 +36,37 @@ public class NamedEntityRecognizer {
     private static final String MODEL_FILE_EXTENSION = ".ner";
     private static final String MODEL_FILE_PREFIX = "model";
 
+    private static final String SPACE_REPLACE_REGEX = "\\s";
+    private static final String BEFORE_PUNCT_NEWLINE_REGEX = "([^\\n])(\\p{Punct})";
+    private static final String BEFORE_PUNCT_REPLACE_REGEX = "$1\n$2";
+    private static final String AFTER_PUNCT_NEWLINE_REGEX = "\\n(\\p{Punct})(.+)";
+    private static final String AFTER_PUNCT_REPLACE_REGEX = "\n$1\n$2";
+    private static final String ADD_TAG_REGEX = "(.+)\\n";
+    private static final String CONTINUING_ENTITY_REGEX = "I-";
+    private static final String CONTINUING_ENTITY_REPLACE_REGEX = "B-";
+
+    private static final Pattern spaceReplacePattern = Pattern.compile(SPACE_REPLACE_REGEX);
+    private static final Pattern beforePunctPattern = Pattern.compile(BEFORE_PUNCT_NEWLINE_REGEX);
+    private static final Pattern beforePunctReplacePattern = Pattern.compile(BEFORE_PUNCT_REPLACE_REGEX);
+    private static final Pattern afterPunctPattern = Pattern.compile(AFTER_PUNCT_NEWLINE_REGEX);
+    private static final Pattern afterPunctReplacePattern = Pattern.compile(AFTER_PUNCT_REPLACE_REGEX);
+    private static final Pattern addTagPattern = Pattern.compile(ADD_TAG_REGEX);
+    private static final Pattern continuingEntityPattern = Pattern.compile(CONTINUING_ENTITY_REGEX);
+
+
+
     private final IObjectTypeTableDAO objectTypeTableDAO;
+    private final INameTagView nameTagView;
     private final IDocumentTableDAO documentTableDAO;
     private final Hashtable<Long, ObjectType> idTempTable;
 
     private Ner ner;
 
-    public NamedEntityRecognizer(IObjectTypeTableDAO objectTypeTableDAO, IDocumentTableDAO documentTableDAO) {
+    public NamedEntityRecognizer(IObjectTypeTableDAO objectTypeTableDAO, INameTagView nameTagView, IDocumentTableDAO documentTableDAO) {
         this.objectTypeTableDAO = objectTypeTableDAO;
+        this.nameTagView = nameTagView;
         this.documentTableDAO = documentTableDAO;
-        idTempTable = new Hashtable<>();
+        idTempTable = new Hashtable<Long, ObjectType>();
     }
 
     private File[] getSortedModels(File modelsDir) {
@@ -108,26 +132,87 @@ public class NamedEntityRecognizer {
         return true;
     }
 
+
     private void prepareLearningData() {
         LOG.info("Creating data from database started");
-        List<DocumentTable> documentTables = documentTableDAO.findAll();
-        for (DocumentTable document : documentTables) {
-            LOG.info("Tagging document {}", document.toString());
-            Set<AliasOccurrenceTable> aliasOccurrenceTables = document.getAliasOccurrences();
-            long offset = 0;
-            StringBuilder taggedDocument = new StringBuilder(document.getText());
-            for (AliasOccurrenceTable aliasOccurrence : aliasOccurrenceTables) {
-                long objectID = aliasOccurrence.getAlias().getObject().getObjectType().getId();
-                String beginTag = "<id=" + objectID + ">";
-                String endTag = "</id>";
-                taggedDocument.insert((int)offset + aliasOccurrence.getPosition(), beginTag);
-                offset += beginTag.length();
-                taggedDocument.insert((int)offset + aliasOccurrence.getPosition() + aliasOccurrence.getAlias().getAlias().length(), endTag);
-                offset += endTag.length();
+        try {
+            PrintStream output = new PrintStream(new FileOutputStream("test.txt"));
+
+            List<NameTagRecord> documents = nameTagView.findAll();
+            LOG.info("Found documents:  {}", documents.size());
+            Collections.sort(documents, (
+                    NameTagRecord a, NameTagRecord b) ->
+                    a.getDocumentID() != b.getDocumentID()
+                            ? Long.signum(a.getDocumentID() - b.getDocumentID())
+                            : Long.signum(a.getAliasOccurrencePosition() - b.getAliasOccurrencePosition()));
+
+            long lastID = -1L;
+            int lastEntityEnd = 0;
+            String documentText = "";
+            StringBuilder taggedDocument = new StringBuilder();
+            for (NameTagRecord record : documents) {
+                if (lastID != record.getDocumentID()) {
+                    output.print(taggedDocument.toString().replaceAll("[\\n]+","\n"));
+                    taggedDocument.delete(0, taggedDocument.length());
+                    documentText = documentTableDAO.find(record.getDocumentID()).getText();
+                    lastEntityEnd = 0;
+                    lastID = record.getDocumentID();
+                }
+                if (lastEntityEnd == record.getAliasOccurrencePosition() + 1) {
+                    taggedDocument.append(formatAliasForTraining(record.getAlias(), record.getObjectTypeID(), true));
+                } else {
+                    taggedDocument.append(formatAliasForTraining(documentText.substring(lastEntityEnd, record.getAliasOccurrencePosition()), null, false));
+                    taggedDocument.append(formatAliasForTraining(record.getAlias(), record.getObjectTypeID(), false));
+                }
+                lastEntityEnd = record.getAliasOccurrencePosition() + record.getAlias().length();
             }
-            LOG.info("Tagged document: {}", taggedDocument.toString());
+            taggedDocument.append(formatAliasForTraining(documentText.substring(lastEntityEnd), null, false));
+            output.print(taggedDocument.toString());
+            taggedDocument.delete(0, taggedDocument.length());
+            output.close();
+        } catch (FileNotFoundException e) {
+            LOG.error("Can't open file for generated input data {}", e);
         }
     }
+
+    String formatAliasForTraining(String alias, Long id, boolean continuingEntity) {
+        LOG.info("Preparing text: {}", alias);
+        String tagRegex = id != null ? "$1\tI-" + id +"\n" : "$1\t_\n";
+
+        alias = alias.trim();
+
+        Matcher m = spaceReplacePattern.matcher(alias);
+        alias = m.replaceAll("\n");
+
+        m = beforePunctPattern.matcher(alias);
+        alias = m.replaceAll(BEFORE_PUNCT_REPLACE_REGEX);
+
+        m = afterPunctPattern.matcher(alias);
+        alias = m.replaceAll(AFTER_PUNCT_REPLACE_REGEX);
+
+        alias += '\n';
+
+        m = addTagPattern.matcher(alias);
+        alias = m.replaceAll(tagRegex);
+
+        if (continuingEntity) {
+            m = continuingEntityPattern.matcher(alias);
+            alias = m.replaceAll(CONTINUING_ENTITY_REPLACE_REGEX);
+        }
+
+//        alias = alias.replaceAll("\\s","\n");
+//        alias = alias.replaceAll("([^\\n])(\\p{Punct})", "$1\n$2");
+//        alias = alias.replaceAll("\\n(\\p{Punct})(.+)", "\n$1\n$2");
+//        alias += '\n';
+//        alias = alias.replaceAll("(.+)\\n", tagRegex);
+//        if (continuingEntity) {
+//            alias = alias.replaceFirst("I-", "B-");
+//        }
+//        LOG.info("Prepared text: {}", alias);
+//        return alias.trim().length() > 0 ? alias : "";
+        return alias;
+    }
+
 
     /**
      * Learn new model
@@ -136,6 +221,7 @@ public class NamedEntityRecognizer {
      */
     //TODO: only package private and move the "learn" command class into this package?
     public void learn(boolean waitForModel) {
+        prepareLearningData();
         LOG.info("Started training new NameTag model");
         try {
             File dir = new File("../../Linguistics/training").getCanonicalFile();
@@ -220,7 +306,6 @@ public class NamedEntityRecognizer {
     }
 
     public List<Entity> tagText(String input) {
-        prepareLearningData();
         LOG.debug(input);
         if (ner == null) {
             LOG.error("NameTag hasn't model!");
