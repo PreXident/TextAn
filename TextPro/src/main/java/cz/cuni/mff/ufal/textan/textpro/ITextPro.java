@@ -16,6 +16,9 @@ public interface ITextPro {
      *
      */
     
+    // Learn the model
+    public void learn();
+    
     //  Output a list of token after processing
     public List<String> TokenizeDoc(String document);
     

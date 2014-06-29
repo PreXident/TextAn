@@ -80,11 +80,17 @@ public class TextPro implements ITextPro {
         this.relationOccurrenceTableDAO = relationOccurrenceTableDAO;
         this.relationTableDAO = relationTableDAO;
         
-        /*** Init the train model**/
-        Train train = new Train();
-        model = train.doTraining();
     }
-
+    
+    @Override
+    public void learn() {
+        
+        /*** Create the train model**/
+        Train train = new Train();
+        
+        /*** Train the model **/
+        model = train.doTraining();        
+    }
     //TODO: implement or change interface method
 
 
