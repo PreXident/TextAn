@@ -58,6 +58,8 @@ debug {
 }
 
 task megaJar (type: Jar) {
+    archiveName = 'TextAn-client.jar' //fixed name because of run scripts
+
 	duplicatesStrategy = 'exclude'
 	from sourceSets.main.output
 	from(configurations.compile
@@ -83,6 +85,9 @@ task dist(type: Copy, dependsOn: 'megaJar') {
 }
 
 task zip(type: Zip, dependsOn: 'dist') {
+    baseName = 'TextAn'
+    appendix = 'client'
+
 	from 'build/dist'
 	exclude "*.zip"
 	destinationDir = file('build/dist')
