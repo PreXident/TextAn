@@ -9,3 +9,7 @@
 .text-no-object {
 	-fx-effect: dropshadow(three-pass-box, orange, 4, 4, 0, 0);
 }
+
+.slider {
+	-fx-padding: 10 10 10 10;
+}

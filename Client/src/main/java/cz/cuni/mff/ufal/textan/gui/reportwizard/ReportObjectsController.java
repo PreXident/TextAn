@@ -9,6 +9,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import cz.cuni.mff.ufal.textan.gui.Window;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -160,6 +161,7 @@ public class ReportObjectsController extends ReportWizardController {
         resourceBundle = rb;
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        slider.setLabelFormatter(new SliderLabelFormatter());
         scrollPane.vvalueProperty().addListener(e -> {
             textFlow.layoutChildren();
         });
@@ -497,6 +499,14 @@ public class ReportObjectsController extends ReportWizardController {
                 }
             }
         }
+    }
+
+    @Override
+    public void setWindow(final Window window) {
+        super.setWindow(window);
+        window.getScene().getWindow().widthProperty().addListener(e -> {
+            Utils.runFXlater(() -> { textFlow.layoutChildren(); });
+        });
     }
 
     /**

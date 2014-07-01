@@ -12,3 +12,7 @@
 .ENTITY {
 	-fx-underline: true;
 }
+
+.slider {
+	-fx-padding: 10 10 10 10;
+}

@@ -125,25 +125,32 @@ public class TextAn extends Application {
 
         //ask for login if needed
         if (settings.getProperty("username", "").isEmpty()) {
-            final String login = Dialogs.create()
-                    .owner(stage)
-                    .title(TextAnController.TITLE)
-                    .masthead(localize("username.prompt"))
-                    .message(localize("username.login.label"))
-                    .lightweight()
-                    .showTextInput(System.getProperty("user.name", ""));
-            if (login == null) {
-                Dialogs.create()
+            String login;
+            do {
+                login = Dialogs.create()
                         .owner(stage)
                         .title(TextAnController.TITLE)
-                        .masthead(localize("username.error.title"))
-                        .message(localize("username.error.text"))
+                        .masthead(localize("username.prompt"))
+                        .message(localize("username.login.label"))
                         .lightweight()
-                        .showError();
-                Platform.exit();
-            } else {
-                settings.setProperty("username", login);
-            }
+                        .showTextInput(System.getProperty("user.name", ""));
+                if (login == null || login.isEmpty() || login.trim().isEmpty()) {
+                    Dialogs.create()
+                            .owner(stage)
+                            .title(TextAnController.TITLE)
+                            .masthead(localize("username.error.title"))
+                            .message(localize("username.error.text"))
+                            .lightweight()
+                            .showError();
+                }
+                if (login == null) { //dialog cancelled
+                    Platform.exit();
+                    return;
+                }
+            } while (login == null || login.isEmpty() || login.trim().isEmpty());
+            final String trimmed = login.trim();
+            controller.loginTextField.setText(trimmed);
+            settings.setProperty("username", trimmed);
         }
     }
 

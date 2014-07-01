@@ -20,11 +20,13 @@ import java.util.Properties;
 public class LearningParameters {
     private static final String TRAIN_NER = "train_ner";
     private static final String WAITING_TIME = "waiting_time";
-    private static final String TRAINING_DATA = "training_data";
+    private static final String TRAINING_DATA = "default_training_data_file";
+    private static final String USE_DEFAULT_TRAINING_DATA = "use_default_training_data";
     private static final String MAXIMUM_STORED_MODELS = "maximum_stored_models";
     private static final String DEFAULT_TRAINING_DATA_PATH = "cnec2.0-all" + File.separator + "train.txt";
     private static final int DEFAULT_WAITING_TIME = 300000;
     private static final int DEFAULT_MAXIMUM_STORED_MODELS = 5;
+    private static final boolean DEFAULT_USE_DEFAULT_DATA = true;
     private static final String DEFAULT_NER_IDENTIFIER = "czech";
     private static final String DEFAULT_TAGGER = "morphodita:czech-131112-pos_only.tagger";
     private static final String DEFAULT_FEATURES_FILE = "features-tsd13.txt";
@@ -58,6 +60,8 @@ public class LearningParameters {
     private int maximumStoredModels;
     private File trainingDataFile;
 
+    private boolean useDefaultTrainingData;
+
     public LearningParameters(File workingDirectory) {
         command = new LinkedList<>();
         command.add(new File(workingDirectory, mapBinaryName(TRAIN_NER)).toString());
@@ -74,17 +78,20 @@ public class LearningParameters {
                 }
             }
 
-            try {
-                trainingDataFile = new File(workingDirectory.getAbsolutePath() + File.separator + getStringProperty(p, TRAINING_DATA, DEFAULT_TRAINING_DATA_PATH)).getCanonicalFile();
-            }
-            catch (IOException e) {
-                LOG.warn("Config value {} wasn't set, using default value.", TRAINING_DATA);
-            } finally {
-                if (trainingDataFile == null) {
-                    try {
-                        trainingDataFile = new File(workingDirectory.getAbsolutePath() + File.separator + DEFAULT_TRAINING_DATA_PATH).getCanonicalFile();
-                    } catch (IOException e) {
-                        LOG.error("Default learning data file not exists.", e);
+            useDefaultTrainingData = getBooleanProperty(p, USE_DEFAULT_TRAINING_DATA, DEFAULT_USE_DEFAULT_DATA);
+
+            if (useDefaultTrainingData) {
+                try {
+                    trainingDataFile = new File(workingDirectory.getAbsolutePath() + File.separator + getStringProperty(p, TRAINING_DATA, DEFAULT_TRAINING_DATA_PATH)).getCanonicalFile();
+                } catch (IOException e) {
+                    LOG.warn("Config value {} wasn't set, using default value.", TRAINING_DATA);
+                } finally {
+                    if (trainingDataFile == null) {
+                        try {
+                            trainingDataFile = new File(workingDirectory.getAbsolutePath() + File.separator + DEFAULT_TRAINING_DATA_PATH).getCanonicalFile();
+                        } catch (IOException e) {
+                            LOG.error("Default learning data file not exists.", e);
+                        }
                     }
                 }
             }
@@ -92,6 +99,8 @@ public class LearningParameters {
             waitingTime = getIntegerProperty(p, WAITING_TIME, DEFAULT_WAITING_TIME);
 
             maximumStoredModels = getIntegerProperty(p, MAXIMUM_STORED_MODELS, DEFAULT_MAXIMUM_STORED_MODELS);
+
+
 
         } catch (Exception e) {
             LOG.warn("Config file for NameTag wasn't found, using default values.", e.getMessage());
@@ -125,6 +134,20 @@ public class LearningParameters {
         String value = defaultValue;
         try {
             value = (String) p.get(propertyName);
+            if (value == null) {
+                LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
+                value = defaultValue;
+            }
+        } catch (Exception e) {
+            LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
+        }
+        return value;
+    }
+
+    private boolean getBooleanProperty(Properties p, String propertyName, boolean defaultValue) {
+        Boolean value = defaultValue;
+        try {
+            value = Boolean.valueOf((String) p.get(propertyName));
             if (value == null) {
                 LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
                 value = defaultValue;
@@ -172,6 +195,13 @@ public class LearningParameters {
      */
     public int getMaximumStoredModels() {
         return maximumStoredModels;
+    }
+
+    /**
+     * @return true if default training data should be used
+     */
+    public boolean useDefaultTrainingData() {
+        return useDefaultTrainingData;
     }
 
 

@@ -14,10 +14,29 @@ public interface IObjectTableDAO extends IObjectRelationDAO<ObjectTable> {
      * finds all objects of specified type
      * 
      * @param objectTypeId id of object type
+     * @param firstResult
+     * @param pageSize
+     * @return 
+     */
+    List<ObjectTable> findAllByObjectType(Long objectTypeId, int firstResult, int pageSize);
+    /**
+     * finds all objects of specified type
+     * 
+     * @param objectTypeId id of object type
      * @return 
      */
     List<ObjectTable> findAllByObjectType(Long objectTypeId);
 
+    
+        /**
+     * finds all objects of specified type
+     * 
+     * @param type
+     * @param firstResult
+     * @param pageSize
+     * @return 
+     */
+    List<ObjectTable> findAllByObjectType(ObjectTypeTable type, int firstResult, int pageSize);
     /**
      * finds all objects of specified type
      * 

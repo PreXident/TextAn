@@ -1,0 +1,25 @@
+Hi guys,
+ just quick summary:
+
+Adam:
+i have a few things to report, mostly hwks:
+- changed order of information about object in relation assignment (alias, id, type)
+- cursor changes to wait on communication with server
+- object's texts are now highlighted while selecting object to be assigned to relation, it's quite a hack, but it's such a nonstandard feature...
+- added progress indicator for pipeline, removed cancel buttons
+
+Jakub:
+I played with nametag & learning data.
+- I have solved problem with entity ID (string x integer)
+- Trying solve problem with date and time.
+
+Vaclav:
+ 
+Tam:
+I have not done much last week, I spent one day playing with new string metric distance library.:). But the good news is: I don't have class anymore after the next Wednesday. 
+
+Me:
+I refactored headers in web services, so now it's simpler to handle them... but there is some problem with adding header in client. Why nothing in Java does not work as you expect? (And I did some minor things in db-hibernate2, but it needs revision.)
+
+See you on Wednesday,
+Petr

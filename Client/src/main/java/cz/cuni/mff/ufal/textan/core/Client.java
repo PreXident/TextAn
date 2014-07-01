@@ -119,10 +119,10 @@ public class Client {
         if (documentProcessor == null) {
             try {
                 Service service = Service.create(
-                        new URL(settings.getProperty("url.document.wsdl", "http://localhost:9100/soap/document?wsdl")),
+                        new URL(settings.getProperty("url.document.wsdl", "http://textan.ms.mff.cuni.cz:9500/soap/document?wsdl")),
                         DOCUMENT_PROCESSOR_SERVICE);
                 // Endpoint Address
-                String endpointAddress = settings.getProperty("url.document", "http://localhost:9100/soap/document");
+                String endpointAddress = settings.getProperty("url.document", "http://textan.ms.mff.cuni.cz:9500/soap/document");
                 // Add a port to the Service
                 service.addPort(DOCUMENT_PROCESSOR_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 final IDocumentProcessor processor =
@@ -148,10 +148,10 @@ public class Client {
         if (dataProvider == null) {
             try {
                 Service service = Service.create(
-                        new URL(settings.getProperty("url.data.wsdl", "http://localhost:9100/soap/data?wsdl")),
+                        new URL(settings.getProperty("url.data.wsdl", "http://textan.ms.mff.cuni.cz:9500/soap/data?wsdl")),
                         DATA_PROVIDER_SERVICE);
                 // Endpoint Address
-                String endpointAddress = settings.getProperty("url.data", "http://localhost:9100/soap/data");
+                String endpointAddress = settings.getProperty("url.data", "http://textan.ms.mff.cuni.cz:9500/soap/data");
                 // Add a port to the Service
                 service.addPort(DATA_PROVIDER_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
                 final IDataProvider provider = service.getPort(IDataProvider.class);

@@ -1,18 +1,28 @@
 package cz.cuni.mff.ufal.textan.server.linguistics;
 
 import cz.cuni.mff.ufal.nametag.*;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
+import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
+import cz.cuni.mff.ufal.textan.data.views.INameTagView;
+import cz.cuni.mff.ufal.textan.data.views.NameTagRecord;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
 import cz.cuni.mff.ufal.textan.server.models.ObjectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.file.Paths;
+import java.nio.channels.FileChannel;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A named entity recognizer.
@@ -28,15 +38,39 @@ public class NamedEntityRecognizer {
     private static final String MODELS_DIR = "models";
     private static final String MODEL_FILE_EXTENSION = ".ner";
     private static final String MODEL_FILE_PREFIX = "model";
+    private static final String TRAINING_DIR = "training";
+    private static final String TRAINING_DATA_EXTENSION = ".txt";
+    private static final String TRAINING_DATA_PREFIX = "temporaryTrainingData";
+
+    private static final String SPACE_REPLACE_REGEX = "\\s";
+    private static final String BEFORE_PUNCT_NEWLINE_REGEX = "([^\\n])(\\p{Punct})";
+    private static final String BEFORE_PUNCT_REPLACE_REGEX = "$1\n$2";
+    private static final String AFTER_PUNCT_NEWLINE_REGEX = "\\n(\\p{Punct})(.+)";
+    private static final String AFTER_PUNCT_REPLACE_REGEX = "\n$1\n$2";
+    private static final String ADD_TAG_REGEX = "(.+)\\n";
+    private static final String CONTINUING_ENTITY_REGEX = "I-";
+    private static final String CONTINUING_ENTITY_REPLACE_REGEX = "B-";
+
+    private static final Pattern spaceReplacePattern = Pattern.compile(SPACE_REPLACE_REGEX);
+    private static final Pattern beforePunctPattern = Pattern.compile(BEFORE_PUNCT_NEWLINE_REGEX);
+    private static final Pattern afterPunctPattern = Pattern.compile(AFTER_PUNCT_NEWLINE_REGEX);
+    private static final Pattern addTagPattern = Pattern.compile(ADD_TAG_REGEX);
+    private static final Pattern continuingEntityPattern = Pattern.compile(CONTINUING_ENTITY_REGEX);
+
+
 
     private final IObjectTypeTableDAO objectTypeTableDAO;
+    private final INameTagView nameTagView;
+    private final IDocumentTableDAO documentTableDAO;
     private final Hashtable<Long, ObjectType> idTempTable;
 
     private Ner ner;
 
-    public NamedEntityRecognizer(IObjectTypeTableDAO objectTypeTableDAO) {
+    public NamedEntityRecognizer(IObjectTypeTableDAO objectTypeTableDAO, INameTagView nameTagView, IDocumentTableDAO documentTableDAO) {
         this.objectTypeTableDAO = objectTypeTableDAO;
-        idTempTable = new Hashtable<>();
+        this.nameTagView = nameTagView;
+        this.documentTableDAO = documentTableDAO;
+        idTempTable = new Hashtable<Long, ObjectType>();
     }
 
     private File[] getSortedModels(File modelsDir) {
@@ -102,6 +136,90 @@ public class NamedEntityRecognizer {
         return true;
     }
 
+    private void prepareLearningData(File fileWithTrainingData) {
+        LOG.info("Creating data from database started");
+        try {
+            PrintWriter output = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileWithTrainingData, true), "UTF-8"));
+
+            List<NameTagRecord> documents = nameTagView.findAll();
+            Collections.sort(documents, (
+                    NameTagRecord a, NameTagRecord b) ->
+                    a.getDocumentID() != b.getDocumentID()
+                            ? Long.signum(a.getDocumentID() - b.getDocumentID())
+                            : Long.signum(a.getAliasOccurrencePosition() - b.getAliasOccurrencePosition()));
+
+            long lastID = -1L;
+            int lastEntityEnd = 0;
+            String documentText = "";
+            StringBuilder taggedDocument = new StringBuilder();
+            for (NameTagRecord record : documents) {
+                if (lastID != record.getDocumentID()) {
+                    output.print(taggedDocument.toString().replaceAll("[\\n]+","\n"));
+                    taggedDocument.delete(0, taggedDocument.length());
+                    documentText = documentTableDAO.find(record.getDocumentID()).getText();
+                    lastEntityEnd = 0;
+                    lastID = record.getDocumentID();
+                }
+                if (lastEntityEnd == record.getAliasOccurrencePosition() + 1) {
+                    taggedDocument.append(formatAliasForTraining(record.getAlias(), record.getObjectTypeID(), true));
+                } else {
+                    taggedDocument.append(formatAliasForTraining(documentText.substring(lastEntityEnd, record.getAliasOccurrencePosition()), null, false));
+                    taggedDocument.append(formatAliasForTraining(record.getAlias(), record.getObjectTypeID(), false));
+                }
+                lastEntityEnd = record.getAliasOccurrencePosition() + record.getAlias().length();
+            }
+            taggedDocument.append(formatAliasForTraining(documentText.substring(lastEntityEnd), null, false));
+            output.print(taggedDocument.toString());
+            taggedDocument.delete(0, taggedDocument.length());
+            output.close();
+            LOG.info("Creating data from database finished");
+        } catch (FileNotFoundException e) {
+            LOG.error("File for training data not found {}", fileWithTrainingData.getPath(), e);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String formatAliasForTraining(String alias, Long id, boolean continuingEntity) {
+        String tagRegex = id != null ? "$1\tI-" + id +"\n" : "$1\t_\n";
+
+        alias = alias.trim();
+
+        Matcher m = spaceReplacePattern.matcher(alias);
+        alias = m.replaceAll("\n");
+
+        m = beforePunctPattern.matcher(alias);
+        alias = m.replaceAll(BEFORE_PUNCT_REPLACE_REGEX);
+
+        m = afterPunctPattern.matcher(alias);
+        alias = m.replaceAll(AFTER_PUNCT_REPLACE_REGEX);
+
+        alias += '\n';
+
+        m = addTagPattern.matcher(alias);
+        alias = m.replaceAll(tagRegex);
+
+        if (continuingEntity) {
+            m = continuingEntityPattern.matcher(alias);
+            alias = m.replaceAll(CONTINUING_ENTITY_REPLACE_REGEX);
+        }
+        return alias;
+    }
+
+    private void copyFile(File source, File dest) throws IOException {
+        FileChannel inputChannel = null;
+        FileChannel outputChannel = null;
+        try {
+            inputChannel = new FileInputStream(source).getChannel();
+            outputChannel = new FileOutputStream(dest).getChannel();
+            outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+        } finally {
+            inputChannel.close();
+            outputChannel.close();
+        }
+    }
+
+
     /**
      * Learn new model
      *
@@ -113,15 +231,32 @@ public class NamedEntityRecognizer {
         try {
             File dir = new File("../../Linguistics/training").getCanonicalFile();
             SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
-            File modelLocation = new File(MODELS_DIR, MODEL_FILE_PREFIX + sdf.format(Calendar.getInstance().getTime()) + MODEL_FILE_EXTENSION).getAbsoluteFile();
+            Date date = Calendar.getInstance().getTime();
+            File modelLocation = new File(MODELS_DIR, MODEL_FILE_PREFIX + sdf.format(date) + MODEL_FILE_EXTENSION).getAbsoluteFile();
             LOG.debug("New model path: {}", modelLocation);
 
             LearningParameters learningParameters = new LearningParameters(dir);
+            File trainingDataFile = new File(TRAINING_DIR, TRAINING_DATA_PREFIX + sdf.format(date) + TRAINING_DATA_EXTENSION).getAbsoluteFile();
+            if (new File(TRAINING_DIR).mkdir()) {
+                if (learningParameters.useDefaultTrainingData()) {
+                    LOG.info("Copiing default training data from {}", learningParameters.getTrainingData().getPath());
+                    try {
+                        Files.copy(learningParameters.getTrainingData().toPath(), trainingDataFile.toPath());
+                        copyFile(learningParameters.getTrainingData(), trainingDataFile);
+                    } catch (IOException e) {
+                        LOG.error("Can't copy default training data from {} to {}: {}", learningParameters.getTrainingData().getPath(), trainingDataFile.getPath(), e);
+                    }
+                }
+                prepareLearningData(trainingDataFile);
+            } else {
+                LOG.error("Can't create training data folder");
+            }
+
             LOG.debug("Executing learning command: {}", String.join(" ", learningParameters.getCommand()));
+            LOG.debug("Training data file: {}", trainingDataFile.getPath());
 
             // build process
             ProcessBuilder pb = new ProcessBuilder(learningParameters.getCommand());
-            File trainingDataFile = learningParameters.getTrainingData();
             pb.directory(dir);
 
             // IO redirection
