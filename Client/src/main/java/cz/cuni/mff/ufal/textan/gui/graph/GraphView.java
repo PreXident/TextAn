@@ -57,6 +57,9 @@ public class GraphView extends SwingNode {
     /** Color for vertices representing relations. */
     final Color RELATION_OBJECT_COLOR = new Color(238, 238, 238);
 
+    /** Color for vetex border. */
+    final Color VERTEX_BORDER_COLOR = new Color(0, 0, 0, 0);
+
     /**
      * Properties containing application settings.
      * Handle with care, they are shared!
@@ -75,6 +78,13 @@ public class GraphView extends SwingNode {
     /** Mouse handler. */
     final DefaultModalGraphMouse<Integer,String> graphMouse;
 
+    /**
+     * Only constructor.
+     * @param settings application settings
+     * @param objects graph verteces
+     * @param relations graph edges
+     * @param rootId center vertex id
+     */
     public GraphView(final Properties settings, final Map<Long, Object> objects,
             final Set<Relation> relations, final long rootId) {
         this.settings = settings;
@@ -135,8 +145,7 @@ public class GraphView extends SwingNode {
                 hypergraphs ? new PseudoHypergraph<>(g) : (Graph<Object, Relation>) g
         );
         //
-        final Transformer<Object, Paint> vertexPaint =
-                obj -> obj instanceof RelationObject ? RELATION_OBJECT_COLOR : Utils.idToAWTColor(obj.getType().getId());
+        final Transformer<Object, Paint> vertexPaint = obj -> Utils.idToAWTColor(obj.getType().getId());
         float dash[] = {10.0f};
         final Stroke edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
         Transformer<Relation, Stroke> edgeStrokeTransformer = (Relation s) -> edgeStroke;
@@ -148,6 +157,7 @@ public class GraphView extends SwingNode {
         }
         //
         visualizator.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
+        visualizator.getRenderContext().setVertexDrawPaintTransformer(obj -> VERTEX_BORDER_COLOR);
         visualizator.getRenderContext().setVertexShapeTransformer(v -> {
             return v instanceof RelationObject ? new Rectangle(-10, -10, 20, 20) : new Ellipse2D.Float(-10, -10, 20, 20);
         });

@@ -1,0 +1,31 @@
+Dears,
+ again short summary...
+
+Jakub:
+I haven't done too much:
+- waiting for new view for creating training data (but continue
+working on it because I'm using my dummy implementation)
+- re-implementing loading properties (not done yet) 
+
+Tam:
+I have devoted my time for implementing/testing new features of ML, It still have some strange errors, hopefully I intend to finish ML part this Thursday.
+
+Adam:
+quite some work has been done on my part, so the most important things:
+- created run scripts for client
+- default server is now the virtual one
+- created simple dist task for client
+- null objects are not passed as assigned to relations
+- fixed some visualization problems reported by Peter
+- added context menu for graphs
+- better login prompting
+- fixed hypergraph visualization problem
+- proofreading of the brief manual
+
+Me:
+I wrote a brief manual for client in czech and while writing I tested Textan. I found lots of small bugs, mainly visual bugs, so I will report it sometimes. (Some of it Adam already fixed.) I know, it's not much, but administration is so time-consuming and boring...:/
+
+Vaclav didn't send anything again. So Venca, do you want to continue in the project with us? Lots of features are waiting for a database background...
+
+See you on Thursday at 13:00 in the lab,
+Petr

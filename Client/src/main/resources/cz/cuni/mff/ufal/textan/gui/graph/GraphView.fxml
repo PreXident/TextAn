@@ -48,8 +48,8 @@
 					</tooltip>
 				</ToggleButton>
 			</HBox>
-			<HBox fx:id="rightToolbar" alignment="CENTER_RIGHT" >
-				<Label text="%distance" />
+			<HBox fx:id="rightToolbar" styleClass="distance-box" alignment="CENTER_RIGHT" >
+				<Label styleClass="distance-label" text="%distance" />
 				<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="80" />
 				<Button alignment="CENTER_RIGHT" text="%go" onAction="#newDistance" />
 			</HBox>

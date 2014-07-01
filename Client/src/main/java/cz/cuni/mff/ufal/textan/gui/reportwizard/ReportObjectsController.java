@@ -179,7 +179,7 @@ public class ReportObjectsController extends ReportWizardController {
             contextMenu.hide();
             final Entity ent =
                     pipeline.getReportEntities().get(selectedEntity.index);
-            final NewObject newObject = new NewObject(ent.getType(), Arrays.asList(ent.getValue()));
+            final NewObject newObject = new NewObject(ent.getType(), Collections.emptyList());
             newObjects.add(newObject);
             setNewObjectAsSelectedEntityCandidate(newObject);
         });
@@ -388,8 +388,8 @@ public class ReportObjectsController extends ReportWizardController {
         if (object instanceof NewObject) {
             ++((NewObject) object).refCount;
         }
-        final Entity ent = setObjectAsSelectedEntityCandidate(object);
-        object.getAliases().add(ent.getValue());
+        /*final Entity ent = */setObjectAsSelectedEntityCandidate(object);
+        //object.getAliases().add(ent.getValue());
     }
 
     /**
@@ -403,8 +403,7 @@ public class ReportObjectsController extends ReportWizardController {
                 pipeline.getReportEntities().get(selectedEntity.index);
         final Object prev = entity.getCandidate();
         final String alias = entity.getValue();
-        if (prev != null && prev.isNew()) {
-            prev.getAliases().remove(alias);
+        if (prev != null) {
             if (prev instanceof NewObject && --((NewObject) prev).refCount == 0) {
                 newListView.setItems(null); //we need to get rid of the filtered list, or we get exception on removing
                 newObjects.remove(prev);

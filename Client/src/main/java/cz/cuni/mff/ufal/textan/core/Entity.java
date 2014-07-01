@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.ObjectOccurrence;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence;
+import cz.cuni.mff.ufal.textan.commons.models.ObjectOccurrence;
+import cz.cuni.mff.ufal.textan.commons.models.Occurrence;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -73,7 +73,11 @@ public class Entity {
      * @param candidate new selected candidate
      */
     public void setCandidate(Object candidate) {
+        if (this.candidate != null) {
+            this.candidate.removeNewAlias(this.value);
+        }
         this.candidate = candidate;
+        candidate.addNewAlias(this.value);
     }
 
     /**

@@ -102,7 +102,7 @@ public class GraphViewController extends GraphController {
         final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
         graphMI.setOnAction(e -> {
             contextMenu.hide();
-            textAnController.displayGraph(graphView.objectForGraph.getId());
+            textAnController.displayGraph(graphView.objectForGraph.getId(), distanceField.getNumber().intValue());
         });
         contextMenu.getItems().add(graphMI);
     }

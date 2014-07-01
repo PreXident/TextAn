@@ -26,6 +26,12 @@ dependencies {
 	compile name: 'PretopoLib'
 }
 
+gradle.projectsEvaluated {
+		tasks.withType(Compile) {
+			options.compilerArgs << "-Xlint:unchecked"
+		}
+}
+
 //exclude resources in ! directories
 sourceSets {
 	main {
@@ -74,4 +80,10 @@ configure([jar, megaJar]) {
 task dist(type: Copy, dependsOn: 'megaJar') {
 	from 'dist'
 	into 'build/dist'
+}
+
+task zip(type: Zip, dependsOn: 'dist') {
+	from 'build/dist'
+	exclude "*.zip"
+	destinationDir = file('build/dist')
 }

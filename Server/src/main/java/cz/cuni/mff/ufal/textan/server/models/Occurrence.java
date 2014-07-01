@@ -22,12 +22,12 @@ public class Occurrence {
     }
 
     /**
-     * Concerts a {@link cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence} to a {@link cz.cuni.mff.ufal.textan.server.models.Occurrence}
+     * Concerts a {@link cz.cuni.mff.ufal.textan.commons.models.Occurrence} to a {@link cz.cuni.mff.ufal.textan.server.models.Occurrence}
      *
      * @param commonsOccurrence the commons occurrence
      * @return the occurrence
      */
-    public static Occurrence fromCommonsOccurrence(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence commonsOccurrence) {
+    public static Occurrence fromCommonsOccurrence(cz.cuni.mff.ufal.textan.commons.models.Occurrence commonsOccurrence) {
         if (commonsOccurrence != null) {
             return new Occurrence(commonsOccurrence.getValue(), commonsOccurrence.getPosition());
         } else {
@@ -51,6 +51,14 @@ public class Occurrence {
      */
     public int getPosition() {
         return position;
+    }
+
+    public cz.cuni.mff.ufal.textan.commons.models.Occurrence toCommonsOccurrence() {
+        cz.cuni.mff.ufal.textan.commons.models.Occurrence commonsOccurrence = new cz.cuni.mff.ufal.textan.commons.models.Occurrence();
+        commonsOccurrence.setPosition(position);
+        commonsOccurrence.setValue(value);
+
+        return commonsOccurrence;
     }
 
     @Override

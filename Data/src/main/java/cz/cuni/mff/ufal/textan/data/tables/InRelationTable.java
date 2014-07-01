@@ -14,14 +14,16 @@ public class InRelationTable extends AbstractTable {
     
     private long id;
     private int order;
+    private String role;
     private RelationTable relation;
     private ObjectTable object;
 
     public InRelationTable() {}
     public InRelationTable(RelationTable relation, ObjectTable object) {
-        this(0, relation, object);
+        this(null, 0, relation, object);
     }
-    public InRelationTable(int order, RelationTable relation, ObjectTable object) {
+    public InRelationTable(String role, int order, RelationTable relation, ObjectTable object) {
+        this.role = role;
         this.order = order;
         this.relation = relation;
         this.object = object;
@@ -41,6 +43,14 @@ public class InRelationTable extends AbstractTable {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public RelationTable getRelation() {

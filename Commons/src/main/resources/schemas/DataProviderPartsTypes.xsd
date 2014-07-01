@@ -21,8 +21,14 @@
     <xs:element name="getObjectsByTypeIdRequest" type="GetObjectsByTypeIdRequest"/>
     <xs:element name="getObjectsByTypeIdResponse" type="GetObjectsByTypeIdResponse"/>
     
+    <xs:element name="getFilteredObjectsRequest" type="GetFilteredObjectsRequest"/>
+    <xs:element name="getFilteredObjectsResponse" type="GetFilteredObjectsResponse"/>
+    
     <xs:element name="getRelationTypesRequest" type="Void"/>
     <xs:element name="getRelationTypesResponse" type="GetRelationTypesResponse"/>
+
+    <xs:element name="getRolesForRelationTypeByIdRequest" type="GetRolesForRelationTypeByIdRequest"/>
+    <xs:element name="getRolesForRelationTypeByIdResponse" type="GetRolesForRelationTypeByIdResponse"/>
 
     <xs:element name="getRelationsRequest" type="Void"/>
     <xs:element name="getRelationsResponse" type="GetRelationsResponse"/>
@@ -59,6 +65,12 @@
     
     <xs:element name="getDocumentByIdRequest" type="GetDocumentByIdRequest"/>
     <xs:element name="getDocumentByIdResponse" type="GetDocumentByIdResponse"/>
+
+    <xs:element name="getDocumentsContainsObjectByIdRequest" type="GetDocumentsContainsObjectByIdRequest"/>
+    <xs:element name="getDocumentsContainsObjectByIdResponse" type="GetDocumentsContainsObjectByIdResponse"/>
+
+    <xs:element name="getObjectsAndRelationsOccurringInDocumentRequest" type="GetObjectsAndRelationsOccurringInDocumentRequest"/>
+    <xs:element name="getObjectsAndRelationsOccurringInDocumentResponse" type="GetObjectsAndRelationsOccurringInDocumentResponse"/>
 
     <!-- type for messages without parameters -->
     <xs:complexType name="Void">
@@ -112,10 +124,38 @@
             <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:complexType name="GetFilteredObjectsRequest">
+        <xs:sequence>
+            <xs:element name="objectTypeId" type="xs:long" nillable="true"/>
+            <xs:element name="aliasFilter" type="xs:string" nillable="true"/>
+            <xs:element name="firstResult" type="xs:int"/>
+            <xs:element name="maxResults" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetFilteredObjectsResponse">
+        <xs:sequence>
+            <xs:element name="totalNumberOfResults" type="xs:int"/>
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
     
     <xs:complexType name="GetRelationTypesResponse">
         <xs:sequence>
             <xs:element ref="cms:relationType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetRolesForRelationTypeByIdRequest">
+        <xs:sequence>
+            <xs:element name="relationTypeId" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetRolesForRelationTypeByIdResponse">
+        <xs:sequence>
+            <xs:element name="role" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -124,6 +164,7 @@
             <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
+
     
     <!--<xs:complexType name="GetRelationsByType">
         <xs:sequence>
@@ -253,6 +294,33 @@
     <xs:complexType name="GetDocumentByIdResponse">
         <xs:sequence>
             <xs:element ref="cms:document"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetDocumentsContainsObjectByIdRequest">
+        <xs:sequence>
+            <xs:element name="objectId" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetDocumentsContainsObjectByIdResponse">
+        <xs:sequence>
+            <xs:element ref="cms:document" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetObjectsAndRelationsOccurringInDocumentRequest">
+        <xs:sequence>
+            <xs:element name="documentId" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetObjectsAndRelationsOccurringInDocumentResponse">
+        <xs:sequence>
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="objectOccurrence" type="cms:ObjectOccurrence" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="relationOccurrence" type="cms:RelationOccurrence" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

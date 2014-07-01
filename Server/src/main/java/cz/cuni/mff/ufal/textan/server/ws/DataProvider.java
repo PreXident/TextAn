@@ -1,7 +1,10 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
+import cz.cuni.mff.ufal.textan.commons.models.ObjectOccurrence;
+import cz.cuni.mff.ufal.textan.commons.models.RelationOccurrence;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
@@ -138,6 +141,39 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
+    public GetFilteredObjectsResponse getFilteredObjects(
+            @WebParam(partName = "getFilteredObjectsRequest", name = "getFilteredObjectsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetFilteredObjectsRequest getFilteredObjectsRequest) throws IdNotFoundException {
+
+        LOG.debug("Executing operation getFilteredObjectsRequest: {}", getFilteredObjectsRequest);
+
+        try {
+            
+            Pair<List<Object>, Integer> results = dbService.getFilteredObjects(
+                    getFilteredObjectsRequest.getObjectTypeId(),
+                    getFilteredObjectsRequest.getAliasFilter(),
+                    getFilteredObjectsRequest.getFirstResult(),
+                    getFilteredObjectsRequest.getMaxResults()
+            );
+            
+            GetFilteredObjectsResponse response = new GetFilteredObjectsResponse();
+            for (Object object : results.getFirst()) {
+                response.getObjects().add(object.toCommonsObject());
+            }
+            response.setTotalNumberOfResults(results.getSecond());
+
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
     public GetRelationTypesResponse getRelationTypes(
             @WebParam(partName = "getRelationTypes", name = "getRelationTypes", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             Void getRelationTypes) {
@@ -213,6 +249,82 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
+    public GetObjectsAndRelationsOccurringInDocumentResponse getObjectsAndRelationsOccurringInDocument(
+            @WebParam(partName = "getObjectsAndRelationsOccurringInDocumentRequest", name = "getObjectsAndRelationsOccurringInDocumentRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetObjectsAndRelationsOccurringInDocumentRequest getObjectsAndRelationsOccurringInDocumentRequest) throws IdNotFoundException {
+
+        LOG.debug("Executing operation getObjectsAndRelationsOccurringInDocument: {}", getObjectsAndRelationsOccurringInDocumentRequest);
+
+        try {
+
+            GetObjectsAndRelationsOccurringInDocumentResponse response = new GetObjectsAndRelationsOccurringInDocumentResponse();
+
+            //TODO: object or object id?
+            Pair<List<Object>, List<Pair<Long, Occurrence>>> objectWithOccurrences = dbService.getObjectsWithOccurrences(getObjectsAndRelationsOccurringInDocumentRequest.getDocumentId());
+            Pair<List<Relation>, List<Pair<Long, Occurrence>>> relationWithOccurrences = dbService.getRelationsWithOccurrences(getObjectsAndRelationsOccurringInDocumentRequest.getDocumentId());
+
+            for (Object object : objectWithOccurrences.getFirst()) {
+                response.getObjects().add(object.toCommonsObject());
+            }
+
+            for (Pair<Long, Occurrence> objectOccurrence : objectWithOccurrences.getSecond()) {
+                ObjectOccurrence commonsObjectOccurrence = new ObjectOccurrence();
+                commonsObjectOccurrence.setObjectId(objectOccurrence.getFirst());
+                commonsObjectOccurrence.setAlias(objectOccurrence.getSecond().toCommonsOccurrence());
+
+                response.getObjectOccurrences().add(commonsObjectOccurrence);
+            }
+
+            for (Relation relation : relationWithOccurrences.getFirst()) {
+                response.getRelations().add(relation.toCommonsRelation());
+            }
+
+            for (Pair<Long, Occurrence> relationOccurrence : relationWithOccurrences.getSecond()) {
+                RelationOccurrence commonsRelationOccurrence = new RelationOccurrence();
+                commonsRelationOccurrence.setRelationId(relationOccurrence.getFirst());
+                commonsRelationOccurrence.setAnchor((relationOccurrence.getSecond() != null ? relationOccurrence.getSecond().toCommonsOccurrence() : null));
+
+                response.getRelationOccurrences().add(commonsRelationOccurrence);
+            }
+
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
+    public GetDocumentsContainsObjectByIdResponse getDocumentsContainsObjectById(
+            @WebParam(partName = "getDocumentsContainsObjectByIdRequest", name = "getDocumentsContainsObjectByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetDocumentsContainsObjectByIdRequest getDocumentsContainsObjectByIdRequest) throws IdNotFoundException {
+
+        LOG.debug("Executing operation getDocumentsContainsObjectById: {}", getDocumentsContainsObjectByIdRequest);
+
+        try {
+
+            GetDocumentsContainsObjectByIdResponse response = new GetDocumentsContainsObjectByIdResponse();
+            List<Document> documents = dbService.getDocumentsContainsObject(getDocumentsContainsObjectByIdRequest.getObjectId());
+            for (Document document : documents) {
+                response.getDocuments().add(document.toCommonsDocument());
+            }
+
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
     public SplitObjectResponse splitObject(
             @WebParam(partName = "splitObject", name = "splitObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             SplitObjectRequest splitObjectRequest) throws IdNotFoundException {
@@ -224,6 +336,30 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
             SplitObjectResponse response = new SplitObjectResponse();
             response.setResult(result);
+
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
+    public GetRolesForRelationTypeByIdResponse getRolesForRelationTypeById(
+            @WebParam(partName = "getRolesForRelationTypeByIdRequest", name = "getRolesForRelationTypeByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetRolesForRelationTypeByIdRequest getRolesForRelationTypeByIdRequest) throws IdNotFoundException {
+
+        LOG.debug("Executing operation getRolesForRelationTypeById: {}", getRolesForRelationTypeByIdRequest);
+
+        try {
+
+            List<String> roles = dbService.getRolesForRelationType(getRolesForRelationTypeByIdRequest.getRelationTypeId());
+            GetRolesForRelationTypeByIdResponse response = new GetRolesForRelationTypeByIdResponse();
+            response.getRoles().addAll(roles);
 
             return response;
 

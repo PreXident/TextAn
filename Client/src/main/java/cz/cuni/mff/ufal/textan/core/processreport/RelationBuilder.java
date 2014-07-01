@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Occurrence;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RelationOccurrence;
+import cz.cuni.mff.ufal.textan.commons.models.Occurrence;
+import cz.cuni.mff.ufal.textan.commons.models.RelationOccurrence;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;

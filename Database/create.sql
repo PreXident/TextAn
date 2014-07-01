@@ -88,6 +88,7 @@ CREATE TABLE IsInRelation
         CONSTRAINT FK_ISINRELATION_OBJECT
           FOREIGN KEY (id_object)
                 REFERENCES Object(id_object),
+        role NVARCHAR(255),
         order_in_relation int NOT NULL
 );
 
