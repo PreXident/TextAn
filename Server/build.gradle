@@ -119,20 +119,21 @@ shadowJar {
     }
 }
 
-task shadowCopyNametagLib(type: Copy) {
-    shadowJar.dependsOn name
-
-    from (new File(project(':NameTagIntegration').projectDir, 'lib')) {
-        include System.mapLibraryName("nametag_java")
+task dist(type: Copy, dependsOn: 'shadowJar') {
+    from (file('../Samples')) {
+        include 'models/**/*.ner'
     }
-    into new File(shadowJar.destinationDir, 'lib')
+    from (project(':NameTagIntegration').projectDir) {
+        include 'lib/**/*'
+    }
+    into file("$buildDir/dist")
 }
 
-task shadowCopyNametagModel(type: Copy) {
-    shadowJar.dependsOn name
+task zip(type: Zip, dependsOn: 'dist') {
+    baseName = 'TextAn'
+    appendix = 'server'
+    destinationDir = file("$buildDir/dist")
 
-    from (new File('../Samples/models')) {
-        include '**/*.net'
-    }
-    into new File(shadowJar.destinationDir, 'models')
+    from file("$buildDir/dist")
+    exclude "*.zip"
 }
