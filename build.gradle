@@ -12,6 +12,9 @@ clean {
 }
 
 task dist(type: Copy, dependsOn: [':Client:zip', ':Server:zip']) {
+    group = 'Distribution'
+    description = 'Bundles the client and the server distributions.'
+
     from "${project(':Client').buildDir}/dist"
     from "${project(':Server').buildDir}/dist"
     include "*.zip"

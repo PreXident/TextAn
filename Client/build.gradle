@@ -58,6 +58,9 @@ debug {
 }
 
 task megaJar (type: Jar) {
+    group = 'Distribution'
+    description = 'Creates a combined JAR of project and runtime dependencies.'
+
     archiveName = 'TextAn-client.jar' //fixed name because of run scripts
 
 	duplicatesStrategy = 'exclude'
@@ -80,11 +83,17 @@ configure([jar, megaJar]) {
 }
 
 task dist(type: Copy, dependsOn: 'megaJar') {
+    group = 'Distribution'
+    description = 'Creates a client distribution.'
+
 	from 'dist'
 	into 'build/dist'
 }
 
 task zip(type: Zip, dependsOn: 'dist') {
+    group = 'Distribution'
+    description = 'Creates and packs a client distribution.'
+
     baseName = 'TextAn'
     appendix = 'client'
 

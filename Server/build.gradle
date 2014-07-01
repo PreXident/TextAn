@@ -120,6 +120,9 @@ shadowJar {
 }
 
 task dist(type: Copy, dependsOn: 'shadowJar') {
+    group = 'Distribution'
+    description = 'Creates a server distribution.'
+
     from (file('../Samples')) {
         include 'models/**/*.ner'
     }
@@ -130,6 +133,9 @@ task dist(type: Copy, dependsOn: 'shadowJar') {
 }
 
 task zip(type: Zip, dependsOn: 'dist') {
+    group = 'Distribution'
+    description = 'Creates and packs a server distribution.'
+
     baseName = 'TextAn'
     appendix = 'server'
     destinationDir = file("$buildDir/dist")
