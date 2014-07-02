@@ -130,6 +130,14 @@ public class InnerWindow extends Window {
     }
 
     /**
+     * Returns maximized property.
+     * @return maximized property
+     */
+    public BooleanProperty maximizedProperty() {
+        return maximized;
+    }
+
+    /**
      * Returns whether the window is maximized.
      * @return true if the window is maximized, false otherwise
      */
