@@ -129,6 +129,9 @@ task dist(type: Copy, dependsOn: 'shadowJar') {
     from (project(':NameTagIntegration').projectDir) {
         include 'lib/**/*'
     }
+    from (file("$projectDir/dist")) {
+        include "**/*"
+    }
     into file("$buildDir/dist")
 }
 
