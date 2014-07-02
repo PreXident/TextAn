@@ -140,65 +140,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
                 .list();
     }    
     
-    /**
-     * Finds all entities in a repository which have specified value in some column.
-     * Equals to "SELECT * WHERE columnName = columnValue" sql query
-     *
-     * @param <T> Type of the column
-     * @param propertyName Name of the column in database
-     * @param columnValue Value in the column
-     * @return List of entities satisfying the column constraint
-     */
-    @Transactional(readOnly = true)
-    @SuppressWarnings("unchecked")
-    //@Override
-    protected <T> List<E> findAllByProperty(String propertyName, T columnValue) {
-        return findAllByCriteria(new Criterion[]{Restrictions.eq(propertyName, columnValue)} );
-    }
 
-    /**
-     * Finds all entities in a repository by the specified criteria.
-     * Equals to "SELECT * WHERE {criteria}" sql query
-     *
-     * @param <T> Type of the column
-     * @param criteria Criteria to filter results
-     * @return List of entities satisfying criteria constraints
-     */
-    @Transactional(readOnly = true)
-    @SuppressWarnings("unchecked")
-    protected <T> List<E> findAllByCriteria(Collection<Criterion> criteria) {
-        Criteria result = findAllCriteria();
-        for (Criterion criterion : criteria) {
-            result.add(criterion);
-        }
-        return result.list();
-    }
-    /**
-     * Finds all entities in a repository by the specified criteria.
-     * Equals to "SELECT * WHERE {criteria}" sql query
-     *
-     * @param <T> Type of the column
-     * @param criteria Criteria to filter results
-     * @return List of entities satisfying criteria constraints
-     */
-
-    @Transactional(readOnly = true)
-    @SuppressWarnings("unchecked")
-    protected <T> List<E> findAllByCriteria(Criterion[] criteria) {
-        return findAllByCriteria(Arrays.asList(criteria));
-    }
-
-    /**
-     *
-     * @return Criteria that returns findAll
-     * 
-     * @see Criteria
-     */
-    @Transactional(readOnly = true)
-    @SuppressWarnings("unchecked")
-    protected Criteria findAllCriteria() {
-        return currentSession().createCriteria(type, thisAlias);
-    }
 
 
     /**
@@ -250,4 +192,78 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
         E entity = find(key);
         delete(entity);
     }
+    
+    
+    
+    // -----------------------------------------------------
+    // --------------- PROTECTED MEMBERS -------------------
+    // -----------------------------------------------------
+
+    
+    protected Criteria pagination(Criteria criteria, int firstResult, int pageSize) {
+        return criteria
+                .setFirstResult(firstResult)
+                .setMaxResults(pageSize);
+    }
+    /**
+     *
+     * @return Criteria that returns findAll
+     * 
+     * @see Criteria
+     */
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    protected Criteria findAllCriteria() {
+        return currentSession().createCriteria(type, thisAlias);
+    }
+    
+    /**
+     * Finds all entities in a repository which have specified value in some column.
+     * Equals to "SELECT * WHERE columnName = columnValue" sql query
+     *
+     * @param <T> Type of the column
+     * @param propertyName Name of the column in database
+     * @param columnValue Value in the column
+     * @return List of entities satisfying the column constraint
+     */
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    //@Override
+    protected <T> List<E> findAllByProperty(String propertyName, T columnValue) {
+        return findAllByCriteria(new Criterion[]{Restrictions.eq(propertyName, columnValue)} );
+    }
+
+    /**
+     * Finds all entities in a repository by the specified criteria.
+     * Equals to "SELECT * WHERE {criteria}" sql query
+     *
+     * @param <T> Type of the column
+     * @param criteria Criteria to filter results
+     * @return List of entities satisfying criteria constraints
+     */
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    protected <T> List<E> findAllByCriteria(Collection<Criterion> criteria) {
+        Criteria result = findAllCriteria();
+        for (Criterion criterion : criteria) {
+            result.add(criterion);
+        }
+        return result.list();
+    }
+    /**
+     * Finds all entities in a repository by the specified criteria.
+     * Equals to "SELECT * WHERE {criteria}" sql query
+     *
+     * @param <T> Type of the column
+     * @param criteria Criteria to filter results
+     * @return List of entities satisfying criteria constraints
+     */
+
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    protected <T> List<E> findAllByCriteria(Criterion[] criteria) {
+        return findAllByCriteria(Arrays.asList(criteria));
+    }
+
+
 }

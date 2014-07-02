@@ -31,7 +31,20 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     public ObjectTableDAO() {
         super(ObjectTable.class);
     }
-
+   
+    @Override
+    public List<ObjectTable> findAllByObjectTypeAndAliasSubStr(Long objectTypeId, String aliasSubStr, int firstResult, int pageSize) {
+                return findAllCriteria()
+                    .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_OBJECT_TYPE_ID), "objType", JoinType.INNER_JOIN)
+                        .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", ObjectTypeTable.PROPERTY_NAME_ID), objectTypeId))
+                    .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
+                        .add(Restrictions.like(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_ALIAS),
+                                       DAOUtils.getLikeSubstring(aliasSubStr)))    
+                    .setFirstResult(firstResult)
+                    .setMaxResults(pageSize)
+                    .list();
+    }
+    
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByObjectType(Long objectTypeId) {
