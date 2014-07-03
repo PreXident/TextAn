@@ -89,7 +89,7 @@ public class TextPro implements ITextPro {
         Train train = new Train();
         
         /*** Train the model **/
-        model = train.doTraining();        
+        model = train.doTraining(this.objectTableDAO, this.aliasTableDAO);        
     }
     //TODO: implement or change interface method
 
@@ -121,7 +121,7 @@ public class TextPro implements ITextPro {
             Entity e = eList.get(id);
             List<ObjectTable> oList = getCloseObject(e); // List of object closed to the entity
             List<Long> oListID = getCloseObjectID(e);
-                
+            
             //List<Double> score = new ArrayList<Double>();
             /** Initialize all value is 1 for one matching **/
             Double[] score = new Double[oList.size()];
