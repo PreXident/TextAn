@@ -32,10 +32,10 @@ public class NameTagView implements INameTagView {
         return s.createQuery(
                 "select new NameTagRecord(doc.id, occ.position, al.alias, objType.id)"
                         + "from DocumentTable doc"
-                        + "     left join doc.aliasOccurrences occ"
-                        + "     left join occ.alias al"
-                        + "     left join al.object obj"
-                        + "     left join obj.objectType objType"
+                        + "     inner join doc.aliasOccurrences occ"
+                        + "     inner join occ.alias al"
+                        + "     inner join al.object obj"
+                        + "     inner join obj.objectType objType"
                 
         ).list();
     }
