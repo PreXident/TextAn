@@ -153,6 +153,14 @@ public class TextAnController implements Initializable {
         }
     }
 
+    @FXML
+    private void resetSizePos() {
+        stage.setX(0);
+        stage.setY(0);
+        stage.setWidth(800);
+        stage.setHeight(600);
+    }
+
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
         content.addEventFilter(MouseEvent.ANY, (MouseEvent t) -> {
@@ -223,6 +231,7 @@ public class TextAnController implements Initializable {
      */
     public void setStage(final Stage stage) {
         this.stage = stage;
+        stage.setMaximized(settings.getProperty("application.max", "false").equals("true"));
     }
 
     /**
@@ -279,6 +288,16 @@ public class TextAnController implements Initializable {
                 .filter(n -> n instanceof Window)
                 .map(n -> (Window) n)
                 .forEach(w -> w.close());
+        //main stage's size/pos changes are not listened to because of
+        //maximalization issues (x/y notified before isMaximized is set)
+        //next time we will use values from this run's start ignoring later changes...
+        settings.setProperty("application.max", stage.isMaximized() ? "true" : "false");
+        if (!stage.isMaximized()) {
+            settings.setProperty("application.width", Double.toString(stage.getWidth()));
+            settings.setProperty("application.height", Double.toString(stage.getHeight()));
+            settings.setProperty("application.x", Double.toString(stage.getX()));
+            settings.setProperty("application.y", Double.toString(stage.getY()));
+        }
         //copy needed as closing removes stages from children
         for (Stage stage : new ArrayList<>(children)) {
             stage.close();

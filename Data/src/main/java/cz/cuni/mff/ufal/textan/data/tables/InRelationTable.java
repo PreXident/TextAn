@@ -22,7 +22,11 @@ public class InRelationTable extends AbstractTable {
     public InRelationTable(RelationTable relation, ObjectTable object) {
         this(null, 0, relation, object);
     }
+    public InRelationTable(int order, RelationTable relation, ObjectTable object) {
+        this("", order, relation, object);
+    }
     public InRelationTable(String role, int order, RelationTable relation, ObjectTable object) {
+        this.role = role;
         this.order = order;
         this.relation = relation;
         this.object = object;

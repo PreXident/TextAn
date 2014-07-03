@@ -71,6 +71,11 @@
 								</HBox>
 							</content>
 						</CustomMenuItem>
+						<MenuItem text="%reset.sizepos" onAction="#resetSizePos">
+							<accelerator>
+								<KeyCodeCombination alt="DOWN" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="HOME"/>
+							</accelerator>
+						</MenuItem>
 					</Menu>
 				</menus>
 			</MenuBar>

@@ -2,7 +2,7 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.commons.models.Occurrence;
 import cz.cuni.mff.ufal.textan.commons.models.RelationOccurrence;
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.RelationType;
@@ -100,7 +100,7 @@ public abstract class RelationBuilder extends AbstractBuilder {
         final Relation relation = new Relation(-index, type);
         for (IRelationInfo relInfo : data) {
             if (relInfo.getObject() != null) {
-                relation.getObjects().add(new Pair<>(relInfo.getObject(), relInfo.getOrder()));
+                relation.getObjects().add(new Triple<>(relInfo.getOrder(), relInfo.getRole(), relInfo.getObject()));
             }
         }
         return relation.toRelation();
@@ -137,5 +137,11 @@ public abstract class RelationBuilder extends AbstractBuilder {
          * @return assigned object's order
          */
         int getOrder();
+
+        /**
+         * Returns assigned object's role.
+         * @return assigned object's role
+         */
+        String getRole();
     }
 }

@@ -47,6 +47,16 @@
 						<Tooltip text="%pick" />
 					</tooltip>
 				</ToggleButton>
+				<Button onAction="#home">
+					<graphic>
+						<ImageView>
+							<Image url="@home.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%home" />
+					</tooltip>
+				</Button>
 			</HBox>
 			<HBox fx:id="rightToolbar" styleClass="distance-box" alignment="CENTER_RIGHT" >
 				<Label styleClass="distance-label" text="%distance" />

@@ -112,7 +112,7 @@ public class TextAn extends Application {
         controller.setSettings(settings);
         controller.setStage(stage);
         final Scene scene = new Scene(root);
-        Utils.prepareStage(stage, "application", settings);
+        Utils.prepareStage(stage, "application", settings, false);
         //
         scene.getStylesheets().addAll(TextAn.class.getResource("/org/controlsfx/dialog/dialogs.css").toExternalForm()); //without this the first dialog in too small window could mess up its content
         scene.getStylesheets().addAll(TextAn.class.getResource("CustomMenuItem.css").toExternalForm()); //styles for context menus must be set on scene

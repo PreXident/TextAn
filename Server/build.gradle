@@ -71,7 +71,7 @@ task copyNametagModel(type: Copy) {
  * Apache shade plugin for Gradle -> Shadow plugin
  * More on: https://github.com/johnrengelman/shadow
  */
-apply plugin: 'shadow'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
 import com.github.jengelman.gradle.plugins.shadow.transformers.XmlAppendingTransformer
@@ -82,73 +82,68 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
-        //classpath 'org.apache.cxf:cxf-buildtools:2.2.12' //CFX transformers. TODO: find documentation!
-    }
-}
-
-//make standard jar task executable
-jar {
-    manifest {
-        attributes 'Main-Class': 'cz.cuni.mff.ufal.textan.server.AppEntry'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.0.1'
     }
 }
 
 //configure shadow plugin
-//TODO: http://stackoverflow.com/questions/6831954/how-to-package-an-apache-cxf-application-into-a-monolithic-jar-with-the-maven-s
-//TODO: why this works?:D
-shadow {
+//http://stackoverflow.com/questions/6831954/how-to-package-an-apache-cxf-application-into-a-monolithic-jar-with-the-maven-s
+shadowJar {
+    destinationDir = file("$buildDir/dist")
+    archiveName = "TextAn-server.jar"
+
     //exclude signs for manifests from joined jars
     exclude 'META-INF/*.DSA'
     exclude 'META-INF/*.RSA'
 
     //append given resources
-    transformer(AppendingTransformer) {
+    transform(AppendingTransformer) {
         resource = 'META-INF/spring.handlers'
     }
-    transformer(AppendingTransformer) {
+    transform(AppendingTransformer) {
         resource = 'META-INF/spring.schemas'
     }
-    transformer(AppendingTransformer) {
+    transform(AppendingTransformer) {
         resource = 'META-INF/cxf/bus-extensions.txt'
     }
-    transformer(AppendingTransformer) {
+    transform(AppendingTransformer) {
         resource = 'META-INF/services/com.sun.tools.xjc.Plugin'
     }
-    transformer(AppendingTransformer) {
+    transform(AppendingTransformer) {
         resource = 'META-INF/cxf/cxf.extension'
     }
-    transformer(XmlAppendingTransformer) {
+    transform(XmlAppendingTransformer) {
         resource = 'META-INF/extensions.xml'
     }
-    transformer(XmlAppendingTransformer) {
+    transform(XmlAppendingTransformer) {
         resource = 'META-INF/cxf/extensions.xml'
     }
-//    transformer(XmlAppendingTransformer) {
-//        resource = 'META-INF/wsdl.plugin.xml'
-//    }
-//    transformer(XmlAppendingTransformer) {
-//        resource = 'META-INF/tools.service.validator.xml'
-//    }
-//    transformer(XmlAppendingTransformer) {
-//        resource = 'META-INF/cxf/java2wsbeans.xml'
-//    }
 }
 
-task shadowCopyNametagLib(type: Copy) {
-    shadowJar.dependsOn name
+task dist(type: Copy, dependsOn: 'shadowJar') {
+    group = 'Distribution'
+    description = 'Creates a server distribution.'
 
-    from (new File(project(':NameTagIntegration').projectDir, 'lib')) {
-        include System.mapLibraryName("nametag_java")
+    from (file('../Samples')) {
+        include 'models/**/*.ner'
     }
-    into new File(shadow.destinationDir, 'lib')
+    from (project(':NameTagIntegration').projectDir) {
+        include 'lib/**/*'
+    }
+    from (file("$projectDir/dist")) {
+        include "**/*"
+    }
+    into file("$buildDir/dist")
 }
 
-task shadowCopyNametagModel(type: Copy) {
-    shadowJar.dependsOn name
+task zip(type: Zip, dependsOn: 'dist') {
+    group = 'Distribution'
+    description = 'Creates and packs a server distribution.'
 
-    from (new File('../Samples/models')) {
-        include '**/*.net'
-    }
-    into new File(shadow.destinationDir, 'models')
+    baseName = 'TextAn'
+    appendix = 'server'
+    destinationDir = file("$buildDir/dist")
+
+    from file("$buildDir/dist")
+    exclude "*.zip"
 }
