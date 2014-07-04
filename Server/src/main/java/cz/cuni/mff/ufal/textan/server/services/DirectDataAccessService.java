@@ -41,7 +41,7 @@ public class DirectDataAccessService {
      * @param objectTableDAO the object table dAO
      * @param relationTypeTableDAO the relation type table dAO
      * @param relationTableDAO the relation table dAO
-     * @param inRelationTableDAO
+     * @param inRelationTableDAO the inRelationTableDAO
      */
     @Autowired
     public DirectDataAccessService(
@@ -196,7 +196,6 @@ public class DirectDataAccessService {
 
     public Pair<List<Object>,Integer> getFilteredObjects(Long objectTypeId, String aliasFilter, int firstResult, int maxResults) throws IdNotFoundException {
 
-        //TODO:implement
         if (objectTypeId != null) {
             ObjectTypeTable objectType = objectTypeTableDAO.find(objectTypeId);
             if (objectType == null) {
@@ -204,7 +203,37 @@ public class DirectDataAccessService {
             }
         }
 
-        return new Pair<>(new ArrayList<>(), 0);
+        int count;
+        List<ObjectTable> objects;
+
+        if (objectTypeId != null && aliasFilter != null) {
+
+            count = objectTableDAO.findAllByObjectTypeAndAliasSubStr(objectTypeId, aliasFilter, 0, -1).size();
+            objects = objectTableDAO.findAllByObjectTypeAndAliasSubStr(objectTypeId, aliasFilter, firstResult, maxResults);
+
+        } else if (objectTypeId != null) {
+
+            count = objectTableDAO.findAllByObjectType(objectTypeId).size();
+            objects = objectTableDAO.findAllByObjectType(objectTypeId, firstResult, maxResults);
+
+        } else if (aliasFilter != null) {
+
+            count = objectTableDAO.findAllByAliasSubstring(aliasFilter).size();
+            objects = objectTableDAO.findAllByAliasSubstring(aliasFilter, firstResult, maxResults);
+
+        } else {
+
+            count = objectTableDAO.findAll().size();
+            objects = objectTableDAO.findAll(firstResult, maxResults);
+
+        }
+
+        return new Pair<>(
+                objects.stream()
+                    .map(Object::fromObjectTable)
+                    .collect(Collectors.toList()),
+                count
+        );
     }
 
     /**
