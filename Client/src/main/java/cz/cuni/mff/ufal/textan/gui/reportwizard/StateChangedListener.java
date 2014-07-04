@@ -56,6 +56,9 @@ public class StateChangedListener implements IStateChangedListener {
     /** Parent controller. */
     protected final TextAnController textAnController;
 
+    /** Current controller. */
+    protected ReportWizardController controller;
+
     {
         fxmlMapping.put(StateType.LOAD, new StateInfo("01_ReportLoad.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01_ReportLoad", "report.wizard.load.title"));
         fxmlMapping.put(StateType.EDIT_REPORT, new StateInfo("02_ReportEdit.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.02_ReportEdit", "report.wizard.edit.title"));
@@ -107,6 +110,11 @@ public class StateChangedListener implements IStateChangedListener {
             final Properties settings, final ProcessReportPipeline pipeline,
             final ReportWizardWindow window) {
         this(textAnController, settings, pipeline, null, window);
+        window.maximizedProperty().addListener(e -> {
+            if (controller != null) {
+                hackFixTextFlow(controller);
+            }
+        });
     }
 
     @Override
@@ -125,7 +133,7 @@ public class StateChangedListener implements IStateChangedListener {
                 final ResourceBundle rb = ResourceBundle.getBundle(stateInfo.rb);
                 final FXMLLoader loader = new FXMLLoader(getClass().getResource(stateInfo.fxml), rb);
                 final Parent loadedRoot = (Parent) loader.load();
-                ReportWizardController controller = loader.getController();
+                controller = loader.getController();
                 controller.setTextAnController(textAnController);
                 controller.setSettings(settings);
                 controller.setPipeline(pipeline);

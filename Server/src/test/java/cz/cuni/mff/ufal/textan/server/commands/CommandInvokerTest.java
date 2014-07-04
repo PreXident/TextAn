@@ -110,5 +110,10 @@ public class CommandInvokerTest {
 
             return receiver == testCommand.receiver;
         }
+
+        @Override
+        public int hashCode() {
+            return receiver != null ? receiver.hashCode() : 0;
+        }
     }
 }

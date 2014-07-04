@@ -55,7 +55,7 @@ public class OuterStage extends Stage {
         this.settings = settings;
         setOnCloseRequest(e -> close());
         //init from settings
-        Utils.prepareStage(this, propertyID, settings);
+        Utils.prepareStage(this, propertyID, settings, true);
         //add listeners
         addEventFilter(MouseEvent.MOUSE_PRESSED, e -> this.toFront());
         //

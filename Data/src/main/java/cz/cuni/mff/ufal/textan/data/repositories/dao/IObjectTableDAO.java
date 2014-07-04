@@ -10,6 +10,18 @@ import java.util.List;
  * 
  */
 public interface IObjectTableDAO extends IObjectRelationDAO<ObjectTable> {
+
+    /**
+     * finds all objects of specified type
+     * 
+     * @param objectTypeId id of object type
+     * @param aliasSubStr
+     * @param firstResult
+     * @param pageSize
+     * @return 
+     */
+    List<ObjectTable> findAllByObjectTypeAndAliasSubStr(Long objectTypeId, String aliasSubStr, int firstResult, int pageSize);
+
     /**
      * finds all objects of specified type
      * 
