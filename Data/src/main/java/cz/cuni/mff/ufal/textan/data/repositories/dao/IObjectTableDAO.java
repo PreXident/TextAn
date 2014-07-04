@@ -20,7 +20,7 @@ public interface IObjectTableDAO extends IObjectRelationDAO<ObjectTable> {
      * @param pageSize
      * @return 
      */
-    List<ObjectTable> findAllByObjectTypeAndAliasSubStr(Long objectTypeId, String aliasSubStr, int firstResult, int pageSize);
+    List<ObjectTable> findAllByObjectTypeAndAliasSubStr(long objectTypeId, String aliasSubStr, int firstResult, int pageSize);
 
     /**
      * finds all objects of specified type
@@ -30,14 +30,14 @@ public interface IObjectTableDAO extends IObjectRelationDAO<ObjectTable> {
      * @param pageSize
      * @return 
      */
-    List<ObjectTable> findAllByObjectType(Long objectTypeId, int firstResult, int pageSize);
+    List<ObjectTable> findAllByObjectType(long objectTypeId, int firstResult, int pageSize);
     /**
      * finds all objects of specified type
      * 
      * @param objectTypeId id of object type
      * @return 
      */
-    List<ObjectTable> findAllByObjectType(Long objectTypeId);
+    List<ObjectTable> findAllByObjectType(long objectTypeId);
 
     
         /**

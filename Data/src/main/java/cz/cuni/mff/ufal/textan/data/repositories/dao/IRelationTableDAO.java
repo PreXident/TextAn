@@ -18,7 +18,7 @@ public interface IRelationTableDAO extends IObjectRelationDAO<RelationTable> {
      * @param relationTypeId id of the relation type
      * @return 
      */
-    List<RelationTable> findAllByRelationType(Long relationTypeId);
+    List<RelationTable> findAllByRelationType(long relationTypeId);
         /**
      * finds all relations of specified type
      * 
@@ -27,7 +27,7 @@ public interface IRelationTableDAO extends IObjectRelationDAO<RelationTable> {
      * @param pageSize
      * @return 
      */
-    List<RelationTable> findAllByRelationType(Long relationTypeId, int firstResult, int pageSize);
+    List<RelationTable> findAllByRelationType(long relationTypeId, int firstResult, int pageSize);
     
     /**
      * finds all relations of specified type
