@@ -10,6 +10,7 @@ package cz.cuni.mff.ufal.textan.data.repositories.dao;
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
 import cz.cuni.mff.ufal.textan.data.tables.*;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,7 @@ import java.util.List;
 
 /**
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
 @Repository
 @Transactional
@@ -31,18 +33,32 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
         super(ObjectTable.class);
     }
 
+    private Query findAllByObjectTypeAndAliasSubStrQuery(long objectTypeId, String aliasSubstring) {
+        Query hq = currentSession().createQuery(
+                "select distinct obj from ObjectTable as obj "
+                        + "inner join obj.objectType as type "
+                        + "inner join obj.aliases as al "
+                        + "where lower(al.alias) like lower(:pattern) and type.id = :objectTypeId"
+        );
+        hq.setParameter("pattern", DAOUtils.getLikeSubstring(aliasSubstring));
+        hq.setParameter("objectTypeId", objectTypeId);
+        return hq;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
-    public List<ObjectTable> findAllByObjectTypeAndAliasSubStr(long objectTypeId, String aliasSubStr, int firstResult, int pageSize) {
-        return findAllCriteria()
-                .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_OBJECT_TYPE_ID), "objType", JoinType.INNER_JOIN)
-                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", ObjectTypeTable.PROPERTY_NAME_ID), objectTypeId))
-                .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
-                .add(Restrictions.like(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_ALIAS),
-                        DAOUtils.getLikeSubstring(aliasSubStr)))
-                .setFirstResult(firstResult)
-                .setMaxResults(pageSize)
-                .list();
+    public List<ObjectTable> findAllByObjectTypeAndAliasSubStr(long objectTypeId, String aliasSubstring) {
+        return findAllByObjectTypeAndAliasSubStrQuery(objectTypeId, aliasSubstring).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<ObjectTable> findAllByObjectTypeAndAliasSubStr(long objectTypeId, String aliasSubstring, int firstResult, int pageSize) {
+        Query hq = findAllByObjectTypeAndAliasSubStrQuery(objectTypeId, aliasSubstring);
+        hq.setFirstResult(firstResult);
+        hq.setMaxResults(pageSize);
+
+        return hq.list();
     }
 
     @Override
@@ -95,26 +111,31 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
                 .list();
     }
 
+    private Query findAllByAliasSubstringQuery(String aliasSubstring) {
+
+        Query hq = currentSession().createQuery(
+                "select distinct obj from ObjectTable as obj "
+                        + "inner join obj.aliases as al "
+                        + "where lower(al.alias) like lower(:pattern)"
+        );
+        hq.setParameter("pattern", DAOUtils.getLikeSubstring(aliasSubstring));
+        return hq;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByAliasSubstring(String aliasSubstring) {
-        return findAllCriteria()
-                .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
-                .add(Restrictions.like(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_ALIAS),
-                        DAOUtils.getLikeSubstring(aliasSubstring)))
-                .list();
+        return findAllByAliasSubstringQuery(aliasSubstring).list();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByAliasSubstring(String aliasSubstring, int firstResult, int pageSize) {
-        return findAllCriteria()
-                .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
-                .add(Restrictions.like(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_ALIAS),
-                        DAOUtils.getLikeSubstring(aliasSubstring)))
-                .setFirstResult(firstResult)
-                .setMaxResults(pageSize)
-                .list();
+        Query hq = findAllByAliasSubstringQuery(aliasSubstring);
+        hq.setFirstResult(firstResult);
+        hq.setMaxResults(pageSize);
+
+        return hq.list();
     }
 
     @Override
