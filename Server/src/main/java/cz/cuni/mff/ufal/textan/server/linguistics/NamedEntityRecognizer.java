@@ -233,7 +233,7 @@ public class NamedEntityRecognizer {
 
             LearningParameters learningParameters = new LearningParameters(dir);
             File trainingDataFile = new File(TRAINING_DIR, TRAINING_DATA_PREFIX + sdf.format(date) + TRAINING_DATA_EXTENSION).getAbsoluteFile();
-            if (new File(TRAINING_DIR).mkdir()) {
+            if ((new File(TRAINING_DIR).isDirectory()) || (new File(TRAINING_DIR).mkdir())) {
                 if (learningParameters.useDefaultTrainingData()) {
                     LOG.info("Copiing default training data from {}", learningParameters.getTrainingData().getPath());
                     try {
@@ -246,6 +246,7 @@ public class NamedEntityRecognizer {
                 prepareLearningData(trainingDataFile);
             } else {
                 LOG.error("Can't create training data folder");
+                return;
             }
 
             LOG.debug("Executing learning command: {}", String.join(" ", learningParameters.getCommand()));
