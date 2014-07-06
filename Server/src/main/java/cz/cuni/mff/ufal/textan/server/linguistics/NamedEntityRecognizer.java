@@ -305,7 +305,7 @@ public class NamedEntityRecognizer {
      */
     ObjectType translateEntity(String entityType) {
         ObjectType value = new ObjectType(-1L, "");
-        Long id = -1L;
+        long id = -1L;
         try {
             id = Long.parseLong(entityType);
         } catch (NumberFormatException nfe) {
