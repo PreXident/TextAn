@@ -62,6 +62,10 @@ public class LearningParameters {
 
     private boolean useDefaultTrainingData;
 
+    /**
+     * Read learning parameters for nametag
+     * @param workingDirectory working directory, where learning will be run
+     */
     public LearningParameters(File workingDirectory) {
         command = new LinkedList<>();
         command.add(new File(workingDirectory, mapBinaryName(TRAIN_NER)).toString());
@@ -130,6 +134,13 @@ public class LearningParameters {
         }
     }
 
+    /**
+     * Return string property from provided properties
+     * @param p source properties
+     * @param propertyName property name
+     * @param defaultValue default value
+     * @return property value if property is set, default value else
+     */
     private String getStringProperty(Properties p, String propertyName, String defaultValue) {
         String value = defaultValue;
         try {
@@ -144,6 +155,13 @@ public class LearningParameters {
         return value;
     }
 
+    /**
+     * Return boolean property from provided properties
+     * @param p source properties
+     * @param propertyName property name
+     * @param defaultValue default value
+     * @return property value if property is set, default value else
+     */
     private boolean getBooleanProperty(Properties p, String propertyName, boolean defaultValue) {
         Boolean value = defaultValue;
         try {
@@ -158,6 +176,13 @@ public class LearningParameters {
         return value;
     }
 
+    /**
+     * Return integer property from provided properties
+     * @param p source properties
+     * @param propertyName property name
+     * @param defaultValue default value
+     * @return property value if property is set, default value else
+     */
     private int getIntegerProperty(Properties p, String propertyName, int defaultValue) {
         Integer value = defaultValue;
         try {
@@ -204,7 +229,6 @@ public class LearningParameters {
         return useDefaultTrainingData;
     }
 
-
     /**
      * @return file with training data
      */
@@ -212,6 +236,11 @@ public class LearningParameters {
         return trainingDataFile;
     }
 
+    /**
+     * map binary name based on OS
+     * @param binName input binary name
+     * @return mapped binary name
+     */
     private static String mapBinaryName(String binName) {
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             return binName + ".exe";

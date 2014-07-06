@@ -66,6 +66,12 @@ public class NamedEntityRecognizer {
 
     private Ner ner;
 
+    /**
+     * Create new NamedEntityRecognizer
+     * @param objectTypeTableDAO data access object to object tables
+     * @param nameTagView data access object to nameTagView
+     * @param documentTableDAO data access object to document table
+     */
     public NamedEntityRecognizer(IObjectTypeTableDAO objectTypeTableDAO, INameTagView nameTagView, IDocumentTableDAO documentTableDAO) {
         this.objectTypeTableDAO = objectTypeTableDAO;
         this.nameTagView = nameTagView;
@@ -73,6 +79,11 @@ public class NamedEntityRecognizer {
         idTempTable = new Hashtable<Long, ObjectType>();
     }
 
+    /**
+     * Get available models and sort them by 'last modified date' descending
+     * @param modelsDir look up directory
+     * @return sorted models
+     */
     private File[] getSortedModels(File modelsDir) {
         if (modelsDir.exists() && modelsDir.isDirectory()) {
             FilenameFilter modelsFilter = (dir, name) -> (name.length() > MODEL_FILE_EXTENSION.length()) && (name.endsWith(MODEL_FILE_EXTENSION));
@@ -136,6 +147,10 @@ public class NamedEntityRecognizer {
         return true;
     }
 
+    /**
+     * Prepares training data generated from database to provided file
+     * @param fileWithTrainingData file with output data (data will be appended)
+     */
     private void prepareLearningData(File fileWithTrainingData) {
         LOG.info("Creating data from database started");
         try {
@@ -180,6 +195,13 @@ public class NamedEntityRecognizer {
         }
     }
 
+    /**
+     * Format string to nametag training data format
+     * @param alias Alias to be formatted
+     * @param id ID of alias (null if this is not an alias)
+     * @param continuingEntity true if previous entity wasn't separated
+     * @return Formatted text
+     */
     private String formatAliasForTraining(String alias, Long id, boolean continuingEntity) {
         String tagRegex = id != null ? "$1\tI-" + id +"\n" : "$1\t_\n";
 
@@ -206,7 +228,13 @@ public class NamedEntityRecognizer {
         return alias;
     }
 
-    private void copyFile(File source, File destination) throws IOException {
+    /**
+     * Copy file from source location to destination
+     * @param source source
+     * @param destination target
+     * @throws IOException
+     */
+    private void copyFile(File source, File destination) {
         try ( FileChannel inputChannel = new FileInputStream(source).getChannel();
               FileChannel outputChannel = new FileOutputStream(destination).getChannel(); ) {
             outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
@@ -221,7 +249,6 @@ public class NamedEntityRecognizer {
      *
      * @param waitForModel true when learning is tu be blocking, else false
      */
-    //TODO: only package private and move the "learn" command class into this package?
     public void learn(boolean waitForModel) {
         LOG.info("Started training new NameTag model");
         try {
@@ -324,6 +351,11 @@ public class NamedEntityRecognizer {
         return value;
     }
 
+    /**
+     * Tag provided text
+     * @param input input text por tagging
+     * @return return List of entities occurrence
+     */
     public List<Entity> tagText(String input) {
         LOG.debug(input);
         if (ner == null) {
@@ -388,6 +420,11 @@ public class NamedEntityRecognizer {
         return entitiesList;
     }
 
+    /**
+     * Sort entities (based on start position and length)
+     * @param entities input entities
+     * @param sortedEntities sorted entities
+     */
     private void sortEntities(NamedEntities entities, ArrayList<NamedEntity> sortedEntities) {
         class NamedEntitiesComparator implements Comparator<NamedEntity> {
             public int compare(NamedEntity a, NamedEntity b) {
@@ -406,6 +443,11 @@ public class NamedEntityRecognizer {
         Collections.sort(sortedEntities, comparator);
     }
 
+    /**
+     * Encode entities with special characters
+     * @param text input text
+     * @return encoded text
+     */
     private String encodeEntities(String text) {
         return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
     }
