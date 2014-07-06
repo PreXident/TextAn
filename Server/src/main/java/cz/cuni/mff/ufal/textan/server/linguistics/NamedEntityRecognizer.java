@@ -262,13 +262,9 @@ public class NamedEntityRecognizer {
             File trainingDataFile = new File(TRAINING_DIR, TRAINING_DATA_PREFIX + sdf.format(date) + TRAINING_DATA_EXTENSION).getAbsoluteFile();
             if ((new File(TRAINING_DIR).isDirectory()) || (new File(TRAINING_DIR).mkdir())) {
                 if (learningParameters.useDefaultTrainingData()) {
-                    LOG.info("Copiing default training data from {}", learningParameters.getTrainingData().getPath());
-                    try {
-                        Files.copy(learningParameters.getTrainingData().toPath(), trainingDataFile.toPath());
-                        copyFile(learningParameters.getTrainingData(), trainingDataFile);
-                    } catch (IOException e) {
-                        LOG.error("Can't copy default training data from {} to {}: {}", learningParameters.getTrainingData().getPath(), trainingDataFile.getPath(), e);
-                    }
+                    LOG.info("Copying default training data from {}", learningParameters.getTrainingData().getPath());
+                    //Files.copy(learningParameters.getTrainingData().toPath(), trainingDataFile.toPath());
+                    copyFile(learningParameters.getTrainingData(), trainingDataFile);
                 }
                 prepareLearningData(trainingDataFile);
             } else {

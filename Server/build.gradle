@@ -83,11 +83,10 @@ task copyTrainingBinariesAndData(type: Copy) {
 
     from (new File(project(':Linguistics').projectDir, 'training')) {
         include '**/clusters/*'
-        include '**/cnec2.0-all/*'
+        include '**/cnec2.0-all/train.txt'
         include '**/gazetteers/*'
         include '**/*.txt'
-        include '**/*.exe'
-        include '**/*.sh'
+        include '**/train_ner*'
         include '**/*.tagger'
     }
     into new File(buildDir, 'training')
@@ -196,11 +195,10 @@ task shadowCopyTrainingBinariesAndData(type: Copy) {
 
     from (new File(project(':Linguistics').projectDir, 'training')) {
         include '**/clusters/*'
-        include '**/cnec2.0-all/*'
+        include '**/cnec2.0-all/train.txt'
         include '**/gazetteers/*'
         include '**/*.txt'
-        include '**/train*.exe'
-        include '**/train*.sh'
+        include '**/train_ner*'
         include '**/*.tagger'
     }
     into new File(shadow.destinationDir, 'training')
