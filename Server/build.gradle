@@ -88,6 +88,7 @@ task copyTrainingBinariesAndData(type: Copy) {
         include '**/*.txt'
         include '**/*.exe'
         include '**/*.sh'
+        include '**/*.tagger'
     }
     into new File(buildDir, 'training')
 }
@@ -198,8 +199,9 @@ task shadowCopyTrainingBinariesAndData(type: Copy) {
         include '**/cnec2.0-all/*'
         include '**/gazetteers/*'
         include '**/*.txt'
-        include '**/*.exe'
-        include '**/*.sh'
+        include '**/train*.exe'
+        include '**/train*.sh'
+        include '**/*.tagger'
     }
     into new File(shadow.destinationDir, 'training')
 }
