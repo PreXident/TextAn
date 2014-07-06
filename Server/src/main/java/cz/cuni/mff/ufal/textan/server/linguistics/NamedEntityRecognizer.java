@@ -287,6 +287,11 @@ public class NamedEntityRecognizer {
             pb.redirectInput(trainingDataFile);
             pb.redirectOutput(modelLocation);
             pb.redirectErrorStream(false);
+            if (waitForModel) {
+                LOG.info("Training started, waiting to be done (max {} milliseconds)", learningParameters.getWaitingTime());
+            } else {
+                LOG.info("Training started, continuing in work");
+            }
             Process ps = pb.start();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
@@ -298,7 +303,6 @@ public class NamedEntityRecognizer {
 
             boolean notTimeout= true;
             if (waitForModel) {
-                LOG.info("Waiting for training process");
                 notTimeout = ps.waitFor(learningParameters.getWaitingTime(), TimeUnit.MILLISECONDS);
             }
 
