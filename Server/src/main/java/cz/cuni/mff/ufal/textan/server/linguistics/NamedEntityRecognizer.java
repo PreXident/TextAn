@@ -206,16 +206,12 @@ public class NamedEntityRecognizer {
         return alias;
     }
 
-    private void copyFile(File source, File dest) throws IOException {
-        FileChannel inputChannel = null;
-        FileChannel outputChannel = null;
-        try {
-            inputChannel = new FileInputStream(source).getChannel();
-            outputChannel = new FileOutputStream(dest).getChannel();
+    private void copyFile(File source, File destination) throws IOException {
+        try ( FileChannel inputChannel = new FileInputStream(source).getChannel();
+              FileChannel outputChannel = new FileOutputStream(destination).getChannel(); ) {
             outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
-        } finally {
-            inputChannel.close();
-            outputChannel.close();
+        } catch (IOException e) {
+            LOG.error("Can't copy file from {} to {}", source.getPath(), destination.getPath(), e);
         }
     }
 
