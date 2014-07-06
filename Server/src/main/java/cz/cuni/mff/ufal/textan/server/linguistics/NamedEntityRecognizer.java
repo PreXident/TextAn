@@ -225,7 +225,7 @@ public class NamedEntityRecognizer {
     public void learn(boolean waitForModel) {
         LOG.info("Started training new NameTag model");
         try {
-            File dir = new File("../../Linguistics/training").getCanonicalFile();
+            File dir = new File(TRAINING_DIR).getCanonicalFile();
             SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
             Date date = Calendar.getInstance().getTime();
             File modelLocation = new File(MODELS_DIR, MODEL_FILE_PREFIX + sdf.format(date) + MODEL_FILE_EXTENSION).getAbsoluteFile();

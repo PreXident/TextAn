@@ -63,6 +63,7 @@ task copyNametagModel(type: Copy) {
 
     from (new File('../Samples/models')) {
         include '**/*.ner'
+        includeEmptyDirs = false
     }
     into new File(buildDir, 'models')
 }
@@ -72,8 +73,23 @@ task copyMorphoditaTagger(type: Copy) {
 
     from (new File(project(':Linguistics').projectDir, 'training')) {
         include '**/*.tagger'
+        includeEmptyDirs = false
     }
     into new File(buildDir, 'models')
+}
+
+task copyTrainingBinariesAndData(type: Copy) {
+    run.dependsOn name
+
+    from (new File(project(':Linguistics').projectDir, 'training')) {
+        include '**/clusters/*'
+        include '**/cnec2.0-all/*'
+        include '**/gazetteers/*'
+        include '**/*.txt'
+        include '**/*.exe'
+        include '**/*.sh'
+    }
+    into new File(buildDir, 'training')
 }
 
 /*
@@ -159,6 +175,7 @@ task shadowCopyNametagModel(type: Copy) {
 
     from (new File('../Samples/models')) {
         include '**/*.ner'
+        includeEmptyDirs = false
     }
     into new File(shadow.destinationDir, 'models')
 }
@@ -168,6 +185,21 @@ task shadowCopyMorphoditaTagger(type: Copy) {
 
     from (new File(project(':Linguistics').projectDir, 'training')) {
         include '**/*.tagger'
+        includeEmptyDirs = false
     }
     into new File(shadow.destinationDir, 'models')
+}
+
+task shadowCopyTrainingBinariesAndData(type: Copy) {
+    shadowJar.dependsOn name
+
+    from (new File(project(':Linguistics').projectDir, 'training')) {
+        include '**/clusters/*'
+        include '**/cnec2.0-all/*'
+        include '**/gazetteers/*'
+        include '**/*.txt'
+        include '**/*.exe'
+        include '**/*.sh'
+    }
+    into new File(shadow.destinationDir, 'training')
 }
