@@ -51,7 +51,7 @@ public class Train {
         // Create the list of all objects
         List<ObjectTable> objecttable = objectTableDAO.findAll();
         
-        ArrayList<Pair> train_pair = new ArrayList<Pair>();
+        //ArrayList<Pair> train_pair = new ArrayList<Pair>();
         
         
         // Create list of pair between entity and object - YES 

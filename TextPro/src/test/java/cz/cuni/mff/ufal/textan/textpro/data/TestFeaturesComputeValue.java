@@ -24,6 +24,7 @@ public class TestFeaturesComputeValue {
     public void testAdd1Plus1() 
     {
       int x  = 1 ; int y = 1;
+        System.out.println(x);
       assertEquals("test sum, nothing else", 2, x+y);
     }
     /*
