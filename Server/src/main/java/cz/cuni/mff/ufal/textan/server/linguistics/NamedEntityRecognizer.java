@@ -3,9 +3,6 @@ package cz.cuni.mff.ufal.textan.server.linguistics;
 import cz.cuni.mff.ufal.nametag.*;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
-import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
-import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import cz.cuni.mff.ufal.textan.data.views.INameTagView;
 import cz.cuni.mff.ufal.textan.data.views.NameTagRecord;
@@ -16,8 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -57,12 +52,10 @@ public class NamedEntityRecognizer {
     private static final Pattern addTagPattern = Pattern.compile(ADD_TAG_REGEX);
     private static final Pattern continuingEntityPattern = Pattern.compile(CONTINUING_ENTITY_REGEX);
 
-
-
     private final IObjectTypeTableDAO objectTypeTableDAO;
     private final INameTagView nameTagView;
     private final IDocumentTableDAO documentTableDAO;
-    private final Hashtable<Long, ObjectType> idTempTable;
+    private final Map<Long, ObjectType> idTempTable;
 
     private Ner ner;
 
@@ -76,7 +69,7 @@ public class NamedEntityRecognizer {
         this.objectTypeTableDAO = objectTypeTableDAO;
         this.nameTagView = nameTagView;
         this.documentTableDAO = documentTableDAO;
-        idTempTable = new Hashtable<Long, ObjectType>();
+        idTempTable = new Hashtable<>();
     }
 
     /**
@@ -84,7 +77,7 @@ public class NamedEntityRecognizer {
      * @param modelsDir look up directory
      * @return sorted models
      */
-    private File[] getSortedModels(File modelsDir) {
+    private static File[] getSortedModels(File modelsDir) {
         if (modelsDir.exists() && modelsDir.isDirectory()) {
             FilenameFilter modelsFilter = (dir, name) -> (name.length() > MODEL_FILE_EXTENSION.length()) && (name.endsWith(MODEL_FILE_EXTENSION));
             File[] models = modelsDir.listFiles(modelsFilter);
@@ -105,7 +98,7 @@ public class NamedEntityRecognizer {
 
         LOG.info("Looking for models");
         File[] models = getSortedModels(new File(MODELS_DIR));
-        if (models != null || models.length > 0) {
+        if (models != null && models.length > 0) {
             LOG.info("Existing model(s) found)");
             int i = 0;
             while ((i < models.length) && (!bindModel(models[i]))) {
@@ -202,8 +195,8 @@ public class NamedEntityRecognizer {
      * @param continuingEntity true if previous entity wasn't separated
      * @return Formatted text
      */
-    private String formatAliasForTraining(String alias, Long id, boolean continuingEntity) {
-        String tagRegex = id != null ? "$1\tI-" + id +"\n" : "$1\t_\n";
+    private static String formatAliasForTraining(String alias, Long id, boolean continuingEntity) {
+        String tagRegex = id != null ? "$1\tI-" + id + '\n' : "$1\t_\n";
 
         alias = alias.trim();
 
@@ -232,11 +225,10 @@ public class NamedEntityRecognizer {
      * Copy file from source location to destination
      * @param source source
      * @param destination target
-     * @throws IOException
      */
-    private void copyFile(File source, File destination) {
+    private static void copyFile(File source, File destination) { //FIXME: how caller checks if copy was successful?
         try ( FileChannel inputChannel = new FileInputStream(source).getChannel();
-              FileChannel outputChannel = new FileOutputStream(destination).getChannel(); ) {
+              FileChannel outputChannel = new FileOutputStream(destination).getChannel()) {
             outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
         } catch (IOException e) {
             LOG.error("Can't copy file from {} to {}", source.getPath(), destination.getPath(), e);
@@ -294,7 +286,7 @@ public class NamedEntityRecognizer {
             StringBuilder errorMsg = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
-                errorMsg.append(line + '\n');
+                errorMsg.append(line).append('\n');
             }
 
             boolean notTimeout= true;
@@ -305,9 +297,12 @@ public class NamedEntityRecognizer {
             if ((notTimeout) && (ps.exitValue() == 0)) {
                 LOG.info("Training done");
                 this.bindModel(modelLocation);
-            } else {
+            } else if (notTimeout) {
                 LOG.error("Training failed: exit code: {}, error message: {}", ps.exitValue(), errorMsg);
+            } else {
+                LOG.error("Training failed: timeout.");
             }
+
             File[] models = getSortedModels(new File(MODELS_DIR));
             for (int i = learningParameters.getMaximumStoredModels(); i < models.length; ++i) {
                 LOG.info("Maximum models count exceeded, deleting model {}", models[i].toString());
@@ -328,8 +323,8 @@ public class NamedEntityRecognizer {
      * @return translated entity type
      */
     ObjectType translateEntity(String entityType) {
-        ObjectType value = new ObjectType(-1L, "");
-        long id = -1L;
+        ObjectType value = null;
+        long id;
         try {
             id = Long.parseLong(entityType);
         } catch (NumberFormatException nfe) {
@@ -344,9 +339,11 @@ public class NamedEntityRecognizer {
                 value = new ObjectType(tableObject.getId(), tableObject.getName());
                 idTempTable.put(id, value);
                 LOG.debug("Using DATABASE entity {}", value.getName());
-            } else {
-                LOG.warn("Entity type {} recognized, but is not stored in database.", entityType);
             }
+              //handled in caller
+//            } else {
+//                LOG.warn("Entity type {} recognized, but is not stored in database.", entityType);
+//            }
         }
         return value;
     }
@@ -425,17 +422,14 @@ public class NamedEntityRecognizer {
      * @param entities input entities
      * @param sortedEntities sorted entities
      */
-    private void sortEntities(NamedEntities entities, ArrayList<NamedEntity> sortedEntities) {
-        class NamedEntitiesComparator implements Comparator<NamedEntity> {
-            public int compare(NamedEntity a, NamedEntity b) {
-                if (a.getStart() < b.getStart()) return -1;
-                if (a.getStart() > b.getStart()) return 1;
-                if (a.getLength() > b.getLength()) return -1;
-                if (a.getLength() < b.getLength()) return 1;
-                return 0;
-            }
-        }
-        NamedEntitiesComparator comparator = new NamedEntitiesComparator();
+    private static void sortEntities(NamedEntities entities, List<NamedEntity> sortedEntities) {
+        Comparator<NamedEntity> comparator = (a, b) -> {
+            if (a.getStart() < b.getStart()) return -1;
+            if (a.getStart() > b.getStart()) return 1;
+            if (a.getLength() > b.getLength()) return -1;
+            if (a.getLength() < b.getLength()) return 1;
+            return 0;
+        };
 
         sortedEntities.clear();
         for (int i = 0; i < entities.size(); i++)
@@ -448,7 +442,7 @@ public class NamedEntityRecognizer {
      * @param text input text
      * @return encoded text
      */
-    private String encodeEntities(String text) {
+    private static String encodeEntities(String text) {
         return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
     }
 }
