@@ -33,14 +33,22 @@ public class TestMachineLearning {
         IRelationOccurrenceTableDAO relationOccurrenceTableDAO = new RelationOccurrenceTableDAO();
         IRelationTableDAO relationTableDAO = new RelationTableDAO();
         
+        
+        // Constructor
         ITextPro tp = new TextPro(aliasOccurrenceTableDAO, typeTableDAO, aliasTableDAO, 
                                   joinedObjectsTableDAO, objectTableDAO, objectTypeTableDAO, 
                                    relationOccurrenceTableDAO, relationTableDAO);
+        
+        // Learn from database
         tp.learn();
+        
+        // Create fake test
         Entity e = new Entity("Emily", 0, 0 , "Person");
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         assertEquals("1 entity to match", 1, eList.size());
+        
+        // Run the ranking
         Map<Entity, Map<Long, Double>> result = tp.DoubleRanking("Empty", eList, 5);
         assertEquals("1 entity to match", 1, result.keySet().size());
     }

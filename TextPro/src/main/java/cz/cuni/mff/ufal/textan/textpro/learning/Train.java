@@ -69,6 +69,7 @@ public class Train {
             // create an instance from this pair
             Instance ins = CreateInstanceBasic(e, obt, aliasTableDAO, objectTableDAO, 1);
             
+            // Add the instance to dataset
             data.add(ins);
         }
                 
@@ -79,20 +80,21 @@ public class Train {
     
     /*
      * Create learning model with just a few features
+     *    
     */
     static Instance CreateInstanceBasic
         (Entity e, ObjectTable obj, 
         IAliasTableDAO aliasTableDAO, IObjectTableDAO objectTableDAO, 
         int target) {
-        // Feature 1: The similarity between entity text and object alias
+        
+        // Create a defult instance
         double[] values = new double[]{1,1,1,1};
         FeaturesComputeValue fcv = new FeaturesComputeValue();
         
         // Get all alias
         List<AliasTable> aliasTable = aliasTableDAO.findAllAliasesOfObject(obj);
         
-        //Select the highest similarity
-        // first feature value is highest Sim
+        // Feature 1: The similarity between entity text and object alias
         double highestSim = 0;
         for(AliasTable at:aliasTable){
             double sim = fcv.EntityTextAndObjectAlias(e.getText(), at.getAlias() );
@@ -102,11 +104,11 @@ public class Train {
         }
         values[0] = highestSim;
 
-        // The type comparison
+        // Feature 2: The type comparison
         double typeSim = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getName());
         values[1] = typeSim;
                 
-        // Popularity of object
+        // Feature 3: Popularity of object
         double components = fcv.NumberOfComponentObject(obj);
         values[2] = components;
         
@@ -127,8 +129,7 @@ public class Train {
         // Get all alias
         List<AliasTable> aliasTable = aliasTableDAO.findAllAliasesOfObject(obj);
         
-        //Select the highest similarity
-        // first feature value is highest Sim
+        //Feature 1: Select the highest similarity
         double highestSim = 0;
         for(AliasTable at:aliasTable){
             double sim = fcv.EntityTextAndObjectAlias(e.getText(), at.getAlias() );
@@ -138,7 +139,7 @@ public class Train {
         }
         values[0] = highestSim;
 
-        // The type comparison
+        // compare the type of entity and object
         double typeSim = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getName());
         values[1] = typeSim;
         
