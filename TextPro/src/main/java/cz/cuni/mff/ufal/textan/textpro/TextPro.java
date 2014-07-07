@@ -1,16 +1,18 @@
 package cz.cuni.mff.ufal.textan.textpro;
 
-import cz.cuni.mff.ufal.textan.textpro.learning.Test;
-import cz.cuni.mff.ufal.textan.textpro.learning.Train;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
+import cz.cuni.mff.ufal.textan.textpro.learning.Test;
+import cz.cuni.mff.ufal.textan.textpro.learning.Train;
+import net.sf.javaml.classification.Classifier;
+import net.sf.javaml.core.Instance;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.sf.javaml.classification.Classifier;
-import net.sf.javaml.core.Instance;
 
 /**
  * A simple example of an implementation of the ITextPro interface as a Spring bean.
@@ -19,6 +21,7 @@ import net.sf.javaml.core.Instance;
  * @author Tam Hoang
  * Implement the first ranking scheme DoubleRanking(document, list of entities, number of K)
  */
+@Transactional
 public class TextPro implements ITextPro {
 
     /** Provides access to AliasOccurrence table in database */
