@@ -13,6 +13,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.RelationInfo;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -352,6 +353,7 @@ public class ReportRelationsController extends ReportWizardController {
         //
         objectContextMenu = new ContextMenu();
         objectContextMenu.setConsumeAutoHidingEvents(false);
+        objectContextMenu.setStyle(OBJECT_CONTEXT_MENU);
         final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
         graphMI.setOnAction(e -> {
             contextMenu.hide();

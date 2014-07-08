@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
 import cz.cuni.mff.ufal.textan.gui.Window;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -110,6 +111,7 @@ public class GraphViewController extends GraphController {
         leftToolbar.prefWidthProperty().bind(toolbar.widthProperty().add(-25).divide(2));
         rightToolbar.prefWidthProperty().bind(toolbar.widthProperty().add(-25).divide(2));
         contextMenu = new ContextMenu();
+        contextMenu.setStyle(OBJECT_CONTEXT_MENU);
         contextMenu.setConsumeAutoHidingEvents(false);
         final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
         graphMI.setOnAction(e -> {

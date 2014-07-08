@@ -7,6 +7,7 @@ import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -103,6 +104,7 @@ public class ReportErrorsController extends ReportWizardController {
         });
         newObjectsContextMenu.getItems().add(graphMI);
         newObjectsContextMenu.setConsumeAutoHidingEvents(false);
+        newObjectsContextMenu.setStyle(OBJECT_CONTEXT_MENU);
         //
         final MenuItem joinedGraphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
         joinedGraphMI.setOnAction(e -> {
@@ -113,6 +115,7 @@ public class ReportErrorsController extends ReportWizardController {
         });
         joinedObjectsContextMenu.getItems().add(graphMI);
         joinedObjectsContextMenu.setConsumeAutoHidingEvents(false);
+        joinedObjectsContextMenu.setStyle(OBJECT_CONTEXT_MENU);
         treeView.setContextMenu(joinedObjectsContextMenu);
         //
         newObjectsTable.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
