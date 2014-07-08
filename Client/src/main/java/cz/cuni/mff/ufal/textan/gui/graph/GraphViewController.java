@@ -9,8 +9,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
 import javafx.concurrent.Task;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -31,6 +29,9 @@ import jfxtras.labs.scene.control.BigDecimalField;
  * Controls GraphView.
  */
 public class GraphViewController extends GraphController {
+
+    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    static protected final String PROPERTY_ID = "graph.viewer";
 
     @FXML
     private BorderPane root;
@@ -160,7 +161,7 @@ public class GraphViewController extends GraphController {
                 graphView.setObjectContextMenu(contextMenu);
                 final Object center = g.getNodes().get(grapher.getRootId());
                 final Window w = window == null ? stage.getInnerWindow() : window;
-                w.setTitle(w.getTitle() + " - " + Utils.shortString(center.toString()));
+                w.setTitle(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(center.toString()));
                 lock.release();
             });
             setOnFailed(e -> {
