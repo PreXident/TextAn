@@ -12,16 +12,16 @@ import cz.cuni.mff.ufal.textan.data.tables.AliasTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import cz.cuni.mff.ufal.textan.textpro.data.FeaturesComputeValue;
+import java.util.List;
+import java.util.Set;
 import javafx.util.Pair;
 import libsvm.LibSVM;
 import net.sf.javaml.classification.Classifier;
+import net.sf.javaml.classification.KNearestNeighbors;
 import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * Create training data
@@ -54,7 +54,7 @@ public class Train {
         // Create list of pair between entity and object - YES 
         for (ObjectTable obt : objectTable) {
 
-            String type = obt.getObjectType().getName(); //TODO: why you use name instead of identifier?
+            long type = obt.getObjectType().getId(); //TODO: why you use name instead of identifier?
             Set<AliasTable> als = obt.getAliases();
             AliasTable first_alias = als.iterator().next();
             String first_alias_text = ""; //first_alias.getAlias();
@@ -70,9 +70,9 @@ public class Train {
             data.add(ins);
         }
 
-        Classifier svm = new LibSVM();
-        svm.buildClassifier(data);
-        return svm;
+        Classifier knn = new KNearestNeighbors(5);
+        knn.buildClassifier(data);
+        return knn;
     }
 
     /*
@@ -99,7 +99,7 @@ public class Train {
         values[0] = highestSim;
 
         // Feature 2: The type comparison
-        double typeSim = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getName());
+        double typeSim = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getId());
         values[1] = typeSim;
 
         // Feature 3: Popularity of object
@@ -130,7 +130,7 @@ public class Train {
         values[0] = highestSim;
 
         // compare the type of entity and object
-        double typeSim = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getName());
+        double typeSim = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getId());
         values[1] = typeSim;
 
 

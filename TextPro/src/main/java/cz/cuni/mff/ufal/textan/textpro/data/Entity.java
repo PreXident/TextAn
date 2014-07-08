@@ -6,11 +6,15 @@ package cz.cuni.mff.ufal.textan.textpro.data;
 
 public class Entity{
 
-    public Entity(String text, int offset, int position, String type) {
+    /*
+     * Change type from String to long
+     * Default constructor
+    */
+    public Entity(String text, int offset, int position, long typeID) {
         this.text = text;
         this.offset = offset;
         this.position = position;
-        this.type = type;
+        this.type = typeID;
     }
     
     /*
@@ -53,16 +57,18 @@ public class Entity{
     
     /*
      * type of the entity
+     * Associate with the PROPERTY_NAME_ID of object table
      */
-    String type;
-    public String getType() {
+    long type;
+    public long getType() {
         return type;
     }
-    public void setType(String type) {
+    public void setType(long type) {
         this.type = type;
     }    
     public boolean equals (Entity e2) {
         if(this.offset != e2.offset) return false;
         return true;
     }
+        
 }
