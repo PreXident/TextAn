@@ -9,6 +9,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
 import cz.cuni.mff.ufal.textan.gui.Window;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -205,6 +206,7 @@ public class ReportObjectsController extends ReportWizardController {
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
         contextMenu.setConsumeAutoHidingEvents(false);
         objectContextMenu = new ContextMenu();
+        objectContextMenu.setStyle(OBJECT_CONTEXT_MENU);
         objectContextMenu.setConsumeAutoHidingEvents(false);
         final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
         graphMI.setOnAction(e -> {

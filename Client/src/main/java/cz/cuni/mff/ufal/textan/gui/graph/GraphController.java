@@ -26,7 +26,7 @@ abstract class GraphController extends WindowController {
             throws IOException {
         String bundleId;
         String fxml;
-        if (grapher.getDistance() != -1 && grapher.getRootId() != -1) {
+        if (grapher.getDistance() >= 0 && grapher.getRootId() > 0) {
             bundleId = "cz.cuni.mff.ufal.textan.gui.graph.GraphView";
             fxml = "GraphView.fxml";
         } else {

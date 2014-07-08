@@ -5,6 +5,7 @@ import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.graph.GraphViewController.GRAPH_PROPERTY_ID;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.scene.Parent;
@@ -18,9 +19,6 @@ public class GraphStage extends OuterStage {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Graph Viewer";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
-    static protected final String PROPERTY_ID = "graph.viewer";
-
     /** Graph information provider. */
     final protected Grapher grapher;
 
@@ -33,7 +31,7 @@ public class GraphStage extends OuterStage {
      * @param grapher graph information provider
      */
     public GraphStage(final TextAnController textAnController, final Properties settings, final Grapher grapher) {
-        super(TITLE, PROPERTY_ID, settings);
+        super(TITLE, GRAPH_PROPERTY_ID, settings);
         this.grapher = grapher;
         ResourceBundle resourceBundle = null;
         try {
@@ -45,7 +43,7 @@ public class GraphStage extends OuterStage {
             controller.setStage(this);
             controller.setSettings(settings);
             controller.setGrapher(grapher);
-            setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            setTitle(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID));
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()
