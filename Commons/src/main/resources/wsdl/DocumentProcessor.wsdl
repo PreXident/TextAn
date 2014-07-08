@@ -84,11 +84,20 @@
         <wsdl:part name="saveProcessedDocumentFromStringResponse" element="tns:saveProcessedDocumentFromStringResponse"/>
     </wsdl:message>
 
-    <wsdl:message name="getProblemsByIdRequest">
+    <wsdl:message name="getProblemsRequest">
+        <wsdl:part name="getProblemsRequest" element="tns:getProblemsRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
+    </wsdl:message>
+
+    <wsdl:message name="getProblemsResponse">
+        <wsdl:part name="getProblemsResponse" element="tns:getProblemsResponse"/>
+    </wsdl:message>
+
+    <!--<wsdl:message name="getProblemsByIdRequest">
         <wsdl:part name="getProblemsByIdRequest" element="tns:getProblemsByIdRequest"/>
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
-    
+
     <wsdl:message name="getProblemsByIdResponse">
         <wsdl:part name="getProblemsByIdResponse" element="tns:getProblemsByIdResponse"/>
     </wsdl:message>
@@ -100,7 +109,7 @@
 
     <wsdl:message name="getProblemsFromStringResponse">
         <wsdl:part name="getProblemsFromStringResponse" element="tns:getProblemsFromStringResponse"/>
-    </wsdl:message>
+    </wsdl:message>-->
 
     <wsdl:message name="idNotFoundException">
         <wsdl:part name="idNotFoundException" element="cms:idNotFoundException"/>
@@ -146,8 +155,14 @@
             <wsdl:output message="ws:saveProcessedDocumentByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
+
+        <wsdl:operation name="getProblems">
+            <wsdl:input message="ws:getProblemsRequest"/>
+            <wsdl:output message="ws:getProblemsResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+        </wsdl:operation>
         
-        <wsdl:operation name="getProblemsById">
+        <!--<wsdl:operation name="getProblemsById">
             <wsdl:input message="ws:getProblemsByIdRequest"/>
             <wsdl:output message="ws:getProblemsByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
@@ -156,7 +171,7 @@
         <wsdl:operation name="getProblemsFromString">
             <wsdl:input message="ws:getProblemsFromStringRequest"/>
             <wsdl:output message="ws:getProblemsFromStringResponse"/>
-        </wsdl:operation>
+        </wsdl:operation>-->
         
     </wsdl:portType>
     
@@ -257,9 +272,24 @@
                 <soap:fault name="idNotFoundException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
-    
-        <wsdl:operation name="getProblemsById">
+
+        <wsdl:operation name="getProblems">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getProblems"/>
+            <wsdl:input>
+                <soap:body parts="getProblemsRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:getProblemsRequest" part="editingTicket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getProblemsResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal" />
+            </wsdl:fault>
+        </wsdl:operation>
+    
+        <!--<wsdl:operation name="getProblemsById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getProblemsById"/>
             <wsdl:input>
                 <soap:body parts="getProblemsByIdRequest" use="literal"/>
                 <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
@@ -274,7 +304,7 @@
         </wsdl:operation>
 
         <wsdl:operation name="getProblemsFromString">
-            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getProblems"/>
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getProblemsFromString"/>
             <wsdl:input>
                 <soap:body parts="getProblemsFromStringRequest" use="literal"/>
                 <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
@@ -283,7 +313,7 @@
             <wsdl:output>
                 <soap:body parts="getProblemsFromStringResponse" use="literal"/>
             </wsdl:output>
-        </wsdl:operation>
+        </wsdl:operation>-->
     </wsdl:binding>
     
     <wsdl:service name="DocumentProcessorService">

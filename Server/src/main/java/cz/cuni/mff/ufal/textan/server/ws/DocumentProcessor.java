@@ -123,17 +123,17 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         }
     }
 
-    @Override
-    public GetProblemsByIdResponse getProblemsById(
-            @WebParam(partName = "getProblemsById", name = "getProblemsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
-            GetProblemsByIdRequest getProblemsByIdRequest,
-            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
-            EditingTicket editingTicket) throws IdNotFoundException {
-
-        LOG.debug("Executing operation getProblems: {} {}", getProblemsByIdRequest, editingTicket);
-
-        return new GetProblemsByIdResponse();
-    }
+//    @Override
+//    public GetProblemsByIdResponse getProblemsById(
+//            @WebParam(partName = "getProblemsById", name = "getProblemsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+//            GetProblemsByIdRequest getProblemsByIdRequest,
+//            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
+//            EditingTicket editingTicket) throws IdNotFoundException {
+//
+//        LOG.debug("Executing operation getProblems: {} {}", getProblemsByIdRequest, editingTicket);
+//
+//        return new GetProblemsByIdResponse();
+//    }
 
     @Override
     public GetAssignmentsByIdResponse getAssignmentsById(
@@ -271,16 +271,28 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         }
     }
 
+//    @Override
+//    public GetProblemsFromStringResponse getProblemsFromString(
+//            @WebParam(partName = "getProblemsFromString", name = "getProblemsFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+//            GetProblemsFromStringRequest getProblemsFromStringRequest,
+//            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
+//            EditingTicket editingTicket) {
+//
+//        LOG.debug("Executing operation getEditingTicket: {} {}", getProblemsFromStringRequest, editingTicket);
+//
+//        return new GetProblemsFromStringResponse();
+//    }
+
     @Override
-    public GetProblemsFromStringResponse getProblemsFromString(
+    public GetProblemsResponse getProblems(
             @WebParam(partName = "getProblemsFromString", name = "getProblemsFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
-            GetProblemsFromStringRequest getProblemsFromStringRequest,
+            GetProblemsRequest getProblemsFromStringRequest,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
             EditingTicket editingTicket) {
 
         LOG.debug("Executing operation getEditingTicket: {} {}", getProblemsFromStringRequest, editingTicket);
 
-        return new GetProblemsFromStringResponse();
+        return new GetProblemsResponse();
     }
 
     @Override
@@ -293,7 +305,6 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         final GetEditingTicketResponse response = new GetEditingTicketResponse();
         final EditingTicket t = new EditingTicket();
         t.setTimestamp(new Date());
-        //t.setUsername(ticket.getUsername());
         response.setEditingTicket(t);
 
         return response;
