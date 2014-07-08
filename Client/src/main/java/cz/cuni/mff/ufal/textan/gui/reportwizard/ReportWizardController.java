@@ -82,6 +82,9 @@ public abstract class ReportWizardController extends WindowController {
             if (val < 4.5) {
                 return Utils.localize(rb, "report.wizard.relations.label");
             }
+            if (val < 5.5) {
+                return Utils.localize(rb, "report.wizard.errors.label");
+            }
             return "";
         }
 
@@ -101,6 +104,9 @@ public abstract class ReportWizardController extends WindowController {
             }
             if (string.equals(Utils.localize(rb, "report.wizard.relations.label"))) {
                 return 4D;
+            }
+           if (string.equals(Utils.localize(rb, "report.wizard.relations.label"))) {
+                return 5D;
             }
             return 0D;
         }

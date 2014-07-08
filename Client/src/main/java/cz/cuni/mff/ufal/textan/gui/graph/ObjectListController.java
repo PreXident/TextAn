@@ -163,6 +163,7 @@ public class ObjectListController extends GraphController {
             }
         });
         contextMenu.getItems().add(graphMI);
+        contextMenu.setConsumeAutoHidingEvents(false);
         table.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
             if (newVal != null) {
                 table.setContextMenu(contextMenu);

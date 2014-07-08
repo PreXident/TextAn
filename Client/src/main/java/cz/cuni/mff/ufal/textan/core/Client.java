@@ -12,6 +12,7 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.core.processreport.Problems;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import java.net.MalformedURLException;
@@ -376,6 +377,20 @@ public class Client {
     }
 
     /**
+     * Returns problems with report saving.
+     * @param ticket editing ticket
+     * @return problems with report saving
+     */
+    public synchronized Problems getProblems(final Ticket ticket) {
+        //TODO how to pass string to the request?
+        final GetProblemsFromStringRequest request =
+                new GetProblemsFromStringRequest();
+        final GetProblemsFromStringResponse response =
+                getDocumentProcessor().getProblemsFromString(request, ticket.toTicket());
+        return new Problems(response);
+    }
+
+    /**
      * Returns set of all relation types in the system.
      * @return set of all relation types in the system
      * @see IDataProvider#getRelationTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
@@ -451,12 +466,14 @@ public class Client {
      * @param text            report text
      * @param reportEntities  report entities
      * @param reportRelations report relations
+     * @param force           force save?
      * @return true if saving was successfull, false otherwise
      * @throws IdNotFoundException if id error occurs
      */
     public synchronized boolean saveProcessedDocument(final Ticket ticket,
                                          final String text, final List<Entity> reportEntities,
-                                         final List<RelationBuilder> reportRelations) throws IdNotFoundException {
+                                         final List<RelationBuilder> reportRelations,
+                                         final boolean force) throws IdNotFoundException {
         final SaveProcessedDocumentFromStringRequest request =
                 new SaveProcessedDocumentFromStringRequest();
 
@@ -481,12 +498,12 @@ public class Client {
         }
 
         request.setText(text);
-        request.setForce(false);
+        request.setForce(force);
 
         try {
             final SaveProcessedDocumentFromStringResponse response =
                     getDocumentProcessor().saveProcessedDocumentFromString(
-                            request, //TODO handle save document error
+                            request,
                             ticket.toTicket());
             return response.isResult();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {

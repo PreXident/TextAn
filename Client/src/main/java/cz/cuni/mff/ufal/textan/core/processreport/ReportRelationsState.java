@@ -80,7 +80,8 @@ final class ReportRelationsState extends State {
                         pipeline.ticket,
                         pipeline.getReportText(),
                         pipeline.reportEntities,
-                        pipeline.reportRelations);
+                        pipeline.reportRelations,
+                        false);
             } catch (IdNotFoundException e) {
                 e.printStackTrace();
             }
@@ -88,8 +89,12 @@ final class ReportRelationsState extends State {
             pipeline.decStepsBack();
         }
         if (pipeline.result) {
-            pipeline.setState(DoneState.getInstance());
+            //TODO remove testing displaying of errors
+            //pipeline.setState(DoneState.getInstance());
+            pipeline.setState(ReportErrorState.getInstance());
+            pipeline.problems = new Problems();
         } else {
+            pipeline.problems = pipeline.client.getProblems(pipeline.ticket);
             pipeline.setState(ReportErrorState.getInstance());
         }
     }
