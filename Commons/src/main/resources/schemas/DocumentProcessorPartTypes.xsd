@@ -166,6 +166,7 @@
             <xs:element name="documentChanged" type="xs:boolean"/>
             <xs:element name="newObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="newRelation" type="cms:Relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="relationObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="newJoinedObject" type="cms:JoinedObject" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
