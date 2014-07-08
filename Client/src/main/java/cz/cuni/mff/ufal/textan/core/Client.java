@@ -146,7 +146,6 @@ public class Client {
      * Returns {@link #dataProvider}, it is created if needed.
      * @return data provider
      */
-    //TODO: configurable wsdl location!
     private IDataProvider getDataProvider() {
         if (dataProvider == null) {
             try {

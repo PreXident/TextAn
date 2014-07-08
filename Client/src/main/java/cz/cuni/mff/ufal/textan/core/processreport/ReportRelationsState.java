@@ -74,7 +74,6 @@ final class ReportRelationsState extends State {
             }
             rels.addAll(unanchoredRelations);
             pipeline.reportRelations = rels;
-            //TODO: handle exception correctly!
             try {
                 pipeline.result = pipeline.client.saveProcessedDocument(
                         pipeline.ticket,

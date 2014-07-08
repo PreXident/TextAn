@@ -73,7 +73,6 @@ public class Problems {
             final List<cz.cuni.mff.ufal.textan.commons.models.Object> newObjects,
             final List<cz.cuni.mff.ufal.textan.commons.models.Relation> newRelations,
             final List<cz.cuni.mff.ufal.textan.commons.models.JoinedObject> joinedObjects) {
-        //TODO remove tests
         this.newObjects = newObjects.stream()
                 .map(Object::new)
                 .collect(Collectors.toList());
