@@ -56,8 +56,8 @@ public class TestFeaturesComputeValue {
     @Test
     public void testEntityTypeAndObjectType() 
     {
-      String entityType = "Person";
-      String objectType = "Person";
+      long entityType = 1;
+      long objectType = 1;
       double sim = FeaturesComputeValue.EntityTypeAndObjectType(entityType, objectType);
       boolean check = (sim == 1);
       assertTrue("Two types are the same", check);

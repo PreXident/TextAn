@@ -65,7 +65,7 @@ public class TestMachineLearning {
         textPro.learn();
         
         // Create fake test
-        Entity e = new Entity("Emily", 0, 0 , "Person");
+        Entity e = new Entity("Emily", 0, 0 , 1);
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         assertEquals("1 entity to match", 1, eList.size());

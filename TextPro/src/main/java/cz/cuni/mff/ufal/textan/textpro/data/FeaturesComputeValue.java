@@ -43,8 +43,8 @@ public class FeaturesComputeValue {
     * Compare the type of entity and object
     * Return 1 if they are the same, 0 otherwise
     */
-    public static double EntityTypeAndObjectType(String eType, String oType) {
-        if(eType.equalsIgnoreCase(oType)) {
+    public static double EntityTypeAndObjectType(long eType, long oType) {
+        if(eType == oType) {
             return 1;
         }
         return 0;

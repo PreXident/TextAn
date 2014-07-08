@@ -73,7 +73,7 @@ public class Test {
         values[0] = highestSim;
         
         // Find the type similarity
-        double typeSim = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getName());
+        double typeSim = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getId());
         values[1] = typeSim;
         
         Instance instance = new DenseInstance(values, target);
