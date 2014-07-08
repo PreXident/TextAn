@@ -296,44 +296,22 @@ public class Client {
      */
     public synchronized Pair<List<Object>, Integer> getObjectsList(final ObjectType type,
             final String filter, final int first, final int size) throws IdNotFoundException {
-//        final GetFilteredObjectsRequest request =
-//                new GetFilteredObjectsRequest();
-//        request.setObjectTypeId(type != null ? type.getId() : null);
-//        request.setAliasFilter(filter);
-//        request.setFirstResult(first);
-//        request.setMaxResults(size);
-//        try {
-//            final GetFilteredObjectsResponse response =
-//                    getDataProvider().getFilteredObjects(request);
-//            final List<Object> objects = response.getObjects().stream()
-//                    .map(Object::new)
-//                    .collect(Collectors.toList());
-//            return new Pair<>(objects, response.getTotalNumberOfResults());
-//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
-//            throw new IdNotFoundException(e);
-//        }
-//        //TODO: call proper method when it's ready
-        final GetObjectsResponse response =
-                getDataProvider().getObjects(new Void());
-        Stream<Object> objects = response.getObjects().stream()
-            .map(Object::new);
-        //TODO: remove emulation
-        final int actualSize = response.getObjects().size();
-        if (type != null) {
-            objects = objects.filter(obj -> obj.getType().getId() == type.getId());
+        final GetFilteredObjectsRequest request =
+                new GetFilteredObjectsRequest();
+        request.setObjectTypeId(type != null ? type.getId() : null);
+        request.setAliasFilter(filter);
+        request.setFirstResult(first);
+        request.setMaxResults(size);
+        try {
+            final GetFilteredObjectsResponse response =
+                    getDataProvider().getFilteredObjects(request);
+            final List<Object> objects = response.getObjects().stream()
+                    .map(Object::new)
+                    .collect(Collectors.toList());
+            return new Pair<>(objects, response.getTotalNumberOfResults());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
         }
-        if (filter != null && !filter.isEmpty()) {
-            final String f = filter.toLowerCase();
-            objects = objects.filter(obj -> {
-                final String aliases = String.join(",", obj.getAliases()).toLowerCase();
-                return aliases.contains(f);
-            });
-        }
-        final ArrayList<Object> list = objects
-                .skip(first)
-                .limit(size)
-                .collect(Collectors.toCollection(ArrayList::new));
-        return new Pair<>(list, actualSize);
     }
 
     /**
