@@ -32,7 +32,7 @@ import jfxtras.labs.scene.control.BigDecimalField;
 public class GraphViewController extends GraphController {
 
     /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
-    static protected final String PROPERTY_ID = "graph.viewer";
+    static protected final String GRAPH_PROPERTY_ID = "graph.viewer";
 
     @FXML
     private BorderPane root;
@@ -163,7 +163,7 @@ public class GraphViewController extends GraphController {
                 graphView.setObjectContextMenu(contextMenu);
                 final Object center = g.getNodes().get(grapher.getRootId());
                 final Window w = window == null ? stage.getInnerWindow() : window;
-                w.setTitle(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(center.toString()));
+                w.setTitle(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID) + " - " + Utils.shortString(center.toString()));
                 lock.release();
             });
             setOnFailed(e -> {
