@@ -33,7 +33,15 @@
     <wsdl:message name="getObjectResponse">
         <wsdl:part name="getObjectResponse" element="tns:getObjectResponse"/>
     </wsdl:message>
-    
+
+    <wsdl:message name="getObjectsByIdsRequest">
+        <wsdl:part name="getObjectsByIdsRequest" element="tns:getObjectsByIdsRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getObjectsByIdsResponse">
+        <wsdl:part name="getObjectsByIdsResponse" element="tns:getObjectsByIdsResponse"/>
+    </wsdl:message>
+
     <wsdl:message name="getObjectsRequest">
         <wsdl:part name="getObjectsRequest" element="tns:getObjectsRequest"/>
     </wsdl:message>
@@ -210,6 +218,12 @@
             <wsdl:output message="ws:getObjectResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
+
+        <wsdl:operation name="getObjectsByIds">
+            <wsdl:input message="ws:getObjectsByIdsRequest"/>
+            <wsdl:output message="ws:getObjectsByIdsResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+        </wsdl:operation>
                 
         <wsdl:operation name="getObjects">
             <wsdl:input message="ws:getObjectsRequest"/>
@@ -359,6 +373,20 @@
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getObjectResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getObjectsByIds">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getObjectsByIds"/>
+            <wsdl:input>
+                <soap:body parts="getObjectsByIdsRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getObjectsByIdsResponse" use="literal"/>
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>

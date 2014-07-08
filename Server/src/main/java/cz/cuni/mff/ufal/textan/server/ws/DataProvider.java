@@ -14,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jws.WebParam;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * For now only mocking database access.
@@ -311,6 +313,35 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             List<Document> documents = dbService.getDocumentsContainsObject(getDocumentsContainsObjectByIdRequest.getObjectId());
             for (Document document : documents) {
                 response.getDocuments().add(document.toCommonsDocument());
+            }
+
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
+    public GetObjectsByIdsResponse getObjectsByIds(
+            @WebParam(partName = "getObjectsByIdsRequest", name = "getObjectsByIdsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetObjectsByIdsRequest getObjectsByIdsRequest) throws IdNotFoundException {
+
+        LOG.debug("Executing operation getDocumentsContainsObjectById: {}", getObjectsByIdsRequest);
+
+        try {
+            Set<Object> objects = new HashSet<>(getObjectsByIdsRequest.getObjectIds().size());
+            for (long id : getObjectsByIdsRequest.getObjectIds()) {
+                objects.add(dbService.getObject(id));
+            }
+
+            GetObjectsByIdsResponse response = new GetObjectsByIdsResponse();
+            for (Object object : objects) {
+                response.getObjects().add(object.toCommonsObject());
             }
 
             return response;
