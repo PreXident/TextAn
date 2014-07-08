@@ -17,8 +17,15 @@ HW:
   + Adam: Use pagination from server (not working now) , 
           Column in object list's windows should be resizable, 
           New relation in error winwodws should consist of tree-view
+          context menus should use the same font (size)
+          button (home) size in graph view
   + Peter: Fix the XSD for getProblemFromString (i.e: ADD text field, ADD object in relation, and joined object are array)
+           fulltext index in database,
+           joined object alias
   + Tam: Write more tests for ML, implement LibSVM (optional), write a comparision between kNN and SVM 
   + Jakub: Make some changes with Peter
+  
+  
+  + All: look into documentation, choose some part and start writing
   
 Next meeting: Friday 17:00 (suggested)
