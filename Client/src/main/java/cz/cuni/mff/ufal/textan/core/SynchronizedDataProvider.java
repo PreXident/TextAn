@@ -5,8 +5,6 @@ import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 
-import javax.jws.WebParam;
-
 /**
  * Simple wrapper around IDataProvider to provide synchronization.
  */
@@ -97,6 +95,12 @@ public class SynchronizedDataProvider implements IDataProvider {
             final GetDocumentsContainsObjectByIdRequest getDocumentsContainsObjectByIdRequest)
             throws IdNotFoundException {
         return innerDP.getDocumentsContainsObjectById(getDocumentsContainsObjectByIdRequest);
+    }
+
+    @Override
+    synchronized public GetObjectsByIdsResponse getObjectsByIds(
+            final GetObjectsByIdsRequest getObjectsByIdsRequest) throws IdNotFoundException {
+        return innerDP.getObjectsByIds(getObjectsByIdsRequest);
     }
 
     @Override
