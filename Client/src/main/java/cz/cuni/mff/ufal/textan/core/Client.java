@@ -15,11 +15,7 @@ import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.Problems;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -36,6 +32,10 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Main class controlling core manipulations with reports.
@@ -360,10 +360,14 @@ public class Client {
      */
     public synchronized Problems getProblems(final Ticket ticket) {
         //TODO how to pass string to the request?
-        final GetProblemsFromStringRequest request =
-                new GetProblemsFromStringRequest();
-        final GetProblemsFromStringResponse response =
-                getDocumentProcessor().getProblemsFromString(request, ticket.toTicket());
+        final GetProblemsRequest request =  new GetProblemsRequest();
+        //TODO remove exception!
+        GetProblemsResponse response = null;
+        try {
+            response = getDocumentProcessor().getProblems(request, ticket.toTicket());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            e.printStackTrace();
+        }
         return new Problems(response);
     }
 

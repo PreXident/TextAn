@@ -1,12 +1,9 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsFromStringResponse;
-import cz.cuni.mff.ufal.textan.core.JoinedObject;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
+import cz.cuni.mff.ufal.textan.core.*;
 import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.ObjectType;
-import cz.cuni.mff.ufal.textan.core.Relation;
-import cz.cuni.mff.ufal.textan.core.RelationType;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -14,8 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Simple wrapper of {@link GetProblemsFromStringResponse} and
- * {@link GetProblemsByIdResponse}.
+ * Simple wrapper of {@link GetProblemsResponse}.
  */
 public class Problems {
 
@@ -39,28 +35,41 @@ public class Problems {
     }
 
     /**
-     * Constructs Problems from GetProblemsFromStringResponse.
+     * Constructs Problems from GetProblemsResponse.
      * @param response blue print
      */
-    public Problems(final GetProblemsFromStringResponse response) {
+    public Problems(final GetProblemsResponse response) {
         //TODO replace emptyMap by reponse.getRelationObjects and remove Arrays.asList
         this(Collections.emptyMap(),
                 response.getNewObjects(),
                 response.getNewRelations(),
-                Arrays.asList(response.getNewJoinedObject()));
+                response.getNewJoinedObjects());
     }
 
-    /**
-     * Constructs Problems from GetProblemsByIdResponse.
-     * @param response blue print
-     */
-    public Problems(final GetProblemsByIdResponse response) {
-        //TODO replace emptyMap by reponse.getRelationObjects and remove Arrays.asList
-        this(Collections.emptyMap(),
-                response.getNewObjects(),
-                response.getNewRelations(),
-                Arrays.asList(response.getNewJoinedObject()));
-    }
+//TODO remove
+//    /**
+//     * Constructs Problems from GetProblemsFromStringResponse.
+//     * @param response blue print
+//     */
+//    public Problems(final GetProblemsFromStringResponse response) {
+//        //TODO replace emptyMap by reponse.getRelationObjects and remove Arrays.asList
+//        this(Collections.emptyMap(),
+//                response.getNewObjects(),
+//                response.getNewRelations(),
+//                Arrays.asList(response.getNewJoinedObject()));
+//    }
+//
+//    /**
+//     * Constructs Problems from GetProblemsByIdResponse.
+//     * @param response blue print
+//     */
+//    public Problems(final GetProblemsByIdResponse response) {
+//        //TODO replace emptyMap by reponse.getRelationObjects and remove Arrays.asList
+//        this(Collections.emptyMap(),
+//                response.getNewObjects(),
+//                response.getNewRelations(),
+//                Arrays.asList(response.getNewJoinedObject()));
+//    }
 
     /**
      * Private constructor underlying the others.

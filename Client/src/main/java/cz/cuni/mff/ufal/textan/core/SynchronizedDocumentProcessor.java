@@ -1,24 +1,6 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsFromStringRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsFromStringResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 
@@ -53,11 +35,18 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
     }
 
     @Override
-    synchronized public GetProblemsByIdResponse getProblemsById(
-            final GetProblemsByIdRequest getProblemsByIdRequest,
+    public GetProblemsResponse getProblems(
+            final GetProblemsRequest getProblemsRequest,
             final EditingTicket editingTicket) throws IdNotFoundException {
-        return innerDP.getProblemsById(getProblemsByIdRequest, editingTicket);
+        return innerDP.getProblems(getProblemsRequest, editingTicket);
     }
+
+//    @Override
+//    synchronized public GetProblemsByIdResponse getProblemsById(
+//            final GetProblemsByIdRequest getProblemsByIdRequest,
+//            final EditingTicket editingTicket) throws IdNotFoundException {
+//        return innerDP.getProblemsById(getProblemsByIdRequest, editingTicket);
+//    }
 
     @Override
     synchronized public GetAssignmentsFromStringResponse getAssignmentsFromString(
@@ -87,12 +76,12 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
         return innerDP.saveProcessedDocumentFromString(saveProcessedDocumentFromStringRequest, editingTicket);
     }
 
-    @Override
-    synchronized public GetProblemsFromStringResponse getProblemsFromString(
-            final GetProblemsFromStringRequest getProblemsFromStringRequest,
-            final EditingTicket editingTicket) {
-        return innerDP.getProblemsFromString(getProblemsFromStringRequest, editingTicket);
-    }
+//    @Override
+//    synchronized public GetProblemsFromStringResponse getProblemsFromString(
+//            final GetProblemsFromStringRequest getProblemsFromStringRequest,
+//            final EditingTicket editingTicket) {
+//        return innerDP.getProblemsFromString(getProblemsFromStringRequest, editingTicket);
+//    }
 
     @Override
     synchronized public GetEditingTicketResponse getEditingTicket(

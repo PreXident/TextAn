@@ -14,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jws.WebParam;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * For now only mocking database access.
@@ -49,7 +51,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getObjects", name = "getObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             Void getObjects) {
 
-        LOG.debug("Executing operation getObjects: {}", getObjects);
+        LOG.info("Executing operation getObjects: {}", getObjects);
 
         GetObjectsResponse response = new GetObjectsResponse();
         List<Object> serverObjects = dbService.getObjects();
@@ -58,6 +60,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             response.getObjects().add(object.toCommonsObject());
         }
 
+        LOG.info("Executed operation getObjects: {}", response);
         return response;
     }
 
@@ -66,7 +69,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "updateDocument", name = "updateDocument", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             UpdateDocumentRequest updateDocumentRequest) throws IdNotFoundException {
 
-        LOG.debug("Executing operation updateDocument: {}", updateDocumentRequest);
+        LOG.info("Executing operation updateDocument: {}", updateDocumentRequest);
 
         try {
             boolean result = dbService.updateDocument(updateDocumentRequest.getDocumentId(), updateDocumentRequest.getText());
@@ -74,9 +77,12 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             UpdateDocumentResponse response = new UpdateDocumentResponse();
             response.setResult(result);
 
+            LOG.info("Executed operation updateDocument: {}", response);
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation updateDocument.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -90,7 +96,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getRelations", name = "getRelations", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             Void getRelations) {
 
-        LOG.debug("Executing operation getRelations: {}", getRelations);
+        LOG.info("Executing operation getRelations: {}", getRelations);
 
         GetRelationsResponse response = new GetRelationsResponse();
         List<Relation> relations = dbService.getRelations();
@@ -98,6 +104,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             response.getRelations().add(relation.toCommonsRelation());
         }
 
+        LOG.info("Executed operation getRelations: {}", response);
         return response;
     }
 
@@ -106,7 +113,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getObjectTypes", name = "getObjectTypes", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             Void getObjectTypes) {
 
-        LOG.debug("Executing operation getObjectTypes: {}", getObjectTypes);
+        LOG.info("Executing operation getObjectTypes: {}", getObjectTypes);
 
         final GetObjectTypesResponse response = new GetObjectTypesResponse();
         List<ObjectType> objectTypes = dbService.getObjectTypes();
@@ -114,6 +121,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             response.getObjectTypes().add(objectType.toCommonsObjectType());
         }
 
+        LOG.info("Executed operation getObjectTypes: {}", response);
         return response;
     }
 
@@ -122,16 +130,19 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getDocumentById", name = "getDocumentById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetDocumentByIdRequest getDocumentByIdRequest) throws IdNotFoundException {
 
-        LOG.debug("Executing operation getDocumentById: {}", getDocumentByIdRequest);
+        LOG.info("Executing operation getDocumentById: {}", getDocumentByIdRequest);
 
         try {
             Document document = dbService.getDocument(getDocumentByIdRequest.getDocumentId());
-            GetDocumentByIdResponse getDocumentByIdResponse = new GetDocumentByIdResponse();
-            getDocumentByIdResponse.setDocument(document.toCommonsDocument());
+            GetDocumentByIdResponse response = new GetDocumentByIdResponse();
+            response.setDocument(document.toCommonsDocument());
 
-            return getDocumentByIdResponse;
+            LOG.info("Executed operation getDocumentById: {}", response);
+            return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getDocumentById.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -145,7 +156,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getFilteredObjectsRequest", name = "getFilteredObjectsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetFilteredObjectsRequest getFilteredObjectsRequest) throws IdNotFoundException {
 
-        LOG.debug("Executing operation getFilteredObjectsRequest: {}", getFilteredObjectsRequest);
+        LOG.info("Executing operation getFilteredObjectsRequest: {}", getFilteredObjectsRequest);
 
         try {
             
@@ -162,9 +173,12 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             }
             response.setTotalNumberOfResults(results.getSecond());
 
+            LOG.info("Executed operation getFilteredObjectsRequest: {}", response);
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getFilteredObjectsRequest.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -178,7 +192,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getRelationTypes", name = "getRelationTypes", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             Void getRelationTypes) {
 
-        LOG.debug("Executing operation getRelationTypes: {}", getRelationTypes);
+        LOG.info("Executing operation getRelationTypes: {}", getRelationTypes);
 
         final GetRelationTypesResponse response = new GetRelationTypesResponse();
         List<RelationType> relationTypes = dbService.getRelationTypes();
@@ -186,6 +200,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             response.getRelationTypes().add(relationType.toCommonsRelationType());
         }
 
+        LOG.info("Executed operation getRelationTypes: {}", response);
         return response;
     }
 
@@ -194,15 +209,18 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getGraphById", name = "getGraphById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetGraphByIdRequest getGraphByIdRequest) throws IdNotFoundException {
 
-        LOG.debug("Executing operation getGraphById: {}", getGraphByIdRequest);
+        LOG.info("Executing operation getGraphById: {}", getGraphByIdRequest);
 
         try {
-            GetGraphByIdResponse getGraphByIdResponse = new GetGraphByIdResponse();
+            GetGraphByIdResponse response = new GetGraphByIdResponse();
             Graph graph = graphService.getGraph(getGraphByIdRequest.getObjectId(), getGraphByIdRequest.getDistance());
-            getGraphByIdResponse.setGraph(graph.toCommonsGraph());
+            response.setGraph(graph.toCommonsGraph());
 
-            return getGraphByIdResponse;
+            LOG.info("Executed operation getGraphById: {}", response);
+            return response;
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getGraphById.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -217,14 +235,17 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             GetRelatedObjectsByIdRequest getRelatedObjectsByIdRequest)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getRelatedObjectsById: {}", getRelatedObjectsByIdRequest);
+        LOG.info("Executing operation getRelatedObjectsById: {}", getRelatedObjectsByIdRequest);
         try {
-            GetRelatedObjectsByIdResponse getRelatedObjectsByIdResponse = new GetRelatedObjectsByIdResponse();
+            GetRelatedObjectsByIdResponse response = new GetRelatedObjectsByIdResponse();
             Graph graph = graphService.getRelatedObjects(getRelatedObjectsByIdRequest.getObjectId());
-            getRelatedObjectsByIdResponse.setGraph(graph.toCommonsGraph());
+            response.setGraph(graph.toCommonsGraph());
 
-            return getRelatedObjectsByIdResponse;
+            LOG.info("Executed operation getRelatedObjectsById: {}", response);
+            return response;
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getRelatedObjectsById.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -238,13 +259,14 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "addDocument", name = "addDocument", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             AddDocumentRequest addDocumentRequest) {
 
-        LOG.debug("Executing operation addDocument: {}", addDocumentRequest);
+        LOG.info("Executing operation addDocument: {}", addDocumentRequest);
 
         long documentId = dbService.addDocument(addDocumentRequest.getText());
 
-        AddDocumentResponse addDocumentResponse = new AddDocumentResponse();
-        addDocumentResponse.setDocumentId(documentId);
+        AddDocumentResponse response = new AddDocumentResponse();
+        response.setDocumentId(documentId);
 
+        LOG.info("Executed operation addDocument: {}", response);
         return new AddDocumentResponse();
     }
 
@@ -253,7 +275,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getObjectsAndRelationsOccurringInDocumentRequest", name = "getObjectsAndRelationsOccurringInDocumentRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetObjectsAndRelationsOccurringInDocumentRequest getObjectsAndRelationsOccurringInDocumentRequest) throws IdNotFoundException {
 
-        LOG.debug("Executing operation getObjectsAndRelationsOccurringInDocument: {}", getObjectsAndRelationsOccurringInDocumentRequest);
+        LOG.info("Executing operation getObjectsAndRelationsOccurringInDocument: {}", getObjectsAndRelationsOccurringInDocumentRequest);
 
         try {
 
@@ -287,9 +309,12 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
                 response.getRelationOccurrences().add(commonsRelationOccurrence);
             }
 
+            LOG.info("Executed operation getObjectsAndRelationsOccurringInDocument: {}", response);
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getObjectsAndRelationsOccurringInDocument.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -303,7 +328,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getDocumentsContainsObjectByIdRequest", name = "getDocumentsContainsObjectByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetDocumentsContainsObjectByIdRequest getDocumentsContainsObjectByIdRequest) throws IdNotFoundException {
 
-        LOG.debug("Executing operation getDocumentsContainsObjectById: {}", getDocumentsContainsObjectByIdRequest);
+        LOG.info("Executing operation getDocumentsContainsObjectById: {}", getDocumentsContainsObjectByIdRequest);
 
         try {
 
@@ -313,9 +338,44 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
                 response.getDocuments().add(document.toCommonsDocument());
             }
 
+            LOG.info("Executed operation getDocumentsContainsObjectById: {}", response);
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getDocumentsContainsObjectById.", e);
+
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
+    public GetObjectsByIdsResponse getObjectsByIds(
+            @WebParam(partName = "getObjectsByIdsRequest", name = "getObjectsByIdsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetObjectsByIdsRequest getObjectsByIdsRequest) throws IdNotFoundException {
+
+        LOG.info("Executing operation getDocumentsContainsObjectById: {}", getObjectsByIdsRequest);
+
+        try {
+            Set<Object> objects = new HashSet<>(getObjectsByIdsRequest.getObjectIds().size());
+            for (long id : getObjectsByIdsRequest.getObjectIds()) {
+                objects.add(dbService.getObject(id));
+            }
+
+            GetObjectsByIdsResponse response = new GetObjectsByIdsResponse();
+            for (Object object : objects) {
+                response.getObjects().add(object.toCommonsObject());
+            }
+
+            LOG.info("Executed operation getDocumentsContainsObjectById: {}", response);
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getDocumentsContainsObjectById.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -329,7 +389,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "splitObject", name = "splitObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             SplitObjectRequest splitObjectRequest) throws IdNotFoundException {
 
-        LOG.debug("Executing operation splitObject: {}", splitObjectRequest);
+        LOG.info("Executing operation splitObject: {}", splitObjectRequest);
 
         try {
             boolean result = dbService.splitObject(splitObjectRequest.getObjectId());
@@ -337,9 +397,12 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             SplitObjectResponse response = new SplitObjectResponse();
             response.setResult(result);
 
+            LOG.info("Executed operation splitObject: {}", response);
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation splitObject.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -353,7 +416,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getRolesForRelationTypeByIdRequest", name = "getRolesForRelationTypeByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetRolesForRelationTypeByIdRequest getRolesForRelationTypeByIdRequest) throws IdNotFoundException {
 
-        LOG.debug("Executing operation getRolesForRelationTypeById: {}", getRolesForRelationTypeByIdRequest);
+        LOG.info("Executing operation getRolesForRelationTypeById: {}", getRolesForRelationTypeByIdRequest);
 
         try {
 
@@ -361,9 +424,12 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             GetRolesForRelationTypeByIdResponse response = new GetRolesForRelationTypeByIdResponse();
             response.getRoles().addAll(roles);
 
+            LOG.info("Executed operation getRolesForRelationTypeById: {}", response);
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getRolesForRelationTypeById.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -377,15 +443,18 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getPathById", name = "getPathById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetPathByIdRequest getPathByIdRequest) throws IdNotFoundException {
 
-        LOG.debug("Executing operation getPathById: {}", getPathByIdRequest);
+        LOG.info("Executing operation getPathById: {}", getPathByIdRequest);
 
         try {
-            GetPathByIdResponse getPathByIdResponse = new GetPathByIdResponse();
+            GetPathByIdResponse response = new GetPathByIdResponse();
             Graph graph = graphService.getPath(getPathByIdRequest.getStartObjectId(), getPathByIdRequest.getTargetObjectId());
-            getPathByIdResponse.setGraph(graph.toCommonsGraph());
+            response.setGraph(graph.toCommonsGraph());
 
-            return getPathByIdResponse;
+            LOG.info("Executed operation getPathById: {}", response);
+            return response;
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getPathById.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -399,7 +468,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getDocuments", name = "getDocuments", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             Void getDocuments) {
 
-        LOG.debug("Executing operation getDocuments: {}", getDocuments);
+        LOG.info("Executing operation getDocuments: {}", getDocuments);
 
         GetDocumentsResponse response = new GetDocumentsResponse();
         List<Document> documents = dbService.getDocuments();
@@ -407,6 +476,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             response.getDocuments().add(document.toCommonsDocument());
         }
 
+        LOG.info("Executed operation getDocuments: {}", response);
         return new GetDocumentsResponse();
     }
 
@@ -415,7 +485,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getRelationsByTypeId", name = "getRelationsByTypeId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetRelationsByTypeIdRequest getRelationsByTypeIdRequest) throws IdNotFoundException {
 
-        LOG.debug("Executing operation getRelationsByTypeId: {}", getRelationsByTypeIdRequest);
+        LOG.info("Executing operation getRelationsByTypeId: {}", getRelationsByTypeIdRequest);
 
         GetRelationsByTypeIdResponse response = new GetRelationsByTypeIdResponse();
         List<Relation> relations = dbService.getRelations(getRelationsByTypeIdRequest.getRelationTypeId());
@@ -423,6 +493,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             response.getRelations().add(relation.toCommonsRelation());
         }
 
+        LOG.info("Executed operation getRelationsByTypeId: {}", response);
         return response;
     }
 
@@ -432,7 +503,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             GetObjectsByTypeIdRequest getObjectsByTypeIdRequest)
             throws IdNotFoundException {
 
-        LOG.debug("Executing operation getObjectsByTypeId: {}", getObjectsByTypeIdRequest);
+        LOG.info("Executing operation getObjectsByTypeId: {}", getObjectsByTypeIdRequest);
 
         GetObjectsByTypeIdResponse response = new GetObjectsByTypeIdResponse();
         List<Object> objects = dbService.getObjects(getObjectsByTypeIdRequest.getObjectTypeId());
@@ -440,6 +511,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             response.getObjects().add(object.toCommonsObject());
         }
 
+        LOG.info("Executed operation getObjectsByTypeId: {}", response);
         return response;
     }
 
@@ -448,16 +520,19 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getObject", name = "getObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetObjectRequest getObjectRequest) throws IdNotFoundException {
 
-        LOG.debug("Executing operation getObject: {}", getObjectRequest);
+        LOG.info("Executing operation getObject: {}", getObjectRequest);
 
         try {
             GetObjectResponse response = new GetObjectResponse();
             Object object = dbService.getObject(getObjectRequest.getObjectId());
             response.setObject(object.toCommonsObject());
 
+            LOG.info("Executed operation getObject: {}", response);
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getObject.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -471,16 +546,19 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "mergeObjects", name = "mergeObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             MergeObjectsRequest mergeObjects) throws IdNotFoundException {
 
-        LOG.debug("Executing operation mergeObjects: {}", mergeObjects);
+        LOG.info("Executing operation mergeObjects: {}", mergeObjects);
 
         try {
             MergeObjectsResponse response = new MergeObjectsResponse();
             long objectId = dbService.mergeObjects(mergeObjects.getObject1Id(), mergeObjects.getObject2Id());
             response.setObjectId(objectId);
 
+            LOG.info("Executed operation mergeObjects: {}", response);
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation mergeObjects.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
