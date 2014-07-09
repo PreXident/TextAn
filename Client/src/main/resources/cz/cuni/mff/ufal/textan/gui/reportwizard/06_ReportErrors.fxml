@@ -34,21 +34,14 @@
 				<columns>
 					<TableColumn fx:id="newObjectsTableIdColumn" text="%table.id" prefWidth="60" />
 					<TableColumn fx:id="newObjectsTableTypeColumn" text="%table.type" prefWidth="100" />
-					<TableColumn fx:id="newObjectsTableAliasColumn" text="%table.alias" />
+					<TableColumn fx:id="newObjectsTableAliasColumn" text="%table.alias" prefWidth="110" />
 				</columns>
 				<placeholder>
 					<Label text="" />
 				</placeholder>
 			</TableView>
-			<TableView fx:id="newRelationsTable" minHeight="30" GridPane.columnIndex="1" GridPane.rowIndex="2" >
-				<columns>
-					<TableColumn fx:id="newRelationsTableRelation" text="%table.relation" prefWidth="220" />
-				</columns>
-				<placeholder>
-					<Label text="" />
-				</placeholder>
-			</TableView>
-			<TreeView fx:id="treeView" minHeight="30" GridPane.columnIndex="2" GridPane.rowIndex="2" showRoot="false" />
+			<TreeView fx:id="relationsTreeView" minHeight="30" GridPane.columnIndex="1" GridPane.rowIndex="2" showRoot="false" />
+			<TreeView fx:id="joinedObjectsTreeView" minHeight="30" GridPane.columnIndex="2" GridPane.rowIndex="2" showRoot="false" />
 		</GridPane>
 	</center>
 	<bottom>

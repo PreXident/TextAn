@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.*;
 import cz.cuni.mff.ufal.textan.core.Object;
 import java.util.Arrays;
@@ -35,6 +36,9 @@ public class Problems {
     public Problems() {
         this.newObjects = Arrays.asList(new Object(-1, new ObjectType(-1, "XXX"), Arrays.asList("xxx", "zzz")));
         this.newRelations = Arrays.asList(new Relation(-1, new RelationType(-1, "qqq")));
+        this.newRelations.get(0).getObjects().add(
+                new Triple<>(0, "test", new Object(-1, new ObjectType(-1, "aaa"), Arrays.asList("bla", "ups")))
+        );
         this.joinedObjects = Arrays.asList(new JoinedObject());
         changed = true;
         processed = true;

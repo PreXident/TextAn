@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.JoinedObject;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
@@ -57,13 +58,10 @@ public class ReportErrorsController extends ReportWizardController {
     ListView<FXRelationBuilder> relationsListView;
 
     @FXML
-    private TableView<Relation> newRelationsTable;
+    private TreeView<java.lang.Object> relationsTreeView;
 
     @FXML
-    private TableColumn<Relation, String> newRelationsTableRelation;
-
-    @FXML
-    private TreeView<Object> treeView;
+    private TreeView<Object> joinedObjectsTreeView;
 
     @FXML
     private VBox vbox;
@@ -88,6 +86,9 @@ public class ReportErrorsController extends ReportWizardController {
 
     /** Context menu for joined objects. */
     ContextMenu joinedObjectsContextMenu = new ContextMenu();
+
+    /** Context menu for relation's objects. */
+    ContextMenu relationsContextMenu = new ContextMenu();
 
     @FXML
     private void back() {
@@ -124,15 +125,15 @@ public class ReportErrorsController extends ReportWizardController {
         //
         final MenuItem joinedGraphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
         joinedGraphMI.setOnAction(e -> {
-            final Object obj = treeView.getSelectionModel().getSelectedItem().getValue();
+            final Object obj = joinedObjectsTreeView.getSelectionModel().getSelectedItem().getValue();
             if (obj != null) {
                 textAnController.displayGraph(obj.getId());
             }
         });
-        joinedObjectsContextMenu.getItems().add(graphMI);
+        joinedObjectsContextMenu.getItems().add(joinedGraphMI);
         joinedObjectsContextMenu.setConsumeAutoHidingEvents(false);
         joinedObjectsContextMenu.setStyle(OBJECT_CONTEXT_MENU);
-        treeView.setContextMenu(joinedObjectsContextMenu);
+        joinedObjectsTreeView.setContextMenu(joinedObjectsContextMenu);
         //
         newObjectsTable.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
             if (newVal != null) {
@@ -141,7 +142,6 @@ public class ReportErrorsController extends ReportWizardController {
                 newObjectsTable.setContextMenu(null);
             }
         });
-        newObjectsTableAliasColumn.prefWidthProperty().bind(newObjectsTable.widthProperty().add(newObjectsTableIdColumn.prefWidthProperty().add(newObjectsTableTypeColumn.prefWidthProperty()) .multiply(-1).add(-2)));
         newObjectsTableIdColumn.setCellValueFactory((TableColumn.CellDataFeatures<Object, Number> p) -> new ReadOnlyLongWrapper(p.getValue().getId()));
         newObjectsTableIdColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {
             @Override
@@ -167,9 +167,24 @@ public class ReportErrorsController extends ReportWizardController {
         newObjectsTableAliasColumn.setCellValueFactory((TableColumn.CellDataFeatures<Object, String> p) -> new ReadOnlyStringWrapper(p.getValue().getAliasString()));
         newObjectsTableAliasColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         //
-        //newRelationsTableRelation.prefWidthProperty().bind(newRelationsTable.widthProperty());
-        newRelationsTableRelation.setCellValueFactory((TableColumn.CellDataFeatures<Relation, String> p) -> new ReadOnlyStringWrapper(p.getValue().toString()));
-        newRelationsTableRelation.setCellFactory(TextFieldTableCell.forTableColumn());
+        final MenuItem relationGraphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
+        relationGraphMI.setOnAction(e -> {
+            final java.lang.Object obj = relationsTreeView.getSelectionModel().getSelectedItem().getValue();
+            if (obj instanceof RelationTriple) {
+                final RelationTriple t = (RelationTriple) obj;
+                textAnController.displayGraph(t.triple.getThird().getId());
+            }
+        });
+        relationsContextMenu.getItems().add(relationGraphMI);
+        relationsContextMenu.setConsumeAutoHidingEvents(false);
+        relationsContextMenu.setStyle(OBJECT_CONTEXT_MENU);
+        relationsTreeView.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
+            if (newVal == null || !(newVal.getValue() instanceof RelationTriple)) {
+                relationsTreeView.setContextMenu(null);
+            } else {
+                relationsTreeView.setContextMenu(relationsContextMenu);
+            }
+        });
         //
         ColumnConstraints column1 = new ColumnConstraints();
         column1.setHgrow(Priority.ALWAYS);
@@ -190,21 +205,56 @@ public class ReportErrorsController extends ReportWizardController {
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
         newObjectsTable.getItems().addAll(pipeline.getProblems().getNewObjects());
-        newRelationsTable.getItems().addAll(pipeline.getProblems().getNewRelations());
-        treeView.setRoot(new TreeItem<>(null));
+        //
+        joinedObjectsTreeView.setRoot(new TreeItem<>(null));
         for (JoinedObject joined : pipeline.getProblems().getJoinedObjects()) {
             final TreeItem<Object> parent = new TreeItem<>(joined.root);
             for (Object obj : joined.children) {
                 final TreeItem<Object> child = new TreeItem<>(obj);
                 parent.getChildren().add(child);
             }
-            treeView.getRoot().getChildren().add(parent);
+            joinedObjectsTreeView.getRoot().getChildren().add(parent);
         }
+        //
+        relationsTreeView.setRoot(new TreeItem<>(null));
+        for (Relation relation : pipeline.getProblems().getNewRelations()) {
+            final TreeItem<java.lang.Object> parent = new TreeItem<>(relation);
+            for (Triple<Integer, String, Object> triple : relation.getObjects()) {
+                final TreeItem<java.lang.Object> child =
+                        new TreeItem<>(new RelationTriple(triple));
+                parent.getChildren().add(child);
+            }
+            relationsTreeView.getRoot().getChildren().add(parent);
+        }
+        //
         if (!pipeline.getProblems().isProcessed()) {
             vbox.getChildren().remove(processedLabel);
         }
         if (!pipeline.getProblems().isChanged()) {
             vbox.getChildren().remove(changedLabel);
+        }
+    }
+
+    /**
+     * Simple holder for displaying relation triple.
+     */
+    static private class RelationTriple {
+
+        /** Wrapped triple. */
+        final Triple<Integer, String, Object> triple;
+
+        /**
+         * Only constructor.
+         * @param triple triple to wrap
+         */
+        public RelationTriple(final Triple<Integer, String, Object> triple) {
+            this.triple = triple;
+        }
+
+        @Override
+        public String toString() {
+            return triple.getFirst() + " - " + triple.getSecond()
+                    + " - " + triple.getThird().toString();
         }
     }
 }
