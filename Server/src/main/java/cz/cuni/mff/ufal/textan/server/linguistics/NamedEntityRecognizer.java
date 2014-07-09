@@ -34,6 +34,7 @@ public class NamedEntityRecognizer {
     private static final String MODEL_FILE_EXTENSION = ".ner";
     private static final String MODEL_FILE_PREFIX = "model";
     private static final String TRAINING_DIR = "training";
+    private static final String EXECUTABLE_DIR = "bin";
     private static final String TRAINING_DATA_EXTENSION = ".txt";
     private static final String TRAINING_DATA_PREFIX = "temporaryTrainingData";
 
@@ -93,7 +94,7 @@ public class NamedEntityRecognizer {
      * Initialize NameTag
      * if there are existing models, than use newest one, else train new
      */
-    public void init() {
+    public void init() throws LearningException {
         LOG.info("Initializing NameTag");
 
         LOG.info("Looking for models");
@@ -111,6 +112,10 @@ public class NamedEntityRecognizer {
         } else {
             LOG.info("No models found");
             learn(true);
+        }
+        if (ner == null)
+        {
+            throw new LearningException("Learning wasn't successful (see log for details)");
         }
 
     }
@@ -235,7 +240,6 @@ public class NamedEntityRecognizer {
         }
     }
 
-
     /**
      * Learn new model
      *
@@ -244,13 +248,14 @@ public class NamedEntityRecognizer {
     public void learn(boolean waitForModel) {
         LOG.info("Started training new NameTag model");
         try {
-            File dir = new File(TRAINING_DIR).getCanonicalFile();
+            File trainingExecutable = new File(EXECUTABLE_DIR).getCanonicalFile();
+            File trainingDirectory = new File(TRAINING_DIR).getCanonicalFile();
             SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
             Date date = Calendar.getInstance().getTime();
             File modelLocation = new File(MODELS_DIR, MODEL_FILE_PREFIX + sdf.format(date) + MODEL_FILE_EXTENSION).getAbsoluteFile();
             LOG.debug("New model path: {}", modelLocation);
 
-            LearningParameters learningParameters = new LearningParameters(dir);
+            LearningParameters learningParameters = new LearningParameters(trainingExecutable, trainingDirectory);
             File trainingDataFile = new File(TRAINING_DIR, TRAINING_DATA_PREFIX + sdf.format(date) + TRAINING_DATA_EXTENSION).getAbsoluteFile();
             if ((new File(TRAINING_DIR).isDirectory()) || (new File(TRAINING_DIR).mkdir())) {
                 if (learningParameters.useDefaultTrainingData()) {
@@ -269,7 +274,7 @@ public class NamedEntityRecognizer {
 
             // build process
             ProcessBuilder pb = new ProcessBuilder(learningParameters.getCommand());
-            pb.directory(dir);
+            pb.directory(trainingDirectory);
 
             // IO redirection
             pb.redirectInput(trainingDataFile);
@@ -306,7 +311,9 @@ public class NamedEntityRecognizer {
             File[] models = getSortedModels(new File(MODELS_DIR));
             for (int i = learningParameters.getMaximumStoredModels(); i < models.length; ++i) {
                 LOG.info("Maximum models count exceeded, deleting model {}", models[i].toString());
-                models[i].delete();
+                if (!models[i].delete()){
+                    LOG.info("Can't delete model {}", models[i].toString());
+                }
             }
 
         } catch (IOException e) {

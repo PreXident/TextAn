@@ -78,7 +78,7 @@ task copyMorphoditaTagger(type: Copy) {
     into new File(buildDir, 'models')
 }
 
-task copyTrainingBinariesAndData(type: Copy) {
+task copyTrainingData(type: Copy) {
     run.dependsOn name
 
     from (new File(project(':Linguistics').projectDir, 'training')) {
@@ -86,10 +86,18 @@ task copyTrainingBinariesAndData(type: Copy) {
         include '**/cnec2.0-all/train.txt'
         include '**/gazetteers/*'
         include '**/*.txt'
-        include '**/train_ner*'
         include '**/*.tagger'
     }
     into new File(buildDir, 'training')
+}
+
+task copyTrainingBinaries(type: Copy) {
+    run.dependsOn name
+
+    from (new File(project(':Linguistics').projectDir, 'training')) {
+        include '**/train_ner*'
+    }
+    into new File(buildDir, 'bin')
 }
 
 /*
@@ -190,7 +198,7 @@ task shadowCopyMorphoditaTagger(type: Copy) {
     into new File(shadow.destinationDir, 'models')
 }
 
-task shadowCopyTrainingBinariesAndData(type: Copy) {
+task shadowCopyTrainingData(type: Copy) {
     shadowJar.dependsOn name
 
     from (new File(project(':Linguistics').projectDir, 'training')) {
@@ -198,8 +206,16 @@ task shadowCopyTrainingBinariesAndData(type: Copy) {
         include '**/cnec2.0-all/train.txt'
         include '**/gazetteers/*'
         include '**/*.txt'
-        include '**/train_ner*'
         include '**/*.tagger'
     }
     into new File(shadow.destinationDir, 'training')
+}
+
+task shadowCopyTrainingBinaries(type: Copy) {
+    shadowJar.dependsOn name
+
+    from (new File(project(':Linguistics').projectDir, 'training')) {
+        include '**/train_ner*'
+    }
+    into new File(shadow.destinationDir, 'bin')
 }

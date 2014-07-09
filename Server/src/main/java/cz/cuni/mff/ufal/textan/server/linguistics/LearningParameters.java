@@ -64,11 +64,12 @@ public class LearningParameters {
 
     /**
      * Read learning parameters for nametag
-     * @param workingDirectory working directory, where learning will be run
-     */
-    public LearningParameters(File workingDirectory) {
+     * @param binaryDirectory directory, where learning binary is stored
+     * @param workingDirectory working directory, where learning files are stored
+     * */
+    public LearningParameters(File binaryDirectory, File workingDirectory) {
         command = new LinkedList<>();
-        command.add(new File(workingDirectory, mapBinaryName(TRAIN_NER)).toString());
+        command.add(new File(binaryDirectory, mapBinaryName(TRAIN_NER)).toString());
 
 
         try (InputStream configFileStream = NamedEntityRecognizer.class.getResource("/NametagLearning.properties").openStream()){
