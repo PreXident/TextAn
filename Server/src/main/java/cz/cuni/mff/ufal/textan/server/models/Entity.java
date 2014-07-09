@@ -88,6 +88,10 @@ public class Entity {
         return commonsEntity;
     }
 
+    public cz.cuni.mff.ufal.textan.textpro.data.Entity toTextProEntity() {
+        return new cz.cuni.mff.ufal.textan.textpro.data.Entity(value, length, position, type.getId());
+    }
+
     @Override
     public boolean equals(java.lang.Object o) {
         if (this == o) return true;

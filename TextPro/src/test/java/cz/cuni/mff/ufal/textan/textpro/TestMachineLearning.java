@@ -71,7 +71,7 @@ public class TestMachineLearning {
         assertEquals("1 entity to match", 1, eList.size());
         
         // Run the ranking
-        Map<Entity, Map<Long, Double>> result = textPro.DoubleRanking("Empty", eList, 5);
+        Map<Entity, Object> result = textPro.DoubleRanking("Empty", eList, 5);
         assertEquals("1 entity to match", 1, result.keySet().size());
     }
 }

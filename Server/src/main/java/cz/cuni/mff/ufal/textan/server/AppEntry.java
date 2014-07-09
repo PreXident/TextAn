@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.server;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.configs.AppConfig;
 import cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices;
+import cz.cuni.mff.ufal.textan.textpro.ITextPro;
 import org.eclipse.jetty.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,8 @@ public class AppEntry {
             server = context.getBean(Server.class);
             invoker = context.getBean(CommandInvoker.class);
             NameTagServices nameTagServices = context.getBean(NameTagServices.class);
+            ITextPro textPro = context.getBean(ITextPro.class);
+            textPro.learn();
 
             LOG.info("Initialize named entity recognizer");
             nameTagServices.bindModel(NAMETAG_MODEL.toString());
