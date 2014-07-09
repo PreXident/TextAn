@@ -185,18 +185,17 @@ public class LearningParameters {
      * @return property value if property is set, default value else
      */
     private int getIntegerProperty(Properties p, String propertyName, int defaultValue) {
-        Integer value = defaultValue;
+        int value = defaultValue;
         try {
-            value  = Integer.parseInt((String)p.get(propertyName));
-            if (value == null) {
-                value = defaultValue;
-                LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
-            }
+            value = Integer.parseInt((String)p.get(propertyName));
+            LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
         }
         catch (NumberFormatException nfe) {
+            value = defaultValue;
             LOG.warn("Could not parse config value {}, using default value {}.", propertyName, defaultValue);
         }
         catch (Exception e) {
+            value = defaultValue;
             LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
         }
         return value;
