@@ -359,15 +359,8 @@ public class Client {
      * @return problems with report saving
      */
     public synchronized Problems getProblems(final Ticket ticket) {
-        //TODO how to pass string to the request?
         final GetProblemsRequest request =  new GetProblemsRequest();
-        //TODO remove exception!
-        GetProblemsResponse response = null;
-        try {
-            response = getDocumentProcessor().getProblems(request, ticket.toTicket());
-        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
-            e.printStackTrace();
-        }
+        final GetProblemsResponse response = getDocumentProcessor().getProblems(request, ticket.toTicket());
         return new Problems(response);
     }
 
