@@ -96,6 +96,7 @@ task copyTrainingBinaries(type: Copy) {
 
     from (new File(project(':Linguistics').projectDir, 'training')) {
         include '**/train_ner*'
+        fileMode = 700
     }
     into new File(buildDir, 'bin')
 }
@@ -216,6 +217,7 @@ task shadowCopyTrainingBinaries(type: Copy) {
 
     from (new File(project(':Linguistics').projectDir, 'training')) {
         include '**/train_ner*'
+        fileMode = 700
     }
     into new File(shadow.destinationDir, 'bin')
 }
