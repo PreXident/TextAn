@@ -3,9 +3,7 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
 import cz.cuni.mff.ufal.textan.core.*;
 import cz.cuni.mff.ufal.textan.core.Object;
-
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,6 +22,12 @@ public class Problems {
     /** Newly joined Objects. */
     private final List<JoinedObject> joinedObjects;
 
+    /** Flag indicating whether the document has been changed. */
+    private final boolean changed;
+
+    /** Flag indicating whether the document has already been processed. */
+    private final boolean processed;
+
     /**
      * Testing constructor.
      */
@@ -32,6 +36,8 @@ public class Problems {
         this.newObjects = Arrays.asList(new Object(-1, new ObjectType(-1, "XXX"), Arrays.asList("xxx", "zzz")));
         this.newRelations = Arrays.asList(new Relation(-1, new RelationType(-1, "qqq")));
         this.joinedObjects = Arrays.asList(new JoinedObject());
+        changed = true;
+        processed = true;
     }
 
     /**
@@ -39,58 +45,21 @@ public class Problems {
      * @param response blue print
      */
     public Problems(final GetProblemsResponse response) {
-        //TODO replace emptyMap by reponse.getRelationObjects and remove Arrays.asList
-        this(Collections.emptyMap(),
-                response.getNewObjects(),
-                response.getNewRelations(),
-                response.getNewJoinedObjects());
-    }
-
-//TODO remove
-//    /**
-//     * Constructs Problems from GetProblemsFromStringResponse.
-//     * @param response blue print
-//     */
-//    public Problems(final GetProblemsFromStringResponse response) {
-//        //TODO replace emptyMap by reponse.getRelationObjects and remove Arrays.asList
-//        this(Collections.emptyMap(),
-//                response.getNewObjects(),
-//                response.getNewRelations(),
-//                Arrays.asList(response.getNewJoinedObject()));
-//    }
-//
-//    /**
-//     * Constructs Problems from GetProblemsByIdResponse.
-//     * @param response blue print
-//     */
-//    public Problems(final GetProblemsByIdResponse response) {
-//        //TODO replace emptyMap by reponse.getRelationObjects and remove Arrays.asList
-//        this(Collections.emptyMap(),
-//                response.getNewObjects(),
-//                response.getNewRelations(),
-//                Arrays.asList(response.getNewJoinedObject()));
-//    }
-
-    /**
-     * Private constructor underlying the others.
-     * @param objects id -> object mapping to resolve relation ids
-     * @param newObjects new objects
-     * @param newRelations new relations
-     * @param joinedObjects newly joined objects
-     */
-    private Problems(final Map<Long, Object> objects,
-            final List<cz.cuni.mff.ufal.textan.commons.models.Object> newObjects,
-            final List<cz.cuni.mff.ufal.textan.commons.models.Relation> newRelations,
-            final List<cz.cuni.mff.ufal.textan.commons.models.JoinedObject> joinedObjects) {
-        this.newObjects = newObjects.stream()
+        final Map<Long, Object> objects = response.getRelationObjects().stream()
+                .collect(Collectors.toMap(
+                        cz.cuni.mff.ufal.textan.commons.models.Object::getId,
+                        Object::new));
+        newObjects = response.getNewObjects().stream()
                 .map(Object::new)
                 .collect(Collectors.toList());
-        this.newRelations = newRelations.stream()
+        newRelations = response.getNewRelations().stream()
                 .map(rel -> new Relation(rel, objects))
                 .collect(Collectors.toList());
-        this.joinedObjects = joinedObjects.stream()
+        joinedObjects = response.getNewJoinedObjects().stream()
                 .map(JoinedObject::new)
                 .collect(Collectors.toList());
+        changed = response.isDocumentChanged();
+        processed = response.isDocumentProcessed();
     }
 
     /**
@@ -115,5 +84,21 @@ public class Problems {
      */
     public List<JoinedObject> getJoinedObjects() {
         return joinedObjects;
+    }
+
+    /**
+     * Returns whether the document has been changed.
+     * @return true if the document has been changed, false otherwise
+     */
+    public boolean isChanged() {
+        return changed;
+    }
+
+    /**
+     * Returns whether the document has already been processed.
+     * @return true if the document has been processed, false otherwise
+     */
+    public boolean isProcessed() {
+        return processed;
     }
 }

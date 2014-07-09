@@ -4,12 +4,10 @@ import cz.cuni.mff.ufal.textan.core.JoinedObject;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.Relation;
-import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -18,6 +16,7 @@ import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
@@ -27,6 +26,11 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
 /**
@@ -62,7 +66,19 @@ public class ReportErrorsController extends ReportWizardController {
     private TreeView<Object> treeView;
 
     @FXML
+    private VBox vbox;
+
+    @FXML
     Slider slider;
+
+    @FXML
+    Label processedLabel;
+
+    @FXML
+    Label changedLabel;
+
+    @FXML
+    GridPane gridPane;
 
     /** Localization controller. */
     ResourceBundle resourceBundle;
@@ -154,6 +170,20 @@ public class ReportErrorsController extends ReportWizardController {
         //newRelationsTableRelation.prefWidthProperty().bind(newRelationsTable.widthProperty());
         newRelationsTableRelation.setCellValueFactory((TableColumn.CellDataFeatures<Relation, String> p) -> new ReadOnlyStringWrapper(p.getValue().toString()));
         newRelationsTableRelation.setCellFactory(TextFieldTableCell.forTableColumn());
+        //
+        ColumnConstraints column1 = new ColumnConstraints();
+        column1.setHgrow(Priority.ALWAYS);
+        column1.setFillWidth(true);
+        ColumnConstraints column2 = new ColumnConstraints();
+        column2.setHgrow(Priority.ALWAYS);
+        column2.setFillWidth(true);
+        ColumnConstraints column3 = new ColumnConstraints();
+        column3.setHgrow(Priority.ALWAYS);
+        column3.setFillWidth(true);
+        gridPane.getColumnConstraints().addAll(column1, column2, column3);
+        RowConstraints row3 = new RowConstraints();
+        row3.setVgrow(Priority.ALWAYS);
+        gridPane.getRowConstraints().addAll(new RowConstraints(), new RowConstraints(), row3);
     }
 
     @Override
@@ -169,6 +199,12 @@ public class ReportErrorsController extends ReportWizardController {
                 parent.getChildren().add(child);
             }
             treeView.getRoot().getChildren().add(parent);
+        }
+        if (!pipeline.getProblems().isProcessed()) {
+            vbox.getChildren().remove(processedLabel);
+        }
+        if (!pipeline.getProblems().isChanged()) {
+            vbox.getChildren().remove(changedLabel);
         }
     }
 }

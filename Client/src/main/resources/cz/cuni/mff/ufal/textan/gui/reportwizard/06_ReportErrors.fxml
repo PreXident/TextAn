@@ -21,12 +21,16 @@
 		<URL value="@06_ReportErrors.css" />
 	</stylesheets>
 	<center>
-		<GridPane alignment="CENTER_LEFT" hgap="10" vgap="10">
+		<GridPane fx:id="gridPane" alignment="CENTER_LEFT" hgap="10" vgap="10">
 			<padding><Insets top="0" right="0" bottom="10" left="0"/></padding>
-			<Label text="%newObjects" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-			<Label text="%newRelations" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-			<Label text="%joinedObjects" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-			<TableView fx:id="newObjectsTable" minHeight="30" GridPane.columnIndex="0" GridPane.rowIndex="1" >
+			<VBox fx:id="hbox" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="0">
+				<Label fx:id="processedLabel" text="%processed" />
+				<Label fx:id="changedLabel" text="%changed" />
+			</VBox>
+			<Label text="%newObjects" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+			<Label text="%newRelations" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+			<Label text="%joinedObjects" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+			<TableView fx:id="newObjectsTable" minHeight="30" GridPane.columnIndex="0" GridPane.rowIndex="2" >
 				<columns>
 					<TableColumn fx:id="newObjectsTableIdColumn" text="%table.id" prefWidth="60" />
 					<TableColumn fx:id="newObjectsTableTypeColumn" text="%table.type" prefWidth="100" />
@@ -36,7 +40,7 @@
 					<Label text="" />
 				</placeholder>
 			</TableView>
-			<TableView fx:id="newRelationsTable" minHeight="30" GridPane.columnIndex="1" GridPane.rowIndex="1" >
+			<TableView fx:id="newRelationsTable" minHeight="30" GridPane.columnIndex="1" GridPane.rowIndex="2" >
 				<columns>
 					<TableColumn fx:id="newRelationsTableRelation" text="%table.relation" prefWidth="220" />
 				</columns>
@@ -44,7 +48,7 @@
 					<Label text="" />
 				</placeholder>
 			</TableView>
-			<TreeView fx:id="treeView" minHeight="30" GridPane.columnIndex="2" GridPane.rowIndex="1" showRoot="false" />
+			<TreeView fx:id="treeView" minHeight="30" GridPane.columnIndex="2" GridPane.rowIndex="2" showRoot="false" />
 		</GridPane>
 	</center>
 	<bottom>
