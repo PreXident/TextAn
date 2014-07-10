@@ -182,18 +182,17 @@ public class Client {
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
             final long id, final int first, final int size) throws IdNotFoundException {
         try {
-            final GetDocumentsContainsObjectByIdRequest request =
-                    new GetDocumentsContainsObjectByIdRequest();
+            final GetDocumentsContainingObjectByIdRequest request =
+                    new GetDocumentsContainingObjectByIdRequest();
             request.setObjectId(id);
-            final GetDocumentsContainsObjectByIdResponse response =
-                    getDataProvider().getDocumentsContainsObjectById(request);
-            final int actualSize = response.getDocuments().size();
+            request.setFirstResult(first);
+            request.setMaxResults(size);
+            final GetDocumentsContainingObjectByIdResponse response =
+                    getDataProvider().getDocumentsContainingObjectById(request);
             final List<Document> list = response.getDocuments().stream()
-                    .skip(first)
-                    .limit(size)
                     .map(Document::new)
                     .collect(Collectors.toCollection(ArrayList::new));
-            return new Pair<>(list, actualSize);
+            return new Pair<>(list, response.getTotalNumberOfResults());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
         }
