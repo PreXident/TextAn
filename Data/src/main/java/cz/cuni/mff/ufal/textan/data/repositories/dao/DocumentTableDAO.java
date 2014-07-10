@@ -25,6 +25,19 @@ import java.util.List;
 @Transactional
 public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> implements IDocumentTableDAO{
 
+    private Query findAllDocumentsWithObjectQuery(long objectId) {
+        Query hq = currentSession().createQuery(
+                "select distinct doc from DocumentTable as doc "
+                        + "inner join doc.aliasOccurrences as occ "
+                        + "inner join occ.alias as alias "
+                        + "inner join alias.object as obj "
+                        +"where obj.id = :objectId"
+        );
+        hq.setParameter("objectId", objectId);
+
+        return hq;
+    }
+
     @Override
     public List<DocumentTable> findAllDocumentsWithObject(ObjectTable obj) {
         return findAllDocumentsWithObject(obj.getId());
@@ -32,16 +45,21 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<DocumentTable> findAllDocumentsWithObject(Long objectId) {
+    public List<DocumentTable> findAllDocumentsWithObject(long objectId) {
+        return findAllDocumentsWithObjectQuery(objectId).list();
+    }
 
-        Query hq = currentSession().createQuery(
-                "select distinct doc from DocumentTable as doc "
-                    + "inner join doc.aliasOccurrences as occ "
-                    + "inner join occ.alias as alias "
-                    + "inner join alias.object as obj "
-                +"where obj.id = :objectId"
-        );
-        hq.setParameter("objectId", objectId);
+    @Override
+    public List<DocumentTable> findAllDocumentsWithObject(ObjectTable obj, int firstResult, int maxResults) {
+        return findAllDocumentsWithObject(obj.getId(), firstResult, maxResults);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllDocumentsWithObject(long objectId, int firstResult, int maxResults) {
+        Query hq = findAllDocumentsWithObjectQuery(objectId);
+        hq.setFirstResult(firstResult);
+        hq.setMaxResults(maxResults);
 
         return hq.list();
     }
