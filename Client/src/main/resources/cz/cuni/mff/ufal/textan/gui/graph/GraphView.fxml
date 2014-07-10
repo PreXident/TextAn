@@ -26,7 +26,7 @@
 				</fx:define>
 				<ToggleButton fx:id="transformButton" selected="true"
 						toggleGroup="$graphModeToggleGroup"
-						onAction="#transform">
+						onAction="#transform" prefHeight="35">
 					<graphic>
 						<ImageView>
 							<Image url="@cursor-move.png"/>
@@ -37,7 +37,7 @@
 					</tooltip>
 				</ToggleButton>
 				<ToggleButton fx:id="pickButton" toggleGroup="$graphModeToggleGroup"
-						onAction="#pick">
+						onAction="#pick" prefHeight="35">
 					<graphic>
 						<ImageView>
 							<Image url="@cursor-hand.png"/>
@@ -47,6 +47,16 @@
 						<Tooltip text="%pick" />
 					</tooltip>
 				</ToggleButton>
+				<Button onAction="#home" prefHeight="35">
+					<graphic>
+						<ImageView>
+							<Image url="@home.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%home" />
+					</tooltip>
+				</Button>
 			</HBox>
 			<HBox fx:id="rightToolbar" styleClass="distance-box" alignment="CENTER_RIGHT" >
 				<Label styleClass="distance-label" text="%distance" />

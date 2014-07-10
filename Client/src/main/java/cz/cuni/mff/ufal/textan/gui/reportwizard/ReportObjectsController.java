@@ -9,6 +9,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
 import cz.cuni.mff.ufal.textan.gui.Window;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -205,6 +206,7 @@ public class ReportObjectsController extends ReportWizardController {
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
         contextMenu.setConsumeAutoHidingEvents(false);
         objectContextMenu = new ContextMenu();
+        objectContextMenu.setStyle(OBJECT_CONTEXT_MENU);
         objectContextMenu.setConsumeAutoHidingEvents(false);
         final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
         graphMI.setOnAction(e -> {
@@ -331,7 +333,7 @@ public class ReportObjectsController extends ReportWizardController {
                             if (p.getFirst() != null) {
                                 prefix = p.getFirst().toString() + ": ";
                             }
-                            setText(shorter(prefix + p.getSecond().toString()));
+                            setText(Utils.shortString(prefix + p.getSecond().toString()));
                             setContextMenu(objectContextMenu);
                         } else {
                             setContextMenu(null);
@@ -371,7 +373,7 @@ public class ReportObjectsController extends ReportWizardController {
                             return;
                         }
                         if (o != null) {
-                            setText(shorter(o.toString()));
+                            setText(Utils.shortString(o.toString()));
                         }
                     }
                 };
@@ -415,17 +417,6 @@ public class ReportObjectsController extends ReportWizardController {
         entity.setCandidate(object);
         pipeline.resetStepsBack();
         return entity;
-    }
-
-    /**
-     * If string is too long, returns its shortened variant that ends with ...
-     * @param string string to shorter
-     * @return shorter string
-     */
-    private String shorter(final String string) {
-        return string.length() > 35 ?
-                string.substring(0, 32) + "..."
-                : string;
     }
 
     /**

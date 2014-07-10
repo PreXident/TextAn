@@ -1,1 +1,2 @@
-@start javaw -jar TextAn.Client.jar %*
+@echo off
+@start javaw -jar TextAn-client.jar %*

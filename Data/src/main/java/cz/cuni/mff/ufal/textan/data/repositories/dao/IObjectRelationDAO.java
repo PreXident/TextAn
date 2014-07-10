@@ -53,14 +53,14 @@ public interface IObjectRelationDAO<T> extends IOperations<T, Long> {
      * @param pageSize
      * @return 
      */
-    List<T> findAllByDocumentOccurrence(Long documentId, int firstResult, int pageSize);
+    List<T> findAllByDocumentOccurrence(long documentId, int firstResult, int pageSize);
     /**
      * finds all objects/relations which occurred in specified document
      * 
      * @param documentId Id of document
      * @return 
      */
-    List<T> findAllByDocumentOccurrence(Long documentId);
+    List<T> findAllByDocumentOccurrence(long documentId);
 
     /**
      * finds all objects/relations which occurred in specified document

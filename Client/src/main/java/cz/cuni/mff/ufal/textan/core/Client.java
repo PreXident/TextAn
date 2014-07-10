@@ -12,13 +12,10 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.core.processreport.Problems;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -35,6 +32,10 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Main class controlling core manipulations with reports.
@@ -145,7 +146,6 @@ public class Client {
      * Returns {@link #dataProvider}, it is created if needed.
      * @return data provider
      */
-    //TODO: configurable wsdl location!
     private IDataProvider getDataProvider() {
         if (dataProvider == null) {
             try {
@@ -292,31 +292,26 @@ public class Client {
      * @param first index of the first object
      * @param size maximal number of objects
      * @return list of filtered objects in the system
+     * @throws IdNotFoundException if id error occurs
      */
     public synchronized Pair<List<Object>, Integer> getObjectsList(final ObjectType type,
-            final String filter, final int first, final int size) {
-        //TODO: call proper method when it's ready
-        final GetObjectsResponse response =
-                getDataProvider().getObjects(new Void());
-        Stream<Object> objects = response.getObjects().stream()
-            .map(Object::new);
-        //TODO: remove emulation
-        final int actualSize = response.getObjects().size();
-        if (type != null) {
-            objects = objects.filter(obj -> obj.getType().getId() == type.getId());
+            final String filter, final int first, final int size) throws IdNotFoundException {
+        final GetFilteredObjectsRequest request =
+                new GetFilteredObjectsRequest();
+        request.setObjectTypeId(type != null ? type.getId() : null);
+        request.setAliasFilter(filter);
+        request.setFirstResult(first);
+        request.setMaxResults(size);
+        try {
+            final GetFilteredObjectsResponse response =
+                    getDataProvider().getFilteredObjects(request);
+            final List<Object> objects = response.getObjects().stream()
+                    .map(Object::new)
+                    .collect(Collectors.toList());
+            return new Pair<>(objects, response.getTotalNumberOfResults());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
         }
-        if (filter != null && !filter.isEmpty()) {
-            final String f = filter.toLowerCase();
-            objects = objects.filter(obj -> {
-                final String aliases = String.join(",", obj.getAliases()).toLowerCase();
-                return aliases.contains(f);
-            });
-        }
-        final ArrayList<Object> list = objects
-                .skip(first)
-                .limit(size)
-                .collect(Collectors.toCollection(ArrayList::new));
-        return new Pair<>(list, actualSize);
     }
 
     /**
@@ -359,6 +354,17 @@ public class Client {
     }
 
     /**
+     * Returns problems with report saving.
+     * @param ticket editing ticket
+     * @return problems with report saving
+     */
+    public synchronized Problems getProblems(final Ticket ticket) {
+        final GetProblemsRequest request =  new GetProblemsRequest();
+        final GetProblemsResponse response = getDocumentProcessor().getProblems(request, ticket.toTicket());
+        return new Problems(response);
+    }
+
+    /**
      * Returns set of all relation types in the system.
      * @return set of all relation types in the system
      * @see IDataProvider#getRelationTypes(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
@@ -369,6 +375,24 @@ public class Client {
         return response.getRelationTypes().stream()
                 .map(RelationType::new)
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Returns list of role for given relation type.
+     * @param type relation type
+     * @return list of role for given relation type
+     * @throws IdNotFoundException if id error occurs
+     */
+    public synchronized List<String> getRolesForRelationType(
+            final RelationType type) throws IdNotFoundException {
+        try {
+            final GetRolesForRelationTypeByIdRequest request =
+                    new GetRolesForRelationTypeByIdRequest();
+            request.setRelationTypeId(type.getId());
+            return getDataProvider().getRolesForRelationTypeById(request).getRoles();
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
     }
 
     /**
@@ -416,12 +440,14 @@ public class Client {
      * @param text            report text
      * @param reportEntities  report entities
      * @param reportRelations report relations
+     * @param force           force save?
      * @return true if saving was successfull, false otherwise
      * @throws IdNotFoundException if id error occurs
      */
     public synchronized boolean saveProcessedDocument(final Ticket ticket,
                                          final String text, final List<Entity> reportEntities,
-                                         final List<RelationBuilder> reportRelations) throws IdNotFoundException {
+                                         final List<RelationBuilder> reportRelations,
+                                         final boolean force) throws IdNotFoundException {
         final SaveProcessedDocumentFromStringRequest request =
                 new SaveProcessedDocumentFromStringRequest();
 
@@ -446,12 +472,12 @@ public class Client {
         }
 
         request.setText(text);
-        request.setForce(false);
+        request.setForce(force);
 
         try {
             final SaveProcessedDocumentFromStringResponse response =
                     getDocumentProcessor().saveProcessedDocumentFromString(
-                            request, //TODO handle save document error
+                            request,
                             ticket.toTicket());
             return response.isResult();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {

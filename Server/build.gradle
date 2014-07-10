@@ -106,7 +106,7 @@ task copyTrainingBinaries(type: Copy) {
  * Apache shade plugin for Gradle -> Shadow plugin
  * More on: https://github.com/johnrengelman/shadow
  */
-apply plugin: 'shadow'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
 import com.github.jengelman.gradle.plugins.shadow.transformers.XmlAppendingTransformer
@@ -117,109 +117,94 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
-        //classpath 'org.apache.cxf:cxf-buildtools:2.2.12' //CFX transformers. TODO: find documentation!
-    }
-}
-
-//make standard jar task executable
-jar {
-    manifest {
-        attributes 'Main-Class': 'cz.cuni.mff.ufal.textan.server.AppEntry'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.0.1'
     }
 }
 
 //configure shadow plugin
-//TODO: http://stackoverflow.com/questions/6831954/how-to-package-an-apache-cxf-application-into-a-monolithic-jar-with-the-maven-s
-//TODO: why this works?:D
-shadow {
+//http://stackoverflow.com/questions/6831954/how-to-package-an-apache-cxf-application-into-a-monolithic-jar-with-the-maven-s
+shadowJar {
+    destinationDir = file("$buildDir/dist")
+    archiveName = "TextAn-server.jar"
+
     //exclude signs for manifests from joined jars
     exclude 'META-INF/*.DSA'
     exclude 'META-INF/*.RSA'
 
     //append given resources
-    transformer(AppendingTransformer) {
+    transform(AppendingTransformer) {
         resource = 'META-INF/spring.handlers'
     }
-    transformer(AppendingTransformer) {
+    transform(AppendingTransformer) {
         resource = 'META-INF/spring.schemas'
     }
-    transformer(AppendingTransformer) {
+    transform(AppendingTransformer) {
         resource = 'META-INF/cxf/bus-extensions.txt'
     }
-    transformer(AppendingTransformer) {
+    transform(AppendingTransformer) {
         resource = 'META-INF/services/com.sun.tools.xjc.Plugin'
     }
-    transformer(AppendingTransformer) {
+    transform(AppendingTransformer) {
         resource = 'META-INF/cxf/cxf.extension'
     }
-    transformer(XmlAppendingTransformer) {
+    transform(XmlAppendingTransformer) {
         resource = 'META-INF/extensions.xml'
     }
-    transformer(XmlAppendingTransformer) {
+    transform(XmlAppendingTransformer) {
         resource = 'META-INF/cxf/extensions.xml'
     }
-//    transformer(XmlAppendingTransformer) {
-//        resource = 'META-INF/wsdl.plugin.xml'
-//    }
-//    transformer(XmlAppendingTransformer) {
-//        resource = 'META-INF/tools.service.validator.xml'
-//    }
-//    transformer(XmlAppendingTransformer) {
-//        resource = 'META-INF/cxf/java2wsbeans.xml'
-//    }
 }
 
-task shadowLinguisticsLibs(type: Copy) {
-    shadowJar.dependsOn name
+task dist(type: Copy, dependsOn: 'shadowJar') {
+    group = 'Distribution'
+    description = 'Creates a server distribution.'
 
-    from (new File(project(':Linguistics').projectDir, 'lib')) {
-        include System.mapLibraryName("nametag_java")
-        include System.mapLibraryName("morphodita_java")
+    includeEmptyDirs = false
+    //nametag model
+    from (file('../Samples')) {
+        include 'models/**/*.ner'
     }
-    into new File(shadow.destinationDir, 'lib')
-}
-
-task shadowCopyNametagModel(type: Copy) {
-    shadowJar.dependsOn name
-
-    from (new File('../Samples/models')) {
-        include '**/*.ner'
-        includeEmptyDirs = false
-    }
-    into new File(shadow.destinationDir, 'models')
-}
-
-task shadowCopyMorphoditaTagger(type: Copy) {
-    shadowJar.dependsOn name
-
-    from (new File(project(':Linguistics').projectDir, 'training')) {
+    //morphodita model
+    from (file("${project(':Linguistics').projectDir.toPath()}/training")){
         include '**/*.tagger'
-        includeEmptyDirs = false
+        into 'models'
     }
-    into new File(shadow.destinationDir, 'models')
-}
 
-task shadowCopyTrainingData(type: Copy) {
-    shadowJar.dependsOn name
-
-    from (new File(project(':Linguistics').projectDir, 'training')) {
+    //training data
+    from (file("${project(':Linguistics').projectDir.toPath()}/training")) {
         include '**/clusters/*'
         include '**/cnec2.0-all/train.txt'
         include '**/gazetteers/*'
         include '**/*.txt'
         include '**/*.tagger'
+        into 'training'
     }
-    into new File(shadow.destinationDir, 'training')
-}
-
-task shadowCopyTrainingBinaries(type: Copy) {
-    shadowJar.dependsOn name
-
-    from (new File(project(':Linguistics').projectDir, 'training')) {
+    //binaries
+    from (file("${project(':Linguistics').projectDir.toPath()}/training")){
         include '**/train_ner*'
         fileMode = 0700
-        includeEmptyDirs = false
+        into 'bin'
     }
-    into new File(shadow.destinationDir, 'bin')
+    //nametag and morphodita libraries
+    from (file("${project(':Linguistics').projectDir.toPath()}/lib")) {
+        include '**/*'
+        into 'lib'
+    }
+    //starting scripts
+    from (file("$projectDir/dist")) {
+        include "**/*"
+    }
+    into file("$buildDir/dist")
+}
+
+task zip(type: Zip, dependsOn: 'dist') {
+    group = 'Distribution'
+    description = 'Creates and packs a server distribution.'
+
+    baseName = 'TextAn'
+    appendix = 'server'
+    destinationDir = file("$buildDir/dist")
+
+    from file("$buildDir/dist")
+    exclude "*.zip"
 }

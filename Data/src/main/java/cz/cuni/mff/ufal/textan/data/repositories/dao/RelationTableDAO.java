@@ -37,7 +37,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<RelationTable> findAllByRelationType(Long relationTypeId) {
+    public List<RelationTable> findAllByRelationType(long relationTypeId) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_RELATION_TYPE_ID), "objType", JoinType.INNER_JOIN)
                 .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", RelationTypeTable.PROPERTY_NAME_ID), relationTypeId))
@@ -45,7 +45,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     }
     @Override
     @SuppressWarnings("unchecked")
-    public List<RelationTable> findAllByRelationType(Long relationTypeId, int firstResult, int pageSize) {
+    public List<RelationTable> findAllByRelationType(long relationTypeId, int firstResult, int pageSize) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_RELATION_TYPE_ID), "objType", JoinType.INNER_JOIN)
                 .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", RelationTypeTable.PROPERTY_NAME_ID), relationTypeId))
@@ -105,7 +105,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<RelationTable> findAllByDocumentOccurrence(Long documentId) {
+    public List<RelationTable> findAllByDocumentOccurrence(long documentId) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
                 .createAlias(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_DOCUMENT),
@@ -116,7 +116,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     }
     @Override
     @SuppressWarnings("unchecked")
-    public List<RelationTable> findAllByDocumentOccurrence(Long documentId, int firstResult, int pageSize) {
+    public List<RelationTable> findAllByDocumentOccurrence(long documentId, int firstResult, int pageSize) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
                 .createAlias(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_DOCUMENT),

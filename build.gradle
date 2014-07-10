@@ -5,3 +5,18 @@ allprojects {
     version = '0.1.0'
 }
 
+def distDir = "distribution"
+
+clean {
+    delete distDir
+}
+
+task dist(type: Copy, dependsOn: [':Client:zip', ':Server:zip']) {
+    group = 'Distribution'
+    description = 'Bundles the client and the server distributions.'
+
+    from "${project(':Client').buildDir}/dist"
+    from "${project(':Server').buildDir}/dist"
+    include "*.zip"
+    into distDir
+}

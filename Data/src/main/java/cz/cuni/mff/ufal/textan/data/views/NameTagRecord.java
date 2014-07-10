@@ -11,12 +11,12 @@ import java.util.Objects;
  * @author Vaclav Pernicka
  */
 public class NameTagRecord {
-    long DocumentID;
-    int aliasOccurrencePosition;
+    Long DocumentID;
+    Integer aliasOccurrencePosition;
     String alias;
-    long objectTypeID;
+    Long objectTypeID;
 
-    public NameTagRecord(long DocumentID, int aliasOccurrencePosition, String alias, long objectTypeID) {
+    public NameTagRecord(Long DocumentID, Integer aliasOccurrencePosition, String alias, Long objectTypeID) {
         this.DocumentID = DocumentID;
         this.aliasOccurrencePosition = aliasOccurrencePosition;
         this.alias = alias;

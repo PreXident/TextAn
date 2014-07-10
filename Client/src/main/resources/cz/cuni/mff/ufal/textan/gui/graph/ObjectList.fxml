@@ -32,7 +32,16 @@
 		</GridPane>
 	</top>
 	<center>
-		<ListView fx:id="listView" minHeight="30" />
+		<TableView fx:id="table" minHeight="30">
+			<columns>
+				<TableColumn fx:id="idColumn" text="%table.id" prefWidth="60" sortable="false" />
+				<TableColumn fx:id="typeColumn" text="%table.type" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="aliasColumn" text="%table.alias" sortable="false" />
+			</columns>
+			<placeholder>
+				<Label text="" />
+			</placeholder>
+		</TableView>
 	</center>
 	<bottom>
 		<BorderPane>
@@ -44,7 +53,7 @@
 			</left>
 			<center>
 				<VBox alignment="CENTER">
-					<Label text="Dummy"/>
+					<Label fx:id="paginationLabel" text="Dummy"/>
 					<HBox alignment="CENTER">
 						<Label text="%page.size" />
 						<ComboBox fx:id="perPageComboBox">

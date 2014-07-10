@@ -69,6 +69,28 @@ public class Object {
     }
 
     /**
+     * Returns concatenated aliases and new aliases.
+     * @return concatenated aliases and new aliases
+     */
+    public String getAliasString() {
+        final StringBuilder s = new StringBuilder();
+        getAliasString(s);
+        return s.toString();
+    }
+
+    /**
+     * Appends concatenated aliases and new aliases to builder.
+     * @param builder builder to append to
+     */
+    protected void getAliasString(final StringBuilder builder) {
+        builder.append(String.join(ALIAS_DELIMITER, aliases));
+        if (!aliases.isEmpty() && !newAliases.isEmpty()) {
+            builder.append(ALIAS_DELIMITER);
+        }
+        builder.append(String.join(ALIAS_DELIMITER, newAliases));
+    }
+
+    /**
      * Returns whether the object was fetched from DB or created by client.
      * @return true if the object was fetched from DB, false otherwise
      */
@@ -123,11 +145,7 @@ public class Object {
         final StringBuilder s = new StringBuilder();
         s.append(id);
         s.append(": ");
-        s.append(String.join(ALIAS_DELIMITER, aliases));
-        if (!aliases.isEmpty() && !newAliases.isEmpty()) {
-            s.append(ALIAS_DELIMITER);
-        }
-        s.append(String.join(ALIAS_DELIMITER, newAliases));
+        getAliasString(s);
         return s.toString();
     }
 

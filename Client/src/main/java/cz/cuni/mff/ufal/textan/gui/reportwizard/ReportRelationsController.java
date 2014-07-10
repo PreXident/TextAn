@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.utils.Ref;
+import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.IClearer;
@@ -12,6 +13,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.RelationInfo;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -114,6 +116,9 @@ public class ReportRelationsController extends ReportWizardController {
     TableColumn<RelationInfo, Number> orderColumn;
 
     @FXML
+    TableColumn<RelationInfo, String> roleColumn;
+
+    @FXML
     TableColumn<RelationInfo, Object> objectColumn;
 
     @FXML
@@ -177,7 +182,7 @@ public class ReportRelationsController extends ReportWizardController {
     private void add() {
         if (selectedRelation != null) {
             pipeline.resetStepsBack();
-            selectedRelation.getData().add(new RelationInfo(0, null));
+            selectedRelation.getData().add(new RelationInfo(0, "", null));
         }
     }
 
@@ -193,7 +198,8 @@ public class ReportRelationsController extends ReportWizardController {
         });
         if (relation.val != null) {
             pipeline.resetStepsBack();
-            selectedRelation = new FXRelationBuilder(relation.val, relationsListView.getItems());
+            final List<String> roles = fetchRoles(relation.val);
+            selectedRelation = new FXRelationBuilder(relation.val, relationsListView.getItems(), roles);
             table.setItems(selectedRelation.getData());
             relationsListView.getSelectionModel().select(selectedRelation);
         }
@@ -262,7 +268,7 @@ public class ReportRelationsController extends ReportWizardController {
             textFlow.layoutChildren();
         });
         table.setEditable(true);
-        objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().multiply(-1).add(-2)));
+        objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().add(roleColumn.prefWidthProperty()) .multiply(-1).add(-2)));
         orderColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Number> p) -> p.getValue().order);
         orderColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {
             @Override
@@ -278,6 +284,13 @@ public class ReportRelationsController extends ReportWizardController {
             (CellEditEvent<RelationInfo, Number> t) -> {
                 t.getTableView().getItems().get(
                         t.getTablePosition().getRow()).order.setValue(t.getNewValue());
+        });
+        roleColumn.setCellValueFactory((CellDataFeatures<RelationInfo, String> p) -> p.getValue().role);
+        roleColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        roleColumn.setOnEditCommit(
+            (CellEditEvent<RelationInfo, String> t) -> {
+                t.getTableView().getItems().get(
+                        t.getTablePosition().getRow()).role.setValue(t.getNewValue());
         });
         objectColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Object> p) -> p.getValue().object);
         objectColumn.setOnEditCommit(
@@ -340,6 +353,7 @@ public class ReportRelationsController extends ReportWizardController {
         //
         objectContextMenu = new ContextMenu();
         objectContextMenu.setConsumeAutoHidingEvents(false);
+        objectContextMenu.setStyle(OBJECT_CONTEXT_MENU);
         final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
         graphMI.setOnAction(e -> {
             contextMenu.hide();
@@ -532,7 +546,7 @@ public class ReportRelationsController extends ReportWizardController {
                             if (o == null) {
                                 return "";
                             }
-                            return String.join(", ", o.getAliases()) + " (" + o.getId() + ") - " + o.getType().getName();
+                            return o.getAliasString() + " (" + o.getId() + ") - " + o.getType().getName();
                         }
                         @Override
                         public Object fromString(String string) {
@@ -572,7 +586,9 @@ public class ReportRelationsController extends ReportWizardController {
                 selectRelation(selectedRelation);
                 return;
             }
-            final FXRelationBuilder builder = new FXRelationBuilder(relation, relationsListView.getItems());
+            final List<String> roles = fetchRoles(relation);
+            final FXRelationBuilder builder = new FXRelationBuilder(relation,
+                    relationsListView.getItems(), roles);
             final Pair<Integer, Integer> bounds =
                     builder.add(words, firstSelectedIndex, lastSelectedIndex, clearer);
             for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
@@ -612,6 +628,20 @@ public class ReportRelationsController extends ReportWizardController {
                     })
                     .forEach(Utils::unstyleTextBackground);
          }
+    }
+
+    /**
+     * Fetches roles for given relation type.
+     * @param type relation type
+     * @return roles for given relation type
+     */
+    protected List<String> fetchRoles(final RelationType type) {
+        try {
+            return pipeline.getClient().getRolesForRelationType(type);
+        } catch (IdNotFoundException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 
     /**

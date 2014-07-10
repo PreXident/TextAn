@@ -1,2 +1,2 @@
 #!/bin/bash
-javaw -jar replayer.jar "$@"
+javaw -jar TextAn-client.jar "$@"

@@ -7,10 +7,11 @@
 \usepackage{xcolor}
 \usepackage{amsmath}
 \usepackage[some]{background}
-
+\usepackage{listings}
 
 %TODO select color coresponding to logo
 \definecolor{titlepagecolor}{cmyk}{1,.60,0,.40}
+\definecolor{javagreen}{rgb}{0.25,0.5,0.35}
 
 \backgroundsetup{
 scale=1,
@@ -50,7 +51,21 @@ contents={
 \addcontentsline{toc}{chapter}{#1}
 }
 
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\lstdefinelanguage{properties}{% new language for listings
+  basicstyle=\ttfamily,
+  sensitive=false,
+  morecomment=[l]{\#},      % comment
+  morestring=[b]",          % string def
+  commentstyle=\color{javagreen},
+  basicstyle=\small
+}
+
 \setkeys{Gin}{resolution=96}
+
+\newcommand{\textan}{\emph{TextAn}}
 
 \begin{document}
 
@@ -100,20 +115,144 @@ Ondřej Bojar\vspace{40pt} \\
 \pagenumbering{arabic}
 
 \section{Introduction}
+
+TODO what is textan
+
+TODO basic usage
+
 \subsection{System overview}
+
+
 \subsection{Glossary}
+
+TODO definitions of terms in documentation and applications
+
 \subsection{Conventions} %is this section needed?
 
 
 
 \chapter{Administrator guide}
 
-\section{Installation guide}
+%TODO client instalation guide in the administrator guide or user guide?
 
-\subsection{Prerequisites}
-\subsection{Installation}
+\section{Server}
 
-\section{Settings}
+\subsection{Installation guide}
 
+%An installation guide for a server side application of \textan.
+
+\subsubsection{Prerequisites}
+\label{sssec:SerInstPre}
+
+The \textan\ server needs installed \emph{Java 8 JRE \footnote{We recommend to use JRE from \emph{Oracle} available at: \url{http://www.oracle.com/technetwork/java/javase/downloads/index.html}}} or a later version and a relational database system (e.g. \emph{MySQL}). The server should be platform independent, but it depends on native and 3rd party libraries. Supported operating systems in the distribution of the \textan\ server are Linux (32 bit and 64 bit) and Windows (32 bit and 64 bit).
+
+\subsubsection{Installation}
+
+Unpack an archive with the \textan\ server distribution into any directory. The archive contains server binaries and and scripts for starting and setup.
+
+\subsubsection{Basic configuration}
+
+Before the first start is necessary to set up the server and the database.
+
+TODO write how to setup server
+
+TODO add some link to \ref{sec:ServerSettings}
+
+\subsubsection{Starting the server}
+
+To start the server use starting scripts, which are in root directory. Scripts for different operating systems unfortunately aren't equivalent.
+
+The start script for operating system based on Linux (\emph{run.sh}) runs the server application as daemon and can be used to run the server as system service.
+
+The start script for the Microsoft Windows is less powerful, only run the server application. To run the server as a background process is needed the Windows Service. Unfortunately, there are no components that ship with the Jetty Distribution to make it a formal Windows Service. However, we recommend the use of \emph{Apache ProcRun's Daemon\footnote{More information can be found on \url{https://commons.apache.org/proper/commons-daemon/procrun.html} and in JavaDoc documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry} class.}}.
+
+\subsection{Settings}
+\label{sec:ServerSettings}
+
+\subsubsection{Web server settings}
+
+%connector
+\paragraph{server.connector.host} The particular interface to listen on. If not set or 0.0.0.0, the web server listens on port on all interfaces.
+
+\paragraph{server.connector.port} The port to listen on. If not set, the web server listens on port 9500.
+
+%thread pool
+\paragraph{server.threadPool.maxThreads} The maximum number of threads in web server thread pool. It determines a maximum number of simultaneously opened connections. The default value is 200.
+
+\paragraph{server.threadPool.minThreads} The minimum number of threads in web server thread pool. The default value is 8.
+
+\paragraph{server.threadPool.idleTimeout} The time in milliseconds that the connection can be idle before it is closed.
+
+\subsubsection{Database connection settings}
+
+%jdbc
+\paragraph{jdbc.driverClassName} 
+
+\paragraph{jdbc.url} 
+
+\paragraph{jdbc.user}
+
+\paragraph{jdbc.pass}
+
+
+%c3p0 (http://www.mchange.com/projects/c3p0/#configuration_properties)
+\paragraph{c3p0.maxPoolSize}
+
+\paragraph{c3p0.minPoolSize}
+
+\paragraph{c3p0.initialPoolSize}
+
+\paragraph{c3p0.acquireIncrement}
+
+\paragraph{c3p0.maxIdleTime}
+
+\paragraph{c3p0.checkoutTimeout}
+
+\paragraph{c3p0.maxStatements}
+
+\paragraph{c3p0.maxStatementsPerConnection}
+
+\paragraph{c3p0.idleConnectionTestPeriod}
+
+%hibernate
+\paragraph{hibernate.dialect}
+
+\paragraph{hibernate.show\_sql}
+
+\subsubsection{Named entity recognizer settings}
+
+\subsection{Data formats}
+
+\section{Client}
+
+\subsection{Installation guide}
+
+\subsubsection{Prerequisites}
+
+The \textan\ client needs installed \emph{Java 8 JRE} or a later version same as the server (see \ref{sssec:SerInstPre}).
+
+\subsubsection{Installation}
+
+Unpack an archive with the \textan\ client distribution into any directory. The archive contains a .jar file and starting scripts for the \emph{Microsoft Windows} and operating systems based on Linux.
+
+\subsubsection{Basic configuration}
+
+If the client doesn't have to connect to the default server, it is necessary to configure a server location. The settings of server location is in the \emph{TextAn.properties\footnote{A description of format of .properties file can be found on \url{http://en.wikipedia.org/wiki/.properties}}} in the directory with the client. Simply edit or add following lines in properties file:
+\begin{lstlisting}[frame=single,language=properties]
+#url of the document processor
+url.document=http://localhost:9500/soap/document
+#url of the document processor wsdl
+url.document.wsdl=http://localhost:9500/soap/document?wsdl
+#url of the data provider
+url.data=http://localhost:9500/soap/data
+#url of the data provider
+url.data.wsdl=http://localhost:9500/soap/data?wsdl
+\end{lstlisting}
+
+\subsubsection{Starting the client}
+
+The .jar file from the distribution archive is executable, but we recommend to use starting scripts\footnote{run.bat for the Microsoft Windows and run.sh for operating systems based on Linux}.
+
+\subsection{Settings}
 
 \end{document}

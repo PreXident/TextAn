@@ -56,12 +56,16 @@ public class StateChangedListener implements IStateChangedListener {
     /** Parent controller. */
     protected final TextAnController textAnController;
 
+    /** Current controller. */
+    protected ReportWizardController controller;
+
     {
         fxmlMapping.put(StateType.LOAD, new StateInfo("01_ReportLoad.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01_ReportLoad", "report.wizard.load.title"));
         fxmlMapping.put(StateType.EDIT_REPORT, new StateInfo("02_ReportEdit.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.02_ReportEdit", "report.wizard.edit.title"));
         fxmlMapping.put(StateType.EDIT_ENTITIES, new StateInfo("03_ReportEntities.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.03_ReportEntities", "report.wizard.entities.title"));
         fxmlMapping.put(StateType.EDIT_OBJECTS, new StateInfo("04_ReportObjects.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.04_ReportObjects", "report.wizard.objects.title"));
         fxmlMapping.put(StateType.EDIT_RELATIONS, new StateInfo("05_ReportRelations.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.05_ReportRelations", "report.wizard.relations.title"));
+        fxmlMapping.put(StateType.ERROR, new StateInfo("06_ReportErrors.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.06_ReportErrors", "report.wizard.errors.title"));
     }
 
     /**
@@ -107,6 +111,11 @@ public class StateChangedListener implements IStateChangedListener {
             final Properties settings, final ProcessReportPipeline pipeline,
             final ReportWizardWindow window) {
         this(textAnController, settings, pipeline, null, window);
+        window.maximizedProperty().addListener(e -> {
+            if (controller != null) {
+                hackFixTextFlow(controller);
+            }
+        });
     }
 
     @Override
@@ -125,7 +134,7 @@ public class StateChangedListener implements IStateChangedListener {
                 final ResourceBundle rb = ResourceBundle.getBundle(stateInfo.rb);
                 final FXMLLoader loader = new FXMLLoader(getClass().getResource(stateInfo.fxml), rb);
                 final Parent loadedRoot = (Parent) loader.load();
-                ReportWizardController controller = loader.getController();
+                controller = loader.getController();
                 controller.setTextAnController(textAnController);
                 controller.setSettings(settings);
                 controller.setPipeline(pipeline);

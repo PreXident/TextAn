@@ -6,10 +6,16 @@ import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
 import java.net.URL;
 import java.text.Collator;
-import java.util.*;
+import java.util.List;
+import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
+import javafx.beans.property.ReadOnlyLongWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -18,11 +24,14 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
+import javafx.util.StringConverter;
 
 /**
  * Controls selecting object to be displayed in the graph.
@@ -32,11 +41,17 @@ public class ObjectListController extends GraphController {
     @FXML
     private BorderPane root;
 
-//    @FXML
-//    private BigDecimalField distanceField;
+    @FXML
+    private TableView<Object> table;
 
     @FXML
-    private ListView<Object> listView;
+    private TableColumn<Object, Number> idColumn;
+
+    @FXML
+    private TableColumn<Object, ObjectType> typeColumn;
+
+    @FXML
+    private TableColumn<Object, String> aliasColumn;
 
     @FXML
     private ComboBox<ObjectType> typeComboBox;
@@ -46,6 +61,9 @@ public class ObjectListController extends GraphController {
 
     @FXML
     private ComboBox<Integer> perPageComboBox;
+
+    @FXML
+    private Label paginationLabel;
 
     /** Context menu for objects. */
     protected ContextMenu contextMenu = new ContextMenu();
@@ -96,11 +114,12 @@ public class ObjectListController extends GraphController {
             };
             task.setOnSucceeded(e -> {
                 Pair<List<Object>, Integer> pair = task.getValue();
-                listView.getItems().clear();
-                listView.getItems().addAll(FXCollections.observableList(pair.getFirst()));
+                table.getItems().clear();
+                table.getItems().addAll(FXCollections.observableList(pair.getFirst()));
                 objectCount = pair.getSecond();
                 pageCount = (int) Math.ceil(1.0 * pair.getSecond() / size);
-
+                final String format = Utils.localize(resourceBundle, "pagination.label");
+                paginationLabel.setText(String.format(format, pageNo + 1, pageCount));
                 node.setCursor(Cursor.DEFAULT);
                 lock.release();
             });
@@ -139,27 +158,46 @@ public class ObjectListController extends GraphController {
         super.initialize(url, rb);
         final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
         graphMI.setOnAction(e -> {
-            final Object obj = listView.getSelectionModel().getSelectedItem();
+            final Object obj = table.getSelectionModel().getSelectedItem();
             if (obj != null) {
                 textAnController.displayGraph(obj.getId());
             }
         });
+        contextMenu.setStyle(OBJECT_CONTEXT_MENU);
         contextMenu.getItems().add(graphMI);
-        listView.setCellFactory((ListView<Object> p) -> {
-            return new ListCell<Object>() {
-                @Override
-                protected void updateItem(Object obj, boolean bln) {
-                    super.updateItem(obj, bln);
-                    if (obj != null) {
-                        setText(obj.getId() + " - " + String.join(",", obj.getAliases()));
-                        setContextMenu(contextMenu);
-                    } else {
-                        setText("");
-                        setContextMenu(null);
-                    }
-                }
-            };
+        contextMenu.setConsumeAutoHidingEvents(false);
+        table.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
+            if (newVal != null) {
+                table.setContextMenu(contextMenu);
+            } else {
+                table.setContextMenu(null);
+            }
         });
+        aliasColumn.prefWidthProperty().bind(table.widthProperty().add(idColumn.widthProperty().add(typeColumn.widthProperty()).multiply(-1).add(-30)));
+        idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Object, Number> p) -> new ReadOnlyLongWrapper(p.getValue().getId()));
+        idColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {
+            @Override
+            public String toString(Number t) {
+                return t != null ? t.toString() : "";
+            }
+            @Override
+            public Number fromString(String string) {
+                return Long.parseLong(string);
+            }
+        }));
+        typeColumn.setCellValueFactory((TableColumn.CellDataFeatures<Object, ObjectType> p) -> new ReadOnlyObjectWrapper<>(p.getValue().getType()));
+        typeColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<ObjectType>() {
+            @Override
+            public String toString(ObjectType t) {
+                return t != null ? t.getName() : "";
+            }
+            @Override
+            public ObjectType fromString(String string) {
+                throw new UnsupportedOperationException("This should never happan!");
+            }
+        }));
+        aliasColumn.setCellValueFactory((TableColumn.CellDataFeatures<Object, String> p) -> new ReadOnlyStringWrapper(p.getValue().getAliasString()));
+        aliasColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         typeComboBox.valueProperty().addListener((ov, oldVal, newVal) -> {
             pageNo = 0;
         });

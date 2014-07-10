@@ -11,6 +11,9 @@
     
     <xs:element name="getObjectRequest" type="GetObjectRequest"/>
     <xs:element name="getObjectResponse" type="GetObjectResponse"/>
+
+    <xs:element name="getObjectsByIdsRequest" type="GetObjectsByIdsRequest"/>
+    <xs:element name="getObjectsByIdsResponse" type="GetObjectsByIdsResponse"/>
     
     <xs:element name="getObjectsRequest" type="Void"/>
     <xs:element name="getObjectsResponse" type="GetObjectsResponse"/>
@@ -92,6 +95,18 @@
     <xs:complexType name="GetObjectResponse">
         <xs:sequence>
             <xs:element ref="cms:object"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetObjectsByIdsRequest">
+        <xs:sequence>
+            <xs:element name="objectId" type="xs:long" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetObjectsByIdsResponse">
+        <xs:sequence>
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
