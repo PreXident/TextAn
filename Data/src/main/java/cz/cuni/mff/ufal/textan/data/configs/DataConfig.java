@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.data.configs;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
+import cz.cuni.mff.ufal.textan.data.logging.GlobalVersionAndLogInterceptor;
 import cz.cuni.mff.ufal.textan.data.logging.LogInterceptor;
 import cz.cuni.mff.ufal.textan.data.views.INameTagView;
 import cz.cuni.mff.ufal.textan.data.views.NameTagView;
@@ -26,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import org.hibernate.Interceptor;
 
 /**
  * A Spring configuration for a connection to a database.
@@ -101,7 +103,7 @@ public class DataConfig {
 
     @Bean
     public LogInterceptor logInterceptor() {
-        return new LogInterceptor("username");
+        return new GlobalVersionAndLogInterceptor("username");
     }
 
     /**
@@ -123,7 +125,7 @@ public class DataConfig {
         sessionFactory.setMappingLocations(mappings);
         sessionFactory.afterPropertiesSet();
 
-        //sessionFactory.getConfiguration().setInterceptor(logInterceptor());
+        sessionFactory.getConfiguration().setInterceptor(logInterceptor());
 
         return sessionFactory.getObject();
     }
@@ -148,7 +150,7 @@ public class DataConfig {
     @Bean
     public PlatformTransactionManager transactionManager() throws PropertyVetoException, IOException {
         HibernateTransactionManager result = new HibernateTransactionManager(sessionFactory());
-        result.setEntityInterceptor(logInterceptor());
+        //result.setEntityInterceptor(logInterceptor());
         return result;
     }
 

@@ -8,7 +8,8 @@
       <meta attribute="class-description">
          Global version of objects (for now) to decide if there was or created a new object 
       </meta>
-       <id name="version" column="version" type="long"/>
+       <id name="id" column="id_global_version" type="long"/>
+       <property name="version" column="version" type="long"/>
     </class>
     
 </hibernate-mapping>

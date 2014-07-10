@@ -5,9 +5,18 @@ package cz.cuni.mff.ufal.textan.data.tables;
  * @author Vaclav Pernicka
  */
 public class GlobalVersionTable extends AbstractTable {
+    private long id;
     private long version;
 
     public GlobalVersionTable() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getVersion() {
@@ -20,8 +29,9 @@ public class GlobalVersionTable extends AbstractTable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 47 * hash + (int) (this.version ^ (this.version >>> 32));
+        int hash = 7;
+        hash = 41 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 41 * hash + (int) (this.version ^ (this.version >>> 32));
         return hash;
     }
 
@@ -34,11 +44,16 @@ public class GlobalVersionTable extends AbstractTable {
             return false;
         }
         final GlobalVersionTable other = (GlobalVersionTable) obj;
+        if (this.id != other.id) {
+            return false;
+        }
         if (this.version != other.version) {
             return false;
         }
         return true;
     }
+
+
     
     
 }

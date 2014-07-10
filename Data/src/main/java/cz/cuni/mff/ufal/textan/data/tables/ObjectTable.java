@@ -19,6 +19,7 @@ public class ObjectTable extends AbstractTable {
     
     private long id;
     private String data;
+    private long globalVersion;
 
     private ObjectTypeTable objectType;
     private Set<AliasTable> aliases = new HashSet<>();
@@ -142,6 +143,14 @@ public class ObjectTable extends AbstractTable {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public long getGlobalVersion() {
+        return globalVersion;
+    }
+
+    public void setGlobalVersion(long globalVersion) {
+        this.globalVersion = globalVersion;
     }
 
     @Override
