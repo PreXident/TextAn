@@ -17,21 +17,36 @@ import java.util.List;
  * @author Vaclav Pernicka
  */
 public interface IDocumentTableDAO extends IOperations<DocumentTable, Long> {
-    
+
     /**
      * finds all documents in which is occurred specified object
-     * 
+     *
      * @param obj object which has to be in all returned documents
      * @return list of documents with the object
      */
     List<DocumentTable> findAllDocumentsWithObject(ObjectTable obj);
     /**
      * finds all documents in which is occurred specified object
-     * 
+     *
      * @param objectId id of object which has to be in all returned documents
+     */
+    List<DocumentTable> findAllDocumentsWithObject(long objectId);
+
+    /**
+     * finds all documents in which is occurred specified object
+     * 
+     * @param obj object which has to be in all returned documents
      * @return list of documents with the object
      */
-    List<DocumentTable> findAllDocumentsWithObject(Long objectId);
+    List<DocumentTable> findAllDocumentsWithObject(ObjectTable obj, int firstResult, int maxResults);
+    /**
+     * finds all documents in which is occurred specified object
+     * 
+     * @param objectId id of object which has to be in all returned documents
+     * @param firstResult
+     *@param maxResults @return list of documents with the object
+     */
+    List<DocumentTable> findAllDocumentsWithObject(long objectId, int firstResult, int maxResults);
 
     /**
      * finds all documents in which is occurred specified relation

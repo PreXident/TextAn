@@ -69,8 +69,8 @@
     <xs:element name="getDocumentByIdRequest" type="GetDocumentByIdRequest"/>
     <xs:element name="getDocumentByIdResponse" type="GetDocumentByIdResponse"/>
 
-    <xs:element name="getDocumentsContainsObjectByIdRequest" type="GetDocumentsContainsObjectByIdRequest"/>
-    <xs:element name="getDocumentsContainsObjectByIdResponse" type="GetDocumentsContainsObjectByIdResponse"/>
+    <xs:element name="getDocumentsContainingObjectByIdRequest" type="GetDocumentsContainingObjectByIdRequest"/>
+    <xs:element name="getDocumentsContainingObjectByIdResponse" type="GetDocumentsContainingObjectByIdResponse"/>
 
     <xs:element name="getObjectsAndRelationsOccurringInDocumentRequest" type="GetObjectsAndRelationsOccurringInDocumentRequest"/>
     <xs:element name="getObjectsAndRelationsOccurringInDocumentResponse" type="GetObjectsAndRelationsOccurringInDocumentResponse"/>
@@ -312,14 +312,17 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetDocumentsContainsObjectByIdRequest">
+    <xs:complexType name="GetDocumentsContainingObjectByIdRequest">
         <xs:sequence>
             <xs:element name="objectId" type="xs:long" />
+            <xs:element name="firstResult" type="xs:int"/>
+            <xs:element name="maxResults" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetDocumentsContainsObjectByIdResponse">
+    <xs:complexType name="GetDocumentsContainingObjectByIdResponse">
         <xs:sequence>
+            <xs:element name="totalNumberOfResults" type="xs:int"/>
             <xs:element ref="cms:document" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
