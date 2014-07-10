@@ -15,7 +15,11 @@ import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.Problems;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
-
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -32,10 +36,6 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Main class controlling core manipulations with reports.
@@ -76,6 +76,7 @@ public class Client {
         UsernameToken token = new UsernameToken();
         token.setUsername(settings.getProperty("username"));
 
+        @SuppressWarnings("rawtypes")
         List<Handler> handlers = new ArrayList<>(1);
         handlers.add(new SOAPHandler<SOAPMessageContext>() {
 
@@ -168,6 +169,34 @@ public class Client {
             }
         }
         return dataProvider;
+    }
+
+    /**
+     * Returns documents containing object with given id.
+     * @param id object id
+     * @param first index of the first object
+     * @param size maximal number of objects
+     * @return list of documents containing object with given id
+     * @throws IdNotFoundException if id error occurs
+     */
+    public synchronized Pair<List<Document>, Integer> getDocumentsList(
+            final long id, final int first, final int size) throws IdNotFoundException {
+        try {
+            final GetDocumentsContainsObjectByIdRequest request =
+                    new GetDocumentsContainsObjectByIdRequest();
+            request.setObjectId(id);
+            final GetDocumentsContainsObjectByIdResponse response =
+                    getDataProvider().getDocumentsContainsObjectById(request);
+            final int actualSize = response.getDocuments().size();
+            final List<Document> list = response.getDocuments().stream()
+                    .skip(first)
+                    .limit(size)
+                    .map(Document::new)
+                    .collect(Collectors.toCollection(ArrayList::new));
+            return new Pair<>(list, actualSize);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
     }
 
     /**

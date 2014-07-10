@@ -163,8 +163,16 @@ public class ObjectListController extends GraphController {
                 textAnController.displayGraph(obj.getId());
             }
         });
-        contextMenu.setStyle(OBJECT_CONTEXT_MENU);
+        final MenuItem documentMI = new MenuItem(Utils.localize(resourceBundle, "document.show"));
+        documentMI.setOnAction(e -> {
+            final Object obj = table.getSelectionModel().getSelectedItem();
+            if (obj != null) {
+                textAnController.displayDocuments(obj.getId());
+            }
+        });
+        contextMenu.getItems().add(documentMI);
         contextMenu.getItems().add(graphMI);
+        contextMenu.setStyle(OBJECT_CONTEXT_MENU);
         contextMenu.setConsumeAutoHidingEvents(false);
         table.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
             if (newVal != null) {

@@ -5,7 +5,8 @@ import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import static cz.cuni.mff.ufal.textan.gui.graph.GraphViewController.GRAPH_PROPERTY_ID;
+import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.GRAPH_PROPERTY_ID;
+import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.TITLE;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.scene.Parent;
@@ -15,9 +16,6 @@ import org.controlsfx.dialog.Dialogs;
  * Class for displaying Report Wizard in independent window.
  */
 public class GraphStage extends OuterStage {
-
-    /** Initial title of the wizard. */
-    static protected final String TITLE = "Graph Viewer";
 
     /** Graph information provider. */
     final protected Grapher grapher;
