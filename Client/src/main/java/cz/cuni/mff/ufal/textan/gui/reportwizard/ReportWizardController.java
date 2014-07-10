@@ -15,6 +15,12 @@ import javafx.util.StringConverter;
  */
 public abstract class ReportWizardController extends WindowController {
 
+    /** Initial title of the wizard. */
+    static protected final String TITLE = "Report Wizard";
+
+    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    static protected final String PROPERTY_ID = "report.wizard";
+
     /** Pipeline controlling the report processing. */
     protected ProcessReportPipeline pipeline;
 

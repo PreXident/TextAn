@@ -31,9 +31,6 @@ import jfxtras.labs.scene.control.BigDecimalField;
  */
 public class GraphViewController extends GraphController {
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
-    static protected final String GRAPH_PROPERTY_ID = "graph.viewer";
-
     @FXML
     private BorderPane root;
 
