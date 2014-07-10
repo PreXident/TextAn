@@ -51,6 +51,9 @@ contents={
 \addcontentsline{toc}{chapter}{#1}
 }
 
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
 \lstdefinelanguage{properties}{% new language for listings
   basicstyle=\ttfamily,
   sensitive=false,
@@ -132,9 +135,9 @@ TODO definitions of terms in documentation and applications
 
 %TODO client instalation guide in the administrator guide or user guide?
 
-\section{Installation guide}
+\section{Server}
 
-\subsection{Server}
+\subsection{Installation guide}
 
 %An installation guide for a server side application of \textan.
 
@@ -163,7 +166,20 @@ The start script for operating system based on Linux (\emph{run.sh}) runs the se
 
 The start script for the Microsoft Windows is less powerful, only run the server application. To run the server as a background process is needed the Windows Service. Unfortunately, there are no components that ship with the Jetty Distribution to make it a formal Windows Service. However, we recommend the use of \emph{Apache ProcRun's Daemon\footnote{More information can be found on \url{https://commons.apache.org/proper/commons-daemon/procrun.html} and in JavaDoc documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry} class.}}.
 
-\subsection{Client}
+\subsection{Settings}
+\label{sec:ServerSettings}
+
+TODO server settings
+
+TODO db settings
+
+TODO learning settings
+
+\subsection{Data formats}
+
+\section{Client}
+
+\subsection{Installation guide}
 
 \subsubsection{Prerequisites}
 
@@ -191,15 +207,6 @@ url.data.wsdl=http://localhost:9500/soap/data?wsdl
 
 The .jar file from the distribution archive is executable, but we recommend to use starting scripts\footnote{run.bat for the Microsoft Windows and run.sh for operating systems based on Linux}.
 
-\section{Settings}
-\label{sec:ServerSettings}
-
-TODO server settings
-
-TODO db settings
-
-TODO learning settings
-
-\section{Data formats}
+\subsection{Settings}
 
 \end{document}
