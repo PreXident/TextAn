@@ -76,6 +76,7 @@ public class Client {
         UsernameToken token = new UsernameToken();
         token.setUsername(settings.getProperty("username"));
 
+        @SuppressWarnings("rawtypes")
         List<Handler> handlers = new ArrayList<>(1);
         handlers.add(new SOAPHandler<SOAPMessageContext>() {
 
