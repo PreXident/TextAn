@@ -169,11 +169,57 @@ The start script for the Microsoft Windows is less powerful, only run the server
 \subsection{Settings}
 \label{sec:ServerSettings}
 
-TODO server settings
+\subsubsection{Web server settings}
 
-TODO db settings
+%connector
+\paragraph{server.connector.host} The particular interface to listen on. If not set or 0.0.0.0, the web server listens on port on all interfaces.
 
-TODO learning settings
+\paragraph{server.connector.port} The port to listen on. If not set, the web server listens on port 9500.
+
+%thread pool
+\paragraph{server.threadPool.maxThreads} The maximum number of threads in web server thread pool. It determines a maximum number of simultaneously opened connections. The default value is 200.
+
+\paragraph{server.threadPool.minThreads} The minimum number of threads in web server thread pool. The default value is 8.
+
+\paragraph{server.threadPool.idleTimeout} The time in milliseconds that the connection can be idle before it is closed.
+
+\subsubsection{Database connection settings}
+
+%jdbc
+\paragraph{jdbc.driverClassName} 
+
+\paragraph{jdbc.url} 
+
+\paragraph{jdbc.user}
+
+\paragraph{jdbc.pass}
+
+
+%c3p0 (http://www.mchange.com/projects/c3p0/#configuration_properties)
+\paragraph{c3p0.maxPoolSize}
+
+\paragraph{c3p0.minPoolSize}
+
+\paragraph{c3p0.initialPoolSize}
+
+\paragraph{c3p0.acquireIncrement}
+
+\paragraph{c3p0.maxIdleTime}
+
+\paragraph{c3p0.checkoutTimeout}
+
+\paragraph{c3p0.maxStatements}
+
+\paragraph{c3p0.maxStatementsPerConnection}
+
+\paragraph{c3p0.idleConnectionTestPeriod}
+
+%hibernate
+\paragraph{hibernate.dialect}
+
+\paragraph{hibernate.show\_sql}
+
+\subsubsection{Named entity recognizer settings}
 
 \subsection{Data formats}
 
