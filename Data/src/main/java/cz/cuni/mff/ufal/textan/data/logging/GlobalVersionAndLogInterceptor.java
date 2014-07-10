@@ -32,7 +32,6 @@ public class GlobalVersionAndLogInterceptor extends LogInterceptor {
             // TODO SET NEW VERSION
             for (int i = 0; i < propertyNames.length; i++) {
                 if ("globalVersion".equals(propertyNames[i])) currentState[i] = version;
-                if ("data".equals(propertyNames[i])) currentState[i] += " processed";
             }
             
             super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
