@@ -23,6 +23,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -32,6 +33,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 /**
@@ -170,16 +172,17 @@ public class ReportErrorsController extends ReportWizardController {
         final MenuItem relationGraphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
         relationGraphMI.setOnAction(e -> {
             final java.lang.Object obj = relationsTreeView.getSelectionModel().getSelectedItem().getValue();
-            if (obj instanceof RelationTriple) {
-                final RelationTriple t = (RelationTriple) obj;
-                textAnController.displayGraph(t.triple.getThird().getId());
+            if (obj instanceof Triple) {
+                @SuppressWarnings("unchecked")
+                final Triple<Integer, String, Object> t = (Triple<Integer, String, Object>) obj;
+                textAnController.displayGraph(t.getThird().getId());
             }
         });
         relationsContextMenu.getItems().add(relationGraphMI);
         relationsContextMenu.setConsumeAutoHidingEvents(false);
         relationsContextMenu.setStyle(OBJECT_CONTEXT_MENU);
         relationsTreeView.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
-            if (newVal == null || !(newVal.getValue() instanceof RelationTriple)) {
+            if (newVal == null || !(newVal.getValue() instanceof Triple)) {
                 relationsTreeView.setContextMenu(null);
             } else {
                 relationsTreeView.setContextMenu(relationsContextMenu);
@@ -217,11 +220,34 @@ public class ReportErrorsController extends ReportWizardController {
         }
         //
         relationsTreeView.setRoot(new TreeItem<>(null));
+        relationsTreeView.setCellFactory(new Callback<TreeView<java.lang.Object>, TreeCell<java.lang.Object>>() {
+            @Override
+            public TreeCell<java.lang.Object> call(TreeView<java.lang.Object> p) {
+                return new TreeCell<java.lang.Object>() {
+                    @Override
+                    protected void updateItem(java.lang.Object o, boolean empty) {
+                        super.updateItem(o, empty);
+                        if (!empty && o != null) {
+                            if (o instanceof Triple) {
+                                @SuppressWarnings("unchecked")
+                                final Triple<Integer, String, Object> triple =
+                                        (Triple<Integer, String, Object>) o;
+                                this.setText(String.format("%s - %s - %s",
+                                        triple.getFirst(), triple.getSecond(), triple.getThird()));
+                            } else {
+                                this.setText(o.toString());
+                            }
+                        } else {
+                            this.setText("");
+                        }
+                    }
+                };
+            }
+        });
         for (Relation relation : pipeline.getProblems().getNewRelations()) {
             final TreeItem<java.lang.Object> parent = new TreeItem<>(relation);
             for (Triple<Integer, String, Object> triple : relation.getObjects()) {
-                final TreeItem<java.lang.Object> child =
-                        new TreeItem<>(new RelationTriple(triple));
+                final TreeItem<java.lang.Object> child = new TreeItem<>(triple);
                 parent.getChildren().add(child);
             }
             relationsTreeView.getRoot().getChildren().add(parent);
@@ -232,29 +258,6 @@ public class ReportErrorsController extends ReportWizardController {
         }
         if (!pipeline.getProblems().isChanged()) {
             vbox.getChildren().remove(changedLabel);
-        }
-    }
-
-    /**
-     * Simple holder for displaying relation triple.
-     */
-    static private class RelationTriple {
-
-        /** Wrapped triple. */
-        final Triple<Integer, String, Object> triple;
-
-        /**
-         * Only constructor.
-         * @param triple triple to wrap
-         */
-        public RelationTriple(final Triple<Integer, String, Object> triple) {
-            this.triple = triple;
-        }
-
-        @Override
-        public String toString() {
-            return triple.getFirst() + " - " + triple.getSecond()
-                    + " - " + triple.getThird().toString();
         }
     }
 }
