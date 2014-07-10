@@ -96,7 +96,7 @@ public class NamedEntityRecognizer {
      */
     public void init() throws LearningException {
         LOG.info("Initializing NameTag");
-
+        boolean result = false;
         LOG.info("Looking for models");
         File[] models = getSortedModels(new File(MODELS_DIR));
         if (models != null && models.length > 0) {
@@ -107,14 +107,13 @@ public class NamedEntityRecognizer {
             }
             if (i >= models.length) {
                 LOG.info("Found models are corrupted, learning new model");
-                learn(true);
+                result = learn(true);
             }
         } else {
             LOG.info("No models found");
-            learn(true);
+            result = learn(true);
         }
-        if (ner == null)
-        {
+        if (!result) {
             throw new LearningException("Learning wasn't successful (see log for details)");
         }
 
@@ -231,13 +230,16 @@ public class NamedEntityRecognizer {
      * @param source source
      * @param destination target
      */
-    private static void copyFile(File source, File destination) { //FIXME: how caller checks if copy was successful?
+    private static boolean copyFile(File source, File destination) {
+        boolean result = false;
         try ( FileChannel inputChannel = new FileInputStream(source).getChannel();
               FileChannel outputChannel = new FileOutputStream(destination).getChannel()) {
             outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+            result = true;
         } catch (IOException e) {
             LOG.error("Can't copy file from {} to {}", source.getPath(), destination.getPath(), e);
         }
+        return result;
     }
 
     /**
@@ -245,8 +247,9 @@ public class NamedEntityRecognizer {
      *
      * @param waitForModel true when learning is tu be blocking, else false
      */
-    public void learn(boolean waitForModel) {
+    public boolean learn(boolean waitForModel) {
         LOG.info("Started training new NameTag model");
+        boolean result = true;
         try {
             File trainingExecutable = new File(EXECUTABLE_DIR).getCanonicalFile();
             File trainingDirectory = new File(TRAINING_DIR).getCanonicalFile();
@@ -261,12 +264,14 @@ public class NamedEntityRecognizer {
                 if (learningParameters.useDefaultTrainingData()) {
                     LOG.info("Copying default training data from {}", learningParameters.getTrainingData().getPath());
                     //Files.copy(learningParameters.getTrainingData().toPath(), trainingDataFile.toPath());
-                    copyFile(learningParameters.getTrainingData(), trainingDataFile);
+                    if (!copyFile(learningParameters.getTrainingData(), trainingDataFile)) {
+                        return false;
+                    }
                 }
                 prepareLearningData(trainingDataFile);
             } else {
                 LOG.error("Can't create training data folder");
-                return;
+                return false;
             }
 
             LOG.debug("Executing learning command: {}", String.join(" ", learningParameters.getCommand()));
@@ -301,11 +306,13 @@ public class NamedEntityRecognizer {
 
             if ((notTimeout) && (ps.exitValue() == 0)) {
                 LOG.info("Training done");
-                this.bindModel(modelLocation);
+                result = this.bindModel(modelLocation);
             } else if (notTimeout) {
                 LOG.error("Training failed: exit code: {}, error message: {}", ps.exitValue(), errorMsg);
+                return false;
             } else {
                 LOG.error("Training failed: timeout.");
+                return false;
             }
 
             File[] models = getSortedModels(new File(MODELS_DIR));
@@ -318,9 +325,12 @@ public class NamedEntityRecognizer {
 
         } catch (IOException e) {
             LOG.error("Training failed", e);
+            return false;
         } catch (InterruptedException e) {
             LOG.error("Training takes too long", e);
+            return false;
         }
+        return result;
     }
 
     /**

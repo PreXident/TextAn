@@ -68,6 +68,16 @@ task copyNametagModel(type: Copy) {
     into new File(buildDir, 'models')
 }
 
+task copySampleTrainingData(type: Copy) {
+    run.dependsOn name
+
+    from (new File('../Samples/trainingData')) {
+        include '**/sampleTrainData.txt'
+        includeEmptyDirs = false
+    }
+    into new File(buildDir, 'training')
+}
+
 task copyMorphoditaTagger(type: Copy) {
     run.dependsOn name
 
@@ -83,7 +93,6 @@ task copyTrainingData(type: Copy) {
 
     from (new File(project(':Linguistics').projectDir, 'training')) {
         include '**/clusters/*'
-        include '**/cnec2.0-all/train.txt'
         include '**/gazetteers/*'
         include '**/*.txt'
         include '**/*.tagger'
@@ -173,7 +182,6 @@ task dist(type: Copy, dependsOn: 'shadowJar') {
     //training data
     from (file("${project(':Linguistics').projectDir.toPath()}/training")) {
         include '**/clusters/*'
-        include '**/cnec2.0-all/train.txt'
         include '**/gazetteers/*'
         include '**/*.txt'
         include '**/*.tagger'
