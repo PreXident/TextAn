@@ -7,7 +7,7 @@
 package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
-import cz.cuni.mff.ufal.textan.data.logging.LogInterceptor;
+import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;

@@ -155,9 +155,10 @@ public class ObjectTable extends AbstractTable {
 
     @Override
     public String toString() {
-        return String.format("ObjectTable(%d, \"%s\". %s)", getId(), getData(), getObjectType());
-                
+        return "ObjectTable{" + "id=" + id + ", globalVersion=" + globalVersion + ", data=" + data + ", objectType=" + objectType + '}';
     }
+
+    
 
     @Override
     public boolean equals(Object o) {

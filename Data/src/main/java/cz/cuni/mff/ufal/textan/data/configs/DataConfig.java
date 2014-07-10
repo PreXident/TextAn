@@ -2,8 +2,8 @@ package cz.cuni.mff.ufal.textan.data.configs;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
-import cz.cuni.mff.ufal.textan.data.logging.GlobalVersionAndLogInterceptor;
-import cz.cuni.mff.ufal.textan.data.logging.LogInterceptor;
+import cz.cuni.mff.ufal.textan.data.interceptors.GlobalVersionAndLogInterceptor;
+import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
 import cz.cuni.mff.ufal.textan.data.views.INameTagView;
 import cz.cuni.mff.ufal.textan.data.views.NameTagView;
 import org.hibernate.SessionFactory;
