@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.textpro;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
@@ -7,6 +8,8 @@ import cz.cuni.mff.ufal.textan.textpro.learning.Test;
 import cz.cuni.mff.ufal.textan.textpro.learning.Train;
 import net.sf.javaml.classification.Classifier;
 import net.sf.javaml.core.Instance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -23,6 +26,8 @@ import java.util.Map;
  */
 @Transactional
 public class TextPro implements ITextPro {
+
+    private static Logger LOG = LoggerFactory.getLogger(TextPro.class);
 
     /** Provides access to AliasOccurrence table in database */
     IAliasOccurrenceTableDAO aliasOccurrenceTableDAO;
@@ -87,7 +92,8 @@ public class TextPro implements ITextPro {
     
     @Override
     public void learn() {
-        
+        LOG.debug("Starting TexPro learning.");
+
         /*** Create the train model**/
         Train train = new Train();
         
@@ -112,13 +118,18 @@ public class TextPro implements ITextPro {
      * @return the result of DoubleRank
      */
     @Override
-    public Map<Entity, Map<Long, Double>> DoubleRanking(String document, List<Entity> eList, int topK){
+    //public Map<Entity, Map<Long, Double>> DoubleRanking(String document, List<Entity> eList, int topK){
+    public Map<Entity, List<Pair<Long, Double>>> DoubleRanking(String document, List<Entity> eList, int topK){
+
+        LOG.debug("Starting TexPro ranking.");
+
         /*
          * Assign value to the mapping
          */
         /********************** REGULAR RANKING **************************/
         // Initialize the eMap - final result
-        Map<Entity, Map<Long, Double>> eMap = new HashMap<>();
+        Map<Entity, List<Pair<Long, Double>>> eMap = new HashMap<>();
+
         for (int id = 0; id < eList.size(); id++) {
             /********************** REGULAR RANKING **************************/
             Entity e = eList.get(id);
@@ -176,20 +187,19 @@ public class TextPro implements ITextPro {
             */
             /* Assign value */
             /***************** ASSIGN VALUE *********************************/
-            Map <Long,Double> entityScore = new HashMap <Long,Double>();
+            List<Pair<Long, Double>> entityScore = new ArrayList<>();
             for (int i = 0; i < test.getObjectListID().size(); i++){
                 Instance in = instances.get(i);
                 Object predictedClassValue = this.model.classify(in);
                 if(predictedClassValue.toString().equalsIgnoreCase("1")) {
-                    entityScore.put(test.getObjectListID().get(i), test.getObjectListScore().get(i));
+
+                    entityScore.add(new Pair<>(test.getObjectListID().get(id), test.getObjectListScore().get(id)));
                 }
             }
             eMap.put(e, entityScore);
-            
         }
         // Return the value
         return eMap;
-        
     }
     
     public List<ObjectTable> getCloseObject(Entity e){

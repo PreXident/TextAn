@@ -65,10 +65,29 @@ public class Entity{
     }
     public void setType(long type) {
         this.type = type;
-    }    
-    public boolean equals (Entity e2) {
-        if(this.offset != e2.offset) return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Entity entity = (Entity) o;
+
+        if (offset != entity.offset) return false;
+        if (position != entity.position) return false;
+        if (type != entity.type) return false;
+        if (!text.equals(entity.text)) return false;
+
         return true;
     }
-        
+
+    @Override
+    public int hashCode() {
+        int result = text.hashCode();
+        result = 31 * result + offset;
+        result = 31 * result + position;
+        result = 31 * result + (int) (type ^ (type >>> 32));
+        return result;
+    }
 }

@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices;
+import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -35,7 +36,7 @@ import java.util.Properties;
  * @author Jakub Vlček
  */
 @Configuration
-@Import(DataConfig.class)
+@Import({DataConfig.class, TextProConfig.class})
 @ComponentScan("cz.cuni.mff.ufal.textan.server.services")
 public class AppConfig implements ApplicationContextAware {
 
