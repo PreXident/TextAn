@@ -5,7 +5,7 @@ USE textan;
 
 
 CREATE TABLE GlobalVersion (
-  id_global_version int PRIMARY KEY AUTO_INCREMENT
+  id_global_version int PRIMARY KEY AUTO_INCREMENT,
   version int DEFAULT 0 NOT NULL
 );
 

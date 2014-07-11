@@ -21,6 +21,7 @@ public class ObjectTable extends AbstractTable {
     
     private long id;
     private String data;
+    private long globalVersion;
 
     private ObjectTypeTable objectType;
     private Set<AliasTable> aliases = new HashSet<>();
@@ -156,11 +157,20 @@ public class ObjectTable extends AbstractTable {
         this.oldObjects2 = oldObjects2;
     }
 
+    public long getGlobalVersion() {
+        return globalVersion;
+    }
+
+    public void setGlobalVersion(long globalVersion) {
+        this.globalVersion = globalVersion;
+    }
+
     @Override
     public String toString() {
-        return String.format("ObjectTable(%d, \"%s\". %s)", getId(), getData(), getObjectType());
-                
+        return "ObjectTable{" + "id=" + id + ", globalVersion=" + globalVersion + ", data=" + data + ", objectType=" + objectType + '}';
     }
+
+    
 
     @Override
     public boolean equals(Object o) {

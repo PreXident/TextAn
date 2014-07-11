@@ -15,7 +15,10 @@
           unsaved-value="0">
          <generator class="native" />
       </id>  
+      
        <property name="data" column="data" type="string"/>
+       <property name="globalVersion" column="globalversion" type="long" />
+       
        <many-to-one name="objectType" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable" 
                     column="id_object_type" not-null="true" lazy="false" cascade="save-update" />
        <set name="aliases" table="Alias" inverse="true" cascade="delete, delete-orphan">
