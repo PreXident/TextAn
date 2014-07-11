@@ -53,7 +53,7 @@
 			</left>
 			<center>
 				<VBox alignment="CENTER">
-					<Label fx:id="paginationLabel" text="Dummy"/>
+					<Label fx:id="paginationLabel"/>
 					<HBox alignment="CENTER">
 						<Label text="%page.size" />
 						<ComboBox fx:id="perPageComboBox">
