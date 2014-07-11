@@ -139,20 +139,28 @@ TODO definitions of terms in documentation and applications
 
 \subsection{Installation guide}
 
+
+This section will show you how to install and build \textan\ server. 
 %An installation guide for a server side application of \textan.
 
 \subsubsection{Prerequisites}
 \label{sssec:SerInstPre}
 
-The \textan\ server needs installed \emph{Java 8 JRE \footnote{We recommend to use JRE from \emph{Oracle} available at: \url{http://www.oracle.com/technetwork/java/javase/downloads/index.html}}} or a later version and a relational database system (e.g. \emph{MySQL}). The server should be platform independent, but it depends on native and 3rd party libraries. Supported operating systems in the distribution of the \textan\ server are Linux (32 bit and 64 bit) and Windows (32 bit and 64 bit).
+The \textan\ server requires installation of \emph{Java 8 JRE \footnote{We recommend to use JRE from \emph{Oracle}, 
+available at: \url{http://www.oracle.com/technetwork/java/javase/downloads/index.html}}} or a later version and a 
+relational database system (e.g. \emph{MySQL}). The server should be platform independent, but it depends on native 
+and 3rd party libraries. 
+Supported operating systems in the distribution of the \textan\ server are Linux (32 bit and 64 bit) and 
+Windows (32 bit and 64 bit). % I am thinking ...
 
 \subsubsection{Installation}
 
-Unpack an archive with the \textan\ server distribution into any directory. The archive contains server binaries and and scripts for starting and setup.
+It is best to unpack an archive of the \textan\ server distribution into a directory. 
+Once it is unpacked, the directory should contain server binaries and scripts. % TAM: somehow vague meaning
 
 \subsubsection{Basic configuration}
 
-Before the first start is necessary to set up the server and the database.
+Before the first start, it is necessary to set up the server and the database.
 
 TODO write how to setup server
 
@@ -160,11 +168,18 @@ TODO add some link to \ref{sec:ServerSettings}
 
 \subsubsection{Starting the server}
 
-To start the server use starting scripts, which are in root directory. Scripts for different operating systems unfortunately aren't equivalent.
+The server can be started by starting scripts in root directory. 
+Scripts for different operating systems unfortunately aren't equivalent. % TAM: somehow vague meaning. equivalent = similar??
 
-The start script for operating system based on Linux (\emph{run.sh}) runs the server application as daemon and can be used to run the server as system service.
+The start script for the Linux-based operating system (\emph{run.sh}) runs the server application as daemon and can be used 
+to run the server as system service.
 
-The start script for the Microsoft Windows is less powerful, only run the server application. To run the server as a background process is needed the Windows Service. Unfortunately, there are no components that ship with the Jetty Distribution to make it a formal Windows Service. However, we recommend the use of \emph{Apache ProcRun's Daemon\footnote{More information can be found on \url{https://commons.apache.org/proper/commons-daemon/procrun.html} and in JavaDoc documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry} class.}}.
+The start script for the Microsoft Windows OS is less powerful, only runs the server application. 
+To run the server as a background process, the Windows Service is required. 
+Unfortunately, there are no components that ship with the Jetty Distribution to make it a formal Windows Service. % what does ship mean?
+However, we recommend the use of \emph{Apache ProcRun's Daemon\footnote{More information can be found on 
+\url{https://commons.apache.org/proper/commons-daemon/procrun.html} and in JavaDoc documentation for 
+\emph{cz.cuni.mff.ufal.textan.server.AppEntry} class.}}.
 
 \subsection{Settings}
 \label{sec:ServerSettings}
@@ -229,15 +244,21 @@ The start script for the Microsoft Windows is less powerful, only run the server
 
 \subsubsection{Prerequisites}
 
-The \textan\ client needs installed \emph{Java 8 JRE} or a later version same as the server (see \ref{sssec:SerInstPre}).
+The \textan\ client requires installation of \emph{Java 8 JRE} or later version same as the server 
+(see \ref{sssec:SerInstPre}).
 
 \subsubsection{Installation}
 
-Unpack an archive with the \textan\ client distribution into any directory. The archive contains a .jar file and starting scripts for the \emph{Microsoft Windows} and operating systems based on Linux.
+Unpack an archive with the \textan\ client distribution into any directory. 
+The archive contains a .jar file and starting scripts for the \emph{Microsoft Windows} and Linux-based
+operating systems.
 
 \subsubsection{Basic configuration}
 
-If the client doesn't have to connect to the default server, it is necessary to configure a server location. The settings of server location is in the \emph{TextAn.properties\footnote{A description of format of .properties file can be found on \url{http://en.wikipedia.org/wiki/.properties}}} in the directory with the client. Simply edit or add following lines in properties file:
+If the client doesn't connect to the default server, it is necessary to configure a server location. 
+The settings of server location are in \emph{TextAn.properties\footnote{A description of format of .properties file 
+can be found at \url{http://en.wikipedia.org/wiki/.properties}}} in the directory with the client. 
+Simply edit or add following lines to properties file:
 \begin{lstlisting}[frame=single,language=properties]
 #url of the document processor
 url.document=http://localhost:9500/soap/document
@@ -251,7 +272,8 @@ url.data.wsdl=http://localhost:9500/soap/data?wsdl
 
 \subsubsection{Starting the client}
 
-The .jar file from the distribution archive is executable, but we recommend to use starting scripts\footnote{run.bat for the Microsoft Windows and run.sh for operating systems based on Linux}.
+The .jar file from the distribution archive is executable, but we recommend to use starting 
+scripts\footnote{run.bat for the Microsoft Windows and run.sh for operating systems based on Linux}.
 
 \subsection{Settings}
 

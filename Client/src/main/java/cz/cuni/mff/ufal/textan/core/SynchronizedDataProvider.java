@@ -91,10 +91,10 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
-    synchronized public GetDocumentsContainsObjectByIdResponse getDocumentsContainsObjectById(
-            final GetDocumentsContainsObjectByIdRequest getDocumentsContainsObjectByIdRequest)
+    synchronized public GetDocumentsContainingObjectByIdResponse getDocumentsContainingObjectById(
+            final GetDocumentsContainingObjectByIdRequest getDocumentsContainingObjectByIdRequest)
             throws IdNotFoundException {
-        return innerDP.getDocumentsContainsObjectById(getDocumentsContainsObjectByIdRequest);
+        return innerDP.getDocumentsContainingObjectById(getDocumentsContainingObjectByIdRequest);
     }
 
     @Override

@@ -4,10 +4,13 @@
  * and open the template in the editor.
  */
 
-package cz.cuni.mff.ufal.textan.data.logging;
+package cz.cuni.mff.ufal.textan.data.interceptors;
 
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAuditTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.AuditTable;
+import cz.cuni.mff.ufal.textan.data.tables.GlobalVersionTable;
+import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
 import org.slf4j.Logger;
@@ -31,12 +34,12 @@ public class LogInterceptor extends EmptyInterceptor {
 
     private static boolean enabled = true;
 
-    private final Set<Object> inserts = new HashSet<Object>();
-    private final Set<Object> updates = new HashSet<Object>();
-    private final Set<Object> deletes = new HashSet<Object>();
+    private final Set<Object> inserts = new HashSet<>();
+    private final Set<Object> updates = new HashSet<>();
+    private final Set<Object> deletes = new HashSet<>();
 
 
-    private SessionFactory sessionFactory;
+    protected SessionFactory sessionFactory;
      
     private String username;
 
@@ -57,10 +60,10 @@ public class LogInterceptor extends EmptyInterceptor {
 
     @Override
     public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-        LOG.debug("Executing onSave");
+        LOG.debug("LogInterceptor - Executing onSave");
 //        System.out.println(username + ": save: " + entity);
         //audit.add(new AuditTable(username, AuditTable.AuditType.Insert, entity.toString()));
-        if (!(entity instanceof AuditTable) && enabled) {
+        if (isLoggableTable(entity) && enabled) {
             inserts.add(entity);
         }
         return super.onSave(entity, id, state, propertyNames, types); //To change body of generated methods, choose Tools | Templates.
@@ -68,10 +71,10 @@ public class LogInterceptor extends EmptyInterceptor {
 
     @Override
     public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
-        LOG.debug("Executing onFlushDirty");
+        LOG.debug("LogInterceptor - Executing onFlushDirty");
 //        System.out.println(username + ": update: " + entity);
         //audit.add(new AuditTable(username, AuditTable.AuditType.Update, entity.toString()));
-        if (!(entity instanceof AuditTable) && enabled) {
+        if (isLoggableTable(entity) && enabled) {
             updates.add(entity);
         }
         return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types); //To change body of generated methods, choose Tools | Templates.
@@ -79,10 +82,10 @@ public class LogInterceptor extends EmptyInterceptor {
 
     @Override
     public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-        LOG.debug("Executing onDelete");
+        LOG.debug("LogInterceptor - Executing onDelete");
 //        System.out.println(username + ": delete: " + entity);
         //audit.add(new AuditTable(username, AuditTable.AuditType.Delete, entity.toString()));
-        if (!(entity instanceof AuditTable) && enabled) {
+        if (isLoggableTable(entity) && enabled) {
             deletes.add(entity);
         }
         super.onDelete(entity, id, state, propertyNames, types); //To change body of generated methods, choose Tools | Templates.
@@ -91,7 +94,7 @@ public class LogInterceptor extends EmptyInterceptor {
     @Override
     @SuppressWarnings("rawtypes")
     public void postFlush(Iterator iterator) {
-        LOG.debug("Executing postFlush");
+        LOG.debug("LogInterceptor - Executing postFlush");
         super.postFlush(iterator);
         
         if (!enabled) return;
@@ -135,4 +138,17 @@ public class LogInterceptor extends EmptyInterceptor {
             deletes.clear();
         }
     }
+    
+    private boolean affectsObjectTable(Object entity) {
+        return entity instanceof ObjectTable ||
+                entity instanceof JoinedObjectsTable;
+    }
+    
+    private boolean isLoggableTable(Object entity) {
+        return !(
+                    entity instanceof AuditTable || 
+                    entity instanceof GlobalVersionTable
+                );
+    }
+
 }

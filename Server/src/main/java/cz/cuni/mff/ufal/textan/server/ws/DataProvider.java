@@ -324,19 +324,24 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
-    public GetDocumentsContainsObjectByIdResponse getDocumentsContainsObjectById(
+    public GetDocumentsContainingObjectByIdResponse getDocumentsContainingObjectById(
             @WebParam(partName = "getDocumentsContainsObjectByIdRequest", name = "getDocumentsContainsObjectByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetDocumentsContainsObjectByIdRequest getDocumentsContainsObjectByIdRequest) throws IdNotFoundException {
+            GetDocumentsContainingObjectByIdRequest getDocumentsContainingObjectByIdRequest) throws IdNotFoundException {
 
-        LOG.info("Executing operation getDocumentsContainsObjectById: {}", getDocumentsContainsObjectByIdRequest);
+        LOG.info("Executing operation getDocumentsContainsObjectById: {}", getDocumentsContainingObjectByIdRequest);
 
         try {
 
-            GetDocumentsContainsObjectByIdResponse response = new GetDocumentsContainsObjectByIdResponse();
-            List<Document> documents = dbService.getDocumentsContainsObject(getDocumentsContainsObjectByIdRequest.getObjectId());
-            for (Document document : documents) {
+            GetDocumentsContainingObjectByIdResponse response = new GetDocumentsContainingObjectByIdResponse();
+            Pair<List<Document>, Integer> documents = dbService.getDocumentsContainingObject(
+                    getDocumentsContainingObjectByIdRequest.getObjectId(),
+                    getDocumentsContainingObjectByIdRequest.getFirstResult(),
+                    getDocumentsContainingObjectByIdRequest.getMaxResults()
+            );
+            for (Document document : documents.getFirst()) {
                 response.getDocuments().add(document.toCommonsDocument());
             }
+            response.setTotalNumberOfResults(documents.getSecond());
 
             LOG.info("Executed operation getDocumentsContainsObjectById: {}", response);
             return response;
@@ -544,13 +549,13 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public MergeObjectsResponse mergeObjects(
             @WebParam(partName = "mergeObjects", name = "mergeObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            MergeObjectsRequest mergeObjects) throws IdNotFoundException {
+            MergeObjectsRequest mergeObjectsRequest) throws IdNotFoundException {
 
-        LOG.info("Executing operation mergeObjects: {}", mergeObjects);
+        LOG.info("Executing operation mergeObjects: {}", mergeObjectsRequest);
 
         try {
             MergeObjectsResponse response = new MergeObjectsResponse();
-            long objectId = dbService.mergeObjects(mergeObjects.getObject1Id(), mergeObjects.getObject2Id());
+            long objectId = dbService.mergeObjects(mergeObjectsRequest.getObject1Id(), mergeObjectsRequest.getObject2Id());
             response.setObjectId(objectId);
 
             LOG.info("Executed operation mergeObjects: {}", response);

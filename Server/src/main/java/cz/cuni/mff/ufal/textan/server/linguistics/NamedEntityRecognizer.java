@@ -2,10 +2,10 @@ package cz.cuni.mff.ufal.textan.server.linguistics;
 
 import cz.cuni.mff.ufal.nametag.*;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IEntityViewDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
-import cz.cuni.mff.ufal.textan.data.views.INameTagView;
-import cz.cuni.mff.ufal.textan.data.views.NameTagRecord;
+import cz.cuni.mff.ufal.textan.data.views.EntityView;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
 import cz.cuni.mff.ufal.textan.server.models.ObjectType;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ public class NamedEntityRecognizer {
     private static final Pattern continuingEntityPattern = Pattern.compile(CONTINUING_ENTITY_REGEX);
 
     private final IObjectTypeTableDAO objectTypeTableDAO;
-    private final INameTagView nameTagView;
+    private final IEntityViewDAO entityViewDAO;
     private final IDocumentTableDAO documentTableDAO;
     private final Map<Long, ObjectType> idTempTable;
 
@@ -63,12 +63,12 @@ public class NamedEntityRecognizer {
     /**
      * Create new NamedEntityRecognizer
      * @param objectTypeTableDAO data access object to object tables
-     * @param nameTagView data access object to nameTagView
+     * @param entityViewDAO data access object to entityViewDAO
      * @param documentTableDAO data access object to document table
      */
-    public NamedEntityRecognizer(IObjectTypeTableDAO objectTypeTableDAO, INameTagView nameTagView, IDocumentTableDAO documentTableDAO) {
+    public NamedEntityRecognizer(IObjectTypeTableDAO objectTypeTableDAO, IEntityViewDAO entityViewDAO, IDocumentTableDAO documentTableDAO) {
         this.objectTypeTableDAO = objectTypeTableDAO;
-        this.nameTagView = nameTagView;
+        this.entityViewDAO = entityViewDAO;
         this.documentTableDAO = documentTableDAO;
         idTempTable = new Hashtable<>();
     }
@@ -153,9 +153,9 @@ public class NamedEntityRecognizer {
         try {
             PrintWriter output = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileWithTrainingData, true), "UTF-8"));
 
-            List<NameTagRecord> documents = nameTagView.findAll();
+            List<EntityView> documents = entityViewDAO.findAll();
             Collections.sort(documents, (
-                    NameTagRecord a, NameTagRecord b) ->
+                    EntityView a, EntityView b) ->
                     a.getDocumentID() != b.getDocumentID()
                             ? Long.signum(a.getDocumentID() - b.getDocumentID())
                             : Long.signum(a.getAliasOccurrencePosition() - b.getAliasOccurrencePosition()));
@@ -164,7 +164,7 @@ public class NamedEntityRecognizer {
             int lastEntityEnd = 0;
             String documentText = "";
             StringBuilder taggedDocument = new StringBuilder();
-            for (NameTagRecord record : documents) {
+            for (EntityView record : documents) {
                 if (lastID != record.getDocumentID()) {
                     output.print(taggedDocument.toString().replaceAll("[\\n]+","\n"));
                     taggedDocument.delete(0, taggedDocument.length());

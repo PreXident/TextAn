@@ -102,19 +102,23 @@ public class DirectDataAccessService {
     /**
      * Gets documents which contain object with given id.
      * @param objectId the object id
-     * @return a list of documents
+     * @param firstResult
+     *@param maxResults @return a list of documents
      * @throws IdNotFoundException thrown when object with given id not exists
      */
-    public List<Document> getDocumentsContainsObject(long objectId) throws IdNotFoundException {
+    public Pair<List<Document>, Integer> getDocumentsContainingObject(long objectId, int firstResult, int maxResults) throws IdNotFoundException {
 
         ObjectTable objectTable = objectTableDAO.find(objectId);
         if (objectTable == null) {
             throw new IdNotFoundException("objectId", objectId);
         }
 
-        return documentTableDAO.findAllDocumentsWithObject(objectId).stream()
+        int count = documentTableDAO.findAllDocumentsWithObject(objectId).size();
+        List<Document> documents = documentTableDAO.findAllDocumentsWithObject(objectId, firstResult, maxResults).stream()
                 .map(Document::fromDocumentTable)
                 .collect(Collectors.toList());
+
+        return new Pair<>(documents, count);
     }
 
     /**

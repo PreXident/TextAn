@@ -15,6 +15,12 @@ import javafx.scene.Parent;
  */
 abstract class GraphController extends WindowController {
 
+    /** Initial title of the wizard. */
+    static protected final String TITLE = "Graph Viewer";
+
+    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    static protected final String GRAPH_PROPERTY_ID = "graph.viewer";
+
     /**
      * Loads FXML suitable for the grapher.
      * If grapher is initialized by distance and center, graph is loaded,
