@@ -4,12 +4,14 @@
 
 package cz.cuni.mff.ufal.textan.data.views;
 
+import javax.persistence.Entity;
 import java.util.Objects;
 
 /**
  *
  * @author Vaclav Pernicka
  */
+@Entity
 public class NameTagRecord {
     Long DocumentID;
     Integer aliasOccurrencePosition;

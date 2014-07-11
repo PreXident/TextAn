@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
@@ -116,11 +114,17 @@ public class DataConfig {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setHibernateProperties(hibernateProperties());
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        Resource[] mappings = null;
+        sessionFactory.setPackagesToScan(
+                "cz.cuni.mff.ufal.textan.data.tables",
+                "cz.cuni.mff.ufal.textan.data.views",
+                "cz.cuni.mff.ufal.textan.data.graph"
+        );
 
-        mappings = resolver.getResources("classpath:mappings/*.hbm.xml");
-        sessionFactory.setMappingLocations(mappings);
+//        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+//        Resource[] mappings = null;
+//
+//        mappings = resolver.getResources("classpath:mappings/*.hbm.xml");
+//        sessionFactory.setMappingLocations(mappings);
         sessionFactory.afterPropertiesSet();
 
         //sessionFactory.getConfiguration().setInterceptor(logInterceptor());
@@ -164,7 +168,7 @@ public class DataConfig {
 //                setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
                 setProperty("hibernate.dialect", dataProperties().getProperty("hibernate.dialect"));
                 setProperty("show_sql", dataProperties().getProperty("hibernate.show_sql"));
-                setProperty("hibernate.globally_quoted_identifiers", "true");
+                //setProperty("hibernate.globally_quoted_identifiers", "true");
             }
         };
     }

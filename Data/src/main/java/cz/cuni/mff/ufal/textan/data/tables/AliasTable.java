@@ -6,14 +6,17 @@
 
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 /**
- *
+ * Alias of an entity. For a person it could be "Karel", "Kája" or "The butcher"
  * @author Vaclav Pernicka
  */
+@Entity
+@Table(name = "Alias")
 public class AliasTable extends AbstractTable {
     public static final String PROPERTY_NAME_ALIAS = "alias";
     public static final String PROPERTY_NAME_OCCURRENCES = "occurrences";
@@ -34,14 +37,9 @@ public class AliasTable extends AbstractTable {
         this.alias = alias;
     }
 
-    public Set<AliasOccurrenceTable> getOccurrences() {
-        return occurrences;
-    }
-
-    public void setOccurrences(Set<AliasOccurrenceTable> occurrences) {
-        this.occurrences = occurrences;
-    }
-
+    @Id
+    @GeneratedValue
+    @Column(name = "id_alias", nullable = false, unique = true)
     public long getId() {
         return id;
     }
@@ -50,6 +48,17 @@ public class AliasTable extends AbstractTable {
         this.id = id;
     }
 
+    @Column(name = "alias", nullable = false)
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    @ManyToOne //TODO:lazy="false" cascade="save-update"
+    @JoinColumn(name = "id_object", nullable = false)
     public ObjectTable getObject() {
         return object;
     }
@@ -58,13 +67,15 @@ public class AliasTable extends AbstractTable {
         this.object = object;
     }
 
-    public String getAlias() {
-        return alias;
+    @OneToMany(mappedBy = "AliasOccurrence") //TODO:cascade="delete, delete-orphan"
+    public Set<AliasOccurrenceTable> getOccurrences() {
+        return occurrences;
     }
 
-    public void setAlias(String alias) {
-        this.alias = alias;
+    public void setOccurrences(Set<AliasOccurrenceTable> occurrences) {
+        this.occurrences = occurrences;
     }
+
 
     @Override
     public String toString() {

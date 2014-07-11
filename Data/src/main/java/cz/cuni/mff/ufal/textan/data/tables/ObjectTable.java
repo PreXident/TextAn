@@ -1,15 +1,17 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import javax.persistence.*;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 /**
+ * Object (entity) itself
  * @author Vaclav Pernicka
  */
-
-
+@Entity
+@Table(name = "Object")
 public class ObjectTable extends AbstractTable {
 
     public static final String PROPERTY_NAME_ID = "id";
@@ -79,55 +81,10 @@ public class ObjectTable extends AbstractTable {
         }
         return result;
     }
-    
-    public Set<JoinedObjectsTable> getOldObjects1() {
-        return oldObjects1;
-    }
 
-    public void setOldObjects1(Set<JoinedObjectsTable> oldObjects1) {
-        this.oldObjects1 = oldObjects1;
-    }
-
-    public Set<JoinedObjectsTable> getOldObjects2() {
-        return oldObjects2;
-    }
-
-    public void setOldObjects2(Set<JoinedObjectsTable> oldObjects2) {
-        this.oldObjects2 = oldObjects2;
-    }
-
-    public JoinedObjectsTable getNewObject() {
-        return newObject;
-    }
-
-    public void setNewObject(JoinedObjectsTable newObject) {
-        this.newObject = newObject;
-    }
-
-    public Set<InRelationTable> getRelations() {
-        return relations;
-    }
-
-    public void setRelations(Set<InRelationTable> relations) {
-        this.relations = relations;
-    }
-
-    public Set<AliasTable> getAliases() {
-        return aliases;
-    }
-
-    public void setAliases(Set<AliasTable> aliases) {
-        this.aliases = aliases;
-    }
-
-    public ObjectTypeTable getObjectType() {
-        return objectType;
-    }
-
-    public void setObjectType(ObjectTypeTable objectType) {
-        this.objectType = objectType;
-    }
-    
+    @Id
+    @GeneratedValue
+    @Column(name = "id_object", nullable = false, unique = true)
     public long getId() {
         return id;
     }
@@ -136,12 +93,67 @@ public class ObjectTable extends AbstractTable {
         this.id = id;
     }
 
+    @Column(name="data", nullable = true)
     public String getData() {
         return data;
     }
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    @ManyToOne //TODO
+    public ObjectTypeTable getObjectType() {
+        return objectType;
+    }
+
+    public void setObjectType(ObjectTypeTable objectType) {
+        this.objectType = objectType;
+    }
+
+    @OneToMany //TODO
+    public Set<AliasTable> getAliases() {
+        return aliases;
+    }
+
+    public void setAliases(Set<AliasTable> aliases) {
+        this.aliases = aliases;
+    }
+
+    @OneToMany //TODO
+    public Set<InRelationTable> getRelations() {
+        return relations;
+    }
+
+    public void setRelations(Set<InRelationTable> relations) {
+        this.relations = relations;
+    }
+
+    @OneToOne //TODO
+    public JoinedObjectsTable getNewObject() {
+        return newObject;
+    }
+
+    public void setNewObject(JoinedObjectsTable newObject) {
+        this.newObject = newObject;
+    }
+
+    @OneToMany //TODO
+    public Set<JoinedObjectsTable> getOldObjects1() {
+        return oldObjects1;
+    }
+
+    public void setOldObjects1(Set<JoinedObjectsTable> oldObjects1) {
+        this.oldObjects1 = oldObjects1;
+    }
+
+    @OneToMany //TODO
+    public Set<JoinedObjectsTable> getOldObjects2() {
+        return oldObjects2;
+    }
+
+    public void setOldObjects2(Set<JoinedObjectsTable> oldObjects2) {
+        this.oldObjects2 = oldObjects2;
     }
 
     @Override

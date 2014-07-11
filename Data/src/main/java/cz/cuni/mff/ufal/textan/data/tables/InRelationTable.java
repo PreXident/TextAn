@@ -6,10 +6,14 @@
 
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import javax.persistence.*;
+
 /**
- *
+ * Join table between relation and object.
  * @author Vaclav Pernicka
  */
+@Entity
+@Table(name = "IsInRelation")
 public class InRelationTable extends AbstractTable {
     
     private long id;
@@ -32,6 +36,9 @@ public class InRelationTable extends AbstractTable {
         this.object = object;
     }
 
+    @Id
+    @GeneratedValue
+    @Column(name = "id_is_in_relation", nullable = false, unique = true)
     public long getId() {
         return id;
     }
@@ -40,6 +47,7 @@ public class InRelationTable extends AbstractTable {
         this.id = id;
     }
 
+    @Column(name = "order_in_relation", nullable = false)
     public int getOrder() {
         return order;
     }
@@ -48,6 +56,7 @@ public class InRelationTable extends AbstractTable {
         this.order = order;
     }
 
+    @Column(name = "role", nullable = false)
     public String getRole() {
         return role;
     }
@@ -56,6 +65,7 @@ public class InRelationTable extends AbstractTable {
         this.role = role;
     }
 
+    @ManyToOne //TODO
     public RelationTable getRelation() {
         return relation;
     }
@@ -64,6 +74,7 @@ public class InRelationTable extends AbstractTable {
         this.relation = relation;
     }
 
+    @ManyToOne //TODO
     public ObjectTable getObject() {
         return object;
     }

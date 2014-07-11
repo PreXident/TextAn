@@ -6,12 +6,15 @@
 
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
- *
+ * Occurrence of a relation in a document. Stores the position and anchor of the relation.
  * @author Vaclav Pernicka
  */
+@Entity
+@Table(name = "RelationOccurrence")
 public class RelationOccurrenceTable extends AbstractTable {
     public static final String PROPERTY_NAME_ANCHOR = "anchor";
     public static final String PROPERTY_NAME_DOCUMENT = "document";
@@ -44,7 +47,10 @@ public class RelationOccurrenceTable extends AbstractTable {
     public RelationOccurrenceTable(RelationTable relation, DocumentTable document, int position, int length) {
         this(relation, document, position, document.getText().substring(position, position+length));
     }
-    
+
+    @Id
+    @GeneratedValue
+    @Column(name = "id_relation_occurence")
     public long getId() {
         return id;
     }
@@ -53,22 +59,16 @@ public class RelationOccurrenceTable extends AbstractTable {
         this.id = id;
     }
 
-    public RelationTable getRelation() {
-        return relation;
+    @Column(name = "anchor", nullable = true)
+    public String getAnchor() {
+        return anchor;
     }
 
-    public void setRelation(RelationTable relation) {
-        this.relation = relation;
+    public void setAnchor(String anchor) {
+        this.anchor = anchor;
     }
 
-    public DocumentTable getDocument() {
-        return document;
-    }
-
-    public void setDocument(DocumentTable document) {
-        this.document = document;
-    }
-
+    @Column(name = "position", nullable = true)
     public Integer getPosition() {
         return position;
     }
@@ -77,12 +77,22 @@ public class RelationOccurrenceTable extends AbstractTable {
         this.position = position;
     }
 
-    public String getAnchor() {
-        return anchor;
+    @ManyToOne //TODO
+    public RelationTable getRelation() {
+        return relation;
     }
 
-    public void setAnchor(String anchor) {
-        this.anchor = anchor;
+    public void setRelation(RelationTable relation) {
+        this.relation = relation;
+    }
+
+    @ManyToOne //TODO
+    public DocumentTable getDocument() {
+        return document;
+    }
+
+    public void setDocument(DocumentTable document) {
+        this.document = document;
     }
 
     @Override

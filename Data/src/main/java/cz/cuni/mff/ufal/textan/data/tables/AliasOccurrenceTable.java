@@ -1,9 +1,13 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import javax.persistence.*;
+
 /**
- *
+ * Occurrence of an alias in a document. Keeps the position of the alias.
  * @author Vaclav Pernicka
  */
+@Entity
+@Table(name = "AliasOccurrence")
 public class AliasOccurrenceTable extends AbstractTable {
     /**
      * name of the document property
@@ -43,6 +47,9 @@ public class AliasOccurrenceTable extends AbstractTable {
      *
      * @return id of the alias occurrence
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id_alias_occurence", unique = true, nullable = false)
     public long getId() {
         return id;
     }
@@ -59,6 +66,7 @@ public class AliasOccurrenceTable extends AbstractTable {
      *
      * @return position in the document
      */
+    @Column(name = "position", nullable = false)
     public int getPosition() {
         return position;
     }
@@ -75,11 +83,14 @@ public class AliasOccurrenceTable extends AbstractTable {
      * 
      * @return alias
      */
+    @ManyToOne //TODO add cascade lazy="false" cascade="save-update"
+    @JoinColumn(name = "id_alias", nullable = false)
     public AliasTable getAlias() {
         return alias;
     }
 
-    
+    @ManyToOne
+    @JoinColumn(name = "id_document", nullable = false)
     public void setAlias(AliasTable alias) {
         this.alias = alias;
     }

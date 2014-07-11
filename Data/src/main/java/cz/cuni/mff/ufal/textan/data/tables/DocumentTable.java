@@ -6,17 +6,18 @@
 
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import java.util.Date;
+import javax.persistence.*;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
- *
+ * Document - Report - Text written by policemen
  * @author Vaclav Pernicka
  */
+@Entity
+@Table(name = "Document")
 public class DocumentTable extends AbstractTable {
     
     public static final String PROPERTY_NAME_ID = "id";
@@ -42,38 +43,9 @@ public class DocumentTable extends AbstractTable {
         this.text = text;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public Set<AliasOccurrenceTable> getAliasOccurrences() {
-        return aliasOccurrences;
-    }
-
-    public void setAliasOccurrences(Set<AliasOccurrenceTable> aliasOccurrences) {
-        this.aliasOccurrences = aliasOccurrences;
-    }
-
-    public Set<RelationOccurrenceTable> getRelationOccurrences() {
-        return relationOccurrences;
-    }
-
-    public void setRelationOccurrences(Set<RelationOccurrenceTable> relationOccurrences) {
-        this.relationOccurrences = relationOccurrences;
-    }
-    
-    public void setProcessedDateToNow() {
-        setProcessedDate(new Date());
-    }
-    
-    public boolean isProcessed() {
-        return getProcessedDate() != null;
-    }
-
+    @Id
+    @GeneratedValue
+    @Column(name = "document_id", nullable = false)
     public long getId() {
         return id;
     }
@@ -82,6 +54,18 @@ public class DocumentTable extends AbstractTable {
         this.id = id;
     }
 
+    @Version
+    @Column(name = "version", nullable = false)
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    @Column(name = "added", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getAddedDate() {
         return addedDate;
     }
@@ -90,6 +74,8 @@ public class DocumentTable extends AbstractTable {
         this.addedDate = addedDate;
     }
 
+    @Column(name = "processed", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getProcessedDate() {
         return processedDate;
     }
@@ -98,12 +84,39 @@ public class DocumentTable extends AbstractTable {
         this.processedDate = processedDate;
     }
 
+    public boolean isProcessed() {
+        return getProcessedDate() != null;
+    }
+
+    @Column(name = "text", columnDefinition = "text", nullable = false)
     public String getText() {
         return text;
     }
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @OneToMany(mappedBy = "id_document") //TODO
+    public Set<RelationOccurrenceTable> getRelationOccurrences() {
+        return relationOccurrences;
+    }
+
+    public void setRelationOccurrences(Set<RelationOccurrenceTable> relationOccurrences) {
+        this.relationOccurrences = relationOccurrences;
+    }
+
+    @OneToMany //TODO
+    public Set<AliasOccurrenceTable> getAliasOccurrences() {
+        return aliasOccurrences;
+    }
+
+    public void setAliasOccurrences(Set<AliasOccurrenceTable> aliasOccurrences) {
+        this.aliasOccurrences = aliasOccurrences;
+    }
+
+    public void setProcessedDateToNow() {
+        setProcessedDate(new Date());
     }
 
     @Override

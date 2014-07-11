@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -7,10 +8,11 @@ import java.util.Set;
 
 
 /**
+ * Relation itself
  * @author Vaclav Pernicka
  */
-
-
+@Entity
+@Table(name = "Relation")
 public class RelationTable extends AbstractTable {
     public static final String PROPERTY_NAME_RELATION_TYPE_ID = "relationType";
     public static final String PROPERTY_NAME_OCCURRENCES_ID = "occurrences";
@@ -28,34 +30,9 @@ public class RelationTable extends AbstractTable {
         this.relationType = objectType;
     }
 
-    public Set<RelationOccurrenceTable> getOccurrences() {
-        return occurrences;
-    }
-
-    public void setOccurrences(Set<RelationOccurrenceTable> occurrences) {
-        this.occurrences = occurrences;
-    }
-    
-    public Set<InRelationTable> getObjectsInRelation() {
-        return objectsInRelation;
-    }
-
-    public void setObjectsInRelation(Set<InRelationTable> objectsInRelation) {
-        this.objectsInRelation = objectsInRelation;
-    }
-    
-    public RelationTypeTable getRelationType() {
-        return relationType;
-    }
-
-    public void setRelationType(RelationTypeTable relationType) {
-        this.relationType = relationType;
-    }
-
-    
-    
-    
-    
+    @Id
+    @GeneratedValue
+    @Column(name = "id_relation", nullable = false, unique = true)
     public long getId() {
         return id;
     }
@@ -64,6 +41,33 @@ public class RelationTable extends AbstractTable {
         this.id = id;
     }
 
+    @ManyToOne //TODO
+    public RelationTypeTable getRelationType() {
+        return relationType;
+    }
+
+    public void setRelationType(RelationTypeTable relationType) {
+        this.relationType = relationType;
+    }
+
+    @OneToMany //TODO
+    public Set<RelationOccurrenceTable> getOccurrences() {
+        return occurrences;
+    }
+
+    public void setOccurrences(Set<RelationOccurrenceTable> occurrences) {
+        this.occurrences = occurrences;
+    }
+
+    @OneToMany //TODO
+    public Set<InRelationTable> getObjectsInRelation() {
+        return objectsInRelation;
+    }
+
+    public void setObjectsInRelation(Set<InRelationTable> objectsInRelation) {
+        this.objectsInRelation = objectsInRelation;
+    }
+    
 
     @Override
     public String toString() {

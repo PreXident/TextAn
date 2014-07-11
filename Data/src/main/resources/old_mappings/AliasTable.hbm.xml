@@ -18,6 +18,7 @@
         <property name="alias" column="alias" type="string"/>
         <many-to-one name="object" class="cz.cuni.mff.ufal.textan.data.tables.ObjectTable" 
                     column="id_object" not-null="true" lazy="false" cascade="save-update" />
+
         <set name="occurrences" table="AliasOccurrence" inverse="true" cascade="delete, delete-orphan">
             <key>
                 <column name="id_alias"></column>

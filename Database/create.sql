@@ -5,6 +5,7 @@ USE textan;
 
 
 CREATE TABLE GlobalVersion (
+  id_global_version int PRIMARY KEY AUTO_INCREMENT
   version int DEFAULT 0 NOT NULL
 );
 
@@ -106,8 +107,8 @@ CREATE TABLE JoinedObjects
           CONSTRAINT FK_JOINEDOBJECTS_OLDOBJ2
             FOREIGN KEY (id_old_object2)
                   REFERENCES Object(id_object),
-        from_date date,
-        to_date date
+        from_date datetime NOT NULL,
+        to_date datetime
 );
 
 -- TODO add constrant: joined objects have to have the same type
@@ -125,7 +126,7 @@ CREATE TABLE RelationOccurrence
         CONSTRAINT FK_RELOCCURENCE_DOCUMENT
           FOREIGN KEY (id_document)
                 REFERENCES Document(id_document),
-        position int NOT NULL,
+        position int,
         anchor NVARCHAR(255)
 );
 

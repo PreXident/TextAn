@@ -6,14 +6,17 @@
 
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
 /**
- *
+ * Table that is able to cover joining two objects into one
  * @author Vaclav Pernicka
  */
+@Entity
+@Table(name = "JoinedObjects")
 public class JoinedObjectsTable extends AbstractTable {
     private long id;
     private Date from;
@@ -52,6 +55,8 @@ public class JoinedObjectsTable extends AbstractTable {
         this.oldObject2 = oldObject2;
     }
 
+    @Id
+    @Column(name = "id_new_object", unique = true, nullable = false)
     public long getId() {
         return id;
     }
@@ -59,7 +64,9 @@ public class JoinedObjectsTable extends AbstractTable {
     public void setId(long id) {
         this.id = id;
     }
-        
+
+    @Column(name = "from_date", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getFrom() {
         return from;
     }
@@ -68,6 +75,8 @@ public class JoinedObjectsTable extends AbstractTable {
         this.from = from;
     }
 
+    @Column(name = "to_date", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getTo() {
         return to;
     }
@@ -76,15 +85,17 @@ public class JoinedObjectsTable extends AbstractTable {
         this.to = to;
     }
 
+    @OneToOne //todo
     public ObjectTable getNewObject() {
         return newObject;
     }
 
     public void setNewObject(ObjectTable newObject) {
         this.newObject = newObject;
-        //this.setId(newObject.getId());
+        this.setId(newObject.getId());
     }
 
+    @OneToOne //todo
     public ObjectTable getOldObject1() {
         return oldObject1;
     }
@@ -93,6 +104,7 @@ public class JoinedObjectsTable extends AbstractTable {
         this.oldObject1 = oldObject1;
     }
 
+    @OneToOne //todo
     public ObjectTable getOldObject2() {
         return oldObject2;
     }

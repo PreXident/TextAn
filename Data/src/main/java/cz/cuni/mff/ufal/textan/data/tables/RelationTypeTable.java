@@ -6,15 +6,17 @@
 
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 /**
- *
+ * Type of a relation (killed, lived, was engaged, ...)
  * @author Vaclav Pernicka
  */
-
+@Entity
+@Table(name = "RelationType")
 public class RelationTypeTable extends AbstractTable {
     public static final String PROPERTY_NAME_ID = "id";
  
@@ -23,7 +25,6 @@ public class RelationTypeTable extends AbstractTable {
     
     private Set<RelationTable> relationsOfThisType = new HashSet<>();
 
-    
     public RelationTypeTable() {
         this("");
     }
@@ -32,28 +33,33 @@ public class RelationTypeTable extends AbstractTable {
         this.name = name;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-    
+    @Id
+    @GeneratedValue
+    @Column(name = "id_relation_type")
     public long getId() {
         return id;
     }
 
-    public Set<RelationTable> getRelationsOfThisType() {
-        return relationsOfThisType;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public void setRelationsOfThisType(Set<RelationTable> relationsOfThisType) {
-        this.relationsOfThisType = relationsOfThisType;
-    }
-
+    @Column(name = "name", nullable = false, unique = true)
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @OneToMany //TODO
+    public Set<RelationTable> getRelationsOfThisType() {
+        return relationsOfThisType;
+    }
+
+    public void setRelationsOfThisType(Set<RelationTable> relationsOfThisType) {
+        this.relationsOfThisType = relationsOfThisType;
     }
 
     @Override
