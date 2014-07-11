@@ -1,34 +1,37 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.tables;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 
 /**
  * Join table between relation and object.
+ *
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
 @Entity
 @Table(name = "IsInRelation")
 public class InRelationTable extends AbstractTable {
-    
+
     private long id;
     private int order;
     private String role;
     private RelationTable relation;
     private ObjectTable object;
 
-    public InRelationTable() {}
+    public InRelationTable() {
+    }
+
     public InRelationTable(RelationTable relation, ObjectTable object) {
         this(null, 0, relation, object);
     }
+
     public InRelationTable(int order, RelationTable relation, ObjectTable object) {
         this("", order, relation, object);
     }
+
     public InRelationTable(String role, int order, RelationTable relation, ObjectTable object) {
         this.role = role;
         this.order = order;
@@ -65,7 +68,9 @@ public class InRelationTable extends AbstractTable {
         this.role = role;
     }
 
-    @ManyToOne //TODO
+    @ManyToOne
+    @Cascade(CascadeType.SAVE_UPDATE)
+    @JoinColumn(name = "id_relation", nullable = false)
     public RelationTable getRelation() {
         return relation;
     }
@@ -74,7 +79,9 @@ public class InRelationTable extends AbstractTable {
         this.relation = relation;
     }
 
-    @ManyToOne //TODO
+    @ManyToOne
+    @Cascade(CascadeType.SAVE_UPDATE)
+    @JoinColumn(name = "id_object", nullable = false)
     public ObjectTable getObject() {
         return object;
     }
@@ -86,8 +93,8 @@ public class InRelationTable extends AbstractTable {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof InRelationTable)) return false;
-        
-        InRelationTable irt = (InRelationTable)o;
+
+        InRelationTable irt = (InRelationTable) o;
         if (irt.getId() != irt.getId()) return false;
         return irt.getOrder() == irt.getOrder();
     }
@@ -99,7 +106,4 @@ public class InRelationTable extends AbstractTable {
         hash = 59 * hash + this.order;
         return hash;
     }
-    
-       
-    
 }

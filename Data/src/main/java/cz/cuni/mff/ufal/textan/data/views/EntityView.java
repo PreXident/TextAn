@@ -4,21 +4,19 @@
 
 package cz.cuni.mff.ufal.textan.data.views;
 
-import javax.persistence.Entity;
 import java.util.Objects;
 
 /**
  *
  * @author Vaclav Pernicka
  */
-@Entity
-public class NameTagRecord {
+public class EntityView {
     Long DocumentID;
     Integer aliasOccurrencePosition;
     String alias;
     Long objectTypeID;
 
-    public NameTagRecord(Long DocumentID, Integer aliasOccurrencePosition, String alias, Long objectTypeID) {
+    public EntityView(Long DocumentID, Integer aliasOccurrencePosition, String alias, Long objectTypeID) {
         this.DocumentID = DocumentID;
         this.aliasOccurrencePosition = aliasOccurrencePosition;
         this.alias = alias;
@@ -80,7 +78,7 @@ public class NameTagRecord {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final NameTagRecord other = (NameTagRecord) obj;
+        final EntityView other = (EntityView) obj;
         if (this.DocumentID != other.DocumentID) {
             return false;
         }

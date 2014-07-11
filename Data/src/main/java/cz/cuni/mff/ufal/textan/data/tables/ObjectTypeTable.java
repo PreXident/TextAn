@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.tables;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,7 +10,9 @@ import java.util.Set;
 
 /**
  * Type of the object (person, adress, ...)
+ *
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
 @Entity
 @Table(name = "ObjectType")
@@ -53,7 +52,8 @@ public class ObjectTypeTable extends AbstractTable {
         this.name = name;
     }
 
-    @OneToMany //TODO
+    @OneToMany(mappedBy = "objectType", orphanRemoval = true)
+    @Cascade(CascadeType.DELETE)
     public Set<ObjectTable> getObjectsOfThisType() {
         return objectsOfThisType;
     }
@@ -83,11 +83,4 @@ public class ObjectTypeTable extends AbstractTable {
         hash = 97 * hash + Objects.hashCode(this.name);
         return hash;
     }
-
- 
-
-    
-    
-    
- 
 }

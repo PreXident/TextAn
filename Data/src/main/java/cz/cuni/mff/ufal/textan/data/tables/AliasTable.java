@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.tables;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,7 +10,9 @@ import java.util.Set;
 
 /**
  * Alias of an entity. For a person it could be "Karel", "Kája" or "The butcher"
+ *
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
 @Entity
 @Table(name = "Alias")
@@ -21,14 +20,14 @@ public class AliasTable extends AbstractTable {
     public static final String PROPERTY_NAME_ALIAS = "alias";
     public static final String PROPERTY_NAME_OCCURRENCES = "occurrences";
     public static final String PROPERTY_NAME_OBJECT_ID = "object";
-    
+
     private long id;
     private String alias;
-    
+
     private ObjectTable object;
     private Set<AliasOccurrenceTable> occurrences = new HashSet<>();
-    
-    
+
+
     public AliasTable() {
     }
 
@@ -57,7 +56,8 @@ public class AliasTable extends AbstractTable {
         this.alias = alias;
     }
 
-    @ManyToOne //TODO:lazy="false" cascade="save-update"
+    @ManyToOne
+    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object", nullable = false)
     public ObjectTable getObject() {
         return object;
@@ -67,7 +67,8 @@ public class AliasTable extends AbstractTable {
         this.object = object;
     }
 
-    @OneToMany(mappedBy = "AliasOccurrence") //TODO:cascade="delete, delete-orphan"
+    @OneToMany(mappedBy = "alias", orphanRemoval = true)
+    @Cascade({CascadeType.DELETE})
     public Set<AliasOccurrenceTable> getOccurrences() {
         return occurrences;
     }
@@ -80,12 +81,12 @@ public class AliasTable extends AbstractTable {
     @Override
     public String toString() {
         return String.format("AliasTable(%d, \"%s\", %s)", this.getId(), this.getAlias(), this.getObject());
-    }   
-    
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof AliasTable)) return false;
-        AliasTable at = (AliasTable)o;
+        AliasTable at = (AliasTable) o;
         if (at.getId() != this.getId()) return false;
         return at.getAlias().equals(this.getAlias());
     }
@@ -97,7 +98,4 @@ public class AliasTable extends AbstractTable {
         hash = 97 * hash + Objects.hashCode(this.alias);
         return hash;
     }
-    
-    
-    
 }

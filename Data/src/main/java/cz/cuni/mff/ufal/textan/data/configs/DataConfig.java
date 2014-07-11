@@ -4,8 +4,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.interceptors.GlobalVersionAndLogInterceptor;
 import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
-import cz.cuni.mff.ufal.textan.data.views.INameTagView;
-import cz.cuni.mff.ufal.textan.data.views.NameTagView;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -115,17 +113,7 @@ public class DataConfig {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setHibernateProperties(hibernateProperties());
-        sessionFactory.setPackagesToScan(
-                "cz.cuni.mff.ufal.textan.data.tables",
-                "cz.cuni.mff.ufal.textan.data.views",
-                "cz.cuni.mff.ufal.textan.data.graph"
-        );
-
-//        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-//        Resource[] mappings = null;
-//
-//        mappings = resolver.getResources("classpath:mappings/*.hbm.xml");
-//        sessionFactory.setMappingLocations(mappings);
+        sessionFactory.setPackagesToScan("cz.cuni.mff.ufal.textan.data.tables");
         sessionFactory.afterPropertiesSet();
 
         sessionFactory.getConfiguration().setInterceptor(logInterceptor());
@@ -183,12 +171,6 @@ public class DataConfig {
     public GraphFactory graphFactory() throws PropertyVetoException, IOException {
         return new GraphFactory(sessionFactory());
     }
-    
-    @Bean
-    public INameTagView nameTagView() throws PropertyVetoException, IOException {
-        return new NameTagView(sessionFactory());
-    }
-
 
     @Bean
     public LogInterceptorHack logInterceptorHack() {

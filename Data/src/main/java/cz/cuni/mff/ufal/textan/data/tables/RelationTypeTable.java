@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.tables;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,22 +10,23 @@ import java.util.Set;
 
 /**
  * Type of a relation (killed, lived, was engaged, ...)
+ *
  * @author Vaclav Pernicka
  */
 @Entity
 @Table(name = "RelationType")
 public class RelationTypeTable extends AbstractTable {
     public static final String PROPERTY_NAME_ID = "id";
- 
+
     private long id;
     private String name;
-    
+
     private Set<RelationTable> relationsOfThisType = new HashSet<>();
 
     public RelationTypeTable() {
         this("");
     }
-    
+
     public RelationTypeTable(String name) {
         this.name = name;
     }
@@ -53,7 +51,8 @@ public class RelationTypeTable extends AbstractTable {
         this.name = name;
     }
 
-    @OneToMany //TODO
+    @OneToMany(mappedBy = "relationType", orphanRemoval = true)
+    @Cascade(CascadeType.DELETE)
     public Set<RelationTable> getRelationsOfThisType() {
         return relationsOfThisType;
     }
@@ -83,9 +82,4 @@ public class RelationTypeTable extends AbstractTable {
         hash = 79 * hash + Objects.hashCode(this.name);
         return hash;
     }
-
-    
-    
-    
- 
 }

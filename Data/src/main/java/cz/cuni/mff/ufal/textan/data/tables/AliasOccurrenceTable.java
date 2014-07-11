@@ -1,10 +1,15 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
 
 /**
  * Occurrence of an alias in a document. Keeps the position of the alias.
+ *
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
 @Entity
 @Table(name = "AliasOccurrence")
@@ -20,22 +25,22 @@ public class AliasOccurrenceTable extends AbstractTable {
 
     private long id;
     private int position;
-    
+
     private AliasTable alias;
     private DocumentTable document;
 
     /**
-     *  no-param constructor
+     * no-param constructor
      */
     public AliasOccurrenceTable() {
     }
 
     /**
      * constructor
-     * 
+     *
      * @param position position in the text
-     * @param alias alias of the object
-     * @param document 
+     * @param alias    alias of the object
+     * @param document
      */
     public AliasOccurrenceTable(int position, AliasTable alias, DocumentTable document) {
         this.position = position;
@@ -44,18 +49,16 @@ public class AliasOccurrenceTable extends AbstractTable {
     }
 
     /**
-     *
      * @return id of the alias occurrence
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_alias_occurence", unique = true, nullable = false)
+    @Column(name = "id_alias_occurrence", unique = true, nullable = false)
     public long getId() {
         return id;
     }
 
     /**
-     * 
      * @param id id of the alias occurrence
      */
     public void setId(long id) {
@@ -63,7 +66,6 @@ public class AliasOccurrenceTable extends AbstractTable {
     }
 
     /**
-     *
      * @return position in the document
      */
     @Column(name = "position", nullable = false)
@@ -72,7 +74,6 @@ public class AliasOccurrenceTable extends AbstractTable {
     }
 
     /**
-     * 
      * @param position position in the document
      */
     public void setPosition(int position) {
@@ -80,21 +81,22 @@ public class AliasOccurrenceTable extends AbstractTable {
     }
 
     /**
-     * 
      * @return alias
      */
-    @ManyToOne //TODO add cascade lazy="false" cascade="save-update"
+    @ManyToOne
+    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_alias", nullable = false)
     public AliasTable getAlias() {
         return alias;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "id_document", nullable = false)
     public void setAlias(AliasTable alias) {
         this.alias = alias;
     }
 
+    @ManyToOne
+    @Cascade(CascadeType.SAVE_UPDATE)
+    @JoinColumn(name = "id_document", nullable = false)
     public DocumentTable getDocument() {
         return document;
     }
@@ -109,9 +111,9 @@ public class AliasOccurrenceTable extends AbstractTable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof AliasOccurrenceTable)) return false;
-        AliasOccurrenceTable aot = (AliasOccurrenceTable)o;
+    public boolean equals(Object obj) {
+        if (!(obj instanceof AliasOccurrenceTable)) return false;
+        AliasOccurrenceTable aot = (AliasOccurrenceTable) obj;
         if (aot.getId() != this.getId()) return false;
         return aot.getPosition() == this.getPosition();
     }
@@ -123,8 +125,4 @@ public class AliasOccurrenceTable extends AbstractTable {
         hash = 23 * hash + this.position;
         return hash;
     }
-    
-    
-    
-    
 }

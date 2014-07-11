@@ -1,17 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Objects;
 
 /**
  * Occurrence of a relation in a document. Stores the position and anchor of the relation.
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
 @Entity
 @Table(name = "RelationOccurrence")
@@ -50,7 +50,7 @@ public class RelationOccurrenceTable extends AbstractTable {
 
     @Id
     @GeneratedValue
-    @Column(name = "id_relation_occurence")
+    @Column(name = "id_relation_occurrence")
     public long getId() {
         return id;
     }
@@ -77,7 +77,9 @@ public class RelationOccurrenceTable extends AbstractTable {
         this.position = position;
     }
 
-    @ManyToOne //TODO
+    @ManyToOne
+    @Cascade(CascadeType.SAVE_UPDATE)
+    @JoinColumn(name = "id_relation", nullable = false)
     public RelationTable getRelation() {
         return relation;
     }
@@ -86,7 +88,9 @@ public class RelationOccurrenceTable extends AbstractTable {
         this.relation = relation;
     }
 
-    @ManyToOne //TODO
+    @ManyToOne
+    @Cascade(CascadeType.SAVE_UPDATE)
+    @JoinColumn(name = "id_document", nullable = false)
     public DocumentTable getDocument() {
         return document;
     }
@@ -118,6 +122,4 @@ public class RelationOccurrenceTable extends AbstractTable {
         hash = 53 * hash + Objects.hashCode(this.anchor);
         return hash;
     }
-    
-    
 }

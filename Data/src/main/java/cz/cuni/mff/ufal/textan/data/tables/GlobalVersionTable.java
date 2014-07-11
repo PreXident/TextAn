@@ -4,7 +4,9 @@ import javax.persistence.*;
 
 /**
  * Global version of objects (for now) to decide if there was or created a new object
+ *
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
 @Entity
 @Table(name = "GlobalVersion")
@@ -60,8 +62,4 @@ public class GlobalVersionTable extends AbstractTable {
         }
         return true;
     }
-
-
-    
-    
 }

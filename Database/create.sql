@@ -22,7 +22,7 @@ CREATE TABLE Audit (
 
 CREATE TABLE Document (
 	id_document int PRIMARY KEY AUTO_INCREMENT, 
-	added datetime,
+	added datetime NOT NULL,
 	processed datetime NULL,
 	text text CHARSET utf8 NOT NULL,
 	version int DEFAULT 0 NOT NULL
@@ -58,14 +58,14 @@ CREATE TABLE Alias (
 
 
 CREATE TABLE AliasOccurrence (
-	id_alias_occurence int PRIMARY KEY AUTO_INCREMENT,
+	id_alias_occurrence int PRIMARY KEY AUTO_INCREMENT,
 	id_alias int NOT NULL, 
 	id_document int NOT NULL, 
 	position int NOT NULL,
-  CONSTRAINT FK_ALIASOCCURENCE_IDALIAS
+  CONSTRAINT FK_ALIASOCCURRENCE_IDALIAS
    FOREIGN KEY (id_alias)
 		REFERENCES Alias(id_alias),
-  CONSTRAINT FK_ALIASOCCURENCE_IDDOCUMENT
+  CONSTRAINT FK_ALIASOCCURRENCE_IDDOCUMENT
    FOREIGN KEY (id_document)
 		REFERENCES Document(id_document)
 );
@@ -117,13 +117,13 @@ CREATE TABLE JoinedObjects
 CREATE TABLE RelationOccurrence
 (
 
-        id_relation_occurence int PRIMARY KEY AUTO_INCREMENT,
+        id_relation_occurrence int PRIMARY KEY AUTO_INCREMENT,
         id_relation int NOT NULL,
-        CONSTRAINT FK_RELOCCURENCE_RELATION
+        CONSTRAINT FK_RELOCCURRENCE_RELATION
           FOREIGN KEY (id_relation)
             REFERENCES Relation(id_relation),
         id_document int NOT NULL,
-        CONSTRAINT FK_RELOCCURENCE_DOCUMENT
+        CONSTRAINT FK_RELOCCURRENCE_DOCUMENT
           FOREIGN KEY (id_document)
                 REFERENCES Document(id_document),
         position int,
