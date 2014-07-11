@@ -3,14 +3,13 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
 import cz.cuni.mff.ufal.textan.gui.Window;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
 import javafx.concurrent.Task;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -109,6 +108,7 @@ public class GraphViewController extends GraphController {
         leftToolbar.prefWidthProperty().bind(toolbar.widthProperty().add(-25).divide(2));
         rightToolbar.prefWidthProperty().bind(toolbar.widthProperty().add(-25).divide(2));
         contextMenu = new ContextMenu();
+        contextMenu.setStyle(OBJECT_CONTEXT_MENU);
         contextMenu.setConsumeAutoHidingEvents(false);
         final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
         graphMI.setOnAction(e -> {
@@ -160,7 +160,7 @@ public class GraphViewController extends GraphController {
                 graphView.setObjectContextMenu(contextMenu);
                 final Object center = g.getNodes().get(grapher.getRootId());
                 final Window w = window == null ? stage.getInnerWindow() : window;
-                w.setTitle(w.getTitle() + " - " + Utils.shortString(center.toString()));
+                w.setTitle(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID) + " - " + Utils.shortString(center.toString()));
                 lock.release();
             });
             setOnFailed(e -> {

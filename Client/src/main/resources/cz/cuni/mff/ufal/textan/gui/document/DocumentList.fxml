@@ -15,28 +15,19 @@
 <?import jfxtras.labs.scene.control.BigDecimalField?>
 
 <BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
-			fx:controller="cz.cuni.mff.ufal.textan.gui.graph.ObjectListController" styleClass="root" >
+			fx:controller="cz.cuni.mff.ufal.textan.gui.document.DocumentListController" styleClass="root" >
 	<stylesheets >
-		<URL value="@ObjectList.css" />
+		<URL value="@DocumentList.css" />
 	</stylesheets>
-	<top>
-		<GridPane alignment="CENTER_LEFT" hgap="10" vgap="10">
-			<padding><Insets top="0" right="0" bottom="10" left="0"/></padding>
-			<Label text="%type" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-			<ComboBox fx:id="typeComboBox" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-			<Label text="%filter" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-			<TextField fx:id="filterField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-			<!--<Label text="%distance" />
-			<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="100" />-->
-			<Button text="%filter.execute" onAction="#filter" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-		</GridPane>
-	</top>
 	<center>
 		<TableView fx:id="table" minHeight="30">
 			<columns>
 				<TableColumn fx:id="idColumn" text="%table.id" prefWidth="60" sortable="false" />
-				<TableColumn fx:id="typeColumn" text="%table.type" prefWidth="100" sortable="false" />
-				<TableColumn fx:id="aliasColumn" text="%table.alias" sortable="false" />
+				<TableColumn fx:id="addTimeColumn" text="%table.added" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="lastChangeTimeColumn" text="%table.lastChangeTime" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="processedColumn" text="%table.processed" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="processTimeColumn" text="%table.processedTime" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="textColumn" text="%table.text" sortable="false" />
 			</columns>
 			<placeholder>
 				<Label text="" />

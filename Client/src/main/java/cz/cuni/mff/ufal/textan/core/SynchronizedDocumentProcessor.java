@@ -37,7 +37,7 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
     @Override
     public GetProblemsResponse getProblems(
             final GetProblemsRequest getProblemsRequest,
-            final EditingTicket editingTicket) throws IdNotFoundException {
+            final EditingTicket editingTicket) {
         return innerDP.getProblems(getProblemsRequest, editingTicket);
     }
 

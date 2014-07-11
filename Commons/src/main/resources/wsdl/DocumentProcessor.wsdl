@@ -159,7 +159,6 @@
         <wsdl:operation name="getProblems">
             <wsdl:input message="ws:getProblemsRequest"/>
             <wsdl:output message="ws:getProblemsResponse"/>
-            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <!--<wsdl:operation name="getProblemsById">
@@ -283,9 +282,6 @@
             <wsdl:output>
                 <soap:body parts="getProblemsResponse" use="literal"/>
             </wsdl:output>
-            <wsdl:fault name="idNotFoundException">
-                <soap:fault name="idNotFoundException" use="literal" />
-            </wsdl:fault>
         </wsdl:operation>
     
         <!--<wsdl:operation name="getProblemsById">
