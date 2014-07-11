@@ -54,9 +54,8 @@ public class Train {
         // Create list of pair between entity and object - YES 
         for (ObjectTable obt : objectTable) {
 
-            long type = obt.getObjectType().getId(); //TODO: why you use name instead of identifier?
+            long type = obt.getObjectType().getId(); //TODO: why you use name instead of identifier? - done
             Set<AliasTable> als = obt.getAliases();
-            AliasTable first_alias = als.iterator().next();
             String first_alias_text = ""; //first_alias.getAlias();
 
             // Create a fake entity for training
@@ -79,7 +78,9 @@ public class Train {
      * Create learning model with just a few features
      *    
     */
-    static Instance CreateInstanceBasic(Entity e, ObjectTable obj, IAliasTableDAO aliasTableDAO, IObjectTableDAO objectTableDAO, int target) {
+    static Instance CreateInstanceBasic
+        (Entity e, ObjectTable obj, IAliasTableDAO aliasTableDAO, 
+                IObjectTableDAO objectTableDAO, int target) {
 
         // Create a defult instance
         double[] values = new double[]{1, 1, 1, 1};
