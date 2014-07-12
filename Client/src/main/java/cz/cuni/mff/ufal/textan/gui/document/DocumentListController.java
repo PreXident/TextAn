@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.gui.document;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Client;
+import cz.cuni.mff.ufal.textan.core.Client.Processed;
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
@@ -23,6 +24,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -30,6 +32,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
@@ -48,6 +51,12 @@ public class DocumentListController extends WindowController {
 
     @FXML
     private BorderPane root;
+
+    @FXML
+    private CheckBox processedCheckBox;
+
+    @FXML
+    private TextField filterField;
 
     @FXML
     private TableView<Document> table;
@@ -125,13 +134,17 @@ public class DocumentListController extends WindowController {
             node.setCursor(Cursor.WAIT);
             final int size = perPageComboBox.getValue();
             final int first = perPageComboBox.getValue() * pageNo;
+            final String filter = filterField.getText();
+            final Processed processed = processedCheckBox.isIndeterminate()
+                    ? Processed.BOTH
+                    : processedCheckBox.isSelected() ? Processed.YES : Processed.NO;
             final Task<Pair<List<Document>, Integer>> task = new Task<Pair<List<Document>, Integer>>() {
                 @Override
                 protected Pair<List<Document>, Integer> call() throws Exception {
                     Pair<List<Document>, Integer> pair =
                             objectId == -1
-                            ? client.getDocumentsList(first, size)
-                            : client.getDocumentsList(objectId, first, size);
+                            ? client.getDocumentsList(processed, filter, first, size)
+                            : client.getDocumentsList(objectId, processed, filter, first, size);
                     pair.getFirst().sort((doc1, doc2) -> Long.compare(doc1.getId(), doc2.getId()));
                     return pair;
                 }

@@ -49,6 +49,35 @@ public class Client {
     private static final QName DATA_PROVIDER_SERVICE = new QName("http://ws.commons.textan.ufal.mff.cuni.cz", "DataProviderService");
     private static final QName DATA_PROVIDER_PORT = new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService", "DataProviderPort");
 
+    /** Values for document processed filtering. */
+    public enum Processed {
+        YES {
+            @Override
+            public boolean filter(final Document document) {
+                return document.isProcessed();
+            }
+        },
+        NO {
+            @Override
+            public boolean filter(final Document document) {
+                return !document.isProcessed();
+            }
+        },
+        BOTH {
+            @Override
+            public boolean filter(final Document document) {
+                return true;
+            }
+        };
+
+        /**
+         * Filters document by it's processed field.
+         * @param document document to filter
+         * @return true if document passes the filter, false otherwise
+         */
+        public abstract boolean filter(final Document document);
+    }
+
     /** Settings of the application. Handle with care, they're shared. */
     final protected Properties settings;
 
@@ -173,19 +202,24 @@ public class Client {
 
     /**
      * Returns list of documents.
+     * @param processed only processed documents?
+     * @param filter document text filter
      * @param first index of the first object
      * @param size maximal number of objects
      * @return list of documents
      */
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
+            final Processed processed, final String filter,
             final int first, final int size) {
-        //TODO remove emulation of pagination
+        //TODO remove emulation of pagination and filtering
         final GetDocumentsResponse response =
                 getDataProvider().getDocuments(new Void());
         final List<Document> list = response.getDocuments().stream()
+                .map(Document::new)
+                .filter(d -> processed.filter(d))
+                .filter(d -> d.getText().contains(filter))
                 .skip(first)
                 .limit(size)
-                .map(Document::new)
                 .collect(Collectors.toCollection(ArrayList::new));
         return new Pair<>(list, response.getDocuments().size());
     }
@@ -193,23 +227,30 @@ public class Client {
     /**
      * Returns documents containing object with given id.
      * @param id object id
+     * @param processed only processed documents?
+     * @param filter document text filter
      * @param first index of the first object
      * @param size maximal number of objects
      * @return list of documents containing object with given id
      * @throws IdNotFoundException if id error occurs
      */
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
-            final long id, final int first, final int size) throws IdNotFoundException {
+            final long id, final Processed processed, final String filter,
+            final int first, final int size) throws IdNotFoundException {
         try {
             final GetDocumentsContainingObjectByIdRequest request =
                     new GetDocumentsContainingObjectByIdRequest();
             request.setObjectId(id);
             request.setFirstResult(first);
             request.setMaxResults(size);
+            //TODO set parameters for filtering when ready
             final GetDocumentsContainingObjectByIdResponse response =
                     getDataProvider().getDocumentsContainingObjectById(request);
             final List<Document> list = response.getDocuments().stream()
                     .map(Document::new)
+                    //TODO remove filtering emulation
+                    .filter(d -> processed.filter(d))
+                    .filter(d -> d.getText().contains(filter))
                     .collect(Collectors.toCollection(ArrayList::new));
             return new Pair<>(list, response.getTotalNumberOfResults());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {

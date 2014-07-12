@@ -7,3 +7,8 @@
 	-fx-border-color: black;
 	-fx-border-width: 2;
 }
+
+.check-box *.box {
+	-fx-pref-width: 25px;
+	-fx-pref-height: 25px;
+}
