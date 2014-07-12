@@ -482,7 +482,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         }
 
         LOG.info("Executed operation getDocuments: {}", response);
-        return new GetDocumentsResponse();
+        return response;
     }
 
     @Override
