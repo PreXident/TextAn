@@ -36,7 +36,9 @@ public class DocumentStage extends OuterStage {
             final DocumentListController controller = loader.getController();
             controller.setStage(this);
             controller.setSettings(settings);
-            controller.setObjectId(objectId);
+            if (objectId != -1) {
+                controller.setObjectId(objectId);
+            }
             controller.setTextAnController(textAnController);
             controller.setClient(client);
             controller.filter();

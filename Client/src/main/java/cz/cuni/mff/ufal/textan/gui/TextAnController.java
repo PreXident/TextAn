@@ -159,6 +159,11 @@ public class TextAnController implements Initializable {
     }
 
     @FXML
+    private void displayDocuments() {
+        displayDocuments(-1);
+    }
+
+    @FXML
     private void reportWizard() {
         try {
             final ProcessReportPipeline pipeline = client.createNewReportPipeline();

@@ -172,6 +172,25 @@ public class Client {
     }
 
     /**
+     * Returns list of documents.
+     * @param first index of the first object
+     * @param size maximal number of objects
+     * @return list of documents
+     */
+    public synchronized Pair<List<Document>, Integer> getDocumentsList(
+            final int first, final int size) {
+        //TODO remove emulation of pagination
+        final GetDocumentsResponse response =
+                getDataProvider().getDocuments(new Void());
+        final List<Document> list = response.getDocuments().stream()
+                .skip(first)
+                .limit(size)
+                .map(Document::new)
+                .collect(Collectors.toCollection(ArrayList::new));
+        return new Pair<>(list, response.getDocuments().size());
+    }
+
+    /**
      * Returns documents containing object with given id.
      * @param id object id
      * @param first index of the first object

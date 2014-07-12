@@ -129,7 +129,9 @@ public class DocumentListController extends WindowController {
                 @Override
                 protected Pair<List<Document>, Integer> call() throws Exception {
                     Pair<List<Document>, Integer> pair =
-                            client.getDocumentsList(objectId, first, size);
+                            objectId == -1
+                            ? client.getDocumentsList(first, size)
+                            : client.getDocumentsList(objectId, first, size);
                     pair.getFirst().sort((doc1, doc2) -> Long.compare(doc1.getId(), doc2.getId()));
                     return pair;
                 }

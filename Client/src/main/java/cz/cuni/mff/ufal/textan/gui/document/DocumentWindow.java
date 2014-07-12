@@ -36,7 +36,9 @@ public class DocumentWindow extends InnerWindow {
             final DocumentListController controller = loader.getController();
             controller.setWindow(this);
             controller.setSettings(settings);
-            controller.setObjectId(objectId);
+            if (objectId != -1) {
+                controller.setObjectId(objectId);
+            }
             controller.setTextAnController(textAnController);
             controller.setClient(client);
             controller.filter();
