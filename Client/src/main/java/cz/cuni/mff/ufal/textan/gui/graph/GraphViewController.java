@@ -1,19 +1,26 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.Graph;
+import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.Utils.CONTEXT_MENU_STYLE;
 import cz.cuni.mff.ufal.textan.gui.Window;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
@@ -64,8 +71,11 @@ public class GraphViewController extends GraphController {
     /** Synchronization lock. */
     final Semaphore lock = new Semaphore(1);
 
-    /** Context menu for nodes and edges. */
-    ObjectContextMenu contextMenu;
+    /** Context menu for nodes. */
+    ObjectContextMenu objectContextMenu;
+
+    /** Context menu for edges. */
+    ContextMenu relationContextMenu;
 
     @FXML
     private void home() {
@@ -156,10 +166,30 @@ public class GraphViewController extends GraphController {
                 final Object center = g.getNodes().get(grapher.getRootId());
                 final Window w = window == null ? stage.getInnerWindow() : window;
                 w.setTitle(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID) + " - " + Utils.shortString(center.toString()));
-                contextMenu = new ObjectContextMenu(textAnController);
-                contextMenu.objectProperty().bind(graphView.objectForGraph);
-                contextMenu.distanceProperty().bind(distanceField.numberProperty());
-                graphView.setObjectContextMenu(contextMenu);
+                objectContextMenu = new ObjectContextMenu(textAnController);
+                objectContextMenu.objectProperty().bind(graphView.objectForGraph);
+                objectContextMenu.distanceProperty().bind(distanceField.numberProperty());
+                graphView.setObjectContextMenu(objectContextMenu);
+                relationContextMenu = new ContextMenu();
+                relationContextMenu.setStyle(CONTEXT_MENU_STYLE);
+                graphView.relationForGraph.addListener((ov, oldVal, newVal) -> {
+                    relationContextMenu.getItems().clear();
+                    final List<Triple<Integer, String, Object>> list =
+                            new ArrayList<>(newVal.getObjects());
+                    Collections.sort(list, (t1, t2) -> t1.getFirst() - t2.getFirst());
+                    list.forEach(t -> {
+                        final String text = String.format("%s: %s - %s",
+                                t.getFirst(), t.getSecond(), t.getThird());
+                        final MenuItem mi = new MenuItem(text);
+                        mi.setUserData(t.getThird());
+                        mi.setOnAction(ev -> {
+                            final Object obj = (Object) ((MenuItem)ev.getSource()).getUserData();
+                            graphView.centerToObject(obj);
+                        });
+                        relationContextMenu.getItems().add(mi);
+                    });
+                });
+                graphView.setRelationContextMenu(relationContextMenu);
                 lock.release();
             });
             setOnFailed(e -> {
