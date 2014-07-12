@@ -19,6 +19,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
@@ -80,6 +81,9 @@ public class ReportErrorsController extends ReportWizardController {
 
     @FXML
     GridPane gridPane;
+
+    @FXML
+    Button forceButton;
 
     /** Localization controller. */
     ResourceBundle resourceBundle;
@@ -232,6 +236,8 @@ public class ReportErrorsController extends ReportWizardController {
         //
         if (!pipeline.getProblems().isProcessed()) {
             vbox.getChildren().remove(processedLabel);
+        } else {
+            forceButton.setVisible(false);
         }
         if (!pipeline.getProblems().isChanged()) {
             vbox.getChildren().remove(changedLabel);
