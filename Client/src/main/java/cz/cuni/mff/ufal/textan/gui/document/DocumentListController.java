@@ -26,7 +26,9 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.util.StringConverter;
@@ -187,6 +189,25 @@ public class DocumentListController extends WindowController {
             } else {
                 table.setContextMenu(null);
             }
+        });
+        table.setRowFactory((TableView<Document> tv) -> {
+            return new TableRow<Document>() {
+                /** Tooltip displaying full document text. */
+                protected Tooltip tooltip = new Tooltip();
+
+                {
+                    tooltip.setWrapText(true);
+                    tooltip.setMaxWidth(500);
+                    itemProperty().addListener((ov, oldVal, newVal) -> {
+                        if (newVal != null) {
+                            tooltip.setText(newVal.getText());
+                            setTooltip(tooltip);
+                        } else {
+                            setTooltip(null);
+                        }
+                    });
+                }
+            };
         });
         textColumn.prefWidthProperty().bind(table.widthProperty().add(idColumn.widthProperty().add(addTimeColumn.widthProperty()).add(lastChangeTimeColumn.widthProperty()).add(processedColumn.widthProperty()).add(processTimeColumn.widthProperty()).multiply(-1).add(-30)));
         idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, Number> p) -> new ReadOnlyLongWrapper(p.getValue().getId()));
