@@ -242,6 +242,49 @@ public class NamedEntityRecognizer {
         return result;
     }
 
+    private boolean createFeatures(LearningParameters learningParameters) {
+        LOG.info("Creating features file");
+        File featuresFile = learningParameters.getFeatruresFile();
+        LOG.debug("Features file location {}", featuresFile.getPath());
+        try (BufferedWriter features = new BufferedWriter(new FileWriter(featuresFile))) {
+            features.write("Form/" + learningParameters.getForm());
+            features.newLine();
+            features.write("Lemma/" + learningParameters.getLemma());
+            features.newLine();
+            features.write("RawLemma/" + learningParameters.getRawLemma());
+            features.newLine();
+            features.write("RawLemmaCapitalization/" + learningParameters.getRawLemmaCapitalization());
+            features.newLine();
+            features.write("Tag/" + learningParameters.getTag());
+            features.newLine();
+            features.write("NumericTimeValue/" + learningParameters.getNumericTimeValue());
+            features.newLine();
+            features.write("CzechLemmaTerm/" + learningParameters.getCzechLemmaTerm());
+            features.newLine();
+            features.write("BrownClusters/" + learningParameters.getBrownClusters() + " " + learningParameters.getBrownClustersFile().getPath());
+            features.newLine();
+            features.write("Gazetteers/" + learningParameters.getGazetteers());
+            File gazetteers = learningParameters.getGazetteersDirectory();
+            if (gazetteers.isDirectory()) {
+                for (String gazetteer : gazetteers.list()) {
+                    features.write(" " + gazetteers.getPath() + File.separator + gazetteer);
+                }
+            } else {
+                return false;
+            }
+            features.newLine();
+            features.write("PreviousStage/" + learningParameters.getPreviousStage());
+            features.newLine();
+            features.write("URLEmailDetector " + learningParameters.getURLEmailDetector());
+            features.newLine();
+
+        } catch (IOException e) {
+            LOG.error("Error creating feature file", e);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Learn new model
      *
@@ -258,7 +301,7 @@ public class NamedEntityRecognizer {
             File modelLocation = new File(MODELS_DIR, MODEL_FILE_PREFIX + sdf.format(date) + MODEL_FILE_EXTENSION).getAbsoluteFile();
             LOG.debug("New model path: {}", modelLocation);
 
-            LearningParameters learningParameters = new LearningParameters(trainingExecutable, trainingDirectory);
+            LearningParameters learningParameters = new LearningParameters(trainingExecutable, trainingDirectory, trainingDirectory);
             File trainingDataFile = new File(TRAINING_DIR, TRAINING_DATA_PREFIX + sdf.format(date) + TRAINING_DATA_EXTENSION).getAbsoluteFile();
             if ((new File(TRAINING_DIR).isDirectory()) || (new File(TRAINING_DIR).mkdir())) {
                 if (learningParameters.useDefaultTrainingData()) {
@@ -271,6 +314,11 @@ public class NamedEntityRecognizer {
                 prepareLearningData(trainingDataFile);
             } else {
                 LOG.error("Can't create training data folder");
+                return false;
+            }
+
+            if (!createFeatures(learningParameters)) {
+                LOG.error("Can't create features file");
                 return false;
             }
 
