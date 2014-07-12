@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -180,8 +181,20 @@ public class DocumentListController extends WindowController {
                 //TODO display new window containing the document
             }
         });
-        contextMenu.setStyle(CONTEXT_MENU_STYLE);
         contextMenu.getItems().add(graphMI);
+        final MenuItem processMI = new MenuItem(Utils.localize(resourceBundle, "document.process"));
+        processMI.setOnAction(e -> {
+            final Document doc = table.getSelectionModel().getSelectedItem();
+            if (doc != null) {
+                //TODO display new window to process the document
+            }
+        });
+        processMI.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            final Document doc = table.getSelectionModel().getSelectedItem();
+            return doc != null ? doc.isProcessed() : true;
+        }, table.getSelectionModel().selectedItemProperty()));
+        contextMenu.getItems().add(processMI);
+        contextMenu.setStyle(CONTEXT_MENU_STYLE);
         contextMenu.setConsumeAutoHidingEvents(false);
         table.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
             if (newVal != null) {
