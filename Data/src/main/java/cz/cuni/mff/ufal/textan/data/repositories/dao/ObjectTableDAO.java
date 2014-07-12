@@ -177,4 +177,12 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     public List<ObjectTable> findAllByDocumentOccurrence(DocumentTable document, int firstResult, int pageSize) {
         return findAllByDocumentOccurrence(document.getId(), firstResult, pageSize);
     }
+
+    @Override
+    public List<ObjectTable> findAllSinceGlobalVersion(long version) {
+        return findAllCriteria()
+                .add(Restrictions.ge(ObjectTable.PROPERTY_NAME_GLOBAL_VERSION, version))
+                .list();
+                
+    }
 }

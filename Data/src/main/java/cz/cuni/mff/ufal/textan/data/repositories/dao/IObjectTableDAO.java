@@ -65,4 +65,12 @@ public interface IObjectTableDAO extends IObjectRelationDAO<ObjectTable> {
      * @return 
      */
     List<ObjectTable> findAllByObjectType(ObjectTypeTable type);
+    
+    /**
+     * finds all object newer or equal from specified version
+     * 
+     * @param version global version which auto increments with object creation or update
+     * @return 
+     */
+    List<ObjectTable> findAllSinceGlobalVersion(long version);   
 }
