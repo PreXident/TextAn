@@ -10,7 +10,7 @@ import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.beans.binding.ObjectBinding;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -250,17 +250,11 @@ public class ReportErrorsController extends ReportWizardController {
         newObjectsContextMenu.objectProperty().bind(newObjectsTable.getSelectionModel().selectedItemProperty());
         //
         joinedObjectsContextMenu = new ObjectContextMenu(textAnController);
-        joinedObjectsContextMenu.objectProperty().bind(new ObjectBinding<Object>() {
-            {
-                bind(joinedObjectsTreeView.getSelectionModel().selectedItemProperty());
-            }
-            @Override
-            protected Object computeValue() {
-                final TreeItem<Object> selected =
-                        joinedObjectsTreeView.getSelectionModel().getSelectedItem();
-                return selected != null ? selected.getValue() : null;
-            }
-        });
+        joinedObjectsContextMenu.objectProperty().bind(Bindings.createObjectBinding(() -> {
+            final TreeItem<Object> selected =
+                    joinedObjectsTreeView.getSelectionModel().getSelectedItem();
+            return selected != null ? selected.getValue() : null;
+        }, joinedObjectsTreeView.getSelectionModel().selectedItemProperty()));
         joinedObjectsTreeView.setContextMenu(joinedObjectsContextMenu);
         //
         relationsContextMenu = new ObjectContextMenu(textAnController);
