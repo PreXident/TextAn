@@ -6,20 +6,21 @@ import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
-import cz.cuni.mff.ufal.textan.gui.Utils;
-import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
+import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
+import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -84,13 +85,19 @@ public class ReportErrorsController extends ReportWizardController {
     ResourceBundle resourceBundle;
 
     /** Context menu for new objects. */
-    ContextMenu newObjectsContextMenu = new ContextMenu();
+    ObjectContextMenu newObjectsContextMenu;
 
     /** Context menu for joined objects. */
-    ContextMenu joinedObjectsContextMenu = new ContextMenu();
+    ObjectContextMenu joinedObjectsContextMenu;
 
     /** Context menu for relation's objects. */
-    ContextMenu relationsContextMenu = new ContextMenu();
+    ObjectContextMenu relationsContextMenu;
+
+    /** JoinedObject that is selected. */
+    ObjectProperty<Object> selectedJoinedObject = new SimpleObjectProperty<>();
+
+    /** Relation Object that is selected. */
+    ObjectProperty<Object> selectedRelationObject = new SimpleObjectProperty<>();
 
     @FXML
     private void back() {
@@ -114,29 +121,6 @@ public class ReportErrorsController extends ReportWizardController {
         this.resourceBundle = rb;
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
         slider.setLabelFormatter(new SliderLabelFormatter());
-        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
-        graphMI.setOnAction(e -> {
-            final Object obj = newObjectsTable.getSelectionModel().getSelectedItem();
-            if (obj != null) {
-                textAnController.displayGraph(obj.getId());
-            }
-        });
-        newObjectsContextMenu.getItems().add(graphMI);
-        newObjectsContextMenu.setConsumeAutoHidingEvents(false);
-        newObjectsContextMenu.setStyle(OBJECT_CONTEXT_MENU);
-        //
-        final MenuItem joinedGraphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
-        joinedGraphMI.setOnAction(e -> {
-            final Object obj = joinedObjectsTreeView.getSelectionModel().getSelectedItem().getValue();
-            if (obj != null) {
-                textAnController.displayGraph(obj.getId());
-            }
-        });
-        joinedObjectsContextMenu.getItems().add(joinedGraphMI);
-        joinedObjectsContextMenu.setConsumeAutoHidingEvents(false);
-        joinedObjectsContextMenu.setStyle(OBJECT_CONTEXT_MENU);
-        joinedObjectsTreeView.setContextMenu(joinedObjectsContextMenu);
-        //
         newObjectsTable.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
             if (newVal != null) {
                 newObjectsTable.setContextMenu(newObjectsContextMenu);
@@ -169,23 +153,16 @@ public class ReportErrorsController extends ReportWizardController {
         newObjectsTableAliasColumn.setCellValueFactory((TableColumn.CellDataFeatures<Object, String> p) -> new ReadOnlyStringWrapper(p.getValue().getAliasString()));
         newObjectsTableAliasColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         //
-        final MenuItem relationGraphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
-        relationGraphMI.setOnAction(e -> {
-            final java.lang.Object obj = relationsTreeView.getSelectionModel().getSelectedItem().getValue();
-            if (obj instanceof Triple) {
-                @SuppressWarnings("unchecked")
-                final Triple<Integer, String, Object> t = (Triple<Integer, String, Object>) obj;
-                textAnController.displayGraph(t.getThird().getId());
-            }
-        });
-        relationsContextMenu.getItems().add(relationGraphMI);
-        relationsContextMenu.setConsumeAutoHidingEvents(false);
-        relationsContextMenu.setStyle(OBJECT_CONTEXT_MENU);
         relationsTreeView.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
             if (newVal == null || !(newVal.getValue() instanceof Triple)) {
                 relationsTreeView.setContextMenu(null);
+                selectedRelationObject.set(null);
             } else {
                 relationsTreeView.setContextMenu(relationsContextMenu);
+                @SuppressWarnings("unchecked")
+                final Triple<Integer, String, Object> triple =
+                      (Triple<Integer, String, Object>) newVal.getValue();
+                selectedRelationObject.set(triple.getThird());
             }
         });
         //
@@ -259,5 +236,28 @@ public class ReportErrorsController extends ReportWizardController {
         if (!pipeline.getProblems().isChanged()) {
             vbox.getChildren().remove(changedLabel);
         }
+    }
+
+    @Override
+    public void setTextAnController(final TextAnController textAnController) {
+        newObjectsContextMenu = new ObjectContextMenu(textAnController);
+        newObjectsContextMenu.objectProperty().bind(newObjectsTable.getSelectionModel().selectedItemProperty());
+        //
+        joinedObjectsContextMenu = new ObjectContextMenu(textAnController);
+        joinedObjectsContextMenu.objectProperty().bind(new ObjectBinding<Object>() {
+            {
+                bind(joinedObjectsTreeView.getSelectionModel().selectedItemProperty());
+            }
+            @Override
+            protected Object computeValue() {
+                final TreeItem<Object> selected =
+                        joinedObjectsTreeView.getSelectionModel().getSelectedItem();
+                return selected != null ? selected.getValue() : null;
+            }
+        });
+        joinedObjectsTreeView.setContextMenu(joinedObjectsContextMenu);
+        //
+        relationsContextMenu = new ObjectContextMenu(textAnController);
+        relationsContextMenu.objectProperty().bind(selectedRelationObject);
     }
 }

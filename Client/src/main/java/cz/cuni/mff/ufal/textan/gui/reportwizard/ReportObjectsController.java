@@ -8,13 +8,13 @@ import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
+import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
+import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
 import cz.cuni.mff.ufal.textan.gui.Window;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventType;
@@ -110,10 +112,10 @@ public class ReportObjectsController extends ReportWizardController {
     CheckBox allObjectsCheckBox;
 
     /** Context menu for objects. */
-    ContextMenu objectContextMenu;
+    ObjectContextMenu objectContextMenu;
 
     /** Object to display graph for. */
-    Object objectForGraph;
+    ObjectProperty<Object> objectForGraph = new SimpleObjectProperty<>();
 
     @FXML
     public void back() {
@@ -205,15 +207,6 @@ public class ReportObjectsController extends ReportWizardController {
         border.setTop(top);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
         contextMenu.setConsumeAutoHidingEvents(false);
-        objectContextMenu = new ContextMenu();
-        objectContextMenu.setStyle(OBJECT_CONTEXT_MENU);
-        objectContextMenu.setConsumeAutoHidingEvents(false);
-        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
-        graphMI.setOnAction(e -> {
-            contextMenu.hide();
-            textAnController.displayGraph(objectForGraph.getId());
-        });
-        objectContextMenu.getItems().add(graphMI);
     }
 
     @Override
@@ -257,7 +250,7 @@ public class ReportObjectsController extends ReportWizardController {
                         filterField.requestFocus();
                     } else {
                         if (ent.getCandidate() != null) {
-                            objectForGraph = ent.getCandidate();
+                            objectForGraph.set(ent.getCandidate());
                             objectContextMenu.show(text, Side.BOTTOM, 0, 0);
                         }
                     }
@@ -306,7 +299,7 @@ public class ReportObjectsController extends ReportWizardController {
                                 final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
                                 setObjectAsSelectedEntityCandidate(p.getSecond());
                             } else {
-                                objectForGraph = this.getItem().getSecond();
+                                objectForGraph.set(this.getItem().getSecond());
                             }
                         });
                         this.setOnMouseEntered(e -> {
@@ -417,6 +410,13 @@ public class ReportObjectsController extends ReportWizardController {
         entity.setCandidate(object);
         pipeline.resetStepsBack();
         return entity;
+    }
+
+    @Override
+    public void setTextAnController(final TextAnController textAnController) {
+        objectContextMenu = new ObjectContextMenu(textAnController);
+        objectContextMenu.setOnAction(e -> contextMenu.hide());
+        objectContextMenu.objectProperty().bind(objectForGraph);
     }
 
     /**

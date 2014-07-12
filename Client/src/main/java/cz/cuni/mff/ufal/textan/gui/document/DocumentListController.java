@@ -3,11 +3,9 @@ package cz.cuni.mff.ufal.textan.gui.document;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Document;
-import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import static cz.cuni.mff.ufal.textan.gui.Utils.OBJECT_CONTEXT_MENU;
+import static cz.cuni.mff.ufal.textan.gui.Utils.CONTEXT_MENU_STYLE;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
 import java.net.URL;
 import java.util.Date;
@@ -180,7 +178,7 @@ public class DocumentListController extends WindowController {
                 //TODO display new window containing the document
             }
         });
-        contextMenu.setStyle(OBJECT_CONTEXT_MENU);
+        contextMenu.setStyle(CONTEXT_MENU_STYLE);
         contextMenu.getItems().add(graphMI);
         contextMenu.setConsumeAutoHidingEvents(false);
         table.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {

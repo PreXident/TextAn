@@ -42,6 +42,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.control.ContextMenu;
 import javax.swing.SwingUtilities;
@@ -72,7 +74,7 @@ public class GraphView extends SwingNode {
     ContextMenu objectContextMenu;
 
     /** Object to display graph for. */
-    Object objectForGraph;
+    final ObjectProperty<Object> objectForGraph = new SimpleObjectProperty<>();
 
     /** Central object. */
     Object center;
@@ -195,9 +197,9 @@ public class GraphView extends SwingNode {
                 if(pickSupport != null) {
                     final Point s = MouseInfo.getPointerInfo().getLocation(); //e.getLocationOnScreen() is not good enough
                     final Object v = pickSupport.getVertex(vv.getGraphLayout(), p.getX(), p.getY());
-                    objectForGraph = v;
                     if (v != null && objectContextMenu != null) {
                         Platform.runLater(() -> {
+                            objectForGraph.set(v);
                             objectContextMenu.show(GraphView.this, s.getX(), s.getY());
                         });
                     }/* else {
