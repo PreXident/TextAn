@@ -25,6 +25,9 @@ public class Document {
     /** The document has been processed at this time. */
     final private Date processTime;
 
+    /** The number of occurences of the given object, if available.  */
+    final private int count;
+
     /**
      * Only constructor.
      * @param document document blueprint
@@ -36,6 +39,8 @@ public class Document {
         addTime = document.getAddTime();
         lastChangeTime = document.getLastChangeTime();
         processTime = document.getProcessTime();
+        count = 1; //TODO use blueprint document's count
+        //count = document.getCount();
     }
 
     /**
@@ -44,6 +49,14 @@ public class Document {
      */
     public Date getAddTime() {
         return addTime;
+    }
+
+    /**
+     * Returns {@link #count}.
+     * @return {@link #count}
+     */
+    public int getCount() {
+        return count;
     }
 
     /**

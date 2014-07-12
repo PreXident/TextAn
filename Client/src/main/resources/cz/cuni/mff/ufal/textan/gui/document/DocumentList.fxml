@@ -27,7 +27,8 @@
 				<TableColumn fx:id="lastChangeTimeColumn" text="%table.lastChangeTime" prefWidth="100" sortable="false" />
 				<TableColumn fx:id="processedColumn" text="%table.processed" prefWidth="100" sortable="false" />
 				<TableColumn fx:id="processTimeColumn" text="%table.processedTime" prefWidth="100" sortable="false" />
-				<TableColumn fx:id="textColumn" text="%table.text" sortable="false" />
+				<TableColumn fx:id="countColumn" text="%table.count" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="textColumn" text="%table.text" sortable="false" minWidth="100" />
 			</columns>
 			<placeholder>
 				<Label text="" />

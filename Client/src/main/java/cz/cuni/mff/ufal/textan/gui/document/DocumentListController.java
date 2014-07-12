@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -67,6 +68,9 @@ public class DocumentListController extends WindowController {
     private TableColumn<Document, Date> processTimeColumn;
 
     @FXML
+    private TableColumn<Document, Number> countColumn;
+
+    @FXML
     private TableColumn<Document, String> textColumn;
 
     @FXML
@@ -88,7 +92,7 @@ public class DocumentListController extends WindowController {
     Client client;
 
     /** Object id to filter the documents. */
-    protected long objectId;
+    protected long objectId = -1L;
 
     /** Number of displayed page. */
     protected int pageNo = 0;
@@ -252,6 +256,18 @@ public class DocumentListController extends WindowController {
         }));
         processTimeColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, Date> p) -> new ReadOnlyObjectWrapper<>(p.getValue().getLastChangeTime()));
         processTimeColumn.setCellFactory(TextFieldTableCell.forTableColumn(dateConverter));
+        countColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, Number> p) -> new ReadOnlyIntegerWrapper(p.getValue().getCount()));
+        countColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {
+            @Override
+            public String toString(Number t) {
+                return t != null ? t.toString() : "";
+            }
+            @Override
+            public Number fromString(String string) {
+                return Integer.parseInt(string);
+            }
+        }));
+        table.getColumns().remove(countColumn);
         textColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, String> p) -> new ReadOnlyStringWrapper(p.getValue().getText()));
         textColumn.setCellFactory(TextFieldTableCell.forTableColumn());
     }
@@ -270,6 +286,8 @@ public class DocumentListController extends WindowController {
      */
     public void setObjectId(final long objectId) {
         this.objectId = objectId;
+        table.getColumns().add(table.getColumns().size() - 1, countColumn);
+        textColumn.prefWidthProperty().bind(table.widthProperty().add(idColumn.widthProperty().add(addTimeColumn.widthProperty()).add(lastChangeTimeColumn.widthProperty()).add(processedColumn.widthProperty()).add(processTimeColumn.widthProperty()).add(countColumn.widthProperty()).multiply(-1).add(-30)));
     }
 
     @Override
