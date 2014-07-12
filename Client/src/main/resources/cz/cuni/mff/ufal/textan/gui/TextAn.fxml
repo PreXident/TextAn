@@ -33,6 +33,7 @@
 						<MenuItem text="%report.wizard" onAction="#reportWizard" />
 						<MenuItem text="%graph.wizard" onAction="#graph" />
 					</Menu>
+					<Menu fx:id="windowsMenu" text="%windows" />
 					<Menu fx:id="settingsMenu" text="%settings" style="-fx-skin: 'cz.cuni.mff.ufal.textan.gui.MyMenuButtonSkin';" >
 						<CheckMenuItem fx:id="menuItemIndependentWindows" text="%independent.windows" onAction="#independentWindows" />
 						<CheckMenuItem fx:id="menuItemHypergraphs" text="%hypergraphs" onAction="#hypergraphs" />
