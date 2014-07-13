@@ -2,16 +2,13 @@ package cz.cuni.mff.ufal.textan.data.configs;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
-import cz.cuni.mff.ufal.textan.data.logging.LogInterceptor;
-import cz.cuni.mff.ufal.textan.data.views.INameTagView;
-import cz.cuni.mff.ufal.textan.data.views.NameTagView;
+import cz.cuni.mff.ufal.textan.data.interceptors.GlobalVersionAndLogInterceptor;
+import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
@@ -101,7 +98,7 @@ public class DataConfig {
 
     @Bean
     public LogInterceptor logInterceptor() {
-        return new LogInterceptor("username");
+        return new GlobalVersionAndLogInterceptor("username");
     }
 
     /**
@@ -116,14 +113,10 @@ public class DataConfig {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setHibernateProperties(hibernateProperties());
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        Resource[] mappings = null;
-
-        mappings = resolver.getResources("classpath:mappings/*.hbm.xml");
-        sessionFactory.setMappingLocations(mappings);
+        sessionFactory.setPackagesToScan("cz.cuni.mff.ufal.textan.data.tables");
         sessionFactory.afterPropertiesSet();
 
-        //sessionFactory.getConfiguration().setInterceptor(logInterceptor());
+        sessionFactory.getConfiguration().setInterceptor(logInterceptor());
 
         return sessionFactory.getObject();
     }
@@ -148,7 +141,7 @@ public class DataConfig {
     @Bean
     public PlatformTransactionManager transactionManager() throws PropertyVetoException, IOException {
         HibernateTransactionManager result = new HibernateTransactionManager(sessionFactory());
-        result.setEntityInterceptor(logInterceptor());
+        //result.setEntityInterceptor(logInterceptor());
         return result;
     }
 
@@ -164,7 +157,7 @@ public class DataConfig {
 //                setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
                 setProperty("hibernate.dialect", dataProperties().getProperty("hibernate.dialect"));
                 setProperty("show_sql", dataProperties().getProperty("hibernate.show_sql"));
-                setProperty("hibernate.globally_quoted_identifiers", "true");
+                //setProperty("hibernate.globally_quoted_identifiers", "true");
             }
         };
     }
@@ -178,12 +171,6 @@ public class DataConfig {
     public GraphFactory graphFactory() throws PropertyVetoException, IOException {
         return new GraphFactory(sessionFactory());
     }
-    
-    @Bean
-    public INameTagView nameTagView() throws PropertyVetoException, IOException {
-        return new NameTagView(sessionFactory());
-    }
-
 
     @Bean
     public LogInterceptorHack logInterceptorHack() {

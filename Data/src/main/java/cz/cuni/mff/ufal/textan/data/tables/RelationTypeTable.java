@@ -1,59 +1,64 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 /**
+ * Type of a relation (killed, lived, was engaged, ...)
  *
  * @author Vaclav Pernicka
  */
-
+@Entity
+@Table(name = "RelationType")
 public class RelationTypeTable extends AbstractTable {
     public static final String PROPERTY_NAME_ID = "id";
- 
+
     private long id;
     private String name;
-    
+
     private Set<RelationTable> relationsOfThisType = new HashSet<>();
 
-    
     public RelationTypeTable() {
         this("");
     }
-    
+
     public RelationTypeTable(String name) {
         this.name = name;
+    }
+
+    @Id
+    @GeneratedValue
+    @Column(name = "id_relation_type")
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
-    
-    public long getId() {
-        return id;
-    }
 
-    public Set<RelationTable> getRelationsOfThisType() {
-        return relationsOfThisType;
-    }
-
-    public void setRelationsOfThisType(Set<RelationTable> relationsOfThisType) {
-        this.relationsOfThisType = relationsOfThisType;
-    }
-
+    @Column(name = "name", nullable = false, unique = true)
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @OneToMany(mappedBy = "relationType", orphanRemoval = true)
+    @Cascade(CascadeType.DELETE)
+    public Set<RelationTable> getRelationsOfThisType() {
+        return relationsOfThisType;
+    }
+
+    public void setRelationsOfThisType(Set<RelationTable> relationsOfThisType) {
+        this.relationsOfThisType = relationsOfThisType;
     }
 
     @Override
@@ -77,9 +82,4 @@ public class RelationTypeTable extends AbstractTable {
         hash = 79 * hash + Objects.hashCode(this.name);
         return hash;
     }
-
-    
-    
-    
- 
 }

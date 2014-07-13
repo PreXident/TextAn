@@ -1,20 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 /**
+ * Type of the object (person, adress, ...)
  *
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
-
+@Entity
+@Table(name = "ObjectType")
 public class ObjectTypeTable extends AbstractTable {
     public static final String PROPERTY_NAME_ID = "id";
 
@@ -26,33 +27,39 @@ public class ObjectTypeTable extends AbstractTable {
     public ObjectTypeTable() {
         this("");
     }
-    
+
     public ObjectTypeTable(String name) {
         this.name = name;
     }
 
-    public Set<ObjectTable> getObjectsOfThisType() {
-        return objectsOfThisType;
-    }
-
-    public void setObjectsOfThisType(Set<ObjectTable> objectsOfThisType) {
-        this.objectsOfThisType = objectsOfThisType;
+    @Id
+    @GeneratedValue
+    @Column(name = "id_object_type", nullable = false, unique = true)
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
-    
-    public long getId() {
-        return id;
-    }
 
+    @Column(name = "name", nullable = false, unique = true)
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @OneToMany(mappedBy = "objectType", orphanRemoval = true)
+    @Cascade(CascadeType.DELETE)
+    public Set<ObjectTable> getObjectsOfThisType() {
+        return objectsOfThisType;
+    }
+
+    public void setObjectsOfThisType(Set<ObjectTable> objectsOfThisType) {
+        this.objectsOfThisType = objectsOfThisType;
     }
 
     @Override
@@ -76,11 +83,4 @@ public class ObjectTypeTable extends AbstractTable {
         hash = 97 * hash + Objects.hashCode(this.name);
         return hash;
     }
-
- 
-
-    
-    
-    
- 
 }
