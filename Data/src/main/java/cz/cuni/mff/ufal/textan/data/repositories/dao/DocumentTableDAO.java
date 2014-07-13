@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
@@ -18,6 +12,7 @@ import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -109,13 +104,13 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
     @Override
     @SuppressWarnings("unchecked")
     public List<DocumentTable> findAllProcessedDocuments(boolean processed) {
-        return null; //TODO
+        return new ArrayList<>(); //TODO
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<DocumentTable> findAllProcessedDocuments(boolean processed, int firstResult, int maxResults) {
-        return null; //TODO
+        return new ArrayList<>(); //TODO
     }
 
     public Query findAllProcessedDocumentsByFullTextQuery(boolean processed, String pattern) {

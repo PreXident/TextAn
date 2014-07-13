@@ -10,6 +10,7 @@ import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.services.DirectDataAccessService;
 import cz.cuni.mff.ufal.textan.server.services.GraphService;
+import cz.cuni.mff.ufal.textan.server.services.ProcessedFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +40,6 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         this.dbService = dbService;
         this.graphService = graphService;
     }
-
-    /*
-    * TODO: Add operations which:
-    *  - gets all documents for given object
-    *
-    * */
 
     @Override
     public GetObjectsResponse getObjects(
@@ -510,7 +505,19 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         LOG.info("Executing operation getFilteredDocuments: {}", getFilteredDocumentsRequest);
 
         GetFilteredDocumentsResponse response = new GetFilteredDocumentsResponse();
-        //TODO implement
+
+        Pair<List<Document>, Integer> documents = dbService.getFilteredDocuments(
+                getFilteredDocumentsRequest.getPattern(),
+                ProcessedFilter.parse(getFilteredDocumentsRequest.getProcessedFilter()),
+                getFilteredDocumentsRequest.getFirstResult(),
+                getFilteredDocumentsRequest.getMaxResults()
+        );
+
+        for (Document document : documents.getFirst()) {
+            response.getDocuments().add(document.toCommonsDocument());
+        }
+        response.setTotalNumberOfResults(documents.getSecond());
+
         LOG.info("Executed operation getFilteredDocuments: {}", response);
         return response;
     }

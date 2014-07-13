@@ -99,6 +99,38 @@ public class DirectDataAccessService {
                 .collect(Collectors.toList());
     }
 
+    public Pair<List<Document>,Integer> getFilteredDocuments(String pattern, ProcessedFilter processedFilter, int firstResult, int maxResults) {
+
+        List<DocumentTable> documentTables;
+        int count;
+
+        if ((pattern != null && !pattern.isEmpty()) && (processedFilter != null && processedFilter != ProcessedFilter.ALL)) {
+
+            count = documentTableDAO.findAllProcessedDocumentsByFullText(processedFilter == ProcessedFilter.PROCESSED, pattern).size();
+            documentTables = documentTableDAO.findAllProcessedDocumentsByFullText(processedFilter == ProcessedFilter.PROCESSED, pattern, firstResult, maxResults);
+
+        } else if (pattern != null && !pattern.isEmpty()) {
+
+            count = documentTableDAO.findAllDocumentsByFullText(pattern).size();
+            documentTables = documentTableDAO.findAllDocumentsByFullText(pattern, firstResult, maxResults);
+
+        } else if (processedFilter != null && processedFilter != ProcessedFilter.ALL) {
+
+            count = documentTableDAO.findAllProcessedDocuments(processedFilter == ProcessedFilter.PROCESSED).size();
+            documentTables = documentTableDAO.findAllProcessedDocuments(processedFilter == ProcessedFilter.PROCESSED, firstResult, maxResults);
+
+        } else {
+
+            count = documentTableDAO.findAll().size();
+            documentTables = documentTableDAO.findAll(firstResult, maxResults);
+        }
+
+        return new Pair<>(
+                documentTables.stream().map(Document::fromDocumentTable).collect(Collectors.toList()),
+                count
+        );
+    }
+
     /**
      * Gets documents which contain object with given id.
      * @param objectId the object id
@@ -366,6 +398,4 @@ public class DirectDataAccessService {
 
         return inRelationTableDAO.getRolesForRelationType(relationTypeId);
     }
-
-
 }
