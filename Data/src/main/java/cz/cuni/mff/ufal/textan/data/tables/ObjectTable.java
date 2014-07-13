@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -76,6 +77,7 @@ public class ObjectTable extends AbstractTable {
     @ManyToOne
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object_type", nullable = false)
+    @IndexedEmbedded
     public ObjectTypeTable getObjectType() {
         return objectType;
     }

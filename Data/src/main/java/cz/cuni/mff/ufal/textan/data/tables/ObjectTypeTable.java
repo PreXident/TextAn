@@ -2,6 +2,10 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Store;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -35,6 +39,7 @@ public class ObjectTypeTable extends AbstractTable {
     @Id
     @GeneratedValue
     @Column(name = "id_object_type", nullable = false, unique = true)
+    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     public long getId() {
         return id;
     }

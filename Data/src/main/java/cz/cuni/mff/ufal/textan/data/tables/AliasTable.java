@@ -2,6 +2,8 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -15,6 +17,7 @@ import java.util.Set;
  * @author Petr Fanta
  */
 @Entity
+@Indexed
 @Table(name = "Alias")
 public class AliasTable extends AbstractTable {
     public static final String PROPERTY_NAME_ALIAS = "alias";
@@ -48,6 +51,7 @@ public class AliasTable extends AbstractTable {
     }
 
     @Column(name = "alias", nullable = false)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     public String getAlias() {
         return alias;
     }
@@ -59,6 +63,7 @@ public class AliasTable extends AbstractTable {
     @ManyToOne
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object", nullable = false)
+    @IndexedEmbedded
     public ObjectTable getObject() {
         return object;
     }
