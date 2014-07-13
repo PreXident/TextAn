@@ -3,7 +3,10 @@ package cz.cuni.mff.ufal.textan.core;
 import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds;
 import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation;
 import cz.cuni.mff.ufal.textan.commons.utils.Triple;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +25,9 @@ public class Relation {
     /** Objects (and their order and role) in relation. */
     private final Set<Triple<Integer, String, Object>> objects;
 
+    /** List of anchors. */
+    private final List<String> anchors;
+
     /** Flag indicating whether the relation was fetched from db or created by client. */
     private final boolean isNew;
 
@@ -37,13 +43,28 @@ public class Relation {
                 .map(inRel -> new Triple<>(inRel.getOrder(), inRel.getRole(), objects.get(inRel.getObjectId())))
                 .collect(Collectors.toCollection(HashSet::new));
         isNew = relation.isIsNew();
+        anchors = new ArrayList<>(relation.getAnchors());
     }
 
+    /**
+     * Creates new relation from id and relation type.
+     * @param id relation id
+     * @param type relation type
+     */
     public Relation(final long id, final RelationType type) {
         this.id  = id;
         this.type = type;
         objects = new HashSet<>();
         isNew = true;
+        anchors = Collections.emptyList();
+    }
+
+    /**
+     * Returns anchors.
+     * @return anchors
+     */
+    public List<String> getAnchors() {
+        return anchors;
     }
 
     /**
@@ -70,6 +91,22 @@ public class Relation {
         return objects;
     }
 
+    @Override
+    public boolean equals(java.lang.Object other) {
+        if (other instanceof Relation) {
+            return id == ((Relation) other).id;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = (int)(67 * hash + this.id);
+        return hash;
+    }
+
     /**
      * Creates new commons Relation.
      * @return new commons Relation
@@ -89,6 +126,7 @@ public class Relation {
             ids.getInRelations().add(inRelation);
         }
         result.setObjectInRelationIds(ids);
+        result.getAnchors().addAll(anchors);
         return result;
     }
 

@@ -1,10 +1,13 @@
 package cz.cuni.mff.ufal.textan.gui;
 
 import cz.cuni.mff.ufal.textan.core.Client;
+import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentWindow;
+import cz.cuni.mff.ufal.textan.gui.document.DocumentsStage;
+import cz.cuni.mff.ufal.textan.gui.document.DocumentsWindow;
 import cz.cuni.mff.ufal.textan.gui.graph.GraphStage;
 import cz.cuni.mff.ufal.textan.gui.graph.GraphWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
@@ -320,15 +323,35 @@ public class TextAnController implements Initializable {
     }
 
     /**
+     * Displays given document.
+     * @param document document to display
+     */
+    public void displayDocument(final Document document) {
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final DocumentWindow docWindow = new DocumentWindow(this, settings, client, document);
+            content.getChildren().add(docWindow);
+        } else {
+            final DocumentStage docStage = new DocumentStage(this, settings, client, document);
+            children.add(docStage);
+            docStage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(docStage);
+                }
+            });
+            docStage.show();
+        }
+    }
+
+    /**
      * Creates and displays graph.
      * @param objectId object id
      */
     public void displayDocuments(final long objectId) {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-            final DocumentWindow docWindow = new DocumentWindow(this, settings, client, objectId);
+            final DocumentsWindow docWindow = new DocumentsWindow(this, settings, client, objectId);
             content.getChildren().add(docWindow);
         } else {
-            final DocumentStage docStage = new DocumentStage(this, settings, client, objectId);
+            final DocumentsStage docStage = new DocumentsStage(this, settings, client, objectId);
             children.add(docStage);
             docStage.showingProperty().addListener((ov, oldVal, newVal) -> {
                 if (!newVal) {

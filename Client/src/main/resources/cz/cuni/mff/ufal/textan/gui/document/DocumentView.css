@@ -1,0 +1,19 @@
+.root {
+	-fx-padding: 10;
+}
+
+.text-flow {
+}
+
+.selected {
+	-fx-effect: dropshadow(three-pass-box, lightblue, 4, 4, 0, 0);
+}
+
+.ENTITY {
+	-fx-underline: true;
+}
+
+.RELATION {
+	-fx-underline: true;
+	-fx-font-style: italic;
+}

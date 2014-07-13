@@ -193,6 +193,7 @@ public class GraphViewController extends GraphController {
                 lock.release();
             });
             setOnFailed(e -> {
+                getException().printStackTrace();
                 getMainNode().setCursor(Cursor.DEFAULT);
                 callWithContentBackup(() -> {
                     createDialog()

@@ -47,7 +47,7 @@ public class DocumentListController extends WindowController {
     static protected final String TITLE = "Document Viewer";
 
     /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
-    static protected final String PROPERTY_ID = "document.viewer";
+    static protected final String PROPERTY_ID = "documents.viewer";
 
     @FXML
     private BorderPane root;
@@ -197,6 +197,7 @@ public class DocumentListController extends WindowController {
         graphMI.setOnAction(e -> {
             final Document doc = table.getSelectionModel().getSelectedItem();
             if (doc != null) {
+                textAnController.displayDocument(doc);
                 //TODO display new window containing the document
             }
         });

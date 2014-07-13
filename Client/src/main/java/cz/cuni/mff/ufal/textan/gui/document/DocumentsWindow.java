@@ -1,12 +1,11 @@
 package cz.cuni.mff.ufal.textan.gui.document;
 
 import cz.cuni.mff.ufal.textan.core.Client;
-import cz.cuni.mff.ufal.textan.core.Document;
-import cz.cuni.mff.ufal.textan.gui.OuterStage;
+import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import static cz.cuni.mff.ufal.textan.gui.document.DocumentViewController.PROPERTY_ID;
-import static cz.cuni.mff.ufal.textan.gui.document.DocumentViewController.TITLE;
+import static cz.cuni.mff.ufal.textan.gui.document.DocumentListController.PROPERTY_ID;
+import static cz.cuni.mff.ufal.textan.gui.document.DocumentListController.TITLE;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
@@ -14,33 +13,36 @@ import javafx.scene.Parent;
 import org.controlsfx.dialog.Dialogs;
 
 /**
- * Class for displaying Report Wizard in independent window.
+ * Wizard for handling reports.
  */
-public class DocumentStage extends OuterStage {
+public class DocumentsWindow extends InnerWindow {
 
     /**
      * Only constructor.
      * @param textAnController application controller
      * @param settings properties with settings
      * @param client client to communicate with server
-     * @param document document
+     * @param objectId object id
      */
-    public DocumentStage(final TextAnController textAnController,
-            final Properties settings, final Client client, final Document document) {
+    public DocumentsWindow(final TextAnController textAnController,
+            final Properties settings, final Client client, final long objectId) {
         super(TITLE, PROPERTY_ID, settings);
         ResourceBundle resourceBundle = null;
         try {
-            resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.document.DocumentView");
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("DocumentView.fxml"), resourceBundle);
+            resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.document.DocumentList");
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("DocumentList.fxml"), resourceBundle);
             final Parent loadedRoot = (Parent) loader.load();
-            getInnerWindow().getContentPane().getChildren().add(loadedRoot);
-            final DocumentViewController controller = loader.getController();
-            controller.setStage(this);
+            getContentPane().getChildren().add(loadedRoot);
+            final DocumentListController controller = loader.getController();
+            controller.setWindow(this);
             controller.setSettings(settings);
+            if (objectId != -1) {
+                controller.setObjectId(objectId);
+            }
             controller.setTextAnController(textAnController);
             controller.setClient(client);
-            controller.setDocument(document);
-            getInnerWindow().setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            controller.filter();
+            setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

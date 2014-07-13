@@ -201,6 +201,26 @@ public class Client {
     }
 
     /**
+     * Returns document with given id.
+     * @param docId document id
+     * @return document with given id
+     * @throws IdNotFoundException on id error
+     */
+    public synchronized DocumentData getDocumentData(final long docId)
+            throws IdNotFoundException {
+        try {
+            final GetObjectsAndRelationsOccurringInDocumentRequest request =
+                    new GetObjectsAndRelationsOccurringInDocumentRequest();
+            request.setDocumentId(docId);
+            final GetObjectsAndRelationsOccurringInDocumentResponse response =
+                    getDataProvider().getObjectsAndRelationsOccurringInDocument(request);
+            return new DocumentData(response);
+        } catch(cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
+    }
+
+    /**
      * Returns list of documents.
      * @param processed only processed documents?
      * @param filter document text filter
