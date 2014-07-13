@@ -58,11 +58,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByAliasFullText(String pattern, int firstResult, int pageSize) {
-        Query hq = findAllByAliasFullTextQuery(pattern);
-        hq.setFirstResult(firstResult);
-        hq.setMaxResults(pageSize);
-
-        return hq.list();
+        return addPagination(findAllByAliasFullTextQuery(pattern), firstResult, pageSize).list();
     }
 
     private Query findAllByObjTypeAndAliasFullTextQuery(long objectTypeId, String pattern) {
@@ -99,11 +95,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern, int firstResult, int pageSize) {
-        Query hq = findAllByObjTypeAndAliasFullTextQuery(objectTypeId, pattern);
-        hq.setFirstResult(firstResult);
-        hq.setMaxResults(pageSize);
-
-        return hq.list();
+        return addPagination(findAllByObjTypeAndAliasFullTextQuery(objectTypeId, pattern), firstResult, pageSize).list();
     }
 
     private Query findAllByObjectTypeAndAliasSubStrQuery(long objectTypeId, String aliasSubstring) {
@@ -127,11 +119,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByObjectTypeAndAliasSubStr(long objectTypeId, String aliasSubstring, int firstResult, int pageSize) {
-        Query hq = findAllByObjectTypeAndAliasSubStrQuery(objectTypeId, aliasSubstring);
-        hq.setFirstResult(firstResult);
-        hq.setMaxResults(pageSize);
-
-        return hq.list();
+        return addPagination(findAllByObjectTypeAndAliasSubStrQuery(objectTypeId, aliasSubstring), firstResult, pageSize).list();
     }
 
     @Override
@@ -204,11 +192,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByAliasSubstring(String aliasSubstring, int firstResult, int pageSize) {
-        Query hq = findAllByAliasSubstringQuery(aliasSubstring);
-        hq.setFirstResult(firstResult);
-        hq.setMaxResults(pageSize);
-
-        return hq.list();
+        return addPagination(findAllByAliasSubstringQuery(aliasSubstring), firstResult, pageSize).list();
     }
 
     @Override

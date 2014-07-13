@@ -11,6 +11,9 @@ import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
 import cz.cuni.mff.ufal.textan.data.tables.*;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,7 @@ import java.util.List;
 /**
  *
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
 @Repository
 @Transactional
@@ -57,11 +61,7 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
     @Override
     @SuppressWarnings("unchecked")
     public List<DocumentTable> findAllDocumentsWithObject(long objectId, int firstResult, int maxResults) {
-        Query hq = findAllDocumentsWithObjectQuery(objectId);
-        hq.setFirstResult(firstResult);
-        hq.setMaxResults(maxResults);
-
-        return hq.list();
+        return addPagination(findAllDocumentsWithObjectQuery(objectId), firstResult, maxResults).list();
     }
 
     @Override
@@ -80,5 +80,79 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                                  relationId))
             .list();
     }
-    
+
+    private Query findAllDocumentsByFullTextQuery(String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query query = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllDocumentsByFullText(String pattern) {
+        return findAllDocumentsByFullTextQuery(pattern).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllDocumentsByFullText(String pattern, int firstResult, int maxResults) {
+        return addPagination(findAllDocumentsByFullTextQuery(pattern), firstResult, maxResults).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllProcessedDocuments(boolean processed) {
+        return null; //TODO
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllProcessedDocuments(boolean processed, int firstResult, int maxResults) {
+        return null; //TODO
+    }
+
+    public Query findAllProcessedDocumentsByFullTextQuery(boolean processed, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query queryFullText = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query queryProcessed = builder
+                .keyword()
+                .onField("processedBool")
+                .matching(processed)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .keyword()
+                .onField("processedBool")
+                .matching(processed)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern) {
+        return findAllProcessedDocumentsByFullTextQuery(processed, pattern).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern, int firstResult, int maxResults) {
+        return addPagination(findAllProcessedDocumentsByFullTextQuery(processed, pattern), firstResult, maxResults).list();
+    }
+
 }

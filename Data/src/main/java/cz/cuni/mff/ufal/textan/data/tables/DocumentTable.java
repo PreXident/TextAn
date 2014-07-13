@@ -86,7 +86,7 @@ public class DocumentTable extends AbstractTable {
     }
 
     @Transient
-    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
+    @Field(name = "processedBool",index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     public boolean isProcessed() {
         return getProcessedDate() != null;
     }
