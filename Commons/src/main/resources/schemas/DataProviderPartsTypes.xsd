@@ -65,6 +65,9 @@
     
     <xs:element name="getDocumentsRequest" type="Void"/>
     <xs:element name="getDocumentsResponse" type="GetDocumentsResponse"/>
+
+    <xs:element name="getFilteredDocumentsRequest" type="GetFilteredDocumentsRequest"/>
+    <xs:element name="getFilteredDocumentsResponse" type="GetFilteredDocumentsResponse"/>
     
     <xs:element name="getDocumentByIdRequest" type="GetDocumentByIdRequest"/>
     <xs:element name="getDocumentByIdResponse" type="GetDocumentByIdResponse"/>
@@ -296,6 +299,30 @@
     
     <xs:complexType name="GetDocumentsResponse">
         <xs:sequence>
+            <xs:element ref="cms:document" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetFilteredDocumentsRequest">
+        <xs:sequence>
+            <xs:element name="pattern" type="xs:string" nillable="true"/>
+            <xs:element name="processedFilter" nillable="true">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="all"/>
+                        <xs:enumeration value="processed"/>
+                        <xs:enumeration value="unprocessed"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="firstResult" type="xs:int"/>
+            <xs:element name="maxResults" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetFilteredDocumentsResponse">
+        <xs:sequence>
+            <xs:element name="totalNumberOfResults" type="xs:int"/>
             <xs:element ref="cms:document" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>

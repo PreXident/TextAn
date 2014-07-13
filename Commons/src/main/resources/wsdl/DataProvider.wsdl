@@ -161,6 +161,14 @@
     <wsdl:message name="getDocumentsResponse">
         <wsdl:part name="getDocumentsResponse" element="tns:getDocumentsResponse"/>
     </wsdl:message>
+    
+    <wsdl:message name="getFilteredDocumentsRequest">
+        <wsdl:part name="getFilteredDocumentsRequest" element="tns:getFilteredDocumentsRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getFilteredDocumentsResponse">
+        <wsdl:part name="getFilteredDocumentsResponse" element="tns:getFilteredDocumentsResponse"/>
+    </wsdl:message>
 
     <wsdl:message name="addDocumentRequest">
         <wsdl:part name="addDocumentRequest" element="tns:addDocumentRequest"/>
@@ -318,6 +326,11 @@
         <wsdl:operation name="getDocuments">
             <wsdl:input message="ws:getDocumentsRequest"/>
             <wsdl:output message="ws:getDocumentsResponse"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getFilteredDocuments">
+            <wsdl:input message="ws:getFilteredDocumentsRequest"/>
+            <wsdl:output message="ws:getFilteredDocumentsResponse"/>
         </wsdl:operation>
         
         <wsdl:operation name="getDocumentById">
@@ -596,6 +609,17 @@
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getDocumentsResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getFilteredDocuments">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getFilteredDocuments"/>
+            <wsdl:input>
+                <soap:body parts="getFilteredDocumentsRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getFilteredDocumentsResponse" use="literal"/>
             </wsdl:output>
         </wsdl:operation>
     

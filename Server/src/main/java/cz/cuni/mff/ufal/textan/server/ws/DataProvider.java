@@ -503,6 +503,19 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
+    public GetFilteredDocumentsResponse getFilteredDocuments(
+            @WebParam(partName = "getFilteredDocumentsRequest", name = "getFilteredDocumentsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetFilteredDocumentsRequest getFilteredDocumentsRequest) {
+
+        LOG.info("Executing operation getFilteredDocuments: {}", getFilteredDocumentsRequest);
+
+        GetFilteredDocumentsResponse response = new GetFilteredDocumentsResponse();
+        //TODO implement
+        LOG.info("Executed operation getFilteredDocuments: {}", response);
+        return response;
+    }
+
+    @Override
     public GetObjectsByTypeIdResponse getObjectsByTypeId(
             @WebParam(partName = "getObjectsByTypeId", name = "getObjectsByTypeId", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetObjectsByTypeIdRequest getObjectsByTypeIdRequest)
