@@ -48,4 +48,5 @@ public interface IDocumentTableDAO extends IOperations<DocumentTable, Long> {
      */
     List<DocumentTable> findAllDocumentsWithRelation(Long relationId);
     
+    List<DocumentTable> findAllProcessed(boolean processed);
 }
