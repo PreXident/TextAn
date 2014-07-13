@@ -12,6 +12,9 @@ import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
 import cz.cuni.mff.ufal.textan.data.tables.*;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +34,76 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
      */
     public ObjectTableDAO() {
         super(ObjectTable.class);
+    }
+
+    private Query findAllByAliasFullTextQuery(String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query query = builder
+                .phrase()
+                .onField("aliases.alias")
+                .sentence(pattern)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<ObjectTable> findAllByAliasFullText(String pattern) {
+        return findAllByAliasFullTextQuery(pattern).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<ObjectTable> findAllByAliasFullText(String pattern, int firstResult, int pageSize) {
+        Query hq = findAllByAliasFullTextQuery(pattern);
+        hq.setFirstResult(firstResult);
+        hq.setMaxResults(pageSize);
+
+        return hq.list();
+    }
+
+    private Query findAllByObjTypeAndAliasFullTextQuery(long objectTypeId, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query fullTextQuery = builder
+                .phrase()
+                .onField("aliases.alias")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query typeQuery = builder
+                .keyword()
+                .onField("objectType.id")
+                .matching(objectTypeId)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(fullTextQuery)
+                .must(typeQuery)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern) {
+        return findAllByObjTypeAndAliasFullTextQuery(objectTypeId, pattern).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern, int firstResult, int pageSize) {
+        Query hq = findAllByObjTypeAndAliasFullTextQuery(objectTypeId, pattern);
+        hq.setFirstResult(firstResult);
+        hq.setMaxResults(pageSize);
+
+        return hq.list();
     }
 
     private Query findAllByObjectTypeAndAliasSubStrQuery(long objectTypeId, String aliasSubstring) {

@@ -210,20 +210,20 @@ public class DirectDataAccessService {
         int count;
         List<ObjectTable> objects;
 
-        if (objectTypeId != null && aliasFilter != null) {
+        if (objectTypeId != null && (aliasFilter != null && !aliasFilter.isEmpty())) {
 
-            count = objectTableDAO.findAllByObjectTypeAndAliasSubStr(objectTypeId, aliasFilter).size();
-            objects = objectTableDAO.findAllByObjectTypeAndAliasSubStr(objectTypeId, aliasFilter, firstResult, maxResults);
+            count = objectTableDAO.findAllByObjTypeAndAliasFullText(objectTypeId, aliasFilter).size();
+            objects = objectTableDAO.findAllByObjTypeAndAliasFullText(objectTypeId, aliasFilter, firstResult, maxResults);
 
         } else if (objectTypeId != null) {
 
             count = objectTableDAO.findAllByObjectType(objectTypeId).size();
             objects = objectTableDAO.findAllByObjectType(objectTypeId, firstResult, maxResults);
 
-        } else if (aliasFilter != null) {
+        } else if (aliasFilter != null && !aliasFilter.isEmpty()) {
 
-            count = objectTableDAO.findAllByAliasSubstring(aliasFilter).size();
-            objects = objectTableDAO.findAllByAliasSubstring(aliasFilter, firstResult, maxResults);
+            count = objectTableDAO.findAllByAliasFullText(aliasFilter).size();
+            objects = objectTableDAO.findAllByAliasFullText(aliasFilter, firstResult, maxResults);
 
         } else {
 

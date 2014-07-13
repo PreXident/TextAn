@@ -11,6 +11,12 @@ import java.util.List;
  */
 public interface IObjectTableDAO extends IObjectRelationDAO<ObjectTable> {
 
+    List<ObjectTable> findAllByAliasFullText(String pattern);
+    List<ObjectTable> findAllByAliasFullText(String pattern, int firstResult, int pageSize);
+
+    List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern);
+    List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern, int firstResult, int pageSize);
+
     /**
      * finds all objects of specified type and alias
      *

@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.util.Set;
  * @author Petr Fanta
  */
 @Entity
+@Indexed
 @Table(name = "Object")
 public class ObjectTable extends AbstractTable {
 
@@ -88,6 +90,7 @@ public class ObjectTable extends AbstractTable {
 
     @OneToMany(mappedBy = "object", orphanRemoval = true)
     @Cascade(CascadeType.DELETE)
+    @IndexedEmbedded(includePaths = "alias")
     public Set<AliasTable> getAliases() {
         return aliases;
     }
