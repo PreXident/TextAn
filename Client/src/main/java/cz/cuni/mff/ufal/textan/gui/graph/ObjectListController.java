@@ -5,6 +5,8 @@ import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
+import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
 import java.text.Collator;
@@ -65,7 +67,7 @@ public class ObjectListController extends GraphController {
     private Label paginationLabel;
 
     /** Context menu for objects. */
-    protected ContextMenu contextMenu = new ContextMenu();
+    protected ObjectContextMenu contextMenu;
 
     /** Number of displayed page. */
     protected int pageNo = 0;
@@ -155,14 +157,6 @@ public class ObjectListController extends GraphController {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         super.initialize(url, rb);
-        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
-        graphMI.setOnAction(e -> {
-            final Object obj = table.getSelectionModel().getSelectedItem();
-            if (obj != null) {
-                textAnController.displayGraph(obj.getId());
-            }
-        });
-        contextMenu.getItems().add(graphMI);
         table.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
             if (newVal != null) {
                 table.setContextMenu(contextMenu);
@@ -237,6 +231,13 @@ public class ObjectListController extends GraphController {
             settings.setProperty("objects.per.page", newVal.toString());
             filter();
         });
+    }
+
+    @Override
+    public void setTextAnController(final TextAnController textAnController) {
+        super.setTextAnController(textAnController);
+        contextMenu = new ObjectContextMenu(textAnController);
+        contextMenu.objectProperty().bind(table.getSelectionModel().selectedItemProperty());
     }
 
     /**

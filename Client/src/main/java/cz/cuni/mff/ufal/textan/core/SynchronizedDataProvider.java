@@ -5,8 +5,6 @@ import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 
-import javax.jws.WebParam;
-
 /**
  * Simple wrapper around IDataProvider to provide synchronization.
  */
@@ -93,10 +91,16 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
-    synchronized public GetDocumentsContainsObjectByIdResponse getDocumentsContainsObjectById(
-            final GetDocumentsContainsObjectByIdRequest getDocumentsContainsObjectByIdRequest)
+    synchronized public GetDocumentsContainingObjectByIdResponse getDocumentsContainingObjectById(
+            final GetDocumentsContainingObjectByIdRequest getDocumentsContainingObjectByIdRequest)
             throws IdNotFoundException {
-        return innerDP.getDocumentsContainsObjectById(getDocumentsContainsObjectByIdRequest);
+        return innerDP.getDocumentsContainingObjectById(getDocumentsContainingObjectByIdRequest);
+    }
+
+    @Override
+    synchronized public GetObjectsByIdsResponse getObjectsByIds(
+            final GetObjectsByIdsRequest getObjectsByIdsRequest) throws IdNotFoundException {
+        return innerDP.getObjectsByIds(getObjectsByIdsRequest);
     }
 
     @Override
@@ -129,6 +133,12 @@ public class SynchronizedDataProvider implements IDataProvider {
             final GetRelationsByTypeIdRequest getRelationsByTypeIdRequest)
             throws IdNotFoundException {
         return innerDP.getRelationsByTypeId(getRelationsByTypeIdRequest);
+    }
+
+    @Override
+    synchronized public GetFilteredDocumentsResponse getFilteredDocuments(
+            final GetFilteredDocumentsRequest getFilteredDocumentsRequest) {
+        return innerDP.getFilteredDocuments(getFilteredDocumentsRequest);
     }
 
     @Override

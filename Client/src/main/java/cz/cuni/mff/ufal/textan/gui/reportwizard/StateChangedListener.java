@@ -65,6 +65,7 @@ public class StateChangedListener implements IStateChangedListener {
         fxmlMapping.put(StateType.EDIT_ENTITIES, new StateInfo("03_ReportEntities.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.03_ReportEntities", "report.wizard.entities.title"));
         fxmlMapping.put(StateType.EDIT_OBJECTS, new StateInfo("04_ReportObjects.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.04_ReportObjects", "report.wizard.objects.title"));
         fxmlMapping.put(StateType.EDIT_RELATIONS, new StateInfo("05_ReportRelations.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.05_ReportRelations", "report.wizard.relations.title"));
+        fxmlMapping.put(StateType.ERROR, new StateInfo("06_ReportErrors.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.06_ReportErrors", "report.wizard.errors.title"));
     }
 
     /**

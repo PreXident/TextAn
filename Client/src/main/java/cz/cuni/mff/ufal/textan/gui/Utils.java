@@ -16,6 +16,9 @@ import javafx.stage.Stage;
  */
 public class Utils {
 
+    /** Style for Object context menus. */
+    public final static String CONTEXT_MENU_STYLE = "-fx-font-size: 12";
+
     /**
      * Converts id to Color.
      * @param id long to covert

@@ -10,7 +10,9 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.BlockingArrayQueue;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.util.thread.ThreadPool;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -27,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * The root spring configuration.
@@ -91,13 +94,23 @@ public class AppConfig implements ApplicationContextAware {
     @Bean(destroyMethod = "stop")
     public Server server() throws IOException {
 
-        Server server = new Server(
-                new QueuedThreadPool(
-                        Integer.parseInt(serverProperties().getProperty("server.threadPool.maxThreads")),
-                        Integer.parseInt(serverProperties().getProperty("server.threadPool.minThreads")),
-                        Integer.parseInt(serverProperties().getProperty("server.threadPool.idleTimeout"))
-                )
-        );
+        int maxThreads = Integer.parseInt(serverProperties().getProperty("server.threadPool.maxThreads"));
+        int minThreads = Integer.parseInt(serverProperties().getProperty("server.threadPool.minThreads"));
+        int idleTimeout = Integer.parseInt(serverProperties().getProperty("server.threadPool.idleTimeout"));
+
+        BlockingQueue<Runnable> acceptQueue = null;
+        String acceptQueueSizeProperty = serverProperties().getProperty("server.acceptQueue.size");
+        if (acceptQueueSizeProperty != null) {
+            int acceptQueueSize = Integer.parseInt(acceptQueueSizeProperty);
+            int capacity = Math.max(maxThreads, minThreads);
+            int grow = Math.min(maxThreads, minThreads);
+            int maxCapacity = Math.max(acceptQueueSize, capacity);
+
+            acceptQueue = new BlockingArrayQueue<>(capacity, grow, maxCapacity);
+        }
+
+        ThreadPool threadPool = new QueuedThreadPool(maxThreads, minThreads, idleTimeout, acceptQueue);
+        Server server = new Server(threadPool);
 
         //TODO: what about SSL connector?
         ServerConnector connector = new ServerConnector(server);

@@ -10,6 +10,9 @@ import cz.cuni.mff.ufal.textan.core.RelationType;
  */
 public class DummyRelation extends Relation {
 
+    /** Database Object of the relation. */
+    private final Triple<Integer, String, Object> triple;
+
     /**
      * Only constructor
      * @param type relation type
@@ -18,6 +21,7 @@ public class DummyRelation extends Relation {
     public DummyRelation(RelationType type, Triple<Integer, String, Object> triple) {
         super(-1, type);
         getObjects().add(triple);
+        this.triple = triple;
     }
 
     @Override
@@ -27,6 +31,6 @@ public class DummyRelation extends Relation {
 
     @Override
     public String toString() {
-        return getType().getName();
+        return triple.getSecond();
     }
 }

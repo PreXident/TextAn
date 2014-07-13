@@ -1,0 +1,35 @@
+Venca and Kuba are missing. Kuba overworked :-D Adam is ill, but here.
+
+Adam:
+- all HWKs done
+- started document viewing
+
+Peter:
+- hibernate now uses annotations
+- documentation tweaks
+- integrated textpro into the rest of the project, except for relearning command
+
+Tam:
+- textpro can learn from database
+- documentation tweaks
+
+HWK
+- Adam, roles should be visible in the graph!
+- Adam, when document is already processed, the force save should not be possible
+- Adam, all object context menus should contain the Show document
+- Adam, add menu to main menu containing all windows and stages of the application
+- Adam, hint on document row should display document text
+- Adam, display futurely added occurence count column to document table
+- Adam & Peter, add filtering for documents: (un)processed, keywords
+- Adam, add option to process unprocessed documents from document list
+- Tam, introduction to documentation
+- Peter, fulltext search through lucene
+- Peter, getdocument... should return a occurence count too
+- Peter, spam Venca, create issues etc.
+- Peter, test TextPro
+- Adam & Peter & Venca, get the bloody joining of objects done!
+- Venca, implement selecting of all changes since given date
+- Venca, come to the next meeting!
+- Kuba, start documentation, at least parameters for learning
+
+Next meeting Tuesday at 17:00.

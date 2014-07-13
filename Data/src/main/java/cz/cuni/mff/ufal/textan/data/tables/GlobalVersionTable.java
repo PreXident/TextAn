@@ -1,9 +1,15 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import javax.persistence.*;
+
 /**
+ * Global version of objects (for now) to decide if there was or created a new object
  *
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
+@Entity
+@Table(name = "GlobalVersion")
 public class GlobalVersionTable extends AbstractTable {
     private long id;
     private long version;
@@ -11,6 +17,9 @@ public class GlobalVersionTable extends AbstractTable {
     public GlobalVersionTable() {
     }
 
+    @Id
+    @GeneratedValue
+    @Column(name = "id_global_version", nullable = false, unique = true)
     public long getId() {
         return id;
     }
@@ -19,6 +28,7 @@ public class GlobalVersionTable extends AbstractTable {
         this.id = id;
     }
 
+    @Column(name = "version", nullable = false)
     public long getVersion() {
         return version;
     }
@@ -52,8 +62,4 @@ public class GlobalVersionTable extends AbstractTable {
         }
         return true;
     }
-
-
-    
-    
 }

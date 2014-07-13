@@ -1,16 +1,22 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.Graph;
+import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
+import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.Utils.CONTEXT_MENU_STYLE;
 import cz.cuni.mff.ufal.textan.gui.Window;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
 import javafx.concurrent.Task;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -65,8 +71,11 @@ public class GraphViewController extends GraphController {
     /** Synchronization lock. */
     final Semaphore lock = new Semaphore(1);
 
-    /** Context menu for nodes and edges. */
-    ContextMenu contextMenu;
+    /** Context menu for nodes. */
+    ObjectContextMenu objectContextMenu;
+
+    /** Context menu for edges. */
+    ContextMenu relationContextMenu;
 
     @FXML
     private void home() {
@@ -108,14 +117,6 @@ public class GraphViewController extends GraphController {
         stackPane.prefHeightProperty().bind(scrollPane.heightProperty());
         leftToolbar.prefWidthProperty().bind(toolbar.widthProperty().add(-25).divide(2));
         rightToolbar.prefWidthProperty().bind(toolbar.widthProperty().add(-25).divide(2));
-        contextMenu = new ContextMenu();
-        contextMenu.setConsumeAutoHidingEvents(false);
-        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
-        graphMI.setOnAction(e -> {
-            contextMenu.hide();
-            textAnController.displayGraph(graphView.objectForGraph.getId(), distanceField.getNumber().intValue());
-        });
-        contextMenu.getItems().add(graphMI);
         //ugly shortcut for centering by HOME key
         root.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent t) -> {
             if (t.getCode() == KeyCode.HOME
@@ -139,6 +140,11 @@ public class GraphViewController extends GraphController {
         new Thread(new GraphGetter(), "GraphGetter").start();
     }
 
+    @Override
+    public void setTextAnController(final TextAnController textAnController) {
+        super.setTextAnController(textAnController);
+    }
+
     /**
      * Task for getting graph from server.
      */
@@ -157,10 +163,33 @@ public class GraphViewController extends GraphController {
                 graphView.requestFocus();
                 getMainNode().setCursor(Cursor.DEFAULT);
                 scrollPane.requestFocus();
-                graphView.setObjectContextMenu(contextMenu);
                 final Object center = g.getNodes().get(grapher.getRootId());
                 final Window w = window == null ? stage.getInnerWindow() : window;
-                w.setTitle(w.getTitle() + " - " + Utils.shortString(center.toString()));
+                w.setTitle(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID) + " - " + Utils.shortString(center.toString()));
+                objectContextMenu = new ObjectContextMenu(textAnController);
+                objectContextMenu.objectProperty().bind(graphView.objectForGraph);
+                objectContextMenu.distanceProperty().bind(distanceField.numberProperty());
+                graphView.setObjectContextMenu(objectContextMenu);
+                relationContextMenu = new ContextMenu();
+                relationContextMenu.setStyle(CONTEXT_MENU_STYLE);
+                graphView.relationForGraph.addListener((ov, oldVal, newVal) -> {
+                    relationContextMenu.getItems().clear();
+                    final List<Triple<Integer, String, Object>> list =
+                            new ArrayList<>(newVal.getObjects());
+                    Collections.sort(list, (t1, t2) -> t1.getFirst() - t2.getFirst());
+                    list.forEach(t -> {
+                        final String text = String.format("%s: %s - %s",
+                                t.getFirst(), t.getSecond(), t.getThird());
+                        final MenuItem mi = new MenuItem(text);
+                        mi.setUserData(t.getThird());
+                        mi.setOnAction(ev -> {
+                            final Object obj = (Object) ((MenuItem)ev.getSource()).getUserData();
+                            graphView.centerToObject(obj);
+                        });
+                        relationContextMenu.getItems().add(mi);
+                    });
+                });
+                graphView.setRelationContextMenu(relationContextMenu);
                 lock.release();
             });
             setOnFailed(e -> {

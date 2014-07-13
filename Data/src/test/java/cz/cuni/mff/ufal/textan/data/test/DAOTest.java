@@ -7,21 +7,12 @@
 package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
-import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
-import cz.cuni.mff.ufal.textan.data.tables.AliasOccurrenceTable;
-import cz.cuni.mff.ufal.textan.data.tables.AliasTable;
-import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
-import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
-import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
-import cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable;
+import cz.cuni.mff.ufal.textan.data.tables.*;
 import org.junit.After;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.test.util.AssertionErrors;
 
 import java.util.List;
-import org.springframework.test.util.AssertionErrors;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  *
