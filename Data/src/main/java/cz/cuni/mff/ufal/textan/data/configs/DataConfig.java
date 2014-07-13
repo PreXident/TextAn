@@ -152,14 +152,17 @@ public class DataConfig {
      */
     @SuppressWarnings("serial")
     private Properties hibernateProperties() throws IOException {
-        return new Properties() {
-            {
-//                setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-                setProperty("hibernate.dialect", dataProperties().getProperty("hibernate.dialect"));
-                setProperty("show_sql", dataProperties().getProperty("hibernate.show_sql"));
-                //setProperty("hibernate.globally_quoted_identifiers", "true");
-            }
-        };
+        Properties properties = new Properties();
+
+        //hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.setProperty("hibernate.dialect", dataProperties().getProperty("hibernate.dialect"));
+        properties.setProperty("show_sql", dataProperties().getProperty("hibernate.show_sql"));
+        //properties.setProperty("hibernate.globally_quoted_identifiers", "true");
+
+        properties.setProperty("hibernate.search.default.directory_provider", dataProperties().getProperty("hibernate.search.default.directory_provider"));
+        properties.setProperty("hibernate.search.default.indexBase", dataProperties().getProperty("hibernate.search.default.indexBase"));
+
+        return properties;
     }
 
     /**

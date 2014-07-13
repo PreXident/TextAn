@@ -12,9 +12,12 @@ def hibernateVersion = '4.3.5.Final'
 def slf4jVersion = '1.7.6'
 
 dependencies {
-    //hibernate
+    //hibernate ORM
     compile group: 'org.hibernate', name: 'hibernate-core', version: hibernateVersion
     compile group: 'org.hibernate', name: 'hibernate-c3p0', version: hibernateVersion
+
+    //hibernate Search
+    compile group: 'org.hibernate', name: 'hibernate-search-orm', version: '4.5.1.Final'
 
     // mysql connector
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.28'
