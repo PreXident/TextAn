@@ -38,6 +38,7 @@ import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
@@ -307,6 +308,19 @@ public class DocumentViewController extends WindowController {
         };
         task.setOnSucceeded(e -> {
             documentData = task.getValue();
+            relationsListView.setCellFactory(lv -> {
+                return new ListCell<Relation>() {
+                    @Override
+                    protected void updateItem(final Relation t, final boolean empty) {
+                        super.updateItem(t, empty);
+                        if (empty || t == null) {
+                            setText("");
+                        } else {
+                            setText(t.toString() + "(" + String.join(", ", t.getAnchors()) + ")");
+                        }
+                    }
+                };
+            });
             relationsListView.setItems(FXCollections.observableArrayList(documentData.getRelations().values()));
             relationsListView.getSelectionModel().selectedItemProperty().addListener(
                     (ov, oldVal, newVal) -> { selectRelation(newVal); });
