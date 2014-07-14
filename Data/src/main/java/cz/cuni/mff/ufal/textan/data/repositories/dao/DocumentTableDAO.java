@@ -1,49 +1,76 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
-import cz.cuni.mff.ufal.textan.data.tables.*;
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
+import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
+import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
 @Repository
 @Transactional
 public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> implements IDocumentTableDAO{
 
-    @Override
-    public List<DocumentTable> findAllDocumentsWithObject(ObjectTable obj) {
-        return findAllDocumentsWithObject(obj.getId());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<DocumentTable> findAllDocumentsWithObject(Long objectId) {
-
+    private Query findAllDocumentsWithObjectQuery(long objectId) {
         Query hq = currentSession().createQuery(
-                "select distinct doc from DocumentTable as doc "
-                    + "inner join doc.aliasOccurrences as occ "
-                    + "inner join occ.alias as alias "
-                    + "inner join alias.object as obj "
-                +"where obj.id = :objectId"
+                "select doc, count(occ) as num from DocumentTable as doc "
+                        + "inner join doc.aliasOccurrences as occ "
+                        + "inner join occ.alias as alias "
+                        + "inner join alias.object as obj "
+                        +"where obj.id = :objectId "
+                + "group by doc.id "
+                + "order by num desc"
         );
         hq.setParameter("objectId", objectId);
 
-        return hq.list();
+        return hq;
+    }
+
+    @Override
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObject(ObjectTable obj) {
+        return findAllDocumentsWithObject(obj.getId());
+
+    }
+
+    @Override
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObject(long objectId) {
+        @SuppressWarnings("unchecked")
+        List<Object[]> results = findAllDocumentsWithObjectQuery(objectId).list();
+        return results.stream()
+                .map(result -> new Pair<>((DocumentTable) result[0], ((Long)result[1]).intValue()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObject(ObjectTable obj, int firstResult, int maxResults) {
+        return findAllDocumentsWithObject(obj.getId(), firstResult, maxResults);
+    }
+
+    @Override
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObject(long objectId, int firstResult, int maxResults) {
+        @SuppressWarnings("unchecked")
+        List<Object[]> results = addPagination(findAllDocumentsWithObjectQuery(objectId), firstResult, maxResults).list();
+        return results.stream()
+                .map(result -> new Pair<>((DocumentTable) result[0], ((Long)result[1]).intValue()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -74,6 +101,79 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                     .add(Restrictions.isNull(DocumentTable.PROPERTY_NAME_PROCESSED))
                     .list();
             
+
+    private Query findAllDocumentsByFullTextQuery(String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query query = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
     }
-    
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllDocumentsByFullText(String pattern) {
+        return findAllDocumentsByFullTextQuery(pattern).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllDocumentsByFullText(String pattern, int firstResult, int maxResults) {
+        return addPagination(findAllDocumentsByFullTextQuery(pattern), firstResult, maxResults).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllProcessedDocuments(boolean processed) {
+        return new ArrayList<>(); //TODO
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllProcessedDocuments(boolean processed, int firstResult, int maxResults) {
+        return new ArrayList<>(); //TODO
+    }
+
+    public Query findAllProcessedDocumentsByFullTextQuery(boolean processed, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query queryFullText = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query queryProcessed = builder
+                .keyword()
+                .onField("processedBool")
+                .matching(processed)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .keyword()
+                .onField("processedBool")
+                .matching(processed)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern) {
+        return findAllProcessedDocumentsByFullTextQuery(processed, pattern).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern, int firstResult, int maxResults) {
+        return addPagination(findAllProcessedDocumentsByFullTextQuery(processed, pattern), firstResult, maxResults).list();
+    }
+
 }

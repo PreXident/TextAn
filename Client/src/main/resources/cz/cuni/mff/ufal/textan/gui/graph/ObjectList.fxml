@@ -34,9 +34,9 @@
 	<center>
 		<TableView fx:id="table" minHeight="30">
 			<columns>
-				<TableColumn fx:id="idColumn" text="%table.id" resizable="false" prefWidth="60" sortable="false" />
-				<TableColumn fx:id="typeColumn" text="%table.type" resizable="false" prefWidth="100" sortable="false" />
-				<TableColumn fx:id="aliasColumn" text="%table.alias" resizable="false" sortable="false" />
+				<TableColumn fx:id="idColumn" text="%table.id" prefWidth="60" sortable="false" />
+				<TableColumn fx:id="typeColumn" text="%table.type" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="aliasColumn" text="%table.alias" sortable="false" />
 			</columns>
 			<placeholder>
 				<Label text="" />
@@ -53,7 +53,7 @@
 			</left>
 			<center>
 				<VBox alignment="CENTER">
-					<Label fx:id="paginationLabel" text="Dummy"/>
+					<Label fx:id="paginationLabel"/>
 					<HBox alignment="CENTER">
 						<Label text="%page.size" />
 						<ComboBox fx:id="perPageComboBox">

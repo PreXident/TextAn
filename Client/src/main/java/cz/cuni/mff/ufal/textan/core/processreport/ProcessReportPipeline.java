@@ -44,6 +44,9 @@ public class ProcessReportPipeline {
     /** Ticket for document processing. */
     protected final Ticket ticket;
 
+    /** Problems with document. */
+    protected Problems problems;
+
     /** Simple synchronization. Indented to be used by UI. */
     public final Semaphore lock = new Semaphore(1);
 
@@ -144,6 +147,13 @@ public class ProcessReportPipeline {
      */
     public void back() {
         state.back(this);
+    }
+
+    /**
+     * Forces the document to be save into the db.
+     */
+    public void forceSave() {
+        state.forceSave(this);
     }
 
     /**
@@ -249,5 +259,13 @@ public class ProcessReportPipeline {
     public void setReportRelations(final List<Word> words,
             final List<? extends RelationBuilder> unanchoredRelations) {
         state.setReportRelations(this, words, unanchoredRelations);
+    }
+
+    /**
+     * Returns report problems.
+     * @return report problems
+     */
+    public Problems getProblems() {
+        return problems;
     }
 }

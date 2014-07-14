@@ -11,6 +11,8 @@ import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
+import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
+import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.RelationInfo;
@@ -26,6 +28,8 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.beans.Observable;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -172,10 +176,10 @@ public class ReportRelationsController extends ReportWizardController {
     List<Text> texts;
 
     /** Context menu for objects. */
-    ContextMenu objectContextMenu;
+    ObjectContextMenu objectContextMenu;
 
     /** Object to display graph for. */
-    Object objectForGraph;
+    ObjectProperty<Object> objectForGraph = new SimpleObjectProperty<>();
 
     @FXML
     private void add() {
@@ -349,15 +353,6 @@ public class ReportRelationsController extends ReportWizardController {
                 (FXRelationBuilder p) -> new Observable[] { p.stringRepresentation }));
         relationsListView.getSelectionModel().selectedItemProperty().addListener(
                 (ov, oldVal, newVal) -> { selectRelation(newVal); });
-        //
-        objectContextMenu = new ContextMenu();
-        objectContextMenu.setConsumeAutoHidingEvents(false);
-        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "graph.show"));
-        graphMI.setOnAction(e -> {
-            contextMenu.hide();
-            textAnController.displayGraph(objectForGraph.getId());
-        });
-        objectContextMenu.getItems().add(graphMI);
     }
 
     @Override
@@ -439,7 +434,7 @@ public class ReportRelationsController extends ReportWizardController {
                     final int entityIndex = word.getEntity().getIndex();
                     final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
                     if (obj != null) {
-                        objectForGraph = obj;
+                        objectForGraph.set(obj);
                         objectContextMenu.show(text, Side.BOTTOM, 0, 0);
                     }
                 }
@@ -560,12 +555,20 @@ public class ReportRelationsController extends ReportWizardController {
                     });
                     cell.setOnMousePressed(e -> {
                         if (e.isSecondaryButtonDown() && cell.getItem() != null) {
-                            objectForGraph = cell.getItem();
+                            objectForGraph.set(cell.getItem());
                         }
                     });
                     return cell;
                 };
         objectColumn.setCellFactory(cellFactory);
+    }
+
+    @Override
+    public void setTextAnController(final TextAnController textAnController) {
+        super.setTextAnController(textAnController);
+        objectContextMenu = new ObjectContextMenu(textAnController);
+        objectContextMenu.setOnAction(e -> contextMenu.hide());
+        objectContextMenu.objectProperty().bind(objectForGraph);
     }
 
     /**

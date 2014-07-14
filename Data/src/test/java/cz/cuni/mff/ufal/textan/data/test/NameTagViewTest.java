@@ -7,22 +7,17 @@
 package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
-import cz.cuni.mff.ufal.textan.data.graph.Graph;
-import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
-import cz.cuni.mff.ufal.textan.data.graph.ObjectNode;
 import cz.cuni.mff.ufal.textan.data.tables.InRelationTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable;
-import cz.cuni.mff.ufal.textan.data.views.INameTagView;
-import cz.cuni.mff.ufal.textan.data.views.NameTagView;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IEntityViewDAO;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,7 +36,7 @@ public class NameTagViewTest {
     private Data data;
     
     @Autowired
-    private INameTagView nameTagView;
+    private IEntityViewDAO nameTagView;
 
     static final int OBJECTS_COUNT = 20;
     static final int OBJECTS_IN_RELATION_COUNT = 10;

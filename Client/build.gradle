@@ -26,7 +26,17 @@ dependencies {
 	compile name: 'PretopoLib'
 }
 
-[compileJava, compileTestJava]*.options*.compilerArgs << '-Xlint:all'
+if (gradle.gradleVersion.startsWith("1.")) {
+	gradle.projectsEvaluated {
+		tasks.withType(Compile) {
+			options.compilerArgs << "-Xlint:all"
+			options.compilerArgs << "-Xlint:-serial"
+		}
+	}
+} else {
+	[compileJava, compileTestJava]*.options*.compilerArgs << '-Xlint:all'
+	[compileJava, compileTestJava]*.options*.compilerArgs << '-Xlint:-serial'
+}
 
 //exclude resources in ! directories
 sourceSets {

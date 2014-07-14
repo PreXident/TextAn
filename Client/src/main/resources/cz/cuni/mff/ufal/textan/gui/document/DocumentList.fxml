@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import java.net.URL ?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.text.*?>
+<?import jfxtras.labs.scene.control.BigDecimalField?>
+
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
+			fx:controller="cz.cuni.mff.ufal.textan.gui.document.DocumentListController" styleClass="root" >
+	<stylesheets >
+		<URL value="@DocumentList.css" />
+	</stylesheets>
+	<top>
+		<GridPane alignment="CENTER_LEFT" hgap="10" vgap="10">
+			<padding><Insets top="0" right="0" bottom="10" left="0"/></padding>
+			<CheckBox fx:id="processedCheckBox" text="%processed" indeterminate="true" allowIndeterminate="true" GridPane.columnSpan="2" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+			<Label text="%filter" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+			<TextField fx:id="filterField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+			<Button text="%filter.execute" onAction="#filter" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+		</GridPane>
+	</top>
+	<center>
+		<TableView fx:id="table" minHeight="30">
+			<columns>
+				<TableColumn fx:id="idColumn" text="%table.id" prefWidth="60" sortable="false" />
+				<TableColumn fx:id="addTimeColumn" text="%table.added" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="lastChangeTimeColumn" text="%table.lastChangeTime" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="processedColumn" text="%table.processed" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="processTimeColumn" text="%table.processedTime" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="countColumn" text="%table.count" prefWidth="100" sortable="false" />
+				<TableColumn fx:id="textColumn" text="%table.text" sortable="false" minWidth="100" />
+			</columns>
+			<placeholder>
+				<Label text="" />
+			</placeholder>
+		</TableView>
+	</center>
+	<bottom>
+		<BorderPane>
+			<left>
+				<HBox>
+					<Button text="|&lt;&lt;" onAction="#fastRewind" />
+					<Button text="&lt;" onAction="#rewind" />
+				</HBox>
+			</left>
+			<center>
+				<VBox alignment="CENTER">
+					<Label fx:id="paginationLabel" text="Dummy"/>
+					<HBox alignment="CENTER">
+						<Label text="%page.size" />
+						<ComboBox fx:id="perPageComboBox">
+							<items>
+								<FXCollections fx:factory="observableArrayList">
+									<Integer fx:value="10" />
+									<Integer fx:value="25" />
+									<Integer fx:value="50" />
+									<Integer fx:value="100" />
+								</FXCollections>
+							</items>
+							<value>
+								<Integer fx:value="25" />
+							</value>
+						</ComboBox>
+					</HBox>
+				</VBox>
+			</center>
+			<right>
+				<HBox>
+					<Button text="&gt;" onAction="#forward" />
+					<Button text="&gt;&gt;|" onAction="#fastForward" />
+				</HBox>
+			</right>
+		</BorderPane>
+	</bottom>
+</BorderPane>

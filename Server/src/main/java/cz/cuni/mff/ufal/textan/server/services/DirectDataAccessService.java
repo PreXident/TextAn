@@ -99,22 +99,58 @@ public class DirectDataAccessService {
                 .collect(Collectors.toList());
     }
 
+    public Pair<List<Document>,Integer> getFilteredDocuments(String pattern, ProcessedFilter processedFilter, int firstResult, int maxResults) {
+
+        List<DocumentTable> documentTables;
+        int count;
+
+        if ((pattern != null && !pattern.isEmpty()) && (processedFilter != null && processedFilter != ProcessedFilter.ALL)) {
+
+            count = documentTableDAO.findAllProcessedDocumentsByFullText(processedFilter == ProcessedFilter.PROCESSED, pattern).size();
+            documentTables = documentTableDAO.findAllProcessedDocumentsByFullText(processedFilter == ProcessedFilter.PROCESSED, pattern, firstResult, maxResults);
+
+        } else if (pattern != null && !pattern.isEmpty()) {
+
+            count = documentTableDAO.findAllDocumentsByFullText(pattern).size();
+            documentTables = documentTableDAO.findAllDocumentsByFullText(pattern, firstResult, maxResults);
+
+        } else if (processedFilter != null && processedFilter != ProcessedFilter.ALL) {
+
+            count = documentTableDAO.findAllProcessedDocuments(processedFilter == ProcessedFilter.PROCESSED).size();
+            documentTables = documentTableDAO.findAllProcessedDocuments(processedFilter == ProcessedFilter.PROCESSED, firstResult, maxResults);
+
+        } else {
+
+            count = documentTableDAO.findAll().size();
+            documentTables = documentTableDAO.findAll(firstResult, maxResults);
+        }
+
+        return new Pair<>(
+                documentTables.stream().map(Document::fromDocumentTable).collect(Collectors.toList()),
+                count
+        );
+    }
+
     /**
      * Gets documents which contain object with given id.
      * @param objectId the object id
-     * @return a list of documents
+     * @param firstResult
+     *@param maxResults @return a list of documents
      * @throws IdNotFoundException thrown when object with given id not exists
      */
-    public List<Document> getDocumentsContainsObject(long objectId) throws IdNotFoundException {
+    public Pair<List<Pair<Document, Integer>>, Integer> getDocumentsContainingObject(long objectId, int firstResult, int maxResults) throws IdNotFoundException {
 
         ObjectTable objectTable = objectTableDAO.find(objectId);
         if (objectTable == null) {
             throw new IdNotFoundException("objectId", objectId);
         }
 
-        return documentTableDAO.findAllDocumentsWithObject(objectId).stream()
-                .map(Document::fromDocumentTable)
+        int count = documentTableDAO.findAllDocumentsWithObject(objectId).size();
+        List<Pair<Document, Integer>> documents = documentTableDAO.findAllDocumentsWithObject(objectId, firstResult, maxResults).stream()
+                .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
                 .collect(Collectors.toList());
+
+        return new Pair<>(documents, count);
     }
 
     /**
@@ -206,20 +242,20 @@ public class DirectDataAccessService {
         int count;
         List<ObjectTable> objects;
 
-        if (objectTypeId != null && aliasFilter != null) {
+        if (objectTypeId != null && (aliasFilter != null && !aliasFilter.isEmpty())) {
 
-            count = objectTableDAO.findAllByObjectTypeAndAliasSubStr(objectTypeId, aliasFilter).size();
-            objects = objectTableDAO.findAllByObjectTypeAndAliasSubStr(objectTypeId, aliasFilter, firstResult, maxResults);
+            count = objectTableDAO.findAllByObjTypeAndAliasFullText(objectTypeId, aliasFilter).size();
+            objects = objectTableDAO.findAllByObjTypeAndAliasFullText(objectTypeId, aliasFilter, firstResult, maxResults);
 
         } else if (objectTypeId != null) {
 
             count = objectTableDAO.findAllByObjectType(objectTypeId).size();
             objects = objectTableDAO.findAllByObjectType(objectTypeId, firstResult, maxResults);
 
-        } else if (aliasFilter != null) {
+        } else if (aliasFilter != null && !aliasFilter.isEmpty()) {
 
-            count = objectTableDAO.findAllByAliasSubstring(aliasFilter).size();
-            objects = objectTableDAO.findAllByAliasSubstring(aliasFilter, firstResult, maxResults);
+            count = objectTableDAO.findAllByAliasFullText(aliasFilter).size();
+            objects = objectTableDAO.findAllByAliasFullText(aliasFilter, firstResult, maxResults);
 
         } else {
 
@@ -362,6 +398,4 @@ public class DirectDataAccessService {
 
         return inRelationTableDAO.getRolesForRelationType(relationTypeId);
     }
-
-
 }

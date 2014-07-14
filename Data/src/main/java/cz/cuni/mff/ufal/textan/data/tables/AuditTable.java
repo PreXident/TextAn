@@ -1,17 +1,23 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import cz.cuni.mff.ufal.textan.data.repositories.common.EnumUserType;
+import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
+ * Log of changes in DB
  *
  * @author Vaclav Pernicka
+ * @author Petr Fanta
  */
+@Entity
+@Table(name = "Audit")
 public class AuditTable extends AbstractTable {
     public enum AuditType {
         Insert, Delete, Update, Read
     }
-    
+
     private long id;
     private String username;
     private AuditType type;
@@ -19,13 +25,16 @@ public class AuditTable extends AbstractTable {
 
     public AuditTable() {
     }
-   
+
     public AuditTable(String username, AuditType type, String edit) {
         this.username = username;
         this.type = type;
         this.edit = edit;
     }
-    
+
+    @Id
+    @GeneratedValue
+    @Column(name = "id_audit", nullable = false, unique = true)
     public long getId() {
         return id;
     }
@@ -34,6 +43,7 @@ public class AuditTable extends AbstractTable {
         this.id = id;
     }
 
+    @Column(name = "username", nullable = false)
     public String getUsername() {
         return username;
     }
@@ -42,6 +52,8 @@ public class AuditTable extends AbstractTable {
         this.username = username;
     }
 
+    @Column(name = "edittype", nullable = false)
+    @Type(type = "cz.cuni.mff.ufal.textan.data.tables.usertypes.AuditEnumUserType")
     public AuditType getType() {
         return type;
     }
@@ -50,6 +62,7 @@ public class AuditTable extends AbstractTable {
         this.type = type;
     }
 
+    @Column(name = "edit", nullable = false)
     public String getEdit() {
         return edit;
     }
@@ -91,5 +104,4 @@ public class AuditTable extends AbstractTable {
         }
         return true;
     }
-    
 }

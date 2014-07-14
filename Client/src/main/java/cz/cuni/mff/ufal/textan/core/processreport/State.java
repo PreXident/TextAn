@@ -32,6 +32,14 @@ public abstract class State {
     }
 
     /**
+     * Forces the document to be save into the db.
+     * @param pipeline pipeline delegating the request
+     */
+    public void forceSave(final ProcessReportPipeline pipeline) {
+        throw new IllegalStateException("Cannot force save when in state " + getType());
+    }
+
+    /**
      * Selects database as a source of the new report.
      * Available in {@link State.StateType#LOAD} state.
      * @param pipeline pipeline delegating the request

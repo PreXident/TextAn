@@ -12,13 +12,10 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.core.processreport.Problems;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -35,6 +32,10 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Main class controlling core manipulations with reports.
@@ -47,6 +48,35 @@ public class Client {
 
     private static final QName DATA_PROVIDER_SERVICE = new QName("http://ws.commons.textan.ufal.mff.cuni.cz", "DataProviderService");
     private static final QName DATA_PROVIDER_PORT = new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService", "DataProviderPort");
+
+    /** Values for document processed filtering. */
+    public enum Processed {
+        YES {
+            @Override
+            public boolean filter(final Document document) {
+                return document.isProcessed();
+            }
+        },
+        NO {
+            @Override
+            public boolean filter(final Document document) {
+                return !document.isProcessed();
+            }
+        },
+        BOTH {
+            @Override
+            public boolean filter(final Document document) {
+                return true;
+            }
+        };
+
+        /**
+         * Filters document by it's processed field.
+         * @param document document to filter
+         * @return true if document passes the filter, false otherwise
+         */
+        public abstract boolean filter(final Document document);
+    }
 
     /** Settings of the application. Handle with care, they're shared. */
     final protected Properties settings;
@@ -75,6 +105,7 @@ public class Client {
         UsernameToken token = new UsernameToken();
         token.setUsername(settings.getProperty("username"));
 
+        @SuppressWarnings("rawtypes")
         List<Handler> handlers = new ArrayList<>(1);
         handlers.add(new SOAPHandler<SOAPMessageContext>() {
 
@@ -145,7 +176,6 @@ public class Client {
      * Returns {@link #dataProvider}, it is created if needed.
      * @return data provider
      */
-    //TODO: configurable wsdl location!
     private IDataProvider getDataProvider() {
         if (dataProvider == null) {
             try {
@@ -168,6 +198,64 @@ public class Client {
             }
         }
         return dataProvider;
+    }
+
+    /**
+     * Returns list of documents.
+     * @param processed only processed documents?
+     * @param filter document text filter
+     * @param first index of the first object
+     * @param size maximal number of objects
+     * @return list of documents
+     */
+    public synchronized Pair<List<Document>, Integer> getDocumentsList(
+            final Processed processed, final String filter,
+            final int first, final int size) {
+        //TODO remove emulation of pagination and filtering
+        final GetDocumentsResponse response =
+                getDataProvider().getDocuments(new Void());
+        final List<Document> list = response.getDocuments().stream()
+                .map(Document::new)
+                .filter(d -> processed.filter(d))
+                .filter(d -> d.getText().contains(filter))
+                .skip(first)
+                .limit(size)
+                .collect(Collectors.toCollection(ArrayList::new));
+        return new Pair<>(list, response.getDocuments().size());
+    }
+
+    /**
+     * Returns documents containing object with given id.
+     * @param id object id
+     * @param processed only processed documents?
+     * @param filter document text filter
+     * @param first index of the first object
+     * @param size maximal number of objects
+     * @return list of documents containing object with given id
+     * @throws IdNotFoundException if id error occurs
+     */
+    public synchronized Pair<List<Document>, Integer> getDocumentsList(
+            final long id, final Processed processed, final String filter,
+            final int first, final int size) throws IdNotFoundException {
+        try {
+            final GetDocumentsContainingObjectByIdRequest request =
+                    new GetDocumentsContainingObjectByIdRequest();
+            request.setObjectId(id);
+            request.setFirstResult(first);
+            request.setMaxResults(size);
+            //TODO set parameters for filtering when ready
+            final GetDocumentsContainingObjectByIdResponse response =
+                    getDataProvider().getDocumentsContainingObjectById(request);
+            final List<Document> list = response.getDocumentCountPairs().stream()
+                    .map(x -> new Document(x.getDocument())) //TODO add number of occurrences somewhere
+                    //TODO remove filtering emulation
+                    .filter(d -> processed.filter(d))
+                    .filter(d -> d.getText().contains(filter))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            return new Pair<>(list, response.getTotalNumberOfResults());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
     }
 
     /**
@@ -296,44 +384,22 @@ public class Client {
      */
     public synchronized Pair<List<Object>, Integer> getObjectsList(final ObjectType type,
             final String filter, final int first, final int size) throws IdNotFoundException {
-//        final GetFilteredObjectsRequest request =
-//                new GetFilteredObjectsRequest();
-//        request.setObjectTypeId(type != null ? type.getId() : null);
-//        request.setAliasFilter(filter);
-//        request.setFirstResult(first);
-//        request.setMaxResults(size);
-//        try {
-//            final GetFilteredObjectsResponse response =
-//                    getDataProvider().getFilteredObjects(request);
-//            final List<Object> objects = response.getObjects().stream()
-//                    .map(Object::new)
-//                    .collect(Collectors.toList());
-//            return new Pair<>(objects, response.getTotalNumberOfResults());
-//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
-//            throw new IdNotFoundException(e);
-//        }
-//        //TODO: call proper method when it's ready
-        final GetObjectsResponse response =
-                getDataProvider().getObjects(new Void());
-        Stream<Object> objects = response.getObjects().stream()
-            .map(Object::new);
-        //TODO: remove emulation
-        final int actualSize = response.getObjects().size();
-        if (type != null) {
-            objects = objects.filter(obj -> obj.getType().getId() == type.getId());
+        final GetFilteredObjectsRequest request =
+                new GetFilteredObjectsRequest();
+        request.setObjectTypeId(type != null ? type.getId() : null);
+        request.setAliasFilter(filter);
+        request.setFirstResult(first);
+        request.setMaxResults(size);
+        try {
+            final GetFilteredObjectsResponse response =
+                    getDataProvider().getFilteredObjects(request);
+            final List<Object> objects = response.getObjects().stream()
+                    .map(Object::new)
+                    .collect(Collectors.toList());
+            return new Pair<>(objects, response.getTotalNumberOfResults());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
         }
-        if (filter != null && !filter.isEmpty()) {
-            final String f = filter.toLowerCase();
-            objects = objects.filter(obj -> {
-                final String aliases = String.join(",", obj.getAliases()).toLowerCase();
-                return aliases.contains(f);
-            });
-        }
-        final ArrayList<Object> list = objects
-                .skip(first)
-                .limit(size)
-                .collect(Collectors.toCollection(ArrayList::new));
-        return new Pair<>(list, actualSize);
     }
 
     /**
@@ -373,6 +439,17 @@ public class Client {
         return response.getObjectTypes().stream()
                 .map(ObjectType::new)
                 .collect(Collectors.toCollection(HashSet::new));
+    }
+
+    /**
+     * Returns problems with report saving.
+     * @param ticket editing ticket
+     * @return problems with report saving
+     */
+    public synchronized Problems getProblems(final Ticket ticket) {
+        final GetProblemsRequest request =  new GetProblemsRequest();
+        final GetProblemsResponse response = getDocumentProcessor().getProblems(request, ticket.toTicket());
+        return new Problems(response);
     }
 
     /**
@@ -451,12 +528,14 @@ public class Client {
      * @param text            report text
      * @param reportEntities  report entities
      * @param reportRelations report relations
+     * @param force           force save?
      * @return true if saving was successfull, false otherwise
      * @throws IdNotFoundException if id error occurs
      */
     public synchronized boolean saveProcessedDocument(final Ticket ticket,
                                          final String text, final List<Entity> reportEntities,
-                                         final List<RelationBuilder> reportRelations) throws IdNotFoundException {
+                                         final List<RelationBuilder> reportRelations,
+                                         final boolean force) throws IdNotFoundException {
         final SaveProcessedDocumentFromStringRequest request =
                 new SaveProcessedDocumentFromStringRequest();
 
@@ -481,12 +560,12 @@ public class Client {
         }
 
         request.setText(text);
-        request.setForce(false);
+        request.setForce(force);
 
         try {
             final SaveProcessedDocumentFromStringResponse response =
                     getDocumentProcessor().saveProcessedDocumentFromString(
-                            request, //TODO handle save document error
+                            request,
                             ticket.toTicket());
             return response.isResult();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {

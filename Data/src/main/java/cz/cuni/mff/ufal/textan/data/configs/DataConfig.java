@@ -4,15 +4,14 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.interceptors.GlobalVersionAndLogInterceptor;
 import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
-import cz.cuni.mff.ufal.textan.data.views.INameTagView;
-import cz.cuni.mff.ufal.textan.data.views.NameTagView;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
@@ -27,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import org.hibernate.Interceptor;
 
 /**
  * A Spring configuration for a connection to a database.
@@ -118,16 +116,24 @@ public class DataConfig {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setHibernateProperties(hibernateProperties());
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        Resource[] mappings = null;
-
-        mappings = resolver.getResources("classpath:mappings/*.hbm.xml");
-        sessionFactory.setMappingLocations(mappings);
+        sessionFactory.setPackagesToScan("cz.cuni.mff.ufal.textan.data.tables");
         sessionFactory.afterPropertiesSet();
 
         sessionFactory.getConfiguration().setInterceptor(logInterceptor());
 
-        return sessionFactory.getObject();
+        SessionFactory factory = sessionFactory.getObject();
+
+        //Initialize of fulltext indexes (TODO: better place)
+        Session session = factory.openSession();
+        FullTextSession fullTextSession = Search.getFullTextSession(session);
+        try {
+            fullTextSession.createIndexer().startAndWait();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        session.close();
+
+        return factory;
     }
 
     /**
@@ -161,14 +167,18 @@ public class DataConfig {
      */
     @SuppressWarnings("serial")
     private Properties hibernateProperties() throws IOException {
-        return new Properties() {
-            {
-//                setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-                setProperty("hibernate.dialect", dataProperties().getProperty("hibernate.dialect"));
-                setProperty("show_sql", dataProperties().getProperty("hibernate.show_sql"));
-                setProperty("hibernate.globally_quoted_identifiers", "true");
-            }
-        };
+        Properties properties = new Properties();
+
+        //hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.setProperty("hibernate.dialect", dataProperties().getProperty("hibernate.dialect"));
+        properties.setProperty("show_sql", dataProperties().getProperty("hibernate.show_sql"));
+        //properties.setProperty("hibernate.globally_quoted_identifiers", "true");
+
+        properties.setProperty("hibernate.search.default.directory_provider", dataProperties().getProperty("hibernate.search.default.directory_provider"));
+        properties.setProperty("hibernate.search.default.indexBase", dataProperties().getProperty("hibernate.search.default.indexBase"));
+        properties.setProperty("hibernate.search.analyzer", dataProperties().getProperty("hibernate.search.analyzer"));
+
+        return properties;
     }
 
     /**
@@ -180,12 +190,6 @@ public class DataConfig {
     public GraphFactory graphFactory() throws PropertyVetoException, IOException {
         return new GraphFactory(sessionFactory());
     }
-    
-    @Bean
-    public INameTagView nameTagView() throws PropertyVetoException, IOException {
-        return new NameTagView(sessionFactory());
-    }
-
 
     @Bean
     public LogInterceptorHack logInterceptorHack() {

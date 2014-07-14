@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import cz.cuni.mff.ufal.textan.gui.reportwizard.TextFlow?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import java.net.URL ?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.cell.*?>
+
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
+			fx:controller="cz.cuni.mff.ufal.textan.gui.reportwizard.ReportErrorsController" styleClass="root" >
+	<stylesheets >
+		<URL value="@06_ReportErrors.css" />
+	</stylesheets>
+	<center>
+		<GridPane fx:id="gridPane" alignment="CENTER_LEFT" hgap="10" vgap="10">
+			<padding><Insets top="0" right="0" bottom="10" left="0"/></padding>
+			<VBox fx:id="hbox" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="0">
+				<Label fx:id="processedLabel" text="%processed" />
+				<Label fx:id="changedLabel" text="%changed" />
+			</VBox>
+			<Label text="%newObjects" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+			<Label text="%newRelations" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+			<Label text="%joinedObjects" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+			<TableView fx:id="newObjectsTable" minHeight="30" GridPane.columnIndex="0" GridPane.rowIndex="2" >
+				<columns>
+					<TableColumn fx:id="newObjectsTableIdColumn" text="%table.id" prefWidth="60" />
+					<TableColumn fx:id="newObjectsTableTypeColumn" text="%table.type" prefWidth="100" />
+					<TableColumn fx:id="newObjectsTableAliasColumn" text="%table.alias" prefWidth="110" />
+				</columns>
+				<placeholder>
+					<Label text="" />
+				</placeholder>
+			</TableView>
+			<TreeView fx:id="relationsTreeView" minHeight="30" GridPane.columnIndex="1" GridPane.rowIndex="2" showRoot="false" />
+			<TreeView fx:id="joinedObjectsTreeView" minHeight="30" GridPane.columnIndex="2" GridPane.rowIndex="2" showRoot="false" />
+		</GridPane>
+	</center>
+	<bottom>
+		<BorderPane>
+			<left>
+				<Button text="%back" onAction="#back"/>
+			</left>
+			<center>
+				<Slider fx:id="slider" min="1" max="5" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="5" majorTickUnit="1" minorTickCount="0" />
+			</center>
+			<right>
+				<Button fx:id="forceButton" text="%force" onAction="#force"/>
+			</right>
+		</BorderPane>
+	</bottom>
+</BorderPane>

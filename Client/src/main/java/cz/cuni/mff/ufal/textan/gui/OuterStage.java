@@ -41,6 +41,9 @@ public class OuterStage extends Stage {
     /** Flag indicating whether dragging is NW. */
     private boolean draggingNW = false;
 
+    /** User data. */
+    private Object userData = null;
+
     /**
      * Only constructor.
      * @param title Stage's title
@@ -134,5 +137,21 @@ public class OuterStage extends Stage {
      */
     public Window getInnerWindow() {
         return innerWindow;
+    }
+
+    /**
+     * Returns user data.
+     * @return user data
+     */
+    public Object getUserData() {
+        return userData;
+    }
+
+    /**
+     * Sets user data.
+     * @param userData new user data
+     */
+    public void setUserData(final Object userData) {
+        this.userData = userData;
     }
 }
