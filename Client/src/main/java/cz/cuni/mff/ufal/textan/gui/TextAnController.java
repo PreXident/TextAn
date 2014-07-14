@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.gui;
 
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Document;
+import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentStage;
@@ -123,7 +124,7 @@ public class TextAnController implements Initializable {
         if (!(t.getSource() instanceof MenuItem)) {
             return;
         }
-        final Object window = ((MenuItem) t.getSource()).getUserData();
+        final java.lang.Object window = ((MenuItem) t.getSource()).getUserData();
         if (window instanceof InnerWindow) {
             final InnerWindow w = (InnerWindow) window;
             //Utils.runFXlater(() -> w.toFront());
@@ -163,7 +164,7 @@ public class TextAnController implements Initializable {
 
     @FXML
     private void displayDocuments() {
-        displayDocuments(-1);
+        displayDocuments(null);
     }
 
     @FXML
@@ -344,14 +345,14 @@ public class TextAnController implements Initializable {
 
     /**
      * Creates and displays graph.
-     * @param objectId object id
+     * @param object object whose documents should be displayes
      */
-    public void displayDocuments(final long objectId) {
+    public void displayDocuments(final Object object) {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-            final DocumentsWindow docWindow = new DocumentsWindow(this, settings, client, objectId);
+            final DocumentsWindow docWindow = new DocumentsWindow(this, settings, client, object);
             content.getChildren().add(docWindow);
         } else {
-            final DocumentsStage docStage = new DocumentsStage(this, settings, client, objectId);
+            final DocumentsStage docStage = new DocumentsStage(this, settings, client, object);
             children.add(docStage);
             docStage.showingProperty().addListener((ov, oldVal, newVal) -> {
                 if (!newVal) {

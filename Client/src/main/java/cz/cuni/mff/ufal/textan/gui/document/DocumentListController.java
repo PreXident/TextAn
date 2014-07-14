@@ -4,9 +4,11 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Client.Processed;
 import cz.cuni.mff.ufal.textan.core.Document;
+import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import static cz.cuni.mff.ufal.textan.gui.Utils.CONTEXT_MENU_STYLE;
+import cz.cuni.mff.ufal.textan.gui.Window;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
 import java.net.URL;
 import java.text.DateFormat;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyLongWrapper;
@@ -103,8 +106,8 @@ public class DocumentListController extends WindowController {
     /** Client for communication with server. */
     Client client;
 
-    /** Object id to filter the documents. */
-    protected long objectId = -1L;
+    /** Object to filter the documents. */
+    protected Object object = null;
 
     /** Number of displayed page. */
     protected int pageNo = 0;
@@ -145,9 +148,9 @@ public class DocumentListController extends WindowController {
                 @Override
                 protected Pair<List<Document>, Integer> call() throws Exception {
                     Pair<List<Document>, Integer> pair =
-                            objectId == -1
+                            object == null
                             ? client.getDocumentsList(processed, filter, first, size)
-                            : client.getDocumentsList(objectId, processed, filter, first, size);
+                            : client.getDocumentsList(object.getId(), processed, filter, first, size);
                     pair.getFirst().sort((doc1, doc2) -> Long.compare(doc1.getId(), doc2.getId()));
                     return pair;
                 }
@@ -300,11 +303,15 @@ public class DocumentListController extends WindowController {
     }
 
     /**
-     * Sets object id to filter documents.
-     * @param objectId new object id
+     * Sets object to filter documents.
+     * @param object new object
      */
-    public void setObjectId(final long objectId) {
-        this.objectId = objectId;
+    public void setObject(final Object object) {
+        this.object = object;
+        final Window w = window != null ? window : stage.getInnerWindow();
+        Platform.runLater(() -> {
+            w.setTitle(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(object.toString()));
+        });
         table.getColumns().add(table.getColumns().size() - 1, countColumn);
         textColumn.prefWidthProperty().bind(table.widthProperty().add(idColumn.widthProperty().add(addTimeColumn.widthProperty()).add(lastChangeTimeColumn.widthProperty()).add(processedColumn.widthProperty()).add(processTimeColumn.widthProperty()).add(countColumn.widthProperty()).multiply(-1).add(-30)));
     }

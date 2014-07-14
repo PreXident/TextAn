@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui.document;
 
 import cz.cuni.mff.ufal.textan.core.Client;
+import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
@@ -22,10 +23,10 @@ public class DocumentsStage extends OuterStage {
      * @param textAnController application controller
      * @param settings properties with settings
      * @param client client to communicate with server
-     * @param objectId object id
+     * @param object object whose documents should be displayed
      */
     public DocumentsStage(final TextAnController textAnController,
-            final Properties settings, final Client client, final long objectId) {
+            final Properties settings, final Client client, final Object object) {
         super(TITLE, PROPERTY_ID, settings);
         ResourceBundle resourceBundle = null;
         try {
@@ -36,8 +37,8 @@ public class DocumentsStage extends OuterStage {
             final DocumentListController controller = loader.getController();
             controller.setStage(this);
             controller.setSettings(settings);
-            if (objectId != -1) {
-                controller.setObjectId(objectId);
+            if (object != null) {
+                controller.setObject(object);
             }
             controller.setTextAnController(textAnController);
             controller.setClient(client);

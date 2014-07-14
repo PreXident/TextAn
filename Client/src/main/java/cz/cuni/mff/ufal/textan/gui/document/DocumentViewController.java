@@ -12,6 +12,7 @@ import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.s
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import cz.cuni.mff.ufal.textan.gui.Window;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.TextFlow;
 import java.net.URL;
@@ -291,6 +292,8 @@ public class DocumentViewController extends WindowController {
         };
         task.setOnSucceeded(e -> {
             documentData = task.getValue();
+            final Window w = window == null ? stage.getInnerWindow() : window;
+            w.setTitle(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + document.getId());
             relationsListView.setCellFactory(lv -> {
                 return new ListCell<Relation>() {
                     @Override

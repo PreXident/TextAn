@@ -46,7 +46,7 @@ public class ObjectContextMenu extends ContextMenu {
         final MenuItem documentMI = new MenuItem(Utils.localize(resourceBundle, "document.show"));
         documentMI.setOnAction(e -> {
             if (object.get() != null) {
-                controller.displayDocuments(object.get().getId());
+                controller.displayDocuments(object.get());
             }
         });
         documentMI.disableProperty().bind(object.isNull());
