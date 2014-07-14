@@ -45,7 +45,7 @@ CREATE TABLE Object (
     CONSTRAINT FK_OBJECT_TO_TYPE FOREIGN KEY (id_object_type)
   		REFERENCES ObjectType(id_object_type),
 	globalversion int DEFAULT 0 NOT NULL,
-  id_root_object int --,  -- root of the joined tree
+  id_root_object int -- ,  -- root of the joined tree
     /*CONSTRAINT FK_OBJECT_ROOT FOREIGN KEY (id_root_object)
   		REFERENCES Object(id_object)*/	
 );
