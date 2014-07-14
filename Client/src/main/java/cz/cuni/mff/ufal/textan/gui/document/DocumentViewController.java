@@ -13,8 +13,7 @@ import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
-import cz.cuni.mff.ufal.textan.gui.reportwizard.*;
-import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.RelationInfo;
+import cz.cuni.mff.ufal.textan.gui.reportwizard.TextFlow;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +36,6 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
@@ -164,21 +162,6 @@ public class DocumentViewController extends WindowController {
 
     /** Texts's tooltip. */
     Tooltip tooltip = new Tooltip("");
-
-    /** Index of the first selected {@link Text} node. */
-    int firstDragged = -1;
-
-    /** Index of the lasty dragged {@link Text} node. */
-    int lastDragged = -1;
-
-    /** Index of the first selected {@link Text} node. */
-    int firstSelectedIndex = -1;
-
-    /** Index of the last selected {@link Text} node. */
-    int lastSelectedIndex = -1;
-
-    /** Flag indicating whether dragging is taking place. */
-    boolean dragging = false;
 
     /** Localization controller. */
     ResourceBundle resourceBundle;
@@ -389,15 +372,7 @@ public class DocumentViewController extends WindowController {
                     clearSelectedRelationBackground();
                     selectedRelation = null;
                     relationsListView.getSelectionModel().select(-1);
-                    if (!text.getStyleClass().contains(SELECTED) && finObj == null) {
-                        removeSelectedClass(texts);
-                        dragging = true;
-                        firstDragged = texts.indexOf(text);
-                        lastDragged = firstDragged;
-                        firstSelectedIndex = firstDragged;
-                        lastSelectedIndex = firstDragged;
-                        text.getStyleClass().add(SELECTED);
-                    }
+                    removeSelectedClass(texts);
                     if (finRel != null) {
                         selectRelation(finRel);
                         relationsListView.getSelectionModel().select(finRel);
