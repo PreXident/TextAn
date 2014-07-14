@@ -20,7 +20,8 @@ public class ObjectTable extends AbstractTable {
     private long id;
     private String data;
     private long globalVersion;
-
+    
+    private ObjectTable rootObject;
     private ObjectTypeTable objectType;
     private Set<AliasTable> aliases = new HashSet<>();
     private Set<InRelationTable> relations = new HashSet<>();
@@ -30,9 +31,11 @@ public class ObjectTable extends AbstractTable {
     private Set<JoinedObjectsTable> oldObjects2;
     
     public ObjectTable() {
+        rootObject = this;
     }
 
     public ObjectTable(String data, ObjectTypeTable objectType) {
+        this();
         this.data = data;
         this.objectType = objectType;
     }
@@ -79,6 +82,14 @@ public class ObjectTable extends AbstractTable {
             result.addAll(getNewObject().getOldObject2().getObjectsThisWasJoinedFrom());
         }
         return result;
+    }
+
+    public ObjectTable getRootObject() {
+        return rootObject;
+    }
+
+    public void setRootObject(ObjectTable rootObject) {
+        this.rootObject = rootObject;
     }
     
     public Set<JoinedObjectsTable> getOldObjects1() {
@@ -175,12 +186,5 @@ public class ObjectTable extends AbstractTable {
         hash = 79 * hash + Objects.hashCode(this.objectType);
         return hash;
     }
-
-
-
-
-    
-    
-
     
 }

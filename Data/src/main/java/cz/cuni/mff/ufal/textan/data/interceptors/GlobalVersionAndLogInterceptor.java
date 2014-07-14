@@ -4,12 +4,8 @@ import cz.cuni.mff.ufal.textan.data.tables.GlobalVersionTable;
 import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import java.io.Serializable;
-import java.util.Iterator;
-import org.hibernate.EmptyInterceptor;
 import org.hibernate.LockMode;
-import org.hibernate.LockOptions;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.type.Type;
 
@@ -19,7 +15,7 @@ import org.hibernate.type.Type;
  */
 public class GlobalVersionAndLogInterceptor extends LogInterceptor {
     private static final long serialVersionUID = 20156489756124L;
-
+    
     
     public GlobalVersionAndLogInterceptor(String username) {
         super(username);
@@ -39,7 +35,7 @@ public class GlobalVersionAndLogInterceptor extends LogInterceptor {
             return true;
         }
         if (entity instanceof JoinedObjectsTable) {
-            updateGlobalVersionOfObject(id);
+            updateGlobalVersionOfObject((JoinedObjectsTable)entity);
             return super.onSave(entity, id, state, propertyNames, types);
         }
         return super.onSave(entity, id, state, propertyNames, types); 
@@ -62,13 +58,13 @@ public class GlobalVersionAndLogInterceptor extends LogInterceptor {
             return true;
         }
         if (entity instanceof JoinedObjectsTable) {
-            updateGlobalVersionOfObject(id);
+            updateGlobalVersionOfObject((JoinedObjectsTable)entity);
             return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types); //To change body of generated methods, choose Tools | Templates.
         }
         return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types); //To change body of generated methods, choose Tools | Templates.
     }
-    private void updateGlobalVersionOfObject(Serializable joinedObjectID) {
-        // TODO
+    private void updateGlobalVersionOfObject(JoinedObjectsTable joinedObject) {
+        joinedObject.getNewObject().setGlobalVersion(getAndIncreaseGlobalVersion());
     }
     private long getAndIncreaseGlobalVersion() {
         Session session = sessionFactory.openSession();
