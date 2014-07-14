@@ -1,9 +1,11 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IEntityViewDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
-import cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices;
+import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -53,6 +55,14 @@ public class AppConfig implements ApplicationContextAware {
     @SuppressWarnings("unused")
     @Autowired
     private IObjectTypeTableDAO objectTypeTableDAO;
+
+    @SuppressWarnings("unused")
+    @Autowired
+    private IDocumentTableDAO documentTableDAO;
+
+    @SuppressWarnings("unused")
+    @Autowired
+    private IEntityViewDAO entityViewDAO;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -154,10 +164,10 @@ public class AppConfig implements ApplicationContextAware {
     /**
      * Creates a named entity recognizer
      * @return the recognizer
-     * @see cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices
+     * @see cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer
      */
-    @Bean
-    public NameTagServices nametagServices() {
-        return new NameTagServices(objectTypeTableDAO);
+    @Bean(initMethod = "init")
+    public NamedEntityRecognizer namedEntityRecognizer() {
+        return new NamedEntityRecognizer(objectTypeTableDAO, entityViewDAO, documentTableDAO);
     }
 }

@@ -1,2 +1,2 @@
 
-include "Commons", "Data", "Server", "Client", "NameTagIntegration"
+include "Commons", "Data", "Server", "Client", "Linguistics"
