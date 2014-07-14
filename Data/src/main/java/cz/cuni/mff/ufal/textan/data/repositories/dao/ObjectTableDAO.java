@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import org.hibernate.Criteria;
 
 /**
  * @author Vaclav Pernicka
@@ -243,4 +244,12 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
                 .list();
                 
     }
+
+    @Override
+    protected Criteria findAllCriteria() {
+        return super.findAllCriteria()
+                .add(Restrictions.eqProperty(ObjectTable.PROPERTY_NAME_ID, 
+                                             ObjectTable.PROPERTY_NAME_ROOT_OBJECT_ID));
+    }
+
 }

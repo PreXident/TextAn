@@ -26,6 +26,7 @@ public class ObjectTable extends AbstractTable {
     public static final String PROPERTY_NAME_OBJECT_TYPE_ID = "objectType";
     public static final String PROPERTY_NAME_ALIASES_ID = "aliases";
     public static final String PROPERTY_NAME_GLOBAL_VERSION = "globalVersion";
+    public static final String PROPERTY_NAME_ROOT_OBJECT_ID = "rootObject";
 
     private long id;
     private String data;
@@ -66,7 +67,12 @@ public class ObjectTable extends AbstractTable {
         return data;
     }
 
-    @Column(name = "id_root_object")
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_root_object")
     public ObjectTable getRootObject() {
         return rootObject;
     }
@@ -198,7 +204,7 @@ public class ObjectTable extends AbstractTable {
 
     @Override
     public String toString() {
-        return "ObjectTable{" + "id=" + id + ", globalVersion=" + globalVersion + ", data=" + data + ", objectType=" + objectType + '}';
+        return "ObjectT{" + "id=" + id + "root=" + rootObject.getId() + ", globalVersion=" + globalVersion + ", data=" + data + ", objectType=" + objectType + '}';
     }
 
     @Override
