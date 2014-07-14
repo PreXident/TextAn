@@ -91,6 +91,7 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<DocumentTable> findAllProcessed(boolean processed) {
         if (processed)
             return findAllCriteria()
@@ -101,7 +102,8 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                     .add(Restrictions.isNull(DocumentTable.PROPERTY_NAME_PROCESSED))
                     .list();
             
-
+    }
+    
     private Query findAllDocumentsByFullTextQuery(String pattern) {
         FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 

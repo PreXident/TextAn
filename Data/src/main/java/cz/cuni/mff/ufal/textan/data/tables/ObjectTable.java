@@ -66,16 +66,13 @@ public class ObjectTable extends AbstractTable {
         return data;
     }
 
+    @Column(name = "id_root_object")
     public ObjectTable getRootObject() {
         return rootObject;
     }
 
     public void setRootObject(ObjectTable rootObject) {
         this.rootObject = rootObject;
-    }
-    
-    public Set<JoinedObjectsTable> getOldObjects1() {
-        return oldObjects1;
     }
 
     @Column(name = "globalversion", nullable = false)
