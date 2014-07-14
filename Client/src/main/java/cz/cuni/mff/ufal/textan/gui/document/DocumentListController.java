@@ -9,6 +9,9 @@ import cz.cuni.mff.ufal.textan.gui.Utils;
 import static cz.cuni.mff.ufal.textan.gui.Utils.CONTEXT_MENU_STYLE;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -254,7 +257,7 @@ public class DocumentListController extends WindowController {
                 return Long.parseLong(string);
             }
         }));
-        final DateToStringConverter dateConverter = new DateToStringConverter();
+        final DateToStringConverter dateConverter = new DateToStringConverter(Utils.localize(resourceBundle, "date.format", "YYYY-MM-dd hh:mm:ss"));
         addTimeColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, Date> p) -> new ReadOnlyObjectWrapper<>(p.getValue().getAddTime()));
         addTimeColumn.setCellFactory(TextFieldTableCell.forTableColumn(dateConverter));
         lastChangeTimeColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, Date> p) -> new ReadOnlyObjectWrapper<>(p.getValue().getLastChangeTime()));
@@ -330,16 +333,24 @@ public class DocumentListController extends WindowController {
      */
     static class DateToStringConverter extends StringConverter<Date> {
 
+        private final DateFormat format;
+
+        public DateToStringConverter(final String format) {
+            this.format = new SimpleDateFormat(format);
+        }
+
         @Override
-        public String toString(Date t) {
-            return t != null ? t.toString() : "";
+        public String toString(Date date) {
+            return date != null ? format.format(date) : "";
         }
 
         @Override
         public Date fromString(String string) {
-            @SuppressWarnings("deprecation") //this should never happen anyway
-            final Date result = new Date(string);
-            return result;
+            try {
+                return format.parse(string);
+            } catch (ParseException e) {
+                return null;
+            }
         }
     }
 }

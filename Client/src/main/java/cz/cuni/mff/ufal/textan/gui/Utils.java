@@ -70,6 +70,24 @@ public class Utils {
     }
 
     /**
+     * Uses resourceBundle to localize key.
+     * If not found, logs it and returns defaultVal.
+     * @param resourceBundle localization container
+     * @param key localization key
+     * @param defaultVal default value
+     * @return localization or key if not found
+     */
+    static public String localize(final ResourceBundle resourceBundle,
+            final String key, final String defaultVal) {
+        try {
+            return resourceBundle.getString(key);
+        } catch(NullPointerException | MissingResourceException e) {
+            System.err.printf("Localization string \"%1$s\" not found!\n", key);
+            return defaultVal;
+        }
+    }
+
+    /**
      * Sets the position and size of the stage from the settings and creates
      * listeners to keep the settings updated.
      * @param stage stage to prepate
