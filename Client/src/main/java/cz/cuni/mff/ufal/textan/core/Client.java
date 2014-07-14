@@ -15,11 +15,7 @@ import cz.cuni.mff.ufal.textan.core.graph.Grapher;
 import cz.cuni.mff.ufal.textan.core.processreport.Problems;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -36,6 +32,10 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Main class controlling core manipulations with reports.
@@ -246,8 +246,8 @@ public class Client {
             //TODO set parameters for filtering when ready
             final GetDocumentsContainingObjectByIdResponse response =
                     getDataProvider().getDocumentsContainingObjectById(request);
-            final List<Document> list = response.getDocuments().stream()
-                    .map(Document::new)
+            final List<Document> list = response.getDocumentCountPairs().stream()
+                    .map(x -> new Document(x.getDocument())) //TODO add number of occurrences somewhere
                     //TODO remove filtering emulation
                     .filter(d -> processed.filter(d))
                     .filter(d -> d.getText().contains(filter))

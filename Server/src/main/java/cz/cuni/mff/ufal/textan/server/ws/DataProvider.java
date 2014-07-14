@@ -328,13 +328,16 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         try {
 
             GetDocumentsContainingObjectByIdResponse response = new GetDocumentsContainingObjectByIdResponse();
-            Pair<List<Document>, Integer> documents = dbService.getDocumentsContainingObject(
+            Pair<List<Pair<Document, Integer>>, Integer> documents = dbService.getDocumentsContainingObject(
                     getDocumentsContainingObjectByIdRequest.getObjectId(),
                     getDocumentsContainingObjectByIdRequest.getFirstResult(),
                     getDocumentsContainingObjectByIdRequest.getMaxResults()
             );
-            for (Document document : documents.getFirst()) {
-                response.getDocuments().add(document.toCommonsDocument());
+            for (Pair<Document, Integer> documentCountPair : documents.getFirst()) {
+                GetDocumentsContainingObjectByIdResponse.DocumentCountPair pair = new GetDocumentsContainingObjectByIdResponse.DocumentCountPair();
+                pair.setDocument(documentCountPair.getFirst().toCommonsDocument());
+                pair.setCountOfOccurrences(documentCountPair.getSecond());
+                response.getDocumentCountPairs().add(pair);
             }
             response.setTotalNumberOfResults(documents.getSecond());
 

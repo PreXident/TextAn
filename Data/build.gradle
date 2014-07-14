@@ -38,7 +38,7 @@ dependencies {
     runtime group: 'org.slf4j', name: 'log4j-over-slf4j', version: slf4jVersion
     runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'
 
-    //compile project(':Commons')
+    compile project(':Commons')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
     testCompile group: 'org.springframework', name: 'spring-test', version: springVersion

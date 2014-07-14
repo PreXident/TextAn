@@ -236,6 +236,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllSinceGlobalVersion(long version) {
         return findAllCriteria()
                 .add(Restrictions.ge(ObjectTable.PROPERTY_NAME_GLOBAL_VERSION, version))
