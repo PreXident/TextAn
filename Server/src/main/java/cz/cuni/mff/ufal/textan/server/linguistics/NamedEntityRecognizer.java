@@ -102,7 +102,7 @@ public class NamedEntityRecognizer {
         if (models != null && models.length > 0) {
             LOG.info("Existing model(s) found)");
             int i = 0;
-            while ((i < models.length) && (!bindModel(models[i]))) {
+            while ((i < models.length) && (!(result = bindModel(models[i])))) {
                 ++i;
             }
             if (i >= models.length) {
