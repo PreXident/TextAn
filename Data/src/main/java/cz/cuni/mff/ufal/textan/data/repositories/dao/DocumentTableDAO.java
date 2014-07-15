@@ -7,6 +7,7 @@ import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextSession;
@@ -16,7 +17,6 @@ import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -118,13 +118,29 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
     @Override
     @SuppressWarnings("unchecked")
     public List<DocumentTable> findAllProcessedDocuments(boolean processed) {
-        return new ArrayList<>(); //TODO
+        Criteria criteria = findAllCriteria();
+        if (processed) {
+            criteria.add(Restrictions.isNotNull(DocumentTable.PROPERTY_NAME_PROCESSED));
+        } else {
+            criteria.add(Restrictions.isNull(DocumentTable.PROPERTY_NAME_PROCESSED));
+        }
+
+        return criteria.list();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<DocumentTable> findAllProcessedDocuments(boolean processed, int firstResult, int maxResults) {
-        return new ArrayList<>(); //TODO
+        Criteria criteria = findAllCriteria();
+        if (processed) {
+            criteria.add(Restrictions.isNotNull(DocumentTable.PROPERTY_NAME_PROCESSED));
+        } else {
+            criteria.add(Restrictions.isNull(DocumentTable.PROPERTY_NAME_PROCESSED));
+        }
+        criteria.setFirstResult(firstResult);
+        criteria.setMaxResults(maxResults);
+
+        return criteria.list();
     }
 
     public Query findAllProcessedDocumentsByFullTextQuery(boolean processed, String pattern) {
