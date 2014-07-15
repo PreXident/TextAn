@@ -1,0 +1,34 @@
+All here! Finally! Even Ondrej came.
+
+Adam
+- almost all hwks, except for: joining objects, entering report processing from document list
+
+Tam
+- introduction is WiP
+
+Peter
+- count document column returned from db
+- fulltext search!
+- many minor changes in webservice layers
+
+Kuba
+- documentation for nametag
+
+HWK
+- Adam, try to embed treeview into table cell (for relation table)
+- Adam, use joining objects implemented in the db
+- Adam, relation table with filtering (context menu for displaying lists of documents containing the relation)
+- Adam, try to diplay graphs for documents (optional hwk)
+- Adam, search for TODOs in client to see changes in webservices
+- Adam & Peter & Venca, display graph for relation
+- Adam & Kuba & Peter & Venca, see issue number 64 and than write a document and annotate it. (http://www.nssoud.cz/, povinné odpovědi policie)
+- all, write documentation (do not forget to cite nametag)
+- Venca, instead of list return iterator from hibernate to solve joined objects
+  - it means itrerate over results in DAO methods and return a list with unique objects 
+- prepare first prototype of presentation in 3 weeks
+- Kuba, write czech analyzer for Lucene (use Luke to see the files)
+- Peter, merging of duplicite relations
+- Tam, finish the introduction
+- test if server can run just on JRE, or requires JDK
+
+Next meeting Friday at 17:00.
