@@ -170,9 +170,9 @@ task dist(type: Copy, dependsOn: 'shadowJar') {
 
     includeEmptyDirs = false
     //nametag model
-    from (file('../Samples')) {
-        include 'models/**/*.ner'
-    }
+//    from (file('../Samples')) {
+//        include 'models/**/*.ner'
+//    }
     //morphodita model
     from (file("${project(':Linguistics').projectDir.toPath()}/training")){
         include '**/*.tagger'
