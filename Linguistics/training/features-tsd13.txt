@@ -1,0 +1,20 @@
+# Sentence processors
+Form/2
+Lemma/2
+RawLemma/2
+RawLemmaCapitalization/2
+Tag/2
+NumericTimeValue/1
+
+CzechLemmaTerm/2
+
+BrownClusters/2 clusters/wiki-1000-3
+
+Gazetteers/2 gazetteers/cities.txt gazetteers/clubs.txt gazetteers/countries.txt gazetteers/drugs.txt gazetteers/feasts.txt gazetteers/institutions.txt gazetteers/months.txt gazetteers/objects.txt gazetteers/psc.txt gazetteers/streets.txt
+
+PreviousStage/5
+
+# Detectors
+URLEmailDetector mi me
+
+# Entity processors

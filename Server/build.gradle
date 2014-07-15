@@ -42,17 +42,18 @@ dependencies {
 
     compile project(':Commons')
     compile project(':Data')
-    compile project(':NameTagIntegration')
+    compile project(':Linguistics')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
 }
 
-task copyNametagLib(type: Copy) {
+task copyLinguisticsLibs(type: Copy) {
     run.dependsOn name
 
-    from (new File(project(':NameTagIntegration').projectDir, 'lib')) {
+    from (new File(project(':Linguistics').projectDir, 'lib')) {
         include System.mapLibraryName("nametag_java")
+        include System.mapLibraryName("morphodita_java")
     }
     into new File(buildDir, 'lib')
 }
@@ -62,8 +63,52 @@ task copyNametagModel(type: Copy) {
 
     from (new File('../Samples/models')) {
         include '**/*.ner'
+        includeEmptyDirs = false
     }
     into new File(buildDir, 'models')
+}
+
+task copySampleTrainingData(type: Copy) {
+    run.dependsOn name
+
+    from (new File('../Samples/trainingData')) {
+        include '**/sampleTrainData.txt'
+        includeEmptyDirs = false
+    }
+    into new File(buildDir, 'training')
+}
+
+task copyMorphoditaTagger(type: Copy) {
+    run.dependsOn name
+
+    from (new File(project(':Linguistics').projectDir, 'training')) {
+        include '**/*.tagger'
+        includeEmptyDirs = false
+    }
+    into new File(buildDir, 'models')
+}
+
+task copyTrainingData(type: Copy) {
+    run.dependsOn name
+
+    from (new File(project(':Linguistics').projectDir, 'training')) {
+        include '**/clusters/*'
+        include '**/gazetteers/*'
+        include '**/*.txt'
+        include '**/*.tagger'
+    }
+    into new File(buildDir, 'training')
+}
+
+task copyTrainingBinaries(type: Copy) {
+    run.dependsOn name
+
+    from (new File(project(':Linguistics').projectDir, 'training')) {
+        include '**/train_ner*'
+        fileMode = 0700
+        includeEmptyDirs = false
+    }
+    into new File(buildDir, 'bin')
 }
 
 /*
@@ -123,12 +168,37 @@ task dist(type: Copy, dependsOn: 'shadowJar') {
     group = 'Distribution'
     description = 'Creates a server distribution.'
 
+    includeEmptyDirs = false
+    //nametag model
     from (file('../Samples')) {
         include 'models/**/*.ner'
     }
-    from (project(':NameTagIntegration').projectDir) {
-        include 'lib/**/*'
+    //morphodita model
+    from (file("${project(':Linguistics').projectDir.toPath()}/training")){
+        include '**/*.tagger'
+        into 'models'
     }
+
+    //training data
+    from (file("${project(':Linguistics').projectDir.toPath()}/training")) {
+        include '**/clusters/*'
+        include '**/gazetteers/*'
+        include '**/*.txt'
+        include '**/*.tagger'
+        into 'training'
+    }
+    //binaries
+    from (file("${project(':Linguistics').projectDir.toPath()}/training")){
+        include '**/train_ner*'
+        fileMode = 0700
+        into 'bin'
+    }
+    //nametag and morphodita libraries
+    from (file("${project(':Linguistics').projectDir.toPath()}/lib")) {
+        include '**/*'
+        into 'lib'
+    }
+    //starting scripts
     from (file("$projectDir/dist")) {
         include "**/*"
     }
