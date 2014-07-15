@@ -2,6 +2,8 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -16,6 +18,7 @@ import java.util.Set;
  * @author Petr Fanta
  */
 @Entity
+@Indexed
 @Table(name = "Document")
 public class DocumentTable extends AbstractTable {
 
@@ -83,11 +86,13 @@ public class DocumentTable extends AbstractTable {
     }
 
     @Transient
+    @Field(name = "processedBool",index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     public boolean isProcessed() {
         return getProcessedDate() != null;
     }
 
     @Column(name = "text", columnDefinition = "text", nullable = false)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     public String getText() {
         return text;
     }

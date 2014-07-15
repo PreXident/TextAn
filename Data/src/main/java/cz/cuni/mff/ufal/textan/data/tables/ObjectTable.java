@@ -2,6 +2,8 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -16,13 +18,14 @@ import java.util.Set;
  * @author Petr Fanta
  */
 @Entity
+@Indexed
 @Table(name = "Object")
 public class ObjectTable extends AbstractTable {
 
     public static final String PROPERTY_NAME_ID = "id";
     public static final String PROPERTY_NAME_OBJECT_TYPE_ID = "objectType";
     public static final String PROPERTY_NAME_ALIASES_ID = "aliases";
-
+    public static final String PROPERTY_NAME_GLOBAL_VERSION = "globalVersion";
 
     private long id;
     private String data;
@@ -76,6 +79,7 @@ public class ObjectTable extends AbstractTable {
     @ManyToOne
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object_type", nullable = false)
+    @IndexedEmbedded
     public ObjectTypeTable getObjectType() {
         return objectType;
     }
@@ -86,6 +90,7 @@ public class ObjectTable extends AbstractTable {
 
     @OneToMany(mappedBy = "object", orphanRemoval = true)
     @Cascade(CascadeType.DELETE)
+    @IndexedEmbedded(includePaths = "alias")
     public Set<AliasTable> getAliases() {
         return aliases;
     }

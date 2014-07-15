@@ -136,6 +136,12 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
+    synchronized public GetFilteredDocumentsResponse getFilteredDocuments(
+            final GetFilteredDocumentsRequest getFilteredDocumentsRequest) {
+        return innerDP.getFilteredDocuments(getFilteredDocumentsRequest);
+    }
+
+    @Override
     synchronized public GetObjectsByTypeIdResponse getObjectsByTypeId(
             final GetObjectsByTypeIdRequest getObjectsByTypeIdRequest)
             throws IdNotFoundException {

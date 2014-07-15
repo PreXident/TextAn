@@ -10,6 +10,7 @@ import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.services.DirectDataAccessService;
 import cz.cuni.mff.ufal.textan.server.services.GraphService;
+import cz.cuni.mff.ufal.textan.server.services.ProcessedFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +40,6 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         this.dbService = dbService;
         this.graphService = graphService;
     }
-
-    /*
-    * TODO: Add operations which:
-    *  - gets all documents for given object
-    *
-    * */
 
     @Override
     public GetObjectsResponse getObjects(
@@ -333,13 +328,16 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         try {
 
             GetDocumentsContainingObjectByIdResponse response = new GetDocumentsContainingObjectByIdResponse();
-            Pair<List<Document>, Integer> documents = dbService.getDocumentsContainingObject(
+            Pair<List<Pair<Document, Integer>>, Integer> documents = dbService.getDocumentsContainingObject(
                     getDocumentsContainingObjectByIdRequest.getObjectId(),
                     getDocumentsContainingObjectByIdRequest.getFirstResult(),
                     getDocumentsContainingObjectByIdRequest.getMaxResults()
             );
-            for (Document document : documents.getFirst()) {
-                response.getDocuments().add(document.toCommonsDocument());
+            for (Pair<Document, Integer> documentCountPair : documents.getFirst()) {
+                GetDocumentsContainingObjectByIdResponse.DocumentCountPair pair = new GetDocumentsContainingObjectByIdResponse.DocumentCountPair();
+                pair.setDocument(documentCountPair.getFirst().toCommonsDocument());
+                pair.setCountOfOccurrences(documentCountPair.getSecond());
+                response.getDocumentCountPairs().add(pair);
             }
             response.setTotalNumberOfResults(documents.getSecond());
 
@@ -499,6 +497,31 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         }
 
         LOG.info("Executed operation getRelationsByTypeId: {}", response);
+        return response;
+    }
+
+    @Override
+    public GetFilteredDocumentsResponse getFilteredDocuments(
+            @WebParam(partName = "getFilteredDocumentsRequest", name = "getFilteredDocumentsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetFilteredDocumentsRequest getFilteredDocumentsRequest) {
+
+        LOG.info("Executing operation getFilteredDocuments: {}", getFilteredDocumentsRequest);
+
+        GetFilteredDocumentsResponse response = new GetFilteredDocumentsResponse();
+
+        Pair<List<Document>, Integer> documents = dbService.getFilteredDocuments(
+                getFilteredDocumentsRequest.getPattern(),
+                ProcessedFilter.parse(getFilteredDocumentsRequest.getProcessedFilter()),
+                getFilteredDocumentsRequest.getFirstResult(),
+                getFilteredDocumentsRequest.getMaxResults()
+        );
+
+        for (Document document : documents.getFirst()) {
+            response.getDocuments().add(document.toCommonsDocument());
+        }
+        response.setTotalNumberOfResults(documents.getSecond());
+
+        LOG.info("Executed operation getFilteredDocuments: {}", response);
         return response;
     }
 

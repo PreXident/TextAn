@@ -4,7 +4,10 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.interceptors.GlobalVersionAndLogInterceptor;
 import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -118,7 +121,19 @@ public class DataConfig {
 
         sessionFactory.getConfiguration().setInterceptor(logInterceptor());
 
-        return sessionFactory.getObject();
+        SessionFactory factory = sessionFactory.getObject();
+
+        //Initialize of fulltext indexes (TODO: better place)
+        Session session = factory.openSession();
+        FullTextSession fullTextSession = Search.getFullTextSession(session);
+        try {
+            fullTextSession.createIndexer().startAndWait();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        session.close();
+
+        return factory;
     }
 
     /**
@@ -152,14 +167,18 @@ public class DataConfig {
      */
     @SuppressWarnings("serial")
     private Properties hibernateProperties() throws IOException {
-        return new Properties() {
-            {
-//                setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-                setProperty("hibernate.dialect", dataProperties().getProperty("hibernate.dialect"));
-                setProperty("show_sql", dataProperties().getProperty("hibernate.show_sql"));
-                //setProperty("hibernate.globally_quoted_identifiers", "true");
-            }
-        };
+        Properties properties = new Properties();
+
+        //hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.setProperty("hibernate.dialect", dataProperties().getProperty("hibernate.dialect"));
+        properties.setProperty("show_sql", dataProperties().getProperty("hibernate.show_sql"));
+        //properties.setProperty("hibernate.globally_quoted_identifiers", "true");
+
+        properties.setProperty("hibernate.search.default.directory_provider", dataProperties().getProperty("hibernate.search.default.directory_provider"));
+        properties.setProperty("hibernate.search.default.indexBase", dataProperties().getProperty("hibernate.search.default.indexBase"));
+        properties.setProperty("hibernate.search.analyzer", dataProperties().getProperty("hibernate.search.analyzer"));
+
+        return properties;
     }
 
     /**

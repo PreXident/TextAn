@@ -11,6 +11,12 @@ import java.util.List;
  */
 public interface IObjectTableDAO extends IObjectRelationDAO<ObjectTable> {
 
+    List<ObjectTable> findAllByAliasFullText(String pattern);
+    List<ObjectTable> findAllByAliasFullText(String pattern, int firstResult, int pageSize);
+
+    List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern);
+    List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern, int firstResult, int pageSize);
+
     /**
      * finds all objects of specified type and alias
      *
@@ -65,4 +71,12 @@ public interface IObjectTableDAO extends IObjectRelationDAO<ObjectTable> {
      * @return 
      */
     List<ObjectTable> findAllByObjectType(ObjectTypeTable type);
+    
+    /**
+     * finds all object newer or equal from specified version
+     * 
+     * @param version global version which auto increments with object creation or update
+     * @return 
+     */
+    List<ObjectTable> findAllSinceGlobalVersion(long version);   
 }
