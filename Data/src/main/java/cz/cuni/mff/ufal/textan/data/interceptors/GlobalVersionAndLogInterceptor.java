@@ -26,10 +26,11 @@ public class GlobalVersionAndLogInterceptor extends LogInterceptor {
     }
 
     @Override
-    public void preFlush(Iterator entities) {
-        super.preFlush(entities);
+    public void afterTransactionBegin(Transaction tx) {
+        super.afterTransactionBegin(tx);
         increaseVersion = true;
     }
+    
     
     @Override
     public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
