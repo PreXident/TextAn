@@ -9,6 +9,7 @@ package cz.cuni.mff.ufal.textan.data.repositories.dao;
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,5 +50,10 @@ public class JoinedObjectsTableDAO extends AbstractHibernateDAO<JoinedObjectsTab
         
         setRootInSubTree(obj.getNewObject().getOldObject1(), root);
         setRootInSubTree(obj.getNewObject().getOldObject2(), root);
+    }
+
+    @Override
+    public List<IJoinedObjectsTableDAO> findAllSinceGlobalVersion(long version) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

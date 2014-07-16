@@ -136,4 +136,9 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     public List<RelationTable> findAllByDocumentOccurrence(DocumentTable document, int firstResult, int pageSize) {
         return findAllByDocumentOccurrence(document.getId(), firstResult, pageSize);
     }
+
+    @Override
+    public List<RelationTable> findAllSinceGlobalVersion(long version) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

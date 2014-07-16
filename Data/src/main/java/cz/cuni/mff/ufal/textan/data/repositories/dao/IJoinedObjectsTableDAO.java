@@ -9,6 +9,7 @@ package cz.cuni.mff.ufal.textan.data.repositories.dao;
 import cz.cuni.mff.ufal.textan.data.repositories.common.IOperations;
 import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
+import java.util.List;
 
 /**
  *
@@ -18,4 +19,10 @@ public interface IJoinedObjectsTableDAO extends IOperations<JoinedObjectsTable, 
 
     ObjectTable join(ObjectTable obj1, ObjectTable obj2);
     
+    /**
+     *
+     * @param version
+     * @return
+     */
+    List<IJoinedObjectsTableDAO> findAllSinceGlobalVersion(long version); 
 }
