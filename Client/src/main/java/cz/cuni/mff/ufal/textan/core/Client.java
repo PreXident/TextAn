@@ -56,17 +56,32 @@ public class Client {
             public boolean filter(final Document document) {
                 return document.isProcessed();
             }
+
+            @Override
+            public String toFilter() {
+                return "processed";
+            }
         },
         NO {
             @Override
             public boolean filter(final Document document) {
                 return !document.isProcessed();
             }
+
+            @Override
+            public String toFilter() {
+                return "unprocessed";
+            }
         },
         BOTH {
             @Override
             public boolean filter(final Document document) {
                 return true;
+            }
+
+            @Override
+            public String toFilter() {
+                return "all";
             }
         };
 
@@ -76,6 +91,12 @@ public class Client {
          * @return true if document passes the filter, false otherwise
          */
         public abstract boolean filter(final Document document);
+
+        /**
+         * Returns filter value for field processed filter of DocumentProvider request.
+         * @return filter value for field processed filter of DocumentProvider request
+         */
+        public abstract String toFilter();
     }
 
     /** Settings of the application. Handle with care, they're shared. */
@@ -231,15 +252,16 @@ public class Client {
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
             final Processed processed, final String filter,
             final int first, final int size) {
-        //TODO remove emulation of pagination and filtering
-        final GetDocumentsResponse response =
-                getDataProvider().getDocuments(new Void());
+        final GetFilteredDocumentsRequest request =
+                new GetFilteredDocumentsRequest();
+        request.setFirstResult(first);
+        request.setMaxResults(size);
+        request.setPattern(filter);
+        request.setProcessedFilter(processed.toFilter());
+        final GetFilteredDocumentsResponse response =
+                getDataProvider().getFilteredDocuments(request);
         final List<Document> list = response.getDocuments().stream()
                 .map(Document::new)
-                .filter(d -> processed.filter(d))
-                .filter(d -> d.getText().contains(filter))
-                .skip(first)
-                .limit(size)
                 .collect(Collectors.toCollection(ArrayList::new));
         return new Pair<>(list, response.getDocuments().size());
     }
@@ -267,7 +289,7 @@ public class Client {
             final GetDocumentsContainingObjectByIdResponse response =
                     getDataProvider().getDocumentsContainingObjectById(request);
             final List<Document> list = response.getDocumentCountPairs().stream()
-                    .map(x -> new Document(x.getDocument())) //TODO add number of occurrences somewhere
+                    .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
                     //TODO remove filtering emulation
                     .filter(d -> processed.filter(d))
                     .filter(d -> d.getText().contains(filter))
