@@ -3,7 +3,10 @@ package cz.cuni.mff.ufal.textan.gui;
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.core.Relation;
+import cz.cuni.mff.ufal.textan.core.graph.DocumentGrapher;
+import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
+import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentWindow;
@@ -11,6 +14,10 @@ import cz.cuni.mff.ufal.textan.gui.document.DocumentsStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentsWindow;
 import cz.cuni.mff.ufal.textan.gui.graph.GraphStage;
 import cz.cuni.mff.ufal.textan.gui.graph.GraphWindow;
+import cz.cuni.mff.ufal.textan.gui.join.JoinStage;
+import cz.cuni.mff.ufal.textan.gui.join.JoinWindow;
+import cz.cuni.mff.ufal.textan.gui.relation.RelationListStage;
+import cz.cuni.mff.ufal.textan.gui.relation.RelationListWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
@@ -148,6 +155,11 @@ public class TextAnController implements Initializable {
     }
 
     @FXML
+    private void displayDocuments() {
+        displayDocuments((Object) null);
+    }
+
+    @FXML
     private void graph() {
         displayGraph(-1, -1);
     }
@@ -163,8 +175,20 @@ public class TextAnController implements Initializable {
     }
 
     @FXML
-    private void displayDocuments() {
-        displayDocuments(null);
+    private void join() {
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final JoinWindow joinWindow = new JoinWindow(this, settings);
+            content.getChildren().add(joinWindow);
+        } else {
+            final JoinStage joinStage = new JoinStage(this, settings);
+            children.add(joinStage);
+            joinStage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(joinStage);
+                }
+            });
+            joinStage.show();
+        }
     }
 
     @FXML
@@ -195,6 +219,23 @@ public class TextAnController implements Initializable {
                     .lightweight()
                     .title(Utils.localize(resourceBundle, "webservice.error"))
                     .showException(e);
+        }
+    }
+
+    @FXML
+    private void relations() {
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final RelationListWindow relationListWindow = new RelationListWindow(this, settings);
+            content.getChildren().add(relationListWindow);
+        } else {
+            final RelationListStage relationListStage = new RelationListStage(this, settings);
+            children.add(relationListStage);
+            relationListStage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(relationListStage);
+                }
+            });
+            relationListStage.show();
         }
     }
 
@@ -255,6 +296,14 @@ public class TextAnController implements Initializable {
                 }
             }
         });
+    }
+
+    /**
+     * Returns client for communicating with the server.
+     * @return client for communicating with the server
+     */
+    public Client getClient() {
+        return client;
     }
 
     /**
@@ -349,10 +398,12 @@ public class TextAnController implements Initializable {
      */
     public void displayDocuments(final Object object) {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-            final DocumentsWindow docWindow = new DocumentsWindow(this, settings, client, object);
+            final DocumentsWindow docWindow =
+                    new DocumentsWindow(this, settings, client, object, null);
             content.getChildren().add(docWindow);
         } else {
-            final DocumentsStage docStage = new DocumentsStage(this, settings, client, object);
+            final DocumentsStage docStage =
+                    new DocumentsStage(this, settings, client, object, null);
             children.add(docStage);
             docStage.showingProperty().addListener((ov, oldVal, newVal) -> {
                 if (!newVal) {
@@ -364,28 +415,32 @@ public class TextAnController implements Initializable {
     }
 
     /**
-     * Creates and displays graph with default distance.
-     * @param centerId root object id
+     * Creates and displays graph.
+     * @param relation relation whose documents should be displayes
      */
-    public void displayGraph(final long centerId) {
-        int distance;
-        try {
-            distance = Integer.parseInt(settings.getProperty("graph.distance", "5"));
-        } catch (NumberFormatException e) {
-            distance = 5;
+    public void displayDocuments(final Relation relation) {
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final DocumentsWindow docWindow =
+                    new DocumentsWindow(this, settings, client, null, relation);
+            content.getChildren().add(docWindow);
+        } else {
+            final DocumentsStage docStage =
+                    new DocumentsStage(this, settings, client, null, relation);
+            children.add(docStage);
+            docStage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(docStage);
+                }
+            });
+            docStage.show();
         }
-        displayGraph(centerId, distance);
     }
 
     /**
-     * Creates and displays graph.
-     * @param centerId root object id
-     * @param distance graph distance
+     * Displays graph from given grapher.
+     * @param grapher grapher with graph
      */
-    public void displayGraph(final long centerId, final int distance) {
-        final Grapher grapher = client.createGrapher();
-        grapher.setRootId(centerId);
-        grapher.setDistance(distance);
+    private void displayGraph(final IGrapher grapher) {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final GraphWindow graphWindow = new GraphWindow(this, settings, grapher);
             content.getChildren().add(graphWindow);
@@ -398,6 +453,67 @@ public class TextAnController implements Initializable {
                 }
             });
             stage.show();
+        }
+    }
+
+    /**
+     * Creates and displays graph with default distance.
+     * @param centerId root object id
+     */
+    public void displayGraph(final long centerId) {
+        displayGraph(centerId, defaultDistance());
+    }
+
+    /**
+     * Creates and displays graph.
+     * @param centerId root object id
+     * @param distance graph distance
+     */
+    public void displayGraph(final long centerId, final int distance) {
+        final IGrapher grapher = client.createObjectGrapher();
+        grapher.setRootId(centerId);
+        grapher.setDistance(distance);
+        displayGraph(grapher);
+    }
+
+    /**
+     * Creates and displays graph with default distance.
+     * @param document document to display
+     */
+    public void displayGraph(final Document document) {
+        final IGrapher grapher = new DocumentGrapher(client, document);
+        displayGraph(grapher);
+    }
+
+    /**
+     * Creates and displays graph with default distance.
+     * @param relation relation to display
+     */
+    public void displayGraph(final Relation relation) {
+        displayGraph(relation, defaultDistance());
+    }
+
+    /**
+     * Creates and displays graph with default distance.
+     * @param relation relation to display
+     * @param distance graph distance
+     */
+    public void displayGraph(final Relation relation, final int distance) {
+        final IGrapher grapher = client.createRelationGrapher();
+        grapher.setRootId(relation.getId());
+        grapher.setDistance(distance);
+        displayGraph(grapher);
+    }
+
+    /**
+     * Returns default graph distance.
+     * @return default graph distance
+     */
+    public int defaultDistance() {
+        try {
+            return Integer.parseInt(settings.getProperty("graph.distance", "5"));
+        } catch (NumberFormatException e) {
+            return 5;
         }
     }
 

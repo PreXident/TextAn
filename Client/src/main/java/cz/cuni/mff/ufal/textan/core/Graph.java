@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.Graph.Edges;
 import cz.cuni.mff.ufal.textan.commons.models.Graph.Nodes;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +23,7 @@ public class Graph {
     private final Set<Relation> edges = new HashSet<>();
 
     /**
-     * Only constructor.
+     * Constructs graph from commons blue print
      * @param graph graph blue print
      */
     public Graph(final cz.cuni.mff.ufal.textan.commons.models.Graph graph) {
@@ -32,6 +33,16 @@ public class Graph {
         graph.getEdges().getRelations().stream().forEach(relation -> {
             edges.add(new Relation(relation, nodes));
         });
+    }
+
+    /**
+     * Constructs graph from map of nodes and set of edges.
+     * @param nodes graph nodes
+     * @param edges graph edges
+     */
+    public Graph(final Map<Long, Object> nodes, final Collection<Relation> edges) {
+        this.nodes.putAll(nodes);
+        this.edges.addAll(edges);
     }
 
     /**

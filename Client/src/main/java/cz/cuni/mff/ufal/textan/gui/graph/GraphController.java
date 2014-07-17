@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
 import java.io.IOException;
@@ -28,11 +28,11 @@ abstract class GraphController extends WindowController {
      * @param grapher graph information provider
      * @return loaded fxml root and its controller
      */
-    static public Pair<Parent, GraphController> loadFXML(final Grapher grapher)
+    static public Pair<Parent, GraphController> loadFXML(final IGrapher grapher)
             throws IOException {
         String bundleId;
         String fxml;
-        if (grapher.getDistance() >= 0 && grapher.getRootId() > 0) {
+        if (grapher.isReady()) {
             bundleId = "cz.cuni.mff.ufal.textan.gui.graph.GraphView";
             fxml = "GraphView.fxml";
         } else {
@@ -47,7 +47,7 @@ abstract class GraphController extends WindowController {
     }
 
     /** Graph information provider. */
-    protected Grapher grapher;
+    protected IGrapher grapher;
 
     /** Localization container. */
     protected ResourceBundle resourceBundle;
@@ -64,7 +64,7 @@ abstract class GraphController extends WindowController {
      * Sets graph information provider.
      * @param grapher new graph information provider
      */
-    public void setGrapher(final Grapher grapher) {
+    public void setGrapher(final IGrapher grapher) {
         this.grapher = grapher;
     }
 

@@ -29,7 +29,7 @@ public class Document {
     final private int count;
 
     /**
-     * Only constructor.
+     * Constructs document solely from blueprint.
      * @param document document blueprint
      */
     public Document(final cz.cuni.mff.ufal.textan.commons.models.Document document) {
@@ -39,8 +39,23 @@ public class Document {
         addTime = document.getAddTime();
         lastChangeTime = document.getLastChangeTime();
         processTime = document.getProcessTime();
-        count = 1; //TODO use blueprint document's count
-        //count = document.getCount();
+        count = 0;
+    }
+
+    /**
+     * Constructs document from blueprint and number of occurrences.
+     * @param document document blueprint
+     * @param count number of occurrences
+     */
+    public Document(final cz.cuni.mff.ufal.textan.commons.models.Document document,
+            final int count) {
+        id = document.getId();
+        text = document.getText();
+        processed = document.isProcessed();
+        addTime = document.getAddTime();
+        lastChangeTime = document.getLastChangeTime();
+        processTime = document.getProcessTime();
+        this.count = count;
     }
 
     /**
