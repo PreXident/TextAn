@@ -161,6 +161,9 @@ public class DocumentListController extends WindowController {
                 table.getItems().addAll(FXCollections.observableList(pair.getFirst()));
                 objectCount = pair.getSecond();
                 pageCount = (int) Math.ceil(1.0 * pair.getSecond() / size);
+                if (pageCount == 0) {
+                    pageCount = 1;
+                }
                 final String format = Utils.localize(resourceBundle, "pagination.label");
                 paginationLabel.setText(String.format(format, pageNo + 1, pageCount));
                 node.setCursor(Cursor.DEFAULT);

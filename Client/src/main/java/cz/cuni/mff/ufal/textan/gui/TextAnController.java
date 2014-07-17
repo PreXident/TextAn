@@ -11,6 +11,8 @@ import cz.cuni.mff.ufal.textan.gui.document.DocumentsStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentsWindow;
 import cz.cuni.mff.ufal.textan.gui.graph.GraphStage;
 import cz.cuni.mff.ufal.textan.gui.graph.GraphWindow;
+import cz.cuni.mff.ufal.textan.gui.join.JoinStage;
+import cz.cuni.mff.ufal.textan.gui.join.JoinWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
@@ -148,6 +150,11 @@ public class TextAnController implements Initializable {
     }
 
     @FXML
+    private void displayDocuments() {
+        displayDocuments(null);
+    }
+
+    @FXML
     private void graph() {
         displayGraph(-1, -1);
     }
@@ -163,8 +170,20 @@ public class TextAnController implements Initializable {
     }
 
     @FXML
-    private void displayDocuments() {
-        displayDocuments(null);
+    private void join() {
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final JoinWindow joinWindow = new JoinWindow(this, settings);
+            content.getChildren().add(joinWindow);
+        } else {
+            final JoinStage joinStage = new JoinStage(this, settings);
+            children.add(joinStage);
+            joinStage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(joinStage);
+                }
+            });
+            joinStage.show();
+        }
     }
 
     @FXML
@@ -255,6 +274,14 @@ public class TextAnController implements Initializable {
                 }
             }
         });
+    }
+
+    /**
+     * Returns client for communicating with the server.
+     * @return client for communicating with the server
+     */
+    public Client getClient() {
+        return client;
     }
 
     /**

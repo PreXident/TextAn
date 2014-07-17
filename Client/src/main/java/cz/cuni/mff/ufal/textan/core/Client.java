@@ -614,4 +614,26 @@ public class Client {
             throw new IdNotFoundException(e);
         }
     }
+
+    /**
+     * Join given objects.
+     * @param id1 first object id
+     * @param id2 second object id
+     * @return joined object id
+     * @throws IdNotFoundException if id error occurs
+     */
+    public long joinObjects(final long id1, final long id2)
+            throws IdNotFoundException {
+        final MergeObjectsRequest request =
+                new MergeObjectsRequest();
+        request.setObject1Id(id1);
+        request.setObject2Id(id2);
+        try {
+            final MergeObjectsResponse response =
+                    getDataProvider().mergeObjects(request);
+            return response.getObjectId();
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
+    }
 }

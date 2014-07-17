@@ -5,11 +5,11 @@ import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.gui.GetTypesTask;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
-import java.text.Collator;
 import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -93,46 +93,14 @@ public class ObjectListController extends GraphController {
 
     @FXML
     private void filter() {
-        if (lock.tryAcquire()) {
-            final Node node = getMainNode();
-            node.setCursor(Cursor.WAIT);
-            final ObjectType selectedType = typeComboBox.getValue();
-            final String filter = filterField.getText();
-            final int size = perPageComboBox.getValue();
-            final int first = perPageComboBox.getValue() * pageNo;
-            final Task<Pair<List<Object>, Integer>> task = new Task<Pair<List<Object>, Integer>>() {
-                @Override
-                protected Pair<List<Object>, Integer> call() throws Exception {
-                    final Client client = grapher.getClient();
-                    Pair<List<Object>, Integer> pair =
-                            client.getObjectsList(selectedType, filter, first, size);
-                    pair.getFirst().sort((obj1, obj2) -> Long.compare(obj1.getId(), obj2.getId()));
-                    return pair;
-                }
-            };
-            task.setOnSucceeded(e -> {
-                Pair<List<Object>, Integer> pair = task.getValue();
-                table.getItems().clear();
-                table.getItems().addAll(FXCollections.observableList(pair.getFirst()));
-                objectCount = pair.getSecond();
-                pageCount = (int) Math.ceil(1.0 * pair.getSecond() / size);
-                final String format = Utils.localize(resourceBundle, "pagination.label");
-                paginationLabel.setText(String.format(format, pageNo + 1, pageCount));
-                node.setCursor(Cursor.DEFAULT);
-                lock.release();
-            });
-            task.setOnFailed(e -> {
-                node.setCursor(Cursor.DEFAULT);
-                callWithContentBackup(() -> {
-                    createDialog()
-                            .owner(getDialogOwner(root))
-                            .title(Utils.localize(resourceBundle, "page.load.error"))
-                            .showException(task.getException());
-                });
-                lock.release();
-            });
-            new Thread(task, "Filter").start();
-        }
+        Utils.filterObjects(textAnController.getClient(), this, lock,
+                getMainNode(), root, typeComboBox.getValue(),
+                filterField.getText(), perPageComboBox.getValue(),
+                pageNo, resourceBundle, paginationLabel,
+                (objectCnt, pageCnt) -> {
+                    objectCount = objectCnt;
+                    pageCount = pageCnt;
+                }, table.getItems());
     }
 
     @FXML
@@ -189,6 +157,12 @@ public class ObjectListController extends GraphController {
         typeComboBox.valueProperty().addListener((ov, oldVal, newVal) -> {
             pageNo = 0;
         });
+        filterField.textProperty().addListener((o) -> {
+            pageNo = 0;
+        });
+        filterField.setOnAction(e -> {
+            filter();
+        });
     }
 
     @Override
@@ -196,13 +170,11 @@ public class ObjectListController extends GraphController {
         super.setGrapher(grapher);
         final Node node = getMainNode();
         node.setCursor(Cursor.WAIT);
-        final GetTypesTask task = new GetTypesTask();
+        final GetTypesTask task = new GetTypesTask(textAnController.getClient());
         task.setOnSucceeded(e -> {
             final ObservableList<ObjectType> types =
-                    FXCollections.observableArrayList(task.types);
-            types.add(0, null);
+                    FXCollections.observableArrayList(task.getValue());
             typeComboBox.setItems(types);
-            typeComboBox.setValue(task.selectedType);
             node.setCursor(Cursor.DEFAULT);
             filter();
         });
@@ -235,26 +207,5 @@ public class ObjectListController extends GraphController {
         super.setTextAnController(textAnController);
         contextMenu = new ObjectContextMenu(textAnController);
         contextMenu.objectProperty().bind(table.getSelectionModel().selectedItemProperty());
-    }
-
-    /**
-     * Simple task to get information for object list.
-     * After run, fields are filled.
-     */
-    class GetTypesTask extends Task<Void> {
-
-        /** List of all object types. */
-        List<ObjectType> types;
-
-        /** Selected type. */
-        ObjectType selectedType = null;
-
-        @Override
-        protected Void call() throws Exception {
-            types = grapher.getClient().getObjectTypesList();
-            final Collator collator = Collator.getInstance();
-            types.sort((type1, type2) -> collator.compare(type1.getName(), type2.getName()));
-            return null;
-        }
     }
 }

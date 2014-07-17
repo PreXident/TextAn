@@ -33,6 +33,7 @@
 						<MenuItem text="%report.wizard" onAction="#reportWizard" />
 						<MenuItem text="%graph.wizard" onAction="#graph" />
 						<MenuItem text="%document.wizard" onAction="#displayDocuments" />
+						<MenuItem text="%join.wizard" onAction="#join" />
 					</Menu>
 					<Menu fx:id="windowsMenu" text="%windows" />
 					<Menu fx:id="settingsMenu" text="%settings" style="-fx-skin: 'cz.cuni.mff.ufal.textan.gui.MyMenuButtonSkin';" >
