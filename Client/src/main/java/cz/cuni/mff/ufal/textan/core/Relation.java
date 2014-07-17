@@ -68,6 +68,14 @@ public class Relation {
     }
 
     /**
+     * Returns concatenated aliases.
+     * @return concatenated aliasess
+     */
+    public String getAnchorString() {
+        return String.join(", ", anchors);
+    }
+
+    /**
      * Returns relation id.
      * @return relation id
      */

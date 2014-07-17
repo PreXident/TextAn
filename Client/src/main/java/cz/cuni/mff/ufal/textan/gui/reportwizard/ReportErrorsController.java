@@ -1,13 +1,12 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.JoinedObject;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
-import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
+import cz.cuni.mff.ufal.textan.gui.relation.RelationTreeView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -25,7 +24,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -35,7 +33,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 /**
@@ -62,7 +59,7 @@ public class ReportErrorsController extends ReportWizardController {
     ListView<FXRelationBuilder> relationsListView;
 
     @FXML
-    private TreeView<java.lang.Object> relationsTreeView;
+    private RelationTreeView relationsTreeView;
 
     @FXML
     private TreeView<Object> joinedObjectsTreeView;
@@ -94,14 +91,8 @@ public class ReportErrorsController extends ReportWizardController {
     /** Context menu for joined objects. */
     ObjectContextMenu joinedObjectsContextMenu;
 
-    /** Context menu for relation's objects. */
-    ObjectContextMenu relationsContextMenu;
-
     /** JoinedObject that is selected. */
     ObjectProperty<Object> selectedJoinedObject = new SimpleObjectProperty<>();
-
-    /** Relation Object that is selected. */
-    ObjectProperty<Object> selectedRelationObject = new SimpleObjectProperty<>();
 
     @FXML
     private void back() {
@@ -157,19 +148,6 @@ public class ReportErrorsController extends ReportWizardController {
         newObjectsTableAliasColumn.setCellValueFactory((TableColumn.CellDataFeatures<Object, String> p) -> new ReadOnlyStringWrapper(p.getValue().getAliasString()));
         newObjectsTableAliasColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         //
-        relationsTreeView.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
-            if (newVal == null || !(newVal.getValue() instanceof Triple)) {
-                relationsTreeView.setContextMenu(null);
-                selectedRelationObject.set(null);
-            } else {
-                relationsTreeView.setContextMenu(relationsContextMenu);
-                @SuppressWarnings("unchecked")
-                final Triple<Integer, String, Object> triple =
-                      (Triple<Integer, String, Object>) newVal.getValue();
-                selectedRelationObject.set(triple.getThird());
-            }
-        });
-        //
         ColumnConstraints column1 = new ColumnConstraints();
         column1.setHgrow(Priority.ALWAYS);
         column1.setFillWidth(true);
@@ -199,40 +177,7 @@ public class ReportErrorsController extends ReportWizardController {
             }
             joinedObjectsTreeView.getRoot().getChildren().add(parent);
         }
-        //
-        relationsTreeView.setRoot(new TreeItem<>(null));
-        relationsTreeView.setCellFactory(new Callback<TreeView<java.lang.Object>, TreeCell<java.lang.Object>>() {
-            @Override
-            public TreeCell<java.lang.Object> call(TreeView<java.lang.Object> p) {
-                return new TreeCell<java.lang.Object>() {
-                    @Override
-                    protected void updateItem(java.lang.Object o, boolean empty) {
-                        super.updateItem(o, empty);
-                        if (!empty && o != null) {
-                            if (o instanceof Triple) {
-                                @SuppressWarnings("unchecked")
-                                final Triple<Integer, String, Object> triple =
-                                        (Triple<Integer, String, Object>) o;
-                                this.setText(String.format("%s - %s - %s",
-                                        triple.getFirst(), triple.getSecond(), triple.getThird()));
-                            } else {
-                                this.setText(o.toString());
-                            }
-                        } else {
-                            this.setText("");
-                        }
-                    }
-                };
-            }
-        });
-        for (Relation relation : pipeline.getProblems().getNewRelations()) {
-            final TreeItem<java.lang.Object> parent = new TreeItem<>(relation);
-            for (Triple<Integer, String, Object> triple : relation.getObjects()) {
-                final TreeItem<java.lang.Object> child = new TreeItem<>(triple);
-                parent.getChildren().add(child);
-            }
-            relationsTreeView.getRoot().getChildren().add(parent);
-        }
+        relationsTreeView.addRelations(pipeline.getProblems().getNewRelations());
         //
         if (!pipeline.getProblems().isProcessed()) {
             vbox.getChildren().remove(processedLabel);
@@ -257,7 +202,6 @@ public class ReportErrorsController extends ReportWizardController {
         }, joinedObjectsTreeView.getSelectionModel().selectedItemProperty()));
         joinedObjectsTreeView.setContextMenu(joinedObjectsContextMenu);
         //
-        relationsContextMenu = new ObjectContextMenu(textAnController);
-        relationsContextMenu.objectProperty().bind(selectedRelationObject);
+        relationsTreeView.setTextAnController(textAnController);
     }
 }

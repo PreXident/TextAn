@@ -4,7 +4,6 @@ import PretopoVisual.Jung.BasicHypergraphRenderer;
 import PretopoVisual.Jung.PseudoHypergraph;
 import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
@@ -34,7 +33,6 @@ import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -342,8 +340,8 @@ public class GraphView extends SwingNode {
             final Point2D p1 = layout.transform(objects.get(0));
             final Point2D p2 = layout.transform(objects.get(1));
             final Point2D p = new Point2D.Double(
-                    (p1.getX() - p2.getX()) / 2,
-                    (p1.getY() - p2.getY()) / 2
+                    (p1.getX() + p2.getX()) / 2,
+                    (p1.getY() + p2.getY()) / 2
             );
             final MutableTransformer layout2 = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT);
             Point2D ctr = visualizator.getCenter();

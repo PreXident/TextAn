@@ -1,7 +1,6 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.ObjectOccurrence;
-import cz.cuni.mff.ufal.textan.commons.models.Relation;
 import cz.cuni.mff.ufal.textan.commons.models.RelationOccurrence;
 import cz.cuni.mff.ufal.textan.commons.models.UsernameToken;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
@@ -9,13 +8,19 @@ import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest.Entities;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
+import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.Problems;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
-
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -32,10 +37,6 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Main class controlling core manipulations with reports.
@@ -268,8 +269,8 @@ public class Client {
     }
 
     /**
-     * Returns documents containing object with given id.
-     * @param id object id
+     * Returns documents containing given object.
+     * @param object object whose document should be returned
      * @param processed only processed documents?
      * @param filter document text filter
      * @param first index of the first object
@@ -278,12 +279,12 @@ public class Client {
      * @throws IdNotFoundException if id error occurs
      */
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
-            final long id, final Processed processed, final String filter,
+            final Object object, final Processed processed, final String filter,
             final int first, final int size) throws IdNotFoundException {
         try {
             final GetDocumentsContainingObjectByIdRequest request =
                     new GetDocumentsContainingObjectByIdRequest();
-            request.setObjectId(id);
+            request.setObjectId(object.getId());
             request.setFirstResult(first);
             request.setMaxResults(size);
             //TODO set parameters for filtering when ready
@@ -299,6 +300,36 @@ public class Client {
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
         }
+    }
+
+    /**
+     * Returns documents containing given relation.
+     * @param relation relation whose document should be returned
+     * @param processed only processed documents?
+     * @param filter document text filter
+     * @param first index of the first object
+     * @param size maximal number of objects
+     * @return list of documents containing object with given id
+     * @throws IdNotFoundException if id error occurs
+     */
+    public synchronized Pair<List<Document>, Integer> getDocumentsList(
+            final Relation relation, final Processed processed, final String filter,
+            final int first, final int size) throws IdNotFoundException {
+        //TODO call proper methods when they are ready
+        final Pair<List<Document>, Integer> pair =
+                getDocumentsList(processed, filter, 0, Integer.MAX_VALUE);
+        final List<Document> documents = pair.getFirst();
+        final List<Document> result = new ArrayList<>();
+        for (Document document : documents) {
+            final DocumentData documentData = getDocumentData(document.getId());
+            if (documentData.getRelations().containsKey(relation.getId())) {
+                result.add(document);
+            }
+        }
+        return new Pair<>(result.stream()
+                .skip(first)
+                .limit(size)
+                .collect(Collectors.toList()), result.size());
     }
 
     /**
@@ -446,6 +477,20 @@ public class Client {
     }
 
     /**
+     * Returns map of all objects in the system.
+     * @return map of all objects in the system
+     * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
+     */
+    public synchronized Map<Long, Object> getObjectsMap() {
+        final GetObjectsResponse response =
+                getDataProvider().getObjects(new Void());
+        return response.getObjects().stream()
+                .collect(Collectors.toMap(
+                        cz.cuni.mff.ufal.textan.commons.models.Object::getId,
+                        Object::new));
+    }
+
+    /**
      * Returns set of all objects in the system.
      * @return set of all objects in the system
      * @see IDataProvider#getObjects(cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void)
@@ -493,6 +538,63 @@ public class Client {
         final GetProblemsRequest request =  new GetProblemsRequest();
         final GetProblemsResponse response = getDocumentProcessor().getProblems(request, ticket.toTicket());
         return new Problems(response);
+    }
+
+    public synchronized Graph getRelationGraph(final long rootId,
+            final int distance) throws IdNotFoundException {
+        //TODO call proper methods when they are ready
+        final Map<Long, Object> allObjects = getObjectsMap();
+        final GetRelationsResponse response = getDataProvider().getRelations(new Void());
+        final Relation relation = response.getRelations().stream()
+                .map(rel -> new Relation(rel, allObjects))
+                .filter(rel -> rel.getId() == rootId)
+                .findFirst().get();
+        final Map<Long, Object> objects = new HashMap<>();
+        final Set<Relation> relations = new HashSet<>();
+        relation.getObjects().stream()
+                .map(Triple<Integer, String, Object>::getThird)
+                .map(obj -> {
+                    try {
+                        return this.getGraph(obj.getId(), distance);
+                    } catch (Exception e) {
+                        return new Graph(Collections.emptyMap(), Collections.emptyList());
+                    }
+                })
+                .forEach(graph -> {
+                    objects.putAll(graph.getNodes());
+                    relations.addAll(graph.getEdges());
+                });
+        return new Graph(objects, relations);
+    }
+
+    /**
+     * Returns filtered list of relations in the system.
+     * @param type filter object type
+     * @param filter filter aliases
+     * @param first index of the first object
+     * @param size maximal number of objects
+     * @return list of filtered objects in the system
+     * @throws IdNotFoundException if id error occurs
+     */
+    public synchronized Pair<List<Relation>, Integer> getRelationList(
+            final RelationType type, final String filter, final int first,
+            final int size) throws IdNotFoundException {
+        //TODO call proper methods when they are ready
+        final Map<Long, Object> objects = getObjectsMap();
+        final GetRelationsResponse response = getDataProvider().getRelations(new Void());
+        Stream<Relation> stream = response.getRelations().stream()
+                .map(rel -> new Relation(rel, objects));
+        if (type != null) {
+            stream = stream.filter(rel -> rel.getType().getId() == type.getId());
+        }
+        if (!filter.isEmpty()) {
+            stream = stream.filter(rel -> rel.getAnchorString().contains(filter));
+        }
+        final List<Relation> relations = stream
+                .skip(first)
+                .limit(size)
+                .collect(Collectors.toList());
+        return new Pair<>(relations, response.getRelations().size());
     }
 
     /**
@@ -551,7 +653,7 @@ public class Client {
      * Creates new grapher for providing graph information.
      * @return new grapher for providing graph information
      */
-    public ObjectGrapher createGrapher() {
+    public ObjectGrapher createObjectGrapher() {
         return new ObjectGrapher(this);
     }
 
@@ -561,6 +663,14 @@ public class Client {
      */
     public ProcessReportPipeline createNewReportPipeline() {
         return new ProcessReportPipeline(this);
+    }
+
+    /**
+     * Creates new grapher for providing graph information.
+     * @return new grapher for providing graph information
+     */
+    public RelationGrapher createRelationGrapher() {
+        return new RelationGrapher(this);
     }
 
     /**
@@ -592,7 +702,7 @@ public class Client {
             }
         }
 
-        final List<Relation> relations = request.getRelations();
+        final List<cz.cuni.mff.ufal.textan.commons.models.Relation> relations = request.getRelations();
         final List<RelationOccurrence> relationOccurrences =
                 request.getRelationOccurrences();
         for (RelationBuilder relation : reportRelations) {

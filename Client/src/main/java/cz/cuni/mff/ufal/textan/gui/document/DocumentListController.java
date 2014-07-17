@@ -5,6 +5,7 @@ import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Client.Processed;
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Object;
+import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import static cz.cuni.mff.ufal.textan.gui.Utils.CONTEXT_MENU_STYLE;
@@ -109,6 +110,9 @@ public class DocumentListController extends WindowController {
     /** Object to filter the documents. */
     protected Object object = null;
 
+    /** Object to filter the documents. */
+    protected Relation relation = null;
+
     /** Number of displayed page. */
     protected int pageNo = 0;
 
@@ -147,10 +151,14 @@ public class DocumentListController extends WindowController {
             final Task<Pair<List<Document>, Integer>> task = new Task<Pair<List<Document>, Integer>>() {
                 @Override
                 protected Pair<List<Document>, Integer> call() throws Exception {
-                    Pair<List<Document>, Integer> pair =
-                            object == null
-                            ? client.getDocumentsList(processed, filter, first, size)
-                            : client.getDocumentsList(object.getId(), processed, filter, first, size);
+                    Pair<List<Document>, Integer> pair;
+                    if (object != null) {
+                        pair = client.getDocumentsList(object, processed, filter, first, size);
+                    } else if (relation != null) {
+                        pair = client.getDocumentsList(relation, processed, filter, first, size);
+                    } else {
+                        pair = client.getDocumentsList(processed, filter, first, size);
+                    }
                     pair.getFirst().sort((doc1, doc2) -> Long.compare(doc1.getId(), doc2.getId()));
                     return pair;
                 }
@@ -320,10 +328,10 @@ public class DocumentListController extends WindowController {
         this.object = object;
         final Window w = window != null ? window : stage.getInnerWindow();
         Platform.runLater(() -> {
+            table.getColumns().add(table.getColumns().size() - 1, countColumn);
+            textColumn.prefWidthProperty().bind(table.widthProperty().add(idColumn.widthProperty().add(addTimeColumn.widthProperty()).add(lastChangeTimeColumn.widthProperty()).add(processedColumn.widthProperty()).add(processTimeColumn.widthProperty()).add(countColumn.widthProperty()).multiply(-1).add(-30)));
             w.setTitle(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(object.toString()));
         });
-        table.getColumns().add(table.getColumns().size() - 1, countColumn);
-        textColumn.prefWidthProperty().bind(table.widthProperty().add(idColumn.widthProperty().add(addTimeColumn.widthProperty()).add(lastChangeTimeColumn.widthProperty()).add(processedColumn.widthProperty()).add(processTimeColumn.widthProperty()).add(countColumn.widthProperty()).multiply(-1).add(-30)));
     }
 
     @Override
@@ -334,6 +342,20 @@ public class DocumentListController extends WindowController {
             pageNo = 0;
             settings.setProperty("documents.per.page", newVal.toString());
             filter();
+        });
+    }
+
+    /**
+     * Sets relation to filter documents.
+     * @param relation new relation
+     */
+    public void setRelation(final Relation relation) {
+        this.relation = relation;
+        final Window w = window != null ? window : stage.getInnerWindow();
+        Platform.runLater(() -> {
+            table.getColumns().add(table.getColumns().size() - 1, countColumn);
+            textColumn.prefWidthProperty().bind(table.widthProperty().add(idColumn.widthProperty().add(addTimeColumn.widthProperty()).add(lastChangeTimeColumn.widthProperty()).add(processedColumn.widthProperty()).add(processTimeColumn.widthProperty()).add(countColumn.widthProperty()).multiply(-1).add(-30)));
+            w.setTitle(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(relation.toString() + ": " + relation.getAnchorString()));
         });
     }
 
