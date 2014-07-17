@@ -11,7 +11,7 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFr
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
-import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.Problems;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
@@ -551,8 +551,8 @@ public class Client {
      * Creates new grapher for providing graph information.
      * @return new grapher for providing graph information
      */
-    public Grapher createGrapher() {
-        return new Grapher(this);
+    public ObjectGrapher createGrapher() {
+        return new ObjectGrapher(this);
     }
 
     /**

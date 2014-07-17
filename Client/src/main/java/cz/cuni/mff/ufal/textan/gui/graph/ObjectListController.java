@@ -1,16 +1,13 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
-import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
 import cz.cuni.mff.ufal.textan.gui.GetTypesTask;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.net.URL;
-import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
@@ -19,7 +16,6 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -166,7 +162,7 @@ public class ObjectListController extends GraphController {
     }
 
     @Override
-    public void setGrapher(final Grapher grapher) {
+    public void setGrapher(final IGrapher grapher) {
         super.setGrapher(grapher);
         final Node node = getMainNode();
         node.setCursor(Cursor.WAIT);

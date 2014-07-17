@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
@@ -18,7 +18,7 @@ import org.controlsfx.dialog.Dialogs;
 public class GraphStage extends OuterStage {
 
     /** Graph information provider. */
-    final protected Grapher grapher;
+    final protected IGrapher grapher;
 
     /**
      * Only constructor.
@@ -28,7 +28,8 @@ public class GraphStage extends OuterStage {
      * @param settings properties with settings
      * @param grapher graph information provider
      */
-    public GraphStage(final TextAnController textAnController, final Properties settings, final Grapher grapher) {
+    public GraphStage(final TextAnController textAnController,
+            final Properties settings, final IGrapher grapher) {
         super(TITLE, GRAPH_PROPERTY_ID, settings);
         this.grapher = grapher;
         ResourceBundle resourceBundle = null;

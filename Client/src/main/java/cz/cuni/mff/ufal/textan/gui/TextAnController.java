@@ -3,7 +3,8 @@ package cz.cuni.mff.ufal.textan.gui;
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.core.graph.DocumentGrapher;
+import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentWindow;
@@ -410,9 +411,30 @@ public class TextAnController implements Initializable {
      * @param distance graph distance
      */
     public void displayGraph(final long centerId, final int distance) {
-        final Grapher grapher = client.createGrapher();
+        final IGrapher grapher = client.createGrapher();
         grapher.setRootId(centerId);
         grapher.setDistance(distance);
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final GraphWindow graphWindow = new GraphWindow(this, settings, grapher);
+            content.getChildren().add(graphWindow);
+        } else {
+            final GraphStage stage = new GraphStage(this, settings, grapher);
+            children.add(stage);
+            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(stage);
+                }
+            });
+            stage.show();
+        }
+    }
+
+    /**
+     * Creates and displays graph with default distance.
+     * @param document document to display
+     */
+    public void displayGraph(final Document document) {
+        final IGrapher grapher = new DocumentGrapher(client, document);
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final GraphWindow graphWindow = new GraphWindow(this, settings, grapher);
             content.getChildren().add(graphWindow);

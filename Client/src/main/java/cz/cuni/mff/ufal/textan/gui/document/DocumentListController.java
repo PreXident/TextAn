@@ -202,12 +202,19 @@ public class DocumentListController extends WindowController {
     @Override
      public void initialize(URL url, ResourceBundle rb) {
         this.resourceBundle = rb;
-        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "document.show"));
-        graphMI.setOnAction(e -> {
+        final MenuItem showMI = new MenuItem(Utils.localize(resourceBundle, "document.show"));
+        showMI.setOnAction(e -> {
             final Document doc = table.getSelectionModel().getSelectedItem();
             if (doc != null) {
                 textAnController.displayDocument(doc);
-                //TODO display new window containing the document
+            }
+        });
+        contextMenu.getItems().add(showMI);
+        final MenuItem graphMI = new MenuItem(Utils.localize(resourceBundle, "document.graph"));
+        graphMI.setOnAction(e -> {
+            final Document doc = table.getSelectionModel().getSelectedItem();
+            if (doc != null) {
+                textAnController.displayGraph(doc);
             }
         });
         contextMenu.getItems().add(graphMI);
