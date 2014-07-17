@@ -10,6 +10,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import java.util.List;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +54,10 @@ public class JoinedObjectsTableDAO extends AbstractHibernateDAO<JoinedObjectsTab
     }
 
     @Override
-    public List<IJoinedObjectsTableDAO> findAllSinceGlobalVersion(long version) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    @SuppressWarnings("unchecked")
+    public List<JoinedObjectsTable> findAllSinceGlobalVersion(long version) {
+                return findAllCriteria()
+                .add(Restrictions.ge(JoinedObjectsTable.PROPERTY_NAME_GLOBAL_VERSION, version))
+                .list();
     }
 }

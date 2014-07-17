@@ -138,7 +138,10 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<RelationTable> findAllSinceGlobalVersion(long version) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                return findAllCriteria()
+                .add(Restrictions.ge(RelationTable.PROPERTY_NAME_GLOBAL_VERSION, version))
+                .list();
     }
 }

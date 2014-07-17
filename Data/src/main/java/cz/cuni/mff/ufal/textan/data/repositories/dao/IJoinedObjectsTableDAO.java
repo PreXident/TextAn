@@ -24,5 +24,5 @@ public interface IJoinedObjectsTableDAO extends IOperations<JoinedObjectsTable, 
      * @param version
      * @return
      */
-    List<IJoinedObjectsTableDAO> findAllSinceGlobalVersion(long version); 
+    List<JoinedObjectsTable> findAllSinceGlobalVersion(long version); 
 }

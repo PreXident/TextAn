@@ -204,7 +204,7 @@ public class ObjectTable extends AbstractTable {
 
     @Override
     public String toString() {
-        return "ObjectT{" + "id=" + id + "root=" + rootObject.getId() + ", globalVersion=" + globalVersion + ", data=" + data + ", objectType=" + objectType + '}';
+        return "ObjectT{" + "id=" + id + ", root=" + rootObject.getId() + ", globalVersion=" + globalVersion + ", data=" + data + ", objectType=" + objectType + '}';
     }
 
     @Override

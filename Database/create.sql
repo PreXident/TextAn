@@ -78,7 +78,8 @@ CREATE TABLE Relation
         id_relation int PRIMARY KEY AUTO_INCREMENT,
         id_relation_type int NOT NULL,
         CONSTRAINT FK_RELATION_RELTYPE FOREIGN KEY (id_relation_type)
-                REFERENCES RelationType (id_relation_type)
+                REFERENCES RelationType (id_relation_type),
+	      globalversion int DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE IsInRelation
@@ -111,7 +112,8 @@ CREATE TABLE JoinedObjects
             FOREIGN KEY (id_old_object2)
                   REFERENCES Object(id_object),
         from_date datetime NOT NULL,
-        to_date datetime
+        to_date datetime,
+	      globalversion int DEFAULT 0 NOT NULL
 );
 
 -- TODO add constrant: joined objects have to have the same type
