@@ -127,7 +127,6 @@
     /* A little darker than -fx-base and used as the -fx-color for the
      * "armed" pseudoclass state.
      *
-     * TODO: should this be renamed to -fx-armed-base?
      */
     -fx-pressed-base: derive(-fx-base,-6%);
 
@@ -271,7 +270,6 @@
     /* The color to use as -fx-text-fill when painting text on top of
      * backgrounds filled with -fx-selection-bar.
      *
-     * TODO: this can be removed
      */
     -fx-selection-bar-text: -fx-text-background-color;
 

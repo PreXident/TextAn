@@ -116,7 +116,7 @@ public class Relation {
                 new cz.cuni.mff.ufal.textan.commons.models.Relation();
         result.setId(id);
         result.setRelationType(type.toRelationType());
-        result.setIsNew(Boolean.TRUE); //TODO add relation feature
+        result.setIsNew(isNew);
         final ObjectInRelationIds ids = new ObjectInRelationIds();
         for (Triple<Integer, String, Object> triple : objects) {
             final InRelation inRelation = new InRelation();

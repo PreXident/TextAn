@@ -52,7 +52,6 @@ import org.apache.commons.collections15.Transformer;
 
 /**
  * Displays graphs.
- * TODO PretopoLib licensing!
  */
 public class GraphView extends SwingNode {
 

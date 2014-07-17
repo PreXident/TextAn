@@ -9,9 +9,6 @@ import java.util.Date;
  */
 public class Ticket {
 
-    /** User login. */
-    //private final String username; fixme
-
     /** Ticket timestamp. */
     private final Date timestamp;
 
@@ -20,17 +17,8 @@ public class Ticket {
      * @param ticket ticket blue print
      */
     public Ticket(final EditingTicket ticket) {
-        //username = null; //ticket.getUsername(); fixme
         timestamp = ticket.getTimestamp();
     }
-
-    /**
-     * Returns user name.
-     * @return user name
-     */
-//    public String getUsername() {
-//        return username;
-//    }
 
     /**
      * Returns time stamp.
@@ -47,7 +35,6 @@ public class Ticket {
     public cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket toTicket() {
         final cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket result =
                 new cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket();
-        //result.setUsername(username); fixme
         result.setTimestamp(timestamp);
         return result;
     }

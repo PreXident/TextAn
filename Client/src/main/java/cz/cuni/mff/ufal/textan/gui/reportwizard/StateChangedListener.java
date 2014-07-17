@@ -24,7 +24,7 @@ public class StateChangedListener implements IStateChangedListener {
     /**
      * Ugly hack to prevent mouse events for TextFlow to be ignored
      * and some display errors.
-     * TODO more systematic solution
+     * TODO more systematic solution for TextFlow layout problems
      * @param controller controller that possible holds textflow
      */
     static private void hackFixTextFlow(final ReportWizardController controller) {

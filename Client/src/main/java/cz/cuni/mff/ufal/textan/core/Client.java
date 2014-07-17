@@ -123,6 +123,7 @@ public class Client {
      */
     private void addSOAPHandler(Binding binding) {
 
+        //TODO token as field to enable changing of username on-the-fly?
         UsernameToken token = new UsernameToken();
         token.setUsername(settings.getProperty("username"));
 
@@ -535,11 +536,10 @@ public class Client {
 
     /**
      * Returns ticket for document processing.
-     * @param username user login
      * @return ticket for document processing
      * @see IDocumentProcessor#getEditingTicket(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketRequest)
      */
-    public synchronized Ticket getTicket(final String username) { //TODO: remove username parameter
+    public synchronized Ticket getTicket() {
         final GetEditingTicketRequest request = new GetEditingTicketRequest();
         final IDocumentProcessor docProc = getDocumentProcessor();
         final GetEditingTicketResponse response =

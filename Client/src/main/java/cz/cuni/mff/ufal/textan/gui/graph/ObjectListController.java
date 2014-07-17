@@ -106,7 +106,6 @@ public class ObjectListController extends GraphController {
                     final Client client = grapher.getClient();
                     Pair<List<Object>, Integer> pair =
                             client.getObjectsList(selectedType, filter, first, size);
-                    //FIXME: is the comparison right?
                     pair.getFirst().sort((obj1, obj2) -> Long.compare(obj1.getId(), obj2.getId()));
                     return pair;
                 }
