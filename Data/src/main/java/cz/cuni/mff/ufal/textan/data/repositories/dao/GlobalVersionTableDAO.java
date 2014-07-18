@@ -28,7 +28,10 @@ public class GlobalVersionTableDAO extends AbstractHibernateDAO<GlobalVersionTab
 
     @Override
     public long getCurrentVersion() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        GlobalVersionTable gvt = (GlobalVersionTable)currentSession().createCriteria(GlobalVersionTable.class)
+                .setMaxResults(1)
+                .list().get(0);
+        return gvt.getVersion();
     }
     
 }

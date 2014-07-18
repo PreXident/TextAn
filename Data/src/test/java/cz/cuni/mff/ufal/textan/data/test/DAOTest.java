@@ -8,8 +8,10 @@ package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.GlobalVersionTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IGlobalVersionTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.*;
@@ -24,6 +26,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.util.AssertionErrors;
 
 import java.util.List;
+import org.junit.Assert;
 
 import static org.junit.Assert.assertTrue;
 
@@ -49,6 +52,8 @@ public class DAOTest {
     @Autowired
     IDocumentTableDAO documentTableDAO;
 
+    @Autowired
+    IGlobalVersionTableDAO globalVersionDAO;
     
     private DocumentTable document;
     private RelationTypeTable relationType;
@@ -297,6 +302,12 @@ public class DAOTest {
 
     }
     
-    
+    @Test
+    public void globalVersionTest() {
+        System.out.println("Global version = " + globalVersionDAO.getCurrentVersion());
+
+        Assert.assertNotEquals("global version is not 0", 0, globalVersionDAO.getCurrentVersion());
+
+    }
 }
 
