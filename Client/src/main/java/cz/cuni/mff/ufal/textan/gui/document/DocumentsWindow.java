@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.gui.document;
 
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Object;
+import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
@@ -26,7 +27,8 @@ public class DocumentsWindow extends InnerWindow {
      * @param object object whose documents should be displayed
      */
     public DocumentsWindow(final TextAnController textAnController,
-            final Properties settings, final Client client, final Object object) {
+            final Properties settings, final Client client, final Object object,
+            final Relation relation) {
         super(TITLE, PROPERTY_ID, settings);
         ResourceBundle resourceBundle = null;
         try {
@@ -39,6 +41,9 @@ public class DocumentsWindow extends InnerWindow {
             controller.setSettings(settings);
             if (object != null) {
                 controller.setObject(object);
+            }
+            if (relation != null) {
+                controller.setRelation(relation);
             }
             controller.setTextAnController(textAnController);
             controller.setClient(client);

@@ -3,6 +3,7 @@
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import cz.cuni.mff.ufal.textan.gui.reportwizard.TextFlow?>
+<?import cz.cuni.mff.ufal.textan.gui.relation.RelationTreeView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
@@ -40,7 +41,7 @@
 					<Label text="" />
 				</placeholder>
 			</TableView>
-			<TreeView fx:id="relationsTreeView" minHeight="30" GridPane.columnIndex="1" GridPane.rowIndex="2" showRoot="false" />
+			<RelationTreeView fx:id="relationsTreeView" minHeight="30" GridPane.columnIndex="1" GridPane.rowIndex="2" showRoot="false" />
 			<TreeView fx:id="joinedObjectsTreeView" minHeight="30" GridPane.columnIndex="2" GridPane.rowIndex="2" showRoot="false" />
 		</GridPane>
 	</center>

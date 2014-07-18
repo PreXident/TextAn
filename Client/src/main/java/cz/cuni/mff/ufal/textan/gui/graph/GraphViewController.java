@@ -3,7 +3,7 @@ package cz.cuni.mff.ufal.textan.gui.graph;
 import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
@@ -127,12 +127,8 @@ public class GraphViewController extends GraphController {
         });
     }
 
-    /**
-     * Sets graph information provider.
-     * @param grapher new graph information provider
-     */
     @Override
-    public void setGrapher(final Grapher grapher) {
+    public void setGrapher(final IGrapher grapher) {
         super.setGrapher(grapher);
         distanceField.setNumber(new BigDecimal(grapher.getDistance()));
         final Node node = getMainNode();
@@ -157,15 +153,14 @@ public class GraphViewController extends GraphController {
             setOnSucceeded(e -> {
                 final Graph g = getValue();
                 graphView = new GraphView(settings,
-                        g.getNodes(), g.getEdges(), grapher.getRootId());
+                        g.getNodes(), g.getEdges(), grapher.getCenterer());
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(graphView);
                 graphView.requestFocus();
                 getMainNode().setCursor(Cursor.DEFAULT);
                 scrollPane.requestFocus();
-                final Object center = g.getNodes().get(grapher.getRootId());
                 final Window w = window == null ? stage.getInnerWindow() : window;
-                w.setTitle(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID) + " - " + Utils.shortString(center.toString()));
+                w.setTitle(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID) + " - " + Utils.shortString(grapher.getTitle()));
                 objectContextMenu = new ObjectContextMenu(textAnController);
                 objectContextMenu.objectProperty().bind(graphView.objectForGraph);
                 objectContextMenu.distanceProperty().bind(distanceField.numberProperty());

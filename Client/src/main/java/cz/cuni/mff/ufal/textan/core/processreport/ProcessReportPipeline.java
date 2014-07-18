@@ -2,7 +2,6 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Entity;
-import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.Ticket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,13 +63,12 @@ public class ProcessReportPipeline {
 
     /**
      * Only constructor. Do not use directly!
-     * TODO think of a design preventing users from calling this constructor directly
+     * TODO think of a design preventing users from calling this constructor directly - maybe private constructor and use reflection?
      * @param client parent Client of the pipeline
      */
     public ProcessReportPipeline(final Client client) {
         this.client = client;
-        final String username = client.getSettings().getProperty("username");
-        ticket = client.getTicket(username);
+        ticket = client.getTicket();
     }
 
     /**
