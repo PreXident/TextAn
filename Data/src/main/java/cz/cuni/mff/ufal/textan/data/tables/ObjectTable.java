@@ -26,23 +26,28 @@ public class ObjectTable extends AbstractTable {
     public static final String PROPERTY_NAME_OBJECT_TYPE_ID = "objectType";
     public static final String PROPERTY_NAME_ALIASES_ID = "aliases";
     public static final String PROPERTY_NAME_GLOBAL_VERSION = "globalVersion";
+    public static final String PROPERTY_NAME_ROOT_OBJECT_ID = "rootObject";
 
     private long id;
     private String data;
     private long globalVersion;
-
+    
+    private ObjectTable rootObject;
     private ObjectTypeTable objectType;
     private Set<AliasTable> aliases = new HashSet<>();
     private Set<InRelationTable> relations = new HashSet<>();
 
+    private Set<ObjectTable> rootOfObjects = new HashSet<ObjectTable>();
     private JoinedObjectsTable newObject;
     private Set<JoinedObjectsTable> oldObjects1;
     private Set<JoinedObjectsTable> oldObjects2;
 
     public ObjectTable() {
+        rootObject = this;
     }
 
     public ObjectTable(String data, ObjectTypeTable objectType) {
+        this();
         this.data = data;
         this.objectType = objectType;
     }
@@ -65,6 +70,16 @@ public class ObjectTable extends AbstractTable {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_root_object")
+    public ObjectTable getRootObject() {
+        return rootObject;
+    }
+
+    public void setRootObject(ObjectTable rootObject) {
+        this.rootObject = rootObject;
     }
 
     @Column(name = "globalversion", nullable = false)
@@ -188,9 +203,18 @@ public class ObjectTable extends AbstractTable {
         return result;
     }
 
+    @OneToMany(mappedBy = "rootObject")
+    public Set<ObjectTable> getRootOfObjects() {
+        return rootOfObjects;
+    }
+
+    public void setRootOfObjects(Set<ObjectTable> rootOfObjects) {
+        this.rootOfObjects = rootOfObjects;
+    }
+
     @Override
     public String toString() {
-        return "ObjectTable{" + "id=" + id + ", globalVersion=" + globalVersion + ", data=" + data + ", objectType=" + objectType + '}';
+        return "ObjectT{" + "id=" + id + ", root=" + rootObject.getId() + ", globalVersion=" + globalVersion + ", data=" + data + ", objectType=" + objectType + '}';
     }
 
     @Override
@@ -208,4 +232,4 @@ public class ObjectTable extends AbstractTable {
         hash = 79 * hash + Objects.hashCode(this.objectType);
         return hash;
     }
-}
+    }

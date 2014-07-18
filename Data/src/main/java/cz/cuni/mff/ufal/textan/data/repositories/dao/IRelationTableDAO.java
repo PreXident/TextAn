@@ -40,8 +40,16 @@ public interface IRelationTableDAO extends IObjectRelationDAO<RelationTable> {
      * finds all relations of specified type
      * 
      * @param type
+     * @param firstResult
+     * @param pageSize
      * @return 
      */
     List<RelationTable> findAllByRelationType(RelationTypeTable type, int firstResult, int pageSize);
 
+    /**
+     * 
+     * @param version
+     * @return 
+     */
+    List<RelationTable> findAllSinceGlobalVersion(long version); 
 }

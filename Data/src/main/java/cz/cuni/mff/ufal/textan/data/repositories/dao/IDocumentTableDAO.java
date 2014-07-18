@@ -73,4 +73,5 @@ public interface IDocumentTableDAO extends IOperations<DocumentTable, Long> {
 
     List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern);
     List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern, int firstResult, int maxResults);
+    List<DocumentTable> findAllProcessed(boolean processed);
 }

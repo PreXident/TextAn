@@ -90,6 +90,20 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
             .list();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllProcessed(boolean processed) {
+        if (processed)
+            return findAllCriteria()
+                    .add(Restrictions.isNotNull(DocumentTable.PROPERTY_NAME_PROCESSED))
+                    .list();
+        else
+            return findAllCriteria()
+                    .add(Restrictions.isNull(DocumentTable.PROPERTY_NAME_PROCESSED))
+                    .list();
+            
+    }
+    
     private Query findAllDocumentsByFullTextQuery(String pattern) {
         FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 

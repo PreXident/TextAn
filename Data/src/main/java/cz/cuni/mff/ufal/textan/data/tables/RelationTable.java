@@ -20,8 +20,10 @@ public class RelationTable extends AbstractTable {
     public static final String PROPERTY_NAME_RELATION_TYPE_ID = "relationType";
     public static final String PROPERTY_NAME_OCCURRENCES_ID = "occurrences";
     public static final String PROPERTY_NAME_ID = "id";
+    public static final String PROPERTY_NAME_GLOBAL_VERSION = "globalVersion";
 
     private long id;
+    private long globalVersion;
 
     private RelationTypeTable relationType;
     private Set<InRelationTable> objectsInRelation = new HashSet<>();
@@ -43,6 +45,15 @@ public class RelationTable extends AbstractTable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Column(name = "globalversion", nullable = false)
+    public long getGlobalVersion() {
+        return globalVersion;
+    }
+
+    public void setGlobalVersion(long globalVersion) {
+        this.globalVersion = globalVersion;
     }
 
     @ManyToOne
@@ -78,8 +89,7 @@ public class RelationTable extends AbstractTable {
 
     @Override
     public String toString() {
-        return String.format("RelationTable(%d, %s)", getId(), getRelationType());
-
+        return "RelationTable{" + "id=" + id + ", globalVersion=" + globalVersion + ", relationType=" + relationType + '}';
     }
 
     @Override
