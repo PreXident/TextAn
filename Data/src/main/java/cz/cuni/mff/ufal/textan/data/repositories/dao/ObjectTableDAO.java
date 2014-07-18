@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
 
 /**
  * @author Vaclav Pernicka
@@ -37,19 +38,6 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
         super(ObjectTable.class);
     }
 
-    private Query findAllByAliasFullTextQuery(String pattern) {
-        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
-
-        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
-        org.apache.lucene.search.Query query = builder
-                .phrase()
-                .onField("aliases.alias")
-                .sentence(pattern)
-                .createQuery();
-
-        return fullTextSession.createFullTextQuery(query);
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByAliasFullText(String pattern) {
@@ -62,31 +50,6 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
         return addPagination(findAllByAliasFullTextQuery(pattern), firstResult, pageSize).list();
     }
 
-    private Query findAllByObjTypeAndAliasFullTextQuery(long objectTypeId, String pattern) {
-        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
-
-        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
-        org.apache.lucene.search.Query fullTextQuery = builder
-                .phrase()
-                .onField("aliases.alias")
-                .sentence(pattern)
-                .createQuery();
-
-        org.apache.lucene.search.Query typeQuery = builder
-                .keyword()
-                .onField("objectType.id")
-                .matching(objectTypeId)
-                .createQuery();
-
-        org.apache.lucene.search.Query query = builder
-                .bool()
-                .must(fullTextQuery)
-                .must(typeQuery)
-                .createQuery();
-
-        return fullTextSession.createFullTextQuery(query);
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern) {
@@ -97,18 +60,6 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern, int firstResult, int pageSize) {
         return addPagination(findAllByObjTypeAndAliasFullTextQuery(objectTypeId, pattern), firstResult, pageSize).list();
-    }
-
-    private Query findAllByObjectTypeAndAliasSubStrQuery(long objectTypeId, String aliasSubstring) {
-        Query hq = currentSession().createQuery(
-                "select distinct obj from ObjectTable as obj "
-                        + "inner join obj.objectType as type "
-                        + "inner join obj.aliases as al "
-                        + "where lower(al.alias) like lower(:pattern) and type.id = :objectTypeId"
-        );
-        hq.setParameter("pattern", DAOUtils.getLikeSubstring(aliasSubstring));
-        hq.setParameter("objectTypeId", objectTypeId);
-        return hq;
     }
 
     @Override
@@ -156,32 +107,17 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByAliasEqualTo(String alias) {
-        return findAllCriteria()
-                .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
-                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_ALIAS), alias))
+        return findAllByAliasQuery(alias)
                 .list();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByAliasEqualTo(String alias, int firstResult, int pageSize) {
-        return findAllCriteria()
-                .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
-                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_ALIAS), alias))
+        return findAllByAliasQuery(alias)
                 .setFirstResult(firstResult)
                 .setMaxResults(pageSize)
                 .list();
-    }
-
-    private Query findAllByAliasSubstringQuery(String aliasSubstring) {
-
-        Query hq = currentSession().createQuery(
-                "select distinct obj from ObjectTable as obj "
-                        + "inner join obj.aliases as al "
-                        + "where lower(al.alias) like lower(:pattern)"
-        );
-        hq.setParameter("pattern", DAOUtils.getLikeSubstring(aliasSubstring));
-        return hq;
     }
 
     @Override
@@ -199,28 +135,14 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByDocumentOccurrence(long documentId) {
-        return findAllCriteria()
-                .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
-                .createAlias(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_OCCURRENCES),
-                        "aliasOccurrence", JoinType.INNER_JOIN)
-                .createAlias(DAOUtils.getAliasPropertyName("aliasOccurrence", AliasOccurrenceTable.PROPERTY_NAME_DOCUMENT),
-                        "document", JoinType.INNER_JOIN)
-                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("document", DocumentTable.PROPERTY_NAME_ID),
-                        documentId))
+        return findAllByDocumentQuery(documentId)
                 .list();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<ObjectTable> findAllByDocumentOccurrence(long documentId, int firstResult, int pageSize) {
-        return findAllCriteria()
-                .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_ALIASES_ID), "alias", JoinType.INNER_JOIN)
-                .createAlias(DAOUtils.getAliasPropertyName("alias", AliasTable.PROPERTY_NAME_OCCURRENCES),
-                        "aliasOccurrence", JoinType.INNER_JOIN)
-                .createAlias(DAOUtils.getAliasPropertyName("aliasOccurrence", AliasOccurrenceTable.PROPERTY_NAME_DOCUMENT),
-                        "document", JoinType.INNER_JOIN)
-                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("document", DocumentTable.PROPERTY_NAME_ID),
-                        documentId))
+        return findAllByDocumentQuery(documentId)
                 .setFirstResult(firstResult)
                 .setMaxResults(pageSize)
                 .list();
@@ -251,5 +173,100 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
                 .add(Restrictions.eqProperty(ObjectTable.PROPERTY_NAME_ID, 
                                              ObjectTable.PROPERTY_NAME_ROOT_OBJECT_ID));
     }
+    private Query findAllByAliasFullTextQuery(String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query query = builder
+                .phrase()
+                .onField("aliases.alias")
+                .sentence(pattern)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+    
+    private Query findAllByObjTypeAndAliasFullTextQuery(long objectTypeId, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query fullTextQuery = builder
+                .phrase()
+                .onField("aliases.alias")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query typeQuery = builder
+                .keyword()
+                .onField("objectType.id")
+                .matching(objectTypeId)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(fullTextQuery)
+                .must(typeQuery)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+     
+    private Query findAllByObjectTypeAndAliasSubStrQuery(long objectTypeId, String aliasSubstring) {
+        Query hq = currentSession().createQuery(
+                "select distinct obj "
+              + "from ObjectTable as obj "
+                        + "inner join obj.rootOfObjects as rootOf"
+                        + "inner join obj.objectType as type "
+                        + "inner join rootOf.aliases as al "
+              + "where lower(al.alias) like lower(:pattern) and type.id = :objectTypeId "
+                        + "and obj.root = obj.id"
+        );
+        hq.setParameter("pattern", DAOUtils.getLikeSubstring(aliasSubstring));
+        hq.setParameter("objectTypeId", objectTypeId);
+        return hq;
+    }
+
+    private Query findAllByAliasSubstringQuery(String aliasSubstring) {
+
+        Query hq = currentSession().createQuery(
+                "select distinct obj "
+                        + "from ObjectTable as obj "
+                            + "inner join obj.rootOfObjects as rootOf "
+                            + "inner join rootOf.aliases as al "
+                        + "where lower(al.alias) like lower(:pattern)"
+                            + "and obj.rootObject = obj.id"           // this is root
+        );
+        hq.setParameter("pattern", DAOUtils.getLikeSubstring(aliasSubstring));
+        return hq;
+    }
+    
+    private Query findAllByAliasQuery(String aliasSubstring) {
+        Query hq = currentSession().createQuery(
+                "select distinct obj "
+              + "from ObjectTable as obj "
+                        + "inner join obj.rootOfObjects as rootOf "
+                        + "inner join rootOf.aliases as al "
+              + "where lower(al.alias) = lower(:pattern) "
+                        + "and obj.rootObject = obj.id"           // this is root
+        );
+        
+        hq.setParameter("pattern", aliasSubstring);
+        return hq;
+        
+    }
+    
+    private Query findAllByDocumentQuery(Long documentId) {
+        return currentSession().createQuery(
+                "select distinct obj "
+              + "from ObjectTable as obj "
+                        + "inner join obj.rootOfObjects as rootOf "
+                        + "inner join rootOf.aliases as al "
+                        + "inner join al.occurrences as occ "
+                        + "inner join occ.document as doc "
+              + "where doc.id = :docId "
+                        + "and obj.rootObject = obj.id"           // this is root
+        )
+        .setParameter("docId", documentId);
+        
+    }
 }

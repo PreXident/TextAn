@@ -37,6 +37,7 @@ public class ObjectTable extends AbstractTable {
     private Set<AliasTable> aliases = new HashSet<>();
     private Set<InRelationTable> relations = new HashSet<>();
 
+    private Set<ObjectTable> rootOfObjects = new HashSet<ObjectTable>();
     private JoinedObjectsTable newObject;
     private Set<JoinedObjectsTable> oldObjects1;
     private Set<JoinedObjectsTable> oldObjects2;
@@ -200,6 +201,15 @@ public class ObjectTable extends AbstractTable {
             result.addAll(getNewObject().getOldObject2().getObjectsThisWasJoinedFrom());
         }
         return result;
+    }
+
+    @OneToMany(mappedBy = "rootObject")
+    public Set<ObjectTable> getRootOfObjects() {
+        return rootOfObjects;
+    }
+
+    public void setRootOfObjects(Set<ObjectTable> rootOfObjects) {
+        this.rootOfObjects = rootOfObjects;
     }
 
     @Override
