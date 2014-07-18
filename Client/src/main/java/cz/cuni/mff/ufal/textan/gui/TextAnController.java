@@ -6,7 +6,6 @@ import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.graph.DocumentGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
-import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentWindow;

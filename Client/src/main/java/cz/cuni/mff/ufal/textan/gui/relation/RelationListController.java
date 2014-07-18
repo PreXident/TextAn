@@ -2,7 +2,6 @@ package cz.cuni.mff.ufal.textan.gui.relation;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Client;
-import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
@@ -33,7 +32,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.util.StringConverter;

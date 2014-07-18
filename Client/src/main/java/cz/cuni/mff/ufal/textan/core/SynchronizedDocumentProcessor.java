@@ -1,6 +1,22 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 

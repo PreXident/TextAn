@@ -307,21 +307,6 @@ public class GraphView extends SwingNode {
             final double deltaY = (ctr.getY() - p.getY())*1/scale;
             layout2.translate(deltaX, deltaY);
             visualizator.repaint();
-
-//            VisualizationViewer<Object, Relation> vv = visualizator;
-//            MutableTransformer view = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW);
-//            MutableTransformer layout = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT);
-//
-//            Point2D ctr = vv.getCenter();
-//            Point2D pnt = view.inverseTransform(ctr);
-//
-//            double scale = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW).getScale();
-//
-//            double deltaX = (ctr.getX() - p.getX())*1/scale;
-//            double deltaY = (ctr.getY() - p.getY())*1/scale;
-//            Point2D delta = new Point2D.Double(deltaX, deltaY);
-//
-//            layout.translate(deltaX, deltaY);
         });
     }
 
@@ -334,7 +319,8 @@ public class GraphView extends SwingNode {
             final List<Object> objects = relation.getObjects().stream()
                     .map(Triple<Integer, String, Object>::getThird)
                     .collect(Collectors.toList());
-            if (objects.size() < 2) {
+            //TODO what to do with hyperedges?
+            if (objects.size() != 2) {
                 return;
             }
             final Point2D p1 = layout.transform(objects.get(0));

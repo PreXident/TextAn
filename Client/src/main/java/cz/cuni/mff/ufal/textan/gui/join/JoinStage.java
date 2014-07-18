@@ -1,7 +1,5 @@
 package cz.cuni.mff.ufal.textan.gui.join;
 
-import cz.cuni.mff.ufal.textan.core.Client;
-import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;

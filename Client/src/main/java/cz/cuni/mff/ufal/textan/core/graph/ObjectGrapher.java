@@ -1,9 +1,9 @@
 package cz.cuni.mff.ufal.textan.core.graph;
 
 import cz.cuni.mff.ufal.textan.core.Client;
-import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
+import cz.cuni.mff.ufal.textan.core.Object;
 import java.util.function.Predicate;
 
 /**
