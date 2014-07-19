@@ -74,6 +74,14 @@ public class GraphFactory {
         return getGraphFromObject(obj.getId(), depth);
     }
 
+    public Graph getGraphFromRelation(RelationTable relation, int depth) {
+        return getGraphFromRelation(relation.getId(), depth);
+    }
+
+    public Graph getGraphFromRelation(long relationId, int depth) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     @SuppressWarnings({"rawtypes"})
     private Graph getGraphFromObject(long objectId, int depth, Set<Node> passedNodes) {
         if (depth <= 0) {
@@ -138,7 +146,5 @@ public class GraphFactory {
         }
         return result;
     }
-
-
-  
+ 
 }
