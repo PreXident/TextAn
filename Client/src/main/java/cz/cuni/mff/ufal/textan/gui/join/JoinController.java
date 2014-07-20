@@ -134,14 +134,22 @@ public class JoinController extends WindowController {
 
     @FXML
     private void join() {
-        if (leftTable.getSelectionModel().getSelectedItem() == null
-                || rightTable.getSelectionModel().getSelectedItem() == null) {
+        final Object leftObject = leftTable.getSelectionModel().getSelectedItem();
+        final Object rightObject = rightTable.getSelectionModel().getSelectedItem();
+        if (leftObject == null || rightObject == null) {
+            return;
+        }
+        if (!leftObject.getType().equals(rightObject.getType())) {
+            createDialog()
+                    .owner(getDialogOwner(root))
+                    .title(Utils.localize(resourceBundle, "join.error.typemismatch.title"))
+                    .message(Utils.localize(resourceBundle, "join.error.typemismatch.message"))
+                    .showError();
             return;
         }
         try {
             final long joinedObject = textAnController.getClient().joinObjects(
-                    leftTable.getSelectionModel().getSelectedItem().getId(),
-                    rightTable.getSelectionModel().getSelectedItem().getId()
+                    leftObject.getId(), rightObject.getId()
             );
             final Action response = createDialog()
                     .owner(getDialogOwner(root))
