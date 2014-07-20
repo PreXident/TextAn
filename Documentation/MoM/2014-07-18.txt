@@ -1,0 +1,46 @@
+Venca and Kuba are late!
+
+Adam:
+- all hwk done, except for processing from document list and annotating
+
+Peter:
+- server build script compatible with gradle 2.0
+- WiP checking changes
+- WiP Lucena
+
+Kuba:
+- WiP nametag documentation
+- handling errors on no data available
+
+!PROMOTION!
+Kuba is now fully responsible for managing documentation! Congrats!
+
+Venca:
+- all hwk done
+
+Tam:
+- introduction done, other parts WiP
+- still searching for related works
+
+HWK:
+- Adam, username change should be in effect after restart
+- Adam, add check if objects can be join when Join button is pressed
+- Adam, finish pipeline
+- Peter, add methods needed in client, see todos in client
+  - getDocumentsContainingObjectById with filtering
+  - getDocumentsList for relations
+  - getRelationGraph
+  - getRelationList
+- Peter, always return exact page count, merge fetching records and counting records
+- Adam & Kuba & Peter & Venca, see issue number 64 and than write a document and annotate it. (http://www.nssoud.cz/, povinné odpovědi policie)
+  - you lazy bums!
+- Venca, add getRelationGraph into db
+- Kuba, documentation
+- Tam, implement the feature you are thinking about
+
+Next meeting: Tueday at 16:30
+
+
+Related works:
+http://www.aclweb.org/anthology/N/N13/N13-3004.pdf
+http://brat.nlplab.org/
