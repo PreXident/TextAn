@@ -79,10 +79,16 @@ import javax.xml.ws.soap.SOAPBinding;
  */
 public class Client {
 
+    /** Document processor QName. */
     private static final QName DOCUMENT_PROCESSOR_SERVICE = new QName("http://ws.commons.textan.ufal.mff.cuni.cz", "DocumentProcessorService");
+
+    /** Document processor Port. */
     private static final QName DOCUMENT_PROCESSOR_PORT = new QName("http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessorService", "DocumentProcessorPort");
 
+    /** Data provider QName. */
     private static final QName DATA_PROVIDER_SERVICE = new QName("http://ws.commons.textan.ufal.mff.cuni.cz", "DataProviderService");
+
+    /** Data provider Port. */
     private static final QName DATA_PROVIDER_PORT = new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService", "DataProviderPort");
 
     /** Values for document processed filtering. */
@@ -138,6 +144,9 @@ public class Client {
     /** Settings of the application. Handle with care, they're shared. */
     final protected Properties settings;
 
+    /** Username for communication with the server. It is not change until restart. */
+    protected String username;
+
     /** Instance of data provider. */
     protected IDataProvider dataProvider = null;
 
@@ -150,35 +159,40 @@ public class Client {
      */
     public Client(final Properties settings) {
         this.settings = settings;
+        username = settings.getProperty("username");
+    }
+
+    /**
+     * Sets the username.
+     * Make sure this method is called BEFORE creating {@link #dataProvider} or
+     * {@link #documentProcessor}, so they use new username.
+     * @param username
+     */
+    public void setUsername(final String username) {
+        this.username = username;
     }
 
     /**
      * Adds JAX-WS Handler which adds UsernameToken header into SOAP message.
-     *
      * @param binding JAW-WS bindings (from web service port)
      */
     private void addSOAPHandler(Binding binding) {
-
-        //TODO token as field to enable changing of username on-the-fly?
-        UsernameToken token = new UsernameToken();
-        token.setUsername(settings.getProperty("username"));
+        final UsernameToken token = new UsernameToken();
+        token.setUsername(username);
 
         @SuppressWarnings("rawtypes")
         List<Handler> handlers = new ArrayList<>(1);
         handlers.add(new SOAPHandler<SOAPMessageContext>() {
-
             @Override
             public boolean handleMessage(SOAPMessageContext context) {
                 try {
                     Boolean outbound = (Boolean) context.get("javax.xml.ws.handler.message.outbound");
                     if (outbound != null && outbound) {
-
                         SOAPMessage message = context.getMessage();
                         SOAPHeader header = message.getSOAPHeader();
                         if (header == null) {
                             header = message.getSOAPPart().getEnvelope().addHeader();
                         }
-
                         Marshaller marshaller = JAXBContext.newInstance(UsernameToken.class).createMarshaller();
                         marshaller.marshal(token, header);
                     }
@@ -198,7 +212,6 @@ public class Client {
             @Override
             public Set<QName> getHeaders() { return null; }
         });
-
         binding.setHandlerChain(handlers);
     }
 

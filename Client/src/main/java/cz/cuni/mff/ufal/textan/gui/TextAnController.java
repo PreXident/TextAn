@@ -333,6 +333,12 @@ public class TextAnController implements Initializable {
                             .showError();
                 } else {
                     settings.setProperty("username", login);
+                    settingsMenu.hide();
+                    Dialogs.create()
+                        .owner(stage)
+                        .lightweight()
+                        .message(Utils.localize(resourceBundle,"restart.change"))
+                        .showWarning();
                 }
             }
         });
@@ -345,7 +351,7 @@ public class TextAnController implements Initializable {
                             Dialogs.create()
                                 .owner(stage)
                                 .lightweight()
-                                .message(Utils.localize(resourceBundle,"locale.changed"))
+                                .message(Utils.localize(resourceBundle,"restart.change"))
                                 .showWarning();
                             });
                 settings.setProperty("locale.language", newVal);
@@ -369,6 +375,12 @@ public class TextAnController implements Initializable {
      */
     public StringProperty titleProperty() {
         return titleProperty;
+    }
+
+    public void setUsername(final String username) {
+        loginTextField.setText(username);
+        client.setUsername(username);
+        settings.setProperty("username", username);
     }
 
     /**

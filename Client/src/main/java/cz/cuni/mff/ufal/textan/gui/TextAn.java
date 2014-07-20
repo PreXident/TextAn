@@ -149,8 +149,7 @@ public class TextAn extends Application {
                 }
             } while (login == null || login.isEmpty() || login.trim().isEmpty());
             final String trimmed = login.trim();
-            controller.loginTextField.setText(trimmed);
-            settings.setProperty("username", trimmed);
+            controller.setUsername(trimmed);
         }
     }
 
