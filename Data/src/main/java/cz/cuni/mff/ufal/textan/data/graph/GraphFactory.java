@@ -9,12 +9,15 @@ package cz.cuni.mff.ufal.textan.data.graph;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
+import java.util.Collection;
+import java.util.Collections;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -79,7 +82,23 @@ public class GraphFactory {
     }
 
     public Graph getGraphFromRelation(long relationId, int depth) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Session s = sessionFactory.getCurrentSession();
+        List<Node> res = s.createQuery(
+                "select new Node(obj.id, obj.data) "
+                        + " from ObjectTable obj"
+                        + "     left join obj.relations inRel"
+                        + "     left join inRel.relation rel"
+                
+                        + " where rel.id = :pId "
+                  )
+                .setParameter("pId", relationId)
+                .list();
+        Set<Node> passedNodes = new HashSet<Node>(res);
+        Graph result = new Graph();
+        for (Node node : res) {
+            result.mergeIntoThis(getGraphFromObject(node.getId(), depth, passedNodes));
+        }
+        return result;
     }
     
     @SuppressWarnings({"rawtypes"})
