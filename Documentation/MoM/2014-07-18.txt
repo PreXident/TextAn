@@ -43,4 +43,6 @@ Next meeting: Tueday at 16:30
 
 Related works:
 http://www.aclweb.org/anthology/N/N13/N13-3004.pdf
+--> http://knowtator.sourceforge.net/
 http://brat.nlplab.org/
+
