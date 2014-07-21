@@ -16,4 +16,29 @@ were written as a local application in a local machine under the threat of data 
 with client-server structure. % OK, INTRODUCTION TO ANAFORA
 
 
+Anafora is designed for the medical domain with a medical named entity tags, not a general domain. It is developed with a server in Django (a Python framework) and a client in jQuery (a JavaScript 
+library). Besides, it stores annotations in each single XML files. By doing so, authors claim that the tool is agile and 
+flexible. The project hierachy is designed to be the file/directory structures. The application provides an automatic detection
+of named entities. Users could change/add details to the annotation by mouse or keyboard. Language choice is English.
+
+The limitation of Anafora lies in the data structure. The complicated deﬁnitions like relations (or relation properties) 
+among entities are not supported. It may be the trade-off when authors want to develop a light tools based on a simple
+data structure such as XML.
+
+% http://brat.nlplab.org/
+
+BRAT rapid annotation tool is a web-based tool for text annotation, most useful to add note to existing text documents 
+(taken from the introduction of BRAT). It is developed by Japanese. This tool does support the linking relation between 
+two entities and even the link 
+from entities to a definition outside documents (such as wikipedia).
+
+The strong point of BRAT is the simplicity of usage. The tool offers a comprehensive visualization with mouse-based 
+activities, a linking method to an external resources (such as Freebase, Wikipedia, and Open Biomedical Ontologies). A number 
+of other useful functions are \textit{save, export from standoff format, search}. The brat standoff format is a simple 
+format developed for the visualization of the tool, in which data is stored in two files: a text file \textit{.txt} and an
+annotation file \textit{.ann}.
+
+The weak point of the tool is that it does not support any automatic recognition of entities. All annotations have to be
+done manually. This leads to a features that the tool could be applied on a wide range of languages. However, the 
+limitation leads to a fact that BRAT is merely an editor for annotating.
 
