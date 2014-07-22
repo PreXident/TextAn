@@ -3,25 +3,7 @@ package cz.cuni.mff.ufal.textan.core;
 import cz.cuni.mff.ufal.textan.commons.models.ObjectOccurrence;
 import cz.cuni.mff.ufal.textan.commons.models.RelationOccurrence;
 import cz.cuni.mff.ufal.textan.commons.models.UsernameToken;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetDocumentsContainingObjectByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetDocumentsContainingObjectByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetFilteredDocumentsRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetFilteredDocumentsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetFilteredObjectsRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetFilteredObjectsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetGraphByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetGraphByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectTypesResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsAndRelationsOccurringInDocumentRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsAndRelationsOccurringInDocumentResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelationTypesResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelationsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRolesForRelationTypeByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.MergeObjectsRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.MergeObjectsResponse;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Assignment;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest;
@@ -394,12 +376,12 @@ public class Client {
      */
     public synchronized Graph getGraph(final long centerId, final int distance)
             throws IdNotFoundException {
-        final GetGraphByIdRequest request = new GetGraphByIdRequest();
+        final GetGraphByObjectIdRequest request = new GetGraphByObjectIdRequest();
         request.setDistance(distance);
         request.setObjectId(centerId);
         try {
-            final GetGraphByIdResponse response =
-                    getDataProvider().getGraphById(request);
+            final GetGraphByObjectIdResponse response =
+                    getDataProvider().getGraphByObjectId(request);
             return new Graph(response.getGraph());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
