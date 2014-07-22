@@ -67,15 +67,25 @@ public abstract class ReportWizardController extends WindowController {
     }
 
     /**
+     * Informs controller that it is now in control of the container.
+     */
+    public void nowInControl() {
+        //nothing
+    }
+
+    /**
      * Simple convertor to provide labels to progress sliders.
      */
     protected static class SliderLabelFormatter extends StringConverter<Double> {
 
         /** Localization container. */
-        final ResourceBundle rb = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizard");
+        final protected ResourceBundle rb = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizard");
 
         @Override
         public String toString(Double val) {
+            if (val < 0.5) {
+                return Utils.localize(rb, "report.wizard.selectfile.label");
+            }
             if (val < 1.5) {
                 return Utils.localize(rb, "report.wizard.edit.label");
             }

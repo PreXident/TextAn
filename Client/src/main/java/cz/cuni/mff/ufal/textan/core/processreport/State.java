@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Entity;
+import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.FileType;
 import java.util.List;
 
 /**
@@ -67,6 +68,18 @@ public abstract class State {
     }
 
     /**
+     * Extracts text from bytes in fileType.
+     * @param pipeline pipeline delegating the request
+     * @param data file data
+     * @param fileType file's type
+     * @return
+     */
+    public String extractText(final ProcessReportPipeline pipeline,
+            final byte[] data, final FileType fileType) {
+        throw new IllegalStateException("Cannot select file as report data source when in state " + getType());
+    }
+
+    /**
      * Selects unfinished report as a source of the new report.
      * Available in {@link State.StateType#LOAD} state.
      * @param pipeline pipeline delegating the request
@@ -126,6 +139,8 @@ public abstract class State {
     public enum StateType {
         /** Selecting report source. Implemented by {@link LoadReportState}. */
         LOAD,
+        /** Selecting file with report. */
+        SELECT_FILE,
         /** Editing the report. Implemented by {@link ReportEditState}. */
         EDIT_REPORT,
         /** Editing the entities. Implemented by {@link ReportEntitiesState}. */

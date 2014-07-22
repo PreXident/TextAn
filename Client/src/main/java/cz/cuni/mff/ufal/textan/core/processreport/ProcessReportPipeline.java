@@ -3,13 +3,19 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.Ticket;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Represents pipeline handling processing documents.
@@ -19,10 +25,55 @@ public class ProcessReportPipeline {
     /** Separators delimiting words. */
     public static final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';', '!')));
 
+    /** Supported file types. */
+    public enum FileType {
+        TEXT_UTF8 {
+            @Override
+            public String extractText(byte[] data) {
+                return new String(data, StandardCharsets.UTF_8);
+            }
+        },
+        TEXT_CP1250 {
+            @Override
+            public String extractText(byte[] data) {
+                try {
+                    return new String(data, Charset.forName("windows-1250"));
+                } catch (Exception e) {
+                    return "";
+                }
+            }
+        };
+
+        /** Default mapping of extensions to FileTypes. */
+        private static final Map<String, FileType> extensions;
+
+        static {
+            final Map<String, FileType> result = new HashMap<>();
+            result.put("txt", TEXT_UTF8);
+            extensions = Collections.unmodifiableMap(result);
+        }
+
+        /**
+         * Returns default FileType for given extension.
+         * @param extension given extension
+         * @return default FileType for given extension or null if none available
+         */
+        public static FileType getForExtension(final String extension) {
+            return extensions.get(extension);
+        }
+
+        /**
+         * Extracts text from data.
+         * @param data data with encoded text
+         * @return text extracted from data
+         */
+        public abstract String extractText(byte[] data);
+    }
+
     /** Parent Client of the pipeline. */
     protected final Client client;
 
-    /** Report text. TOODO change test content to empty string */
+    /** Report text. TODO change test content to empty string */
     protected String reportText = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
 
     /** Report words. */
@@ -179,6 +230,16 @@ public class ProcessReportPipeline {
      */
     public void selectFileDatasource() {
         state.selectFileDatasource(this);
+    }
+
+    /**
+     * Extracts text from bytes in fileType.
+     * @param data file data
+     * @param fileType file's type
+     * @return
+     */
+    public String extractText(final byte[] data, final FileType fileType) {
+        return state.extractText(this, data, fileType);
     }
 
     /**

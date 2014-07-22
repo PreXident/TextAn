@@ -13,14 +13,18 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
-			fx:controller="cz.cuni.mff.ufal.textan.gui.reportwizard.ReportEditController" styleClass="root" >
+			fx:controller="cz.cuni.mff.ufal.textan.gui.reportwizard.SelectFileController" styleClass="root" >
 	<stylesheets >
-		<URL value="@02_ReportEdit.css" />
+		<URL value="@01a_SelectFile.css" />
 	</stylesheets>
+	<top>
+		<HBox alignment="CENTER" >
+			<Label text="%filetype" />
+			<ComboBox fx:id="typeComboBox" />
+		</HBox>
+	</top>
 	<center>
-		<!--<ScrollPane fx:id="scrollPane" >-->
-			<TextArea fx:id="textArea" wrapText="true"  />
-		<!--</ScrollPane>-->
+		<TextArea fx:id="textArea" wrapText="true" editable="false" />
 	</center>
 	<bottom>
 		<BorderPane>
@@ -28,7 +32,7 @@
 				<Button text="%back" onAction="#next" visible="false" />
 			</left>
 			<center>
-				<Slider fx:id="slider" min="1" max="4" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1" majorTickUnit="1" minorTickCount="0" />
+				<Slider fx:id="slider" min="0" max="4" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="0" majorTickUnit="1" minorTickCount="0" />
 			</center>
 			<right>
 				<Button text="%continue" onAction="#next"/>
