@@ -42,8 +42,11 @@
     <xs:element name="getRelationsByTypeIdRequest" type="GetRelationsByTypeIdRequest"/>
     <xs:element name="getRelationsByTypeIdResponse" type="GetRelationsByTypeIdResponse"/>
     
-    <xs:element name="getGraphByIdRequest" type="GetGraphByIdRequest"/>
-    <xs:element name="getGraphByIdResponse" type="GetGraphByIdResponse"/>
+    <xs:element name="getGraphByObjectIdRequest" type="GetGraphByObjectIdRequest"/>
+    <xs:element name="getGraphByObjectIdResponse" type="GetGraphByObjectIdResponse"/>
+
+    <xs:element name="getGraphByRelationIdRequest" type="GetGraphByRelationIdRequest"/>
+    <xs:element name="getGraphByRelationIdResponse" type="GetGraphByRelationIdResponse"/>
     
     <xs:element name="getRelatedObjectsByIdRequest" type="GetRelatedObjectsByIdRequest"/>
     <xs:element name="getRelatedObjectsByIdResponse" type="GetRelatedObjectsByIdResponse"/>
@@ -211,14 +214,27 @@
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="GetGraphByIdRequest">
+    <xs:complexType name="GetGraphByObjectIdRequest">
         <xs:sequence>
             <xs:element name="objectId" type="xs:long"/>
             <xs:element name="distance" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="GetGraphByIdResponse">
+    <xs:complexType name="GetGraphByObjectIdResponse">
+        <xs:sequence>
+            <xs:element ref="cms:graph"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetGraphByRelationIdRequest">
+        <xs:sequence>
+            <xs:element name="objectId" type="xs:long"/>
+            <xs:element name="distance" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetGraphByRelationIdResponse">
         <xs:sequence>
             <xs:element ref="cms:graph"/>
         </xs:sequence>

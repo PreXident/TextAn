@@ -40,7 +40,7 @@ public class GraphService {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public Graph getGraph(long objectId, int distance) throws IdNotFoundException {
+    public Graph getGraphFromObject(long objectId, int distance) throws IdNotFoundException {
         return getGraphInner(objectId, distance);
     }
 
@@ -48,10 +48,13 @@ public class GraphService {
         return getGraphInner(objectId, 1);
     }
 
+    public Graph getGraphFromRelation(long relationId, int distance) throws IdNotFoundException {
+
+        //TODO:implement
+        return null;
+    }
+
     private Graph getGraphInner(long objectId, int distance) throws IdNotFoundException {
-
-        //TODO implement properly
-
         List<Object> nodes = new ArrayList<Object>();
         List<Relation> edges = new ArrayList<Relation>();
 

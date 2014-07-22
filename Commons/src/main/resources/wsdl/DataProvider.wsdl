@@ -114,12 +114,20 @@
         <wsdl:part name="getRelationsByTypeIdResponse" element="tns:getRelationsByTypeIdResponse"/>
     </wsdl:message>
     
-    <wsdl:message name="getGraphByIdRequest">
-        <wsdl:part name="getGraphByIdRequest" element="tns:getGraphByIdRequest"/>
+    <wsdl:message name="getGraphByObjectIdRequest">
+        <wsdl:part name="getGraphByObjectIdRequest" element="tns:getGraphByObjectIdRequest"/>
     </wsdl:message>
     
-    <wsdl:message name="getGraphByIdResponse">
-        <wsdl:part name="getGraphByIdResponse" element="tns:getGraphByIdResponse"/>
+    <wsdl:message name="getGraphByObjectIdResponse">
+        <wsdl:part name="getGraphByObjectIdResponse" element="tns:getGraphByObjectIdResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getGraphByRelationIdRequest">
+        <wsdl:part name="getGraphByRelationIdRequest" element="tns:getGraphByRelationIdRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getGraphByRelationIdResponse">
+        <wsdl:part name="getGraphByRelationIdResponse" element="tns:getGraphByRelationIdResponse"/>
     </wsdl:message>
     
     <wsdl:message name="getRelatedObjectsByIdRequest">
@@ -291,9 +299,15 @@
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
-        <wsdl:operation name="getGraphById">
-            <wsdl:input message="ws:getGraphByIdRequest"/>
-            <wsdl:output message="ws:getGraphByIdResponse"/>            
+        <wsdl:operation name="getGraphByObjectId">
+            <wsdl:input message="ws:getGraphByObjectIdRequest"/>
+            <wsdl:output message="ws:getGraphByObjectIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getGraphByRelationId">
+            <wsdl:input message="ws:getGraphByRelationIdRequest"/>
+            <wsdl:output message="ws:getGraphByRelationIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
@@ -521,14 +535,28 @@
             </wsdl:fault>
         </wsdl:operation>
     
-        <wsdl:operation name="getGraphById">
-            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getGraphById"/>
+        <wsdl:operation name="getGraphByObjectId">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getGraphByObjectId"/>
             <wsdl:input>
-                <soap:body parts="getGraphByIdRequest" use="literal"/>
+                <soap:body parts="getGraphByObjectIdRequest" use="literal"/>
                 <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body parts="getGraphByIdResponse" use="literal"/>
+                <soap:body parts="getGraphByObjectIdResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getGraphByRelationId">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getGraphByRelationId"/>
+            <wsdl:input>
+                <soap:body parts="getGraphByRelationIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getGraphByRelationIdResponse" use="literal"/>
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>

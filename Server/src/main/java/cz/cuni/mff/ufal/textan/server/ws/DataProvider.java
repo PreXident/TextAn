@@ -147,6 +147,31 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
+    public GetGraphByRelationIdResponse getGraphByRelationId(
+            @WebParam(partName = "getGraphByRelationIdRequest", name = "getGraphByRelationIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetGraphByRelationIdRequest getGraphByRelationIdRequest) throws IdNotFoundException {
+
+        LOG.info("Executing operation getGraphByRelationId: {}", getGraphByRelationIdRequest);
+
+        try {
+            GetGraphByRelationIdResponse response = new GetGraphByRelationIdResponse();
+            Graph graph = graphService.getGraphFromRelation(getGraphByRelationIdRequest.getObjectId(), getGraphByRelationIdRequest.getDistance());
+            response.setGraph(graph.toCommonsGraph());
+
+            LOG.info("Executed operation getGraphById: {}", response);
+            return response;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getGraphById.", e);
+
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
     public GetFilteredObjectsResponse getFilteredObjects(
             @WebParam(partName = "getFilteredObjectsRequest", name = "getFilteredObjectsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetFilteredObjectsRequest getFilteredObjectsRequest) throws IdNotFoundException {
@@ -200,15 +225,15 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
-    public GetGraphByIdResponse getGraphById(
+    public GetGraphByObjectIdResponse getGraphByObjectId(
             @WebParam(partName = "getGraphById", name = "getGraphById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetGraphByIdRequest getGraphByIdRequest) throws IdNotFoundException {
+            GetGraphByObjectIdRequest getGraphByObjectIdRequest) throws IdNotFoundException {
 
-        LOG.info("Executing operation getGraphById: {}", getGraphByIdRequest);
+        LOG.info("Executing operation getGraphByObjectId: {}", getGraphByObjectIdRequest);
 
         try {
-            GetGraphByIdResponse response = new GetGraphByIdResponse();
-            Graph graph = graphService.getGraph(getGraphByIdRequest.getObjectId(), getGraphByIdRequest.getDistance());
+            GetGraphByObjectIdResponse response = new GetGraphByObjectIdResponse();
+            Graph graph = graphService.getGraphFromObject(getGraphByObjectIdRequest.getObjectId(), getGraphByObjectIdRequest.getDistance());
             response.setGraph(graph.toCommonsGraph());
 
             LOG.info("Executed operation getGraphById: {}", response);
