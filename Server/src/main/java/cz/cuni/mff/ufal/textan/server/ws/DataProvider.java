@@ -388,6 +388,43 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
+    public GetDocumentsContainingRelationByIdResponse getDocumentsContainingRelationById(
+            @WebParam(partName = "getDocumentsContainingRelationByIdRequest", name = "getDocumentsContainingRelationByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetDocumentsContainingRelationByIdRequest getDocumentsContainingRelationByIdRequest) throws IdNotFoundException {
+
+        LOG.info("Executing operation getDocumentsContainingRelationById: {}", getDocumentsContainingRelationByIdRequest);
+
+        try {
+
+            GetDocumentsContainingRelationByIdResponse response = new GetDocumentsContainingRelationByIdResponse();
+            Pair<List<Pair<Document, Integer>>, Integer> documents = dbService.getDocumentsContainingRelation(
+                    getDocumentsContainingRelationByIdRequest.getRelationId(),
+                    getDocumentsContainingRelationByIdRequest.getFirstResult(),
+                    getDocumentsContainingRelationByIdRequest.getMaxResults()
+            );
+            for (Pair<Document, Integer> documentCountPair : documents.getFirst()) {
+                GetDocumentsContainingRelationByIdResponse.DocumentCountPair pair = new GetDocumentsContainingRelationByIdResponse.DocumentCountPair();
+                pair.setDocument(documentCountPair.getFirst().toCommonsDocument());
+                pair.setCountOfOccurrences(documentCountPair.getSecond());
+                response.getDocumentCountPairs().add(pair);
+            }
+            response.setTotalNumberOfResults(documents.getSecond());
+
+            LOG.info("Executed operation getDocumentsContainingRelationById: {}", response);
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getDocumentsContainingRelationById.", e);
+
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
     public SplitObjectResponse splitObject(
             @WebParam(partName = "splitObject", name = "splitObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             SplitObjectRequest splitObjectRequest) throws IdNotFoundException {

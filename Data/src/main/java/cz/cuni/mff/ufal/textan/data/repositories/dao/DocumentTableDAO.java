@@ -74,20 +74,40 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
     }
 
     @Override
-    public List<DocumentTable> findAllDocumentsWithRelation(RelationTable relation) {
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(RelationTable relation) {
         return findAllDocumentsWithRelation(relation.getId());
+    }
+
+    private Query findAllDocumentsWithRelationQuery(long relationId) {
+        Query hq = currentSession().createQuery(
+                "select doc, count(occ) as num from DocumentTable as doc "
+                        + "inner join doc.relationOccurrences as occ "
+                        + "inner join occ.relation rel "
+                        +"where rel.id = :relationId "
+                        + "group by doc.id "
+                        + "order by num desc"
+        );
+        hq.setParameter("relationId", relationId);
+
+        return hq;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<DocumentTable> findAllDocumentsWithRelation(Long relationId) {
-        return findAllCriteria()
-            .createAlias(getAliasPropertyName(DocumentTable.PROPERTY_NAME_RELATION_OCCURRENCES), "relOccurrence", JoinType.INNER_JOIN)
-            .createAlias(DAOUtils.getAliasPropertyName("relOccurrence", RelationOccurrenceTable.PROPERTY_NAME_RELATION),
-                         "relation", JoinType.INNER_JOIN)
-            .add(Restrictions.eq(DAOUtils.getAliasPropertyName("relation", RelationTable.PROPERTY_NAME_ID),
-                                 relationId))
-            .list();
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(long relationId) {
+        List<Object[]> result = findAllDocumentsWithRelationQuery(relationId).list();
+        return result.stream()
+                .map(x ->  new Pair<>((DocumentTable) x[0], ((Long)x[1]).intValue()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(long relationId, int firstResult, int maxResults) {
+        List<Object[]> result = addPagination(findAllDocumentsWithRelationQuery(relationId), firstResult, maxResults).list();
+        return result.stream()
+                .map(x ->  new Pair<>((DocumentTable) x[0], ((Long)x[1]).intValue()))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -288,9 +288,9 @@ public class DAOTest {
     
     @Test
     public void documentFindAllDocumentsWithRelationTest() {
-        List<DocumentTable> res = documentTableDAO.findAllDocumentsWithRelation(withRelation);
-        for (DocumentTable objectTable : res) {
-            if (objectTable.equals(document))
+        List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithRelation(withRelation);
+        for (Pair<DocumentTable, Integer> relationTableCountPair : res) {
+            if (relationTableCountPair.getFirst().equals(document))
                 return;
         }
         assertTrue("Document not found", false);

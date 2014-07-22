@@ -56,14 +56,15 @@ public interface IDocumentTableDAO extends IOperations<DocumentTable, Long> {
      * @param relation
      * @return 
      */
-    List<DocumentTable> findAllDocumentsWithRelation(RelationTable relation);
+    List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(RelationTable relation);
     /**
      * finds all documents in which is occurred specified relation
      * 
      * @param relationId id of the relation
      * @return 
      */
-    List<DocumentTable> findAllDocumentsWithRelation(Long relationId);
+    List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(long relationId);
+    List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(long relationId, int firstResult, int maxResults);
 
     List<DocumentTable> findAllDocumentsByFullText(String pattern);
     List<DocumentTable> findAllDocumentsByFullText(String pattern, int firstResult, int maxResults);
