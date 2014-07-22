@@ -1,0 +1,27 @@
+Venca is missing. Kuba is guard in summer camp.
+
+Adam:
+- username change now in effect after restart
+- it is no longer possible to join objects with different types
+- added option to load new report from text file
+
+Tam:
+- continue with adding features
+- documentation progress!
+
+Peter:
+- added quite a lot of methods needed in client
+
+HWK
+- Adam, Joining objects needs minimal size set
+- Adam, pagination should use "table" layout - 1 of 1 in the same line as |<<, < etc.
+- Adam, Per page label needs margins
+- Adam, use new sever services instead of temporary emulation (getdoccontrelbyid without filtering, getGraphById renamed and added relation graph)
+- Adam, selecting db as source of report should skip the edit part
+- Adam, add wizard to just add documents for processing later
+- Adam, add wizard to change unprocessed documents
+- Adam, check if java 8 update 11 improves some linux related bugs
+- Peter, throw DocumentChange exceptions from pipeline methods using document id
+- Peter & Adam, check Tam's part of the documentation, we need to find consensus how the documentation should look like
+
+Next meeting on Friday from 16:30.
