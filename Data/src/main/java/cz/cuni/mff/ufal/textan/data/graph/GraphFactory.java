@@ -83,6 +83,7 @@ public class GraphFactory {
 
     public Graph getGraphFromRelation(long relationId, int depth) {
         Session s = sessionFactory.getCurrentSession();
+        @SuppressWarnings("unchecked")
         List<Node> res = s.createQuery(
                 "select new Node(obj.id, obj.data) "
                         + " from ObjectTable obj"
