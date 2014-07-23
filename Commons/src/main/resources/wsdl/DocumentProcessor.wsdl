@@ -114,6 +114,10 @@
     <wsdl:message name="idNotFoundException">
         <wsdl:part name="idNotFoundException" element="cms:idNotFoundException"/>
     </wsdl:message>
+
+    <wsdl:message name="documentChanged">
+        <wsdl:part name="documentChanged" element="tns:documentChanged"/>
+    </wsdl:message>
     
     <wsdl:portType name="DocumentProcessor">
         
@@ -131,6 +135,7 @@
             <wsdl:input message="ws:getEntitiesByIdRequest"/>
             <wsdl:output message="ws:getEntitiesByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+            <wsdl:fault name="documentChanged" message="ws:documentChanged"/>
         </wsdl:operation>
         
         <wsdl:operation name="getAssignmentsFromString">
@@ -142,6 +147,7 @@
             <wsdl:input message="ws:getAssignmentsByIdRequest"/>
             <wsdl:output message="ws:getAssignmentsByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+            <wsdl:fault name="documentChanged" message="ws:documentChanged"/>
         </wsdl:operation>
         
         <wsdl:operation name="saveProcessedDocumentFromString">
@@ -154,6 +160,7 @@
             <wsdl:input message="ws:saveProcessedDocumentByIdRequest"/>
             <wsdl:output message="ws:saveProcessedDocumentByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+            <wsdl:fault name="documentChanged" message="ws:documentChanged"/>
         </wsdl:operation>
 
         <wsdl:operation name="getProblems">
@@ -213,6 +220,9 @@
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal" />
             </wsdl:fault>
+            <wsdl:fault name="documentChanged">
+                <soap:fault name="documentChanged" use="literal" />
+            </wsdl:fault>
         </wsdl:operation>
         
         <wsdl:operation name="getAssignmentsFromString">
@@ -239,6 +249,9 @@
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal" />
+            </wsdl:fault>
+            <wsdl:fault name="documentChanged">
+                <soap:fault name="documentChanged" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         
@@ -269,6 +282,9 @@
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal" />
+            </wsdl:fault>
+            <wsdl:fault name="documentChanged">
+                <soap:fault name="documentChanged" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
 

@@ -3,7 +3,8 @@ package cz.cuni.mff.ufal.textan.server.ws;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
+import cz.cuni.mff.ufal.textan.commons.ws.*;
+import cz.cuni.mff.ufal.textan.commons.ws.DocumentChanged;
 import cz.cuni.mff.ufal.textan.server.models.Assignment;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
@@ -75,7 +76,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "saveProcessedDocumentById", name = "saveProcessedDocumentById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             SaveProcessedDocumentByIdRequest saveProcessedDocumentByIdRequest,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
-            EditingTicket editingTicket) throws IdNotFoundException {
+            EditingTicket editingTicket) throws DocumentChanged, IdNotFoundException {
 
         LOG.info("Executing operation saveProcessedDocumentById: {} {}", saveProcessedDocumentByIdRequest, editingTicket);
 
@@ -143,7 +144,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "getAssignmentsById", name = "getAssignmentsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             GetAssignmentsByIdRequest getAssignmentsByIdRequest,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
-            EditingTicket editingTicket) throws IdNotFoundException {
+            EditingTicket editingTicket) throws DocumentChanged, IdNotFoundException {
 
         LOG.info("Executing operation getObjectsById: {} {}", getAssignmentsByIdRequest, editingTicket);
 
@@ -201,7 +202,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "getEntitiesById", name = "getEntitiesById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             GetEntitiesByIdRequest getEntitiesByIdRequest,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
-            EditingTicket editingTicket) throws IdNotFoundException {
+            EditingTicket editingTicket) throws DocumentChanged, IdNotFoundException {
 
         LOG.info("Executing operation getEntitiesById: {} {}", getEntitiesByIdRequest, editingTicket);
 
