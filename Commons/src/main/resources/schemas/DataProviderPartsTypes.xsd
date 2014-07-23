@@ -35,6 +35,9 @@
 
     <xs:element name="getRelationsRequest" type="Void"/>
     <xs:element name="getRelationsResponse" type="GetRelationsResponse"/>
+
+    <xs:element name="getFilteredRelationsRequest" type="GetFilteredRelationsRequest"/>
+    <xs:element name="getFilteredRelationsResponse" type="GetFilteredRelationsResponse"/>
     
     <!--<xs:element name="getRelationsByType" type="GetRelationsByType"/>-->
     <!--<xs:element name="getRelationsByTypeResponse" type="GetRelationsByTypeResponse"/>-->
@@ -189,6 +192,21 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="GetFilteredRelationsRequest">
+        <xs:sequence>
+            <xs:element name="relationTypeId" type="xs:long" nillable="true"/>
+            <xs:element name="anchorFilter" type="xs:string" nillable="true"/>
+            <xs:element name="firstResult" type="xs:int"/>
+            <xs:element name="maxResults" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetFilteredRelationsResponse">
+        <xs:sequence>
+            <xs:element name="totalNumberOfResults" type="xs:int"/>
+            <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
     
     <!--<xs:complexType name="GetRelationsByType">
         <xs:sequence>

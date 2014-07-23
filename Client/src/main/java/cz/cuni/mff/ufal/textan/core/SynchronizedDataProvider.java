@@ -60,6 +60,13 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
+    public GetFilteredRelationsResponse getFilteredRelations(
+            final GetFilteredRelationsRequest getFilteredRelationsRequest)
+            throws IdNotFoundException {
+        return innerDP.getFilteredRelations(getFilteredRelationsRequest);
+    }
+
+    @Override
     synchronized public GetFilteredObjectsResponse getFilteredObjects(
             final GetFilteredObjectsRequest getFilteredObjectsRequest)
             throws IdNotFoundException {

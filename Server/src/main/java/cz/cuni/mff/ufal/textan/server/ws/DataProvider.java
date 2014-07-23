@@ -172,6 +172,17 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
+    public GetFilteredRelationsResponse getFilteredRelations(
+            @WebParam(partName = "getFilteredRelationsRequest", name = "getFilteredRelationsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetFilteredRelationsRequest getFilteredRelationsRequest) throws IdNotFoundException {
+
+        LOG.info("Executing operation getFilteredRelations: {}", getFilteredRelationsRequest);
+        GetFilteredRelationsResponse response = new GetFilteredRelationsResponse();  //TODO: implement
+        LOG.info("Executed operation getFilteredRelations: {}", response);
+        return response;
+    }
+
+    @Override
     public GetFilteredObjectsResponse getFilteredObjects(
             @WebParam(partName = "getFilteredObjectsRequest", name = "getFilteredObjectsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetFilteredObjectsRequest getFilteredObjectsRequest) throws IdNotFoundException {
