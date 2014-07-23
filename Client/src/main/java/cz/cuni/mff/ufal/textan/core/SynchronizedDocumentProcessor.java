@@ -52,7 +52,7 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
     }
 
     @Override
-    public GetProblemsResponse getProblems(
+    synchronized public GetProblemsResponse getProblems(
             final GetProblemsRequest getProblemsRequest,
             final EditingTicket editingTicket) {
         return innerDP.getProblems(getProblemsRequest, editingTicket);

@@ -53,14 +53,14 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
-    public GetGraphByRelationIdResponse getGraphByRelationId(
+    synchronized public GetGraphByRelationIdResponse getGraphByRelationId(
             final GetGraphByRelationIdRequest getGraphByRelationIdRequest)
             throws IdNotFoundException {
         return innerDP.getGraphByRelationId(getGraphByRelationIdRequest);
     }
 
     @Override
-    public GetFilteredRelationsResponse getFilteredRelations(
+    synchronized public GetFilteredRelationsResponse getFilteredRelations(
             final GetFilteredRelationsRequest getFilteredRelationsRequest)
             throws IdNotFoundException {
         return innerDP.getFilteredRelations(getFilteredRelationsRequest);
@@ -127,7 +127,7 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
-    public GetDocumentsContainingRelationByIdResponse getDocumentsContainingRelationById(
+    synchronized public GetDocumentsContainingRelationByIdResponse getDocumentsContainingRelationById(
             final GetDocumentsContainingRelationByIdRequest getDocumentsContainingRelationByIdRequest)
             throws IdNotFoundException {
         return innerDP.getDocumentsContainingRelationById(getDocumentsContainingRelationByIdRequest);
