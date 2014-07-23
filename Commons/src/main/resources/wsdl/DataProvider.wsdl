@@ -218,12 +218,28 @@
         <wsdl:part name="getDocumentsContainingObjectByIdResponse" element="tns:getDocumentsContainingObjectByIdResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="getFilteredDocumentsContainingObjectByIdRequest">
+        <wsdl:part name="getFilteredDocumentsContainingObjectByIdRequest" element="tns:getFilteredDocumentsContainingObjectByIdRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getFilteredDocumentsContainingObjectByIdResponse">
+        <wsdl:part name="getFilteredDocumentsContainingObjectByIdResponse" element="tns:getFilteredDocumentsContainingObjectByIdResponse"/>
+    </wsdl:message>
+
     <wsdl:message name="getDocumentsContainingRelationByIdRequest">
         <wsdl:part name="getDocumentsContainingRelationByIdRequest" element="tns:getDocumentsContainingRelationByIdRequest"/>
     </wsdl:message>
 
     <wsdl:message name="getDocumentsContainingRelationByIdResponse">
         <wsdl:part name="getDocumentsContainingRelationByIdResponse" element="tns:getDocumentsContainingRelationByIdResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getFilteredDocumentsContainingRelationByIdRequest">
+        <wsdl:part name="getFilteredDocumentsContainingRelationByIdRequest" element="tns:getFilteredDocumentsContainingRelationByIdRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getFilteredDocumentsContainingRelationByIdResponse">
+        <wsdl:part name="getFilteredDocumentsContainingRelationByIdResponse" element="tns:getFilteredDocumentsContainingRelationByIdResponse"/>
     </wsdl:message>
 
 
@@ -382,9 +398,21 @@
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
 
+        <wsdl:operation name="getFilteredDocumentsContainingObjectById">
+            <wsdl:input message="ws:getFilteredDocumentsContainingObjectByIdRequest"/>
+            <wsdl:output message="ws:getFilteredDocumentsContainingObjectByIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+        </wsdl:operation>
+
         <wsdl:operation name="getDocumentsContainingRelationById">
             <wsdl:input message="ws:getDocumentsContainingRelationByIdRequest"/>
             <wsdl:output message="ws:getDocumentsContainingRelationByIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getFilteredDocumentsContainingRelationById">
+            <wsdl:input message="ws:getFilteredDocumentsContainingRelationByIdRequest"/>
+            <wsdl:output message="ws:getFilteredDocumentsContainingRelationByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
 
@@ -722,6 +750,20 @@
             </wsdl:fault>
         </wsdl:operation>
 
+        <wsdl:operation name="getFilteredDocumentsContainingObjectById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getFilteredDocumentsContainingObjectById"/>
+            <wsdl:input>
+                <soap:body parts="getFilteredDocumentsContainingObjectByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getFilteredDocumentsContainingObjectByIdResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
         <wsdl:operation name="getDocumentsContainingRelationById">
             <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getDocumentsContainingRelationById"/>
             <wsdl:input>
@@ -730,6 +772,20 @@
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getDocumentsContainingRelationByIdResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getFilteredDocumentsContainingRelationById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DataProvider/getFilteredDocumentsContainingRelationById"/>
+            <wsdl:input>
+                <soap:body parts="getFilteredDocumentsContainingRelationByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getFilteredDocumentsContainingRelationByIdResponse" use="literal"/>
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>

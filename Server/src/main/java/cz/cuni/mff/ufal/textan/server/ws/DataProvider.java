@@ -261,6 +261,18 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
+    public GetFilteredDocumentsContainingObjectByIdResponse getFilteredDocumentsContainingObjectById(
+            @WebParam(partName = "getFilteredDocumentsContainingObjectByIdRequest", name = "getFilteredDocumentsContainingObjectByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetFilteredDocumentsContainingObjectByIdRequest getFilteredDocumentsContainingObjectByIdRequest) throws IdNotFoundException {
+
+        //TODO: implement
+        LOG.info("Executing operation getFilteredDocumentsContainingObjectById: {}", getFilteredDocumentsContainingObjectByIdRequest);
+        GetFilteredDocumentsContainingObjectByIdResponse response = new GetFilteredDocumentsContainingObjectByIdResponse();
+        LOG.info("Executed operation getFilteredDocumentsContainingObjectById: {}", response);
+        return response;
+    }
+
+    @Override
     public GetRelatedObjectsByIdResponse getRelatedObjectsById(
             @WebParam(partName = "getRelatedObjectsById", name = "getRelatedObjectsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetRelatedObjectsByIdRequest getRelatedObjectsByIdRequest)
@@ -595,6 +607,18 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         response.setTotalNumberOfResults(documents.getSecond());
 
         LOG.info("Executed operation getFilteredDocuments: {}", response);
+        return response;
+    }
+
+    @Override
+    public GetFilteredDocumentsContainingRelationByIdResponse getFilteredDocumentsContainingRelationById(
+            @WebParam(partName = "getFilteredDocumentsContainingRelationByIdRequest", name = "getFilteredDocumentsContainingRelationByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetFilteredDocumentsContainingRelationByIdRequest getFilteredDocumentsContainingRelationByIdRequest) throws IdNotFoundException {
+
+        //TODO implement
+        LOG.info("Executing operation getFilteredDocumentsContainingRelationById: {}", getFilteredDocumentsContainingRelationByIdRequest);
+        GetFilteredDocumentsContainingRelationByIdResponse response = new GetFilteredDocumentsContainingRelationByIdResponse();
+        LOG.info("Executed operation getFilteredDocumentsContainingRelationById: {}", response);
         return response;
     }
 

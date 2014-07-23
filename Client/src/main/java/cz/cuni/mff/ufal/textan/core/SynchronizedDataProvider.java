@@ -87,6 +87,13 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
+    synchronized public GetFilteredDocumentsContainingObjectByIdResponse getFilteredDocumentsContainingObjectById(
+            final GetFilteredDocumentsContainingObjectByIdRequest getFilteredDocumentsContainingObjectByIdRequest)
+            throws IdNotFoundException {
+        return innerDP.getFilteredDocumentsContainingObjectById(getFilteredDocumentsContainingObjectByIdRequest);
+    }
+
+    @Override
     synchronized public GetRelatedObjectsByIdResponse getRelatedObjectsById(
             final GetRelatedObjectsByIdRequest getRelatedObjectsByIdRequest)
             throws IdNotFoundException {
@@ -162,6 +169,13 @@ public class SynchronizedDataProvider implements IDataProvider {
     synchronized public GetFilteredDocumentsResponse getFilteredDocuments(
             final GetFilteredDocumentsRequest getFilteredDocumentsRequest) {
         return innerDP.getFilteredDocuments(getFilteredDocumentsRequest);
+    }
+
+    @Override
+    synchronized public GetFilteredDocumentsContainingRelationByIdResponse getFilteredDocumentsContainingRelationById(
+            final GetFilteredDocumentsContainingRelationByIdRequest getFilteredDocumentsContainingRelationByIdRequest)
+            throws IdNotFoundException {
+        return innerDP.getFilteredDocumentsContainingRelationById(getFilteredDocumentsContainingRelationByIdRequest);
     }
 
     @Override

@@ -81,8 +81,14 @@
     <xs:element name="getDocumentsContainingObjectByIdRequest" type="GetDocumentsContainingObjectByIdRequest"/>
     <xs:element name="getDocumentsContainingObjectByIdResponse" type="GetDocumentsContainingObjectByIdResponse"/>
 
+    <xs:element name="getFilteredDocumentsContainingObjectByIdRequest" type="GetFilteredDocumentsContainingObjectByIdRequest"/>
+    <xs:element name="getFilteredDocumentsContainingObjectByIdResponse" type="GetFilteredDocumentsContainingObjectByIdResponse"/>
+
     <xs:element name="getDocumentsContainingRelationByIdRequest" type="GetDocumentsContainingRelationByIdRequest"/>
     <xs:element name="getDocumentsContainingRelationByIdResponse" type="GetDocumentsContainingRelationByIdResponse"/>
+
+    <xs:element name="getFilteredDocumentsContainingRelationByIdRequest" type="GetFilteredDocumentsContainingRelationByIdRequest"/>
+    <xs:element name="getFilteredDocumentsContainingRelationByIdResponse" type="GetFilteredDocumentsContainingRelationByIdResponse"/>
 
     <xs:element name="getObjectsAndRelationsOccurringInDocumentRequest" type="GetObjectsAndRelationsOccurringInDocumentRequest"/>
     <xs:element name="getObjectsAndRelationsOccurringInDocumentResponse" type="GetObjectsAndRelationsOccurringInDocumentResponse"/>
@@ -398,6 +404,29 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="GetFilteredDocumentsContainingObjectByIdRequest">
+        <xs:sequence>
+            <xs:element name="objectId" type="xs:long" />
+            <xs:element name="pattern" type="xs:string"/>
+            <xs:element name="firstResult" type="xs:int"/>
+            <xs:element name="maxResults" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetFilteredDocumentsContainingObjectByIdResponse">
+        <xs:sequence>
+            <xs:element name="totalNumberOfResults" type="xs:int"/>
+            <xs:element name="documentCountPair" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="cms:document"/>
+                        <xs:element name="countOfOccurrences" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="GetDocumentsContainingRelationByIdRequest">
         <xs:sequence>
             <xs:element name="relationId" type="xs:long" />
@@ -407,6 +436,29 @@
     </xs:complexType>
 
     <xs:complexType name="GetDocumentsContainingRelationByIdResponse">
+        <xs:sequence>
+            <xs:element name="totalNumberOfResults" type="xs:int"/>
+            <xs:element name="documentCountPair" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="cms:document"/>
+                        <xs:element name="countOfOccurrences" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetFilteredDocumentsContainingRelationByIdRequest">
+        <xs:sequence>
+            <xs:element name="relationId" type="xs:long" />
+            <xs:element name="pattern" type="xs:string"/>
+            <xs:element name="firstResult" type="xs:int"/>
+            <xs:element name="maxResults" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetFilteredDocumentsContainingRelationByIdResponse">
         <xs:sequence>
             <xs:element name="totalNumberOfResults" type="xs:int"/>
             <xs:element name="documentCountPair" minOccurs="0" maxOccurs="unbounded">
