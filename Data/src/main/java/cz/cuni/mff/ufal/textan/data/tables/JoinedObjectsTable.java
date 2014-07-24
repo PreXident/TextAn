@@ -17,12 +17,15 @@ import java.util.Objects;
 @Entity
 @Table(name = "JoinedObjects")
 public class JoinedObjectsTable extends AbstractTable {
+    public static final String PROPERTY_NAME_GLOBAL_VERSION = "globalVersion";
+    
     private long id;
     private Date from;
     private Date to;
     private ObjectTable newObject;
     private ObjectTable oldObject1;
     private ObjectTable oldObject2;
+    private long globalVersion;
 
     public JoinedObjectsTable() {
     }
@@ -116,6 +119,15 @@ public class JoinedObjectsTable extends AbstractTable {
     public void setOldObject2(ObjectTable oldObject2) {
         this.oldObject2 = oldObject2;
     }
+  
+    @Column(name = "globalversion", nullable = false)
+    public long getGlobalVersion() {
+        return globalVersion;
+    }
+
+    public void setGlobalVersion(long globalVersion) {
+        this.globalVersion = globalVersion;
+    }
 
     @Override
     public int hashCode() {
@@ -142,6 +154,8 @@ public class JoinedObjectsTable extends AbstractTable {
 
     @Override
     public String toString() {
-        return "JoinedObjectsTable{" + "id=" + id + ", from=" + from + ", to=" + to + ", newObject=" + newObject + ", oldObject1=" + oldObject1 + ", oldObject2=" + oldObject2 + '}';
+        return "JoinedObjectsTable{" + "id=" + id + ", globalVersion=" + globalVersion + ", from=" + from + ", to=" + to + ", newObject=" + newObject + ", oldObject1=" + oldObject1 + ", oldObject2=" + oldObject2 + '}';
     }
+
+
 }

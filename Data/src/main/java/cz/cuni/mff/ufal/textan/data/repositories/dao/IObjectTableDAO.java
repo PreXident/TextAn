@@ -75,7 +75,7 @@ public interface IObjectTableDAO extends IObjectRelationDAO<ObjectTable> {
     /**
      * finds all object newer or equal from specified version
      * 
-     * @param version global version which auto increments with object creation or update
+     * @param version global version which auto increments with object creation
      * @return 
      */
     List<ObjectTable> findAllSinceGlobalVersion(long version);   

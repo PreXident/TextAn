@@ -153,6 +153,22 @@ public class DirectDataAccessService {
         return new Pair<>(documents, count);
     }
 
+
+
+    public Pair<List<Pair<Document, Integer>>, Integer> getDocumentsContainingRelation(long relationId, int firstResult, int maxResults) throws IdNotFoundException {
+        RelationTable relationTable = relationTableDAO.find(relationId);
+        if (relationTable == null) {
+            throw new IdNotFoundException("relationId", relationId);
+        }
+
+        int count = documentTableDAO.findAllDocumentsWithRelation(relationId).size();
+        List<Pair<Document, Integer>> documents = documentTableDAO.findAllDocumentsWithRelation(relationId, firstResult, maxResults).stream()
+                .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
+                .collect(Collectors.toList());
+
+        return new Pair<>(documents, count);
+    }
+
     /**
      * Update the document with the given.
      *

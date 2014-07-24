@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,11 @@ public class Relation {
                 .map(inRelation -> new Pair<>(inRelation.getObject().getId(), new Pair<>(inRelation.getRole(), inRelation.getOrder())))
                 .collect(Collectors.toList());
 
+//        List<String> anchors = new ArrayList<>(relationTable.getOccurrences().stream()
+//                .map(RelationOccurrenceTable::getAnchor)
+//                .collect(Collectors.toSet()));
+
+        //TODO: test if this is unique (distinct)
         List<String> anchors = relationTable.getOccurrences().stream()
                 .map(RelationOccurrenceTable::getAnchor)
                 .collect(Collectors.toList());
@@ -138,6 +144,7 @@ public class Relation {
             objectInRelationIds.getInRelations().add(commonsInRelation);
         }
         commonsRelation.setObjectInRelationIds(objectInRelationIds);
+        commonsRelation.getAnchors().addAll(anchors);
 
         commonsRelation.setIsNew(isNew);
 

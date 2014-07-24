@@ -147,6 +147,42 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
+    public GetGraphByRelationIdResponse getGraphByRelationId(
+            @WebParam(partName = "getGraphByRelationIdRequest", name = "getGraphByRelationIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetGraphByRelationIdRequest getGraphByRelationIdRequest) throws IdNotFoundException {
+
+        LOG.info("Executing operation getGraphByRelationId: {}", getGraphByRelationIdRequest);
+
+        try {
+            GetGraphByRelationIdResponse response = new GetGraphByRelationIdResponse();
+            Graph graph = graphService.getGraphFromRelation(getGraphByRelationIdRequest.getObjectId(), getGraphByRelationIdRequest.getDistance());
+            response.setGraph(graph.toCommonsGraph());
+
+            LOG.info("Executed operation getGraphById: {}", response);
+            return response;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getGraphById.", e);
+
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
+    public GetFilteredRelationsResponse getFilteredRelations(
+            @WebParam(partName = "getFilteredRelationsRequest", name = "getFilteredRelationsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetFilteredRelationsRequest getFilteredRelationsRequest) throws IdNotFoundException {
+
+        LOG.info("Executing operation getFilteredRelations: {}", getFilteredRelationsRequest);
+        GetFilteredRelationsResponse response = new GetFilteredRelationsResponse();  //TODO: implement
+        LOG.info("Executed operation getFilteredRelations: {}", response);
+        return response;
+    }
+
+    @Override
     public GetFilteredObjectsResponse getFilteredObjects(
             @WebParam(partName = "getFilteredObjectsRequest", name = "getFilteredObjectsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetFilteredObjectsRequest getFilteredObjectsRequest) throws IdNotFoundException {
@@ -200,15 +236,15 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
-    public GetGraphByIdResponse getGraphById(
+    public GetGraphByObjectIdResponse getGraphByObjectId(
             @WebParam(partName = "getGraphById", name = "getGraphById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetGraphByIdRequest getGraphByIdRequest) throws IdNotFoundException {
+            GetGraphByObjectIdRequest getGraphByObjectIdRequest) throws IdNotFoundException {
 
-        LOG.info("Executing operation getGraphById: {}", getGraphByIdRequest);
+        LOG.info("Executing operation getGraphByObjectId: {}", getGraphByObjectIdRequest);
 
         try {
-            GetGraphByIdResponse response = new GetGraphByIdResponse();
-            Graph graph = graphService.getGraph(getGraphByIdRequest.getObjectId(), getGraphByIdRequest.getDistance());
+            GetGraphByObjectIdResponse response = new GetGraphByObjectIdResponse();
+            Graph graph = graphService.getGraphFromObject(getGraphByObjectIdRequest.getObjectId(), getGraphByObjectIdRequest.getDistance());
             response.setGraph(graph.toCommonsGraph());
 
             LOG.info("Executed operation getGraphById: {}", response);
@@ -222,6 +258,18 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
             throw new IdNotFoundException(e.getMessage(), exceptionBody);
         }
+    }
+
+    @Override
+    public GetFilteredDocumentsContainingObjectByIdResponse getFilteredDocumentsContainingObjectById(
+            @WebParam(partName = "getFilteredDocumentsContainingObjectByIdRequest", name = "getFilteredDocumentsContainingObjectByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetFilteredDocumentsContainingObjectByIdRequest getFilteredDocumentsContainingObjectByIdRequest) throws IdNotFoundException {
+
+        //TODO: implement
+        LOG.info("Executing operation getFilteredDocumentsContainingObjectById: {}", getFilteredDocumentsContainingObjectByIdRequest);
+        GetFilteredDocumentsContainingObjectByIdResponse response = new GetFilteredDocumentsContainingObjectByIdResponse();
+        LOG.info("Executed operation getFilteredDocumentsContainingObjectById: {}", response);
+        return response;
     }
 
     @Override
@@ -388,6 +436,43 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     }
 
     @Override
+    public GetDocumentsContainingRelationByIdResponse getDocumentsContainingRelationById(
+            @WebParam(partName = "getDocumentsContainingRelationByIdRequest", name = "getDocumentsContainingRelationByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetDocumentsContainingRelationByIdRequest getDocumentsContainingRelationByIdRequest) throws IdNotFoundException {
+
+        LOG.info("Executing operation getDocumentsContainingRelationById: {}", getDocumentsContainingRelationByIdRequest);
+
+        try {
+
+            GetDocumentsContainingRelationByIdResponse response = new GetDocumentsContainingRelationByIdResponse();
+            Pair<List<Pair<Document, Integer>>, Integer> documents = dbService.getDocumentsContainingRelation(
+                    getDocumentsContainingRelationByIdRequest.getRelationId(),
+                    getDocumentsContainingRelationByIdRequest.getFirstResult(),
+                    getDocumentsContainingRelationByIdRequest.getMaxResults()
+            );
+            for (Pair<Document, Integer> documentCountPair : documents.getFirst()) {
+                GetDocumentsContainingRelationByIdResponse.DocumentCountPair pair = new GetDocumentsContainingRelationByIdResponse.DocumentCountPair();
+                pair.setDocument(documentCountPair.getFirst().toCommonsDocument());
+                pair.setCountOfOccurrences(documentCountPair.getSecond());
+                response.getDocumentCountPairs().add(pair);
+            }
+            response.setTotalNumberOfResults(documents.getSecond());
+
+            LOG.info("Executed operation getDocumentsContainingRelationById: {}", response);
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getDocumentsContainingRelationById.", e);
+
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
+    }
+
+    @Override
     public SplitObjectResponse splitObject(
             @WebParam(partName = "splitObject", name = "splitObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             SplitObjectRequest splitObjectRequest) throws IdNotFoundException {
@@ -522,6 +607,18 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         response.setTotalNumberOfResults(documents.getSecond());
 
         LOG.info("Executed operation getFilteredDocuments: {}", response);
+        return response;
+    }
+
+    @Override
+    public GetFilteredDocumentsContainingRelationByIdResponse getFilteredDocumentsContainingRelationById(
+            @WebParam(partName = "getFilteredDocumentsContainingRelationByIdRequest", name = "getFilteredDocumentsContainingRelationByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
+            GetFilteredDocumentsContainingRelationByIdRequest getFilteredDocumentsContainingRelationByIdRequest) throws IdNotFoundException {
+
+        //TODO implement
+        LOG.info("Executing operation getFilteredDocumentsContainingRelationById: {}", getFilteredDocumentsContainingRelationByIdRequest);
+        GetFilteredDocumentsContainingRelationByIdResponse response = new GetFilteredDocumentsContainingRelationByIdResponse();
+        LOG.info("Executed operation getFilteredDocumentsContainingRelationById: {}", response);
         return response;
     }
 

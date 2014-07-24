@@ -1,47 +1,11 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.AddDocumentRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.AddDocumentResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetDocumentByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetDocumentByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetDocumentsContainingObjectByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetDocumentsContainingObjectByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetDocumentsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetFilteredDocumentsRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetFilteredDocumentsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetFilteredObjectsRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetFilteredObjectsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetGraphByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetGraphByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectTypesResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsAndRelationsOccurringInDocumentRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsAndRelationsOccurringInDocumentResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByIdsRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByIdsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsByTypeIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetObjectsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetPathByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetPathByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelatedObjectsByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelatedObjectsByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelationTypesResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelationsByTypeIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelationsByTypeIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRelationsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRolesForRelationTypeByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.GetRolesForRelationTypeByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.MergeObjectsRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.MergeObjectsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.SplitObjectRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.SplitObjectResponse;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.UpdateDocumentRequest;
-import cz.cuni.mff.ufal.textan.commons.models.dataprovider.UpdateDocumentResponse;
+import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
+
+import javax.jws.WebParam;
 
 /**
  * Simple wrapper around IDataProvider to provide synchronization.
@@ -89,6 +53,20 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
+    synchronized public GetGraphByRelationIdResponse getGraphByRelationId(
+            final GetGraphByRelationIdRequest getGraphByRelationIdRequest)
+            throws IdNotFoundException {
+        return innerDP.getGraphByRelationId(getGraphByRelationIdRequest);
+    }
+
+    @Override
+    synchronized public GetFilteredRelationsResponse getFilteredRelations(
+            final GetFilteredRelationsRequest getFilteredRelationsRequest)
+            throws IdNotFoundException {
+        return innerDP.getFilteredRelations(getFilteredRelationsRequest);
+    }
+
+    @Override
     synchronized public GetFilteredObjectsResponse getFilteredObjects(
             final GetFilteredObjectsRequest getFilteredObjectsRequest)
             throws IdNotFoundException {
@@ -102,10 +80,17 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
-    synchronized public GetGraphByIdResponse getGraphById(
-            final GetGraphByIdRequest getGraphByIdRequest)
+    synchronized public GetGraphByObjectIdResponse getGraphByObjectId(
+            final GetGraphByObjectIdRequest getGraphByIdRequest)
             throws IdNotFoundException {
-        return innerDP.getGraphById(getGraphByIdRequest);
+        return innerDP.getGraphByObjectId(getGraphByIdRequest);
+    }
+
+    @Override
+    synchronized public GetFilteredDocumentsContainingObjectByIdResponse getFilteredDocumentsContainingObjectById(
+            final GetFilteredDocumentsContainingObjectByIdRequest getFilteredDocumentsContainingObjectByIdRequest)
+            throws IdNotFoundException {
+        return innerDP.getFilteredDocumentsContainingObjectById(getFilteredDocumentsContainingObjectByIdRequest);
     }
 
     @Override
@@ -139,6 +124,13 @@ public class SynchronizedDataProvider implements IDataProvider {
     synchronized public GetObjectsByIdsResponse getObjectsByIds(
             final GetObjectsByIdsRequest getObjectsByIdsRequest) throws IdNotFoundException {
         return innerDP.getObjectsByIds(getObjectsByIdsRequest);
+    }
+
+    @Override
+    synchronized public GetDocumentsContainingRelationByIdResponse getDocumentsContainingRelationById(
+            final GetDocumentsContainingRelationByIdRequest getDocumentsContainingRelationByIdRequest)
+            throws IdNotFoundException {
+        return innerDP.getDocumentsContainingRelationById(getDocumentsContainingRelationByIdRequest);
     }
 
     @Override
@@ -177,6 +169,13 @@ public class SynchronizedDataProvider implements IDataProvider {
     synchronized public GetFilteredDocumentsResponse getFilteredDocuments(
             final GetFilteredDocumentsRequest getFilteredDocumentsRequest) {
         return innerDP.getFilteredDocuments(getFilteredDocumentsRequest);
+    }
+
+    @Override
+    synchronized public GetFilteredDocumentsContainingRelationByIdResponse getFilteredDocumentsContainingRelationById(
+            final GetFilteredDocumentsContainingRelationByIdRequest getFilteredDocumentsContainingRelationByIdRequest)
+            throws IdNotFoundException {
+        return innerDP.getFilteredDocumentsContainingRelationById(getFilteredDocumentsContainingRelationByIdRequest);
     }
 
     @Override

@@ -29,4 +29,9 @@ public class NamedEntityRecognizerLearnCommand extends Command {
         return receiver == command.receiver;
         //return !(receiver != null ? !receiver.equals(that.receiver) : that.receiver != null);
     }
+
+    @Override
+    public int hashCode() {
+        return receiver.hashCode();
+    }
 }

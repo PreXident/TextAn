@@ -40,7 +40,7 @@ public class GraphService {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public Graph getGraph(long objectId, int distance) throws IdNotFoundException {
+    public Graph getGraphFromObject(long objectId, int distance) throws IdNotFoundException {
         return getGraphInner(objectId, distance);
     }
 
@@ -48,12 +48,36 @@ public class GraphService {
         return getGraphInner(objectId, 1);
     }
 
+    public Graph getGraphFromRelation(long relationId, int distance) throws IdNotFoundException {
+
+        List<Object> nodes = new ArrayList<>();
+        List<Relation> edges = new ArrayList<>();
+
+        cz.cuni.mff.ufal.textan.data.graph.Graph dataGraph = graphFactory.getGraphFromRelation(relationId, distance);
+
+        if (dataGraph.getNodes().isEmpty()) {
+            throw new IdNotFoundException("relationId", relationId);
+        }
+
+        for (Node node : dataGraph.getNodes()) {
+
+            if (node instanceof ObjectNode) {
+                long nodeObjectId = node.getId();
+                nodes.add(Object.fromObjectTable(objectTableDAO.find(nodeObjectId)));
+            }
+
+            if (node instanceof RelationNode) {
+                long nodeRelationId = node.getId();
+                edges.add(Relation.fromRelationTable(relationTableDAO.find(nodeRelationId)));
+            }
+        }
+
+        return new Graph(nodes, edges);
+    }
+
     private Graph getGraphInner(long objectId, int distance) throws IdNotFoundException {
-
-        //TODO implement properly
-
-        List<Object> nodes = new ArrayList<Object>();
-        List<Relation> edges = new ArrayList<Relation>();
+        List<Object> nodes = new ArrayList<>();
+        List<Relation> edges = new ArrayList<>();
 
         cz.cuni.mff.ufal.textan.data.graph.Graph dataGraph = graphFactory.getGraphFromObject(objectId, distance);
 
@@ -64,12 +88,12 @@ public class GraphService {
         for (Node node : dataGraph.getNodes()) {
 
             if (node instanceof ObjectNode) {
-                long nodeObjectId = ((ObjectNode) node).getId();
+                long nodeObjectId = node.getId();
                 nodes.add(Object.fromObjectTable(objectTableDAO.find(nodeObjectId)));
             }
 
             if (node instanceof RelationNode) {
-                long nodeRelationId = ((RelationNode) node).getId();
+                long nodeRelationId = node.getId();
                 edges.add(Relation.fromRelationTable(relationTableDAO.find(nodeRelationId)));
             }
         }

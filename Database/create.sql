@@ -44,7 +44,10 @@ CREATE TABLE Object (
 	data NVARCHAR (255),
     CONSTRAINT FK_OBJECT_TO_TYPE FOREIGN KEY (id_object_type)
   		REFERENCES ObjectType(id_object_type),
-	globalversion int DEFAULT 0 NOT NULL	
+	globalversion int DEFAULT 0 NOT NULL,
+  id_root_object int -- ,  -- root of the joined tree
+    /*CONSTRAINT FK_OBJECT_ROOT FOREIGN KEY (id_root_object)
+  		REFERENCES Object(id_object)*/	
 );
 
 CREATE TABLE Alias (
@@ -75,7 +78,8 @@ CREATE TABLE Relation
         id_relation int PRIMARY KEY AUTO_INCREMENT,
         id_relation_type int NOT NULL,
         CONSTRAINT FK_RELATION_RELTYPE FOREIGN KEY (id_relation_type)
-                REFERENCES RelationType (id_relation_type)
+                REFERENCES RelationType (id_relation_type),
+	      globalversion int DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE IsInRelation
@@ -108,7 +112,8 @@ CREATE TABLE JoinedObjects
             FOREIGN KEY (id_old_object2)
                   REFERENCES Object(id_object),
         from_date datetime NOT NULL,
-        to_date datetime
+        to_date datetime,
+	      globalversion int DEFAULT 0 NOT NULL
 );
 
 -- TODO add constrant: joined objects have to have the same type
