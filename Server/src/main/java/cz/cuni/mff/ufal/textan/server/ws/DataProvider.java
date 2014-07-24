@@ -177,9 +177,32 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             GetFilteredRelationsRequest getFilteredRelationsRequest) throws IdNotFoundException {
 
         LOG.info("Executing operation getFilteredRelations: {}", getFilteredRelationsRequest);
-        GetFilteredRelationsResponse response = new GetFilteredRelationsResponse();  //TODO: implement
-        LOG.info("Executed operation getFilteredRelations: {}", response);
-        return response;
+
+        try {
+            Pair<List<Relation>, Integer> results = dbService.getFilteredRelations(
+                    getFilteredRelationsRequest.getRelationTypeId(),
+                    getFilteredRelationsRequest.getAnchorFilter(),
+                    getFilteredRelationsRequest.getFirstResult(),
+                    getFilteredRelationsRequest.getMaxResults()
+            );
+
+            GetFilteredRelationsResponse response = new GetFilteredRelationsResponse();
+            for (Relation relation : results.getFirst()) {
+                response.getRelations().add(relation.toCommonsRelation());
+            }
+            response.setTotalNumberOfResults(results.getSecond());
+
+            LOG.info("Executed operation getFilteredRelations: {}", response);
+            return response;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getFilteredRelations.", e);
+
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
     }
 
     @Override

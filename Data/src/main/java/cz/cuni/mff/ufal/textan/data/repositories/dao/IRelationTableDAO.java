@@ -51,5 +51,12 @@ public interface IRelationTableDAO extends IObjectRelationDAO<RelationTable> {
      * @param version
      * @return 
      */
-    List<RelationTable> findAllSinceGlobalVersion(long version); 
+    List<RelationTable> findAllSinceGlobalVersion(long version);
+
+    List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter);
+    List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter, int firstResult, int maxResults);
+
+
+    List<RelationTable> findAllByAnchorFullText(String anchorFilter);
+    List<RelationTable> findAllByAnchorFullText(String anchorFilter, int firstResult, int maxResults);
 }
