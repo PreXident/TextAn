@@ -301,7 +301,6 @@ public class Client {
     /**
      * Returns documents containing given object.
      * @param object object whose document should be returned
-     * @param processed only processed documents?
      * @param filter document text filter
      * @param first index of the first object
      * @param size maximal number of objects
@@ -309,22 +308,19 @@ public class Client {
      * @throws IdNotFoundException if id error occurs
      */
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
-            final Object object, final Processed processed, final String filter,
+            final Object object, final String filter,
             final int first, final int size) throws IdNotFoundException {
         try {
-            final GetDocumentsContainingObjectByIdRequest request =
-                    new GetDocumentsContainingObjectByIdRequest();
+            final GetFilteredDocumentsContainingObjectByIdRequest request =
+                    new GetFilteredDocumentsContainingObjectByIdRequest();
             request.setObjectId(object.getId());
             request.setFirstResult(first);
             request.setMaxResults(size);
-            //TODO set parameters for filtering when ready
-            final GetDocumentsContainingObjectByIdResponse response =
-                    getDataProvider().getDocumentsContainingObjectById(request);
+            request.setPattern(filter);
+            final GetFilteredDocumentsContainingObjectByIdResponse response =
+                    getDataProvider().getFilteredDocumentsContainingObjectById(request);
             final List<Document> list = response.getDocumentCountPairs().stream()
                     .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
-                    //TODO remove filtering emulation
-                    .filter(d -> processed.filter(d))
-                    .filter(d -> d.getText().contains(filter))
                     .collect(Collectors.toCollection(ArrayList::new));
             return new Pair<>(list, response.getTotalNumberOfResults());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
@@ -335,7 +331,6 @@ public class Client {
     /**
      * Returns documents containing given relation.
      * @param relation relation whose document should be returned
-     * @param processed only processed documents?
      * @param filter document text filter
      * @param first index of the first object
      * @param size maximal number of objects
@@ -343,11 +338,27 @@ public class Client {
      * @throws IdNotFoundException if id error occurs
      */
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
-            final Relation relation, final Processed processed, final String filter,
+            final Relation relation, final String filter,
             final int first, final int size) throws IdNotFoundException {
-        //TODO call proper methods when they are ready
+        //TODO uncomment when the db implementation is done
+//        try {
+//            final GetFilteredDocumentsContainingRelationByIdRequest request =
+//                    new GetFilteredDocumentsContainingRelationByIdRequest();
+//            request.setRelationId(relation.getId());
+//            request.setFirstResult(first);
+//            request.setMaxResults(size);
+//            request.setPattern(filter);
+//            final GetFilteredDocumentsContainingRelationByIdResponse response =
+//                    getDataProvider().getFilteredDocumentsContainingRelationById(request);
+//            final List<Document> list = response.getDocumentCountPairs().stream()
+//                    .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
+//                    .collect(Collectors.toCollection(ArrayList::new));
+//            return new Pair<>(list, response.getTotalNumberOfResults());
+//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+//            throw new IdNotFoundException(e);
+//        }
         final Pair<List<Document>, Integer> pair =
-                getDocumentsList(processed, filter, 0, Integer.MAX_VALUE);
+                getDocumentsList(Processed.YES, filter, 0, Integer.MAX_VALUE);
         final List<Document> documents = pair.getFirst();
         final List<Document> result = new ArrayList<>();
         for (Document document : documents) {
@@ -381,13 +392,13 @@ public class Client {
     }
 
     /**
-     * Returns centered graph with limited distance.
+     * Returns centered object graph with limited distance.
      * @param centerId center object id
      * @param distance maximal distance from center
      * @return centered graph with limited distance
      * @throws IdNotFoundException if object id is not found
      */
-    public synchronized Graph getGraph(final long centerId, final int distance)
+    public synchronized Graph getObjectGraph(final long centerId, final int distance)
             throws IdNotFoundException {
         final GetGraphByObjectIdRequest request = new GetGraphByObjectIdRequest();
         request.setDistance(distance);
@@ -570,9 +581,27 @@ public class Client {
         return new Problems(response);
     }
 
+    /**
+     * Returns centered relation graph with limited distance.
+     * @param rootId center relation id
+     * @param distance maximal distance from center
+     * @return centered graph with limited distance
+     * @throws IdNotFoundException if relation id is not found
+     */
     public synchronized Graph getRelationGraph(final long rootId,
             final int distance) throws IdNotFoundException {
-        //TODO call proper methods when they are ready
+        //TODO uncomment when db implementation works
+//        try {
+//            final GetGraphByRelationIdRequest request =
+//                    new GetGraphByRelationIdRequest();
+//            request.setObjectId(rootId);
+//            request.setDistance(distance);
+//            final GetGraphByRelationIdResponse response =
+//                    getDataProvider().getGraphByRelationId(request);
+//            return new Graph(response.getGraph());
+//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+//            throw new IdNotFoundException(e);
+//        }
         final Map<Long, Object> allObjects = getObjectsMap();
         final GetRelationsResponse response = getDataProvider().getRelations(new Void());
         final Relation relation = response.getRelations().stream()
@@ -585,7 +614,7 @@ public class Client {
                 .map(Triple<Integer, String, Object>::getThird)
                 .map(obj -> {
                     try {
-                        return this.getGraph(obj.getId(), distance);
+                        return this.getObjectGraph(obj.getId(), distance);
                     } catch (Exception e) {
                         return new Graph(Collections.emptyMap(), Collections.emptyList());
                     }
@@ -609,7 +638,27 @@ public class Client {
     public synchronized Pair<List<Relation>, Integer> getRelationList(
             final RelationType type, final String filter, final int first,
             final int size) throws IdNotFoundException {
-        //TODO call proper methods when they are ready
+        //TODO uncomment when the db implementation is done
+//        try {
+//            //TODO extract objects from response when it's ready
+//            final Map<Long, Object> objects = getObjectsMap();
+//            final GetFilteredRelationsRequest request =
+//                    new GetFilteredRelationsRequest();
+//            if (type != null) {
+//                request.setRelationTypeId(type.getId());
+//            }
+//            request.setAnchorFilter(filter);
+//            request.setFirstResult(first);
+//            request.setMaxResults(size);
+//            final GetFilteredRelationsResponse response =
+//                    getDataProvider().getFilteredRelations(request);
+//            final List<Relation> relations = response.getRelations().stream()
+//                    .map(rel -> new Relation(rel, objects))
+//                    .collect(Collectors.toList());
+//            return new Pair<>(relations, response.getTotalNumberOfResults());
+//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+//            throw new IdNotFoundException(e);
+//        }
         final Map<Long, Object> objects = getObjectsMap();
         final GetRelationsResponse response = getDataProvider().getRelations(new Void());
         Stream<Relation> stream = response.getRelations().stream()
