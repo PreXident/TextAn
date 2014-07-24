@@ -6,6 +6,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.IEntityViewDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
+import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -19,10 +20,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -40,16 +38,22 @@ import java.util.concurrent.BlockingQueue;
  * @author Jakub Vlček
  */
 @Configuration
-@Import(DataConfig.class)
+@Import({DataConfig.class, TextProConfig.class})
 @ComponentScan("cz.cuni.mff.ufal.textan.server.services")
 public class AppConfig implements ApplicationContextAware {
 
-    /** Path to a default server property file (inside jar). */
+    /**
+     * Path to a default server property file (inside jar).
+     */
     private static final String DEFAULT_SERVER_PROPERTIES = "server-default.properties";
-    /** Path to an user server property file. The file should be relative to working directory. */
+    /**
+     * Path to an user server property file. The file should be relative to working directory.
+     */
     private static final String USER_SERVER_PROPERTIES = "server.properties";
 
-    /** A Spring application context in which a instance of this config lives. */
+    /**
+     * A Spring application context in which a instance of this config lives.
+     */
     private ApplicationContext context;
 
     @SuppressWarnings("unused")
@@ -163,10 +167,12 @@ public class AppConfig implements ApplicationContextAware {
 
     /**
      * Creates a named entity recognizer
+     *
      * @return the recognizer
      * @see cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer
      */
     @Bean(initMethod = "init")
+    @DependsOn("logInterceptorHack")
     public NamedEntityRecognizer namedEntityRecognizer() {
         return new NamedEntityRecognizer(objectTypeTableDAO, entityViewDAO, documentTableDAO);
     }

@@ -187,7 +187,9 @@ public class ReportObjectsController extends ReportWizardController {
         });
         allObjectsCheckBox = new CheckBox();
         allObjectsCheckBox.setText(Utils.localize(resourceBundle, "include.all.objects"));
-        allObjectsCheckBox.selectedProperty().addListener(e -> filterObjects(selectedEntity));
+        allObjectsCheckBox.selectedProperty().addListener(e -> {
+            filterObjects(selectedEntity);
+        });
         final VBox vbox = new VBox();
         vbox.getChildren().addAll(allObjectsCheckBox, dbListView);
         splitVert.getItems().addAll(vbox, newListView);

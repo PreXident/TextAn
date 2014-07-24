@@ -490,6 +490,21 @@ public class Client {
     }
 
     /**
+     * Converts client fromEntities to commons toEntities while filling entMap.
+     * @param fromEntities client entities
+     * @param toEntities commons entities
+     * @param entMap entity id -> entity mapping
+     */
+    private void convertEntities(final List<Entity> fromEntities,
+            final List<cz.cuni.mff.ufal.textan.commons.models.Entity> toEntities,
+            final Map<Integer, Entity> entMap) {
+        for (Entity entity : fromEntities) {
+            toEntities.add(entity.toEntity());
+            entMap.put(entity.getPosition(), entity);
+        }
+    }
+
+    /**
      * Fills candidates of entities.
      * @param ticket   editing ticket
      * @param id document id
@@ -502,16 +517,9 @@ public class Client {
             final List<Entity> entities)
             throws DocumentChangedException, IdNotFoundException {
         final Map<Integer, Entity> entMap = new HashMap<>();
-        //TODO create one private method for creating entities when they are unified in commons
-        final cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdRequest.Entities ents =
-                new cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdRequest.Entities();
-        for (Entity entity : entities) {
-            ents.getEntities().add(entity.toEntity());
-            entMap.put(entity.getPosition(), entity);
-        }
         final GetAssignmentsByIdRequest request = new GetAssignmentsByIdRequest();
+        convertEntities(entities, request.getEntities(), entMap);
         request.setId(id);
-        request.setEntities(ents);
         try {
             final GetAssignmentsByIdResponse response =
                     getDocumentProcessor().getAssignmentsById(request, ticket.toTicket());
@@ -533,17 +541,9 @@ public class Client {
      */
     public synchronized void getObjects(final Ticket ticket, final String text, final List<Entity> entities) {
         final Map<Integer, Entity> entMap = new HashMap<>();
-        //TODO create one private method for creating entities when they are unified in commons
-        final cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest.Entities ents =
-                new cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest.Entities();
-        for (Entity entity : entities) {
-            ents.getEntities().add(entity.toEntity());
-            entMap.put(entity.getPosition(), entity);
-        }
-        //
         final GetAssignmentsFromStringRequest request = new GetAssignmentsFromStringRequest();
+        convertEntities(entities, request.getEntities(), entMap);
         request.setText(text);
-        request.setEntities(ents);
         //
         final GetAssignmentsFromStringResponse response = getDocumentProcessor().getAssignmentsFromString(request, ticket.toTicket());
         processAssignments(response.getAssignments(), entMap);

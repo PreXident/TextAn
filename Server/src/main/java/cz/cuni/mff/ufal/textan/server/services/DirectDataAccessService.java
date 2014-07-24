@@ -379,6 +379,49 @@ public class DirectDataAccessService {
                 .collect(Collectors.toList());
     }
 
+    public Pair<List<Relation>,Integer> getFilteredRelations(Long relationTypeId, String anchorFilter, int firstResult, int maxResults) throws IdNotFoundException {
+
+        if (relationTypeId != null) {
+            RelationTypeTable relationType = relationTypeTableDAO.find(relationTypeId);
+            if (relationType == null) {
+                throw new IdNotFoundException("relationTypeId", relationTypeId);
+            }
+        }
+
+        int count;
+        List<RelationTable> relations;
+
+        if (relationTypeId != null && (anchorFilter != null && !anchorFilter.isEmpty())) {
+
+            count = relationTableDAO.findAllByRelTypeAndAnchorFullText(relationTypeId, anchorFilter).size();
+            relations = relationTableDAO.findAllByRelTypeAndAnchorFullText(relationTypeId, anchorFilter, firstResult, maxResults);
+
+        } else if (relationTypeId != null) {
+
+            count = relationTableDAO.findAllByRelationType(relationTypeId).size();
+            relations = relationTableDAO.findAllByRelationType(relationTypeId, firstResult, maxResults);
+
+        } else if (anchorFilter != null && !anchorFilter.isEmpty()) {
+
+            count = relationTableDAO.findAllByAnchorFullText(anchorFilter).size();
+            relations = relationTableDAO.findAllByAnchorFullText(anchorFilter, firstResult, maxResults);
+
+        } else {
+
+            count = relationTableDAO.findAll().size();
+            relations = relationTableDAO.findAll(firstResult, maxResults);
+
+        }
+
+
+        return new Pair<>(
+                relations.stream()
+                    .map(Relation::fromRelationTable)
+                    .collect(Collectors.toList()),
+                count
+        );
+    }
+
     /**
      * Finds all relations and their occurrences for a given document.
      * @param documentId the document id
