@@ -5,11 +5,13 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.*;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.commands.NamedEntityRecognizerLearnCommand;
+import cz.cuni.mff.ufal.textan.server.commands.TextProLearnCommand;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.models.Occurrence;
 import cz.cuni.mff.ufal.textan.server.models.Relation;
+import cz.cuni.mff.ufal.textan.textpro.ITextPro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +43,7 @@ public class SaveService {
 
     private final CommandInvoker invoker;
     private final NamedEntityRecognizer recognizer;
+    private final ITextPro textPro;
 
     /**
      * Instantiates a new Save service.
@@ -55,6 +58,7 @@ public class SaveService {
      * @param inRelationTableDAO the in relation table dAO
      * @param invoker
      * @param recognizer
+     * @param textPro
      */
     @Autowired
     public SaveService(
@@ -64,7 +68,7 @@ public class SaveService {
             IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
             IRelationTypeTableDAO relationTypeTableDAO, IRelationTableDAO relationTableDAO,
             IRelationOccurrenceTableDAO relationOccurrenceTableDAO, IInRelationTableDAO inRelationTableDAO,
-            CommandInvoker invoker, NamedEntityRecognizer recognizer) {
+            CommandInvoker invoker, NamedEntityRecognizer recognizer, ITextPro textPro) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
@@ -77,6 +81,7 @@ public class SaveService {
         this.inRelationTableDAO = inRelationTableDAO;
         this.invoker = invoker;
         this.recognizer = recognizer;
+        this.textPro = textPro;
     }
 
     /*
@@ -311,6 +316,7 @@ public class SaveService {
         }
 
         //register re-learn command for named entity recognizer
+        invoker.register(new TextProLearnCommand(textPro));
         invoker.register(new NamedEntityRecognizerLearnCommand(recognizer));
 
         return true;
