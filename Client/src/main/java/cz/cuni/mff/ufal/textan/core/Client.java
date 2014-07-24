@@ -609,40 +609,17 @@ public class Client {
      */
     public synchronized Graph getRelationGraph(final long rootId,
             final int distance) throws IdNotFoundException {
-        //TODO uncomment when db implementation works
-//        try {
-//            final GetGraphByRelationIdRequest request =
-//                    new GetGraphByRelationIdRequest();
-//            request.setObjectId(rootId);
-//            request.setDistance(distance);
-//            final GetGraphByRelationIdResponse response =
-//                    getDataProvider().getGraphByRelationId(request);
-//            return new Graph(response.getGraph());
-//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
-//            throw new IdNotFoundException(e);
-//        }
-        final Map<Long, Object> allObjects = getObjectsMap();
-        final GetRelationsResponse response = getDataProvider().getRelations(new Void());
-        final Relation relation = response.getRelations().stream()
-                .map(rel -> new Relation(rel, allObjects))
-                .filter(rel -> rel.getId() == rootId)
-                .findFirst().get();
-        final Map<Long, Object> objects = new HashMap<>();
-        final Set<Relation> relations = new HashSet<>();
-        relation.getObjects().stream()
-                .map(Triple<Integer, String, Object>::getThird)
-                .map(obj -> {
-                    try {
-                        return this.getObjectGraph(obj.getId(), distance);
-                    } catch (Exception e) {
-                        return new Graph(Collections.emptyMap(), Collections.emptyList());
-                    }
-                })
-                .forEach(graph -> {
-                    objects.putAll(graph.getNodes());
-                    relations.addAll(graph.getEdges());
-                });
-        return new Graph(objects, relations);
+        try {
+            final GetGraphByRelationIdRequest request =
+                    new GetGraphByRelationIdRequest();
+            request.setRelationId(rootId);
+            request.setDistance(distance);
+            final GetGraphByRelationIdResponse response =
+                    getDataProvider().getGraphByRelationId(request);
+            return new Graph(response.getGraph());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
     }
 
     /**
