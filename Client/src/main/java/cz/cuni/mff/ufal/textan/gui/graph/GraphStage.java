@@ -6,6 +6,7 @@ import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.GRAPH_PROPERTY_ID;
+import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.MIN_HEIGHT;
 import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.TITLE;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -36,6 +37,7 @@ public class GraphStage extends OuterStage {
         try {
             final Pair<Parent, GraphController> loaded = GraphController.loadFXML(grapher);
             getInnerWindow().getContentPane().getChildren().add(loaded.getFirst());
+            getInnerWindow().setMinHeight(MIN_HEIGHT);
             final GraphController controller = loaded.getSecond();
             controller.setTextAnController(textAnController);
             resourceBundle = controller.resourceBundle;

@@ -45,40 +45,35 @@
 		</TableView>
 	</center>
 	<bottom>
-		<BorderPane>
-			<left>
-				<HBox>
-					<Button text="|&lt;&lt;" onAction="#fastRewind" />
-					<Button text="&lt;" onAction="#rewind" />
-				</HBox>
-			</left>
-			<center>
-				<VBox alignment="CENTER">
-					<Label fx:id="paginationLabel" text="Dummy"/>
-					<HBox alignment="CENTER">
-						<Label text="%page.size" />
-						<ComboBox fx:id="perPageComboBox">
-							<items>
-								<FXCollections fx:factory="observableArrayList">
-									<Integer fx:value="10" />
-									<Integer fx:value="25" />
-									<Integer fx:value="50" />
-									<Integer fx:value="100" />
-								</FXCollections>
-							</items>
-							<value>
-								<Integer fx:value="25" />
-							</value>
-						</ComboBox>
-					</HBox>
-				</VBox>
-			</center>
-			<right>
-				<HBox>
-					<Button text="&gt;" onAction="#forward" />
-					<Button text="&gt;&gt;|" onAction="#fastForward" />
-				</HBox>
-			</right>
-		</BorderPane>
+		<GridPane>
+			<HBox GridPane.columnIndex="0" GridPane.rowIndex="0" >
+				<Button text="|&lt;&lt;" onAction="#fastRewind" />
+				<Button text="&lt;" onAction="#rewind" />
+			</HBox>
+			<Label fx:id="paginationLabel" GridPane.hgrow="ALWAYS"
+					GridPane.halignment="CENTER" GridPane.columnIndex="1"
+					GridPane.rowIndex="0" />
+			<HBox alignment="CENTER" spacing="10" GridPane.hgrow="ALWAYS"
+					GridPane.columnIndex="1" GridPane.rowIndex="1" >
+				<Label text="%page.size" />
+				<ComboBox fx:id="perPageComboBox">
+					<items>
+						<FXCollections fx:factory="observableArrayList">
+							<Integer fx:value="10" />
+							<Integer fx:value="25" />
+							<Integer fx:value="50" />
+							<Integer fx:value="100" />
+						</FXCollections>
+					</items>
+					<value>
+						<Integer fx:value="25" />
+					</value>
+				</ComboBox>
+			</HBox>
+			<HBox GridPane.columnIndex="2" GridPane.rowIndex="0" >
+				<Button text="&gt;" onAction="#forward" />
+				<Button text="&gt;&gt;|" onAction="#fastForward" />
+			</HBox>
+		</GridPane>
 	</bottom>
 </BorderPane>

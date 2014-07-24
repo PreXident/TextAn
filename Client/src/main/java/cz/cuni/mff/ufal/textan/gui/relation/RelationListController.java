@@ -47,6 +47,9 @@ public class RelationListController extends WindowController {
     /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "relation.view";
 
+    /** Minimal width of the graph window. */
+    static protected final int MIN_HEIGHT = 400;
+
     @FXML
     private BorderPane root;
 

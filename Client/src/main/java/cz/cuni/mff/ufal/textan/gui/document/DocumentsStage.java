@@ -49,6 +49,7 @@ public class DocumentsStage extends OuterStage {
             controller.setClient(client);
             controller.filter();
             getInnerWindow().setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            getInnerWindow().setMinHeight(DocumentsWindow.MIN_HEIGHT);
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

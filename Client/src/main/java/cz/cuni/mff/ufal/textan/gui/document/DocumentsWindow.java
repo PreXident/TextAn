@@ -8,6 +8,7 @@ import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import static cz.cuni.mff.ufal.textan.gui.document.DocumentListController.PROPERTY_ID;
 import static cz.cuni.mff.ufal.textan.gui.document.DocumentListController.TITLE;
+import static cz.cuni.mff.ufal.textan.gui.document.DocumentsWindow.MIN_HEIGHT;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
@@ -19,17 +20,22 @@ import org.controlsfx.dialog.Dialogs;
  */
 public class DocumentsWindow extends InnerWindow {
 
+    /** Minimal height of the join window. */
+    static protected final int MIN_HEIGHT = 400;
+
     /**
      * Only constructor.
      * @param textAnController application controller
      * @param settings properties with settings
      * @param client client to communicate with server
      * @param object object whose documents should be displayed
+     * @param relation relation whose documents should be displayed
      */
     public DocumentsWindow(final TextAnController textAnController,
             final Properties settings, final Client client, final Object object,
             final Relation relation) {
         super(TITLE, PROPERTY_ID, settings);
+        setMinHeight(MIN_HEIGHT);
         ResourceBundle resourceBundle = null;
         try {
             resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.document.DocumentList");

@@ -42,7 +42,7 @@ public class JoinController extends WindowController {
     /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "join.view";
 
-    /** Minimal width of the join window. */
+    /** Minimal height of the join window. */
     static protected final int MIN_HEIGHT = 400;
 
     /** Minimal width of the join window. */
