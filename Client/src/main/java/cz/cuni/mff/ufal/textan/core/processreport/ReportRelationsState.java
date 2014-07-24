@@ -45,7 +45,8 @@ final class ReportRelationsState extends State {
     @Override
     public void setReportRelations(final ProcessReportPipeline pipeline,
             final List<Word> words,
-            final List<? extends RelationBuilder> unanchoredRelations) {
+            final List<? extends RelationBuilder> unanchoredRelations)
+            throws DocumentChangedException {
         if (pipeline.getStepsBack() <= 0) {
             pipeline.reportWords = words;
             final List<RelationBuilder> rels = pipeline.reportRelations;
@@ -75,12 +76,21 @@ final class ReportRelationsState extends State {
             rels.addAll(unanchoredRelations);
             pipeline.reportRelations = rels;
             try {
-                pipeline.result = pipeline.client.saveProcessedDocument(
-                        pipeline.ticket,
-                        pipeline.getReportText(),
-                        pipeline.reportEntities,
-                        pipeline.reportRelations,
-                        false);
+                if (pipeline.reportId > 0) {
+                    pipeline.result = pipeline.client.saveProcessedDocument(
+                            pipeline.ticket,
+                            pipeline.reportId,
+                            pipeline.reportEntities,
+                            pipeline.reportRelations,
+                            false);
+                } else {
+                    pipeline.result = pipeline.client.saveProcessedDocument(
+                            pipeline.ticket,
+                            pipeline.getReportText(),
+                            pipeline.reportEntities,
+                            pipeline.reportRelations,
+                            false);
+                }
             } catch (IdNotFoundException e) {
                 e.printStackTrace();
             }

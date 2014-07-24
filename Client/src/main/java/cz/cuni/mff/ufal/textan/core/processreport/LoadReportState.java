@@ -30,8 +30,7 @@ final class LoadReportState extends State {
 
     @Override
     public void selectDatabaseDatasource(final ProcessReportPipeline pipeline) {
-        //TODO database datasource
-        throw new UnsupportedOperationException("Not implemented yet");
+        pipeline.setState(SelectDocumentState.getInstance());
     }
 
     @Override

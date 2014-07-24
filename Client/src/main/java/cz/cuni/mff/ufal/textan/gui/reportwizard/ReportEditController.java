@@ -9,11 +9,15 @@ import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
 
 /**
  * Controls editing the report.
  */
 public class ReportEditController extends ReportWizardController {
+
+    @FXML
+    BorderPane root;
 
     @FXML
     TextArea textArea;
@@ -29,7 +33,11 @@ public class ReportEditController extends ReportWizardController {
         if (pipeline.lock.tryAcquire()) {
             getMainNode().setCursor(Cursor.WAIT);
             new Thread(() -> {
-                pipeline.setReportText(textArea.getText().replace("\r", ""));
+                final String t = textArea.getText().replace("\r", "");
+                handleDocumentChangedException(root, () -> {
+                    pipeline.setReportText(t);
+                    return null;
+                });
             }, "FromEditState").start();
         }
     }

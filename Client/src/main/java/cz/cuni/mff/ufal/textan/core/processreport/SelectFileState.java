@@ -37,7 +37,7 @@ final public class SelectFileState extends State {
     }
 
     @Override
-    public void setReport(final ProcessReportPipeline pipeline, final String report) {
+    public void setReportText(final ProcessReportPipeline pipeline, final String report) {
         pipeline.reportText = report;
         pipeline.setState(ReportEditState.getInstance());
     }

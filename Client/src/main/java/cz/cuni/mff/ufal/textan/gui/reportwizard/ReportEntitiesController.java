@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.IClearer;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.SplitException;
+import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
@@ -25,6 +26,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
@@ -66,6 +68,9 @@ public class ReportEntitiesController extends ReportWizardController {
 
     @FXML
     BorderPane root;
+
+    @FXML
+    Button backButton;
 
     @FXML
     ScrollPane scrollPane;
@@ -124,7 +129,10 @@ public class ReportEntitiesController extends ReportWizardController {
         if (pipeline.lock.tryAcquire()) {
             getMainNode().setCursor(Cursor.WAIT);
             new Thread(() -> {
-                pipeline.setReportWords(words);
+                handleDocumentChangedException(root, () -> {
+                    pipeline.setReportWords(words);
+                    return null;
+                });
             }, "FromEntitiesState").start();
         }
     }
@@ -165,6 +173,7 @@ public class ReportEntitiesController extends ReportWizardController {
     @Override
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
+        backButton.setVisible(pipeline.getReportId() < 1);
         texts = new ArrayList<>();
         words = pipeline.getReportWords();
         for (Word word: words) {

@@ -58,46 +58,46 @@ public class DocumentListController extends WindowController {
     static protected final String PROPERTY_ID = "documents.viewer";
 
     @FXML
-    private BorderPane root;
+    public BorderPane root;
 
     @FXML
-    private GridPane filterPane;
+    public GridPane filterPane;
 
     @FXML
-    private CheckBox processedCheckBox;
+    public CheckBox processedCheckBox;
 
     @FXML
-    private TextField filterField;
+    public TextField filterField;
 
     @FXML
-    private TableView<Document> table;
+    public TableView<Document> table;
 
     @FXML
-    private TableColumn<Document, Number> idColumn;
+    public TableColumn<Document, Number> idColumn;
 
     @FXML
-    private TableColumn<Document, Date> addTimeColumn;
+    public TableColumn<Document, Date> addTimeColumn;
 
     @FXML
-    private TableColumn<Document, Date> lastChangeTimeColumn;
+    public TableColumn<Document, Date> lastChangeTimeColumn;
 
     @FXML
-    private TableColumn<Document, Boolean> processedColumn;
+    public TableColumn<Document, Boolean> processedColumn;
 
     @FXML
-    private TableColumn<Document, Date> processTimeColumn;
+    public TableColumn<Document, Date> processTimeColumn;
 
     @FXML
-    private TableColumn<Document, Number> countColumn;
+    public TableColumn<Document, Number> countColumn;
 
     @FXML
-    private TableColumn<Document, String> textColumn;
+    public TableColumn<Document, String> textColumn;
 
     @FXML
-    private ComboBox<Integer> perPageComboBox;
+    public ComboBox<Integer> perPageComboBox;
 
     @FXML
-    private Label paginationLabel;
+    public Label paginationLabel;
 
     /** Context menu for documents. */
     protected ContextMenu contextMenu = new ContextMenu();
@@ -130,13 +130,13 @@ public class DocumentListController extends WindowController {
     protected Semaphore lock = new Semaphore(1);
 
     @FXML
-    private void fastForward() {
+    public void fastForward() {
         pageNo = pageCount - 1;
         filter();
     }
 
     @FXML
-    private void fastRewind() {
+    public void fastRewind() {
         pageNo = 0;
         filter();
     }
@@ -196,7 +196,7 @@ public class DocumentListController extends WindowController {
     }
 
     @FXML
-    private void forward() {
+    public void forward() {
         if (pageNo < pageCount - 1) {
             ++pageNo;
             filter();
@@ -204,7 +204,7 @@ public class DocumentListController extends WindowController {
     }
 
     @FXML
-    private void rewind() {
+    public void rewind() {
         if (pageNo > 0) {
             --pageNo;
             filter();

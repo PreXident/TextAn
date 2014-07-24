@@ -25,7 +25,7 @@
 	<bottom>
 		<BorderPane>
 			<left>
-				<Button text="%back" onAction="#next" visible="false" />
+				<Button text="%back" visible="false" />
 			</left>
 			<center>
 				<Slider fx:id="slider" min="1" max="4" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1" majorTickUnit="1" minorTickCount="0" />

@@ -133,7 +133,7 @@ public class ReportObjectsController extends ReportWizardController {
         }
         if (pipeline.lock.tryAcquire()) {
             if (builder.length() != 0) {
-                callWithContentBackup(() ->
+                callWithContentBackup(() -> {
                     createDialog()
                             .owner(getDialogOwner(root))
                             .title(Utils.localize(resourceBundle, "error.objects.unassigned"))
@@ -147,7 +147,7 @@ public class ReportObjectsController extends ReportWizardController {
                                 public void printStackTrace(PrintWriter s) {
                                     s.write(builder.toString());
                                 }
-                            }));
+                            });});
                 pipeline.lock.release();
             } else {
                 getMainNode().setCursor(Cursor.WAIT);

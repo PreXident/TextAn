@@ -106,7 +106,10 @@ public class ReportErrorsController extends ReportWizardController {
         if (pipeline.lock.tryAcquire()) {
             getMainNode().setCursor(Cursor.WAIT);
             new Thread(() -> {
-                pipeline.forceSave();
+                handleDocumentChangedException(root, () -> {
+                    pipeline.forceSave();
+                    return null;
+                });
             }, "ForceSave").start();
         }
     }

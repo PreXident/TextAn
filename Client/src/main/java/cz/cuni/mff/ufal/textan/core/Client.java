@@ -6,30 +6,35 @@ import cz.cuni.mff.ufal.textan.commons.models.UsernameToken;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Assignment;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest.Entities;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.commons.utils.Triple;
+import cz.cuni.mff.ufal.textan.commons.ws.DocumentChanged;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
+import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.Problems;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -121,6 +126,32 @@ public class Client {
          * @return filter value for field processed filter of DocumentProvider request
          */
         public abstract String toFilter();
+    }
+
+    /**
+     * Process assignments to entities.
+     * @param assignments assignments to process
+     * @param entities entities to assign candidates to
+     */
+    static protected void processAssignments(final List<Assignment> assignments,
+            final Map<Integer, Entity> entities) {
+        final Map<Long, Object> objects = new HashMap<>();
+        for (Assignment assignment : assignments) {
+            final Entity ent = entities.get(assignment.getEntity().getPosition());
+            ent.getCandidates().clear();
+            for (Assignment.RatedObject rating : assignment.getRatedObjects()) {
+                final double r = rating.getScore();
+                final Long objId = rating.getObject().getId();
+                Object obj;
+                if (objects.containsKey(objId)) {
+                    obj = objects.get(objId);
+                } else {
+                    obj = new Object(rating.getObject());
+                    objects.put(objId, obj);
+                }
+                ent.getCandidates().add(new Pair<>(r, obj));
+            }
+        }
     }
 
     /** Settings of the application. Handle with care, they're shared. */
@@ -395,9 +426,36 @@ public class Client {
     /**
      * Returns entities identified in text.
      * @param ticket editing ticket
+     * @param id report id
+     * @return entities identified in text
+     * @throws DocumentChangedException if document has been changed under our hands
+     * @throws IdNotFoundException if document was not found
+     * @see IDocumentProcessor#getEntitiesById(GetEntitiesByIdRequest, EditingTicket)
+     */
+    public synchronized List<Entity> getEntities(final Ticket ticket, final long id)
+            throws DocumentChangedException, IdNotFoundException {
+        final GetEntitiesByIdRequest request = new GetEntitiesByIdRequest();
+        request.setDocumentId(id);
+        final IDocumentProcessor docProc = getDocumentProcessor();
+        try {
+            final GetEntitiesByIdResponse response =
+                    docProc.getEntitiesById(request, ticket.toTicket());
+            return response.getEntities().stream()
+                    .map(Entity::new)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } catch (DocumentChanged e) {
+            throw new DocumentChangedException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
+    }
+
+    /**
+     * Returns entities identified in text.
+     * @param ticket editing ticket
      * @param text   text to process
      * @return entities identified in text
-     * @see IDocumentProcessor#getEntitiesFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
+     * @see IDocumentProcessor#getEntitiesFromString(GetEntitiesFromStringRequest, EditingTicket)
      */
     public synchronized List<Entity> getEntities(final Ticket ticket, final String text) {
         final GetEntitiesFromStringRequest request = new GetEntitiesFromStringRequest();
@@ -433,6 +491,40 @@ public class Client {
 
     /**
      * Fills candidates of entities.
+     * @param ticket   editing ticket
+     * @param id document id
+     * @param entities where to store candidates
+     * @throws DocumentChangedException if document has been changed under our hands
+     * @throws IdNotFoundException if id was not found
+     * @see IDocumentProcessor#getAssignmentsById(GetAssignmentsByIdRequest, EditingTicket)
+     */
+    public synchronized void getObjects(final Ticket ticket, final long id,
+            final List<Entity> entities)
+            throws DocumentChangedException, IdNotFoundException {
+        final Map<Integer, Entity> entMap = new HashMap<>();
+        //TODO create one private method for creating entities when they are unified in commons
+        final cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdRequest.Entities ents =
+                new cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdRequest.Entities();
+        for (Entity entity : entities) {
+            ents.getEntities().add(entity.toEntity());
+            entMap.put(entity.getPosition(), entity);
+        }
+        final GetAssignmentsByIdRequest request = new GetAssignmentsByIdRequest();
+        request.setId(id);
+        request.setEntities(ents);
+        try {
+            final GetAssignmentsByIdResponse response =
+                    getDocumentProcessor().getAssignmentsById(request, ticket.toTicket());
+            processAssignments(response.getAssignments(), entMap);
+        } catch (DocumentChanged e) {
+            throw new DocumentChangedException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
+    }
+
+    /**
+     * Fills candidates of entities.
      *
      * @param ticket   editing ticket
      * @param text     report to process
@@ -440,36 +532,21 @@ public class Client {
      * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
      */
     public synchronized void getObjects(final Ticket ticket, final String text, final List<Entity> entities) {
-        final Entities ents = new Entities();
-        final Map<Integer, Entity> map = new HashMap<>();
+        final Map<Integer, Entity> entMap = new HashMap<>();
+        //TODO create one private method for creating entities when they are unified in commons
+        final cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest.Entities ents =
+                new cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest.Entities();
         for (Entity entity : entities) {
             ents.getEntities().add(entity.toEntity());
-            map.put(entity.getPosition(), entity);
+            entMap.put(entity.getPosition(), entity);
         }
-
+        //
         final GetAssignmentsFromStringRequest request = new GetAssignmentsFromStringRequest();
         request.setText(text);
         request.setEntities(ents);
-
+        //
         final GetAssignmentsFromStringResponse response = getDocumentProcessor().getAssignmentsFromString(request, ticket.toTicket());
-
-        final Map<Long, Object> objects = new HashMap<>();
-        for (Assignment assignment : response.getAssignments()) {
-            final Entity ent = map.get(assignment.getEntity().getPosition());
-            ent.getCandidates().clear();
-            for (Assignment.RatedObject rating : assignment.getRatedObjects()) {
-                final double r = rating.getScore();
-                final Long objId = rating.getObject().getId();
-                Object obj;
-                if (objects.containsKey(objId)) {
-                    obj = objects.get(objId);
-                } else {
-                    obj = new Object(rating.getObject());
-                    objects.put(objId, obj);
-                }
-                ent.getCandidates().add(new Pair<>(r, obj));
-            }
-        }
+        processAssignments(response.getAssignments(), entMap);
     }
 
     /**
@@ -749,8 +826,80 @@ public class Client {
     }
 
     /**
+     * Converts reportEntities and reportRelations to objects,
+     * objectsOccurrences, relations and relationOccurrences.
+     * @param reportEntities list of entities
+     * @param reportRelations list of relations
+     * @param objects recognized objects
+     * @param objectOccurrences object occurrences
+     * @param relations recognized relations
+     * @param relationOccurrences relation occurrences
+     */
+    private void prepareSaveRequest(final List<Entity> reportEntities,
+            final List<RelationBuilder> reportRelations,
+            final List<cz.cuni.mff.ufal.textan.commons.models.Object> objects,
+            final List<ObjectOccurrence> objectOccurrences,
+            final List<cz.cuni.mff.ufal.textan.commons.models.Relation> relations,
+            final List<RelationOccurrence> relationOccurrences) {
+        for (Entity ent : reportEntities) {
+            if (ent.getCandidate() != null) {
+                objects.add(ent.getCandidate().toObject());
+                objectOccurrences.add(ent.toObjectOccurrence());
+            }
+        }
+        for (RelationBuilder relation : reportRelations) {
+            relations.add(relation.toRelation());
+            final RelationOccurrence occ = relation.toRelationOccurrence();
+            relationOccurrences.add(occ);
+        }
+    }
+
+    /**
      * Saves processed documents.
-     *
+     * If returns false, check {@link #getProblems(Ticket)}.
+     * @param ticket editing ticket
+     * @param id document id
+     * @param reportEntities report entities
+     * @param reportRelations report relations
+     * @param force  force save?
+     * @return true if saving was successfull, false otherwise
+     * @throws IdNotFoundException if id error occurs
+     * @throws DocumentChangedException if document has been changed under our hands
+     */
+    public synchronized boolean saveProcessedDocument(final Ticket ticket,
+            final long id, final List<Entity> reportEntities,
+            final List<RelationBuilder> reportRelations,
+            final boolean force) throws IdNotFoundException, DocumentChangedException {
+        final SaveProcessedDocumentByIdRequest request =
+                new SaveProcessedDocumentByIdRequest();
+        final List<cz.cuni.mff.ufal.textan.commons.models.Object> objects =
+                request.getObjects();
+        final List<ObjectOccurrence> objectOccurrences =
+                request.getObjectOccurrences();
+        final List<cz.cuni.mff.ufal.textan.commons.models.Relation> relations =
+                request.getRelations();
+        final List<RelationOccurrence> relationOccurrences =
+                request.getRelationOccurrences();
+        prepareSaveRequest(reportEntities, reportRelations, objects,
+                objectOccurrences, relations, relationOccurrences);
+        request.setDocumentId(id);
+        request.setForce(force);
+        try {
+            final SaveProcessedDocumentByIdResponse response =
+                    getDocumentProcessor().saveProcessedDocumentById(
+                            request,
+                            ticket.toTicket());
+            return response.isResult();
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        } catch (DocumentChanged e) {
+            throw new DocumentChangedException(e);
+        }
+    }
+
+    /**
+     * Saves processed documents.
+     * If returns false, check {@link #getProblems(Ticket)}.
      * @param ticket          editing ticket
      * @param text            report text
      * @param reportEntities  report entities
@@ -770,21 +919,11 @@ public class Client {
                 request.getObjects();
         final List<ObjectOccurrence> objectOccurrences =
                 request.getObjectOccurrences();
-        for (Entity ent : reportEntities) {
-            if (ent.getCandidate() != null) {
-                objects.add(ent.getCandidate().toObject());
-                objectOccurrences.add(ent.toObjectOccurrence());
-            }
-        }
-
         final List<cz.cuni.mff.ufal.textan.commons.models.Relation> relations = request.getRelations();
         final List<RelationOccurrence> relationOccurrences =
                 request.getRelationOccurrences();
-        for (RelationBuilder relation : reportRelations) {
-            relations.add(relation.toRelation());
-            final RelationOccurrence occ = relation.toRelationOccurrence();
-            relationOccurrences.add(occ);
-        }
+        prepareSaveRequest(reportEntities, reportRelations, objects,
+                objectOccurrences, relations, relationOccurrences);
 
         request.setText(text);
         request.setForce(force);

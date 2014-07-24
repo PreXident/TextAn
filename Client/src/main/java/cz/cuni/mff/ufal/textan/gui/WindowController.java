@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.gui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -84,6 +85,20 @@ public abstract class WindowController implements Initializable {
         }
     }
 
+    protected <T> T callWithContentBackup(final Callable<T> c) throws Exception {
+        if (window != null) {
+            window.setResizableWindow(false);
+            final List<Node> backup = new ArrayList<>(window.getContentPane().getChildren());
+            final T result = c.call();
+            window.getContentPane().getChildren().clear();
+            window.getContentPane().getChildren().addAll(backup);
+            window.setResizableWindow(true);
+            return result;
+        } else {
+            return c.call();
+        }
+    }
+
     /**
      * Calls the runnable; if in {@link Window} it is done with content backup
      * and restore. It is intended for displaying lightweight dialogs that mess
@@ -91,15 +106,13 @@ public abstract class WindowController implements Initializable {
      * @param r code to run
      */
     protected void callWithContentBackup(final Runnable r) {
-        if (window != null) {
-            window.setResizableWindow(false);
-            final List<Node> backup = new ArrayList<>(window.getContentPane().getChildren());
-            r.run();
-            window.getContentPane().getChildren().clear();
-            window.getContentPane().getChildren().addAll(backup);
-            window.setResizableWindow(true);
-        } else {
-            r.run();
+        try {
+            callWithContentBackup(() -> {
+                r.run();
+                return null;
+            });
+        } catch (Exception e) {
+            throw new RuntimeException("This should never happen!");
         }
     }
 

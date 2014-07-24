@@ -224,7 +224,10 @@ public class ReportRelationsController extends ReportWizardController {
             new Thread(() -> {
                 final FilteredList<FXRelationBuilder> unanchored =
                         relationsListView.getItems().filtered(rel -> rel.words.isEmpty());
-                pipeline.setReportRelations(words, unanchored);
+                handleDocumentChangedException(root, () -> {
+                    pipeline.setReportRelations(words, unanchored);
+                    return null;
+                });
             }, "FromRelationsState").start();
         }
     }
