@@ -155,7 +155,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         try {
             GetGraphByRelationIdResponse response = new GetGraphByRelationIdResponse();
-            Graph graph = graphService.getGraphFromRelation(getGraphByRelationIdRequest.getObjectId(), getGraphByRelationIdRequest.getDistance());
+            Graph graph = graphService.getGraphFromRelation(getGraphByRelationIdRequest.getRelationId(), getGraphByRelationIdRequest.getDistance());
             response.setGraph(graph.toCommonsGraph());
 
             LOG.info("Executed operation getGraphById: {}", response);

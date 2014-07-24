@@ -253,7 +253,7 @@
 
     <xs:complexType name="GetGraphByRelationIdRequest">
         <xs:sequence>
-            <xs:element name="objectId" type="xs:long"/>
+            <xs:element name="relationId" type="xs:long"/>
             <xs:element name="distance" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>

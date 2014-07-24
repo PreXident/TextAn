@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.graph;
 
 import java.util.Objects;
@@ -12,13 +6,13 @@ import java.util.Objects;
  *
  * @author Vaclav Pernicka
  */
-public class Node {
+public abstract class Node {
     public static final long UNKNOWN_NODE_ID = -1;
     
     long id;
     String name;
 
-    Node(long id, String name) {
+    public Node(long id, String name) {
         this.id = id;
         this.name = name;
     }

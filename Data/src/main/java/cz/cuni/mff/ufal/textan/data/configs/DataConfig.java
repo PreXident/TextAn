@@ -4,6 +4,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.interceptors.GlobalVersionAndLogInterceptor;
 import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
@@ -187,8 +188,9 @@ public class DataConfig {
      * @return the graph factory
      */
     @Bean
-    public GraphFactory graphFactory() throws PropertyVetoException, IOException {
-        return new GraphFactory(sessionFactory());
+    @Autowired
+    public GraphFactory graphFactory(IObjectTableDAO objectTableDAO) throws PropertyVetoException, IOException {
+        return new GraphFactory(sessionFactory(), objectTableDAO);
     }
 
     @Bean

@@ -1,23 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.graph;
 
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
-import java.util.Collection;
-import java.util.Collections;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -30,17 +22,16 @@ import java.util.Set;
 @Transactional
 public class GraphFactory {
 
-    @Autowired
-    IObjectTableDAO objectTableDAO;
-    
-    SessionFactory sessionFactory;
+    final IObjectTableDAO objectTableDAO;
+    final SessionFactory sessionFactory;
 
     /**
      *
+     * @param objectTableDAO
      * @param sessionFactory
      */
-    @Autowired
-    public GraphFactory(SessionFactory sessionFactory) {
+    public GraphFactory(SessionFactory sessionFactory, IObjectTableDAO objectTableDAO) {
+        this.objectTableDAO = objectTableDAO;
         this.sessionFactory = sessionFactory;
     }
 
@@ -58,7 +49,7 @@ public class GraphFactory {
      * @return desired graph
      */
     public Graph getGraphFromObject(long objectId, int depth) {
-        return getGraphFromObject(objectId, depth, new HashSet<Node>());
+        return getGraphFromObject(objectId, depth, new HashSet<>());
     }
 
     /**
@@ -85,16 +76,15 @@ public class GraphFactory {
         Session s = sessionFactory.getCurrentSession();
         @SuppressWarnings("unchecked")
         List<Node> res = s.createQuery(
-                "select new Node(obj.id, obj.data) "
+                "select new cz.cuni.mff.ufal.textan.data.graph.ObjectNode(obj.id, obj.data) "
                         + " from ObjectTable obj"
                         + "     left join obj.relations inRel"
                         + "     left join inRel.relation rel"
-                
                         + " where rel.id = :pId "
                   )
                 .setParameter("pId", relationId)
                 .list();
-        Set<Node> passedNodes = new HashSet<Node>(res);
+        Set<Node> passedNodes = new HashSet<>(res);
         Graph result = new Graph();
         for (Node node : res) {
             result.mergeIntoThis(getGraphFromObject(node.getId(), depth, passedNodes));
@@ -133,19 +123,19 @@ public class GraphFactory {
         if (res.isEmpty()) {
             return new Graph().add(new ObjectNode(objectTableDAO.find(objectId)));
         }
-        
-        for (int i = 0; i < res.size(); i++) {
-            List row = (List)res.get(i);
-            ObjectNode objectNode = new ObjectNode((ObjectTable)row.get(0));
-            RelationNode relationNode = row.get(1)==null ? null : new RelationNode((RelationTable)row.get(1));
+
+        for (Object re : res) {
+            List row = (List) re;
+            ObjectNode objectNode = new ObjectNode((ObjectTable) row.get(0));
+            RelationNode relationNode = row.get(1) == null ? null : new RelationNode((RelationTable) row.get(1));
             if (relationNode != null) {
-                int order = (int)row.get(2);
+                int order = (int) row.get(2);
                 Edge edge = new Edge(objectNode, relationNode, order);
                 result.nodes.add(relationNode);
                 result.edges.add(edge);
                 if (row.get(4) != null) {
-                    int order2 = (int)row.get(3);
-                    ObjectNode objectNode2 = new ObjectNode((ObjectTable)row.get(4));
+                    int order2 = (int) row.get(3);
+                    ObjectNode objectNode2 = new ObjectNode((ObjectTable) row.get(4));
                     if (result.nodes.add(objectNode2))
                         thisWave.add(objectNode2);
                     result.edges.add(new Edge(objectNode2, relationNode, order2));
