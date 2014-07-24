@@ -310,17 +310,36 @@ public class Client {
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
             final Object object, final String filter,
             final int first, final int size) throws IdNotFoundException {
+        //TODO uncomment when db implementation is done
+//        try {
+//            final GetFilteredDocumentsContainingObjectByIdRequest request =
+//                    new GetFilteredDocumentsContainingObjectByIdRequest();
+//            request.setObjectId(object.getId());
+//            request.setFirstResult(first);
+//            request.setMaxResults(size);
+//            request.setPattern(filter);
+//            final GetFilteredDocumentsContainingObjectByIdResponse response =
+//                    getDataProvider().getFilteredDocumentsContainingObjectById(request);
+//            final List<Document> list = response.getDocumentCountPairs().stream()
+//                    .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
+//                    .collect(Collectors.toCollection(ArrayList::new));
+//            return new Pair<>(list, response.getTotalNumberOfResults());
+//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+//            throw new IdNotFoundException(e);
+//        }
         try {
-            final GetFilteredDocumentsContainingObjectByIdRequest request =
-                    new GetFilteredDocumentsContainingObjectByIdRequest();
+            final GetDocumentsContainingObjectByIdRequest request =
+                    new GetDocumentsContainingObjectByIdRequest();
             request.setObjectId(object.getId());
             request.setFirstResult(first);
             request.setMaxResults(size);
-            request.setPattern(filter);
-            final GetFilteredDocumentsContainingObjectByIdResponse response =
-                    getDataProvider().getFilteredDocumentsContainingObjectById(request);
+            //TODO set parameters for filtering when ready
+            final GetDocumentsContainingObjectByIdResponse response =
+                    getDataProvider().getDocumentsContainingObjectById(request);
             final List<Document> list = response.getDocumentCountPairs().stream()
                     .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
+                    //TODO remove filtering emulation
+                    .filter(d -> d.getText().contains(filter))
                     .collect(Collectors.toCollection(ArrayList::new));
             return new Pair<>(list, response.getTotalNumberOfResults());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
