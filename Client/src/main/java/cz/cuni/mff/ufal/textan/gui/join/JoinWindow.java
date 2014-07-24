@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.gui.join;
 import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.join.JoinController.MIN_HEIGHT;
 import static cz.cuni.mff.ufal.textan.gui.join.JoinController.MIN_WIDTH;
 import static cz.cuni.mff.ufal.textan.gui.join.JoinController.PROPERTY_ID;
 import static cz.cuni.mff.ufal.textan.gui.join.JoinController.TITLE;
@@ -25,7 +26,8 @@ public class JoinWindow extends InnerWindow {
     public JoinWindow(final TextAnController textAnController,
             final Properties settings) {
         super(TITLE, PROPERTY_ID, settings);
-        setMinHeight(MIN_WIDTH);
+        setMinWidth(MIN_WIDTH);
+        setMinHeight(MIN_HEIGHT);
         ResourceBundle resourceBundle = null;
         try {
             resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.join.Join");
