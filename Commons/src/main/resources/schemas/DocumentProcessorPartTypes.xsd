@@ -85,13 +85,7 @@
     <xs:complexType name="GetAssignmentsFromStringRequest">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
-            <xs:element name="entities">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element ref="cms:entity" minOccurs="1" maxOccurs="unbounded"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
+            <xs:element ref="cms:entity" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -105,13 +99,7 @@
     <xs:complexType name="GetAssignmentsByIdRequest">
         <xs:sequence>
             <xs:element name="id" type="xs:long"/>
-            <xs:element name="entities">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element ref="cms:entity" minOccurs="1" maxOccurs="unbounded"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
+            <xs:element ref="cms:entity" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

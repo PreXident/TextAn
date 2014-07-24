@@ -57,7 +57,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
-        List<Entity> serverEntities = getAssignmentsFromStringRequest.getEntities().getEntities().stream()
+        List<Entity> serverEntities = getAssignmentsFromStringRequest.getEntities().stream()
                 .map(Entity::fromCommonsEntity)
                 .collect(Collectors.toList());
 
@@ -150,7 +150,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
-        List<cz.cuni.mff.ufal.textan.server.models.Entity> serverEntities = getAssignmentsByIdRequest.getEntities().getEntities().stream()
+        List<cz.cuni.mff.ufal.textan.server.models.Entity> serverEntities = getAssignmentsByIdRequest.getEntities().stream()
                 .map(cz.cuni.mff.ufal.textan.server.models.Entity::fromCommonsEntity)
                 .collect(Collectors.toList());
 

@@ -7,7 +7,6 @@ import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Assignment;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest.Entities;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
@@ -440,16 +439,15 @@ public class Client {
      * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
      */
     public synchronized void getObjects(final Ticket ticket, final String text, final List<Entity> entities) {
-        final Entities ents = new Entities();
-        final Map<Integer, Entity> map = new HashMap<>();
-        for (Entity entity : entities) {
-            ents.getEntities().add(entity.toEntity());
-            map.put(entity.getPosition(), entity);
-        }
 
         final GetAssignmentsFromStringRequest request = new GetAssignmentsFromStringRequest();
         request.setText(text);
-        request.setEntities(ents);
+
+        final Map<Integer, Entity> map = new HashMap<>();
+        for (Entity entity : entities) {
+            request.getEntities().add(entity.toEntity());
+            map.put(entity.getPosition(), entity);
+        }
 
         final GetAssignmentsFromStringResponse response = getDocumentProcessor().getAssignmentsFromString(request, ticket.toTicket());
 
