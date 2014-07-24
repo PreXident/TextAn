@@ -15,6 +15,12 @@ import javafx.util.StringConverter;
  */
 public abstract class ReportWizardController extends WindowController {
 
+    /** Initial title of the wizard. */
+    static protected final String TITLE = "Report Wizard";
+
+    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    static protected final String PROPERTY_ID = "report.wizard";
+
     /** Pipeline controlling the report processing. */
     protected ProcessReportPipeline pipeline;
 
@@ -61,15 +67,25 @@ public abstract class ReportWizardController extends WindowController {
     }
 
     /**
+     * Informs controller that it is now in control of the container.
+     */
+    public void nowInControl() {
+        //nothing
+    }
+
+    /**
      * Simple convertor to provide labels to progress sliders.
      */
     protected static class SliderLabelFormatter extends StringConverter<Double> {
 
         /** Localization container. */
-        final ResourceBundle rb = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizard");
+        final protected ResourceBundle rb = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizard");
 
         @Override
         public String toString(Double val) {
+            if (val < 0.5) {
+                return Utils.localize(rb, "report.wizard.selectfile.label");
+            }
             if (val < 1.5) {
                 return Utils.localize(rb, "report.wizard.edit.label");
             }
@@ -81,6 +97,9 @@ public abstract class ReportWizardController extends WindowController {
             }
             if (val < 4.5) {
                 return Utils.localize(rb, "report.wizard.relations.label");
+            }
+            if (val < 5.5) {
+                return Utils.localize(rb, "report.wizard.errors.label");
             }
             return "";
         }
@@ -101,6 +120,9 @@ public abstract class ReportWizardController extends WindowController {
             }
             if (string.equals(Utils.localize(rb, "report.wizard.relations.label"))) {
                 return 4D;
+            }
+           if (string.equals(Utils.localize(rb, "report.wizard.relations.label"))) {
+                return 5D;
             }
             return 0D;
         }

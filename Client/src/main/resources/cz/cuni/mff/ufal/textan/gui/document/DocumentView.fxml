@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import cz.cuni.mff.ufal.textan.gui.reportwizard.TextFlow?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import java.net.URL ?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.cell.*?>
+
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
+			fx:controller="cz.cuni.mff.ufal.textan.gui.document.DocumentViewController" styleClass="root" >
+	<stylesheets >
+		<URL value="@DocumentView.css" />
+	</stylesheets>
+	<center>
+		<SplitPane orientation="VERTICAL">
+			<items>
+				<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
+					<TextFlow fx:id="textFlow" styleClass="text-flow" />
+				</ScrollPane>
+				<SplitPane dividerPositions="0.65" >
+					<items>
+						<BorderPane>
+							<center>
+								<TableView fx:id="table">
+									<columns>
+										<TableColumn fx:id="orderColumn" text="%order" resizable="false" prefWidth="60" />
+										<TableColumn fx:id="roleColumn" text="%role" resizable="false" prefWidth="100" />
+										<TableColumn fx:id="objectColumn" text="%object" resizable="false" />
+									</columns>
+									<placeholder>
+										<Label text="%nothing" />
+									</placeholder>
+								</TableView>
+							</center>
+						</BorderPane>
+						<BorderPane>
+							<center>
+								<ListView fx:id="relationsListView" />
+							</center>
+						</BorderPane>
+					</items>
+				</SplitPane>
+			</items>
+		</SplitPane>
+	</center>
+</BorderPane>

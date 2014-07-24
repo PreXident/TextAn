@@ -1,17 +1,20 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IEntityViewDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
-import cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices;
-import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
+import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.BlockingArrayQueue;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.util.thread.ThreadPool;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -28,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * The root spring configuration.
@@ -51,6 +55,14 @@ public class AppConfig implements ApplicationContextAware {
     @SuppressWarnings("unused")
     @Autowired
     private IObjectTypeTableDAO objectTypeTableDAO;
+
+    @SuppressWarnings("unused")
+    @Autowired
+    private IDocumentTableDAO documentTableDAO;
+
+    @SuppressWarnings("unused")
+    @Autowired
+    private IEntityViewDAO entityViewDAO;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -92,13 +104,23 @@ public class AppConfig implements ApplicationContextAware {
     @Bean(destroyMethod = "stop")
     public Server server() throws IOException {
 
-        Server server = new Server(
-                new QueuedThreadPool(
-                        Integer.parseInt(serverProperties().getProperty("server.threadPool.maxThreads")),
-                        Integer.parseInt(serverProperties().getProperty("server.threadPool.minThreads")),
-                        Integer.parseInt(serverProperties().getProperty("server.threadPool.idleTimeout"))
-                )
-        );
+        int maxThreads = Integer.parseInt(serverProperties().getProperty("server.threadPool.maxThreads"));
+        int minThreads = Integer.parseInt(serverProperties().getProperty("server.threadPool.minThreads"));
+        int idleTimeout = Integer.parseInt(serverProperties().getProperty("server.threadPool.idleTimeout"));
+
+        BlockingQueue<Runnable> acceptQueue = null;
+        String acceptQueueSizeProperty = serverProperties().getProperty("server.acceptQueue.size");
+        if (acceptQueueSizeProperty != null) {
+            int acceptQueueSize = Integer.parseInt(acceptQueueSizeProperty);
+            int capacity = Math.max(maxThreads, minThreads);
+            int grow = Math.min(maxThreads, minThreads);
+            int maxCapacity = Math.max(acceptQueueSize, capacity);
+
+            acceptQueue = new BlockingArrayQueue<>(capacity, grow, maxCapacity);
+        }
+
+        ThreadPool threadPool = new QueuedThreadPool(maxThreads, minThreads, idleTimeout, acceptQueue);
+        Server server = new Server(threadPool);
 
         //TODO: what about SSL connector?
         ServerConnector connector = new ServerConnector(server);
@@ -142,10 +164,10 @@ public class AppConfig implements ApplicationContextAware {
     /**
      * Creates a named entity recognizer
      * @return the recognizer
-     * @see cz.cuni.mff.ufal.textan.server.nametagIntegration.NameTagServices
+     * @see cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer
      */
-    @Bean
-    public NameTagServices nametagServices() {
-        return new NameTagServices(objectTypeTableDAO);
+    @Bean(initMethod = "init")
+    public NamedEntityRecognizer namedEntityRecognizer() {
+        return new NamedEntityRecognizer(objectTypeTableDAO, entityViewDAO, documentTableDAO);
     }
 }

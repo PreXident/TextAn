@@ -13,12 +13,21 @@ public class RelationType {
     private final String name;
 
     /**
-     * Only constructor.
+     * Constructs RelationType from commons blue print.
      * @param type relation type blue print
      */
     public RelationType(final cz.cuni.mff.ufal.textan.commons.models.RelationType type) {
-        id = type.getId();
-        name = type.getName();
+        this(type.getId(), type.getName());
+    }
+
+    /**
+     * Constructs from separate values.
+     * @param id type id
+     * @param name type name
+     */
+    public RelationType(final long id, final String name) {
+        this.id = id;
+        this.name = name;
     }
 
     /**

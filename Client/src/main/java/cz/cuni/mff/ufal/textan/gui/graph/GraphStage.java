@@ -1,10 +1,13 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.core.graph.Grapher;
+import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.GRAPH_PROPERTY_ID;
+import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.MIN_HEIGHT;
+import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.TITLE;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.scene.Parent;
@@ -15,14 +18,8 @@ import org.controlsfx.dialog.Dialogs;
  */
 public class GraphStage extends OuterStage {
 
-    /** Initial title of the wizard. */
-    static protected final String TITLE = "Graph Viewer";
-
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
-    static protected final String PROPERTY_ID = "graph.viewer";
-
     /** Graph information provider. */
-    final protected Grapher grapher;
+    final protected IGrapher grapher;
 
     /**
      * Only constructor.
@@ -32,20 +29,22 @@ public class GraphStage extends OuterStage {
      * @param settings properties with settings
      * @param grapher graph information provider
      */
-    public GraphStage(final TextAnController textAnController, final Properties settings, final Grapher grapher) {
-        super(TITLE, PROPERTY_ID, settings);
+    public GraphStage(final TextAnController textAnController,
+            final Properties settings, final IGrapher grapher) {
+        super(TITLE, GRAPH_PROPERTY_ID, settings);
         this.grapher = grapher;
         ResourceBundle resourceBundle = null;
         try {
             final Pair<Parent, GraphController> loaded = GraphController.loadFXML(grapher);
             getInnerWindow().getContentPane().getChildren().add(loaded.getFirst());
+            getInnerWindow().setMinHeight(MIN_HEIGHT);
             final GraphController controller = loaded.getSecond();
             controller.setTextAnController(textAnController);
             resourceBundle = controller.resourceBundle;
             controller.setStage(this);
             controller.setSettings(settings);
             controller.setGrapher(grapher);
-            setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            setTitle(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID));
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 
@@ -13,7 +7,12 @@ import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable;
+import org.hibernate.Query;
+import org.hibernate.cfg.annotations.QueryBinder;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +36,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<RelationTable> findAllByRelationType(Long relationTypeId) {
+    public List<RelationTable> findAllByRelationType(long relationTypeId) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_RELATION_TYPE_ID), "objType", JoinType.INNER_JOIN)
                 .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", RelationTypeTable.PROPERTY_NAME_ID), relationTypeId))
@@ -45,7 +44,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     }
     @Override
     @SuppressWarnings("unchecked")
-    public List<RelationTable> findAllByRelationType(Long relationTypeId, int firstResult, int pageSize) {
+    public List<RelationTable> findAllByRelationType(long relationTypeId, int firstResult, int pageSize) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_RELATION_TYPE_ID), "objType", JoinType.INNER_JOIN)
                 .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", RelationTypeTable.PROPERTY_NAME_ID), relationTypeId))
@@ -105,7 +104,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<RelationTable> findAllByDocumentOccurrence(Long documentId) {
+    public List<RelationTable> findAllByDocumentOccurrence(long documentId) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
                 .createAlias(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_DOCUMENT),
@@ -116,7 +115,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     }
     @Override
     @SuppressWarnings("unchecked")
-    public List<RelationTable> findAllByDocumentOccurrence(Long documentId, int firstResult, int pageSize) {
+    public List<RelationTable> findAllByDocumentOccurrence(long documentId, int firstResult, int pageSize) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
                 .createAlias(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_DOCUMENT),
@@ -135,5 +134,75 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     @Override
     public List<RelationTable> findAllByDocumentOccurrence(DocumentTable document, int firstResult, int pageSize) {
         return findAllByDocumentOccurrence(document.getId(), firstResult, pageSize);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<RelationTable> findAllSinceGlobalVersion(long version) {
+                return findAllCriteria()
+                .add(Restrictions.ge(RelationTable.PROPERTY_NAME_GLOBAL_VERSION, version))
+                .list();
+    }
+
+    private Query findAllByRelTypeAndAnchorFullTextQuery(long relationTypeId, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query fullTextQuery = builder
+                .phrase()
+                .onField("occurrences.anchor")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query typeQuery = builder
+                .keyword()
+                .onField("relationType.id")
+                .matching(relationTypeId)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(fullTextQuery)
+                .must(typeQuery)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter) {
+        return findAllByRelTypeAndAnchorFullTextQuery(relationTypeId, anchorFilter).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter, int firstResult, int maxResults) {
+        return addPagination(findAllByRelTypeAndAnchorFullTextQuery(relationTypeId, anchorFilter), firstResult, maxResults).list();
+    }
+
+    private Query findAllByAnchorFullTextQuery(String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query query = builder
+                .phrase()
+                .onField("occurrences.anchor")
+                .sentence(pattern)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<RelationTable> findAllByAnchorFullText(String anchorFilter) {
+        return findAllByAnchorFullTextQuery(anchorFilter).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<RelationTable> findAllByAnchorFullText(String anchorFilter, int firstResult, int maxResults) {
+        return addPagination(findAllByAnchorFullTextQuery(anchorFilter), firstResult, maxResults).list();
     }
 }

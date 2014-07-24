@@ -11,14 +11,13 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdR
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsFromStringRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsFromStringResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringResponse;
+import cz.cuni.mff.ufal.textan.commons.ws.DocumentChanged;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 
@@ -41,23 +40,30 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
     @Override
     synchronized public GetAssignmentsByIdResponse getAssignmentsById(
             final GetAssignmentsByIdRequest getAssignmentsByIdRequest,
-            final EditingTicket editingTicket) throws IdNotFoundException {
+            final EditingTicket editingTicket) throws IdNotFoundException, DocumentChanged {
         return innerDP.getAssignmentsById(getAssignmentsByIdRequest, editingTicket);
     }
 
     @Override
     synchronized public SaveProcessedDocumentByIdResponse saveProcessedDocumentById(
             final SaveProcessedDocumentByIdRequest saveProcessedDocumentByIdRequest,
-            final EditingTicket editingTicket) throws IdNotFoundException {
+            final EditingTicket editingTicket) throws IdNotFoundException, DocumentChanged {
         return innerDP.saveProcessedDocumentById(saveProcessedDocumentByIdRequest, editingTicket);
     }
 
     @Override
-    synchronized public GetProblemsByIdResponse getProblemsById(
-            final GetProblemsByIdRequest getProblemsByIdRequest,
-            final EditingTicket editingTicket) throws IdNotFoundException {
-        return innerDP.getProblemsById(getProblemsByIdRequest, editingTicket);
+    synchronized public GetProblemsResponse getProblems(
+            final GetProblemsRequest getProblemsRequest,
+            final EditingTicket editingTicket) {
+        return innerDP.getProblems(getProblemsRequest, editingTicket);
     }
+
+//    @Override
+//    synchronized public GetProblemsByIdResponse getProblemsById(
+//            final GetProblemsByIdRequest getProblemsByIdRequest,
+//            final EditingTicket editingTicket) throws IdNotFoundException {
+//        return innerDP.getProblemsById(getProblemsByIdRequest, editingTicket);
+//    }
 
     @Override
     synchronized public GetAssignmentsFromStringResponse getAssignmentsFromString(
@@ -69,7 +75,7 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
     @Override
     synchronized public GetEntitiesByIdResponse getEntitiesById(
             final GetEntitiesByIdRequest getEntitiesByIdRequest,
-            final EditingTicket editingTicket) throws IdNotFoundException {
+            final EditingTicket editingTicket) throws IdNotFoundException, DocumentChanged {
         return innerDP.getEntitiesById(getEntitiesByIdRequest, editingTicket);
     }
 
@@ -87,12 +93,12 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
         return innerDP.saveProcessedDocumentFromString(saveProcessedDocumentFromStringRequest, editingTicket);
     }
 
-    @Override
-    synchronized public GetProblemsFromStringResponse getProblemsFromString(
-            final GetProblemsFromStringRequest getProblemsFromStringRequest,
-            final EditingTicket editingTicket) {
-        return innerDP.getProblemsFromString(getProblemsFromStringRequest, editingTicket);
-    }
+//    @Override
+//    synchronized public GetProblemsFromStringResponse getProblemsFromString(
+//            final GetProblemsFromStringRequest getProblemsFromStringRequest,
+//            final EditingTicket editingTicket) {
+//        return innerDP.getProblemsFromString(getProblemsFromStringRequest, editingTicket);
+//    }
 
     @Override
     synchronized public GetEditingTicketResponse getEditingTicket(

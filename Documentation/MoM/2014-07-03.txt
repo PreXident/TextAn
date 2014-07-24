@@ -1,0 +1,23 @@
+No one is here.
+
+Tam:
+ - first version of TextPro is ready (need to be tested)
+ - (connection to db, learning of new model)
+ 
+Jakub:
+ - generating of training data
+ 
+Petr:
+ - distribution scripts
+
+HMW:
+ - Tam
+   - clean source code
+   - integration into rest of TextAn
+   - test TextPro
+ - Kuba
+   - long instead of Long
+   - autocloseable (copying of files)
+   - path to linguistics/training 
+
+Next meeting: Tue 17:00

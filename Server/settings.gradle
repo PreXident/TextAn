@@ -5,8 +5,8 @@ project(':Commons').projectDir = new File('../Commons')
 include ':Data'
 project(':Data').projectDir = new File('../Data')
 
-include ':NameTagIntegration'
-project(':NameTagIntegration').projectDir = new File('../NameTagIntegration')
+include ':Linguistics'
+project(':Linguistics').projectDir = new File('../Linguistics')
 
 include ':TextPro'
 project(':TextPro').projectDir = new File('../TextPro')

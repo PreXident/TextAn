@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class Tuple implements Cloneable, Serializable {
 
+    private static final long serialVersionUID = -881745874207797935L;
+
     /** Encapsulated objects. */
     private final List<Object> list;
 

@@ -18,7 +18,7 @@ public interface IRelationTableDAO extends IObjectRelationDAO<RelationTable> {
      * @param relationTypeId id of the relation type
      * @return 
      */
-    List<RelationTable> findAllByRelationType(Long relationTypeId);
+    List<RelationTable> findAllByRelationType(long relationTypeId);
         /**
      * finds all relations of specified type
      * 
@@ -27,7 +27,7 @@ public interface IRelationTableDAO extends IObjectRelationDAO<RelationTable> {
      * @param pageSize
      * @return 
      */
-    List<RelationTable> findAllByRelationType(Long relationTypeId, int firstResult, int pageSize);
+    List<RelationTable> findAllByRelationType(long relationTypeId, int firstResult, int pageSize);
     
     /**
      * finds all relations of specified type
@@ -40,8 +40,23 @@ public interface IRelationTableDAO extends IObjectRelationDAO<RelationTable> {
      * finds all relations of specified type
      * 
      * @param type
+     * @param firstResult
+     * @param pageSize
      * @return 
      */
     List<RelationTable> findAllByRelationType(RelationTypeTable type, int firstResult, int pageSize);
 
+    /**
+     * 
+     * @param version
+     * @return 
+     */
+    List<RelationTable> findAllSinceGlobalVersion(long version);
+
+    List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter);
+    List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter, int firstResult, int maxResults);
+
+
+    List<RelationTable> findAllByAnchorFullText(String anchorFilter);
+    List<RelationTable> findAllByAnchorFullText(String anchorFilter, int firstResult, int maxResults);
 }

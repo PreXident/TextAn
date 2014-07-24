@@ -1,7 +1,7 @@
 #!/bin/bash
 #Use #!/bin/sh in a OS different from Ubuntu. Old "sh" is not exist in Ubuntu.
 
-#Start script for Textan server in Unix style (starts process in backgroud).
+#Start script for Textan server in Unix style (starts process in background).
 #It can be used as Unix daemon.
 
 #The program name

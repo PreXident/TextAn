@@ -39,9 +39,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.control.ContextMenu;
 import javax.swing.SwingUtilities;
@@ -49,7 +52,6 @@ import org.apache.commons.collections15.Transformer;
 
 /**
  * Displays graphs.
- * TODO PretopoLib licensing!
  */
 public class GraphView extends SwingNode {
 
@@ -71,11 +73,20 @@ public class GraphView extends SwingNode {
     /** Object context menu. */
     ContextMenu objectContextMenu;
 
+    /** Relation context menu. */
+    ContextMenu relationContextMenu;
+
     /** Object to display graph for. */
-    Object objectForGraph;
+    final ObjectProperty<Object> objectForGraph = new SimpleObjectProperty<>();
+
+    /** Relation to display graph for. */
+    final ObjectProperty<Relation> relationForGraph = new SimpleObjectProperty<>();
 
     /** Central object. */
-    Object center;
+    Object centerObject;
+
+    /** Central relation. */
+    Relation centerRelation;
 
     /** Vizualizator's layout. */
     Layout<Object, Relation> layout;
@@ -88,29 +99,35 @@ public class GraphView extends SwingNode {
      * @param settings application settings
      * @param objects graph verteces
      * @param relations graph edges
-     * @param rootId center vertex id
+     * @param centerer predicate deciding the center of the graph
      */
     public GraphView(final Properties settings, final Map<Long, Object> objects,
-            final Set<Relation> relations, final long rootId) {
+            final Set<Relation> relations, final Predicate<java.lang.Object> centerer) {
         this.settings = settings;
         final boolean hypergraphs = settings.getProperty(TextAnController.HYPER_GRAPHS, "false").equals("true");
         final Hypergraph<Object, Relation> g = hypergraphs ? new SetHypergraph<>() : new SparseMultigraph<>();
         // Add vertices
         for (Object obj : objects.values()) {
             g.addVertex(obj);
-            if (obj.getId() == rootId) {
-                center = obj;
+            if (centerer.test(obj)) {
+                centerObject = obj;
             }
         }
         // Add edges
         if (hypergraphs) {
             for (Relation rel : relations) {
+                if (centerer.test(rel)) {
+                    centerRelation = rel;
+                }
                 final Stream<Triple<Integer, String, Object>> relatedIDs = rel.getObjects().stream();
                 final List<Object> related = relatedIDs.map(triple -> triple.getThird()).collect(Collectors.toList());
                 g.addEdge(rel, related);
             }
         } else {
             for (Relation rel : relations) {
+                if (centerer.test(rel)) {
+                    centerRelation = rel;
+                }
                 if (rel.getObjects().size() > 2) {
                     final Object dummy = new RelationObject(rel);
                     g.addVertex(dummy);
@@ -125,6 +142,9 @@ public class GraphView extends SwingNode {
                         } else {
                             g.addEdge(dummyRel, Arrays.asList(obj, dummy), EdgeType.UNDIRECTED);
                         }
+                    }
+                    if (centerer.test(rel)) {
+                        centerObject = dummy;
                     }
                 } else if (rel.getObjects().size() == 2) {
                     Iterator<Triple<Integer, String, Object>> it = rel.getObjects().iterator();
@@ -181,6 +201,11 @@ public class GraphView extends SwingNode {
                         objectContextMenu.hide();
                     });
                 }
+                if (relationContextMenu != null && relationContextMenu.isShowing()) {
+                    Platform.runLater(() -> {
+                        relationContextMenu.hide();
+                    });
+                }
                 super.mousePressed(e);
             }
 
@@ -195,19 +220,25 @@ public class GraphView extends SwingNode {
                 if(pickSupport != null) {
                     final Point s = MouseInfo.getPointerInfo().getLocation(); //e.getLocationOnScreen() is not good enough
                     final Object v = pickSupport.getVertex(vv.getGraphLayout(), p.getX(), p.getY());
-                    objectForGraph = v;
-                    if (v != null && objectContextMenu != null) {
-                        Platform.runLater(() -> {
-                            objectContextMenu.show(GraphView.this, s.getX(), s.getY());
-                        });
-                    }/* else {
-                        final Relation edge = pickSupport.getEdge(vv.getGraphLayout(), p.getX(), p.getY());
-                        if (edge != null ) {
+                    Relation edge = pickSupport.getEdge(vv.getGraphLayout(), p.getX(), p.getY());
+                    if (v != null) {
+                        if (v instanceof RelationObject) {
+                            edge = ((RelationObject) v).getRelation();
+                        } else if (objectContextMenu != null) {
                             Platform.runLater(() -> {
-                                contextMenu.show(GraphView.this, s.getX(), s.getY());
+                                objectForGraph.set(v);
+                                objectContextMenu.show(GraphView.this, s.getX(), s.getY());
                             });
+                            return;
                         }
-                    }*/
+                    }
+                    final Relation rel = edge;
+                    if (rel != null && relationContextMenu != null) {
+                        Platform.runLater(() -> {
+                            relationForGraph.set(rel);
+                            relationContextMenu.show(GraphView.this, s.getX(), s.getY());
+                        });
+                    }
                 }
             }
         });
@@ -246,35 +277,78 @@ public class GraphView extends SwingNode {
     }
 
     /**
+     * Returns context menu for edges.
+     * @return context menu for edges
+     */
+    public ContextMenu getRelationContextMenu() {
+        return relationContextMenu;
+    }
+
+    /**
+     * Sets context menu for edges.
+     * @param relationContextMenu new relation context menu
+     */
+    public void setRelationContextMenu(final ContextMenu relationContextMenu) {
+        this.relationContextMenu = relationContextMenu;
+    }
+
+    /**
+     * Centers to the given object
+     * @param object new center
+     */
+    public void centerToObject(final Object object) {
+       SwingUtilities.invokeLater(() -> {
+            final Point2D p = layout.transform(object);
+            final MutableTransformer layout2 = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT);
+            Point2D ctr = visualizator.getCenter();
+            final double scale = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW).getScale();
+            ctr = visualizator.getRenderContext().getMultiLayerTransformer().inverseTransform(ctr);
+            final double deltaX = (ctr.getX() - p.getX())*1/scale;
+            final double deltaY = (ctr.getY() - p.getY())*1/scale;
+            layout2.translate(deltaX, deltaY);
+            visualizator.repaint();
+        });
+    }
+
+    /**
+     * Centers to the given relation
+     * @param relation new center
+     */
+    public void centerToRelation(final Relation relation) {
+        SwingUtilities.invokeLater(() -> {
+            final List<Object> objects = relation.getObjects().stream()
+                    .map(Triple<Integer, String, Object>::getThird)
+                    .collect(Collectors.toList());
+            //TODO what to do with hyperedges? - That's easy: calculate center of gravity for convex hull of nodes...
+            if (objects.size() != 2) {
+                return;
+            }
+            final Point2D p1 = layout.transform(objects.get(0));
+            final Point2D p2 = layout.transform(objects.get(1));
+            final Point2D p = new Point2D.Double(
+                    (p1.getX() + p2.getX()) / 2,
+                    (p1.getY() + p2.getY()) / 2
+            );
+            final MutableTransformer layout2 = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT);
+            Point2D ctr = visualizator.getCenter();
+            final double scale = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW).getScale();
+            ctr = visualizator.getRenderContext().getMultiLayerTransformer().inverseTransform(ctr);
+            final double deltaX = (ctr.getX() - p.getX())*1/scale;
+            final double deltaY = (ctr.getY() - p.getY())*1/scale;
+            layout2.translate(deltaX, deltaY);
+            visualizator.repaint();
+       });
+    }
+
+    /**
      * Center to the graph root.
      */
     public void home() {
-        SwingUtilities.invokeLater(() -> {
-            Point2D p = layout.transform(center);
-            MutableTransformer layout2 = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT);
-            Point2D ctr = visualizator.getCenter();
-            double scale = visualizator.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW).getScale();
-            ctr = visualizator.getRenderContext().getMultiLayerTransformer().inverseTransform(visualizator.getCenter());
-            double deltaX = (ctr.getX() - p.getX())*1/scale;
-            double deltaY = (ctr.getY() - p.getY())*1/scale;
-            layout2.translate(deltaX, deltaY);
-            visualizator.repaint();
-
-//            VisualizationViewer<Object, Relation> vv = visualizator;
-//            MutableTransformer view = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW);
-//            MutableTransformer layout = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT);
-//
-//            Point2D ctr = vv.getCenter();
-//            Point2D pnt = view.inverseTransform(ctr);
-//
-//            double scale = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW).getScale();
-//
-//            double deltaX = (ctr.getX() - p.getX())*1/scale;
-//            double deltaY = (ctr.getY() - p.getY())*1/scale;
-//            Point2D delta = new Point2D.Double(deltaX, deltaY);
-//
-//            layout.translate(deltaX, deltaY);
-        });
+        if (centerObject != null) {
+            centerToObject(centerObject);
+        } else if (centerRelation != null) {
+            centerToRelation(centerRelation);
+        }
     }
 
     /**

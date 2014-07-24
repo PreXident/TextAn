@@ -1,10 +1,22 @@
 package cz.cuni.mff.ufal.textan.gui;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.core.Client;
+import cz.cuni.mff.ufal.textan.core.Object;
+import cz.cuni.mff.ufal.textan.core.ObjectType;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.concurrent.Semaphore;
+import java.util.function.BiConsumer;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -15,6 +27,9 @@ import javafx.stage.Stage;
  * A few useful static methods.
  */
 public class Utils {
+
+    /** Style for Object context menus. */
+    public final static String CONTEXT_MENU_STYLE = "-fx-font-size: 12";
 
     /**
      * Converts id to Color.
@@ -63,6 +78,94 @@ public class Utils {
         } catch(NullPointerException | MissingResourceException e) {
             System.err.printf("Localization string \"%1$s\" not found!\n", key);
             return key;
+        }
+    }
+
+    /**
+     * Uses resourceBundle to localize key.
+     * If not found, logs it and returns defaultVal.
+     * @param resourceBundle localization container
+     * @param key localization key
+     * @param defaultVal default value
+     * @return localization or key if not found
+     */
+    static public String localize(final ResourceBundle resourceBundle,
+            final String key, final String defaultVal) {
+        try {
+            return resourceBundle.getString(key);
+        } catch(NullPointerException | MissingResourceException e) {
+            System.err.printf("Localization string \"%1$s\" not found!\n", key);
+            return defaultVal;
+        }
+    }
+
+    /**
+     * Uses client to get filtered objects, fills outputList.
+     * @param client client for communication with the server
+     * @param controller caller, needed for displaying errors
+     * @param lock synchronization lock
+     * @param mainNode node to set cursor
+     * @param root controller root for displaying errors
+     * @param selectedType object type of filtered objects
+     * @param filter alias filter
+     * @param size maximal size of the output
+     * @param pageNo current page number
+     * @param resourceBundle resource bundle to localize pagination label or errors
+     * @param paginationLabel label displaying pagination info
+     * @param consumer gets notified with totalObjectCount and page count
+     * @param outputList objects are stored here
+     */
+    static public void filterObjects(
+            final Client client,
+            final WindowController controller,
+            final Semaphore lock,
+            final Node mainNode,
+            final Node root,
+            final ObjectType selectedType,
+            final String filter,
+            final int size,
+            final int pageNo,
+            final ResourceBundle resourceBundle,
+            final Label paginationLabel,
+            final BiConsumer<Integer, Integer> consumer,
+            final List<Object> outputList) {
+        if (lock.tryAcquire()) {
+            mainNode.setCursor(Cursor.WAIT);
+            final int first = size * pageNo;
+            final Task<Pair<List<Object>, Integer>> task = new Task<Pair<List<Object>, Integer>>() {
+                @Override
+                protected Pair<List<cz.cuni.mff.ufal.textan.core.Object>, Integer> call() throws Exception {
+                    Pair<List<cz.cuni.mff.ufal.textan.core.Object>, Integer> pair =
+                            client.getObjectsList(selectedType, filter, first, size);
+                    pair.getFirst().sort((obj1, obj2) -> Long.compare(obj1.getId(), obj2.getId()));
+                    return pair;
+                }
+            };
+            task.setOnSucceeded(e -> {
+                final Pair<List<Object>, Integer> pair =
+                        task.getValue();
+                outputList.clear();
+                outputList.addAll(FXCollections.observableList(pair.getFirst()));
+                final int objectCount = pair.getSecond();
+                final int pageCount = (int) Math.ceil(1.0 * pair.getSecond() / size);
+                final String format = Utils.localize(resourceBundle, "pagination.label");
+                paginationLabel.setText(String.format(format, pageNo + 1, pageCount));
+                consumer.accept(objectCount, pageCount);
+                mainNode.setCursor(Cursor.DEFAULT);
+                lock.release();
+            });
+            task.setOnFailed(e -> {
+                mainNode.setCursor(Cursor.DEFAULT);
+                lock.release();
+                controller.callWithContentBackup(() -> {
+                    controller.createDialog()
+                            .owner(controller.getDialogOwner(root))
+                            .title(Utils.localize(resourceBundle, "page.load.error"))
+                            .showException(task.getException());
+                });
+                lock.release();
+            });
+            new Thread(task, "ObjectFilter").start();
         }
     }
 
@@ -167,7 +270,7 @@ public class Utils {
      */
     static public void unstyleText(final Text text) {
         text.getStyleClass().clear();
-        Object color = text.getUserData();
+        java.lang.Object color = text.getUserData();
         if (color instanceof Paint) {
             text.setFill((Paint) color);
         } else {

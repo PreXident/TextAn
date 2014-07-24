@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import java.net.URL ?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.text.*?>
+<?import jfxtras.labs.scene.control.BigDecimalField?>
+
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
+			fx:controller="cz.cuni.mff.ufal.textan.gui.join.JoinController" styleClass="root" >
+	<stylesheets >
+		<URL value="@Join.css" />
+	</stylesheets>
+	<top>
+		<GridPane alignment="CENTER" hgap="10" vgap="10">
+			<padding><Insets top="0" right="0" bottom="10" left="0"/></padding>
+			<Label text="%type" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+			<ComboBox fx:id="typeComboBox" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+		</GridPane>
+	</top>
+	<center>
+		<SplitPane fx:id="splitPane" >
+			<items>
+				<BorderPane>
+					<top>
+						<GridPane alignment="CENTER_LEFT" hgap="10" vgap="10">
+							<padding><Insets top="0" right="0" bottom="10" left="0"/></padding>
+							<Label text="%filter" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+							<TextField fx:id="leftFilterField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+							<Button text="%filter.execute" onAction="#leftFilter" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+						</GridPane>
+					</top>
+					<center>
+						<TableView fx:id="leftTable" >
+							<columns>
+								<TableColumn fx:id="leftIdColumn" text="%table.id" prefWidth="60" sortable="false" />
+								<TableColumn fx:id="leftTypeColumn" text="%table.type" prefWidth="100" sortable="false" />
+								<TableColumn fx:id="leftAliasColumn" text="%table.alias" sortable="false" />
+							</columns>
+							<placeholder>
+								<Label text="" />
+							</placeholder>
+						</TableView>
+					</center>
+					<bottom>
+						<GridPane>
+							<HBox GridPane.columnIndex="0" GridPane.rowIndex="0" >
+								<Button text="|&lt;&lt;" onAction="#leftFastRewind" />
+								<Button text="&lt;" onAction="#leftRewind" />
+							</HBox>
+							<Label fx:id="leftPaginationLabel" GridPane.hgrow="ALWAYS" GridPane.halignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+							<HBox alignment="CENTER" spacing="10" GridPane.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1" >
+								<Label text="%page.size" />
+								<ComboBox fx:id="leftPerPageComboBox">
+									<items>
+										<FXCollections fx:factory="observableArrayList">
+											<Integer fx:value="10" />
+											<Integer fx:value="25" />
+											<Integer fx:value="50" />
+											<Integer fx:value="100" />
+										</FXCollections>
+									</items>
+									<value>
+										<Integer fx:value="25" />
+									</value>
+								</ComboBox>
+							</HBox>
+							<HBox GridPane.columnIndex="2" GridPane.rowIndex="0" >
+								<Button text="&gt;" onAction="#leftForward" />
+								<Button text="&gt;&gt;|" onAction="#leftFastForward" />
+							</HBox>
+						</GridPane>
+					</bottom>
+				</BorderPane>
+				<BorderPane>
+					<top>
+						<GridPane alignment="CENTER_LEFT" hgap="10" vgap="10">
+							<padding><Insets top="0" right="0" bottom="10" left="0"/></padding>
+							<Label text="%filter" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+							<TextField fx:id="rightFilterField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+							<Button text="%filter.execute" onAction="#rightFilter" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+						</GridPane>
+					</top>
+					<center>
+						<TableView fx:id="rightTable" >
+							<columns>
+								<TableColumn fx:id="rightIdColumn" text="%table.id" prefWidth="60" sortable="false" />
+								<TableColumn fx:id="rightTypeColumn" text="%table.type" prefWidth="100" sortable="false" />
+								<TableColumn fx:id="rightAliasColumn" text="%table.alias" sortable="false" />
+							</columns>
+							<placeholder>
+								<Label text="" />
+							</placeholder>
+						</TableView>
+					</center>
+					<bottom>
+						<GridPane>
+							<HBox GridPane.columnIndex="0" GridPane.rowIndex="0" >
+								<Button text="|&lt;&lt;" onAction="#rightFastRewind" />
+								<Button text="&lt;" onAction="#rightRewind" />
+							</HBox>
+							<Label fx:id="rightPaginationLabel" GridPane.hgrow="ALWAYS" GridPane.halignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+							<HBox alignment="CENTER" spacing="10" GridPane.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1">
+								<Label text="%page.size" />
+								<ComboBox fx:id="rightPerPageComboBox">
+									<items>
+										<FXCollections fx:factory="observableArrayList">
+											<Integer fx:value="10" />
+											<Integer fx:value="25" />
+											<Integer fx:value="50" />
+											<Integer fx:value="100" />
+										</FXCollections>
+									</items>
+									<value>
+										<Integer fx:value="25" />
+									</value>
+								</ComboBox>
+							</HBox>
+							<HBox GridPane.columnIndex="2" GridPane.rowIndex="0" >
+								<Button text="&gt;" onAction="#rightForward" />
+								<Button text="&gt;&gt;|" onAction="#rightFastForward" />
+							</HBox>
+						</GridPane>
+					</bottom>
+				</BorderPane>
+			</items>
+		</SplitPane>
+	</center>
+	<bottom>
+		<Button fx:id="joinButton" text="%join.button" onAction="#join" />
+	</bottom>
+</BorderPane>

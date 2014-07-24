@@ -53,6 +53,20 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
+    synchronized public GetGraphByRelationIdResponse getGraphByRelationId(
+            final GetGraphByRelationIdRequest getGraphByRelationIdRequest)
+            throws IdNotFoundException {
+        return innerDP.getGraphByRelationId(getGraphByRelationIdRequest);
+    }
+
+    @Override
+    synchronized public GetFilteredRelationsResponse getFilteredRelations(
+            final GetFilteredRelationsRequest getFilteredRelationsRequest)
+            throws IdNotFoundException {
+        return innerDP.getFilteredRelations(getFilteredRelationsRequest);
+    }
+
+    @Override
     synchronized public GetFilteredObjectsResponse getFilteredObjects(
             final GetFilteredObjectsRequest getFilteredObjectsRequest)
             throws IdNotFoundException {
@@ -66,10 +80,17 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
-    synchronized public GetGraphByIdResponse getGraphById(
-            final GetGraphByIdRequest getGraphByIdRequest)
+    synchronized public GetGraphByObjectIdResponse getGraphByObjectId(
+            final GetGraphByObjectIdRequest getGraphByIdRequest)
             throws IdNotFoundException {
-        return innerDP.getGraphById(getGraphByIdRequest);
+        return innerDP.getGraphByObjectId(getGraphByIdRequest);
+    }
+
+    @Override
+    synchronized public GetFilteredDocumentsContainingObjectByIdResponse getFilteredDocumentsContainingObjectById(
+            final GetFilteredDocumentsContainingObjectByIdRequest getFilteredDocumentsContainingObjectByIdRequest)
+            throws IdNotFoundException {
+        return innerDP.getFilteredDocumentsContainingObjectById(getFilteredDocumentsContainingObjectByIdRequest);
     }
 
     @Override
@@ -93,10 +114,23 @@ public class SynchronizedDataProvider implements IDataProvider {
     }
 
     @Override
-    synchronized public GetDocumentsContainsObjectByIdResponse getDocumentsContainsObjectById(
-            final GetDocumentsContainsObjectByIdRequest getDocumentsContainsObjectByIdRequest)
+    synchronized public GetDocumentsContainingObjectByIdResponse getDocumentsContainingObjectById(
+            final GetDocumentsContainingObjectByIdRequest getDocumentsContainingObjectByIdRequest)
             throws IdNotFoundException {
-        return innerDP.getDocumentsContainsObjectById(getDocumentsContainsObjectByIdRequest);
+        return innerDP.getDocumentsContainingObjectById(getDocumentsContainingObjectByIdRequest);
+    }
+
+    @Override
+    synchronized public GetObjectsByIdsResponse getObjectsByIds(
+            final GetObjectsByIdsRequest getObjectsByIdsRequest) throws IdNotFoundException {
+        return innerDP.getObjectsByIds(getObjectsByIdsRequest);
+    }
+
+    @Override
+    synchronized public GetDocumentsContainingRelationByIdResponse getDocumentsContainingRelationById(
+            final GetDocumentsContainingRelationByIdRequest getDocumentsContainingRelationByIdRequest)
+            throws IdNotFoundException {
+        return innerDP.getDocumentsContainingRelationById(getDocumentsContainingRelationByIdRequest);
     }
 
     @Override
@@ -129,6 +163,19 @@ public class SynchronizedDataProvider implements IDataProvider {
             final GetRelationsByTypeIdRequest getRelationsByTypeIdRequest)
             throws IdNotFoundException {
         return innerDP.getRelationsByTypeId(getRelationsByTypeIdRequest);
+    }
+
+    @Override
+    synchronized public GetFilteredDocumentsResponse getFilteredDocuments(
+            final GetFilteredDocumentsRequest getFilteredDocumentsRequest) {
+        return innerDP.getFilteredDocuments(getFilteredDocumentsRequest);
+    }
+
+    @Override
+    synchronized public GetFilteredDocumentsContainingRelationByIdResponse getFilteredDocumentsContainingRelationById(
+            final GetFilteredDocumentsContainingRelationByIdRequest getFilteredDocumentsContainingRelationByIdRequest)
+            throws IdNotFoundException {
+        return innerDP.getFilteredDocumentsContainingRelationById(getFilteredDocumentsContainingRelationByIdRequest);
     }
 
     @Override

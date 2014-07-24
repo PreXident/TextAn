@@ -1,13 +1,8 @@
 package cz.cuni.mff.ufal.textan.data.repositories.common;
 
 import cz.cuni.mff.ufal.textan.data.tables.AbstractTable;
-import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import org.hibernate.Criteria;
-
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
@@ -15,6 +10,12 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Basic DAO implemented with Hibernate
@@ -29,27 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 //TODO: inherited classes should be annotated with @org.springframework.stereotype.Repository
 @Transactional
 public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Serializable> implements IOperations<E, K>   {
-
-    // -----------------------------------------------------
-    // --------------- STATIC MEMBERS-----------------------
-    // -----------------------------------------------------
-
     /**
      *  alias in queries for this object
      */
     protected final static String thisAlias = "this";
-    
-    /**
-     *
-     * @param propertyName name of the property in the proper class
-     * @return "thisAlias." + propertyName
-     */
-    protected final static String getAliasPropertyName(String propertyName) {
-        return DAOUtils.getAliasPropertyName(thisAlias, propertyName);
-    }  
-    // -----------------------------------------------------
-    // --------------- NON-STATIC MEMBERS-------------------
-    // -----------------------------------------------------
 
     /**
      *  @see SessionFactory
@@ -139,9 +123,6 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
                 .setMaxResults(pageSize)
                 .list();
     }    
-    
-
-
 
     /**
      * Adds an entity into a repository.
@@ -192,14 +173,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
         E entity = find(key);
         delete(entity);
     }
-    
-    
-    
-    // -----------------------------------------------------
-    // --------------- PROTECTED MEMBERS -------------------
-    // -----------------------------------------------------
 
-    
     protected Criteria pagination(Criteria criteria, int firstResult, int pageSize) {
         return criteria
                 .setFirstResult(firstResult)
@@ -266,4 +240,18 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     }
 
 
+    /**
+     *
+     * @param propertyName name of the property in the proper class
+     * @return "thisAlias." + propertyName
+     */
+    protected final static String getAliasPropertyName(String propertyName) {
+        return DAOUtils.getAliasPropertyName(thisAlias, propertyName);
+    }
+
+    protected static Query addPagination(Query query, int firstResult, int maxResults) {
+        query.setFirstResult(firstResult);
+        query.setMaxResults(maxResults);
+        return query;
+    }
 }

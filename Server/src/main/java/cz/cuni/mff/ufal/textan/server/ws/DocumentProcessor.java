@@ -3,7 +3,8 @@ package cz.cuni.mff.ufal.textan.server.ws;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
+import cz.cuni.mff.ufal.textan.commons.ws.*;
+import cz.cuni.mff.ufal.textan.commons.ws.DocumentChanged;
 import cz.cuni.mff.ufal.textan.server.models.Assignment;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
@@ -50,7 +51,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
             EditingTicket editingTicket) {
 
-        LOG.debug("Executing operation getObjectsFromString: {} {}", getAssignmentsFromStringRequest, editingTicket);
+        LOG.info("Executing operation getObjectsFromString: {} {}", getAssignmentsFromStringRequest, editingTicket);
 
         //TODO: change assignments to send set of objects and list of assignment
 
@@ -66,6 +67,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             response.getAssignments().add(assignment.toCommonsAssignment());
         }
 
+        LOG.info("Executed operation getObjectsFromString: {}", response);
         return response;
     }
 
@@ -74,9 +76,9 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "saveProcessedDocumentById", name = "saveProcessedDocumentById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             SaveProcessedDocumentByIdRequest saveProcessedDocumentByIdRequest,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
-            EditingTicket editingTicket) throws IdNotFoundException {
+            EditingTicket editingTicket) throws DocumentChanged, IdNotFoundException {
 
-        LOG.debug("Executing operation saveProcessedDocumentById: {} {}", saveProcessedDocumentByIdRequest, editingTicket);
+        LOG.info("Executing operation saveProcessedDocumentById: {} {}", saveProcessedDocumentByIdRequest, editingTicket);
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
@@ -111,9 +113,11 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             SaveProcessedDocumentByIdResponse response = new SaveProcessedDocumentByIdResponse();
             response.setResult(result);
 
+            LOG.info("Executed operation saveProcessedDocumentById: {}", response);
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation saveProcessedDocumentById.", e);
 
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
@@ -123,26 +127,26 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         }
     }
 
-    @Override
-    public GetProblemsByIdResponse getProblemsById(
-            @WebParam(partName = "getProblemsById", name = "getProblemsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
-            GetProblemsByIdRequest getProblemsByIdRequest,
-            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
-            EditingTicket editingTicket) throws IdNotFoundException {
-
-        LOG.debug("Executing operation getProblems: {} {}", getProblemsByIdRequest, editingTicket);
-
-        return new GetProblemsByIdResponse();
-    }
+//    @Override
+//    public GetProblemsByIdResponse getProblemsById(
+//            @WebParam(partName = "getProblemsById", name = "getProblemsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+//            GetProblemsByIdRequest getProblemsByIdRequest,
+//            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
+//            EditingTicket editingTicket) throws IdNotFoundException {
+//
+//        LOG.info("Executing operation getProblems: {} {}", getProblemsByIdRequest, editingTicket);
+//
+//        return new GetProblemsByIdResponse();
+//    }
 
     @Override
     public GetAssignmentsByIdResponse getAssignmentsById(
             @WebParam(partName = "getAssignmentsById", name = "getAssignmentsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             GetAssignmentsByIdRequest getAssignmentsByIdRequest,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
-            EditingTicket editingTicket) throws IdNotFoundException {
+            EditingTicket editingTicket) throws DocumentChanged, IdNotFoundException {
 
-        LOG.debug("Executing operation getObjectsById: {} {}", getAssignmentsByIdRequest, editingTicket);
+        LOG.info("Executing operation getObjectsById: {} {}", getAssignmentsByIdRequest, editingTicket);
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
@@ -157,9 +161,11 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
                 response.getAssignments().add(assignment.toCommonsAssignment());
             }
 
+            LOG.info("Executed operation getObjectsById: {}", response);
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation saveProcessedDocumentById.", e);
 
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
@@ -177,7 +183,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
             EditingTicket editingTicket) {
 
-        LOG.debug("Executing operation getEntitiesFromString: {} {}", getEntitiesFromStringRequest, editingTicket);
+        LOG.info("Executing operation getEntitiesFromString: {} {}", getEntitiesFromStringRequest, editingTicket);
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
@@ -187,6 +193,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             response.getEntities().add(entity.toCommonsEntity());
         }
 
+        LOG.info("Executed operation getEntitiesFromString: {}", response);
         return response;
     }
 
@@ -195,9 +202,9 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "getEntitiesById", name = "getEntitiesById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             GetEntitiesByIdRequest getEntitiesByIdRequest,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
-            EditingTicket editingTicket) throws IdNotFoundException {
+            EditingTicket editingTicket) throws DocumentChanged, IdNotFoundException {
 
-        LOG.debug("Executing operation getEntitiesById: {} {}", getEntitiesByIdRequest, editingTicket);
+        LOG.info("Executing operation getEntitiesById: {} {}", getEntitiesByIdRequest, editingTicket);
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
@@ -208,9 +215,12 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
                 response.getEntities().add(entity.toCommonsEntity());
             }
 
+            LOG.info("Executed operation getEntitiesById: {}", response);
             return new GetEntitiesByIdResponse();
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getEntitiesById.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -226,7 +236,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
             EditingTicket editingTicket) throws IdNotFoundException {
 
-        LOG.debug("Executing operation saveProcessedDocumentFromString: {} {}", saveProcessedDocumentFromStringRequest, editingTicket);
+        LOG.info("Executing operation saveProcessedDocumentFromString: {} {}", saveProcessedDocumentFromStringRequest, editingTicket);
 
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
@@ -261,8 +271,11 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             SaveProcessedDocumentFromStringResponse response = new SaveProcessedDocumentFromStringResponse();
             response.setResult(result);
 
+            LOG.info("Executed operation saveProcessedDocumentFromString: {}", response);
             return response;
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation saveProcessedDocumentFromString.", e);
+
             cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
             exceptionBody.setFieldName(e.getFieldName());
             exceptionBody.setFieldValue(e.getFieldValue());
@@ -271,16 +284,30 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         }
     }
 
+//    @Override
+//    public GetProblemsFromStringResponse getProblemsFromString(
+//            @WebParam(partName = "getProblemsFromString", name = "getProblemsFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+//            GetProblemsFromStringRequest getProblemsFromStringRequest,
+//            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
+//            EditingTicket editingTicket) {
+//
+//        LOG.info("Executing operation getEditingTicket: {} {}", getProblemsFromStringRequest, editingTicket);
+//
+//        return new GetProblemsFromStringResponse();
+//    }
+
     @Override
-    public GetProblemsFromStringResponse getProblemsFromString(
+    public GetProblemsResponse getProblems(
             @WebParam(partName = "getProblemsFromString", name = "getProblemsFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
-            GetProblemsFromStringRequest getProblemsFromStringRequest,
+            GetProblemsRequest getProblemsRequest,
             @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
             EditingTicket editingTicket) {
 
-        LOG.debug("Executing operation getEditingTicket: {} {}", getProblemsFromStringRequest, editingTicket);
+        LOG.info("Executing operation getProblems: {} {}", getProblemsRequest, editingTicket);
 
-        return new GetProblemsFromStringResponse();
+        GetProblemsResponse response = new GetProblemsResponse();
+        LOG.info("Executed operation getProblems: {}", response);
+        return response;
     }
 
     @Override
@@ -288,14 +315,14 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             @WebParam(partName = "getEditingTicket", name = "getEditingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             GetEditingTicketRequest getEditingTicketRequest) {
 
-        LOG.debug("Executing operation getEditingTicket: {}", getEditingTicketRequest);
+        LOG.info("Executing operation getEditingTicket: {}", getEditingTicketRequest);
 
         final GetEditingTicketResponse response = new GetEditingTicketResponse();
         final EditingTicket t = new EditingTicket();
         t.setTimestamp(new Date());
-        //t.setUsername(ticket.getUsername());
         response.setEditingTicket(t);
 
+        LOG.info("Executed operation getEditingTicket: {}", response);
         return response;
     }
 }

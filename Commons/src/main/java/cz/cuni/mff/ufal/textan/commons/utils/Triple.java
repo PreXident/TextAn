@@ -12,6 +12,8 @@ import java.io.Serializable;
  */
 public class Triple<First, Second, Third> implements Cloneable, Serializable {
 
+    private static final long serialVersionUID = 5400612335228835682L;
+
     /** First encapsulated object */
     private final First first;
 

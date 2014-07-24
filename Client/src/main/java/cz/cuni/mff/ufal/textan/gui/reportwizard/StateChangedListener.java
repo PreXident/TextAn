@@ -24,7 +24,7 @@ public class StateChangedListener implements IStateChangedListener {
     /**
      * Ugly hack to prevent mouse events for TextFlow to be ignored
      * and some display errors.
-     * TODO more systematic solution
+     * TODO more systematic solution for TextFlow layout problems
      * @param controller controller that possible holds textflow
      */
     static private void hackFixTextFlow(final ReportWizardController controller) {
@@ -61,10 +61,12 @@ public class StateChangedListener implements IStateChangedListener {
 
     {
         fxmlMapping.put(StateType.LOAD, new StateInfo("01_ReportLoad.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01_ReportLoad", "report.wizard.load.title"));
+        fxmlMapping.put(StateType.SELECT_FILE, new StateInfo("01a_SelectFile.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01a_SelectFile", "report.wizard.selectfile.title"));
         fxmlMapping.put(StateType.EDIT_REPORT, new StateInfo("02_ReportEdit.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.02_ReportEdit", "report.wizard.edit.title"));
         fxmlMapping.put(StateType.EDIT_ENTITIES, new StateInfo("03_ReportEntities.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.03_ReportEntities", "report.wizard.entities.title"));
         fxmlMapping.put(StateType.EDIT_OBJECTS, new StateInfo("04_ReportObjects.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.04_ReportObjects", "report.wizard.objects.title"));
         fxmlMapping.put(StateType.EDIT_RELATIONS, new StateInfo("05_ReportRelations.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.05_ReportRelations", "report.wizard.relations.title"));
+        fxmlMapping.put(StateType.ERROR, new StateInfo("06_ReportErrors.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.06_ReportErrors", "report.wizard.errors.title"));
     }
 
     /**
@@ -160,6 +162,7 @@ public class StateChangedListener implements IStateChangedListener {
                         .showException(e);
             }
             pipeline.lock.release();
+            controller.nowInControl();
         });
     }
 
