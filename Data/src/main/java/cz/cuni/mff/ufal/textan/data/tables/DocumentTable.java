@@ -104,6 +104,7 @@ public class DocumentTable extends AbstractTable {
 
     @OneToMany(mappedBy = "document")
     @Cascade(CascadeType.SAVE_UPDATE)
+    @IndexedEmbedded(includePaths = "relation.id")
     public Set<RelationOccurrenceTable> getRelationOccurrences() {
         return relationOccurrences;
     }

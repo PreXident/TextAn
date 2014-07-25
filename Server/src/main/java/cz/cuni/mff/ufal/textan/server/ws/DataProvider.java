@@ -663,11 +663,38 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getFilteredDocumentsContainingRelationByIdRequest", name = "getFilteredDocumentsContainingRelationByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetFilteredDocumentsContainingRelationByIdRequest getFilteredDocumentsContainingRelationByIdRequest) throws IdNotFoundException {
 
-        //TODO implement
         LOG.info("Executing operation getFilteredDocumentsContainingRelationById: {}", getFilteredDocumentsContainingRelationByIdRequest);
-        GetFilteredDocumentsContainingRelationByIdResponse response = new GetFilteredDocumentsContainingRelationByIdResponse();
-        LOG.info("Executed operation getFilteredDocumentsContainingRelationById: {}", response);
-        return response;
+
+        try {
+
+            Pair<List<Pair<Document, Integer>>, Integer> documents = dbService.getFilteredDocumentsContainingRelation(
+                    getFilteredDocumentsContainingRelationByIdRequest.getRelationId(),
+                    getFilteredDocumentsContainingRelationByIdRequest.getPattern(),
+                    getFilteredDocumentsContainingRelationByIdRequest.getFirstResult(),
+                    getFilteredDocumentsContainingRelationByIdRequest.getMaxResults()
+            );
+
+            GetFilteredDocumentsContainingRelationByIdResponse response = new GetFilteredDocumentsContainingRelationByIdResponse();
+            for (Pair<Document, Integer> documentCountPair : documents.getFirst()) {
+                GetFilteredDocumentsContainingRelationByIdResponse.DocumentCountPair pair = new GetFilteredDocumentsContainingRelationByIdResponse.DocumentCountPair();
+                pair.setDocument(documentCountPair.getFirst().toCommonsDocument());
+                pair.setCountOfOccurrences(documentCountPair.getSecond());
+                response.getDocumentCountPairs().add(pair);
+            }
+            response.setTotalNumberOfResults(documents.getSecond());
+
+            LOG.info("Executed operation getFilteredDocumentsContainingRelationById: {}", response);
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getFilteredDocumentsContainingRelationById.", e);
+
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
     }
 
     @Override

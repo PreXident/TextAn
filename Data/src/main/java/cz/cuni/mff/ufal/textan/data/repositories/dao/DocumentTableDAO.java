@@ -174,6 +174,68 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                 .collect(Collectors.toList());
     }
 
+    private Query findAllDocumentsWithRelationByFullTextQuery(long relationId, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query queryFullText = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query queryObject = builder
+                .keyword()
+                .onField("relationOccurrences.relation.id")
+                .matching(relationId)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(queryFullText)
+                .must(queryObject)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    private int getNumberOfRelationOccurrencesInDocument(long documentId, long relationId) {
+        Query hq = currentSession().createQuery(
+                "select count(*) from DocumentTable as doc "
+                        + "inner join doc.relationOccurrences as occ "
+                        + "inner join occ.relation rel "
+                        +"where rel.id = :relationId and doc.id = :documentId"
+        );
+        hq.setParameter("documentId", documentId);
+        hq.setParameter("relationId", relationId);
+
+        return ((Long)hq.iterate().next()).intValue();
+    }
+
+    @Override
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelationByFullText(long relationId, String pattern) {
+        @SuppressWarnings("unchecked")
+        List<DocumentTable> documents = findAllDocumentsWithRelationByFullTextQuery(relationId, pattern).list();
+
+        List<Pair<DocumentTable, Integer>> documentCountPairs = documents.stream()
+                .map(x -> new Pair<>(x, getNumberOfRelationOccurrencesInDocument(x.getId(), relationId)))
+                .collect(Collectors.toList());
+
+        return documentCountPairs;
+    }
+
+    @Override
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelationByFullText(long relationId, String pattern, int firstResult, int maxResults) {
+        @SuppressWarnings("unchecked")
+        List<DocumentTable> documents = addPagination(findAllDocumentsWithRelationByFullTextQuery(relationId, pattern), firstResult, maxResults).list();
+
+        List<Pair<DocumentTable, Integer>> documentCountPairs = documents.stream()
+                .map(x -> new Pair<>(x, getNumberOfRelationOccurrencesInDocument(x.getId(), relationId)))
+                .collect(Collectors.toList());
+
+        return documentCountPairs;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public List<DocumentTable> findAllProcessed(boolean processed) {
