@@ -257,10 +257,10 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                 .matching(processed)
                 .createQuery();
 
-        org.apache.lucene.search.Query query = builder //fixme
-                .keyword()
-                .onField("processedBool")
-                .matching(processed)
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(queryFullText)
+                .must(queryProcessed)
                 .createQuery();
 
         return fullTextSession.createFullTextQuery(query);
