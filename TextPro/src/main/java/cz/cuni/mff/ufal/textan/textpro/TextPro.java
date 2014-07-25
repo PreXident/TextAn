@@ -191,7 +191,11 @@ public class TextPro implements ITextPro {
             for (int i = 0; i < test.getObjectListID().size(); i++){
                 Instance in = instances.get(i);
                 Object predictedClassValue = this.model.classify(in);
-                if(predictedClassValue.toString().equalsIgnoreCase("1")) {
+                
+                /*
+                 * OK, make it dump, no learning at all.
+                */
+                if(predictedClassValue.toString().equalsIgnoreCase("1") || true) {
 
                     entityScore.add(new Pair<>(test.getObjectListID().get(id), test.getObjectListScore().get(id)));
                 }
