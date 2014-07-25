@@ -197,7 +197,7 @@ public class TextPro implements ITextPro {
                 */
                 if(predictedClassValue.toString().equalsIgnoreCase("1") || true) {
 
-                    entityScore.add(new Pair<>(test.getObjectListID().get(id), test.getObjectListScore().get(id)));
+                    entityScore.add(new Pair<>(test.getObjectListID().get(i), test.getObjectListScore().get(i)));
                 }
             }
             eMap.put(e, entityScore);
