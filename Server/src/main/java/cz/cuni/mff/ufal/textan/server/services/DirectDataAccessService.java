@@ -155,6 +155,34 @@ public class DirectDataAccessService {
 
 
 
+    public Pair<List<Pair<Document, Integer>>, Integer> getFilteredDocumentsContainingObject(long objectId, String pattern, int firstResult, int maxResults) throws IdNotFoundException {
+
+        ObjectTable objectTable = objectTableDAO.find(objectId);
+        if (objectTable == null) {
+            throw new IdNotFoundException("objectId", objectId);
+        }
+
+        int count;
+        List<Pair<DocumentTable, Integer>> documents;
+
+        if (pattern != null && !pattern.isEmpty()) {
+
+            count = documentTableDAO.findAllDocumentsWithObjectByFullText(objectId, pattern).size();
+            documents = documentTableDAO.findAllDocumentsWithObjectByFullText(objectId, pattern, firstResult, maxResults);
+
+        } else {
+            count = documentTableDAO.findAllDocumentsWithObject(objectId).size();
+            documents = documentTableDAO.findAllDocumentsWithObject(objectId, firstResult, maxResults);
+        }
+
+        return new Pair<>(documents.stream()
+                .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
+                .collect(Collectors.toList()),
+                count);
+    }
+
+
+
     public Pair<List<Pair<Document, Integer>>, Integer> getDocumentsContainingRelation(long relationId, int firstResult, int maxResults) throws IdNotFoundException {
         RelationTable relationTable = relationTableDAO.find(relationId);
         if (relationTable == null) {

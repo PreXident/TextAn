@@ -407,7 +407,7 @@
     <xs:complexType name="GetFilteredDocumentsContainingObjectByIdRequest">
         <xs:sequence>
             <xs:element name="objectId" type="xs:long" />
-            <xs:element name="pattern" type="xs:string"/>
+            <xs:element name="pattern" type="xs:string" nillable="true"/>
             <xs:element name="firstResult" type="xs:int"/>
             <xs:element name="maxResults" type="xs:int"/>
         </xs:sequence>
@@ -452,7 +452,7 @@
     <xs:complexType name="GetFilteredDocumentsContainingRelationByIdRequest">
         <xs:sequence>
             <xs:element name="relationId" type="xs:long" />
-            <xs:element name="pattern" type="xs:string"/>
+            <xs:element name="pattern" type="xs:string" nillable="true"/>
             <xs:element name="firstResult" type="xs:int"/>
             <xs:element name="maxResults" type="xs:int"/>
         </xs:sequence>
