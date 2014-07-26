@@ -216,7 +216,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             }
 
             LOG.info("Executed operation getEntitiesById: {}", response);
-            return new GetEntitiesByIdResponse();
+            return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getEntitiesById.", e);
