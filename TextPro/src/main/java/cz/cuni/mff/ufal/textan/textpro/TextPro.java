@@ -98,7 +98,10 @@ public class TextPro implements ITextPro {
         Train train = new Train();
         
         /*** Train the model **/
-        model = train.doTraining(this.objectTableDAO, this.aliasTableDAO);        
+        model = train.doTraining(this.objectTableDAO, this.aliasTableDAO);
+
+
+        LOG.debug("Finished TexPro learning.");
     }
     //TODO: implement or change interface method
 
@@ -202,6 +205,9 @@ public class TextPro implements ITextPro {
             }
             eMap.put(e, entityScore);
         }
+
+        LOG.debug("Finished TexPro ranking.");
+
         // Return the value
         return eMap;
     }
