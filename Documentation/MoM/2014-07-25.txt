@@ -1,0 +1,40 @@
+Nearly all here.
+
+Adam:
+- using keyboard to close login dialog no longer causes silent exception
+- pagination controls are embedded into GridPane instead of BorderPane
+- various minor graphical fixes
+- it is now possible to process report loaded from db
+- various methods prepared to call new webservice methods when implementation is ready
+
+Petr:
+- integrated text pro into rest of the server aplication
+- implemented operation which returns documets for objects/relations
+- paid 2x beer and 2x kofola for our nice logo
+
+Tam:
+- documentation progress
+
+Venca:
+- getGraphFromRelation
+- global version for joined objects and relations
+
+HWK:
+ - Petr, select only top objects in lucene queries
+ - Petr & Adam, add exception that will be thrown when process is processed while editing
+ - Petr, solve passing username into interceptor
+ - Petr, deploy new version into our server
+ - Petr, add 32bit libraries into Liguistics
+ - Venca, lock tables while inserting(changing) document, processed document etc.
+ - Venca, global version in document table for detecting changes in document text
+ - Adam, webservice implementation is ready to be used, remove emulation from methods
+ - Adam, add edit document
+ - Adam, add processing document from document list
+ - Adam, save and load reports!
+ - Adam, add possibility to add new report without processing
+ - Adam, check resizing bug in document view window
+ 
+ - all, write documentation
+ - all, annotate test reports!
+ 
+Next meeting Tuesday from 16:30.
