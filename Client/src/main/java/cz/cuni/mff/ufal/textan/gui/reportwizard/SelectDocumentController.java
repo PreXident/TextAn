@@ -151,6 +151,8 @@ public class SelectDocumentController extends ReportWizardController {
         processedCheckBox.setIndeterminate(false);
         processedCheckBox.setSelected(false);
         listController.initialize(null, ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.document.DocumentList"));
+        listController.processMI.disableProperty().unbind();
+        listController.processMI.setDisable(true);
     }
 
     @Override

@@ -6,6 +6,7 @@ import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.graph.DocumentGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
+import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentWindow;
@@ -192,33 +193,7 @@ public class TextAnController implements Initializable {
 
     @FXML
     private void reportWizard() {
-        try {
-            final ProcessReportPipeline pipeline = client.createNewReportPipeline();
-            StateChangedListener listener;
-            if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-                final ReportWizardWindow wizard = new ReportWizardWindow(settings);
-                content.getChildren().add(wizard);
-                listener = new StateChangedListener(this, settings, pipeline, wizard);
-            } else {
-                final ReportWizardStage stage = new ReportWizardStage(settings);
-                children.add(stage);
-                stage.showingProperty().addListener((ov, oldVal, newVal) -> {
-                    if (!newVal) {
-                        children.remove(stage);
-                    }
-                });
-                listener = new StateChangedListener(this, settings, pipeline, stage);
-                stage.show();
-            }
-            pipeline.addStateChangedListener(listener);
-        } catch (WebServiceException e) {
-            e.printStackTrace();
-            Dialogs.create()
-                    .owner(stage)
-                    .lightweight()
-                    .title(Utils.localize(resourceBundle, "webservice.error"))
-                    .showException(e);
-        }
+        processDocument(null);
     }
 
     @FXML
@@ -525,6 +500,48 @@ public class TextAnController implements Initializable {
             return Integer.parseInt(settings.getProperty("graph.distance", "5"));
         } catch (NumberFormatException e) {
             return 5;
+        }
+    }
+
+    /**
+     * Starts processing of given document.
+     * @param document document to process
+     */
+    public void processDocument(final Document document) {
+        try {
+            final ProcessReportPipeline pipeline = client.createNewReportPipeline();
+            if (document != null) {
+                pipeline.selectDatabaseDatasource();
+                try {
+                    pipeline.setReport(document);
+                } catch (DocumentChangedException e) { //this should be very rare
+                    e.printStackTrace(); //let the reportwizard package handle errors
+                }
+            }
+            StateChangedListener listener;
+            if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+                final ReportWizardWindow wizard = new ReportWizardWindow(settings);
+                content.getChildren().add(wizard);
+                listener = new StateChangedListener(this, settings, pipeline, wizard);
+            } else {
+                final ReportWizardStage stage = new ReportWizardStage(settings);
+                children.add(stage);
+                stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                    if (!newVal) {
+                        children.remove(stage);
+                    }
+                });
+                listener = new StateChangedListener(this, settings, pipeline, stage);
+                stage.show();
+            }
+            pipeline.addStateChangedListener(listener);
+        } catch (WebServiceException e) {
+            e.printStackTrace();
+            Dialogs.create()
+                    .owner(stage)
+                    .lightweight()
+                    .title(Utils.localize(resourceBundle, "webservice.error"))
+                    .showException(e);
         }
     }
 

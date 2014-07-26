@@ -102,6 +102,9 @@ public class DocumentListController extends WindowController {
     /** Context menu for documents. */
     protected ContextMenu contextMenu = new ContextMenu();
 
+    /** Menu item for processing the document. */
+    public MenuItem processMI;
+
     /** Localization container. */
     ResourceBundle resourceBundle;
 
@@ -230,11 +233,11 @@ public class DocumentListController extends WindowController {
             }
         });
         contextMenu.getItems().add(graphMI);
-        final MenuItem processMI = new MenuItem(Utils.localize(resourceBundle, "document.process"));
+        processMI = new MenuItem(Utils.localize(resourceBundle, "document.process"));
         processMI.setOnAction(e -> {
             final Document doc = table.getSelectionModel().getSelectedItem();
             if (doc != null) {
-                //TODO display new window to process the document
+                textAnController.processDocument(doc);
             }
         });
         processMI.disableProperty().bind(Bindings.createBooleanBinding(() -> {
