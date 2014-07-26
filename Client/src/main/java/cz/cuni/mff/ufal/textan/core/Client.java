@@ -925,4 +925,32 @@ public class Client {
             throw new IdNotFoundException(e);
         }
     }
+
+    /**
+     * Updates text of the document with the given id.
+     * @param id document id
+     * @param text new text
+     * @throws IdNotFoundException if id error occurs
+     */
+    public void updateDocument(final long id, final String text)
+            throws IdNotFoundException {
+        final UpdateDocumentRequest request = new UpdateDocumentRequest();
+        request.setDocumentId(id);
+        request.setText(text);
+        try {
+            getDataProvider().updateDocument(request);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
+    }
+
+    /**
+     * Adds new document with given text.
+     * @param text new document's text
+     */
+    public void addDocument(final String text) {
+        final AddDocumentRequest request = new AddDocumentRequest();
+        request.setText(text);
+        getDataProvider().addDocument(request);
+    }
 }

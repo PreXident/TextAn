@@ -12,6 +12,8 @@ import cz.cuni.mff.ufal.textan.gui.document.DocumentStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentWindow;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentsStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentsWindow;
+import cz.cuni.mff.ufal.textan.gui.document.EditDocumentStage;
+import cz.cuni.mff.ufal.textan.gui.document.EditDocumentWindow;
 import cz.cuni.mff.ufal.textan.gui.graph.GraphStage;
 import cz.cuni.mff.ufal.textan.gui.graph.GraphWindow;
 import cz.cuni.mff.ufal.textan.gui.join.JoinStage;
@@ -501,6 +503,33 @@ public class TextAnController implements Initializable {
         } catch (NumberFormatException e) {
             return 5;
         }
+    }
+
+    /**
+     * Opens dialog for document editing.
+     * @param document document to edit, can be null
+     */
+    public void editDocument(final Document document) {
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final EditDocumentWindow window = new EditDocumentWindow(this, settings, document);
+            content.getChildren().add(window);
+        } else {
+            final EditDocumentStage stage = new EditDocumentStage(this, settings, document);
+            children.add(stage);
+            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(stage);
+                }
+            });
+            stage.show();
+        }
+    }
+
+    /**
+     * Opens dialog for adding new document.
+     */
+    public void newDocument() {
+        editDocument(null);
     }
 
     /**

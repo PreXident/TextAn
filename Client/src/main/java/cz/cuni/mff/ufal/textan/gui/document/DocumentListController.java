@@ -31,6 +31,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
@@ -70,6 +71,9 @@ public class DocumentListController extends WindowController {
     public TextField filterField;
 
     @FXML
+    public Button newButton;
+
+    @FXML
     public TableView<Document> table;
 
     @FXML
@@ -104,6 +108,9 @@ public class DocumentListController extends WindowController {
 
     /** Menu item for processing the document. */
     public MenuItem processMI;
+
+    /** Menu item for editing the document. */
+    public MenuItem editMI;
 
     /** Localization container. */
     ResourceBundle resourceBundle;
@@ -207,6 +214,11 @@ public class DocumentListController extends WindowController {
     }
 
     @FXML
+    public void newDocument() {
+        textAnController.newDocument();
+    }
+
+    @FXML
     public void rewind() {
         if (pageNo > 0) {
             --pageNo;
@@ -245,6 +257,18 @@ public class DocumentListController extends WindowController {
             return doc != null ? doc.isProcessed() : true;
         }, table.getSelectionModel().selectedItemProperty()));
         contextMenu.getItems().add(processMI);
+        editMI = new MenuItem(Utils.localize(resourceBundle, "document.edit"));
+        editMI.setOnAction(e -> {
+            final Document doc = table.getSelectionModel().getSelectedItem();
+            if (doc != null) {
+                textAnController.editDocument(doc);
+            }
+        });
+        editMI.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            final Document doc = table.getSelectionModel().getSelectedItem();
+            return doc != null ? doc.isProcessed() : true;
+        }, table.getSelectionModel().selectedItemProperty()));
+        contextMenu.getItems().add(editMI);
         contextMenu.setStyle(CONTEXT_MENU_STYLE);
         contextMenu.setConsumeAutoHidingEvents(false);
         table.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
