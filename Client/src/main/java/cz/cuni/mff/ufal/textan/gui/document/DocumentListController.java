@@ -100,7 +100,7 @@ public class DocumentListController extends WindowController {
     public Label paginationLabel;
 
     /** Context menu for documents. */
-    protected ContextMenu contextMenu = new ContextMenu();
+    public ContextMenu contextMenu = new ContextMenu();
 
     /** Menu item for processing the document. */
     public MenuItem processMI;
