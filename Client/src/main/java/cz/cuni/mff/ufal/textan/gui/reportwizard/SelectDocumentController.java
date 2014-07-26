@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
+import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
@@ -177,7 +178,7 @@ public class SelectDocumentController extends ReportWizardController {
     }
 
     @Override
-    public void setWindow(final Window window) {
+    public void setWindow(final InnerWindow window) {
         super.setWindow(window);
         listController.setWindow(window);
     }

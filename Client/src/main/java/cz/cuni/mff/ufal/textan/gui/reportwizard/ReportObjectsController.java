@@ -8,6 +8,7 @@ import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
+import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
@@ -493,7 +494,7 @@ public class ReportObjectsController extends ReportWizardController {
     }
 
     @Override
-    public void setWindow(final Window window) {
+    public void setWindow(final InnerWindow window) {
         super.setWindow(window);
         window.getScene().getWindow().widthProperty().addListener(e -> {
             Utils.runFXlater(() -> { textFlow.layoutChildren(); });

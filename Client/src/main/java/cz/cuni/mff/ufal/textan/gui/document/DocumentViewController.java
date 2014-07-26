@@ -9,7 +9,9 @@ import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
+import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
+import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.Window;
@@ -261,6 +263,27 @@ public class DocumentViewController extends WindowController {
         objectContextMenu.objectProperty().bind(objectForGraph);
         tableContextMenu = new ObjectContextMenu(textAnController);
         tableContextMenu.objectProperty().bind(objectForGraph);
+    }
+
+    @Override
+    public void setWindow(final InnerWindow window) {
+        super.setWindow(window);
+        window.maximizedProperty().addListener(e -> {
+            Utils.runFXlater(() -> {
+                textFlow.layoutChildren();
+            });
+        });
+        window.boundsInLocalProperty().addListener(e -> {
+            textFlow.layoutChildren();
+        });
+    }
+
+    @Override
+    public void setStage(final OuterStage stage) {
+        super.setStage(stage);
+        stage.getInnerWindow().boundsInLocalProperty().addListener(e -> {
+            textFlow.layoutChildren();
+        });
     }
 
     /**

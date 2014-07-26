@@ -22,7 +22,7 @@ public abstract class WindowController implements Initializable {
     protected Properties settings = null;
 
     /** Window displaying the view. It can be null if in {@link Stage}. */
-    protected Window window = null;
+    protected InnerWindow window = null;
 
     /** Stage displaying the view. It can be null if in {@link Window}. */
     protected OuterStage stage = null;
@@ -57,7 +57,7 @@ public abstract class WindowController implements Initializable {
      * Sets the window to be controlled.
      * @param window Window to be controlled
      */
-    public void setWindow(final Window window) {
+    public void setWindow(final InnerWindow window) {
         this.window = window;
         window.getContentPane().setCursor(Cursor.DEFAULT);
         window.setContainerCloser(() -> closeContainer());

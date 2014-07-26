@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
+import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
@@ -39,7 +40,7 @@ public abstract class ReportWizardController extends WindowController {
     protected TextAnController textAnController;
 
     @Override
-    public void setWindow(final Window window) {
+    public void setWindow(final InnerWindow window) {
         super.setWindow(window);
         if (textFlow != null) {
             window.boundsInLocalProperty().addListener(e -> {
