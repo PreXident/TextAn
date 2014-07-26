@@ -155,6 +155,30 @@ public class DirectDataAccessService {
 
 
 
+    public Pair<List<Pair<Document, Integer>>, Integer> getFilteredDocumentsContainingObject(long objectId, String pattern, int firstResult, int maxResults) throws IdNotFoundException {
+
+        ObjectTable objectTable = objectTableDAO.find(objectId);
+        if (objectTable == null) {
+            throw new IdNotFoundException("objectId", objectId);
+        }
+
+        int count;
+        List<Pair<DocumentTable, Integer>> documents;
+
+        if (pattern != null && !pattern.isEmpty()) {
+            count = documentTableDAO.findAllDocumentsWithObjectByFullText(objectId, pattern).size();
+            documents = documentTableDAO.findAllDocumentsWithObjectByFullText(objectId, pattern, firstResult, maxResults);
+        } else {
+            count = documentTableDAO.findAllDocumentsWithObject(objectId).size();
+            documents = documentTableDAO.findAllDocumentsWithObject(objectId, firstResult, maxResults);
+        }
+
+        return new Pair<>(documents.stream()
+                .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
+                .collect(Collectors.toList()),
+                count);
+    }
+
     public Pair<List<Pair<Document, Integer>>, Integer> getDocumentsContainingRelation(long relationId, int firstResult, int maxResults) throws IdNotFoundException {
         RelationTable relationTable = relationTableDAO.find(relationId);
         if (relationTable == null) {
@@ -167,6 +191,31 @@ public class DirectDataAccessService {
                 .collect(Collectors.toList());
 
         return new Pair<>(documents, count);
+    }
+
+    public Pair<List<Pair<Document,Integer>>,Integer> getFilteredDocumentsContainingRelation(long relationId, String pattern, int firstResult, int maxResults) throws IdNotFoundException {
+        RelationTable relationTable = relationTableDAO.find(relationId);
+        if (relationTable == null) {
+            throw new IdNotFoundException("relationId", relationId);
+        }
+
+        int count;
+        List<Pair<DocumentTable, Integer>> documents;
+
+        if (pattern != null && !pattern.isEmpty()) {
+            count = documentTableDAO.findAllDocumentsWithRelationByFullText(relationId, pattern).size();
+            documents = documentTableDAO.findAllDocumentsWithRelationByFullText(relationId, pattern, firstResult, maxResults);
+        } else {
+            count = documentTableDAO.findAllDocumentsWithRelation(relationId).size();
+            documents = documentTableDAO.findAllDocumentsWithRelation(relationId, firstResult, maxResults);
+        }
+
+        return new Pair<>(
+                documents.stream()
+                    .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
+                    .collect(Collectors.toList()),
+                count
+        );
     }
 
     /**

@@ -73,7 +73,7 @@ public class RelationTable extends AbstractTable {
 
     @OneToMany(mappedBy = "relation", orphanRemoval = true)
     @Cascade(CascadeType.DELETE)
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = "anchor")
     public Set<RelationOccurrenceTable> getOccurrences() {
         return occurrences;
     }
