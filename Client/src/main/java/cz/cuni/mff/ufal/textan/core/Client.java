@@ -341,36 +341,17 @@ public class Client {
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
             final Object object, final String filter,
             final int first, final int size) throws IdNotFoundException {
-        //TODO uncomment when db implementation is done
-//        try {
-//            final GetFilteredDocumentsContainingObjectByIdRequest request =
-//                    new GetFilteredDocumentsContainingObjectByIdRequest();
-//            request.setObjectId(object.getId());
-//            request.setFirstResult(first);
-//            request.setMaxResults(size);
-//            request.setPattern(filter);
-//            final GetFilteredDocumentsContainingObjectByIdResponse response =
-//                    getDataProvider().getFilteredDocumentsContainingObjectById(request);
-//            final List<Document> list = response.getDocumentCountPairs().stream()
-//                    .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
-//                    .collect(Collectors.toCollection(ArrayList::new));
-//            return new Pair<>(list, response.getTotalNumberOfResults());
-//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
-//            throw new IdNotFoundException(e);
-//        }
         try {
-            final GetDocumentsContainingObjectByIdRequest request =
-                    new GetDocumentsContainingObjectByIdRequest();
+            final GetFilteredDocumentsContainingObjectByIdRequest request =
+                    new GetFilteredDocumentsContainingObjectByIdRequest();
             request.setObjectId(object.getId());
             request.setFirstResult(first);
             request.setMaxResults(size);
-            //TODO set parameters for filtering when ready
-            final GetDocumentsContainingObjectByIdResponse response =
-                    getDataProvider().getDocumentsContainingObjectById(request);
+            request.setPattern(filter);
+            final GetFilteredDocumentsContainingObjectByIdResponse response =
+                    getDataProvider().getFilteredDocumentsContainingObjectById(request);
             final List<Document> list = response.getDocumentCountPairs().stream()
                     .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
-                    //TODO remove filtering emulation
-                    .filter(d -> d.getText().contains(filter))
                     .collect(Collectors.toCollection(ArrayList::new));
             return new Pair<>(list, response.getTotalNumberOfResults());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
@@ -390,37 +371,22 @@ public class Client {
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
             final Relation relation, final String filter,
             final int first, final int size) throws IdNotFoundException {
-        //TODO uncomment when the db implementation is done
-//        try {
-//            final GetFilteredDocumentsContainingRelationByIdRequest request =
-//                    new GetFilteredDocumentsContainingRelationByIdRequest();
-//            request.setRelationId(relation.getId());
-//            request.setFirstResult(first);
-//            request.setMaxResults(size);
-//            request.setPattern(filter);
-//            final GetFilteredDocumentsContainingRelationByIdResponse response =
-//                    getDataProvider().getFilteredDocumentsContainingRelationById(request);
-//            final List<Document> list = response.getDocumentCountPairs().stream()
-//                    .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
-//                    .collect(Collectors.toCollection(ArrayList::new));
-//            return new Pair<>(list, response.getTotalNumberOfResults());
-//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
-//            throw new IdNotFoundException(e);
-//        }
-        final Pair<List<Document>, Integer> pair =
-                getDocumentsList(Processed.YES, filter, 0, Integer.MAX_VALUE);
-        final List<Document> documents = pair.getFirst();
-        final List<Document> result = new ArrayList<>();
-        for (Document document : documents) {
-            final DocumentData documentData = getDocumentData(document.getId());
-            if (documentData.getRelations().containsKey(relation.getId())) {
-                result.add(document);
-            }
+        try {
+            final GetFilteredDocumentsContainingRelationByIdRequest request =
+                    new GetFilteredDocumentsContainingRelationByIdRequest();
+            request.setRelationId(relation.getId());
+            request.setFirstResult(first);
+            request.setMaxResults(size);
+            request.setPattern(filter);
+            final GetFilteredDocumentsContainingRelationByIdResponse response =
+                    getDataProvider().getFilteredDocumentsContainingRelationById(request);
+            final List<Document> list = response.getDocumentCountPairs().stream()
+                    .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            return new Pair<>(list, response.getTotalNumberOfResults());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
         }
-        return new Pair<>(result.stream()
-                .skip(first)
-                .limit(size)
-                .collect(Collectors.toList()), result.size());
     }
 
     /**
@@ -711,42 +677,41 @@ public class Client {
     public synchronized Pair<List<Relation>, Integer> getRelationList(
             final RelationType type, final String filter, final int first,
             final int size) throws IdNotFoundException {
-        //TODO uncomment when the db implementation is done
-//        try {
-//            //TODO extract objects from response when it's ready
-//            final Map<Long, Object> objects = getObjectsMap();
-//            final GetFilteredRelationsRequest request =
-//                    new GetFilteredRelationsRequest();
-//            if (type != null) {
-//                request.setRelationTypeId(type.getId());
-//            }
-//            request.setAnchorFilter(filter);
-//            request.setFirstResult(first);
-//            request.setMaxResults(size);
-//            final GetFilteredRelationsResponse response =
-//                    getDataProvider().getFilteredRelations(request);
-//            final List<Relation> relations = response.getRelations().stream()
-//                    .map(rel -> new Relation(rel, objects))
-//                    .collect(Collectors.toList());
-//            return new Pair<>(relations, response.getTotalNumberOfResults());
-//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
-//            throw new IdNotFoundException(e);
-//        }
-        final Map<Long, Object> objects = getObjectsMap();
-        final GetRelationsResponse response = getDataProvider().getRelations(new Void());
-        Stream<Relation> stream = response.getRelations().stream()
-                .map(rel -> new Relation(rel, objects));
-        if (type != null) {
-            stream = stream.filter(rel -> rel.getType().getId() == type.getId());
+        try {
+            final GetFilteredRelationsRequest request =
+                    new GetFilteredRelationsRequest();
+            if (type != null) {
+                request.setRelationTypeId(type.getId());
+            }
+            request.setAnchorFilter(filter);
+            request.setFirstResult(first);
+            request.setMaxResults(size);
+            final GetFilteredRelationsResponse response =
+                    getDataProvider().getFilteredRelations(request);
+            //TODO extract directly from response when it's ready
+            final GetObjectsByIdsRequest objectRequest =
+                    new GetObjectsByIdsRequest();
+            final List<Long> objectIds = objectRequest.getObjectIds();
+            response.getRelations().stream()
+                    .map(cz.cuni.mff.ufal.textan.commons.models.Relation::getObjectInRelationIds)
+                    .map(cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds::getInRelations)
+                    .flatMap(List::stream)
+                    .map(cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation::getObjectId)
+                    .forEach(objectIds::add);
+            final GetObjectsByIdsResponse objectsResponse =
+                    getDataProvider().getObjectsByIds(objectRequest);
+            final Map<Long, Object> objects = objectsResponse.getObjects().stream()
+                    .collect(Collectors.toMap(
+                            cz.cuni.mff.ufal.textan.commons.models.Object::getId,
+                            Object::new));
+            //
+            final List<Relation> relations = response.getRelations().stream()
+                    .map(rel -> new Relation(rel, objects))
+                    .collect(Collectors.toList());
+            return new Pair<>(relations, response.getTotalNumberOfResults());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
         }
-        if (!filter.isEmpty()) {
-            stream = stream.filter(rel -> rel.getAnchorString().contains(filter));
-        }
-        final List<Relation> relations = stream
-                .skip(first)
-                .limit(size)
-                .collect(Collectors.toList());
-        return new Pair<>(relations, response.getRelations().size());
     }
 
     /**
