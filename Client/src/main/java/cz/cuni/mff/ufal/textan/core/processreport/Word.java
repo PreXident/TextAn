@@ -1,9 +1,11 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
+import java.io.Serializable;
+
 /**
  * Simple holder for information about words.
  */
-public class Word {
+public class Word implements Serializable {
 
     /** Word itself. */
     private final String word;
@@ -99,5 +101,14 @@ public class Word {
      */
     public void setRelation(RelationBuilder relation) {
         this.relation = relation;
+    }
+
+    /**
+     * Re-registers the word into the relation builder.
+     */
+    public void reregister() {
+        if (relation != null) {
+            relation.register(this);
+        }
     }
 }

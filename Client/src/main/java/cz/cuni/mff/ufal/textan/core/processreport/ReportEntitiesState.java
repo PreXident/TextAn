@@ -41,6 +41,11 @@ final class ReportEntitiesState extends State {
     }
 
     @Override
+    protected java.lang.Object readResolve() {
+        return getInstance();
+    }
+
+    @Override
     public void back(final ProcessReportPipeline pipeline) {
         if (pipeline.reportId < 1) {
             pipeline.incStepsBack();

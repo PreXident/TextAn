@@ -6,13 +6,16 @@ import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import cz.cuni.mff.ufal.textan.gui.Window;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
+import java.io.File;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
+import jfxtras.util.PlatformUtil;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog.Actions;
 
@@ -86,7 +89,7 @@ public abstract class ReportWizardController extends WindowController {
             callable.call();
         } catch (DocumentChangedException e) {
             final ResourceBundle rb = ResourceBundle.getBundle(RESOURCE_BUNDLE_PATH);
-            final Action result = jfxtras.util.PlatformUtil.runAndWait(() -> {
+            final Action result = PlatformUtil.runAndWait(() -> {
                 return callWithContentBackup(() -> {
                     return createDialog()
                             .owner(getDialogOwner(root))
@@ -116,6 +119,68 @@ public abstract class ReportWizardController extends WindowController {
      */
     public void nowInControl() {
         //nothing
+    }
+
+    /**
+     * Prompts for save.
+     * @param root node for displaying dialogs
+     */
+    public void promptSave(final Node root) {
+        ResourceBundle rb = null;
+        try {
+            rb = ResourceBundle.getBundle(RESOURCE_BUNDLE_PATH);
+            final ResourceBundle finalRB = rb;
+            final Action result = callWithContentBackup(() -> {
+                return createDialog()
+                        .owner(getDialogOwner(root))
+                        .title(Utils.localize(finalRB, "save.title"))
+                        .message(Utils.localize(finalRB, "save.message"))
+                        .actions(Actions.YES, Actions.NO, Actions.CANCEL)
+                        .showConfirm();
+            });
+            if (result == Actions.CANCEL) {
+                return;
+            }
+            if (result == Actions.YES) {
+                final FileChooser chooser = new FileChooser();
+                chooser.setTitle(Utils.localize(rb, "save.report.prompt"));
+                final String dir = settings.getProperty("loadreport.dir");
+                if (dir != null && !dir.isEmpty()) {
+                    chooser.setInitialDirectory(new File(dir));
+                } else {
+                    chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+                }
+                final javafx.stage.Window w = window != null ? window.getScene().getWindow() : stage;
+                final File file = chooser.showSaveDialog(w);
+                if (file != null) {
+                    settings.setProperty("loadreport.dir", file.getParent());
+                    pipeline.save(file.getAbsolutePath());
+                } else {
+                    return;
+                }
+            }
+            closeContainer();
+        } catch(Exception e) {
+            e.printStackTrace();
+            final ResourceBundle finalRB = rb;
+            callWithContentBackup(() -> {
+                createDialog()
+                        .owner(getDialogOwner(root))
+                        .title(Utils.localize(finalRB, "error"))
+                        .showException(e);
+            });
+        }
+    }
+
+    /**
+     * Returns runnable prompting report save.
+     * @param root node for displaying dialogs
+     * @return runnable prompting report save
+     */
+    public Runnable getSavePrompter(final Node root) {
+        return () -> {
+            promptSave(root);
+        };
     }
 
     /**

@@ -1,13 +1,14 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Client representation of
  * {@link cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket}.
  */
-public class Ticket {
+public class Ticket implements Serializable {
 
     /** Ticket timestamp. */
     private final Date timestamp;

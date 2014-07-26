@@ -171,6 +171,11 @@ public class ReportEntitiesController extends ReportWizardController {
     }
 
     @Override
+    public Runnable getContainerCloser() {
+        return getSavePrompter(root);
+    }
+
+    @Override
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
         backButton.setVisible(pipeline.getReportId() < 1);

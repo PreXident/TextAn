@@ -37,6 +37,11 @@ final class ReportRelationsState extends State {
     }
 
     @Override
+    protected java.lang.Object readResolve() {
+        return getInstance();
+    }
+
+    @Override
     public void back(final ProcessReportPipeline pipeline) {
         pipeline.incStepsBack();
         pipeline.setState(ReportObjectsState.getInstance());

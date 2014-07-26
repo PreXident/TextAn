@@ -4,6 +4,10 @@ import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.Ticket;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -19,7 +23,7 @@ import java.util.concurrent.Semaphore;
 /**
  * Represents pipeline handling processing documents.
  */
-public class ProcessReportPipeline {
+public class ProcessReportPipeline implements Serializable {
 
     /** Separators delimiting words. */
     public static final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';', '!')));
@@ -70,7 +74,7 @@ public class ProcessReportPipeline {
     }
 
     /** Parent Client of the pipeline. */
-    protected final Client client;
+    protected final transient Client client;
 
     /** Report id if text comes from the db. */
     protected long reportId = -1;
@@ -91,16 +95,16 @@ public class ProcessReportPipeline {
     protected State state = LoadReportState.getInstance();
 
     /** List of listeners registered for state changing. */
-    protected final List<IStateChangedListener> stateChangedListeners = new ArrayList<>();
+    protected final transient List<IStateChangedListener> stateChangedListeners = new ArrayList<>();
 
     /** Ticket for document processing. */
-    protected final Ticket ticket;
+    protected Ticket ticket;
 
     /** Problems with document. */
     protected Problems problems;
 
     /** Simple synchronization. Indented to be used by UI. */
-    public final Semaphore lock = new Semaphore(1);
+    public final transient Semaphore lock = new Semaphore(1);
 
     /**
      * Counter of number of steps back.
@@ -168,6 +172,33 @@ public class ProcessReportPipeline {
     }
 
     /**
+     * Loads deserialized pipeline into this one.
+     * @param pipeline deserialized pipeline
+     */
+    public void load(final ProcessReportPipeline pipeline) {
+        reportId = pipeline.reportId;
+        reportText = pipeline.reportText;
+        reportWords = pipeline.reportWords;
+        reportEntities = pipeline.reportEntities;
+        reportRelations = pipeline.reportRelations;
+        ticket = pipeline.ticket;
+        problems = pipeline.problems;
+        setState(pipeline.state);
+    }
+
+    /**
+     * Serializes the pipeline into file.
+     * @param file path to file to serialize to
+     * @throws IOException on IO error
+     */
+    public void save(final String file) throws IOException {
+        try (ObjectOutputStream output =
+                new ObjectOutputStream(new FileOutputStream(file))) {
+            output.writeObject(this);
+        }
+    }
+
+    /**
      * Returns report id.
      * @return report id
      */
@@ -181,6 +212,14 @@ public class ProcessReportPipeline {
      */
     public String getReportText() {
         return reportText;
+    }
+
+    /**
+     * Sets report's text. Does no parsing!
+     * @param reportText new report's text
+     */
+    public void setReportText(final String reportText) {
+        this.reportText = reportText;
     }
 
     /**
@@ -259,8 +298,8 @@ public class ProcessReportPipeline {
      * Available in {@link State.StateType#LOAD} state. Proceeds to next State.
      * @see State#selectLoadDatasource(cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline)
      */
-    public void selectLoadDatasource() {
-        state.selectLoadDatasource(this);
+    public void selectLoadDatasource(final String path) {
+        state.selectLoadDatasource(this, path);
     }
 
     /**
@@ -271,7 +310,7 @@ public class ProcessReportPipeline {
      * @throws DocumentChangedException if processed document has been changed
      * @see State#setReportText(ProcessReportPipeline, String)
      */
-    public void setReportText(final String reportText)
+    public void setReportTextAndParse(final String reportText)
             throws DocumentChangedException {
         state.setReportText(this, reportText);
     }

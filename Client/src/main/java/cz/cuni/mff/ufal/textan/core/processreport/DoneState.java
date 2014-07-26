@@ -32,4 +32,9 @@ public class DoneState extends State {
     public State.StateType getType() {
         return State.StateType.DONE;
     }
+
+    @Override
+    protected java.lang.Object readResolve() {
+        return getInstance();
+    }
 }

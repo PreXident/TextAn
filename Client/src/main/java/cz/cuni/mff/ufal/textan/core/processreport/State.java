@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.FileType;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
  * they are responsible for because default implementations just throw
  * {@link IllegalStateException}.
  */
-public abstract class State {
+public abstract class State implements Serializable {
 
     /**
      * Only constructor.
@@ -24,6 +25,12 @@ public abstract class State {
      * @return state's type
      */
     public abstract StateType getType();
+
+    /**
+     * Implementation of deserialization.
+     * @return singleton instance
+     */
+    protected abstract java.lang.Object readResolve();
 
     /**
      * Moves one step back in pipeline.
@@ -86,8 +93,9 @@ public abstract class State {
      * Selects unfinished report as a source of the new report.
      * Available in {@link State.StateType#LOAD} state.
      * @param pipeline pipeline delegating the request
+     * @param path path to file with saved report
      */
-    public void selectLoadDatasource(final ProcessReportPipeline pipeline) {
+    public void selectLoadDatasource(final ProcessReportPipeline pipeline, final String path) {
         throw new IllegalStateException("Cannot select report data source when in state " + getType());
     }
 

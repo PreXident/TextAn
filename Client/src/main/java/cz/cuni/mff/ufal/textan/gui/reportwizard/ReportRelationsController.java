@@ -15,7 +15,7 @@ import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.RelationInfo;
+import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.FXRelationInfo;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.Collator;
@@ -112,16 +112,16 @@ public class ReportRelationsController extends ReportWizardController {
     ScrollPane scrollPane;
 
     @FXML
-    TableView<RelationInfo> table;
+    TableView<FXRelationInfo> table;
 
     @FXML
-    TableColumn<RelationInfo, Number> orderColumn;
+    TableColumn<FXRelationInfo, Number> orderColumn;
 
     @FXML
-    TableColumn<RelationInfo, String> roleColumn;
+    TableColumn<FXRelationInfo, String> roleColumn;
 
     @FXML
-    TableColumn<RelationInfo, Object> objectColumn;
+    TableColumn<FXRelationInfo, Object> objectColumn;
 
     @FXML
     ListView<FXRelationBuilder> relationsListView;
@@ -184,7 +184,7 @@ public class ReportRelationsController extends ReportWizardController {
     private void add() {
         if (selectedRelation != null) {
             pipeline.resetStepsBack();
-            selectedRelation.getData().add(new RelationInfo(0, "", null));
+            selectedRelation.getData().add(new FXRelationInfo(0, "", null));
         }
     }
 
@@ -238,7 +238,7 @@ public class ReportRelationsController extends ReportWizardController {
             pipeline.resetStepsBack();
             final int index = table.getSelectionModel().getSelectedIndex();
             if (index >= 0) {
-                final RelationInfo remove = selectedRelation.getData().remove(index);
+                final FXRelationInfo remove = selectedRelation.getData().remove(index);
                 //remove selection background
                 final Object obj = remove.getObject();
                 final List<Text> texts = objectWords.get(obj);
@@ -274,7 +274,7 @@ public class ReportRelationsController extends ReportWizardController {
         });
         table.setEditable(true);
         objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().add(roleColumn.prefWidthProperty()) .multiply(-1).add(-2)));
-        orderColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Number> p) -> p.getValue().order);
+        orderColumn.setCellValueFactory((CellDataFeatures<FXRelationInfo, Number> p) -> p.getValue().orderProperty());
         orderColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {
             @Override
             public String toString(Number t) {
@@ -286,20 +286,20 @@ public class ReportRelationsController extends ReportWizardController {
             }
         }));
         orderColumn.setOnEditCommit(
-            (CellEditEvent<RelationInfo, Number> t) -> {
+            (CellEditEvent<FXRelationInfo, Number> t) -> {
                 t.getTableView().getItems().get(
-                        t.getTablePosition().getRow()).order.setValue(t.getNewValue());
+                        t.getTablePosition().getRow()).setOrder(t.getNewValue().intValue());
         });
-        roleColumn.setCellValueFactory((CellDataFeatures<RelationInfo, String> p) -> p.getValue().role);
+        roleColumn.setCellValueFactory((CellDataFeatures<FXRelationInfo, String> p) -> p.getValue().roleProperty());
         roleColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         roleColumn.setOnEditCommit(
-            (CellEditEvent<RelationInfo, String> t) -> {
+            (CellEditEvent<FXRelationInfo, String> t) -> {
                 t.getTableView().getItems().get(
-                        t.getTablePosition().getRow()).role.setValue(t.getNewValue());
+                        t.getTablePosition().getRow()).setRole(t.getNewValue());
         });
-        objectColumn.setCellValueFactory((CellDataFeatures<RelationInfo, Object> p) -> p.getValue().object);
+        objectColumn.setCellValueFactory((CellDataFeatures<FXRelationInfo, Object> p) -> p.getValue().objectProperty());
         objectColumn.setOnEditCommit(
-            (CellEditEvent<RelationInfo, Object> t) -> {
+            (CellEditEvent<FXRelationInfo, Object> t) -> {
                 pipeline.resetStepsBack();
                 final Object oldObj = t.getOldValue();
                 final List<Text> oldTexts = objectWords.get(oldObj);
@@ -307,7 +307,7 @@ public class ReportRelationsController extends ReportWizardController {
                     oldTexts.stream().forEach(Utils::unstyleTextBackground);
                 }
                 t.getTableView().getItems().get(
-                        t.getTablePosition().getRow()).object.setValue(t.getNewValue());
+                        t.getTablePosition().getRow()).setObject(t.getNewValue());
                 final RelationType type = selectedRelation.getType();
                 final long id = type.getId();
                 final Object newObj = t.getNewValue();
@@ -355,6 +355,17 @@ public class ReportRelationsController extends ReportWizardController {
                 (FXRelationBuilder p) -> new Observable[] { p.stringRepresentation }));
         relationsListView.getSelectionModel().selectedItemProperty().addListener(
                 (ov, oldVal, newVal) -> { selectRelation(newVal); });
+    }
+
+
+    @Override
+    public Runnable getContainerCloser() {
+        return () -> {
+            final List<RelationBuilder> rels = pipeline.getReportRelations();
+            rels.clear();
+            rels.addAll(relationsListView.getItems());
+            promptSave(root);
+        };
     }
 
     @Override
@@ -533,8 +544,8 @@ public class ReportRelationsController extends ReportWizardController {
                         .distinct()
                         .collect(Collectors.toList())
         );
-        final Callback<TableColumn<RelationInfo, Object>, TableCell<RelationInfo, Object>> cellFactory =
-                (TableColumn<RelationInfo, Object> param) -> {
+        final Callback<TableColumn<FXRelationInfo, Object>, TableCell<FXRelationInfo, Object>> cellFactory =
+                (TableColumn<FXRelationInfo, Object> param) -> {
                     final ObjectTableCell cell = new ObjectTableCell(new StringConverter<Object>() {
                         @Override
                         public String toString(Object o) {
@@ -626,7 +637,7 @@ public class ReportRelationsController extends ReportWizardController {
         if (selectedRelation != null) {
              selectedRelation.getData().stream()
                     .flatMap(relInfo -> {
-                        final List<Text> words = objectWords.get(relInfo.object.get());
+                        final List<Text> words = objectWords.get(relInfo.getObject());
                         return words != null ? words.stream() : Stream.empty();
                     })
                     .forEach(Utils::unstyleTextBackground);
@@ -671,7 +682,7 @@ public class ReportRelationsController extends ReportWizardController {
         final long id = type.getId();
         selectedRelation.getData().stream()
                 .flatMap(relInfo -> {
-                    final List<Text> words = objectWords.get(relInfo.object.get());
+                    final List<Text> words = objectWords.get(relInfo.getObject());
                     return words != null ? words.stream() : Stream.empty();
                 })
                 .forEach(t -> Utils.styleTextBackground(t, id));
@@ -681,7 +692,7 @@ public class ReportRelationsController extends ReportWizardController {
     /**
      * Hacky class to add background to objects being selected.
      */
-    public class ObjectTableCell extends ComboBoxTableCell<FXRelationBuilder.RelationInfo, Object> {
+    public class ObjectTableCell extends ComboBoxTableCell<FXRelationBuilder.FXRelationInfo, Object> {
 
         /**
          * Only constructor. Converter is used if reflection fails.

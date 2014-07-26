@@ -35,7 +35,7 @@ public class ReportEditController extends ReportWizardController {
             new Thread(() -> {
                 final String t = textArea.getText().replace("\r", "");
                 handleDocumentChangedException(root, () -> {
-                    pipeline.setReportText(t);
+                    pipeline.setReportTextAndParse(t);
                     return null;
                 });
             }, "FromEditState").start();
@@ -46,6 +46,15 @@ public class ReportEditController extends ReportWizardController {
     public void initialize(URL url, ResourceBundle rb) {
         slider.addEventFilter(EventType.ROOT, e -> e.consume());
         slider.setLabelFormatter(new SliderLabelFormatter());
+    }
+
+
+    @Override
+    public Runnable getContainerCloser() {
+        return () -> {
+            pipeline.setReportText(textArea.getText());
+            promptSave(root);
+        };
     }
 
     @Override

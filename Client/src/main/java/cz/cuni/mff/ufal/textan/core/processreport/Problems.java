@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsRespo
 import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.*;
 import cz.cuni.mff.ufal.textan.core.Object;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Simple wrapper of {@link GetProblemsResponse}.
  */
-public class Problems {
+public class Problems implements Serializable {
 
     /** New Objects. */
     private final List<Object> newObjects;

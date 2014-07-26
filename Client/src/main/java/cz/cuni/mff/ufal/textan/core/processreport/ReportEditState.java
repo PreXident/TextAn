@@ -62,6 +62,11 @@ final class ReportEditState extends State {
         return StateType.EDIT_REPORT;
     }
 
+    @Override
+    protected java.lang.Object readResolve() {
+        return getInstance();
+    }
+
     /**
      * Assigns entities to words.
      * @param words list of words to assign to

@@ -46,4 +46,9 @@ final public class SelectFileState extends State {
     public State.StateType getType() {
         return State.StateType.SELECT_FILE;
     }
+
+    @Override
+    protected java.lang.Object readResolve() {
+        return getInstance();
+    }
 }

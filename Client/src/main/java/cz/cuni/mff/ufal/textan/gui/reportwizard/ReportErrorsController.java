@@ -167,6 +167,11 @@ public class ReportErrorsController extends ReportWizardController {
     }
 
     @Override
+    public Runnable getContainerCloser() {
+        return getSavePrompter(root);
+    }
+
+    @Override
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
         newObjectsTable.getItems().addAll(pipeline.getProblems().getNewObjects());

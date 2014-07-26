@@ -42,4 +42,9 @@ public class SelectDocumentState extends State {
     public State.StateType getType() {
         return State.StateType.SELECT_DOCUMENT;
     }
+
+    @Override
+    protected java.lang.Object readResolve() {
+        return getInstance();
+    }
 }

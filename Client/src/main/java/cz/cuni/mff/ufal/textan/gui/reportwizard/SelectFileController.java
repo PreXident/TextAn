@@ -56,7 +56,7 @@ public class SelectFileController extends ReportWizardController {
             new Thread(() -> {
                 final String t = textArea.getText();
                 handleDocumentChangedException(root, () -> {
-                    pipeline.setReportText(t);
+                    pipeline.setReportTextAndParse(t);
                     return null;
                 });
             }, "FromSelectFileState").start();

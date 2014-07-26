@@ -60,7 +60,7 @@ public abstract class WindowController implements Initializable {
     public void setWindow(final InnerWindow window) {
         this.window = window;
         window.getContentPane().setCursor(Cursor.DEFAULT);
-        window.setContainerCloser(() -> closeContainer());
+        window.setContainerCloser(getContainerCloser());
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class WindowController implements Initializable {
     public void setStage(final OuterStage stage) {
         this.stage = stage;
         stage.getInnerWindow().getContentPane().setCursor(Cursor.DEFAULT);
-        stage.getInnerWindow().setContainerCloser(() -> closeContainer());
+        stage.getInnerWindow().setContainerCloser(getContainerCloser());
     }
 
     /**
@@ -83,6 +83,14 @@ public abstract class WindowController implements Initializable {
         } else /* if (stage != null) */ {
             stage.close();
         }
+    }
+
+    /**
+     * Returns runnable that handles closing the container.
+     * @return runnable that handles closing the container
+     */
+    public Runnable getContainerCloser() {
+        return () -> closeContainer();
     }
 
     protected <T> T callWithContentBackup(final Callable<T> c) throws Exception {

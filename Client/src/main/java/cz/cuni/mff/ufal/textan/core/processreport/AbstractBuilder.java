@@ -2,12 +2,13 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Ancestor of other builders, intended to share code.
  */
-public abstract class AbstractBuilder {
+public abstract class AbstractBuilder implements Serializable {
 
     /** Index in the list. */
     protected int index;
