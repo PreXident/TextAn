@@ -358,7 +358,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         response.setDocumentId(documentId);
 
         LOG.info("Executed operation addDocument: {}", response);
-        return new AddDocumentResponse();
+        return response;
     }
 
     @Override
