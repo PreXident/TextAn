@@ -286,8 +286,11 @@ public class DirectDataAccessService {
      * @param objectTypeId the object type id
      * @return the objects
      */
-    public List<Object> getObjects(long objectTypeId) {
-        //TODO: add test if id exists
+    public List<Object> getObjects(long objectTypeId) throws IdNotFoundException {
+        ObjectTypeTable objectTypeTable = objectTypeTableDAO.find(objectTypeId);
+        if (objectTypeTable == null) {
+            throw new IdNotFoundException("objectTypeId", objectTypeId);
+        }
 
         return objectTableDAO.findAllByObjectType(objectTypeId).stream()
                 .map(Object::fromObjectTable)
@@ -419,9 +422,11 @@ public class DirectDataAccessService {
      * @param relationTypeId the relation type id
      * @return the relations
      */
-    public List<Relation> getRelations(long relationTypeId) {
-
-        //TODO: add test if id exists!
+    public List<Relation> getRelations(long relationTypeId) throws IdNotFoundException {
+        RelationTypeTable relationTypeTable = relationTypeTableDAO.find(relationTypeId);
+        if (relationTypeTable == null) {
+            throw new IdNotFoundException("relationTypeId", relationTypeId);
+        }
 
         return relationTableDAO.findAllByRelationType(relationTypeId).stream()
                 .map(Relation::fromRelationTable)

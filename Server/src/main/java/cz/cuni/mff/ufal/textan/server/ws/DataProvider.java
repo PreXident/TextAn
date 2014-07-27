@@ -213,14 +213,14 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         LOG.info("Executing operation getFilteredObjectsRequest: {}", getFilteredObjectsRequest);
 
         try {
-            
+
             Pair<List<Object>, Integer> results = dbService.getFilteredObjects(
                     getFilteredObjectsRequest.getObjectTypeId(),
                     getFilteredObjectsRequest.getAliasFilter(),
                     getFilteredObjectsRequest.getFirstResult(),
                     getFilteredObjectsRequest.getMaxResults()
             );
-            
+
             GetFilteredObjectsResponse response = new GetFilteredObjectsResponse();
             for (Object object : results.getFirst()) {
                 response.getObjects().add(object.toCommonsObject());
@@ -623,14 +623,25 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         LOG.info("Executing operation getRelationsByTypeId: {}", getRelationsByTypeIdRequest);
 
-        GetRelationsByTypeIdResponse response = new GetRelationsByTypeIdResponse();
-        List<Relation> relations = dbService.getRelations(getRelationsByTypeIdRequest.getRelationTypeId());
-        for (Relation relation : relations) {
-            response.getRelations().add(relation.toCommonsRelation());
-        }
+        try {
+            List<Relation> relations = dbService.getRelations(getRelationsByTypeIdRequest.getRelationTypeId());
 
-        LOG.info("Executed operation getRelationsByTypeId: {}", response);
-        return response;
+            GetRelationsByTypeIdResponse response = new GetRelationsByTypeIdResponse();
+            for (Relation relation : relations) {
+                response.getRelations().add(relation.toCommonsRelation());
+            }
+
+            LOG.info("Executed operation getRelationsByTypeId: {}", response);
+            return response;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getObjectsByTypeId.", e);
+
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
     }
 
     @Override
@@ -705,14 +716,25 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         LOG.info("Executing operation getObjectsByTypeId: {}", getObjectsByTypeIdRequest);
 
-        GetObjectsByTypeIdResponse response = new GetObjectsByTypeIdResponse();
-        List<Object> objects = dbService.getObjects(getObjectsByTypeIdRequest.getObjectTypeId());
-        for (Object object : objects) {
-            response.getObjects().add(object.toCommonsObject());
-        }
+        try {
+            List<Object> objects = dbService.getObjects(getObjectsByTypeIdRequest.getObjectTypeId());
 
-        LOG.info("Executed operation getObjectsByTypeId: {}", response);
-        return response;
+            GetObjectsByTypeIdResponse response = new GetObjectsByTypeIdResponse();
+            for (Object object : objects) {
+                response.getObjects().add(object.toCommonsObject());
+            }
+
+            LOG.info("Executed operation getObjectsByTypeId: {}", response);
+            return response;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getObjectsByTypeId.", e);
+
+            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+            exceptionBody.setFieldName(e.getFieldName());
+            exceptionBody.setFieldValue(e.getFieldValue());
+
+            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+        }
     }
 
     @Override
