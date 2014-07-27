@@ -368,30 +368,6 @@ public class DirectDataAccessService {
     }
 
     /**
-     * Merges two objects into one.
-     *
-     * @param object1Id the identifier of the first object
-     * @param object2Id the identifier of the second object
-     * @return the identifier of the new objects
-     */
-    public long mergeObjects(long object1Id, long object2Id) throws IdNotFoundException {
-        //TODO: implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    /**
-     * Splits merged object.
-     *
-     * @param objectId the identifier of merged object
-     * @return true if object was split, false otherwise
-     */
-    public boolean splitObject(long objectId) throws IdNotFoundException {
-        //TODO: implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-
-    /**
      * Gets all relation types.
      *
      * @return the relation types

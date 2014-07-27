@@ -10,6 +10,7 @@ import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.services.DirectDataAccessService;
 import cz.cuni.mff.ufal.textan.server.services.GraphService;
+import cz.cuni.mff.ufal.textan.server.services.MergeService;
 import cz.cuni.mff.ufal.textan.server.services.ProcessedFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +35,13 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
     private final DirectDataAccessService dbService;
     private final GraphService graphService;
+    private final MergeService mergeService;
 
 
-    public DataProvider(DirectDataAccessService dbService, GraphService graphService) {
+    public DataProvider(DirectDataAccessService dbService, GraphService graphService, MergeService mergeService) {
         this.dbService = dbService;
         this.graphService = graphService;
+        this.mergeService = mergeService;
     }
 
     @Override
@@ -528,7 +531,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         LOG.info("Executing operation splitObject: {}", splitObjectRequest);
 
         try {
-            boolean result = dbService.splitObject(splitObjectRequest.getObjectId());
+            boolean result = mergeService.splitObject(splitObjectRequest.getObjectId());
 
             SplitObjectResponse response = new SplitObjectResponse();
             response.setResult(result);
@@ -772,7 +775,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         try {
             MergeObjectsResponse response = new MergeObjectsResponse();
-            long objectId = dbService.mergeObjects(mergeObjectsRequest.getObject1Id(), mergeObjectsRequest.getObject2Id());
+            long objectId = mergeService.mergeObjects(mergeObjectsRequest.getObject1Id(), mergeObjectsRequest.getObject2Id());
             response.setObjectId(objectId);
 
             LOG.info("Executed operation mergeObjects: {}", response);
