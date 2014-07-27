@@ -43,10 +43,12 @@ public class ObjectAssignmentService {
         return getAssignmentsInner(text, entities);
     }
 
-    public List<Assignment> getAssignments(long documentId, List<Entity> entities, EditingTicket ticket) throws IdNotFoundException {
+    public List<Assignment> getAssignments(long documentId, List<Entity> entities, EditingTicket ticket) throws IdNotFoundException, DocumentAlreadyProcessedException {
         DocumentTable documentTable = documentTableDAO.find(documentId);
         if (documentTable == null) {
             throw new IdNotFoundException("documentId", documentId);
+        } else if (documentTable.isProcessed()) {
+            throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
         }
 
         return getAssignmentsInner(documentTable.getText(), entities);

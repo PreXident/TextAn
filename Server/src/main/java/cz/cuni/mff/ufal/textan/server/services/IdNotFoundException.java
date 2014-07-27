@@ -17,12 +17,11 @@ public class IdNotFoundException extends Exception {
      * @param fieldValue the value of the identifier
      */
     public IdNotFoundException(String fieldName, long fieldValue) {
-        super(
-                "The identifier '" + fieldName + "' with value " + fieldValue + " not found."
+        this(
+                "The identifier '" + fieldName + "' with value " + fieldValue + " not found.",
+                fieldName,
+                fieldValue
         );
-
-        this.fieldName = fieldName;
-        this.fieldValue = fieldValue;
     }
 
     /**

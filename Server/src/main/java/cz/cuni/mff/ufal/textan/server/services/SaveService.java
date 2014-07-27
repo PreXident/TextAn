@@ -145,7 +145,7 @@ public class SaveService {
             long documentId,
             List<Object> objects, List<Pair<Long, Occurrence>> objectOccurrences,
             List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences,
-            boolean force, EditingTicket ticket) throws IdNotFoundException {
+            boolean force, EditingTicket ticket) throws IdNotFoundException, DocumentAlreadyProcessedException {
 
         if (!force && checkChanges()) {
             return false;
@@ -154,6 +154,8 @@ public class SaveService {
         DocumentTable documentTable = documentTableDAO.find(documentId);
         if (documentTable == null) {
             throw new IdNotFoundException("documentId", documentId);
+        } else if (documentTable.isProcessed()) {
+            throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
         }
 
         return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences, ticket);
