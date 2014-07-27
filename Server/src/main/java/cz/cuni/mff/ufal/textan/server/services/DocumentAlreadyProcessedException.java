@@ -7,6 +7,8 @@ import java.util.Date;
  */
 public class DocumentAlreadyProcessedException extends Exception {
 
+    private static final long serialVersionUID = -8355602739609373687L;
+
     private final long documentId;
     private final Date processedDate;
 
