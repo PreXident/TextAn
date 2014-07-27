@@ -39,6 +39,9 @@ public class WebAppConfig {
     @Autowired
     private SaveService saveService;
 
+    @Autowired
+    private TicketService ticketService;
+
     /**
      * Creates spring bean with bus for CXF initialization
      *
@@ -107,6 +110,6 @@ public class WebAppConfig {
      */
     @Bean
     public DocumentProcessor documentProcessor() {
-        return new DocumentProcessor(namedEntityRecognizerService, objectAssignmentService, saveService);
+        return new DocumentProcessor(namedEntityRecognizerService, objectAssignmentService, saveService, ticketService);
     }
 }

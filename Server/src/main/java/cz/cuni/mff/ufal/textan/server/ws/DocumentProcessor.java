@@ -12,6 +12,7 @@ import cz.cuni.mff.ufal.textan.server.models.Occurrence;
 import cz.cuni.mff.ufal.textan.server.services.NamedEntityRecognizerService;
 import cz.cuni.mff.ufal.textan.server.services.ObjectAssignmentService;
 import cz.cuni.mff.ufal.textan.server.services.SaveService;
+import cz.cuni.mff.ufal.textan.server.services.TicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,15 +34,18 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
     private final NamedEntityRecognizerService namedEntityService;
     private final ObjectAssignmentService objectAssignmentService;
     private final SaveService saveService;
+    private final TicketService ticketService;
 
     public DocumentProcessor(
             NamedEntityRecognizerService namedEntityService,
             ObjectAssignmentService objectAssignmentService,
-            SaveService saveService) {
+            SaveService saveService,
+            TicketService ticketService) {
 
         this.namedEntityService = namedEntityService;
         this.objectAssignmentService = objectAssignmentService;
         this.saveService = saveService;
+        this.ticketService = ticketService;
     }
 
     @Override
@@ -317,10 +321,10 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         LOG.info("Executing operation getEditingTicket: {}", getEditingTicketRequest);
 
+        EditingTicket editingTicket = ticketService.createTicket().toCommonsEditingTicket();
+
         final GetEditingTicketResponse response = new GetEditingTicketResponse();
-        final EditingTicket t = new EditingTicket();
-        t.setTimestamp(new Date());
-        response.setEditingTicket(t);
+        response.setEditingTicket(editingTicket);
 
         LOG.info("Executed operation getEditingTicket: {}", response);
         return response;
