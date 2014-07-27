@@ -4,7 +4,6 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.server.models.Assignment;
 import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
@@ -43,7 +42,10 @@ public class ObjectAssignmentService {
         return getAssignmentsInner(text, entities);
     }
 
-    public List<Assignment> getAssignments(long documentId, List<Entity> entities, EditingTicket ticket) throws IdNotFoundException, DocumentAlreadyProcessedException {
+    public List<Assignment> getAssignments(long documentId, List<Entity> entities, EditingTicket ticket)
+            throws IdNotFoundException, DocumentAlreadyProcessedException, DocumentChangedException {
+        //TODO:throw Document Changed Exception
+
         DocumentTable documentTable = documentTableDAO.find(documentId);
         if (documentTable == null) {
             throw new IdNotFoundException("documentId", documentId);

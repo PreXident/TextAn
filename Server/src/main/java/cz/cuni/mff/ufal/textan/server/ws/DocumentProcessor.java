@@ -108,6 +108,9 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         } catch (cz.cuni.mff.ufal.textan.server.services.DocumentAlreadyProcessedException e) {
             LOG.warn("Problem in operation getEntitiesById.", e);
             throw translateDocumentAlreadyProcessedException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.DocumentChangedException e) {
+            LOG.warn("Problem in operation getEntitiesById.", e);
+            throw translateDocumentChangedException(e);
         }
     }
 
@@ -136,6 +139,43 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         LOG.info("Executed operation getObjectsFromString: {}", response);
         return response;
+    }
+
+    @Override
+    public GetAssignmentsByIdResponse getAssignmentsById(
+            @WebParam(partName = "getAssignmentsById", name = "getAssignmentsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            GetAssignmentsByIdRequest getAssignmentsByIdRequest,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
+            EditingTicket editingTicket) throws DocumentChangedException, DocumentAlreadyProcessedException, IdNotFoundException {
+
+        LOG.info("Executing operation getObjectsById: {} {}", getAssignmentsByIdRequest, editingTicket);
+
+        cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
+
+        List<cz.cuni.mff.ufal.textan.server.models.Entity> serverEntities = getAssignmentsByIdRequest.getEntities().stream()
+                .map(cz.cuni.mff.ufal.textan.server.models.Entity::fromCommonsEntity)
+                .collect(Collectors.toList());
+
+        try {
+            GetAssignmentsByIdResponse response = new GetAssignmentsByIdResponse();
+            List<Assignment> assignments = objectAssignmentService.getAssignments(getAssignmentsByIdRequest.getId(), serverEntities, serverTicket);
+            for (Assignment assignment : assignments) {
+                response.getAssignments().add(assignment.toCommonsAssignment());
+            }
+
+            LOG.info("Executed operation getObjectsById: {}", response);
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation saveProcessedDocumentById.", e);
+            throw translateIdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.DocumentAlreadyProcessedException e) {
+            LOG.warn("Problem in operation saveProcessedDocumentById.", e);
+            throw translateDocumentAlreadyProcessedException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.DocumentChangedException e) {
+            LOG.warn("Problem in operation saveProcessedDocumentById.", e);
+            throw translateDocumentChangedException(e);
+        }
     }
 
     @Override
@@ -185,40 +225,6 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation saveProcessedDocumentFromString.", e);
             throw translateIdNotFoundException(e);
-        }
-    }
-
-    @Override
-    public GetAssignmentsByIdResponse getAssignmentsById(
-            @WebParam(partName = "getAssignmentsById", name = "getAssignmentsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
-            GetAssignmentsByIdRequest getAssignmentsByIdRequest,
-            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
-            EditingTicket editingTicket) throws DocumentChangedException, DocumentAlreadyProcessedException, IdNotFoundException {
-
-        LOG.info("Executing operation getObjectsById: {} {}", getAssignmentsByIdRequest, editingTicket);
-
-        cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
-
-        List<cz.cuni.mff.ufal.textan.server.models.Entity> serverEntities = getAssignmentsByIdRequest.getEntities().stream()
-                .map(cz.cuni.mff.ufal.textan.server.models.Entity::fromCommonsEntity)
-                .collect(Collectors.toList());
-
-        try {
-            GetAssignmentsByIdResponse response = new GetAssignmentsByIdResponse();
-            List<Assignment> assignments = objectAssignmentService.getAssignments(getAssignmentsByIdRequest.getId(), serverEntities, serverTicket);
-            for (Assignment assignment : assignments) {
-                response.getAssignments().add(assignment.toCommonsAssignment());
-            }
-
-            LOG.info("Executed operation getObjectsById: {}", response);
-            return response;
-
-        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
-            LOG.warn("Problem in operation saveProcessedDocumentById.", e);
-            throw translateIdNotFoundException(e);
-        } catch (cz.cuni.mff.ufal.textan.server.services.DocumentAlreadyProcessedException e) {
-            LOG.warn("Problem in operation saveProcessedDocumentById.", e);
-            throw translateDocumentAlreadyProcessedException(e);
         }
     }
 
@@ -273,6 +279,9 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         } catch (cz.cuni.mff.ufal.textan.server.services.DocumentAlreadyProcessedException e) {
             LOG.warn("Problem in operation saveProcessedDocumentById.", e);
             throw translateDocumentAlreadyProcessedException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.DocumentChangedException e) {
+            LOG.warn("Problem in operation saveProcessedDocumentById.", e);
+            throw translateDocumentChangedException(e);
         }
     }
 
@@ -330,5 +339,14 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         exceptionBody.setProcessedDate(e.getProcessedDate());
 
         return new DocumentAlreadyProcessedException(e.getMessage(), exceptionBody);
+    }
+
+    private static DocumentChangedException translateDocumentChangedException(cz.cuni.mff.ufal.textan.server.services.DocumentChangedException e) {
+        cz.cuni.mff.ufal.textan.commons.models.documentprocessor.DocumentChangedException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.documentprocessor.DocumentChangedException();
+        exceptionBody.setDocumentId(e.getDocumentId());
+        exceptionBody.setDocumentVersion(e.getDocumentVersion());
+        exceptionBody.setTicketVersion(e.getTicketVersion());
+
+        return new DocumentChangedException(e.getMessage(), exceptionBody);
     }
 }

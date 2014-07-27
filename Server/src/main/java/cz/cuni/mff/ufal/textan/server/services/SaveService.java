@@ -145,7 +145,10 @@ public class SaveService {
             long documentId,
             List<Object> objects, List<Pair<Long, Occurrence>> objectOccurrences,
             List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences,
-            boolean force, EditingTicket ticket) throws IdNotFoundException, DocumentAlreadyProcessedException {
+            boolean force, EditingTicket ticket)
+            throws IdNotFoundException, DocumentAlreadyProcessedException, DocumentChangedException {
+
+        //TODO:throw Document Changed Exception
 
         if (!force && checkChanges()) {
             return false;
