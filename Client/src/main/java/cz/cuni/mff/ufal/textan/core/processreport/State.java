@@ -1,7 +1,9 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
+import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.FileType;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +13,7 @@ import java.util.List;
  * they are responsible for because default implementations just throw
  * {@link IllegalStateException}.
  */
-public abstract class State {
+public abstract class State implements Serializable {
 
     /**
      * Only constructor.
@@ -25,6 +27,12 @@ public abstract class State {
     public abstract StateType getType();
 
     /**
+     * Implementation of deserialization.
+     * @return singleton instance
+     */
+    protected abstract java.lang.Object readResolve();
+
+    /**
      * Moves one step back in pipeline.
      * @param pipeline pipeline delegating the request
      */
@@ -35,8 +43,10 @@ public abstract class State {
     /**
      * Forces the document to be save into the db.
      * @param pipeline pipeline delegating the request
+     * @throws DocumentChangedException if processed document has been changed
      */
-    public void forceSave(final ProcessReportPipeline pipeline) {
+    public void forceSave(final ProcessReportPipeline pipeline)
+            throws DocumentChangedException {
         throw new IllegalStateException("Cannot force save when in state " + getType());
     }
 
@@ -83,17 +93,31 @@ public abstract class State {
      * Selects unfinished report as a source of the new report.
      * Available in {@link State.StateType#LOAD} state.
      * @param pipeline pipeline delegating the request
+     * @param path path to file with saved report
      */
-    public void selectLoadDatasource(final ProcessReportPipeline pipeline) {
+    public void selectLoadDatasource(final ProcessReportPipeline pipeline, final String path) {
         throw new IllegalStateException("Cannot select report data source when in state " + getType());
+    }
+
+    /**
+     * Sets document to process.
+     * @param pipeline pipeline delegating the request
+     * @param document document to process
+     * @throws DocumentChangedException if processed document has been changed
+     */
+    public void setReport(final ProcessReportPipeline pipeline,
+            final Document document) throws DocumentChangedException {
+        throw new IllegalStateException("Cannot set report when in state " + getType());
     }
 
     /**
      * Sets the report's text.
      * @param pipeline pipeline delegating the request
      * @param report new report's text
+     * @throws DocumentChangedException if processed document has been changed
      */
-    public void setReport(final ProcessReportPipeline pipeline, final String report) {
+    public void setReportText(final ProcessReportPipeline pipeline, final String report)
+            throws DocumentChangedException {
         throw new IllegalStateException("Cannot set report's text when in state " + getType());
     }
 
@@ -101,18 +125,11 @@ public abstract class State {
      * Sets the report's words. Repopulates entities as well.
      * @param pipeline pipeline delegating the request
      * @param words new report's words
+     * @throws DocumentChangedException if processed document has been changed
      */
-    public void setReportWords(final ProcessReportPipeline pipeline, final List<Word> words) {
+    public void setReportWords(final ProcessReportPipeline pipeline,
+            final List<Word> words) throws DocumentChangedException {
         throw new IllegalStateException("Cannot set report's words when in state " + getType());
-    }
-
-    /**
-     * Sets the report's entities.
-     * @param pipeline pipeline delegating the request
-     * @param entities new entities
-     */
-    public void setReportEntities(final ProcessReportPipeline pipeline, final List<Entity> entities) {
-        throw new IllegalStateException("Cannot set report's entities when in state " + getType());
     }
 
     /**
@@ -129,18 +146,27 @@ public abstract class State {
      * @param pipeline pipeline delegating the request
      * @param words words with assigned relations
      * @param unanchoredRelations list of unanchored relations
+     * @throws DocumentChangedException if document has been changed under our hands
      */
     public void setReportRelations(final ProcessReportPipeline pipeline,
-            final List<Word> words, final List<? extends RelationBuilder> unanchoredRelations) {
+            final List<Word> words,
+            final List<? extends RelationBuilder> unanchoredRelations) throws DocumentChangedException {
         throw new IllegalStateException("Cannot set report's relations when in state " + getType());
     }
 
     /** Possible states. */
     public enum StateType {
         /** Selecting report source. Implemented by {@link LoadReportState}. */
-        LOAD,
+        LOAD {
+            @Override
+            public boolean isLocking() {
+                return false;
+            }
+        },
         /** Selecting file with report. */
         SELECT_FILE,
+        /** Selecting document from db. */
+        SELECT_DOCUMENT,
         /** Editing the report. Implemented by {@link ReportEditState}. */
         EDIT_REPORT,
         /** Editing the entities. Implemented by {@link ReportEntitiesState}. */
@@ -150,8 +176,21 @@ public abstract class State {
         /** Editing the relations. Implemented by {@link ReportRelationsState}. */
         EDIT_RELATIONS,
         /** Document saved. */
-        DONE,
+        DONE {
+            @Override
+            public boolean isLocking() {
+                return false;
+            }
+        },
         /** Document error. */
-        ERROR
+        ERROR;
+
+        /**
+         * Returns if the state uses pipeline's lock.
+         * @return true if the state uses pipeline's lock, false otherwise
+         */
+        public boolean isLocking() {
+            return true;
+        }
     }
 }

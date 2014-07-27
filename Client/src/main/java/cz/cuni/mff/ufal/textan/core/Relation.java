@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.core;
 import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds;
 import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation;
 import cz.cuni.mff.ufal.textan.commons.utils.Triple;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Client side representation of {@link cz.cuni.mff.ufal.textan.commons.models.Relation}.
  */
-public class Relation {
+public class Relation implements Serializable {
 
     /** Relation id. */
     private final long id;

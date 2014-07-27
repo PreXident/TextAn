@@ -36,20 +36,35 @@ final class ReportErrorState extends State {
     }
 
     @Override
+    protected java.lang.Object readResolve() {
+        return getInstance();
+    }
+
+    @Override
     public void back(final ProcessReportPipeline pipeline) {
         pipeline.incStepsBack();
         pipeline.setState(ReportRelationsState.getInstance());
     }
 
     @Override
-    public void forceSave(final ProcessReportPipeline pipeline) {
+    public void forceSave(final ProcessReportPipeline pipeline)
+            throws DocumentChangedException {
         try {
-            pipeline.result = pipeline.client.saveProcessedDocument(
-                    pipeline.ticket,
-                    pipeline.getReportText(),
-                    pipeline.reportEntities,
-                    pipeline.reportRelations,
-                    true);
+            if (pipeline.reportId > 0) {
+                pipeline.result = pipeline.client.saveProcessedDocument(
+                        pipeline.ticket,
+                        pipeline.reportId,
+                        pipeline.reportEntities,
+                        pipeline.reportRelations,
+                        false);
+            } else {
+                pipeline.result = pipeline.client.saveProcessedDocument(
+                        pipeline.ticket,
+                        pipeline.getReportText(),
+                        pipeline.reportEntities,
+                        pipeline.reportRelations,
+                        false);
+            }
         } catch (IdNotFoundException e) {
             e.printStackTrace();
         }

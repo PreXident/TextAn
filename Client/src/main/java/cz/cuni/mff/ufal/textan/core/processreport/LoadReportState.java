@@ -1,5 +1,9 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 /**
  * {@link ProcessReportPipeline}'s {@link State} for selecting report source.
  */
@@ -30,8 +34,7 @@ final class LoadReportState extends State {
 
     @Override
     public void selectDatabaseDatasource(final ProcessReportPipeline pipeline) {
-        //TODO database datasource
-        throw new UnsupportedOperationException("Not implemented yet");
+        pipeline.setState(SelectDocumentState.getInstance());
     }
 
     @Override
@@ -45,13 +48,24 @@ final class LoadReportState extends State {
     }
 
     @Override
-    public void selectLoadDatasource(final ProcessReportPipeline pipeline) {
-        //TODO unfinished report datasource
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void selectLoadDatasource(final ProcessReportPipeline pipeline, final String path) {
+        try (ObjectInputStream in =
+                    new ObjectInputStream(new FileInputStream(path))) {
+            final ProcessReportPipeline loaded =
+                    (ProcessReportPipeline) in.readObject();
+            pipeline.load(loaded);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public StateType getType() {
         return StateType.LOAD;
+    }
+
+    @Override
+    protected java.lang.Object readResolve() {
+        return getInstance();
     }
 }

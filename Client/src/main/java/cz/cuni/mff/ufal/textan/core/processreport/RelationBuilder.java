@@ -6,14 +6,25 @@ import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.RelationType;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import javafx.util.Callback;
 
 /**
  * Simple class representing marked Relation.
  * Entities do not track their words, words track their entities.
- * To get marked entities, iterate word list.
+ * To get marked entities, iterate word list. If extending, consider
+ * reimplementing writeReplace
  */
 public abstract class RelationBuilder extends AbstractBuilder {
+
+    /**
+     * Factory used during deserialization.
+     * If none is provided, RelationBuilderProxy will be deserialized
+     */
+    static public RelationBuilderFactory deserializator = null;
 
     /** Cleaner for cleaning relation builders from words. */
     private static final RelationBuilder CLEANER = new RelationBuilder(null) {
@@ -43,7 +54,6 @@ public abstract class RelationBuilder extends AbstractBuilder {
             final int to, final IClearer clearer) throws SplitException {
         CLEANER.clean(words, from, to, clearer);
     }
-
 
     /** Relation type. */
     protected final RelationType type;
@@ -75,6 +85,10 @@ public abstract class RelationBuilder extends AbstractBuilder {
         return type;
     }
 
+    /**
+     * Creates relation infos in constructor.
+     * @return relation infos for constructor
+     */
     protected abstract List<? extends IRelationInfo> createRelationInfos();
 
     @Override
@@ -122,9 +136,72 @@ public abstract class RelationBuilder extends AbstractBuilder {
     }
 
     /**
-     * Simple holder for object to relation assignments.
+     * Instead of this RelationBuilder, serialize the proxy.
+     * @return proxy to serialize
+     * @throws ObjectStreamException
      */
-    public interface IRelationInfo {
+    protected java.lang.Object writeReplace() throws ObjectStreamException {
+        return new RelationBuilderProxy(this);
+    }
+
+    @FunctionalInterface
+    public interface RelationBuilderFactory
+            extends Callback<RelationBuilderProxy, RelationBuilder> {
+        //nothing
+    }
+
+    /**
+     * Proxy for (de)serialization.
+     * If no {@link #deserializator} is provided, it serves as default fallback.
+     */
+    public static class RelationBuilderProxy extends RelationBuilder {
+
+        /**
+         * Only constructor.
+         * @param relationBuilder blue print
+         */
+        @SuppressWarnings("unchecked")
+        public RelationBuilderProxy(final RelationBuilder relationBuilder) {
+            super(relationBuilder.type);
+            index = relationBuilder.index;
+            ((List)data).addAll(relationBuilder.data);
+        }
+
+        /**
+         * Returns relation data.
+         * @return relation data
+         */
+        public List<? extends IRelationInfo>  getData() {
+            return data;
+        }
+
+        @Override
+        protected List<? extends IRelationInfo> createRelationInfos() {
+            return new ArrayList<>();
+        }
+
+        /**
+         * Implementation of deserialization.
+         * @return this if {@link #deserializator} is null, otherwise its result
+         * @throws ObjectStreamException
+         */
+        protected final java.lang.Object readResolve() throws ObjectStreamException {
+            return deserializator == null ? this : deserializator.call(this);
+        }
+
+        @Override
+        protected java.lang.Object writeReplace() throws ObjectStreamException {
+            return this; //this object is intended for serialization
+        }
+    }
+
+    /**
+     * Simple holder for object to relation assignments.
+     * Before implementing consider extending RelationInfo as it has implemented
+     * (de)serialization and provides means for maintaining saved reports'
+     * compatibility between different client implementations.
+     */
+    public interface IRelationInfo extends Serializable {
 
         /**
          * Returns assigned object.
@@ -143,5 +220,83 @@ public abstract class RelationBuilder extends AbstractBuilder {
          * @return assigned object's role
          */
         String getRole();
+    }
+
+    /**
+     * Abstract ancestor for RelationInfos with implemented serialization.
+     */
+    public static abstract class RelationInfo implements IRelationInfo {
+
+        /**
+         * Factory used during deserialization.
+         * If none is provided, RelationInfoProxy will be deserialized
+         */
+        static public RelationInfoFactory deserializator = null;
+
+        /**
+         * Instead of this RelationInfo, serialize the proxy.
+         * @return proxy to serialize
+         * @throws ObjectStreamException
+         */
+        protected final java.lang.Object writeReplace()
+                throws ObjectStreamException {
+            return new RelationInfoProxy(this);
+        }
+
+        @FunctionalInterface
+        public interface RelationInfoFactory
+                extends Callback<RelationInfoProxy, RelationInfo> {
+            //nothing
+        }
+
+        /**
+         * Proxy for (de)serialization.
+         * If no {@link #deserializator} is provided, it serves as default fallback.
+         */
+        public static class RelationInfoProxy implements IRelationInfo {
+
+            /** Assigned object. */
+            public final Object object;
+
+            /** Assigned object's order. */
+            public final int order;
+
+            /** Assigned objects's role. */
+            public final String role;
+
+            /**
+             * Only constructor.
+             * @param relationInfo blue print
+             */
+            public RelationInfoProxy(final RelationInfo relationInfo) {
+                object = relationInfo.getObject();
+                order = relationInfo.getOrder();
+                role = relationInfo.getRole();
+            }
+
+            @Override
+            public Object getObject() {
+                return object;
+            }
+
+            @Override
+            public int getOrder() {
+                return order;
+            }
+
+            @Override
+            public String getRole() {
+                return role;
+            }
+
+            /**
+             * Implementation of deserialization.
+             * @return this if {@link #deserializator} is null, otherwise its result
+             * @throws ObjectStreamException
+             */
+            protected final java.lang.Object readResolve() throws ObjectStreamException {
+                return deserializator == null ? this : deserializator.call(this);
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.core;
 import cz.cuni.mff.ufal.textan.commons.models.ObjectOccurrence;
 import cz.cuni.mff.ufal.textan.commons.models.Occurrence;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  * Client side representation of
  * {@link cz.cuni.mff.ufal.textan.commons.models.Entity}.
  */
-public class Entity {
+public class Entity implements Serializable {
 
     /** {@link #candidates}'s comparator. */
     final static public Comparator<Pair<Double, Object>> COMPARATOR =

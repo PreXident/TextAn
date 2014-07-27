@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Entity;
+import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +35,19 @@ final class ReportEditState extends State {
     private ReportEditState() { }
 
     @Override
-    public void setReport(final ProcessReportPipeline pipeline, final String report) {
+    public void setReportText(final ProcessReportPipeline pipeline,
+            final String report) throws DocumentChangedException {
         pipeline.reportText = report;
         if (pipeline.getStepsBack() <= 0) {
-            pipeline.reportEntities = pipeline.client.getEntities(pipeline.ticket, report);
+            if (pipeline.reportId > 0) {
+                try {
+                    pipeline.reportEntities = pipeline.client.getEntities(pipeline.ticket, pipeline.reportId);
+                } catch (IdNotFoundException ex) {
+                    throw new RuntimeException("This should never happen!", ex);
+                }
+            } else {
+                pipeline.reportEntities = pipeline.client.getEntities(pipeline.ticket, report);
+            }
             pipeline.reportEntities.sort((Entity e1, Entity e2) -> e1.getPosition() - e2.getPosition());
             pipeline.reportWords = parse(report);
             assign(pipeline.reportWords, pipeline.reportEntities);
@@ -50,6 +60,11 @@ final class ReportEditState extends State {
     @Override
     public StateType getType() {
         return StateType.EDIT_REPORT;
+    }
+
+    @Override
+    protected java.lang.Object readResolve() {
+        return getInstance();
     }
 
     /**

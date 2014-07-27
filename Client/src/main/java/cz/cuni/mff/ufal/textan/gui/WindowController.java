@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.gui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -21,7 +22,7 @@ public abstract class WindowController implements Initializable {
     protected Properties settings = null;
 
     /** Window displaying the view. It can be null if in {@link Stage}. */
-    protected Window window = null;
+    protected InnerWindow window = null;
 
     /** Stage displaying the view. It can be null if in {@link Window}. */
     protected OuterStage stage = null;
@@ -56,10 +57,10 @@ public abstract class WindowController implements Initializable {
      * Sets the window to be controlled.
      * @param window Window to be controlled
      */
-    public void setWindow(final Window window) {
+    public void setWindow(final InnerWindow window) {
         this.window = window;
         window.getContentPane().setCursor(Cursor.DEFAULT);
-        window.setContainerCloser(() -> closeContainer());
+        window.setContainerCloser(getContainerCloser());
     }
 
     /**
@@ -69,7 +70,7 @@ public abstract class WindowController implements Initializable {
     public void setStage(final OuterStage stage) {
         this.stage = stage;
         stage.getInnerWindow().getContentPane().setCursor(Cursor.DEFAULT);
-        stage.getInnerWindow().setContainerCloser(() -> closeContainer());
+        stage.getInnerWindow().setContainerCloser(getContainerCloser());
     }
 
     /**
@@ -85,21 +86,41 @@ public abstract class WindowController implements Initializable {
     }
 
     /**
+     * Returns runnable that handles closing the container.
+     * @return runnable that handles closing the container
+     */
+    public Runnable getContainerCloser() {
+        return () -> closeContainer();
+    }
+
+    protected <T> T callWithContentBackup(final Callable<T> c) throws Exception {
+        if (window != null) {
+            window.setResizableWindow(false);
+            final List<Node> backup = new ArrayList<>(window.getContentPane().getChildren());
+            final T result = c.call();
+            window.getContentPane().getChildren().clear();
+            window.getContentPane().getChildren().addAll(backup);
+            window.setResizableWindow(true);
+            return result;
+        } else {
+            return c.call();
+        }
+    }
+
+    /**
      * Calls the runnable; if in {@link Window} it is done with content backup
      * and restore. It is intended for displaying lightweight dialogs that mess
      * up the controls a bit in windows.
      * @param r code to run
      */
     protected void callWithContentBackup(final Runnable r) {
-        if (window != null) {
-            window.setResizableWindow(false);
-            final List<Node> backup = new ArrayList<>(window.getContentPane().getChildren());
-            r.run();
-            window.getContentPane().getChildren().clear();
-            window.getContentPane().getChildren().addAll(backup);
-            window.setResizableWindow(true);
-        } else {
-            r.run();
+        try {
+            callWithContentBackup(() -> {
+                r.run();
+                return null;
+            });
+        } catch (Exception e) {
+            throw new RuntimeException("This should never happen!");
         }
     }
 

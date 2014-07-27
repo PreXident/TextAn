@@ -54,7 +54,11 @@ public class SelectFileController extends ReportWizardController {
         if (pipeline.lock.tryAcquire()) {
             getMainNode().setCursor(Cursor.WAIT);
             new Thread(() -> {
-                pipeline.setReportText(textArea.getText());
+                final String t = textArea.getText();
+                handleDocumentChangedException(root, () -> {
+                    pipeline.setReportTextAndParse(t);
+                    return null;
+                });
             }, "FromSelectFileState").start();
         }
     }

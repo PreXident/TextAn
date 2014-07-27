@@ -31,6 +31,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
@@ -58,49 +59,58 @@ public class DocumentListController extends WindowController {
     static protected final String PROPERTY_ID = "documents.viewer";
 
     @FXML
-    private BorderPane root;
+    public BorderPane root;
 
     @FXML
-    private GridPane filterPane;
+    public GridPane filterPane;
 
     @FXML
-    private CheckBox processedCheckBox;
+    public CheckBox processedCheckBox;
 
     @FXML
-    private TextField filterField;
+    public TextField filterField;
 
     @FXML
-    private TableView<Document> table;
+    public Button newButton;
 
     @FXML
-    private TableColumn<Document, Number> idColumn;
+    public TableView<Document> table;
 
     @FXML
-    private TableColumn<Document, Date> addTimeColumn;
+    public TableColumn<Document, Number> idColumn;
 
     @FXML
-    private TableColumn<Document, Date> lastChangeTimeColumn;
+    public TableColumn<Document, Date> addTimeColumn;
 
     @FXML
-    private TableColumn<Document, Boolean> processedColumn;
+    public TableColumn<Document, Date> lastChangeTimeColumn;
 
     @FXML
-    private TableColumn<Document, Date> processTimeColumn;
+    public TableColumn<Document, Boolean> processedColumn;
 
     @FXML
-    private TableColumn<Document, Number> countColumn;
+    public TableColumn<Document, Date> processTimeColumn;
 
     @FXML
-    private TableColumn<Document, String> textColumn;
+    public TableColumn<Document, Number> countColumn;
 
     @FXML
-    private ComboBox<Integer> perPageComboBox;
+    public TableColumn<Document, String> textColumn;
 
     @FXML
-    private Label paginationLabel;
+    public ComboBox<Integer> perPageComboBox;
+
+    @FXML
+    public Label paginationLabel;
 
     /** Context menu for documents. */
-    protected ContextMenu contextMenu = new ContextMenu();
+    public ContextMenu contextMenu = new ContextMenu();
+
+    /** Menu item for processing the document. */
+    public MenuItem processMI;
+
+    /** Menu item for editing the document. */
+    public MenuItem editMI;
 
     /** Localization container. */
     ResourceBundle resourceBundle;
@@ -130,13 +140,13 @@ public class DocumentListController extends WindowController {
     protected Semaphore lock = new Semaphore(1);
 
     @FXML
-    private void fastForward() {
+    public void fastForward() {
         pageNo = pageCount - 1;
         filter();
     }
 
     @FXML
-    private void fastRewind() {
+    public void fastRewind() {
         pageNo = 0;
         filter();
     }
@@ -196,7 +206,7 @@ public class DocumentListController extends WindowController {
     }
 
     @FXML
-    private void forward() {
+    public void forward() {
         if (pageNo < pageCount - 1) {
             ++pageNo;
             filter();
@@ -204,7 +214,12 @@ public class DocumentListController extends WindowController {
     }
 
     @FXML
-    private void rewind() {
+    public void newDocument() {
+        textAnController.newDocument();
+    }
+
+    @FXML
+    public void rewind() {
         if (pageNo > 0) {
             --pageNo;
             filter();
@@ -230,11 +245,11 @@ public class DocumentListController extends WindowController {
             }
         });
         contextMenu.getItems().add(graphMI);
-        final MenuItem processMI = new MenuItem(Utils.localize(resourceBundle, "document.process"));
+        processMI = new MenuItem(Utils.localize(resourceBundle, "document.process"));
         processMI.setOnAction(e -> {
             final Document doc = table.getSelectionModel().getSelectedItem();
             if (doc != null) {
-                //TODO display new window to process the document
+                textAnController.processDocument(doc);
             }
         });
         processMI.disableProperty().bind(Bindings.createBooleanBinding(() -> {
@@ -242,6 +257,18 @@ public class DocumentListController extends WindowController {
             return doc != null ? doc.isProcessed() : true;
         }, table.getSelectionModel().selectedItemProperty()));
         contextMenu.getItems().add(processMI);
+        editMI = new MenuItem(Utils.localize(resourceBundle, "document.edit"));
+        editMI.setOnAction(e -> {
+            final Document doc = table.getSelectionModel().getSelectedItem();
+            if (doc != null) {
+                textAnController.editDocument(doc);
+            }
+        });
+        editMI.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            final Document doc = table.getSelectionModel().getSelectedItem();
+            return doc != null ? doc.isProcessed() : true;
+        }, table.getSelectionModel().selectedItemProperty()));
+        contextMenu.getItems().add(editMI);
         contextMenu.setStyle(CONTEXT_MENU_STYLE);
         contextMenu.setConsumeAutoHidingEvents(false);
         table.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {

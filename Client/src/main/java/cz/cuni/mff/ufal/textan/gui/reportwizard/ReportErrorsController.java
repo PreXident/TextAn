@@ -106,7 +106,10 @@ public class ReportErrorsController extends ReportWizardController {
         if (pipeline.lock.tryAcquire()) {
             getMainNode().setCursor(Cursor.WAIT);
             new Thread(() -> {
-                pipeline.forceSave();
+                handleDocumentChangedException(root, () -> {
+                    pipeline.forceSave();
+                    return null;
+                });
             }, "ForceSave").start();
         }
     }
@@ -161,6 +164,11 @@ public class ReportErrorsController extends ReportWizardController {
         RowConstraints row3 = new RowConstraints();
         row3.setVgrow(Priority.ALWAYS);
         gridPane.getRowConstraints().addAll(new RowConstraints(), new RowConstraints(), row3);
+    }
+
+    @Override
+    public Runnable getContainerCloser() {
+        return getSavePrompter(root);
     }
 
     @Override

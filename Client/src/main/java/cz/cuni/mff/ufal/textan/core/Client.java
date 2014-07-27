@@ -6,29 +6,35 @@ import cz.cuni.mff.ufal.textan.commons.models.UsernameToken;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.Assignment;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.commons.utils.Triple;
+import cz.cuni.mff.ufal.textan.commons.ws.DocumentChanged;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
+import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.Problems;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -120,6 +126,32 @@ public class Client {
          * @return filter value for field processed filter of DocumentProvider request
          */
         public abstract String toFilter();
+    }
+
+    /**
+     * Process assignments to entities.
+     * @param assignments assignments to process
+     * @param entities entities to assign candidates to
+     */
+    static protected void processAssignments(final List<Assignment> assignments,
+            final Map<Integer, Entity> entities) {
+        final Map<Long, Object> objects = new HashMap<>();
+        for (Assignment assignment : assignments) {
+            final Entity ent = entities.get(assignment.getEntity().getPosition());
+            ent.getCandidates().clear();
+            for (Assignment.RatedObject rating : assignment.getRatedObjects()) {
+                final double r = rating.getScore();
+                final Long objId = rating.getObject().getId();
+                Object obj;
+                if (objects.containsKey(objId)) {
+                    obj = objects.get(objId);
+                } else {
+                    obj = new Object(rating.getObject());
+                    objects.put(objId, obj);
+                }
+                ent.getCandidates().add(new Pair<>(r, obj));
+            }
+        }
     }
 
     /** Settings of the application. Handle with care, they're shared. */
@@ -309,36 +341,17 @@ public class Client {
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
             final Object object, final String filter,
             final int first, final int size) throws IdNotFoundException {
-        //TODO uncomment when db implementation is done
-//        try {
-//            final GetFilteredDocumentsContainingObjectByIdRequest request =
-//                    new GetFilteredDocumentsContainingObjectByIdRequest();
-//            request.setObjectId(object.getId());
-//            request.setFirstResult(first);
-//            request.setMaxResults(size);
-//            request.setPattern(filter);
-//            final GetFilteredDocumentsContainingObjectByIdResponse response =
-//                    getDataProvider().getFilteredDocumentsContainingObjectById(request);
-//            final List<Document> list = response.getDocumentCountPairs().stream()
-//                    .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
-//                    .collect(Collectors.toCollection(ArrayList::new));
-//            return new Pair<>(list, response.getTotalNumberOfResults());
-//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
-//            throw new IdNotFoundException(e);
-//        }
         try {
-            final GetDocumentsContainingObjectByIdRequest request =
-                    new GetDocumentsContainingObjectByIdRequest();
+            final GetFilteredDocumentsContainingObjectByIdRequest request =
+                    new GetFilteredDocumentsContainingObjectByIdRequest();
             request.setObjectId(object.getId());
             request.setFirstResult(first);
             request.setMaxResults(size);
-            //TODO set parameters for filtering when ready
-            final GetDocumentsContainingObjectByIdResponse response =
-                    getDataProvider().getDocumentsContainingObjectById(request);
+            request.setPattern(filter);
+            final GetFilteredDocumentsContainingObjectByIdResponse response =
+                    getDataProvider().getFilteredDocumentsContainingObjectById(request);
             final List<Document> list = response.getDocumentCountPairs().stream()
                     .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
-                    //TODO remove filtering emulation
-                    .filter(d -> d.getText().contains(filter))
                     .collect(Collectors.toCollection(ArrayList::new));
             return new Pair<>(list, response.getTotalNumberOfResults());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
@@ -358,37 +371,49 @@ public class Client {
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
             final Relation relation, final String filter,
             final int first, final int size) throws IdNotFoundException {
-        //TODO uncomment when the db implementation is done
-//        try {
-//            final GetFilteredDocumentsContainingRelationByIdRequest request =
-//                    new GetFilteredDocumentsContainingRelationByIdRequest();
-//            request.setRelationId(relation.getId());
-//            request.setFirstResult(first);
-//            request.setMaxResults(size);
-//            request.setPattern(filter);
-//            final GetFilteredDocumentsContainingRelationByIdResponse response =
-//                    getDataProvider().getFilteredDocumentsContainingRelationById(request);
-//            final List<Document> list = response.getDocumentCountPairs().stream()
-//                    .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
-//                    .collect(Collectors.toCollection(ArrayList::new));
-//            return new Pair<>(list, response.getTotalNumberOfResults());
-//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
-//            throw new IdNotFoundException(e);
-//        }
-        final Pair<List<Document>, Integer> pair =
-                getDocumentsList(Processed.YES, filter, 0, Integer.MAX_VALUE);
-        final List<Document> documents = pair.getFirst();
-        final List<Document> result = new ArrayList<>();
-        for (Document document : documents) {
-            final DocumentData documentData = getDocumentData(document.getId());
-            if (documentData.getRelations().containsKey(relation.getId())) {
-                result.add(document);
-            }
+        try {
+            final GetFilteredDocumentsContainingRelationByIdRequest request =
+                    new GetFilteredDocumentsContainingRelationByIdRequest();
+            request.setRelationId(relation.getId());
+            request.setFirstResult(first);
+            request.setMaxResults(size);
+            request.setPattern(filter);
+            final GetFilteredDocumentsContainingRelationByIdResponse response =
+                    getDataProvider().getFilteredDocumentsContainingRelationById(request);
+            final List<Document> list = response.getDocumentCountPairs().stream()
+                    .map(x -> new Document(x.getDocument(), x.getCountOfOccurrences()))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            return new Pair<>(list, response.getTotalNumberOfResults());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
         }
-        return new Pair<>(result.stream()
-                .skip(first)
-                .limit(size)
-                .collect(Collectors.toList()), result.size());
+    }
+
+    /**
+     * Returns entities identified in text.
+     * @param ticket editing ticket
+     * @param id report id
+     * @return entities identified in text
+     * @throws DocumentChangedException if document has been changed under our hands
+     * @throws IdNotFoundException if document was not found
+     * @see IDocumentProcessor#getEntitiesById(GetEntitiesByIdRequest, EditingTicket)
+     */
+    public synchronized List<Entity> getEntities(final Ticket ticket, final long id)
+            throws DocumentChangedException, IdNotFoundException {
+        final GetEntitiesByIdRequest request = new GetEntitiesByIdRequest();
+        request.setDocumentId(id);
+        final IDocumentProcessor docProc = getDocumentProcessor();
+        try {
+            final GetEntitiesByIdResponse response =
+                    docProc.getEntitiesById(request, ticket.toTicket());
+            return response.getEntities().stream()
+                    .map(Entity::new)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } catch (DocumentChanged e) {
+            throw new DocumentChangedException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
     }
 
     /**
@@ -396,7 +421,7 @@ public class Client {
      * @param ticket editing ticket
      * @param text   text to process
      * @return entities identified in text
-     * @see IDocumentProcessor#getEntitiesFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
+     * @see IDocumentProcessor#getEntitiesFromString(GetEntitiesFromStringRequest, EditingTicket)
      */
     public synchronized List<Entity> getEntities(final Ticket ticket, final String text) {
         final GetEntitiesFromStringRequest request = new GetEntitiesFromStringRequest();
@@ -431,6 +456,48 @@ public class Client {
     }
 
     /**
+     * Converts client fromEntities to commons toEntities while filling entMap.
+     * @param fromEntities client entities
+     * @param toEntities commons entities
+     * @param entMap entity id -> entity mapping
+     */
+    private void convertEntities(final List<Entity> fromEntities,
+            final List<cz.cuni.mff.ufal.textan.commons.models.Entity> toEntities,
+            final Map<Integer, Entity> entMap) {
+        for (Entity entity : fromEntities) {
+            toEntities.add(entity.toEntity());
+            entMap.put(entity.getPosition(), entity);
+        }
+    }
+
+    /**
+     * Fills candidates of entities.
+     * @param ticket   editing ticket
+     * @param id document id
+     * @param entities where to store candidates
+     * @throws DocumentChangedException if document has been changed under our hands
+     * @throws IdNotFoundException if id was not found
+     * @see IDocumentProcessor#getAssignmentsById(GetAssignmentsByIdRequest, EditingTicket)
+     */
+    public synchronized void getObjects(final Ticket ticket, final long id,
+            final List<Entity> entities)
+            throws DocumentChangedException, IdNotFoundException {
+        final Map<Integer, Entity> entMap = new HashMap<>();
+        final GetAssignmentsByIdRequest request = new GetAssignmentsByIdRequest();
+        convertEntities(entities, request.getEntities(), entMap);
+        request.setId(id);
+        try {
+            final GetAssignmentsByIdResponse response =
+                    getDocumentProcessor().getAssignmentsById(request, ticket.toTicket());
+            processAssignments(response.getAssignments(), entMap);
+        } catch (DocumentChanged e) {
+            throw new DocumentChangedException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
+    }
+
+    /**
      * Fills candidates of entities.
      *
      * @param ticket   editing ticket
@@ -439,35 +506,13 @@ public class Client {
      * @see cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor#getAssignmentsFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
      */
     public synchronized void getObjects(final Ticket ticket, final String text, final List<Entity> entities) {
-
+        final Map<Integer, Entity> entMap = new HashMap<>();
         final GetAssignmentsFromStringRequest request = new GetAssignmentsFromStringRequest();
+        convertEntities(entities, request.getEntities(), entMap);
         request.setText(text);
-
-        final Map<Integer, Entity> map = new HashMap<>();
-        for (Entity entity : entities) {
-            request.getEntities().add(entity.toEntity());
-            map.put(entity.getPosition(), entity);
-        }
-
+        //
         final GetAssignmentsFromStringResponse response = getDocumentProcessor().getAssignmentsFromString(request, ticket.toTicket());
-
-        final Map<Long, Object> objects = new HashMap<>();
-        for (Assignment assignment : response.getAssignments()) {
-            final Entity ent = map.get(assignment.getEntity().getPosition());
-            ent.getCandidates().clear();
-            for (Assignment.RatedObject rating : assignment.getRatedObjects()) {
-                final double r = rating.getScore();
-                final Long objId = rating.getObject().getId();
-                Object obj;
-                if (objects.containsKey(objId)) {
-                    obj = objects.get(objId);
-                } else {
-                    obj = new Object(rating.getObject());
-                    objects.put(objId, obj);
-                }
-                ent.getCandidates().add(new Pair<>(r, obj));
-            }
-        }
+        processAssignments(response.getAssignments(), entMap);
     }
 
     /**
@@ -632,42 +677,41 @@ public class Client {
     public synchronized Pair<List<Relation>, Integer> getRelationList(
             final RelationType type, final String filter, final int first,
             final int size) throws IdNotFoundException {
-        //TODO uncomment when the db implementation is done
-//        try {
-//            //TODO extract objects from response when it's ready
-//            final Map<Long, Object> objects = getObjectsMap();
-//            final GetFilteredRelationsRequest request =
-//                    new GetFilteredRelationsRequest();
-//            if (type != null) {
-//                request.setRelationTypeId(type.getId());
-//            }
-//            request.setAnchorFilter(filter);
-//            request.setFirstResult(first);
-//            request.setMaxResults(size);
-//            final GetFilteredRelationsResponse response =
-//                    getDataProvider().getFilteredRelations(request);
-//            final List<Relation> relations = response.getRelations().stream()
-//                    .map(rel -> new Relation(rel, objects))
-//                    .collect(Collectors.toList());
-//            return new Pair<>(relations, response.getTotalNumberOfResults());
-//        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
-//            throw new IdNotFoundException(e);
-//        }
-        final Map<Long, Object> objects = getObjectsMap();
-        final GetRelationsResponse response = getDataProvider().getRelations(new Void());
-        Stream<Relation> stream = response.getRelations().stream()
-                .map(rel -> new Relation(rel, objects));
-        if (type != null) {
-            stream = stream.filter(rel -> rel.getType().getId() == type.getId());
+        try {
+            final GetFilteredRelationsRequest request =
+                    new GetFilteredRelationsRequest();
+            if (type != null) {
+                request.setRelationTypeId(type.getId());
+            }
+            request.setAnchorFilter(filter);
+            request.setFirstResult(first);
+            request.setMaxResults(size);
+            final GetFilteredRelationsResponse response =
+                    getDataProvider().getFilteredRelations(request);
+            //TODO extract directly from response when it's ready
+            final GetObjectsByIdsRequest objectRequest =
+                    new GetObjectsByIdsRequest();
+            final List<Long> objectIds = objectRequest.getObjectIds();
+            response.getRelations().stream()
+                    .map(cz.cuni.mff.ufal.textan.commons.models.Relation::getObjectInRelationIds)
+                    .map(cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds::getInRelations)
+                    .flatMap(List::stream)
+                    .map(cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation::getObjectId)
+                    .forEach(objectIds::add);
+            final GetObjectsByIdsResponse objectsResponse =
+                    getDataProvider().getObjectsByIds(objectRequest);
+            final Map<Long, Object> objects = objectsResponse.getObjects().stream()
+                    .collect(Collectors.toMap(
+                            cz.cuni.mff.ufal.textan.commons.models.Object::getId,
+                            Object::new));
+            //
+            final List<Relation> relations = response.getRelations().stream()
+                    .map(rel -> new Relation(rel, objects))
+                    .collect(Collectors.toList());
+            return new Pair<>(relations, response.getTotalNumberOfResults());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
         }
-        if (!filter.isEmpty()) {
-            stream = stream.filter(rel -> rel.getAnchorString().contains(filter));
-        }
-        final List<Relation> relations = stream
-                .skip(first)
-                .limit(size)
-                .collect(Collectors.toList());
-        return new Pair<>(relations, response.getRelations().size());
     }
 
     /**
@@ -747,8 +791,80 @@ public class Client {
     }
 
     /**
+     * Converts reportEntities and reportRelations to objects,
+     * objectsOccurrences, relations and relationOccurrences.
+     * @param reportEntities list of entities
+     * @param reportRelations list of relations
+     * @param objects recognized objects
+     * @param objectOccurrences object occurrences
+     * @param relations recognized relations
+     * @param relationOccurrences relation occurrences
+     */
+    private void prepareSaveRequest(final List<Entity> reportEntities,
+            final List<RelationBuilder> reportRelations,
+            final List<cz.cuni.mff.ufal.textan.commons.models.Object> objects,
+            final List<ObjectOccurrence> objectOccurrences,
+            final List<cz.cuni.mff.ufal.textan.commons.models.Relation> relations,
+            final List<RelationOccurrence> relationOccurrences) {
+        for (Entity ent : reportEntities) {
+            if (ent.getCandidate() != null) {
+                objects.add(ent.getCandidate().toObject());
+                objectOccurrences.add(ent.toObjectOccurrence());
+            }
+        }
+        for (RelationBuilder relation : reportRelations) {
+            relations.add(relation.toRelation());
+            final RelationOccurrence occ = relation.toRelationOccurrence();
+            relationOccurrences.add(occ);
+        }
+    }
+
+    /**
      * Saves processed documents.
-     *
+     * If returns false, check {@link #getProblems(Ticket)}.
+     * @param ticket editing ticket
+     * @param id document id
+     * @param reportEntities report entities
+     * @param reportRelations report relations
+     * @param force  force save?
+     * @return true if saving was successfull, false otherwise
+     * @throws IdNotFoundException if id error occurs
+     * @throws DocumentChangedException if document has been changed under our hands
+     */
+    public synchronized boolean saveProcessedDocument(final Ticket ticket,
+            final long id, final List<Entity> reportEntities,
+            final List<RelationBuilder> reportRelations,
+            final boolean force) throws IdNotFoundException, DocumentChangedException {
+        final SaveProcessedDocumentByIdRequest request =
+                new SaveProcessedDocumentByIdRequest();
+        final List<cz.cuni.mff.ufal.textan.commons.models.Object> objects =
+                request.getObjects();
+        final List<ObjectOccurrence> objectOccurrences =
+                request.getObjectOccurrences();
+        final List<cz.cuni.mff.ufal.textan.commons.models.Relation> relations =
+                request.getRelations();
+        final List<RelationOccurrence> relationOccurrences =
+                request.getRelationOccurrences();
+        prepareSaveRequest(reportEntities, reportRelations, objects,
+                objectOccurrences, relations, relationOccurrences);
+        request.setDocumentId(id);
+        request.setForce(force);
+        try {
+            final SaveProcessedDocumentByIdResponse response =
+                    getDocumentProcessor().saveProcessedDocumentById(
+                            request,
+                            ticket.toTicket());
+            return response.isResult();
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        } catch (DocumentChanged e) {
+            throw new DocumentChangedException(e);
+        }
+    }
+
+    /**
+     * Saves processed documents.
+     * If returns false, check {@link #getProblems(Ticket)}.
      * @param ticket          editing ticket
      * @param text            report text
      * @param reportEntities  report entities
@@ -768,21 +884,11 @@ public class Client {
                 request.getObjects();
         final List<ObjectOccurrence> objectOccurrences =
                 request.getObjectOccurrences();
-        for (Entity ent : reportEntities) {
-            if (ent.getCandidate() != null) {
-                objects.add(ent.getCandidate().toObject());
-                objectOccurrences.add(ent.toObjectOccurrence());
-            }
-        }
-
         final List<cz.cuni.mff.ufal.textan.commons.models.Relation> relations = request.getRelations();
         final List<RelationOccurrence> relationOccurrences =
                 request.getRelationOccurrences();
-        for (RelationBuilder relation : reportRelations) {
-            relations.add(relation.toRelation());
-            final RelationOccurrence occ = relation.toRelationOccurrence();
-            relationOccurrences.add(occ);
-        }
+        prepareSaveRequest(reportEntities, reportRelations, objects,
+                objectOccurrences, relations, relationOccurrences);
 
         request.setText(text);
         request.setForce(force);
@@ -818,5 +924,33 @@ public class Client {
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
         }
+    }
+
+    /**
+     * Updates text of the document with the given id.
+     * @param id document id
+     * @param text new text
+     * @throws IdNotFoundException if id error occurs
+     */
+    public void updateDocument(final long id, final String text)
+            throws IdNotFoundException {
+        final UpdateDocumentRequest request = new UpdateDocumentRequest();
+        request.setDocumentId(id);
+        request.setText(text);
+        try {
+            getDataProvider().updateDocument(request);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
+    }
+
+    /**
+     * Adds new document with given text.
+     * @param text new document's text
+     */
+    public void addDocument(final String text) {
+        final AddDocumentRequest request = new AddDocumentRequest();
+        request.setText(text);
+        getDataProvider().addDocument(request);
     }
 }
