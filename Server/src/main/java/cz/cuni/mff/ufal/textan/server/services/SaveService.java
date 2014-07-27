@@ -40,6 +40,7 @@ public class SaveService {
     private final IRelationOccurrenceTableDAO relationOccurrenceTableDAO;
 
     private final IInRelationTableDAO inRelationTableDAO;
+    private final IJoinedObjectsTableDAO joinedObjectsTableDAO;
 
     private final CommandInvoker invoker;
     private final NamedEntityRecognizer recognizer;
@@ -56,6 +57,7 @@ public class SaveService {
      * @param relationTableDAO the relation table dAO
      * @param relationOccurrenceTableDAO the relation occurrence table dAO
      * @param inRelationTableDAO the in relation table dAO
+     * @param joinedObjectsTableDAO
      * @param invoker
      * @param recognizer
      * @param textPro
@@ -68,7 +70,7 @@ public class SaveService {
             IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
             IRelationTypeTableDAO relationTypeTableDAO, IRelationTableDAO relationTableDAO,
             IRelationOccurrenceTableDAO relationOccurrenceTableDAO, IInRelationTableDAO inRelationTableDAO,
-            CommandInvoker invoker, NamedEntityRecognizer recognizer, ITextPro textPro) {
+            IJoinedObjectsTableDAO joinedObjectsTableDAO, CommandInvoker invoker, NamedEntityRecognizer recognizer, ITextPro textPro) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
@@ -79,6 +81,7 @@ public class SaveService {
         this.relationTableDAO = relationTableDAO;
         this.relationOccurrenceTableDAO = relationOccurrenceTableDAO;
         this.inRelationTableDAO = inRelationTableDAO;
+        this.joinedObjectsTableDAO = joinedObjectsTableDAO;
         this.invoker = invoker;
         this.recognizer = recognizer;
         this.textPro = textPro;
@@ -113,7 +116,7 @@ public class SaveService {
             List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences,
             boolean force, EditingTicket ticket) throws IdNotFoundException {
 
-        if (!force && checkChanges()) {
+        if (!force && checkChanges(ticket)) {
             return false;
         }
 
@@ -148,12 +151,6 @@ public class SaveService {
             boolean force, EditingTicket ticket)
             throws IdNotFoundException, DocumentAlreadyProcessedException, DocumentChangedException {
 
-        //TODO:throw Document Changed Exception
-
-        if (!force && checkChanges()) {
-            return false;
-        }
-
         DocumentTable documentTable = documentTableDAO.find(documentId);
         if (documentTable == null) {
             throw new IdNotFoundException("documentId", documentId);
@@ -161,11 +158,19 @@ public class SaveService {
             throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
         }
 
+        //TODO:throw Document Changed Exception
+
+        if (!force && checkChanges(ticket)) {
+            return false;
+        }
+
         return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences, ticket);
     }
 
-    private boolean checkChanges() {
-        return false;
+    private boolean checkChanges(EditingTicket ticket) {
+        return ((objectTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0 )||
+                (relationTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0) ||
+                (joinedObjectsTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0));
     }
 
     private boolean innerSave(
