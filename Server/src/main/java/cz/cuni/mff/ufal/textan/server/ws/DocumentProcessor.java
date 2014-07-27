@@ -6,14 +6,11 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.*;
 import cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException;
 import cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException;
+import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.server.models.Assignment;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
-import cz.cuni.mff.ufal.textan.server.models.Occurrence;
-import cz.cuni.mff.ufal.textan.server.services.NamedEntityRecognizerService;
-import cz.cuni.mff.ufal.textan.server.services.ObjectAssignmentService;
-import cz.cuni.mff.ufal.textan.server.services.SaveService;
-import cz.cuni.mff.ufal.textan.server.services.TicketService;
+import cz.cuni.mff.ufal.textan.server.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,12 +119,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation saveProcessedDocumentById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -170,14 +162,8 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation saveProcessedDocumentById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
-
     }
 
     @Override
@@ -224,12 +210,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getEntitiesById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException();
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -279,12 +260,7 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
             return response;
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation saveProcessedDocumentFromString.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException("", exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -328,5 +304,13 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         LOG.info("Executed operation getEditingTicket: {}", response);
         return response;
+    }
+
+    private static IdNotFoundException translateIdNotFoundException(cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+        cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+        exceptionBody.setFieldName(e.getFieldName());
+        exceptionBody.setFieldValue(e.getFieldValue());
+
+        return new IdNotFoundException(e.getMessage(), exceptionBody);
     }
 }
