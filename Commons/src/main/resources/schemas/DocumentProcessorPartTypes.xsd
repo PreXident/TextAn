@@ -39,7 +39,8 @@
 
     <xs:element name="editingTicket" type="EditingTicket"/>
 
-    <xs:element name="documentChanged" type="DocumentChanged"/>
+    <xs:element name="documentChangedException" type="DocumentChangedException"/>
+    <xs:element name="documentAlreadyProcessedException" type="DocumentAlreadyProcessedException"/>
 
     <!-- <xs:complexType name="Void">
          <xs:sequence/>
@@ -214,11 +215,18 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="DocumentChanged">
+    <xs:complexType name="DocumentChangedException">
         <xs:sequence>
             <xs:element name="documentId" nillable="true" type="xs:long"/>
             <xs:element name="ticketVersion" type="xs:int"/>
             <xs:element name="documentVersion" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DocumentAlreadyProcessedException">
+        <xs:sequence>
+            <xs:element name="documentId" type="xs:long"/>
+            <xs:element name="processedDate" type="xs:dateTime"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>

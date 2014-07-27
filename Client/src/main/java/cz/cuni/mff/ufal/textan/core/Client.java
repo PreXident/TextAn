@@ -23,7 +23,7 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDoc
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.commons.ws.DocumentChanged;
+import cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
@@ -409,10 +409,14 @@ public class Client {
             return response.getEntities().stream()
                     .map(Entity::new)
                     .collect(Collectors.toCollection(ArrayList::new));
-        } catch (DocumentChanged e) {
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException e) {
             throw new DocumentChangedException(e);
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
+        } catch (DocumentAlreadyProcessedException e) {
+            //TODO
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 
@@ -421,7 +425,7 @@ public class Client {
      * @param ticket editing ticket
      * @param text   text to process
      * @return entities identified in text
-     * @see IDocumentProcessor#getEntitiesFromString(GetEntitiesFromStringRequest, EditingTicket)
+     * @see IDocumentProcessor#getEntitiesFromString(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest, cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket)
      */
     public synchronized List<Entity> getEntities(final Ticket ticket, final String text) {
         final GetEntitiesFromStringRequest request = new GetEntitiesFromStringRequest();
@@ -490,10 +494,12 @@ public class Client {
             final GetAssignmentsByIdResponse response =
                     getDocumentProcessor().getAssignmentsById(request, ticket.toTicket());
             processAssignments(response.getAssignments(), entMap);
-        } catch (DocumentChanged e) {
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException e) {
             throw new DocumentChangedException(e);
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
+        } catch (DocumentAlreadyProcessedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -857,8 +863,12 @@ public class Client {
             return response.isResult();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
-        } catch (DocumentChanged e) {
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException e) {
             throw new DocumentChangedException(e);
+        } catch (DocumentAlreadyProcessedException e) {
+            //todo
+            e.printStackTrace();
+            return false;
         }
     }
 
