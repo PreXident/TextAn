@@ -8,10 +8,10 @@ public class DocumentChangedException extends Exception {
     private static final long serialVersionUID = -605380453650483164L;
 
     private final long documentId;
-    private final int documentVersion;
-    private final int ticketVersion;
+    private final long documentVersion;
+    private final long ticketVersion;
 
-    public DocumentChangedException(long documentId, int documentVersion, int ticketVersion) {
+    public DocumentChangedException(long documentId, long documentVersion, long ticketVersion) {
         this(
                 "The document with identifier '" + documentId + "' was changed (your version: " + ticketVersion + ", server version: " + documentVersion + ").",
                 documentId,
@@ -20,7 +20,7 @@ public class DocumentChangedException extends Exception {
         );
     }
 
-    public DocumentChangedException(String message, long documentId, int documentVersion, int ticketVersion) {
+    public DocumentChangedException(String message, long documentId, long documentVersion, long ticketVersion) {
         super(message);
         this.documentId = documentId;
         this.ticketVersion = ticketVersion;
@@ -31,11 +31,11 @@ public class DocumentChangedException extends Exception {
         return documentId;
     }
 
-    public int getTicketVersion() {
+    public long getTicketVersion() {
         return ticketVersion;
     }
 
-    public int getDocumentVersion() {
+    public long getDocumentVersion() {
         return documentVersion;
     }
 }

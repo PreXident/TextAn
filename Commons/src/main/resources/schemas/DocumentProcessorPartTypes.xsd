@@ -208,9 +208,9 @@
 
     <xs:complexType name="DocumentChangedException">
         <xs:sequence>
-            <xs:element name="documentId" nillable="true" type="xs:long"/>
-            <xs:element name="ticketVersion" type="xs:int"/>
-            <xs:element name="documentVersion" type="xs:int"/>
+            <xs:element name="documentId" type="xs:long"/>
+            <xs:element name="ticketVersion" type="xs:long"/>
+            <xs:element name="documentVersion" type="xs:long"/>
         </xs:sequence>
     </xs:complexType>
 

@@ -12,6 +12,8 @@ public class Ticket implements Serializable {
 
     /** Ticket timestamp. */
     private final Date timestamp;
+    /** Server state */
+    private final long version;
 
     /**
      * Only constructor.
@@ -19,6 +21,7 @@ public class Ticket implements Serializable {
      */
     public Ticket(final EditingTicket ticket) {
         timestamp = ticket.getTimestamp();
+        version = ticket.getVersion();
     }
 
     /**
@@ -37,6 +40,7 @@ public class Ticket implements Serializable {
         final cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket result =
                 new cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket();
         result.setTimestamp(timestamp);
+        result.setVersion(version);
         return result;
     }
 }
