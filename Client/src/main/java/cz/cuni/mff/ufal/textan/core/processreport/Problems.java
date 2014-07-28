@@ -24,12 +24,6 @@ public class Problems implements Serializable {
     /** Newly joined Objects. */
     private final List<JoinedObject> joinedObjects;
 
-    /** Flag indicating whether the document has been changed. */
-    private final boolean changed;
-
-    /** Flag indicating whether the document has already been processed. */
-    private final boolean processed;
-
     /**
      * Testing constructor.
      */
@@ -41,8 +35,6 @@ public class Problems implements Serializable {
                 new Triple<>(0, "test", new Object(-1, new ObjectType(-1, "aaa"), Arrays.asList("bla", "ups")))
         );
         this.joinedObjects = Arrays.asList(new JoinedObject());
-        changed = true;
-        processed = true;
     }
 
     /**
@@ -63,10 +55,6 @@ public class Problems implements Serializable {
         joinedObjects = response.getNewJoinedObjects().stream()
                 .map(JoinedObject::new)
                 .collect(Collectors.toList());
-//        changed = response.isDocumentChanged(); FIXME
-//        processed = response.isDocumentProcessed();
-        changed = false;
-        processed = false;
     }
 
     /**
@@ -91,21 +79,5 @@ public class Problems implements Serializable {
      */
     public List<JoinedObject> getJoinedObjects() {
         return joinedObjects;
-    }
-
-    /**
-     * Returns whether the document has been changed.
-     * @return true if the document has been changed, false otherwise
-     */
-    public boolean isChanged() {
-        return changed;
-    }
-
-    /**
-     * Returns whether the document has already been processed.
-     * @return true if the document has been processed, false otherwise
-     */
-    public boolean isProcessed() {
-        return processed;
     }
 }
