@@ -699,10 +699,9 @@ public class Client {
                     new GetObjectsByIdsRequest();
             final List<Long> objectIds = objectRequest.getObjectIds();
             response.getRelations().stream()
-                    .map(cz.cuni.mff.ufal.textan.commons.models.Relation::getObjectInRelationIds)
-                    .map(cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds::getInRelations)
+                    .map(cz.cuni.mff.ufal.textan.commons.models.Relation::getInRelations)
                     .flatMap(List::stream)
-                    .map(cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation::getObjectId)
+                    .map(cz.cuni.mff.ufal.textan.commons.models.Relation.InRelation::getObjectId)
                     .forEach(objectIds::add);
             final GetObjectsByIdsResponse objectsResponse =
                     getDataProvider().getObjectsByIds(objectRequest);

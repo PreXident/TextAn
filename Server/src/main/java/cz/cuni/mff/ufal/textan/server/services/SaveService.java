@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.services;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.*;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
@@ -289,11 +290,11 @@ public class SaveService {
                         .map(x -> x.getObject().getId())
                         .collect(Collectors.toSet());
 
-                for (Pair<Long, Pair<String, Integer>> objectInRelation : relation.getObjectsInRelation()) {
+                for (Triple<Object, String, Integer> objectInRelation : relation.getObjectsInRelation()) {
 
-                    long objectInRelationId = objectInRelation.getFirst();
-                    String role = objectInRelation.getSecond().getFirst();
-                    int order = objectInRelation.getSecond().getSecond();
+                    long objectInRelationId = objectInRelation.getFirst().getId();
+                    String role = objectInRelation.getSecond();
+                    int order = objectInRelation.getThird();
 
                     ObjectTable objectInRelationTable = objectIdMapping.get(objectInRelationId);
                     if (objectInRelationTable == null) {

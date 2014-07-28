@@ -31,7 +31,7 @@ public class ObjectType {
      * @param objectTypeTable the object type table
      * @return the object type
      */
-//todo: maybe provide wrappers instead conversion methods
+    //todo: maybe provide wrappers instead conversion methods
     public static ObjectType fromObjectTypeTable(ObjectTypeTable objectTypeTable) {
         return new ObjectType(objectTypeTable.getId(), objectTypeTable.getName());
     }
@@ -106,12 +106,12 @@ public class ObjectType {
         return (int) (id ^ (id >>> 32));
     }
 
-    //fixme: auto generated
     @Override
     public String toString() {
-        return "ObjectType{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("ObjectType{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

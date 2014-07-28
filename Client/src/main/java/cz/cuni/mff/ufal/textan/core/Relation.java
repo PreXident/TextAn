@@ -1,7 +1,6 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds;
-import cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation;
+import cz.cuni.mff.ufal.textan.commons.models.Relation.InRelation;
 import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class Relation implements Serializable {
     public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Long, Object> objects) {
         id = relation.getId();
         type = new RelationType(relation.getRelationType());
-        this.objects = relation.getObjectInRelationIds().getInRelations().stream()
+        this.objects = relation.getInRelations().stream()
                 .map(inRel -> new Triple<>(inRel.getOrder(), inRel.getRole(), objects.get(inRel.getObjectId())))
                 .collect(Collectors.toCollection(HashSet::new));
         isNew = relation.isIsNew();
@@ -126,15 +125,13 @@ public class Relation implements Serializable {
         result.setId(id);
         result.setRelationType(type.toRelationType());
         result.setIsNew(isNew);
-        final ObjectInRelationIds ids = new ObjectInRelationIds();
         for (Triple<Integer, String, Object> triple : objects) {
             final InRelation inRelation = new InRelation();
             inRelation.setOrder(triple.getFirst());
             inRelation.setRole(triple.getSecond());
             inRelation.setObjectId(triple.getThird().getId());
-            ids.getInRelations().add(inRelation);
+            result.getInRelations().add(inRelation);
         }
-        result.setObjectInRelationIds(ids);
         result.getAnchors().addAll(anchors);
         return result;
     }

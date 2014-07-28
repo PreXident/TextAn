@@ -1,6 +1,5 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.models.Object.Aliases;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,7 +35,7 @@ public class Object implements Serializable {
     public Object(final cz.cuni.mff.ufal.textan.commons.models.Object obj) {
         id = obj.getId();
         type = new ObjectType(obj.getObjectType());
-        aliases = new HashSet<>(obj.getAliases().getAlias());
+        aliases = new HashSet<>(obj.getAlias());
         isNew = obj.isIsNew();
     }
 
@@ -160,9 +159,7 @@ public class Object implements Serializable {
         result.setId(id);
         result.setObjectType(type.toObjectType());
         result.setIsNew(isNew);
-        final Aliases alias = new Aliases();
-        alias.getAlias().addAll(aliases);
-        result.setAliases(alias);
+        result.getAlias().addAll(aliases);
         return result;
     }
 }

@@ -4,32 +4,26 @@
            xmlns="http://models.commons.textan.ufal.mff.cuni.cz"
            elementFormDefault="qualified">
 
-    <xs:include schemaLocation="RelationType.xsd" />
+    <xs:include schemaLocation="RelationType.xsd"/>
 
-    <xs:element name="relation" type="Relation" />
+    <xs:element name="relation" type="Relation"/>
 
     <xs:complexType name="Relation">
         <xs:sequence>
             <xs:element name="id" type="xs:long"/>
-            <xs:element ref="relationType" />
-            <xs:element name="objectInRelationIds">
+            <xs:element ref="relationType"/>
+            <xs:element name="inRelation" minOccurs="2" maxOccurs="unbounded"> <!-- TODO: better name -->
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="inRelation" minOccurs="2" maxOccurs="unbounded"> <!-- TODO: better name -->
-                            <xs:complexType>
-                                <xs:sequence>                                    
-                                    <xs:element name="objectId" type="xs:long"/>
-                                    <xs:element name="order" type="xs:int"/> <!-- TODO: remoce -->
-                                    <xs:element name="role" type="xs:string"/>
-                                </xs:sequence>
-                            </xs:complexType>                            
-                        </xs:element>
+                        <xs:element name="objectId" type="xs:long"/>
+                        <xs:element name="order" type="xs:int"/>   <!-- TODO: remove -->
+                        <xs:element name="role" type="xs:string"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="anchor" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="anchor" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="isNew" type="xs:boolean" default="false" />
+        <xs:attribute name="isNew" type="xs:boolean" default="false"/>
     </xs:complexType>
 
 </xs:schema>

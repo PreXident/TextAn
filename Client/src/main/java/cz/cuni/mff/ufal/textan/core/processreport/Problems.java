@@ -63,8 +63,10 @@ public class Problems implements Serializable {
         joinedObjects = response.getNewJoinedObjects().stream()
                 .map(JoinedObject::new)
                 .collect(Collectors.toList());
-        changed = response.isDocumentChanged();
-        processed = response.isDocumentProcessed();
+//        changed = response.isDocumentChanged(); FIXME
+//        processed = response.isDocumentProcessed();
+        changed = false;
+        processed = false;
     }
 
     /**

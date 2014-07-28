@@ -18,7 +18,7 @@ public class IdNotFoundException extends Exception {
      */
     public IdNotFoundException(String fieldName, long fieldValue) {
         this(
-                "The identifier '" + fieldName + "' with value " + fieldValue + " not found.",
+                "The identifier '" + fieldName + "' with value " + fieldValue + "was not found.",
                 fieldName,
                 fieldValue
         );

@@ -1,11 +1,13 @@
 package cz.cuni.mff.ufal.textan.server.models;
 
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
+import cz.cuni.mff.ufal.textan.server.services.IdNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -16,7 +18,7 @@ public class Relation {
 
     private final long id;
     private final RelationType type;
-    private final List<Pair<Long, Pair<String,Integer>>> objectsInRelation;
+    private final List<Triple<Object, String, Integer>> objectsInRelation;
     private final List<String> anchors;
     private final boolean isNew;
 
@@ -29,7 +31,7 @@ public class Relation {
      * @param anchors
      * @param isNew the is new
      */
-    public Relation(long id, RelationType type, List<Pair<Long, Pair<String,Integer>>> objectsInRelation, List<String> anchors, boolean isNew) {
+    public Relation(long id, RelationType type, List<Triple<Object, String, Integer>>objectsInRelation, List<String> anchors, boolean isNew) {
         this.id = id;
         this.type = type;
         this.objectsInRelation = objectsInRelation;
@@ -45,13 +47,9 @@ public class Relation {
      */
     public static Relation fromRelationTable(RelationTable relationTable) {
 
-        List<Pair<Long, Pair<String,Integer>>> objectsInRelation = relationTable.getObjectsInRelation().stream()
-                .map(inRelation -> new Pair<>(inRelation.getObject().getId(), new Pair<>(inRelation.getRole(), inRelation.getOrder())))
+        List<Triple<Object, String, Integer>> objectsInRelation = relationTable.getObjectsInRelation().stream()
+                .map(inRelation -> new Triple<>(Object.fromObjectTable(inRelation.getObject()), inRelation.getRole(), inRelation.getOrder()))
                 .collect(Collectors.toList());
-
-//        List<String> anchors = new ArrayList<>(relationTable.getOccurrences().stream()
-//                .map(RelationOccurrenceTable::getAnchor)
-//                .collect(Collectors.toSet()));
 
         //TODO: test if this is unique (distinct)
         List<String> anchors = relationTable.getOccurrences().stream()
@@ -67,11 +65,26 @@ public class Relation {
                 );
     }
 
-    public static Relation fromCommonsRelation(cz.cuni.mff.ufal.textan.commons.models.Relation commonsRelation) {
+    public static Relation fromCommonsRelation(cz.cuni.mff.ufal.textan.commons.models.Relation commonsRelation, Map<Long, Object> objectMap) throws IdNotFoundException {
+
+        List<Triple<Object, String, Integer>> objectsInRelation = new ArrayList<>();
+        for (cz.cuni.mff.ufal.textan.commons.models.Relation.InRelation inRelation : commonsRelation.getInRelations()) {
+            Object object = objectMap.get(inRelation.getObjectId());
+            if (object == null) {
+                throw new IdNotFoundException(
+                        "The object with id " + inRelation.getObjectId() + " was not found in objects list.",
+                        "inRelation.objectId",
+                        inRelation.getObjectId()
+                );
+            }
+
+            objectsInRelation.add(new Triple<>(object, inRelation.getRole(), inRelation.getOrder()));
+        }
+
         return new Relation(
                 commonsRelation.getId(),
                 RelationType.fromCommonsRelationType(commonsRelation.getRelationType()),
-                commonsRelation.getObjectInRelationIds().getInRelations().stream().map(x -> new Pair<>(x.getObjectId(), new Pair<>(x.getRole(), x.getOrder()))).collect(Collectors.toList()),
+                objectsInRelation,
                 commonsRelation.getAnchors(),
                 commonsRelation.isIsNew()
         );
@@ -100,7 +113,7 @@ public class Relation {
      *
      * @return the objects in relation
      */
-    public List<Pair<Long, Pair<String,Integer>>> getObjectsInRelation() {
+    public List<Triple<Object, String, Integer>> getObjectsInRelation() {
         return objectsInRelation;
     }
 
@@ -134,16 +147,14 @@ public class Relation {
         commonsRelation.setId(id);
         commonsRelation.setRelationType(type.toCommonsRelationType());
 
-        cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds objectInRelationIds = new cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds();
-        for (Pair<Long, Pair<String,Integer>> inRelation : objectsInRelation) {
-            cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation commonsInRelation = new cz.cuni.mff.ufal.textan.commons.models.Relation.ObjectInRelationIds.InRelation();
-            commonsInRelation.setObjectId(inRelation.getFirst());
-            commonsInRelation.setRole(inRelation.getSecond().getFirst());
-            commonsInRelation.setOrder(inRelation.getSecond().getSecond());
+        for (Triple<Object, String, Integer> inRelation : objectsInRelation) {
+            cz.cuni.mff.ufal.textan.commons.models.Relation.InRelation commonsInRelation = new cz.cuni.mff.ufal.textan.commons.models.Relation.InRelation();
+            commonsInRelation.setObjectId(inRelation.getFirst().getId());
+            commonsInRelation.setRole(inRelation.getSecond());
+            commonsInRelation.setOrder(inRelation.getThird());
 
-            objectInRelationIds.getInRelations().add(commonsInRelation);
+            commonsRelation.getInRelations().add(commonsInRelation);
         }
-        commonsRelation.setObjectInRelationIds(objectInRelationIds);
         commonsRelation.getAnchors().addAll(anchors);
 
         commonsRelation.setIsNew(isNew);
