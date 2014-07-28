@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.InnerWindow;
@@ -109,6 +110,18 @@ public abstract class ReportWizardController extends WindowController {
             } else /*if (result == Actions.CLOSE)*/ {
                 Platform.runLater(() -> closeContainer());
             }
+        } catch (DocumentAlreadyProcessedException e) {
+            final ResourceBundle rb = ResourceBundle.getBundle(RESOURCE_BUNDLE_PATH);
+            PlatformUtil.runAndWait(() -> {
+                callWithContentBackup(() -> {
+                    createDialog()
+                            .owner(getDialogOwner(root))
+                            .title(Utils.localize(rb, "error.documentprocessed.title"))
+                            .message(Utils.localize(rb, "error.documentprocessed.message"))
+                            .showError();
+                });
+                closeContainer();
+            });
         } catch (Exception e) {
             wrapException(e);
         }

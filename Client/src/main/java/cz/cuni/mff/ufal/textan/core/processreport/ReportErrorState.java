@@ -48,7 +48,7 @@ final class ReportErrorState extends State {
 
     @Override
     public void forceSave(final ProcessReportPipeline pipeline)
-            throws DocumentChangedException {
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         try {
             if (pipeline.reportId > 0) {
                 pipeline.result = pipeline.client.saveProcessedDocument(

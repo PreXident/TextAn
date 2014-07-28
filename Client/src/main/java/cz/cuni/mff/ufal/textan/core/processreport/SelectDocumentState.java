@@ -33,7 +33,8 @@ public class SelectDocumentState extends State {
 
     @Override
     public void setReport(final ProcessReportPipeline pipeline,
-            final Document document) throws DocumentChangedException {
+            final Document document)
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         pipeline.reportId = document.getId();
         ReportEditState.getInstance().setReportText(pipeline, document.getText());
     }

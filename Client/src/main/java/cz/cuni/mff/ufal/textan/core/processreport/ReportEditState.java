@@ -36,7 +36,8 @@ final class ReportEditState extends State {
 
     @Override
     public void setReportText(final ProcessReportPipeline pipeline,
-            final String report) throws DocumentChangedException {
+            final String report) throws DocumentChangedException,
+            DocumentAlreadyProcessedException {
         pipeline.reportText = report;
         if (pipeline.getStepsBack() <= 0) {
             if (pipeline.reportId > 0) {

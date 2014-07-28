@@ -57,7 +57,8 @@ final class ReportEntitiesState extends State {
 
     @Override
     public void setReportWords(final ProcessReportPipeline pipeline,
-            final List<Word> words) throws DocumentChangedException {
+            final List<Word> words) throws DocumentChangedException,
+            DocumentAlreadyProcessedException {
         pipeline.reportWords = words;
         if (pipeline.getStepsBack() <= 0) {
             final List<Entity> ents = pipeline.reportEntities;

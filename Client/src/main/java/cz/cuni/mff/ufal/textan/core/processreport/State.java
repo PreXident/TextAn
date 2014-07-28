@@ -44,9 +44,10 @@ public abstract class State implements Serializable {
      * Forces the document to be save into the db.
      * @param pipeline pipeline delegating the request
      * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has been already processed
      */
     public void forceSave(final ProcessReportPipeline pipeline)
-            throws DocumentChangedException {
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         throw new IllegalStateException("Cannot force save when in state " + getType());
     }
 
@@ -104,9 +105,11 @@ public abstract class State implements Serializable {
      * @param pipeline pipeline delegating the request
      * @param document document to process
      * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has been already processed
      */
     public void setReport(final ProcessReportPipeline pipeline,
-            final Document document) throws DocumentChangedException {
+            final Document document)
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         throw new IllegalStateException("Cannot set report when in state " + getType());
     }
 
@@ -115,9 +118,10 @@ public abstract class State implements Serializable {
      * @param pipeline pipeline delegating the request
      * @param report new report's text
      * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has already been processed
      */
     public void setReportText(final ProcessReportPipeline pipeline, final String report)
-            throws DocumentChangedException {
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         throw new IllegalStateException("Cannot set report's text when in state " + getType());
     }
 
@@ -126,9 +130,11 @@ public abstract class State implements Serializable {
      * @param pipeline pipeline delegating the request
      * @param words new report's words
      * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has already been processed
      */
     public void setReportWords(final ProcessReportPipeline pipeline,
-            final List<Word> words) throws DocumentChangedException {
+            final List<Word> words) throws DocumentChangedException,
+            DocumentAlreadyProcessedException {
         throw new IllegalStateException("Cannot set report's words when in state " + getType());
     }
 
@@ -147,10 +153,12 @@ public abstract class State implements Serializable {
      * @param words words with assigned relations
      * @param unanchoredRelations list of unanchored relations
      * @throws DocumentChangedException if document has been changed under our hands
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
      */
     public void setReportRelations(final ProcessReportPipeline pipeline,
             final List<Word> words,
-            final List<? extends RelationBuilder> unanchoredRelations) throws DocumentChangedException {
+            final List<? extends RelationBuilder> unanchoredRelations)
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         throw new IllegalStateException("Cannot set report's relations when in state " + getType());
     }
 

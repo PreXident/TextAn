@@ -251,8 +251,10 @@ public class ProcessReportPipeline implements Serializable {
     /**
      * Forces the document to be save into the db.
      * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has been already processed
      */
-    public void forceSave() throws DocumentChangedException {
+    public void forceSave() throws DocumentChangedException,
+            DocumentAlreadyProcessedException {
         state.forceSave(this);
     }
 
@@ -308,10 +310,11 @@ public class ProcessReportPipeline implements Serializable {
      * Proceeds to next State.
      * @param reportText new report text
      * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has already been processed
      * @see State#setReportText(ProcessReportPipeline, String)
      */
     public void setReportTextAndParse(final String reportText)
-            throws DocumentChangedException {
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         state.setReportText(this, reportText);
     }
 
@@ -327,8 +330,10 @@ public class ProcessReportPipeline implements Serializable {
      * Sets document to process.
      * @param document document to process
      * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has been already processed
      */
-    public void setReport(final Document document) throws DocumentChangedException {
+    public void setReport(final Document document)
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         state.setReport(this, document);
     }
 
@@ -351,9 +356,10 @@ public class ProcessReportPipeline implements Serializable {
      * Sets report's words assigned to entities.
      * @param words word with entities assignments
      * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has already been processed
      */
     public void setReportWords(final List<Word> words)
-            throws DocumentChangedException {
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         state.setReportWords(this, words);
     }
 
@@ -382,10 +388,11 @@ public class ProcessReportPipeline implements Serializable {
      * @param words words with assigned relations
      * @param unanchoredRelations list of unanchored relations
      * @throws DocumentChangedException if document has been changed under our hands
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
      */
     public void setReportRelations(final List<Word> words,
             final List<? extends RelationBuilder> unanchoredRelations)
-            throws DocumentChangedException {
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         state.setReportRelations(this, words, unanchoredRelations);
     }
 

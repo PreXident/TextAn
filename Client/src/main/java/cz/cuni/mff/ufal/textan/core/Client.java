@@ -23,11 +23,11 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDoc
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
+import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.Problems;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -396,10 +395,12 @@ public class Client {
      * @return entities identified in text
      * @throws DocumentChangedException if document has been changed under our hands
      * @throws IdNotFoundException if document was not found
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
      * @see IDocumentProcessor#getEntitiesById(GetEntitiesByIdRequest, EditingTicket)
      */
     public synchronized List<Entity> getEntities(final Ticket ticket, final long id)
-            throws DocumentChangedException, IdNotFoundException {
+            throws DocumentChangedException, IdNotFoundException,
+            DocumentAlreadyProcessedException {
         final GetEntitiesByIdRequest request = new GetEntitiesByIdRequest();
         request.setDocumentId(id);
         final IDocumentProcessor docProc = getDocumentProcessor();
@@ -413,10 +414,8 @@ public class Client {
             throw new DocumentChangedException(e);
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
-        } catch (DocumentAlreadyProcessedException e) {
-            //TODO
-            e.printStackTrace();
-            return new ArrayList<>();
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException e) {
+            throw new DocumentAlreadyProcessedException(e);
         }
     }
 
@@ -481,11 +480,13 @@ public class Client {
      * @param entities where to store candidates
      * @throws DocumentChangedException if document has been changed under our hands
      * @throws IdNotFoundException if id was not found
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
      * @see IDocumentProcessor#getAssignmentsById(GetAssignmentsByIdRequest, EditingTicket)
      */
     public synchronized void getObjects(final Ticket ticket, final long id,
             final List<Entity> entities)
-            throws DocumentChangedException, IdNotFoundException {
+            throws DocumentChangedException, IdNotFoundException,
+            DocumentAlreadyProcessedException {
         final Map<Integer, Entity> entMap = new HashMap<>();
         final GetAssignmentsByIdRequest request = new GetAssignmentsByIdRequest();
         convertEntities(entities, request.getEntities(), entMap);
@@ -498,8 +499,8 @@ public class Client {
             throw new DocumentChangedException(e);
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
-        } catch (DocumentAlreadyProcessedException e) {
-            e.printStackTrace();
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException e) {
+            throw new DocumentAlreadyProcessedException(e);
         }
     }
 
@@ -835,11 +836,13 @@ public class Client {
      * @return true if saving was successfull, false otherwise
      * @throws IdNotFoundException if id error occurs
      * @throws DocumentChangedException if document has been changed under our hands
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
      */
     public synchronized boolean saveProcessedDocument(final Ticket ticket,
             final long id, final List<Entity> reportEntities,
             final List<RelationBuilder> reportRelations,
-            final boolean force) throws IdNotFoundException, DocumentChangedException {
+            final boolean force) throws IdNotFoundException,
+            DocumentChangedException, DocumentAlreadyProcessedException {
         final SaveProcessedDocumentByIdRequest request =
                 new SaveProcessedDocumentByIdRequest();
         final List<cz.cuni.mff.ufal.textan.commons.models.Object> objects =
@@ -864,10 +867,8 @@ public class Client {
             throw new IdNotFoundException(e);
         } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException e) {
             throw new DocumentChangedException(e);
-        } catch (DocumentAlreadyProcessedException e) {
-            //todo
-            e.printStackTrace();
-            return false;
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException e) {
+            throw new DocumentAlreadyProcessedException(e);
         }
     }
 

@@ -6,6 +6,7 @@ import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.graph.DocumentGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
+import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentStage;
@@ -543,7 +544,7 @@ public class TextAnController implements Initializable {
                 pipeline.selectDatabaseDatasource();
                 try {
                     pipeline.setReport(document);
-                } catch (DocumentChangedException e) { //this should be very rare
+                } catch (DocumentChangedException | DocumentAlreadyProcessedException e) { //this should be very rare
                     e.printStackTrace(); //let the reportwizard package handle errors
                 }
             }

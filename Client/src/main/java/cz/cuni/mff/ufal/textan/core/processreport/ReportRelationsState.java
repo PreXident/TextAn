@@ -51,7 +51,7 @@ final class ReportRelationsState extends State {
     public void setReportRelations(final ProcessReportPipeline pipeline,
             final List<Word> words,
             final List<? extends RelationBuilder> unanchoredRelations)
-            throws DocumentChangedException {
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         if (pipeline.getStepsBack() <= 0) {
             pipeline.reportWords = words;
             final List<RelationBuilder> rels = pipeline.reportRelations;
