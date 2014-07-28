@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.commons.models.*;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException;
 import cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
@@ -22,10 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jws.WebParam;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @javax.jws.WebService(
@@ -346,15 +344,19 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         Problems problems = saveService.getProblems(serverTicket);
         GetProblemsResponse response = new GetProblemsResponse();
 
-        //TODO: extract objects from Relation
-
         for (Object object : problems.getNewObjects()) {
             response.getNewObjects().add(object.toCommonsObject());
         }
 
+        Set<cz.cuni.mff.ufal.textan.commons.models.Object> objects = new HashSet<>();
         for (Relation relation : problems.getNewRelations()) {
             response.getNewRelations().add(relation.toCommonsRelation());
+
+            for (Triple<Object, String, Integer> inRelation : relation.getObjectsInRelation()) {
+                objects.add(inRelation.getFirst().toCommonsObject());
+            }
         }
+        response.getRelationObjects().addAll(objects);
 
         for (JoinedObject joinedObject : problems.getNewJoinedObjects()) {
             response.getNewJoinedObjects().add(joinedObject.toCommonsJoinedObject());
