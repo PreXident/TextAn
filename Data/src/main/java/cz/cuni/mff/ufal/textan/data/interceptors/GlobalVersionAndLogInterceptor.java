@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.data.interceptors;
 
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.GlobalVersionTable;
 import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
@@ -95,7 +96,8 @@ public class GlobalVersionAndLogInterceptor extends LogInterceptor {
     private boolean isGlobalVersionTable(Object entity) {
         return entity instanceof ObjectTable || 
                 entity instanceof JoinedObjectsTable ||
-                entity instanceof RelationTable;
+                entity instanceof RelationTable ||
+                entity instanceof DocumentTable;
     }
     
     private void tryIncreaseVersion() {
