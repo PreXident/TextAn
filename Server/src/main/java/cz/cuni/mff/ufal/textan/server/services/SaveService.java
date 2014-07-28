@@ -7,10 +7,8 @@ import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.commands.NamedEntityRecognizerLearnCommand;
 import cz.cuni.mff.ufal.textan.server.commands.TextProLearnCommand;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
-import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
+import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
-import cz.cuni.mff.ufal.textan.server.models.Occurrence;
-import cz.cuni.mff.ufal.textan.server.models.Relation;
 import cz.cuni.mff.ufal.textan.textpro.ITextPro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -330,5 +328,24 @@ public class SaveService {
         invoker.register(new NamedEntityRecognizerLearnCommand(recognizer));
 
         return true;
+    }
+
+    public Problems getProblems(EditingTicket ticket) {
+        List<Object> newObjects = objectTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+                .map(Object::fromObjectTable)
+                .collect(Collectors.toList());
+
+        List<Relation> newRelations = relationTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+                .map(Relation::fromRelationTable)
+                .collect(Collectors.toList());
+
+        List<JoinedObject> newJoinedObjects = joinedObjectsTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+                .map(x -> new JoinedObject(
+                        Object.fromObjectTable(x.getNewObject()),
+                        Object.fromObjectTable(x.getOldObject1()),
+                        Object.fromObjectTable(x.getOldObject2())))
+                .collect(Collectors.toList());
+
+        return new Problems(newObjects, newRelations, newJoinedObjects);
     }
 }

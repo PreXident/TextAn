@@ -320,7 +320,25 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         LOG.info("Executing operation getProblems: {} {}", getProblemsRequest, editingTicket);
 
+        cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
+
+        Problems problems = saveService.getProblems(serverTicket);
         GetProblemsResponse response = new GetProblemsResponse();
+
+        //TODO: extract objects from Relation
+
+        for (Object object : problems.getNewObjects()) {
+            response.getNewObjects().add(object.toCommonsObject());
+        }
+
+        for (Relation relation : problems.getNewRelations()) {
+            response.getNewRelations().add(relation.toCommonsRelation());
+        }
+
+        for (JoinedObject joinedObject : problems.getNewJoinedObjects()) {
+            response.getNewJoinedObjects().add(joinedObject.toCommonsJoinedObject());
+        }
+
         LOG.info("Executed operation getProblems: {}", response);
         return response;
     }

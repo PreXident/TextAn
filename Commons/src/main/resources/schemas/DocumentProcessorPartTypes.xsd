@@ -42,15 +42,8 @@
     <xs:element name="documentChangedException" type="DocumentChangedException"/>
     <xs:element name="documentAlreadyProcessedException" type="DocumentAlreadyProcessedException"/>
 
-    <!-- <xs:complexType name="Void">
-         <xs:sequence/>
-     </xs:complexType>-->
-
     <xs:complexType name="GetEditingTicketRequest">
         <xs:sequence/>
-        <!--<xs:sequence>
-            <xs:element name="username" type="xs:string"/>
-        </xs:sequence>-->
     </xs:complexType>
 
     <xs:complexType name="GetEditingTicketResponse">
@@ -153,8 +146,6 @@
 
     <xs:complexType name="GetProblemsResponse">
         <xs:sequence>
-            <xs:element name="documentProcessed" type="xs:boolean"/> <!-- TODO: processed and changed move to excpetions? -->
-            <xs:element name="documentChanged" type="xs:boolean"/>
             <xs:element name="newObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="newRelation" type="cms:Relation" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="relationObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded"/>
