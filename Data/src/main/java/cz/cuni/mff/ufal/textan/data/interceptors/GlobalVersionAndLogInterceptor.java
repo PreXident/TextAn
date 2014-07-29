@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.data.interceptors;
 
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.GlobalVersionTable;
 import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
@@ -19,8 +20,8 @@ public class GlobalVersionAndLogInterceptor extends LogInterceptor {
     
     private static final long serialVersionUID = 20156489756124L;
     
-    private long curVersion;
-    private boolean increaseVersion;
+    private ThreadLocal<Long> curVersion = new ThreadLocal<>();
+    private ThreadLocal<Boolean> increaseVersion = new ThreadLocal<>();
     
     public GlobalVersionAndLogInterceptor(String username) {
         super(username);
@@ -29,7 +30,7 @@ public class GlobalVersionAndLogInterceptor extends LogInterceptor {
     @Override
     public void afterTransactionBegin(Transaction tx) {
         super.afterTransactionBegin(tx);
-        increaseVersion = true;
+        increaseVersion.set(true);
     }
     
     
@@ -40,7 +41,7 @@ public class GlobalVersionAndLogInterceptor extends LogInterceptor {
             tryIncreaseVersion();
 
             for (int i = 0; i < propertyNames.length; i++) {
-                if ("globalVersion".equals(propertyNames[i])) state[i] = curVersion;
+                if ("globalVersion".equals(propertyNames[i])) state[i] = curVersion.get();
             }
             
             super.onSave(entity, id, state, propertyNames, types);             
@@ -58,7 +59,7 @@ public class GlobalVersionAndLogInterceptor extends LogInterceptor {
             tryIncreaseVersion();
 
             for (int i = 0; i < propertyNames.length; i++) {
-                if ("globalVersion".equals(propertyNames[i])) currentState[i] = curVersion;
+                if ("globalVersion".equals(propertyNames[i])) currentState[i] = curVersion.get();
             }
             
             super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
@@ -95,17 +96,18 @@ public class GlobalVersionAndLogInterceptor extends LogInterceptor {
     private boolean isGlobalVersionTable(Object entity) {
         return entity instanceof ObjectTable || 
                 entity instanceof JoinedObjectsTable ||
-                entity instanceof RelationTable;
+                entity instanceof RelationTable ||
+                entity instanceof DocumentTable;
     }
     
     private void tryIncreaseVersion() {
         if (shouldIncreaseVersion())
-            curVersion = getAndIncreaseGlobalVersion();
+            curVersion.set(getAndIncreaseGlobalVersion());
     }
     private boolean shouldIncreaseVersion() {
-        if (increaseVersion)
+        if (increaseVersion.get())
         {
-            increaseVersion = false;
+            increaseVersion.set(false);
             return true;
         }
         return false;

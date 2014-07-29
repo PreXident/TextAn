@@ -19,7 +19,6 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.io.File;
@@ -101,8 +100,10 @@ public class DataConfig {
     }
 
     @Bean
-    public LogInterceptor logInterceptor() {
-        return new GlobalVersionAndLogInterceptor("username");
+    public LogInterceptor logInterceptor() throws PropertyVetoException, IOException {
+        GlobalVersionAndLogInterceptor interceptor = new GlobalVersionAndLogInterceptor("SYSTEM");
+        interceptor.setSessionFactory(sessionFactory());
+        return interceptor;
     }
 
     /**
@@ -120,7 +121,7 @@ public class DataConfig {
         sessionFactory.setPackagesToScan("cz.cuni.mff.ufal.textan.data.tables");
         sessionFactory.afterPropertiesSet();
 
-        sessionFactory.getConfiguration().setInterceptor(logInterceptor());
+        //sessionFactory.getConfiguration().setInterceptor(logInterceptor());
 
         SessionFactory factory = sessionFactory.getObject();
 
@@ -157,7 +158,7 @@ public class DataConfig {
     @Bean
     public PlatformTransactionManager transactionManager() throws PropertyVetoException, IOException {
         HibernateTransactionManager result = new HibernateTransactionManager(sessionFactory());
-        //result.setEntityInterceptor(logInterceptor());
+        result.setEntityInterceptor(logInterceptor());
         return result;
     }
 
@@ -189,26 +190,8 @@ public class DataConfig {
      */
     @Bean
     @Autowired
+    @SuppressWarnings("unused")
     public GraphFactory graphFactory(IObjectTableDAO objectTableDAO) throws PropertyVetoException, IOException {
         return new GraphFactory(sessionFactory(), objectTableDAO);
-    }
-
-    @Bean
-    public LogInterceptorHack logInterceptorHack() {
-        return new LogInterceptorHack();
-    }
-
-    public class LogInterceptorHack {
-
-        @Autowired
-        private LogInterceptor interceptor;
-
-        @Autowired
-        private SessionFactory sessionFactory;
-
-        @PostConstruct
-        public void inject() {
-            interceptor.setSessionFactory(sessionFactory);
-        }
     }
 }

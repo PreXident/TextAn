@@ -25,7 +25,7 @@ CREATE TABLE Document (
 	added datetime NOT NULL,
 	processed datetime NULL,
 	text text CHARSET utf8 NOT NULL,
-	version int DEFAULT 0 NOT NULL
+	globalversion int DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE RelationType(

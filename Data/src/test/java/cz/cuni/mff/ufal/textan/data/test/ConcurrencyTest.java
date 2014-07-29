@@ -47,7 +47,9 @@ public class ConcurrencyTest {
     }
 
     
-    @Test(expected = StaleObjectStateException.class)
+    @Test(
+            //expected = StaleObjectStateException.class
+    )
     public void DocumentRewriteJustRewrittenTest() {
         System.out.println("\n\nConcurrencyRewriteJustRewrittenTest");
         final long id = objectType1.getId();
