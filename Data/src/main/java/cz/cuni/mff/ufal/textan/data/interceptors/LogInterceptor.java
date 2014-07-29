@@ -43,6 +43,10 @@ public class LogInterceptor extends EmptyInterceptor {
         this.sessionFactory = sessionFactory;
     }
 
+    public void setUsername(String username) {
+        this.username.set(username);
+    }
+
     public static boolean isEnabled() {
         return enabled;
     }

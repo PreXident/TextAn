@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
 import cz.cuni.mff.ufal.textan.commons.models.UsernameToken;
+import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
 import org.apache.cxf.binding.soap.interceptor.SoapHeaderInterceptor;
@@ -25,14 +26,17 @@ public class UsernameTokenInterceptor extends AbstractSoapInterceptor {
     private static final Logger LOG = LoggerFactory.getLogger(UsernameTokenInterceptor.class);
 
     private static final QName USERNAME_TOKEN_HEADER = new QName("http://models.commons.textan.ufal.mff.cuni.cz", "usernameToken");
+    private final LogInterceptor logInterceptor;
 
     /**
      * Instantiates a new Ticket interceptor.
+     * @param logInterceptor
      */
-    public UsernameTokenInterceptor() {
-
+    public UsernameTokenInterceptor(LogInterceptor logInterceptor) {
         super(Phase.PRE_INVOKE);
         getBefore().add(SoapHeaderInterceptor.class.getName());
+
+        this.logInterceptor = logInterceptor;
     }
 
     /**
@@ -52,7 +56,9 @@ public class UsernameTokenInterceptor extends AbstractSoapInterceptor {
 
             String username = token.getUsername();
 
-            if ((username == null) || (username.isEmpty())) {
+            if ((username != null) && (!username.isEmpty())) {
+                logInterceptor.setUsername(username);
+            } else {
                 Fault exception = new Fault(new Exception("User name can not be empty!"));
                 exception.setFaultCode(Fault.FAULT_CODE_SERVER);
 
