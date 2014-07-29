@@ -1,73 +1,66 @@
 Status: A dummy documentation - Text Analyser
 
-Generally, Police often generate some documents with regards to a specific person (criminal records, conflict, ...). 
-In the documents, there is a lot of information such as person name, date of birth, name of other persons, his/her 
-location, other persons' location. They need an application to manage such documents in a convenient way and extract the 
-important details without much human effort. This is the topics of our software project, call Text Analyser (TextAn).
+Generally, the Police often generate documents with regards to a specific person (criminal records, conflict, ...). 
+In the documents, there is a lot of information such as
+person's name, their location, date of birth, name of other persons, other persons' location, etc.
+There is a need for an application to manage such documents in a convenient way and extract the important details without much human effort.
+This is the topics of our software project, called Text Analyser (TextAn).
 
-TextAn is a client-server application for analysing text. It is to manage documents and exploit the information out of the 
-documents. Given a collection of written texts (typically Police's reports) in Czech language, TextAn automatically breaks 
-down the unstructured text to exploit the structured information. 
+TextAn is a client-server application for analysing text.
+It is intended to manage documents and exploit the information out of the them.
+Given a collection of written texts (typically police reports) in Czech language,
+TextAn automatically breaks down the unstructured text to exploit the structured information. 
 
-Furthermore, The application allows user to add/remove/adjust the structured information. They can change the relation, 
-correct mistake or provide further information. The structured information could be seen in graph-view, which is a fancy 
-way that user could look at his/her profile. 
+Furthermore, the application allows users to add/remove/adjust the structured information.
+They can change the relations, correct mistakes or provide further information.
+The structured information could be seen in graph-view,
+%TODO: Tam, profile? What is this about? Adam
+which is a fancy way that users could look at his/her profile. 
 
-Implementation of TextAn is recognised in Java 1.8 with Spring Framework. Information is stored with mysql database.
+%TODO: Anyone, add footnote linking chapter with used libraries when ready. Adam
+TextAn is implemented in Java 1.8 using Spring Framework, Hibernate database layer and other libraries.
+%TODO: Venca, is this correct? Adam
+The data are can be stored within any SQL-like relation database, e.g. MySQL.
 
-The developers's team consists of 5 students:
+The developer team consists of 5 students:
 
 \begin{itemize}
-\item Adam
-\item Jakub
-\item Peter
-\item Tam
-\item Vecca
+\itemsep0em
+\item Petr Fanta
+\item Duc Tam Hoang
+\item Adam Huječek
+\item Václav Pernička
+\item Jakub Vlček
 \end{itemize}
 
-% TODO: PETER, please assemble two of my introductions 
+%TODO: PETER, please assemble two of my introductions. Tam
 Status: An even dummer introduction - Text Analyser
 
-Textan (Text Analyser)
+TextAn (Text Analyser)
 
-Generally, there is a huge amount of unstructured written texts which consist of structure information. It ranges from 
-newspapers, medical bills to even personal letters. In every written documents, there are entities like names, address, 
-dates, etc. These entities do not stand alone, there are relationship between them. The relationship could facilitate the 
-problem of assigning an entity from new text to an existing objects. Such problem of extracting structure information out 
-of a general documents has recently gained attention from both research and industry.
+Generally, there is a huge amount of unstructured written texts which contain structure information.
+It ranges from newspapers, medical bills to even personal letters.
+In every written document, there are entities like names, address, dates, etc.
+These entities do not stand alone, there are relationships between them.
+The relationships could facilitate the problem of assigning an entity from new text to an existing objects already stored in the system.
+Such problem of extracting structure information out of general documents has recently gained attention from both research and industry.
 
-Out of all unstructured sources which contains structured information, Czech police reports is typical. They are the descriptions
-with regard to a specific person, his/her profile and actions, criminal records and so on. Such information by no doubt is the most
-valuable data in the whole documents. Currently, the task of extracting
-it is done manually. In other words, there is a person who read through all documents, look at the database and match the
-description in the document with existing data. This is not-surprisingly time-consuming and labour-intensive. 
+Czech Police reports are typical example of unstructured sources which contain structured information.
+They are the descriptions with regard to a specific person, their profile and actions, criminal records and so on.
+Such information is by no doubt the most valuable data in the whole document.
+Currently, the extracting is done manually.
+In other words, there is a person who reads through all documents,
+looks at the database and match the description in the document with the existing data.
+This is not-surprisingly very time-consuming and labour-intensive. 
 
-Project Textan is devoted to build a pleasant and effective tool for extracting structured data in Czech police reports. 
-Our goal is to provide an effective extraction of structured data with user involvement. It consists of three main contributions.
-First, an efficient design of database for structured data is implemented. Second, we aim to maximize the performance of 
-automatic detection of entities. Third, Textan is designed to provide a friendly method for users to confirm or adjust 
-the system's suggestions. % This may be wrong. TODO: think how to make it clear
-At first, the second task may achieve low accuracy, but the magic of machine learning could improve the performance through 
-confirmation by users. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Project TextAn is devoted to build a pleasant and effective tool for extracting structured data in Czech police reports. 
+Our goal is to provide an effective extraction of structured data with user involvement.
+It consists of three main contributions.
+%TODO: Venca, is it efficient? :-D Adam
+First, an efficient design of database for structured data is implemented.
+Second, we aim to maximize the performance of automatic detection of entities.
+%TODO: This may be wrong. Think how to make it clear. Tam
+%Seems ok to me. Adam
+Third, TextAn is designed to provide a friendly method for users to confirm or adjust the system's suggestions.
+At first, the second task may achieve lown recognition accuracy,
+but with the semi-automatic approach the user input together with the magic of machine learning could improve the performance significantly. 
