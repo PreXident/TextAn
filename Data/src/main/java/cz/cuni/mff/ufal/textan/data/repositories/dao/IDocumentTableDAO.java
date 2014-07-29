@@ -75,4 +75,12 @@ public interface IDocumentTableDAO extends IOperations<DocumentTable, Long> {
     List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern);
     List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern, int firstResult, int maxResults);
     List<DocumentTable> findAllProcessed(boolean processed);
+    
+    /**
+     * finds all documents newer or equal from specified version
+     * 
+     * @param version global version which auto increments
+     * @return 
+     */
+    List<DocumentTable> findAllSinceGlobalVersion(long version); 
 }

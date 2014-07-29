@@ -214,4 +214,12 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         return addPagination(findAllProcessedDocumentsByFullTextQuery(processed, pattern), firstResult, maxResults).list();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllSinceGlobalVersion(long version) {
+        return findAllCriteria()
+                .add(Restrictions.ge(DocumentTable.PROPERTY_NAME_GLOBAL_VERSION, version))
+                .list();
+                
+    }
 }

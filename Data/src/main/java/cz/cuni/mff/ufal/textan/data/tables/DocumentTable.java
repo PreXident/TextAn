@@ -26,6 +26,7 @@ public class DocumentTable extends AbstractTable {
     public static final String PROPERTY_NAME_ALIAS_OCCURRENCES = "aliasOccurrences";
     public static final String PROPERTY_NAME_RELATION_OCCURRENCES = "relationOccurrences";
     public static final String PROPERTY_NAME_PROCESSED = "processedDate";
+    public static final String PROPERTY_NAME_GLOBAL_VERSION = "globalVersion";
 
     private long id;
     private long globalVersion;
