@@ -28,7 +28,7 @@ public class DocumentTable extends AbstractTable {
     public static final String PROPERTY_NAME_PROCESSED = "processedDate";
 
     private long id;
-    private int version;
+    private long globalVersion;
 
     private Date addedDate = Calendar.getInstance().getTime();
     private Date processedDate;
@@ -56,14 +56,13 @@ public class DocumentTable extends AbstractTable {
         this.id = id;
     }
 
-    @Version
-    @Column(name = "version", nullable = false)
-    public int getVersion() {
-        return version;
+    @Column(name = "globalversion", nullable = false)
+    public long getGlobalVersion() {
+        return globalVersion;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
+    public void setGlobalVersion(long globalVersion) {
+        this.globalVersion = globalVersion;
     }
 
     @Column(name = "added", nullable = false)
