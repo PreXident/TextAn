@@ -25,7 +25,7 @@ public class TextProConfig {
      * @return
      */
     @Bean(initMethod = "learn")
-    @DependsOn("logInterceptorHack")
+    @DependsOn("transactionManager")
     @Autowired
     public ITextPro textPro(
             IObjectTypeTableDAO objectTypeTableDAO,

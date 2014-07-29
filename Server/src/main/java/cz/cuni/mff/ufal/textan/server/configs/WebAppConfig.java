@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
+import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
 import cz.cuni.mff.ufal.textan.server.services.*;
 import cz.cuni.mff.ufal.textan.server.ws.DataProvider;
 import cz.cuni.mff.ufal.textan.server.ws.DocumentProcessor;
@@ -42,6 +43,9 @@ public class WebAppConfig {
     @Autowired
     private TicketService ticketService;
 
+    @Autowired
+    private LogInterceptor logInterceptor;
+
     /**
      * Creates spring bean with bus for CXF initialization
      *
@@ -50,7 +54,7 @@ public class WebAppConfig {
     @Bean(destroyMethod = "shutdown")
     public SpringBus cxf() {
         SpringBus bus = new SpringBus();
-        bus.getInInterceptors().add(new UsernameTokenInterceptor());
+        bus.getInInterceptors().add(new UsernameTokenInterceptor(logInterceptor));
 
 //        LoggingInInterceptor loggingIn = new LoggingInInterceptor();
 //        loggingIn.setPrettyLogging(true);
