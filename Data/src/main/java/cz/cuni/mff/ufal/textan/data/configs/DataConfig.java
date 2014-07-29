@@ -101,7 +101,7 @@ public class DataConfig {
 
     @Bean
     public LogInterceptor logInterceptor() throws PropertyVetoException, IOException {
-        GlobalVersionAndLogInterceptor interceptor = new GlobalVersionAndLogInterceptor("username");
+        GlobalVersionAndLogInterceptor interceptor = new GlobalVersionAndLogInterceptor("SYSTEM");
         interceptor.setSessionFactory(sessionFactory());
         return interceptor;
     }
