@@ -114,7 +114,7 @@ public class GraphFactory {
                         + "     left join rel.objectsInRelation inRel2"
                         + "     left join inRel2.object obj2"
                 
-                        + " where obj.id = :pId and obj2.id != obj.id"
+                        + " where obj.id = :pId"
                   )
                 .setParameter("pId", objectId)
                 .list();
