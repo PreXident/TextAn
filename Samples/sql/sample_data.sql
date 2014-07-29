@@ -21,7 +21,7 @@ INSERT INTO `RelationType`(`id_relation_type`,`name`) VALUES(2, "viděn");
 INSERT INTO `RelationType`(`id_relation_type`,`name`) VALUES(3, "poškozoval");
 INSERT INTO `RelationType`(`id_relation_type`,`name`) VALUES(4, "zadržen");
 
-INSERT INTO `Object`(`id_object`,`id_object_type`,`data`) VALUES (1, 1, "");
+INSERT INTO `Object`(`id_object`, `id_root_object`,`id_object_type`,`data`) VALUES (1, 1, 1, "");
 	INSERT INTO `Alias`(`id_alias`,`id_object`,`alias`) VALUES (1, 1, "Josef Novak");
 		INSERT INTO `AliasOccurrence`(`id_alias_occurrence`,`id_alias`,`id_document`,`position`) VALUES(1, 1, 1, 0);
 	INSERT INTO `Alias`(`id_alias`,`id_object`,`alias`) VALUES (2, 1, "Pepíček");
@@ -31,23 +31,23 @@ INSERT INTO `Object`(`id_object`,`id_object_type`,`data`) VALUES (1, 1, "");
 	INSERT INTO `Alias`(`id_alias`,`id_object`,`alias`) VALUES (4, 1, "Novák");
 		INSERT INTO `AliasOccurrence`(`id_alias_occurrence`,`id_alias`,`id_document`,`position`) VALUES(4, 4, 1, 344);
 
-INSERT INTO `Object`(`id_object`,`id_object_type`,`data`) VALUES (2, 2, ""); 
+INSERT INTO `Object`(`id_object`, `id_root_object`,`id_object_type`,`data`) VALUES (2, 2, 2, ""); 
 	INSERT INTO `Alias`(`id_alias`,`id_object`,`alias`) VALUES (5, 2, "19.10.1975");
 		INSERT INTO `AliasOccurrence`(`id_alias_occurrence`,`id_alias`,`id_document`,`position`) VALUES(5, 5, 1, 61);
 
-INSERT INTO `Object`(`id_object`,`id_object_type`,`data`) VALUES (3, 2, ""); 
+INSERT INTO `Object`(`id_object`, `id_root_object`,`id_object_type`,`data`) VALUES (3, 3, 2, ""); 
 	INSERT INTO `Alias`(`id_alias`,`id_object`,`alias`) VALUES (6, 3, "18.9.2013");
 		INSERT INTO `AliasOccurrence`(`id_alias_occurrence`,`id_alias`,`id_document`,`position`) VALUES(6, 6, 1, 88);
 
-INSERT INTO `Object`(`id_object`,`id_object_type`,`data`) VALUES (4, 3, ""); 
+INSERT INTO `Object`(`id_object`, `id_root_object`,`id_object_type`,`data`) VALUES (4, 4, 3, ""); 
 	INSERT INTO `Alias`(`id_alias`,`id_object`,`alias`) VALUES (7, 4, "K novým domům");
 		INSERT INTO `AliasOccurrence`(`id_alias_occurrence`,`id_alias`,`id_document`,`position`) VALUES(7, 7, 1, 106);
 
-INSERT INTO `Object`(`id_object`,`id_object_type`,`data`) VALUES (5, 4, ""); 
+INSERT INTO `Object`(`id_object`, `id_root_object`,`id_object_type`,`data`) VALUES (5, 5, 4, ""); 
 	INSERT INTO `Alias`(`id_alias`,`id_object`,`alias`) VALUES (8, 5, "Praze 5");
 		INSERT INTO `AliasOccurrence`(`id_alias_occurrence`,`id_alias`,`id_document`,`position`) VALUES(8, 8, 1, 122);
 
-INSERT INTO `Object`(`id_object`,`id_object_type`,`data`) VALUES (6, 5, ""); 
+INSERT INTO `Object`(`id_object`, `id_root_object`,`id_object_type`,`data`) VALUES (6, 6, 5, ""); 
 	INSERT INTO `Alias`(`id_alias`,`id_object`,`alias`) VALUES (9, 6, "baseballovou pálkou");
 		INSERT INTO `AliasOccurrence`(`id_alias_occurrence`,`id_alias`,`id_document`,`position`) VALUES(9, 9, 1, 204);
 
