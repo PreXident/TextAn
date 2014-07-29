@@ -31,3 +31,13 @@ classes/
 
 Data/indexes
 .*
+
+#TeX auxiliary files and output
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc
+Manual.pdf
+DeveloperDocumentation.pdf
+UserDocumentation.pdf
