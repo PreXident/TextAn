@@ -292,7 +292,7 @@ public class NamedEntityRecognizer {
      */
     public boolean learn(boolean waitForModel) {
         LOG.info("Started training new NameTag model");
-        boolean result = true;
+        boolean result;
         try {
             File trainingExecutable = new File(EXECUTABLE_DIR).getCanonicalFile();
             File trainingDirectory = new File(TRAINING_DIR).getCanonicalFile();
@@ -306,7 +306,6 @@ public class NamedEntityRecognizer {
             if ((new File(TRAINING_DIR).isDirectory()) || (new File(TRAINING_DIR).mkdir())) {
                 if (learningParameters.useDefaultTrainingData()) {
                     LOG.info("Copying default training data from {}", learningParameters.getTrainingData().getPath());
-                    //Files.copy(learningParameters.getTrainingData().toPath(), trainingDataFile.toPath());
                     if (!copyFile(learningParameters.getTrainingData(), trainingDataFile)) {
                         return false;
                     }
@@ -315,6 +314,11 @@ public class NamedEntityRecognizer {
             } else {
                 LOG.error("Can't create training data folder");
                 return false;
+            }
+
+            if (trainingDataFile.length() == 0) {
+                LOG.warn("Haven't any training data");
+                return true;
             }
 
             if (!createFeatures(learningParameters)) {
