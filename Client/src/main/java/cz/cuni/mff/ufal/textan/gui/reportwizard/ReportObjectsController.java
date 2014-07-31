@@ -252,6 +252,7 @@ public class ReportObjectsController extends ReportWizardController {
                 text.setOnMousePressed(e -> {
                     selectedEntity = ei;
                     if (e.isPrimaryButtonDown()) {
+                        allObjectsCheckBox.setSelected(false);
                         filterObjects(ei);
                         contextMenu.show(text, Side.BOTTOM, 0, 0);
                         filterField.requestFocus();
