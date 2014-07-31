@@ -81,4 +81,12 @@ public interface IDocumentTableDAO extends IOperations<DocumentTable, Long> {
 
     List<Pair<DocumentTable,Integer>> findAllDocumentsWithRelationByFullText(long relationId, String pattern);
     List<Pair<DocumentTable,Integer>> findAllDocumentsWithRelationByFullText(long relationId, String pattern, int firstResult, int maxResults);
+    
+    /**
+     * finds all documents newer or equal from specified version
+     * 
+     * @param version global version which auto increments
+     * @return 
+     */
+    List<DocumentTable> findAllSinceGlobalVersion(long version); 
 }
