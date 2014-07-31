@@ -101,7 +101,7 @@ public abstract class ReportWizardController extends WindowController {
                 });
             });
             if (result == Actions.YES) {
-                pipeline.switchToNewReport();
+                pipeline.switchToReplacingReport();
                 try {
                     callable.call();
                 } catch (Exception ex) {

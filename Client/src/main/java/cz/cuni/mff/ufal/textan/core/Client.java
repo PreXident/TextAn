@@ -915,6 +915,56 @@ public class Client {
     }
 
     /**
+     * Saves processed document replacing the text in the db.
+     * If returns false, check {@link #getProblems(Ticket)}.
+     * @param ticket editing ticket
+     * @param id document id
+     * @param text text replacing the old one
+     * @param reportEntities report entities
+     * @param reportRelations report relations
+     * @param force  force save?
+     * @return true if saving was successfull, false otherwise
+     * @throws IdNotFoundException if id error occurs
+     * @throws DocumentChangedException if document has been changed under our hands
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
+     */
+    public synchronized boolean saveProcessedDocument(final Ticket ticket,
+            final long id, final String text, final List<Entity> reportEntities,
+            final List<RelationBuilder> reportRelations,
+            final boolean force) throws IdNotFoundException,
+            DocumentChangedException, DocumentAlreadyProcessedException {
+        //TODO call apropriate method when it is ready
+        final SaveProcessedDocumentByIdRequest request =
+                new SaveProcessedDocumentByIdRequest();
+        final List<cz.cuni.mff.ufal.textan.commons.models.Object> objects =
+                request.getObjects();
+        final List<ObjectOccurrence> objectOccurrences =
+                request.getObjectOccurrences();
+        final List<cz.cuni.mff.ufal.textan.commons.models.Relation> relations =
+                request.getRelations();
+        final List<RelationOccurrence> relationOccurrences =
+                request.getRelationOccurrences();
+        prepareSaveRequest(reportEntities, reportRelations, objects,
+                objectOccurrences, relations, relationOccurrences);
+        request.setDocumentId(id);
+        //request.setText(text); //TODO uncomment when request is ready
+        request.setForce(force);
+        try {
+            final SaveProcessedDocumentByIdResponse response =
+                    getDocumentProcessor().saveProcessedDocumentById(
+                            request,
+                            ticket.toTicket());
+            return response.isResult();
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException e) {
+            throw new DocumentChangedException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException e) {
+            throw new DocumentAlreadyProcessedException(e);
+        }
+    }
+
+    /**
      * Join given objects.
      * @param id1 first object id
      * @param id2 second object id

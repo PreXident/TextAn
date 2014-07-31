@@ -80,25 +80,7 @@ final class ReportRelationsState extends State {
             }
             rels.addAll(unanchoredRelations);
             pipeline.reportRelations = rels;
-            try {
-                if (pipeline.reportId > 0) {
-                    pipeline.result = pipeline.client.saveProcessedDocument(
-                            pipeline.ticket,
-                            pipeline.reportId,
-                            pipeline.reportEntities,
-                            pipeline.reportRelations,
-                            false);
-                } else {
-                    pipeline.result = pipeline.client.saveProcessedDocument(
-                            pipeline.ticket,
-                            pipeline.getReportText(),
-                            pipeline.reportEntities,
-                            pipeline.reportRelations,
-                            false);
-                }
-            } catch (IdNotFoundException e) {
-                e.printStackTrace();
-            }
+            saveReport(pipeline, false);
         } else {
             pipeline.decStepsBack();
         }
@@ -110,6 +92,46 @@ final class ReportRelationsState extends State {
         } else {
             pipeline.problems = pipeline.client.getProblems(pipeline.ticket);
             pipeline.setState(ReportErrorState.getInstance());
+        }
+    }
+
+    /**
+     * Saves report.
+     * @param pipeline pipeline delegating the request
+     * @param force indicator of force save
+     * @throws DocumentChangedException
+     * @throws DocumentAlreadyProcessedException
+     */
+    protected void saveReport(final ProcessReportPipeline pipeline,
+            final boolean force) throws DocumentChangedException,
+            DocumentAlreadyProcessedException {
+        try {
+            if (pipeline.reportId > 0) {
+                pipeline.result = pipeline.client.saveProcessedDocument(
+                        pipeline.ticket,
+                        pipeline.reportId,
+                        pipeline.reportEntities,
+                        pipeline.reportRelations,
+                        force);
+            } else if (pipeline.replacingReportId > 0) {
+                pipeline.result = pipeline.client.saveProcessedDocument(
+                        pipeline.ticket,
+                        pipeline.reportId,
+                        pipeline.getReportText(),
+                        pipeline.reportEntities,
+                        pipeline.reportRelations,
+                        force);
+            } else {
+                pipeline.result = pipeline.client.saveProcessedDocument(
+                        pipeline.ticket,
+                        pipeline.getReportText(),
+                        pipeline.reportEntities,
+                        pipeline.reportRelations,
+                        force);
+            }
+        } catch (IdNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("This should never happen!", e);
         }
     }
 }
