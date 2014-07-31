@@ -3,11 +3,9 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 
@@ -26,9 +24,6 @@ public class ReportEditController extends ReportWizardController {
     ScrollPane scrollPane;
 
     @FXML
-    Slider slider;
-
-    @FXML
     private void next() {
         if (pipeline.lock.tryAcquire()) {
             getMainNode().setCursor(Cursor.WAIT);
@@ -43,8 +38,8 @@ public class ReportEditController extends ReportWizardController {
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        slider.addEventFilter(EventType.ROOT, e -> e.consume());
+    public void initialize(final URL url, final ResourceBundle rb) {
+        super.initialize(url, rb);
         slider.setLabelFormatter(new SliderLabelFormatter());
     }
 
@@ -61,6 +56,6 @@ public class ReportEditController extends ReportWizardController {
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
         textArea.setText(pipeline.getReportText().replace("\r", ""));
-        textArea.textProperty().addListener(e -> pipeline.resetStepsBack());
+        textArea.textProperty().addListener(e -> resetStepsBack());
     }
 }

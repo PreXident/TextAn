@@ -16,3 +16,7 @@
 .slider {
 	-fx-padding: 5 25 0 25;
 }
+
+.warning .thumb{
+ -fx-color: red;
+}

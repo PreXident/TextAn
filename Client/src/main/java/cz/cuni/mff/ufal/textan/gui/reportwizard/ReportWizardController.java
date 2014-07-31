@@ -9,11 +9,20 @@ import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
 import java.io.File;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import javafx.application.Platform;
+import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import jfxtras.util.PlatformUtil;
@@ -31,8 +40,22 @@ public abstract class ReportWizardController extends WindowController {
     /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "report.wizard";
 
+    /** Style class for slider when progress can be lost. */
+    static protected final String WARNING_CLASS = "warning";
+
     /** Path to resource bundle containing localization. */
     static private final String RESOURCE_BUNDLE_PATH = "cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizard";
+
+    /** Set of events ignored by slider. */
+    static protected final Set<EventType<? extends Event>> SLIDER_IGNORED;
+
+    static {
+        Set<EventType<? extends Event>> events = new HashSet<>();
+        events.add(MouseEvent.MOUSE_CLICKED);
+        events.add(MouseEvent.MOUSE_PRESSED);
+        events.add(MouseEvent.MOUSE_RELEASED);
+        SLIDER_IGNORED = Collections.unmodifiableSet(events);
+    }
 
     /** Pipeline controlling the report processing. */
     protected ProcessReportPipeline pipeline;
@@ -40,8 +63,26 @@ public abstract class ReportWizardController extends WindowController {
     @FXML
     TextFlow textFlow;
 
+    @FXML
+    Slider slider;
+
     /** Parent controller. */
     protected TextAnController textAnController;
+
+    /** Localization container. */
+    protected ResourceBundle resourceBundle;
+
+    @Override
+    public void initialize(final URL url, final ResourceBundle rb) {
+        resourceBundle = rb;
+        if (slider != null) {
+            slider.addEventFilter(EventType.ROOT, e -> {
+                if (SLIDER_IGNORED.contains(e.getEventType())) {
+                    e.consume();
+                }
+            });
+        }
+    }
 
     @Override
     public void setWindow(final InnerWindow window) {
@@ -69,6 +110,13 @@ public abstract class ReportWizardController extends WindowController {
      */
     public void setPipeline(final ProcessReportPipeline pipeline) {
         this.pipeline = pipeline;
+        if (slider != null && pipeline.getStepsBack() > 0) {
+            final ResourceBundle rb =
+                    ResourceBundle.getBundle(RESOURCE_BUNDLE_PATH);
+            final Tooltip tooltip = new Tooltip(Utils.localize(rb, "progress.warning"));
+            slider.setTooltip(tooltip);
+            slider.getStyleClass().add(WARNING_CLASS);
+        }
     }
 
     /**
@@ -132,6 +180,18 @@ public abstract class ReportWizardController extends WindowController {
      */
     public void nowInControl() {
         //nothing
+    }
+
+    /**
+     * Resets pipeline's steps back.
+     * Handles slider warning logic if needed.
+     */
+    protected void resetStepsBack() {
+        pipeline.resetStepsBack();
+        if (slider != null) {
+            slider.setTooltip(null);
+            slider.getStyleClass().remove(WARNING_CLASS);
+        }
     }
 
     /**

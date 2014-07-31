@@ -4,7 +4,6 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.IClearer;
 import cz.cuni.mff.ufal.textan.core.processreport.AbstractBuilder.SplitException;
-import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.separators;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -32,7 +30,6 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
@@ -75,9 +72,6 @@ public class ReportEntitiesController extends ReportWizardController {
     @FXML
     ScrollPane scrollPane;
 
-    @FXML
-    Slider slider;
-
     /** Index of the first selected {@link Text} node. */
     int firstDragged = -1;
 
@@ -95,9 +89,6 @@ public class ReportEntitiesController extends ReportWizardController {
 
     /** Context menu with entity selection. */
     ContextMenu contextMenu;
-
-    /** Localization controller. */
-    ResourceBundle resourceBundle;
 
     /** Words with assigned EntitityBuilders. */
     List<Word> words;
@@ -139,9 +130,8 @@ public class ReportEntitiesController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        resourceBundle = rb;
+        super.initialize(url, rb);
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
-        slider.addEventFilter(EventType.ROOT, e -> e.consume());
         slider.setLabelFormatter(new SliderLabelFormatter());
         scrollPane.vvalueProperty().addListener(e -> {
             textFlow.layoutChildren();
@@ -304,7 +294,7 @@ public class ReportEntitiesController extends ReportWizardController {
         if (settings.getProperty(CLEAR_FILTERS, "false").equals("true")) {
             filterField.clear();
         }
-        pipeline.resetStepsBack();
+        resetStepsBack();
         try {
             final IClearer clearer = i -> Utils.unstyleText(texts.get(i));
             if (ot == null) {
