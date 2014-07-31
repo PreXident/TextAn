@@ -155,9 +155,9 @@ public class SaveService {
             throw new IdNotFoundException("documentId", documentId);
         } else if (documentTable.isProcessed()) {
             throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
+        } if (documentTable.getGlobalVersion() > ticket.getVersion()) {
+            throw new DocumentChangedException(documentId, documentTable.getGlobalVersion(), ticket.getVersion());
         }
-
-        //TODO:throw Document Changed Exception
 
         if (!force && checkChanges(ticket)) {
             return false;

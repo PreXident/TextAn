@@ -254,7 +254,6 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
         try {
-
             List<Object> objects = saveProcessedDocumentByIdRequest.getObjects().stream()
                     .map(Object::fromCommonsObject)
                     .collect(Collectors.toList());
