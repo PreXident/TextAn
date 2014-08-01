@@ -18,6 +18,8 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromS
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RewriteAndSaveProcessedDocumentByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RewriteAndSaveProcessedDocumentByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringRequest;
@@ -925,17 +927,15 @@ public class Client {
      * @param force  force save?
      * @return true if saving was successfull, false otherwise
      * @throws IdNotFoundException if id error occurs
-     * @throws DocumentChangedException if document has been changed under our hands
      * @throws DocumentAlreadyProcessedException if document has been processed under our hands
      */
     public synchronized boolean saveProcessedDocument(final Ticket ticket,
             final long id, final String text, final List<Entity> reportEntities,
             final List<RelationBuilder> reportRelations,
             final boolean force) throws IdNotFoundException,
-            DocumentChangedException, DocumentAlreadyProcessedException {
-        //TODO call apropriate method when it is ready
-        final SaveProcessedDocumentByIdRequest request =
-                new SaveProcessedDocumentByIdRequest();
+            DocumentAlreadyProcessedException {
+        final RewriteAndSaveProcessedDocumentByIdRequest request =
+              new RewriteAndSaveProcessedDocumentByIdRequest();
         final List<cz.cuni.mff.ufal.textan.commons.models.Object> objects =
                 request.getObjects();
         final List<ObjectOccurrence> objectOccurrences =
@@ -947,18 +947,16 @@ public class Client {
         prepareSaveRequest(reportEntities, reportRelations, objects,
                 objectOccurrences, relations, relationOccurrences);
         request.setDocumentId(id);
-        //request.setText(text); //TODO uncomment when request is ready
+        request.setText(text);
         request.setForce(force);
         try {
-            final SaveProcessedDocumentByIdResponse response =
-                    getDocumentProcessor().saveProcessedDocumentById(
+            final RewriteAndSaveProcessedDocumentByIdResponse response =
+                    getDocumentProcessor().rewriteAndSaveProcessedDocumentById(
                             request,
                             ticket.toTicket());
             return response.isResult();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
-        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException e) {
-            throw new DocumentChangedException(e);
         } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException e) {
             throw new DocumentAlreadyProcessedException(e);
         }
