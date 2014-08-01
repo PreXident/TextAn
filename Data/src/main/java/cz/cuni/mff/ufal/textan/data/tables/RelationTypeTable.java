@@ -7,6 +7,8 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Type of a relation (killed, lived, was engaged, ...)
@@ -52,7 +54,7 @@ public class RelationTypeTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "relationType", orphanRemoval = true)
-    @Cascade(CascadeType.DELETE)
+    @Cascade(CascadeType.ALL)
     public Set<RelationTable> getRelationsOfThisType() {
         return relationsOfThisType;
     }

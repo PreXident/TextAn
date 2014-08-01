@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Document - Report - Text written by policemen
@@ -102,8 +104,8 @@ public class DocumentTable extends AbstractTable {
         this.text = text;
     }
 
-    @OneToMany(mappedBy = "document")
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @OneToMany(mappedBy = "document", orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
     public Set<RelationOccurrenceTable> getRelationOccurrences() {
         return relationOccurrences;
     }
@@ -112,8 +114,8 @@ public class DocumentTable extends AbstractTable {
         this.relationOccurrences = relationOccurrences;
     }
 
-    @OneToMany(mappedBy = "document")
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @OneToMany(mappedBy = "document", orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
     public Set<AliasOccurrenceTable> getAliasOccurrences() {
         return aliasOccurrences;
     }
