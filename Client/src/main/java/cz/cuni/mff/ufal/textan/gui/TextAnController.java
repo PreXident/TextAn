@@ -24,9 +24,12 @@ import cz.cuni.mff.ufal.textan.gui.relation.RelationListWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
+import cz.cuni.mff.ufal.textan.gui.reportwizard.TextFlow;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -41,6 +44,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Menu;
@@ -345,6 +349,26 @@ public class TextAnController implements Initializable {
     public void setStage(final Stage stage) {
         this.stage = stage;
         stage.setMaximized(settings.getProperty("application.max", "false").equals("true"));
+        stage.maximizedProperty().addListener((ov, oldVal, newVal) -> {
+            Utils.runFXlater(() -> {
+                final Deque<Parent> stack = new ArrayDeque<>();
+                for (Node node : content.getChildren()) {
+                    if (node instanceof InnerWindow) {
+                        stack.push(((InnerWindow) node).getContentPane());
+                        while (!stack.isEmpty()) {
+                            final Parent parent = stack.pop();
+                            for (Node n : parent.getChildrenUnmodifiable()) {
+                                if (n instanceof TextFlow) {
+                                    ((TextFlow) n).layoutChildren();
+                                } else if (n instanceof Parent) {
+                                    stack.add((Parent) n);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
     }
 
     /**
