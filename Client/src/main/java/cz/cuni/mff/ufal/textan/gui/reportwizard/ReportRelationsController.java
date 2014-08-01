@@ -310,6 +310,7 @@ public class ReportRelationsController extends ReportWizardController {
         //create popup
         BorderPane border = new BorderPane();
         listView = new ListView<>();
+        listView.setStyle("-fx-font-style: normal;");
         listView.setPrefHeight(100);
         border.setCenter(listView);
         filterField = new TextField();
