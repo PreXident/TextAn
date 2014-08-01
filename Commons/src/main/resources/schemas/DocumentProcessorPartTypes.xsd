@@ -88,7 +88,6 @@
 
     <xs:complexType name="GetAssignmentsFromStringResponse">
         <xs:sequence>
-            <!-- TODO: better name for element -->
             <xs:element name="assignment" type="Assignment" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
@@ -102,7 +101,6 @@
 
     <xs:complexType name="GetAssignmentsByIdResponse">
         <xs:sequence>
-            <!-- TODO: better name for element -->
             <xs:element name="assignment" type="Assignment" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
@@ -177,11 +175,10 @@
     <!--<xs:complexType name="GetProblemsFromStringRequest">
         <xs:sequence/>
         &lt;!&ndash;<xs:sequence>&ndash;&gt;
-            &lt;!&ndash;<xs:element name="text" type="xs:string"/> &lt;!&ndash; TODO: je potreba posilat text dokumentu? &ndash;&gt;&ndash;&gt;
+            &lt;!&ndash;<xs:element name="text" type="xs:string"/>
         &lt;!&ndash;</xs:sequence>&ndash;&gt;
     </xs:complexType>
 
-    &lt;!&ndash; TODO: implement &ndash;&gt;
     <xs:complexType name="GetProblemsFromStringResponse">
         <xs:sequence>
             <xs:element name="newObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded" />
@@ -198,7 +195,7 @@
 
     <xs:complexType name="GetProblemsByIdResponse">
         <xs:sequence>
-            <xs:element name="documentProcessed" type="xs:boolean"/> &lt;!&ndash; TODO: processed and changed move to excpetions? &ndash;&gt;
+            <xs:element name="documentProcessed" type="xs:boolean"/>
             <xs:element name="documentChanged" type="xs:boolean"/>
             <xs:element name="newObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="newRelation" type="cms:Relation" minOccurs="0" maxOccurs="unbounded"/>

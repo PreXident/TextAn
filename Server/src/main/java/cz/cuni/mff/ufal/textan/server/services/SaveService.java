@@ -247,7 +247,6 @@ public class SaveService {
             List<AliasTable> aliases = aliasTableDAO.findAllAliasesOfObject(objectTable);
             AliasTable aliasTable = null;
             for (AliasTable alias : aliases) {
-                //TODO: test case sensitivity! (all lowercase?, different aliases?)
                 if (occurrence.getValue().equals(alias.getAlias())) {
                     aliasTable = alias;
                 }
@@ -271,6 +270,7 @@ public class SaveService {
         HashMap<Long, RelationTable> relationIdMapping = new HashMap<>();
 
         //add relation
+        //TODO: group relations?
         for (Pair<Long, Occurrence> relationOccurrence : relationOccurrences) {
 
             RelationTable relationTable;
@@ -345,7 +345,7 @@ public class SaveService {
             relationOccurrenceTableDAO.add(relationOccurrenceTable);
         }
 
-        //register re-learn command for named entity recognizer
+        //register re-learn command for named entity recognizer and text pro
         invoker.register(new TextProLearnCommand(textPro));
         invoker.register(new NamedEntityRecognizerLearnCommand(recognizer));
 
