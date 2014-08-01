@@ -122,7 +122,7 @@ public class SaveService {
         final DocumentTable documentTable = new DocumentTable(text);
         documentTableDAO.add(documentTable);
 
-        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences, ticket);
+        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences);
     }
 
     /**
@@ -155,15 +155,37 @@ public class SaveService {
             throw new IdNotFoundException("documentId", documentId);
         } else if (documentTable.isProcessed()) {
             throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
+        } if (documentTable.getGlobalVersion() > ticket.getVersion()) {
+            throw new DocumentChangedException(documentId, documentTable.getGlobalVersion(), ticket.getVersion());
         }
-
-        //TODO:throw Document Changed Exception
 
         if (!force && checkChanges(ticket)) {
             return false;
         }
 
-        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences, ticket);
+        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences);
+    }
+
+    public boolean save(
+            long documentId, String text,
+            List<Object> objects, List<Pair<Long, Occurrence>> objectOccurrences,
+            List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences,
+            boolean force, EditingTicket ticket) throws IdNotFoundException, DocumentAlreadyProcessedException {
+
+        DocumentTable documentTable = documentTableDAO.find(documentId);
+        if (documentTable == null) {
+            throw new IdNotFoundException("documentId", documentId);
+        } else if (documentTable.isProcessed()) {
+            throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
+        }
+
+        if (!force && checkChanges(ticket)) {
+            return false;
+        }
+
+        documentTable.setText(text);
+
+        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences);
     }
 
     private boolean checkChanges(EditingTicket ticket) {
@@ -175,8 +197,7 @@ public class SaveService {
     private boolean innerSave(
             DocumentTable documentTable,
             List<Object> objects, List<Pair<Long, Occurrence>> objectOccurrences,
-            List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences,
-            EditingTicket ticket) throws IdNotFoundException {
+            List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences) throws IdNotFoundException {
 
         documentTable.setProcessedDateToNow();
 

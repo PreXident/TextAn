@@ -1,26 +1,12 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetAssignmentsFromStringResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEditingTicketResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdResponse;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringRequest;
-import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException;
 import cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
+
+import javax.jws.WebParam;
 
 /**
  * Simple wrapper around IDocumentProcessor to provide synchronization.
@@ -71,6 +57,14 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
             final GetAssignmentsFromStringRequest getAssignmentsFromStringRequest,
             final EditingTicket editingTicket) {
         return innerDP.getAssignmentsFromString(getAssignmentsFromStringRequest, editingTicket);
+    }
+
+    @Override
+    synchronized public RewriteAndSaveProcessedDocumentByIdResponse rewriteAndSaveProcessedDocumentById(
+            final RewriteAndSaveProcessedDocumentByIdRequest rewriteAndSaveProcessedDocumentByIdRequest,
+            final EditingTicket editingTicket)
+            throws DocumentAlreadyProcessedException, IdNotFoundException {
+        return innerDP.rewriteAndSaveProcessedDocumentById(rewriteAndSaveProcessedDocumentByIdRequest, editingTicket);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package cz.cuni.mff.ufal.textan.server.ws;
 
-import cz.cuni.mff.ufal.textan.commons.models.*;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.*;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
@@ -254,7 +253,6 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
         try {
-
             List<Object> objects = saveProcessedDocumentByIdRequest.getObjects().stream()
                     .map(Object::fromCommonsObject)
                     .collect(Collectors.toList());
@@ -305,7 +303,66 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         }
     }
 
-//    @Override
+    @Override
+    public RewriteAndSaveProcessedDocumentByIdResponse rewriteAndSaveProcessedDocumentById(
+            @WebParam(partName = "rewriteAndSaveProcessedDocumentByIdRequest", name = "rewriteAndSaveProcessedDocumentByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            RewriteAndSaveProcessedDocumentByIdRequest rewriteAndSaveProcessedDocumentByIdRequest,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
+            EditingTicket editingTicket) throws DocumentAlreadyProcessedException, IdNotFoundException {
+
+        LOG.info("Executing operation rewriteAndSaveProcessedDocumentById: {} {}", rewriteAndSaveProcessedDocumentByIdRequest, editingTicket);
+        cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
+
+        try {
+            List<Object> objects = rewriteAndSaveProcessedDocumentByIdRequest.getObjects().stream()
+                    .map(Object::fromCommonsObject)
+                    .collect(Collectors.toList());
+
+            Map<Long, Object> objectsMap = new HashMap<>();
+            for (Object object : objects) {
+                objectsMap.put(object.getId(), object);
+            }
+
+            List<Pair<Long, Occurrence>> objectOccurrences = rewriteAndSaveProcessedDocumentByIdRequest.getObjectOccurrences().stream()
+                    .map(o -> new Pair<>(o.getObjectId(), Occurrence.fromCommonsOccurrence(o.getAlias())))
+                    .collect(Collectors.toList());
+
+            List<Relation> relations = new ArrayList<>();
+            for (cz.cuni.mff.ufal.textan.commons.models.Relation relation : rewriteAndSaveProcessedDocumentByIdRequest.getRelations()) {
+                relations.add(Relation.fromCommonsRelation(relation, objectsMap));
+            }
+
+            List<Pair<Long, Occurrence>> relationOccurrences = rewriteAndSaveProcessedDocumentByIdRequest.getRelationOccurrences().stream()
+                    .map(o -> new Pair<>(o.getRelationId(), Occurrence.fromCommonsOccurrence(o.getAnchor())))
+                    .collect(Collectors.toList());
+
+            boolean result = saveService.save(
+                    rewriteAndSaveProcessedDocumentByIdRequest.getDocumentId(),
+                    rewriteAndSaveProcessedDocumentByIdRequest.getText(),
+                    objects,
+                    objectOccurrences,
+                    relations,
+                    relationOccurrences,
+                    rewriteAndSaveProcessedDocumentByIdRequest.isForce(),
+                    serverTicket
+            );
+
+            RewriteAndSaveProcessedDocumentByIdResponse response = new RewriteAndSaveProcessedDocumentByIdResponse();
+            response.setResult(result);
+
+            LOG.info("Executed operation saveProcessedDocumentById: {}", response);
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation saveProcessedDocumentById.", e);
+            throw translateIdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.DocumentAlreadyProcessedException e) {
+            LOG.warn("Problem in operation saveProcessedDocumentById.", e);
+            throw translateDocumentAlreadyProcessedException(e);
+        }
+    }
+
+    //    @Override
 //    public GetProblemsByIdResponse getProblemsById(
 //            @WebParam(partName = "getProblemsById", name = "getProblemsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
 //            GetProblemsByIdRequest getProblemsByIdRequest,

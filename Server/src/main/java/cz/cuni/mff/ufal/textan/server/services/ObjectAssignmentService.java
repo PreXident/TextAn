@@ -44,13 +44,14 @@ public class ObjectAssignmentService {
 
     public List<Assignment> getAssignments(long documentId, List<Entity> entities, EditingTicket ticket)
             throws IdNotFoundException, DocumentAlreadyProcessedException, DocumentChangedException {
-        //TODO:throw Document Changed Exception
 
         DocumentTable documentTable = documentTableDAO.find(documentId);
         if (documentTable == null) {
             throw new IdNotFoundException("documentId", documentId);
         } else if (documentTable.isProcessed()) {
             throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
+        } if (documentTable.getGlobalVersion() > ticket.getVersion()) {
+            throw new DocumentChangedException(documentId, documentTable.getGlobalVersion(), ticket.getVersion());
         }
 
         return getAssignmentsInner(documentTable.getText(), entities);

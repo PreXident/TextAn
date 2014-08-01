@@ -83,6 +83,15 @@
     <wsdl:message name="saveProcessedDocumentFromStringResponse">
         <wsdl:part name="saveProcessedDocumentFromStringResponse" element="tns:saveProcessedDocumentFromStringResponse"/>
     </wsdl:message>
+    
+    <wsdl:message name="rewriteAndSaveProcessedDocumentByIdRequest">
+        <wsdl:part name="rewriteAndSaveProcessedDocumentByIdRequest" element="tns:rewriteAndSaveProcessedDocumentByIdRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
+    </wsdl:message>
+
+    <wsdl:message name="rewriteAndSaveProcessedDocumentByIdResponse">
+        <wsdl:part name="rewriteAndSaveProcessedDocumentByIdResponse" element="tns:rewriteAndSaveProcessedDocumentByIdResponse"/>
+    </wsdl:message>
 
     <wsdl:message name="getProblemsRequest">
         <wsdl:part name="getProblemsRequest" element="tns:getProblemsRequest"/>
@@ -167,6 +176,13 @@
             <wsdl:output message="ws:saveProcessedDocumentByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
             <wsdl:fault name="documentChangedException" message="ws:documentChangedException"/>
+            <wsdl:fault name="documentAlreadyProcessedException" message="ws:documentAlreadyProcessedException"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="rewriteAndSaveProcessedDocumentById">
+            <wsdl:input message="ws:rewriteAndSaveProcessedDocumentByIdRequest"/>
+            <wsdl:output message="ws:rewriteAndSaveProcessedDocumentByIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
             <wsdl:fault name="documentAlreadyProcessedException" message="ws:documentAlreadyProcessedException"/>
         </wsdl:operation>
 
@@ -298,6 +314,24 @@
             </wsdl:fault>
             <wsdl:fault name="documentChangedException">
                 <soap:fault name="documentChangedException" use="literal" />
+            </wsdl:fault>
+            <wsdl:fault name="documentAlreadyProcessedException">
+                <soap:fault name="documentAlreadyProcessedException" use="literal" />
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="rewriteAndSaveProcessedDocumentById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/rewriteAndSaveProcessedDocumentById"/>
+            <wsdl:input>
+                <soap:body parts="rewriteAndSaveProcessedDocumentByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:rewriteAndSaveProcessedDocumentByIdRequest" part="editingTicket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="rewriteAndSaveProcessedDocumentByIdResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal" />
             </wsdl:fault>
             <wsdl:fault name="documentAlreadyProcessedException">
                 <soap:fault name="documentAlreadyProcessedException" use="literal" />
