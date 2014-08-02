@@ -325,7 +325,7 @@ public class DocumentListController extends WindowController {
                 return Utils.localize(resourceBundle, "table.true").equals(string);
             }
         }));
-        processTimeColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, Date> p) -> new ReadOnlyObjectWrapper<>(p.getValue().getLastChangeTime()));
+        processTimeColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, Date> p) -> new ReadOnlyObjectWrapper<>(p.getValue().getProcessTime()));
         processTimeColumn.setCellFactory(TextFieldTableCell.forTableColumn(dateConverter));
         countColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, Number> p) -> new ReadOnlyIntegerWrapper(p.getValue().getCount()));
         countColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {

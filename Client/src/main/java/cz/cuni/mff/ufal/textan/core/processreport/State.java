@@ -148,7 +148,7 @@ public abstract class State implements Serializable {
     }
 
     /**
-     * Sets the report's objects.
+     * Sets the report's relations.
      * @param pipeline pipeline delegating the request
      * @param words words with assigned relations
      * @param unanchoredRelations list of unanchored relations

@@ -147,7 +147,10 @@ public class Utils {
                 outputList.clear();
                 outputList.addAll(FXCollections.observableList(pair.getFirst()));
                 final int objectCount = pair.getSecond();
-                final int pageCount = (int) Math.ceil(1.0 * pair.getSecond() / size);
+                int pageCount = (int) Math.ceil(1.0 * pair.getSecond() / size);
+                if (pageCount == 0) {
+                    pageCount = 1;
+                }
                 final String format = Utils.localize(resourceBundle, "pagination.label");
                 paginationLabel.setText(String.format(format, pageNo + 1, pageCount));
                 consumer.accept(objectCount, pageCount);

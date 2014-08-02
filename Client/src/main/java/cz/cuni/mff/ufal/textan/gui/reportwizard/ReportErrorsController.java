@@ -15,12 +15,10 @@ import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
@@ -63,16 +61,10 @@ public class ReportErrorsController extends ReportWizardController {
     private TreeView<Object> joinedObjectsTreeView;
 
     @FXML
-    Slider slider;
-
-    @FXML
     GridPane gridPane;
 
     @FXML
     Button forceButton;
-
-    /** Localization controller. */
-    ResourceBundle resourceBundle;
 
     /** Context menu for new objects. */
     ObjectContextMenu newObjectsContextMenu;
@@ -105,8 +97,7 @@ public class ReportErrorsController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        this.resourceBundle = rb;
-        slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        super.initialize(url, rb);
         slider.setLabelFormatter(new SliderLabelFormatter());
         newObjectsTable.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
             if (newVal != null) {

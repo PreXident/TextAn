@@ -79,6 +79,9 @@ public class ProcessReportPipeline implements Serializable {
     /** Report id if text comes from the db. */
     protected long reportId = -1;
 
+    /** Id of the replacing id. */
+    protected long replacingReportId = -1;
+
     /** Report text. TODO change test content to empty string */
     protected String reportText = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
 
@@ -346,9 +349,10 @@ public class ProcessReportPipeline implements Serializable {
     }
 
     /**
-     * Switches the report to new report.
+     * Switches the report to replacing report.
      */
-    public void switchToNewReport() {
+    public void switchToReplacingReport() {
+
         reportId = -1;
     }
 

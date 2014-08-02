@@ -33,7 +33,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -46,7 +45,6 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -126,9 +124,6 @@ public class ReportRelationsController extends ReportWizardController {
     @FXML
     ListView<FXRelationBuilder> relationsListView;
 
-    @FXML
-    Slider slider;
-
     /** Texts's tooltip. */
     Tooltip tooltip = new Tooltip("");
 
@@ -149,9 +144,6 @@ public class ReportRelationsController extends ReportWizardController {
 
     /** Context menu with entity selection. */
     ContextMenu contextMenu = new ContextMenu();
-
-    /** Localization controller. */
-    ResourceBundle resourceBundle;
 
     /** Words with assigned EntitityBuilders. */
     List<Word> words;
@@ -183,7 +175,7 @@ public class ReportRelationsController extends ReportWizardController {
     @FXML
     private void add() {
         if (selectedRelation != null) {
-            pipeline.resetStepsBack();
+            resetStepsBack();
             selectedRelation.getData().add(new FXRelationInfo(0, "", null));
         }
     }
@@ -199,7 +191,7 @@ public class ReportRelationsController extends ReportWizardController {
                 .showChoices(allTypes);
         });
         if (relation.val != null) {
-            pipeline.resetStepsBack();
+            resetStepsBack();
             final List<String> roles = fetchRoles(relation.val);
             selectedRelation = new FXRelationBuilder(relation.val, relationsListView.getItems(), roles);
             table.setItems(selectedRelation.getData());
@@ -235,7 +227,7 @@ public class ReportRelationsController extends ReportWizardController {
     @FXML
     private void remove() {
         if (selectedRelation != null) {
-            pipeline.resetStepsBack();
+            resetStepsBack();
             final int index = table.getSelectionModel().getSelectedIndex();
             if (index >= 0) {
                 final FXRelationInfo remove = selectedRelation.getData().remove(index);
@@ -252,7 +244,7 @@ public class ReportRelationsController extends ReportWizardController {
     @FXML
     private void removeRelation() {
         if (selectedRelation != null) {
-            pipeline.resetStepsBack();
+            resetStepsBack();
             clearSelectedRelationBackground();
             for (Word w : selectedRelation.words) {
                 w.setRelation(null);
@@ -265,9 +257,8 @@ public class ReportRelationsController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        this.resourceBundle = rb;
+        super.initialize(url, rb);
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
-        slider.addEventFilter(EventType.ROOT, e -> e.consume());
         slider.setLabelFormatter(new SliderLabelFormatter());
         scrollPane.vvalueProperty().addListener(e -> {
             textFlow.layoutChildren();
@@ -300,7 +291,7 @@ public class ReportRelationsController extends ReportWizardController {
         objectColumn.setCellValueFactory((CellDataFeatures<FXRelationInfo, Object> p) -> p.getValue().objectProperty());
         objectColumn.setOnEditCommit(
             (CellEditEvent<FXRelationInfo, Object> t) -> {
-                pipeline.resetStepsBack();
+                resetStepsBack();
                 final Object oldObj = t.getOldValue();
                 final List<Text> oldTexts = objectWords.get(oldObj);
                 if (oldTexts != null) {
@@ -319,6 +310,7 @@ public class ReportRelationsController extends ReportWizardController {
         //create popup
         BorderPane border = new BorderPane();
         listView = new ListView<>();
+        listView.setStyle("-fx-font-style: normal;");
         listView.setPrefHeight(100);
         border.setCenter(listView);
         filterField = new TextField();
@@ -593,7 +585,7 @@ public class ReportRelationsController extends ReportWizardController {
             filterField.clear();
         }
         try {
-            pipeline.resetStepsBack();
+            resetStepsBack();
             final IClearer clearer = i -> Utils.unstyleText(texts.get(i));
             if (relation == null) {
                 RelationBuilder.clear(words, firstSelectedIndex, lastSelectedIndex, clearer);

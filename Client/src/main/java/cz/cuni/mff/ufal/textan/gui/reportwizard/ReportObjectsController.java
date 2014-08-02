@@ -12,7 +12,6 @@ import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import cz.cuni.mff.ufal.textan.gui.Window;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
@@ -43,7 +41,6 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -68,12 +65,6 @@ public class ReportObjectsController extends ReportWizardController {
 
     @FXML
     ScrollPane scrollPane;
-
-    @FXML
-    Slider slider;
-
-    /** Localization controller. */
-    ResourceBundle resourceBundle;
 
     /** Context menu with object selection. */
     ContextMenu contextMenu;
@@ -161,9 +152,8 @@ public class ReportObjectsController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        resourceBundle = rb;
+        super.initialize(url, rb);
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
-        slider.addEventFilter(EventType.ROOT, e -> e.consume());
         slider.setLabelFormatter(new SliderLabelFormatter());
         scrollPane.vvalueProperty().addListener(e -> {
             textFlow.layoutChildren();
@@ -252,6 +242,7 @@ public class ReportObjectsController extends ReportWizardController {
                 text.setOnMousePressed(e -> {
                     selectedEntity = ei;
                     if (e.isPrimaryButtonDown()) {
+                        allObjectsCheckBox.setSelected(false);
                         filterObjects(ei);
                         contextMenu.show(text, Side.BOTTOM, 0, 0);
                         filterField.requestFocus();
@@ -415,7 +406,7 @@ public class ReportObjectsController extends ReportWizardController {
             text.getStyleClass().remove(TEXT_HIGHLIGHT_CLASS);
         }
         entity.setCandidate(object);
-        pipeline.resetStepsBack();
+        resetStepsBack();
         return entity;
     }
 

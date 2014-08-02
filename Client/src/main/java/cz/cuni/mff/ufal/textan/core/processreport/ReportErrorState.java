@@ -49,25 +49,7 @@ final class ReportErrorState extends State {
     @Override
     public void forceSave(final ProcessReportPipeline pipeline)
             throws DocumentChangedException, DocumentAlreadyProcessedException {
-        try {
-            if (pipeline.reportId > 0) {
-                pipeline.result = pipeline.client.saveProcessedDocument(
-                        pipeline.ticket,
-                        pipeline.reportId,
-                        pipeline.reportEntities,
-                        pipeline.reportRelations,
-                        false);
-            } else {
-                pipeline.result = pipeline.client.saveProcessedDocument(
-                        pipeline.ticket,
-                        pipeline.getReportText(),
-                        pipeline.reportEntities,
-                        pipeline.reportRelations,
-                        false);
-            }
-        } catch (IdNotFoundException e) {
-            e.printStackTrace();
-        }
+        ReportRelationsState.getInstance().saveReport(pipeline, true);
         if (pipeline.result) {
             pipeline.setState(DoneState.getInstance());
         }
