@@ -1,28 +1,85 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Client;
+import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.Ticket;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 /**
  * Represents pipeline handling processing documents.
  */
-public class ProcessReportPipeline {
+public class ProcessReportPipeline implements Serializable {
 
     /** Separators delimiting words. */
     public static final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';', '!')));
 
-    /** Parent Client of the pipeline. */
-    protected final Client client;
+    /** Supported file types. */
+    public enum FileType {
+        TEXT_UTF8 {
+            @Override
+            public String extractText(byte[] data) {
+                return new String(data, StandardCharsets.UTF_8);
+            }
+        },
+        TEXT_CP1250 {
+            @Override
+            public String extractText(byte[] data) {
+                try {
+                    return new String(data, Charset.forName("windows-1250"));
+                } catch (Exception e) {
+                    return "";
+                }
+            }
+        };
 
-    /** Report text. TOODO change test content to empty string */
+        /** Default mapping of extensions to FileTypes. */
+        private static final Map<String, FileType> extensions;
+
+        static {
+            final Map<String, FileType> result = new HashMap<>();
+            result.put("txt", TEXT_UTF8);
+            extensions = Collections.unmodifiableMap(result);
+        }
+
+        /**
+         * Returns default FileType for given extension.
+         * @param extension given extension
+         * @return default FileType for given extension or null if none available
+         */
+        public static FileType getForExtension(final String extension) {
+            return extensions.get(extension);
+        }
+
+        /**
+         * Extracts text from data.
+         * @param data data with encoded text
+         * @return text extracted from data
+         */
+        public abstract String extractText(byte[] data);
+    }
+
+    /** Parent Client of the pipeline. */
+    protected final transient Client client;
+
+    /** Report id if text comes from the db. */
+    protected long reportId = -1;
+
+    /** Report text. TODO change test content to empty string */
     protected String reportText = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
 
     /** Report words. */
@@ -38,16 +95,16 @@ public class ProcessReportPipeline {
     protected State state = LoadReportState.getInstance();
 
     /** List of listeners registered for state changing. */
-    protected final List<IStateChangedListener> stateChangedListeners = new ArrayList<>();
+    protected final transient List<IStateChangedListener> stateChangedListeners = new ArrayList<>();
 
     /** Ticket for document processing. */
-    protected final Ticket ticket;
+    protected Ticket ticket;
 
     /** Problems with document. */
     protected Problems problems;
 
     /** Simple synchronization. Indented to be used by UI. */
-    public final Semaphore lock = new Semaphore(1);
+    public final transient Semaphore lock = new Semaphore(1);
 
     /**
      * Counter of number of steps back.
@@ -107,10 +164,46 @@ public class ProcessReportPipeline {
      * @param newState new state of the pipeline
      */
     protected void setState(final State newState) {
+        final State oldState = state;
         state = newState;
         for (IStateChangedListener listener : stateChangedListeners) {
-            listener.stateChanged(newState);
+            listener.stateChanged(oldState, newState);
         }
+    }
+
+    /**
+     * Loads deserialized pipeline into this one.
+     * @param pipeline deserialized pipeline
+     */
+    public void load(final ProcessReportPipeline pipeline) {
+        reportId = pipeline.reportId;
+        reportText = pipeline.reportText;
+        reportWords = pipeline.reportWords;
+        reportEntities = pipeline.reportEntities;
+        reportRelations = pipeline.reportRelations;
+        ticket = pipeline.ticket;
+        problems = pipeline.problems;
+        setState(pipeline.state);
+    }
+
+    /**
+     * Serializes the pipeline into file.
+     * @param file path to file to serialize to
+     * @throws IOException on IO error
+     */
+    public void save(final String file) throws IOException {
+        try (ObjectOutputStream output =
+                new ObjectOutputStream(new FileOutputStream(file))) {
+            output.writeObject(this);
+        }
+    }
+
+    /**
+     * Returns report id.
+     * @return report id
+     */
+    public long getReportId() {
+        return reportId;
     }
 
     /**
@@ -122,13 +215,21 @@ public class ProcessReportPipeline {
     }
 
     /**
+     * Sets report's text. Does no parsing!
+     * @param reportText new report's text
+     */
+    public void setReportText(final String reportText) {
+        this.reportText = reportText;
+    }
+
+    /**
      * Registers the listener to changing state event.
      * The listener is immediately notified about the current state.
      * @param listener listener to be registered
      */
     public void addStateChangedListener(final IStateChangedListener listener) {
         stateChangedListeners.add(listener);
-        listener.stateChanged(state);
+        listener.stateChanged(null, state);
     }
 
     /**
@@ -149,8 +250,11 @@ public class ProcessReportPipeline {
 
     /**
      * Forces the document to be save into the db.
+     * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has been already processed
      */
-    public void forceSave() {
+    public void forceSave() throws DocumentChangedException,
+            DocumentAlreadyProcessedException {
         state.forceSave(this);
     }
 
@@ -182,12 +286,22 @@ public class ProcessReportPipeline {
     }
 
     /**
+     * Extracts text from bytes in fileType.
+     * @param data file data
+     * @param fileType file's type
+     * @return
+     */
+    public String extractText(final byte[] data, final FileType fileType) {
+        return state.extractText(this, data, fileType);
+    }
+
+    /**
      * Selects unfinished report as a source of the new report.
      * Available in {@link State.StateType#LOAD} state. Proceeds to next State.
      * @see State#selectLoadDatasource(cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline)
      */
-    public void selectLoadDatasource() {
-        state.selectLoadDatasource(this);
+    public void selectLoadDatasource(final String path) {
+        state.selectLoadDatasource(this, path);
     }
 
     /**
@@ -195,10 +309,13 @@ public class ProcessReportPipeline {
      * Available in {@link State.StateType#EDIT_REPORT} state.
      * Proceeds to next State.
      * @param reportText new report text
-     * @see State#setReport(cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline, java.lang.String)
+     * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has already been processed
+     * @see State#setReportText(ProcessReportPipeline, String)
      */
-    public void setReportText(final String reportText) {
-        state.setReport(this, reportText);
+    public void setReportTextAndParse(final String reportText)
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
+        state.setReportText(this, reportText);
     }
 
     /**
@@ -210,6 +327,17 @@ public class ProcessReportPipeline {
     }
 
     /**
+     * Sets document to process.
+     * @param document document to process
+     * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has been already processed
+     */
+    public void setReport(final Document document)
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
+        state.setReport(this, document);
+    }
+
+    /**
      * Returns report words.
      * @return report words
      */
@@ -217,16 +345,22 @@ public class ProcessReportPipeline {
         return reportWords;
     }
 
-    public void setReportWords(final List<Word> words) {
-        state.setReportWords(this, words);
+    /**
+     * Switches the report to new report.
+     */
+    public void switchToNewReport() {
+        reportId = -1;
     }
 
     /**
-     * Sets report's entities.
-     * @param entities new entities
+     * Sets report's words assigned to entities.
+     * @param words word with entities assignments
+     * @throws DocumentChangedException if processed document has been changed
+     * @throws DocumentAlreadyProcessedException if document has already been processed
      */
-    public void setReportEntities(final List<Entity> entities) {
-        state.setReportEntities(this, entities);
+    public void setReportWords(final List<Word> words)
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
+        state.setReportWords(this, words);
     }
 
     public List<Entity> getReportEntities() {
@@ -253,9 +387,12 @@ public class ProcessReportPipeline {
      * Sets report's relations.
      * @param words words with assigned relations
      * @param unanchoredRelations list of unanchored relations
+     * @throws DocumentChangedException if document has been changed under our hands
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
      */
     public void setReportRelations(final List<Word> words,
-            final List<? extends RelationBuilder> unanchoredRelations) {
+            final List<? extends RelationBuilder> unanchoredRelations)
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         state.setReportRelations(this, words, unanchoredRelations);
     }
 

@@ -132,7 +132,7 @@ public class TextAn extends Application {
                         .title(TextAnController.TITLE)
                         .masthead(localize("username.prompt"))
                         .message(localize("username.login.label"))
-                        .lightweight()
+                        //.lightweight() //not lightweight as using keys to close the dialog throws silent exception for some reason
                         .showTextInput(System.getProperty("user.name", ""));
                 if (login == null || login.isEmpty() || login.trim().isEmpty()) {
                     Dialogs.create()
@@ -140,7 +140,7 @@ public class TextAn extends Application {
                             .title(TextAnController.TITLE)
                             .masthead(localize("username.error.title"))
                             .message(localize("username.error.text"))
-                            .lightweight()
+                            //.lightweight() //not lightweight as using keys to close the dialog throws silent exception for some reason
                             .showError();
                 }
                 if (login == null) { //dialog cancelled
@@ -149,8 +149,7 @@ public class TextAn extends Application {
                 }
             } while (login == null || login.isEmpty() || login.trim().isEmpty());
             final String trimmed = login.trim();
-            controller.loginTextField.setText(trimmed);
-            settings.setProperty("username", trimmed);
+            controller.setUsername(trimmed);
         }
     }
 

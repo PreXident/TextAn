@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.gui.join;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.join.JoinController.MIN_HEIGHT;
 import static cz.cuni.mff.ufal.textan.gui.join.JoinController.MIN_WIDTH;
 import static cz.cuni.mff.ufal.textan.gui.join.JoinController.PROPERTY_ID;
 import static cz.cuni.mff.ufal.textan.gui.join.JoinController.TITLE;
@@ -31,7 +32,8 @@ public class JoinStage extends OuterStage {
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("Join.fxml"), resourceBundle);
             final Parent loadedRoot = (Parent) loader.load();
             getInnerWindow().getContentPane().getChildren().add(loadedRoot);
-            getInnerWindow().setMinHeight(MIN_WIDTH);
+            getInnerWindow().setMinHeight(MIN_HEIGHT);
+            getInnerWindow().setMinWidth(MIN_WIDTH);
             final JoinController controller = loader.getController();
             controller.setStage(this);
             controller.setSettings(settings);

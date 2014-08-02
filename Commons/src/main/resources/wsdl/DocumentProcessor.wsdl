@@ -115,8 +115,12 @@
         <wsdl:part name="idNotFoundException" element="cms:idNotFoundException"/>
     </wsdl:message>
 
-    <wsdl:message name="documentChanged">
-        <wsdl:part name="documentChanged" element="tns:documentChanged"/>
+    <wsdl:message name="documentChangedException">
+        <wsdl:part name="documentChangedException" element="tns:documentChangedException"/>
+    </wsdl:message>
+    
+    <wsdl:message name="documentAlreadyProcessedException">
+        <wsdl:part name="documentAlreadyProcessedException" element="tns:documentAlreadyProcessedException"/>
     </wsdl:message>
     
     <wsdl:portType name="DocumentProcessor">
@@ -135,7 +139,8 @@
             <wsdl:input message="ws:getEntitiesByIdRequest"/>
             <wsdl:output message="ws:getEntitiesByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
-            <wsdl:fault name="documentChanged" message="ws:documentChanged"/>
+            <wsdl:fault name="documentChangedException" message="ws:documentChangedException"/>
+            <wsdl:fault name="documentAlreadyProcessedException" message="ws:documentAlreadyProcessedException"/>
         </wsdl:operation>
         
         <wsdl:operation name="getAssignmentsFromString">
@@ -147,7 +152,8 @@
             <wsdl:input message="ws:getAssignmentsByIdRequest"/>
             <wsdl:output message="ws:getAssignmentsByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
-            <wsdl:fault name="documentChanged" message="ws:documentChanged"/>
+            <wsdl:fault name="documentChangedException" message="ws:documentChangedException"/>
+            <wsdl:fault name="documentAlreadyProcessedException" message="ws:documentAlreadyProcessedException"/>
         </wsdl:operation>
         
         <wsdl:operation name="saveProcessedDocumentFromString">
@@ -160,7 +166,8 @@
             <wsdl:input message="ws:saveProcessedDocumentByIdRequest"/>
             <wsdl:output message="ws:saveProcessedDocumentByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
-            <wsdl:fault name="documentChanged" message="ws:documentChanged"/>
+            <wsdl:fault name="documentChangedException" message="ws:documentChangedException"/>
+            <wsdl:fault name="documentAlreadyProcessedException" message="ws:documentAlreadyProcessedException"/>
         </wsdl:operation>
 
         <wsdl:operation name="getProblems">
@@ -220,8 +227,11 @@
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal" />
             </wsdl:fault>
-            <wsdl:fault name="documentChanged">
-                <soap:fault name="documentChanged" use="literal" />
+            <wsdl:fault name="documentChangedException">
+                <soap:fault name="documentChangedException" use="literal" />
+            </wsdl:fault>
+            <wsdl:fault name="documentAlreadyProcessedException">
+                <soap:fault name="documentAlreadyProcessedException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         
@@ -250,8 +260,11 @@
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal" />
             </wsdl:fault>
-            <wsdl:fault name="documentChanged">
-                <soap:fault name="documentChanged" use="literal" />
+            <wsdl:fault name="documentChangedException">
+                <soap:fault name="documentChangedException" use="literal" />
+            </wsdl:fault>
+            <wsdl:fault name="documentAlreadyProcessedException">
+                <soap:fault name="documentAlreadyProcessedException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         
@@ -283,8 +296,11 @@
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal" />
             </wsdl:fault>
-            <wsdl:fault name="documentChanged">
-                <soap:fault name="documentChanged" use="literal" />
+            <wsdl:fault name="documentChangedException">
+                <soap:fault name="documentChangedException" use="literal" />
+            </wsdl:fault>
+            <wsdl:fault name="documentAlreadyProcessedException">
+                <soap:fault name="documentAlreadyProcessedException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
 

@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.gui.relation;
 import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.relation.RelationListController.MIN_HEIGHT;
 import static cz.cuni.mff.ufal.textan.gui.relation.RelationListController.PROPERTY_ID;
 import static cz.cuni.mff.ufal.textan.gui.relation.RelationListController.TITLE;
 import java.util.Properties;
@@ -24,6 +25,7 @@ public class RelationListWindow extends InnerWindow {
     public RelationListWindow(final TextAnController textAnController,
             final Properties settings) {
         super(TITLE, PROPERTY_ID, settings);
+        setMinHeight(MIN_HEIGHT);
         ResourceBundle resourceBundle = null;
         try {
             resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.relation.RelationList");

@@ -1,13 +1,12 @@
 package cz.cuni.mff.ufal.textan.server.configs;
 
+import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
 import cz.cuni.mff.ufal.textan.server.services.*;
 import cz.cuni.mff.ufal.textan.server.ws.DataProvider;
 import cz.cuni.mff.ufal.textan.server.ws.DocumentProcessor;
 import cz.cuni.mff.ufal.textan.server.ws.UsernameTokenInterceptor;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
-import org.apache.cxf.interceptor.LoggingInInterceptor;
-import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +29,9 @@ public class WebAppConfig {
     private GraphService graphService;
 
     @Autowired
+    private MergeService mergeService;
+
+    @Autowired
     private NamedEntityRecognizerService namedEntityRecognizerService;
 
     @Autowired
@@ -37,6 +39,12 @@ public class WebAppConfig {
 
     @Autowired
     private SaveService saveService;
+
+    @Autowired
+    private TicketService ticketService;
+
+    @Autowired
+    private LogInterceptor logInterceptor;
 
     /**
      * Creates spring bean with bus for CXF initialization
@@ -46,7 +54,7 @@ public class WebAppConfig {
     @Bean(destroyMethod = "shutdown")
     public SpringBus cxf() {
         SpringBus bus = new SpringBus();
-        bus.getInInterceptors().add(new UsernameTokenInterceptor());
+        bus.getInInterceptors().add(new UsernameTokenInterceptor(logInterceptor));
 
 //        LoggingInInterceptor loggingIn = new LoggingInInterceptor();
 //        loggingIn.setPrettyLogging(true);
@@ -82,7 +90,7 @@ public class WebAppConfig {
      */
     @Bean
     public DataProvider dataProvider() {
-        return new DataProvider(directDataAccessService, graphService);
+        return new DataProvider(directDataAccessService, graphService, mergeService);
     }
 
     /**
@@ -106,6 +114,6 @@ public class WebAppConfig {
      */
     @Bean
     public DocumentProcessor documentProcessor() {
-        return new DocumentProcessor(namedEntityRecognizerService, objectAssignmentService, saveService);
+        return new DocumentProcessor(namedEntityRecognizerService, objectAssignmentService, saveService, ticketService);
     }
 }

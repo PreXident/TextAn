@@ -6,11 +6,15 @@ import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.graph.DocumentGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
+import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
+import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentWindow;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentsStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentsWindow;
+import cz.cuni.mff.ufal.textan.gui.document.EditDocumentStage;
+import cz.cuni.mff.ufal.textan.gui.document.EditDocumentWindow;
 import cz.cuni.mff.ufal.textan.gui.graph.GraphStage;
 import cz.cuni.mff.ufal.textan.gui.graph.GraphWindow;
 import cz.cuni.mff.ufal.textan.gui.join.JoinStage;
@@ -192,33 +196,7 @@ public class TextAnController implements Initializable {
 
     @FXML
     private void reportWizard() {
-        try {
-            final ProcessReportPipeline pipeline = client.createNewReportPipeline();
-            StateChangedListener listener;
-            if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-                final ReportWizardWindow wizard = new ReportWizardWindow(settings);
-                content.getChildren().add(wizard);
-                listener = new StateChangedListener(this, settings, pipeline, wizard);
-            } else {
-                final ReportWizardStage stage = new ReportWizardStage(settings);
-                children.add(stage);
-                stage.showingProperty().addListener((ov, oldVal, newVal) -> {
-                    if (!newVal) {
-                        children.remove(stage);
-                    }
-                });
-                listener = new StateChangedListener(this, settings, pipeline, stage);
-                stage.show();
-            }
-            pipeline.addStateChangedListener(listener);
-        } catch (WebServiceException e) {
-            e.printStackTrace();
-            Dialogs.create()
-                    .owner(stage)
-                    .lightweight()
-                    .title(Utils.localize(resourceBundle, "webservice.error"))
-                    .showException(e);
-        }
+        processDocument(null);
     }
 
     @FXML
@@ -333,6 +311,12 @@ public class TextAnController implements Initializable {
                             .showError();
                 } else {
                     settings.setProperty("username", login);
+                    settingsMenu.hide();
+                    Dialogs.create()
+                        .owner(stage)
+                        .lightweight()
+                        .message(Utils.localize(resourceBundle,"restart.change"))
+                        .showWarning();
                 }
             }
         });
@@ -345,7 +329,7 @@ public class TextAnController implements Initializable {
                             Dialogs.create()
                                 .owner(stage)
                                 .lightweight()
-                                .message(Utils.localize(resourceBundle,"locale.changed"))
+                                .message(Utils.localize(resourceBundle,"restart.change"))
                                 .showWarning();
                             });
                 settings.setProperty("locale.language", newVal);
@@ -369,6 +353,12 @@ public class TextAnController implements Initializable {
      */
     public StringProperty titleProperty() {
         return titleProperty;
+    }
+
+    public void setUsername(final String username) {
+        loginTextField.setText(username);
+        client.setUsername(username);
+        settings.setProperty("username", username);
     }
 
     /**
@@ -513,6 +503,75 @@ public class TextAnController implements Initializable {
             return Integer.parseInt(settings.getProperty("graph.distance", "5"));
         } catch (NumberFormatException e) {
             return 5;
+        }
+    }
+
+    /**
+     * Opens dialog for document editing.
+     * @param document document to edit, can be null
+     */
+    public void editDocument(final Document document) {
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final EditDocumentWindow window = new EditDocumentWindow(this, settings, document);
+            content.getChildren().add(window);
+        } else {
+            final EditDocumentStage stage = new EditDocumentStage(this, settings, document);
+            children.add(stage);
+            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(stage);
+                }
+            });
+            stage.show();
+        }
+    }
+
+    /**
+     * Opens dialog for adding new document.
+     */
+    public void newDocument() {
+        editDocument(null);
+    }
+
+    /**
+     * Starts processing of given document.
+     * @param document document to process
+     */
+    public void processDocument(final Document document) {
+        try {
+            final ProcessReportPipeline pipeline = client.createNewReportPipeline();
+            if (document != null) {
+                pipeline.selectDatabaseDatasource();
+                try {
+                    pipeline.setReport(document);
+                } catch (DocumentChangedException | DocumentAlreadyProcessedException e) { //this should be very rare
+                    e.printStackTrace(); //let the reportwizard package handle errors
+                }
+            }
+            StateChangedListener listener;
+            if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+                final ReportWizardWindow wizard = new ReportWizardWindow(settings);
+                content.getChildren().add(wizard);
+                listener = new StateChangedListener(this, settings, pipeline, wizard);
+            } else {
+                final ReportWizardStage stage = new ReportWizardStage(settings);
+                children.add(stage);
+                stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                    if (!newVal) {
+                        children.remove(stage);
+                    }
+                });
+                listener = new StateChangedListener(this, settings, pipeline, stage);
+                stage.show();
+            }
+            pipeline.addStateChangedListener(listener);
+        } catch (WebServiceException e) {
+            e.printStackTrace();
+            Dialogs.create()
+                    .owner(stage)
+                    .lightweight()
+                    .title(Utils.localize(resourceBundle, "webservice.error"))
+                    .showException(e);
         }
     }
 

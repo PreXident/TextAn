@@ -10,6 +10,7 @@ import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.services.DirectDataAccessService;
 import cz.cuni.mff.ufal.textan.server.services.GraphService;
+import cz.cuni.mff.ufal.textan.server.services.MergeService;
 import cz.cuni.mff.ufal.textan.server.services.ProcessedFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +35,13 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
     private final DirectDataAccessService dbService;
     private final GraphService graphService;
+    private final MergeService mergeService;
 
 
-    public DataProvider(DirectDataAccessService dbService, GraphService graphService) {
+    public DataProvider(DirectDataAccessService dbService, GraphService graphService, MergeService mergeService) {
         this.dbService = dbService;
         this.graphService = graphService;
+        this.mergeService = mergeService;
     }
 
     @Override
@@ -77,12 +80,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation updateDocument.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -137,12 +135,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getDocumentById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -162,12 +155,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             return response;
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getGraphById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -177,9 +165,27 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             GetFilteredRelationsRequest getFilteredRelationsRequest) throws IdNotFoundException {
 
         LOG.info("Executing operation getFilteredRelations: {}", getFilteredRelationsRequest);
-        GetFilteredRelationsResponse response = new GetFilteredRelationsResponse();  //TODO: implement
-        LOG.info("Executed operation getFilteredRelations: {}", response);
-        return response;
+
+        try {
+            Pair<List<Relation>, Integer> results = dbService.getFilteredRelations(
+                    getFilteredRelationsRequest.getRelationTypeId(),
+                    getFilteredRelationsRequest.getAnchorFilter(),
+                    getFilteredRelationsRequest.getFirstResult(),
+                    getFilteredRelationsRequest.getMaxResults()
+            );
+
+            GetFilteredRelationsResponse response = new GetFilteredRelationsResponse();
+            for (Relation relation : results.getFirst()) {
+                response.getRelations().add(relation.toCommonsRelation());
+            }
+            response.setTotalNumberOfResults(results.getSecond());
+
+            LOG.info("Executed operation getFilteredRelations: {}", response);
+            return response;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getFilteredRelations.", e);
+            throw translateIdNotFoundException(e);
+        }
     }
 
     @Override
@@ -190,14 +196,14 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         LOG.info("Executing operation getFilteredObjectsRequest: {}", getFilteredObjectsRequest);
 
         try {
-            
+
             Pair<List<Object>, Integer> results = dbService.getFilteredObjects(
                     getFilteredObjectsRequest.getObjectTypeId(),
                     getFilteredObjectsRequest.getAliasFilter(),
                     getFilteredObjectsRequest.getFirstResult(),
                     getFilteredObjectsRequest.getMaxResults()
             );
-            
+
             GetFilteredObjectsResponse response = new GetFilteredObjectsResponse();
             for (Object object : results.getFirst()) {
                 response.getObjects().add(object.toCommonsObject());
@@ -209,12 +215,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getFilteredObjectsRequest.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -251,12 +252,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             return response;
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getGraphById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -264,12 +260,32 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     public GetFilteredDocumentsContainingObjectByIdResponse getFilteredDocumentsContainingObjectById(
             @WebParam(partName = "getFilteredDocumentsContainingObjectByIdRequest", name = "getFilteredDocumentsContainingObjectByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetFilteredDocumentsContainingObjectByIdRequest getFilteredDocumentsContainingObjectByIdRequest) throws IdNotFoundException {
-
-        //TODO: implement
         LOG.info("Executing operation getFilteredDocumentsContainingObjectById: {}", getFilteredDocumentsContainingObjectByIdRequest);
-        GetFilteredDocumentsContainingObjectByIdResponse response = new GetFilteredDocumentsContainingObjectByIdResponse();
-        LOG.info("Executed operation getFilteredDocumentsContainingObjectById: {}", response);
-        return response;
+
+        try {
+
+            Pair<List<Pair<Document, Integer>>, Integer> documents = dbService.getFilteredDocumentsContainingObject(
+                    getFilteredDocumentsContainingObjectByIdRequest.getObjectId(),
+                    getFilteredDocumentsContainingObjectByIdRequest.getPattern(),
+                    getFilteredDocumentsContainingObjectByIdRequest.getFirstResult(),
+                    getFilteredDocumentsContainingObjectByIdRequest.getMaxResults()
+            );
+
+            GetFilteredDocumentsContainingObjectByIdResponse response = new GetFilteredDocumentsContainingObjectByIdResponse();
+            for (Pair<Document, Integer> documentCountPair : documents.getFirst()) {
+                GetFilteredDocumentsContainingObjectByIdResponse.DocumentCountPair pair = new GetFilteredDocumentsContainingObjectByIdResponse.DocumentCountPair();
+                pair.setDocument(documentCountPair.getFirst().toCommonsDocument());
+                pair.setCountOfOccurrences(documentCountPair.getSecond());
+                response.getDocumentCountPairs().add(pair);
+            }
+            response.setTotalNumberOfResults(documents.getSecond());
+
+            LOG.info("Executed operation getFilteredDocumentsContainingObjectById: {}", response);
+            return response;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getFilteredDocumentsContainingObjectById.", e);
+            throw translateIdNotFoundException(e);
+        }
     }
 
     @Override
@@ -288,12 +304,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             return response;
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getRelatedObjectsById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -310,7 +321,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         response.setDocumentId(documentId);
 
         LOG.info("Executed operation addDocument: {}", response);
-        return new AddDocumentResponse();
+        return response;
     }
 
     @Override
@@ -357,12 +368,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getObjectsAndRelationsOccurringInDocument.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -394,12 +400,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getDocumentsContainsObjectById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -426,12 +427,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getDocumentsContainsObjectById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -463,12 +459,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getDocumentsContainingRelationById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -480,7 +471,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         LOG.info("Executing operation splitObject: {}", splitObjectRequest);
 
         try {
-            boolean result = dbService.splitObject(splitObjectRequest.getObjectId());
+            boolean result = mergeService.splitObject(splitObjectRequest.getObjectId());
 
             SplitObjectResponse response = new SplitObjectResponse();
             response.setResult(result);
@@ -490,12 +481,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation splitObject.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -517,12 +503,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getRolesForRelationTypeById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -542,12 +523,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             return response;
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getPathById.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -575,14 +551,20 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         LOG.info("Executing operation getRelationsByTypeId: {}", getRelationsByTypeIdRequest);
 
-        GetRelationsByTypeIdResponse response = new GetRelationsByTypeIdResponse();
-        List<Relation> relations = dbService.getRelations(getRelationsByTypeIdRequest.getRelationTypeId());
-        for (Relation relation : relations) {
-            response.getRelations().add(relation.toCommonsRelation());
-        }
+        try {
+            List<Relation> relations = dbService.getRelations(getRelationsByTypeIdRequest.getRelationTypeId());
 
-        LOG.info("Executed operation getRelationsByTypeId: {}", response);
-        return response;
+            GetRelationsByTypeIdResponse response = new GetRelationsByTypeIdResponse();
+            for (Relation relation : relations) {
+                response.getRelations().add(relation.toCommonsRelation());
+            }
+
+            LOG.info("Executed operation getRelationsByTypeId: {}", response);
+            return response;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getObjectsByTypeId.", e);
+            throw translateIdNotFoundException(e);
+        }
     }
 
     @Override
@@ -615,11 +597,33 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getFilteredDocumentsContainingRelationByIdRequest", name = "getFilteredDocumentsContainingRelationByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetFilteredDocumentsContainingRelationByIdRequest getFilteredDocumentsContainingRelationByIdRequest) throws IdNotFoundException {
 
-        //TODO implement
         LOG.info("Executing operation getFilteredDocumentsContainingRelationById: {}", getFilteredDocumentsContainingRelationByIdRequest);
-        GetFilteredDocumentsContainingRelationByIdResponse response = new GetFilteredDocumentsContainingRelationByIdResponse();
-        LOG.info("Executed operation getFilteredDocumentsContainingRelationById: {}", response);
-        return response;
+
+        try {
+
+            Pair<List<Pair<Document, Integer>>, Integer> documents = dbService.getFilteredDocumentsContainingRelation(
+                    getFilteredDocumentsContainingRelationByIdRequest.getRelationId(),
+                    getFilteredDocumentsContainingRelationByIdRequest.getPattern(),
+                    getFilteredDocumentsContainingRelationByIdRequest.getFirstResult(),
+                    getFilteredDocumentsContainingRelationByIdRequest.getMaxResults()
+            );
+
+            GetFilteredDocumentsContainingRelationByIdResponse response = new GetFilteredDocumentsContainingRelationByIdResponse();
+            for (Pair<Document, Integer> documentCountPair : documents.getFirst()) {
+                GetFilteredDocumentsContainingRelationByIdResponse.DocumentCountPair pair = new GetFilteredDocumentsContainingRelationByIdResponse.DocumentCountPair();
+                pair.setDocument(documentCountPair.getFirst().toCommonsDocument());
+                pair.setCountOfOccurrences(documentCountPair.getSecond());
+                response.getDocumentCountPairs().add(pair);
+            }
+            response.setTotalNumberOfResults(documents.getSecond());
+
+            LOG.info("Executed operation getFilteredDocumentsContainingRelationById: {}", response);
+            return response;
+
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getFilteredDocumentsContainingRelationById.", e);
+            throw translateIdNotFoundException(e);
+        }
     }
 
     @Override
@@ -630,14 +634,20 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         LOG.info("Executing operation getObjectsByTypeId: {}", getObjectsByTypeIdRequest);
 
-        GetObjectsByTypeIdResponse response = new GetObjectsByTypeIdResponse();
-        List<Object> objects = dbService.getObjects(getObjectsByTypeIdRequest.getObjectTypeId());
-        for (Object object : objects) {
-            response.getObjects().add(object.toCommonsObject());
-        }
+        try {
+            List<Object> objects = dbService.getObjects(getObjectsByTypeIdRequest.getObjectTypeId());
 
-        LOG.info("Executed operation getObjectsByTypeId: {}", response);
-        return response;
+            GetObjectsByTypeIdResponse response = new GetObjectsByTypeIdResponse();
+            for (Object object : objects) {
+                response.getObjects().add(object.toCommonsObject());
+            }
+
+            LOG.info("Executed operation getObjectsByTypeId: {}", response);
+            return response;
+        } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+            LOG.warn("Problem in operation getObjectsByTypeId.", e);
+            throw translateIdNotFoundException(e);
+        }
     }
 
     @Override
@@ -657,12 +667,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getObject.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
     }
 
@@ -675,7 +680,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         try {
             MergeObjectsResponse response = new MergeObjectsResponse();
-            long objectId = dbService.mergeObjects(mergeObjectsRequest.getObject1Id(), mergeObjectsRequest.getObject2Id());
+            long objectId = mergeService.mergeObjects(mergeObjectsRequest.getObject1Id(), mergeObjectsRequest.getObject2Id());
             response.setObjectId(objectId);
 
             LOG.info("Executed operation mergeObjects: {}", response);
@@ -683,12 +688,15 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation mergeObjects.", e);
-
-            cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
-            exceptionBody.setFieldName(e.getFieldName());
-            exceptionBody.setFieldValue(e.getFieldValue());
-
-            throw new IdNotFoundException(e.getMessage(), exceptionBody);
+            throw translateIdNotFoundException(e);
         }
+    }
+
+    private static IdNotFoundException translateIdNotFoundException(cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
+        cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.IdNotFoundException();
+        exceptionBody.setFieldName(e.getFieldName());
+        exceptionBody.setFieldValue(e.getFieldValue());
+
+        return new IdNotFoundException(e.getMessage(), exceptionBody);
     }
 }

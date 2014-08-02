@@ -319,7 +319,7 @@ public class GraphView extends SwingNode {
             final List<Object> objects = relation.getObjects().stream()
                     .map(Triple<Integer, String, Object>::getThird)
                     .collect(Collectors.toList());
-            //TODO what to do with hyperedges?
+            //TODO what to do with hyperedges? - That's easy: calculate center of gravity for convex hull of nodes...
             if (objects.size() != 2) {
                 return;
             }

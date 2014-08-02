@@ -155,6 +155,30 @@ public class DirectDataAccessService {
 
 
 
+    public Pair<List<Pair<Document, Integer>>, Integer> getFilteredDocumentsContainingObject(long objectId, String pattern, int firstResult, int maxResults) throws IdNotFoundException {
+
+        ObjectTable objectTable = objectTableDAO.find(objectId);
+        if (objectTable == null) {
+            throw new IdNotFoundException("objectId", objectId);
+        }
+
+        int count;
+        List<Pair<DocumentTable, Integer>> documents;
+
+        if (pattern != null && !pattern.isEmpty()) {
+            count = documentTableDAO.findAllDocumentsWithObjectByFullText(objectId, pattern).size();
+            documents = documentTableDAO.findAllDocumentsWithObjectByFullText(objectId, pattern, firstResult, maxResults);
+        } else {
+            count = documentTableDAO.findAllDocumentsWithObject(objectId).size();
+            documents = documentTableDAO.findAllDocumentsWithObject(objectId, firstResult, maxResults);
+        }
+
+        return new Pair<>(documents.stream()
+                .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
+                .collect(Collectors.toList()),
+                count);
+    }
+
     public Pair<List<Pair<Document, Integer>>, Integer> getDocumentsContainingRelation(long relationId, int firstResult, int maxResults) throws IdNotFoundException {
         RelationTable relationTable = relationTableDAO.find(relationId);
         if (relationTable == null) {
@@ -167,6 +191,31 @@ public class DirectDataAccessService {
                 .collect(Collectors.toList());
 
         return new Pair<>(documents, count);
+    }
+
+    public Pair<List<Pair<Document,Integer>>,Integer> getFilteredDocumentsContainingRelation(long relationId, String pattern, int firstResult, int maxResults) throws IdNotFoundException {
+        RelationTable relationTable = relationTableDAO.find(relationId);
+        if (relationTable == null) {
+            throw new IdNotFoundException("relationId", relationId);
+        }
+
+        int count;
+        List<Pair<DocumentTable, Integer>> documents;
+
+        if (pattern != null && !pattern.isEmpty()) {
+            count = documentTableDAO.findAllDocumentsWithRelationByFullText(relationId, pattern).size();
+            documents = documentTableDAO.findAllDocumentsWithRelationByFullText(relationId, pattern, firstResult, maxResults);
+        } else {
+            count = documentTableDAO.findAllDocumentsWithRelation(relationId).size();
+            documents = documentTableDAO.findAllDocumentsWithRelation(relationId, firstResult, maxResults);
+        }
+
+        return new Pair<>(
+                documents.stream()
+                    .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
+                    .collect(Collectors.toList()),
+                count
+        );
     }
 
     /**
@@ -237,8 +286,11 @@ public class DirectDataAccessService {
      * @param objectTypeId the object type id
      * @return the objects
      */
-    public List<Object> getObjects(long objectTypeId) {
-        //TODO: add test if id exists
+    public List<Object> getObjects(long objectTypeId) throws IdNotFoundException {
+        ObjectTypeTable objectTypeTable = objectTypeTableDAO.find(objectTypeId);
+        if (objectTypeTable == null) {
+            throw new IdNotFoundException("objectTypeId", objectTypeId);
+        }
 
         return objectTableDAO.findAllByObjectType(objectTypeId).stream()
                 .map(Object::fromObjectTable)
@@ -316,30 +368,6 @@ public class DirectDataAccessService {
     }
 
     /**
-     * Merges two objects into one.
-     *
-     * @param object1Id the identifier of the first object
-     * @param object2Id the identifier of the second object
-     * @return the identifier of the new objects
-     */
-    public long mergeObjects(long object1Id, long object2Id) throws IdNotFoundException {
-        //TODO: implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    /**
-     * Splits merged object.
-     *
-     * @param objectId the identifier of merged object
-     * @return true if object was split, false otherwise
-     */
-    public boolean splitObject(long objectId) throws IdNotFoundException {
-        //TODO: implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-
-    /**
      * Gets all relation types.
      *
      * @return the relation types
@@ -370,13 +398,58 @@ public class DirectDataAccessService {
      * @param relationTypeId the relation type id
      * @return the relations
      */
-    public List<Relation> getRelations(long relationTypeId) {
-
-        //TODO: add test if id exists!
+    public List<Relation> getRelations(long relationTypeId) throws IdNotFoundException {
+        RelationTypeTable relationTypeTable = relationTypeTableDAO.find(relationTypeId);
+        if (relationTypeTable == null) {
+            throw new IdNotFoundException("relationTypeId", relationTypeId);
+        }
 
         return relationTableDAO.findAllByRelationType(relationTypeId).stream()
                 .map(Relation::fromRelationTable)
                 .collect(Collectors.toList());
+    }
+
+    public Pair<List<Relation>,Integer> getFilteredRelations(Long relationTypeId, String anchorFilter, int firstResult, int maxResults) throws IdNotFoundException {
+
+        if (relationTypeId != null) {
+            RelationTypeTable relationType = relationTypeTableDAO.find(relationTypeId);
+            if (relationType == null) {
+                throw new IdNotFoundException("relationTypeId", relationTypeId);
+            }
+        }
+
+        int count;
+        List<RelationTable> relations;
+
+        if (relationTypeId != null && (anchorFilter != null && !anchorFilter.isEmpty())) {
+
+            count = relationTableDAO.findAllByRelTypeAndAnchorFullText(relationTypeId, anchorFilter).size();
+            relations = relationTableDAO.findAllByRelTypeAndAnchorFullText(relationTypeId, anchorFilter, firstResult, maxResults);
+
+        } else if (relationTypeId != null) {
+
+            count = relationTableDAO.findAllByRelationType(relationTypeId).size();
+            relations = relationTableDAO.findAllByRelationType(relationTypeId, firstResult, maxResults);
+
+        } else if (anchorFilter != null && !anchorFilter.isEmpty()) {
+
+            count = relationTableDAO.findAllByAnchorFullText(anchorFilter).size();
+            relations = relationTableDAO.findAllByAnchorFullText(anchorFilter, firstResult, maxResults);
+
+        } else {
+
+            count = relationTableDAO.findAll().size();
+            relations = relationTableDAO.findAll(firstResult, maxResults);
+
+        }
+
+
+        return new Pair<>(
+                relations.stream()
+                    .map(Relation::fromRelationTable)
+                    .collect(Collectors.toList()),
+                count
+        );
     }
 
     /**

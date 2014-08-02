@@ -1,0 +1,334 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage[some]{background}
+\usepackage{listings}
+\usepackage{footmisc}
+
+%TODO select color coresponding to logo
+\definecolor{titlepagecolor}{cmyk}{1,.60,0,.40}
+\definecolor{javagreen}{rgb}{0.25,0.5,0.35}
+
+\backgroundsetup{
+scale=1,
+angle=0,
+opacity=1,
+contents={
+\begin{tikzpicture}[remember picture,overlay]
+  \path [fill=titlepagecolor] (current page.west)rectangle (current page.north east); 
+  \draw [color=white, very thick] (5,0)--(5,0.5\paperheight);
+ \end{tikzpicture}}
+}
+
+\DeclareFixedFont{\bigsf}{T1}{phv}{b}{n}{1.5cm}
+
+\usepackage[unicode,colorlinks=true]{hyperref}
+\hypersetup{pdftitle=TextAn - user documentation}
+\hypersetup{pdfauthor={Petr Fanta, Duc Tam Hoang, Adam Huječek, Václav Pernička, Jakub Vlček}}
+\hypersetup{linkcolor=black, citecolor=black, urlcolor=black, filecolor=black}
+
+\makeatletter
+\def\@makechapterhead#1{
+  {\parindent \z@ \raggedright \normalfont
+   \Huge\bfseries \thechapter. #1
+   \par\nobreak
+   \vskip 20\p@
+}}
+\def\@makeschapterhead#1{
+  {\parindent \z@ \raggedright \normalfont
+   \Huge\bfseries #1
+   \par\nobreak
+   \vskip 20\p@
+}}
+\makeatother
+
+\def\chapwithtoc#1{
+\chapter*{#1}
+\addcontentsline{toc}{chapter}{#1}
+}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\lstdefinelanguage{properties}{% new language for listings
+  basicstyle=\ttfamily,
+  sensitive=false,
+  morecomment=[l]{\#},      % comment
+  morestring=[b]",          % string def
+  commentstyle=\color{javagreen},
+  basicstyle=\small
+}
+
+\setkeys{Gin}{resolution=96}
+
+\newcommand{\textan}{\emph{TextAn}}
+
+\begin{document}
+
+%TODO better titlepage
+\begin{titlepage}
+\BgThispage
+
+\newgeometry{left=2cm,right=6cm,bottom=2cm}
+\vspace*{0.3\textheight}
+\noindent
+\textcolor{white}{\bigsf TextAn}
+
+\vspace*{1cm}
+\noindent
+\textcolor{white}{\Huge\textbf{\textsf{User Documentation}}}
+
+\vspace*{2cm}\par
+\noindent
+\begin{minipage}{0.35\linewidth}
+\textbf{Authors} \\
+Petr Fanta \\
+Duc Tam Hoang \\
+Adam Huječek \\
+Václav Pernička \\
+Jakub Vlček\vspace{40pt} \\
+\textbf{Supervisor} \\
+Ondřej Bojar\vspace{40pt} \\
+\textbf{Version} \\
+0.1\vspace{40pt} \\
+\textbf{Date} \\
+\today \\
+\end{minipage}
+
+%TODO add logo
+
+\end{titlepage}
+\restoregeometry
+
+\pagenumbering{roman}
+\tableofcontents
+
+%\chapter*{Intro}
+%\addcontentsline{toc}{chapter}{Intro}
+
+
+\chapter{User Guide}
+\pagenumbering{arabic}
+
+\section{Introduction}
+
+TODO what is textan
+
+TODO basic usage
+
+\subsection{System overview}
+
+
+\subsection{Glossary}
+
+TODO definitions of terms in documentation and applications
+
+\subsection{Conventions} %is this section needed?
+
+
+
+\chapter{Administrator guide}
+
+%TODO client instalation guide in the administrator guide or user guide?
+
+\section{Server}
+
+\subsection{Installation guide}
+
+
+This section will show you how to install and build \textan\ server. 
+%An installation guide for a server side application of \textan.
+
+\subsubsection{Prerequisites}
+\label{sssec:SerInstPre}
+
+The \textan\ server requires installation of \emph{Java 8 JRE
+\footnote{We recommend to use JRE from \emph{Oracle}, available at: \url{http://www.oracle.com/technetwork/java/javase/downloads/index.html}}}
+or a later version and a relational database system (e.g. \emph{MySQL}).
+The server should be platform independent, so it runs on any system where JRE is available,
+but it depends on native and 3rd party libraries. 
+Supported operating systems in the distribution of the \textan\ server are
+Linux (32 bit and 64 bit) and Windows (32 bit and 64 bit). % I am thinking ...
+
+\subsubsection{Installation}
+
+The \textan\ server distribution archive contains all files needed for \textan\ server to operate,
+such as server binaries, native libraries, run scripts and additional resources.
+For installation it is sufficient to unpack its content into any directory.
+
+\subsubsection{Basic configuration}
+
+Before the first start, it is necessary to set up the server and the database.
+
+TODO write how to setup server
+
+TODO add some link to \ref{sec:ServerSettings}
+
+\subsubsection{Starting the server}
+
+The server can be started by starting scripts in its root directory. 
+Scripts for different operating systems unfortunately do not provide the same functionality.
+
+The start script for the Linux-based operating system (\emph{run.sh}) runs the server application as daemon
+and can be used to run the server as system service.
+
+The start script for the Microsoft Windows OS is less powerful, only runs the server application. 
+To run the server as a background process, the Windows Service is required. 
+Unfortunately, there are no components shipped with the Jetty Distribution to make it a formal Windows Service.
+However, we recommend the use of \emph{Apache ProcRun's Daemon
+\footnote{More information can be found on \url{https://commons.apache.org/proper/commons-daemon/procrun.html} and in JavaDoc documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry} class.}}.
+
+\subsection{Settings}
+\label{sec:ServerSettings}
+
+\subsubsection{Web server settings}
+
+%connector
+\paragraph{server.connector.host} The particular interface to listen on. If not set or 0.0.0.0, the web server listens on port on all interfaces.
+
+\paragraph{server.connector.port} The port to listen on. If not set, the web server listens on port 9500.
+
+%thread pool
+\paragraph{server.threadPool.maxThreads} The maximum number of threads in web server thread pool. It determines a maximum number of simultaneously opened connections. The default value is 200.
+
+\paragraph{server.threadPool.minThreads} The minimum number of threads in web server thread pool. The default value is 8.
+
+\paragraph{server.threadPool.idleTimeout} The time in milliseconds that the connection can be idle before it is closed.
+
+\subsubsection{Database connection settings}
+
+%jdbc
+\paragraph{jdbc.driverClassName} 
+
+\paragraph{jdbc.url} 
+
+\paragraph{jdbc.user}
+
+\paragraph{jdbc.pass}
+
+
+%c3p0 (http://www.mchange.com/projects/c3p0/#configuration_properties)
+\paragraph{c3p0.maxPoolSize}
+
+\paragraph{c3p0.minPoolSize}
+
+\paragraph{c3p0.initialPoolSize}
+
+\paragraph{c3p0.acquireIncrement}
+
+\paragraph{c3p0.maxIdleTime}
+
+\paragraph{c3p0.checkoutTimeout}
+
+\paragraph{c3p0.maxStatements}
+
+\paragraph{c3p0.maxStatementsPerConnection}
+
+\paragraph{c3p0.idleConnectionTestPeriod}
+
+%hibernate
+\paragraph{hibernate.dialect}
+
+\paragraph{hibernate.show\_sql}
+
+\subsubsection{Named entity recognizer settings}
+
+\subsection{Data formats}
+
+\section{Client}
+
+This section contains all information needed to successfully install, configure and run \textan\ client side application.
+However thanks to \textan\ client-server architecture and extensive use of webservices,
+it is easy to prepare own implementation in any programmer language desired or even use general solutions as SoapUI
+\footnote{More information can be found at \url{http://www.soapui.org/}},
+if \textan\ default client does not provide all required features, user experience or integration to legacy system is needed.
+
+\subsection{Installation guide}
+
+This section describes how to install and configure \textan\ client on workstations of end users.
+
+\subsubsection{Prerequisites}
+
+The \textan\ client has the same requirement for \emph{Java 8 JRE} or later as the server (see \ref{sssec:SerInstPre}).
+However, unlike the server side, it is pure Java application so there are no other additional limitations for operating system etc.
+Any platform where JRE 8 is available can support the client.
+
+\subsubsection{Installation}
+
+Unpack an archive with the \textan\ client distribution into any directory. 
+The archive contains a .jar file and starting scripts for the \emph{Microsoft Windows} and Linux-based operating systems
+\footnote{run.bat for MS Windows and run.sh for Linux clones.\label{runscript_note}}.
+
+\subsubsection{Basic configuration}
+
+If the client is not supposed to connect to the default server, it is necessary to configure a server location. 
+The client settings are by default stored in \emph{TextAn.properties\footnote{A description of format of .properties file can be found at \url{http://en.wikipedia.org/wiki/.properties}}}
+in the client directory. 
+Simply edit or add following lines to properties file (create it if it does not exist),
+replacing default server address with the actual one:
+\begin{lstlisting}[frame=single,language=properties]
+#url of the document processor
+url.document=http://localhost:9500/soap/document
+#url of the document processor wsdl
+url.document.wsdl=http://localhost:9500/soap/document?wsdl
+#url of the data provider
+url.data=http://localhost:9500/soap/data
+#url of the data provider
+url.data.wsdl=http://localhost:9500/soap/data?wsdl
+\end{lstlisting}
+
+\subsubsection{Starting the client}
+
+The .jar file from the distribution archive is executable,
+but we recommend to use starting scripts\footref{runscript_note}.
+Please consult documentation of your Java Platform provider,
+if running scripts are not available for your system.
+For description of command line arguments see \ref{ssec:CliCmdArg}
+
+\subsubsection{Uninstallation}
+
+The client application does not use any files or resources outside its install directory,
+unless explicitly told to do otherwise.
+To uninstall the client just delete its installation folder
+and all files explicitly used as configuration storage.
+
+\subsection{Settings}
+
+This section describes all settings affecting the client behaviour.
+The two basic means are command line arguments and configuration file in properties format.
+
+\subsubsection{Command line arguments}
+\label{ssec:CliCmdArg}
+
+The client has one command line option (-h, --help, /H, /?) which displays the usage information.
+Apart from that it takes only one command line argument which is the location of settings file.
+If no file is specified, default property file \emph{TextAn.properties} will be used.
+If '-' is provided, the standard input will be read and settings will not be stored.
+
+\subsubsection{TextAn.properties}
+
+This section contains a list of properties from configuration file that controls client behaviour.
+
+%TODO: add all the properties and their description, can point to ssec:Settings
+
+\subsection{Usage}
+
+\subsubsection{First run}
+
+\subsubsection{Working space}
+
+\subsubsection{Settings}
+\label{ssec:Settings}
+
+\subsubsection{Report processing}
+
+\subsubsection{Listing objects}
+
+\subsubsection{Graph views}
+
+\end{document}

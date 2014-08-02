@@ -83,6 +83,11 @@ public class ObjectTable extends AbstractTable {
         this.rootObject = rootObject;
     }
 
+    @Transient
+    public boolean isRootObject() {
+        return this == rootObject;
+    }
+
     @Column(name = "globalversion", nullable = false)
     public long getGlobalVersion() {
         return globalVersion;

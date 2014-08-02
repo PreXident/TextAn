@@ -19,7 +19,6 @@ import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
@@ -32,7 +31,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
 /**
@@ -65,16 +63,7 @@ public class ReportErrorsController extends ReportWizardController {
     private TreeView<Object> joinedObjectsTreeView;
 
     @FXML
-    private VBox vbox;
-
-    @FXML
     Slider slider;
-
-    @FXML
-    Label processedLabel;
-
-    @FXML
-    Label changedLabel;
 
     @FXML
     GridPane gridPane;
@@ -106,7 +95,10 @@ public class ReportErrorsController extends ReportWizardController {
         if (pipeline.lock.tryAcquire()) {
             getMainNode().setCursor(Cursor.WAIT);
             new Thread(() -> {
-                pipeline.forceSave();
+                handleDocumentChangedException(root, () -> {
+                    pipeline.forceSave();
+                    return null;
+                });
             }, "ForceSave").start();
         }
     }
@@ -164,6 +156,11 @@ public class ReportErrorsController extends ReportWizardController {
     }
 
     @Override
+    public Runnable getContainerCloser() {
+        return getSavePrompter(root);
+    }
+
+    @Override
     public void setPipeline(final ProcessReportPipeline pipeline) {
         super.setPipeline(pipeline);
         newObjectsTable.getItems().addAll(pipeline.getProblems().getNewObjects());
@@ -178,15 +175,6 @@ public class ReportErrorsController extends ReportWizardController {
             joinedObjectsTreeView.getRoot().getChildren().add(parent);
         }
         relationsTreeView.addRelations(pipeline.getProblems().getNewRelations());
-        //
-        if (!pipeline.getProblems().isProcessed()) {
-            vbox.getChildren().remove(processedLabel);
-        } else {
-            forceButton.setVisible(false);
-        }
-        if (!pipeline.getProblems().isChanged()) {
-            vbox.getChildren().remove(changedLabel);
-        }
     }
 
     @Override

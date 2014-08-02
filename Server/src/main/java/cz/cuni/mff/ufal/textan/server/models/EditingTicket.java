@@ -10,33 +10,43 @@ import java.util.Date;
  */
 public class EditingTicket{
 
+    private final long version;
     private final Date timestamp;
 
     /**
      * Instantiates a new Editing ticket.
      *
+     * @param version
      */
-    public EditingTicket() {
+    public EditingTicket(long version) {
+        this.version = version;
         timestamp = new Date();
     }
 
-    /**
-     * Instantiates a new Editing ticket.
-     *
-     * @param timestamp the timestamp
-     */
-    public EditingTicket(Date timestamp) {
+    public EditingTicket(long version, Date timestamp) {
         this.timestamp = timestamp;
+        this.version = version;
     }
 
     /**
-     * Converts a {@link cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket} to {@link cz.cuni.mff.ufal.textan.server.models.Entity}
+     * Converts a {@link  cz.cuni.mff.ufal.textan.server.models.EditingTicket} to {@link cz.cuni.mff.ufal.textan.server.models.Entity}
      *
      * @param commonsEditingTicket the commons editing ticket
      * @return the editing ticket
      */
     public static EditingTicket fromCommonsEditingTicket(cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket commonsEditingTicket) {
-        return new EditingTicket(commonsEditingTicket.getTimestamp());
+        return new EditingTicket(commonsEditingTicket.getVersion() ,commonsEditingTicket.getTimestamp());
+    }
+
+    public cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket toCommonsEditingTicket() {
+        cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket commonsTicket = new cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket();
+        commonsTicket.setVersion(version);
+        commonsTicket.setTimestamp(timestamp);
+        return commonsTicket;
+    }
+
+    public long getVersion() {
+        return version;
     }
 
     /**
@@ -52,27 +62,24 @@ public class EditingTicket{
     public boolean equals(java.lang.Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
 
         EditingTicket that = (EditingTicket) o;
 
-        if (timestamp != null ? !timestamp.equals(that.timestamp) : that.timestamp != null) return false;
+        if (version != that.version) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
-        return result;
+        return (int) (version ^ (version >>> 32));
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("EditingTicket{");
-        sb.append("timestamp=").append(timestamp).append(", ");
-        sb.append(super.toString());
+        sb.append("version=").append(version);
+        sb.append(", timestamp=").append(timestamp);
         sb.append('}');
         return sb.toString();
     }

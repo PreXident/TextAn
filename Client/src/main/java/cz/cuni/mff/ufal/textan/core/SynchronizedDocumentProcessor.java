@@ -17,7 +17,8 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDoc
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringResponse;
-import cz.cuni.mff.ufal.textan.commons.ws.DocumentChanged;
+import cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException;
+import cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 
@@ -40,14 +41,14 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
     @Override
     synchronized public GetAssignmentsByIdResponse getAssignmentsById(
             final GetAssignmentsByIdRequest getAssignmentsByIdRequest,
-            final EditingTicket editingTicket) throws IdNotFoundException, DocumentChanged {
+            final EditingTicket editingTicket) throws IdNotFoundException,  DocumentChangedException, DocumentAlreadyProcessedException {
         return innerDP.getAssignmentsById(getAssignmentsByIdRequest, editingTicket);
     }
 
     @Override
     synchronized public SaveProcessedDocumentByIdResponse saveProcessedDocumentById(
             final SaveProcessedDocumentByIdRequest saveProcessedDocumentByIdRequest,
-            final EditingTicket editingTicket) throws IdNotFoundException, DocumentChanged {
+            final EditingTicket editingTicket) throws IdNotFoundException, DocumentChangedException, DocumentAlreadyProcessedException {
         return innerDP.saveProcessedDocumentById(saveProcessedDocumentByIdRequest, editingTicket);
     }
 
@@ -75,7 +76,7 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
     @Override
     synchronized public GetEntitiesByIdResponse getEntitiesById(
             final GetEntitiesByIdRequest getEntitiesByIdRequest,
-            final EditingTicket editingTicket) throws IdNotFoundException, DocumentChanged {
+            final EditingTicket editingTicket) throws IdNotFoundException, DocumentChangedException, DocumentAlreadyProcessedException {
         return innerDP.getEntitiesById(getEntitiesByIdRequest, editingTicket);
     }
 

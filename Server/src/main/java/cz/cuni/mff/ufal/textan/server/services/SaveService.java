@@ -1,15 +1,16 @@
 package cz.cuni.mff.ufal.textan.server.services;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.*;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.commands.NamedEntityRecognizerLearnCommand;
+import cz.cuni.mff.ufal.textan.server.commands.TextProLearnCommand;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
-import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
+import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
-import cz.cuni.mff.ufal.textan.server.models.Occurrence;
-import cz.cuni.mff.ufal.textan.server.models.Relation;
+import cz.cuni.mff.ufal.textan.textpro.ITextPro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,9 +39,11 @@ public class SaveService {
     private final IRelationOccurrenceTableDAO relationOccurrenceTableDAO;
 
     private final IInRelationTableDAO inRelationTableDAO;
+    private final IJoinedObjectsTableDAO joinedObjectsTableDAO;
 
     private final CommandInvoker invoker;
     private final NamedEntityRecognizer recognizer;
+    private final ITextPro textPro;
 
     /**
      * Instantiates a new Save service.
@@ -53,8 +56,10 @@ public class SaveService {
      * @param relationTableDAO the relation table dAO
      * @param relationOccurrenceTableDAO the relation occurrence table dAO
      * @param inRelationTableDAO the in relation table dAO
+     * @param joinedObjectsTableDAO
      * @param invoker
      * @param recognizer
+     * @param textPro
      */
     @Autowired
     public SaveService(
@@ -64,7 +69,7 @@ public class SaveService {
             IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
             IRelationTypeTableDAO relationTypeTableDAO, IRelationTableDAO relationTableDAO,
             IRelationOccurrenceTableDAO relationOccurrenceTableDAO, IInRelationTableDAO inRelationTableDAO,
-            CommandInvoker invoker, NamedEntityRecognizer recognizer) {
+            IJoinedObjectsTableDAO joinedObjectsTableDAO, CommandInvoker invoker, NamedEntityRecognizer recognizer, ITextPro textPro) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
@@ -75,8 +80,10 @@ public class SaveService {
         this.relationTableDAO = relationTableDAO;
         this.relationOccurrenceTableDAO = relationOccurrenceTableDAO;
         this.inRelationTableDAO = inRelationTableDAO;
+        this.joinedObjectsTableDAO = joinedObjectsTableDAO;
         this.invoker = invoker;
         this.recognizer = recognizer;
+        this.textPro = textPro;
     }
 
     /*
@@ -108,7 +115,7 @@ public class SaveService {
             List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences,
             boolean force, EditingTicket ticket) throws IdNotFoundException {
 
-        if (!force && checkChanges()) {
+        if (!force && checkChanges(ticket)) {
             return false;
         }
 
@@ -140,22 +147,29 @@ public class SaveService {
             long documentId,
             List<Object> objects, List<Pair<Long, Occurrence>> objectOccurrences,
             List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences,
-            boolean force, EditingTicket ticket) throws IdNotFoundException {
-
-        if (!force && checkChanges()) {
-            return false;
-        }
+            boolean force, EditingTicket ticket)
+            throws IdNotFoundException, DocumentAlreadyProcessedException, DocumentChangedException {
 
         DocumentTable documentTable = documentTableDAO.find(documentId);
         if (documentTable == null) {
             throw new IdNotFoundException("documentId", documentId);
+        } else if (documentTable.isProcessed()) {
+            throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
+        }
+
+        //TODO:throw Document Changed Exception
+
+        if (!force && checkChanges(ticket)) {
+            return false;
         }
 
         return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences, ticket);
     }
 
-    private boolean checkChanges() {
-        return false;
+    private boolean checkChanges(EditingTicket ticket) {
+        return ((objectTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0 )||
+                (relationTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0) ||
+                (joinedObjectsTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0));
     }
 
     private boolean innerSave(
@@ -276,11 +290,11 @@ public class SaveService {
                         .map(x -> x.getObject().getId())
                         .collect(Collectors.toSet());
 
-                for (Pair<Long, Pair<String, Integer>> objectInRelation : relation.getObjectsInRelation()) {
+                for (Triple<Object, String, Integer> objectInRelation : relation.getObjectsInRelation()) {
 
-                    long objectInRelationId = objectInRelation.getFirst();
-                    String role = objectInRelation.getSecond().getFirst();
-                    int order = objectInRelation.getSecond().getSecond();
+                    long objectInRelationId = objectInRelation.getFirst().getId();
+                    String role = objectInRelation.getSecond();
+                    int order = objectInRelation.getThird();
 
                     ObjectTable objectInRelationTable = objectIdMapping.get(objectInRelationId);
                     if (objectInRelationTable == null) {
@@ -311,8 +325,28 @@ public class SaveService {
         }
 
         //register re-learn command for named entity recognizer
+        invoker.register(new TextProLearnCommand(textPro));
         invoker.register(new NamedEntityRecognizerLearnCommand(recognizer));
 
         return true;
+    }
+
+    public Problems getProblems(EditingTicket ticket) {
+        List<Object> newObjects = objectTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+                .map(Object::fromObjectTable)
+                .collect(Collectors.toList());
+
+        List<Relation> newRelations = relationTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+                .map(Relation::fromRelationTable)
+                .collect(Collectors.toList());
+
+        List<JoinedObject> newJoinedObjects = joinedObjectsTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+                .map(x -> new JoinedObject(
+                        Object.fromObjectTable(x.getNewObject()),
+                        Object.fromObjectTable(x.getOldObject1()),
+                        Object.fromObjectTable(x.getOldObject2())))
+                .collect(Collectors.toList());
+
+        return new Problems(newObjects, newRelations, newJoinedObjects);
     }
 }

@@ -49,11 +49,15 @@ public class NamedEntityRecognizerService {
      * @return the list of entities found in the document
      * @throws IdNotFoundException the exception thrown if a document with the given id wasn't found
      */
-    public List<Entity> getEntities(long documentId, EditingTicket editingTicket) throws IdNotFoundException {
+    public List<Entity> getEntities(long documentId, EditingTicket editingTicket)
+            throws IdNotFoundException, DocumentAlreadyProcessedException, DocumentChangedException {
+        //TODO:throw Document Changed Exception
 
         DocumentTable documentTable = documentTableDAO.find(documentId);
         if (documentTable == null) {
             throw new IdNotFoundException("documentId", documentId);
+        } else if (documentTable.isProcessed()) {
+            throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
         }
 
         return namedEntityRecognizer.tagText(documentTable.getText());

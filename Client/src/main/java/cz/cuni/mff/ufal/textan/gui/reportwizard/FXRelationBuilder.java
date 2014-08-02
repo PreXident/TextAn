@@ -6,6 +6,8 @@ import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,6 +17,7 @@ import javafx.collections.ObservableList;
 
 /**
  * Descendant of {@link RelationBuilder} for JavaFX.
+ * Contains a list of assigned words for better textual representation.
  */
 public class FXRelationBuilder extends RelationBuilder {
 
@@ -22,16 +25,16 @@ public class FXRelationBuilder extends RelationBuilder {
      * List to remove builder from if words count hits zero.
      * This needs to be updated on return to relation edit!
      */
-    List<FXRelationBuilder> list;
+    transient List<FXRelationBuilder> list;
 
     /** List of words assigned to the builder. */
-    final List<Word> words = new ArrayList<>();
+    final transient List<Word> words = new ArrayList<>();
 
     /** Holds string representation of the builder. */
-    final StringProperty stringRepresentation = new SimpleStringProperty("");
+    final transient StringProperty stringRepresentation = new SimpleStringProperty("");
 
     /**
-     * Only constructor.
+     * Constructs builder from scratch.
      * @param type relation type
      * @param list {@link #list}
      * @param roles most common roles
@@ -43,10 +46,21 @@ public class FXRelationBuilder extends RelationBuilder {
         list.add(this);
         updateStringRepresentation();
         for (String role : roles) {
-            final RelationInfo relationInfo = new RelationInfo(0, role, null);
+            final FXRelationInfo relationInfo = new FXRelationInfo(0, role, null);
             getData().add(relationInfo);
         }
     }
+
+    /**
+     * Constructs builder from deserialized proxy.
+     * @param proxy deserialized proxy
+     */
+    @SuppressWarnings("unchecked")
+     public FXRelationBuilder(final RelationBuilderProxy proxy) {
+         super(proxy.getType());
+         updateStringRepresentation();
+         ((List)data).addAll(proxy.getData());
+     }
 
     @Override
     protected List<? extends IRelationInfo> createRelationInfos() {
@@ -54,8 +68,8 @@ public class FXRelationBuilder extends RelationBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    ObservableList<RelationInfo> getData() {
-        return (ObservableList<RelationInfo>) data;
+    ObservableList<FXRelationInfo> getData() {
+        return (ObservableList<FXRelationInfo>) data;
     }
 
     @Override
@@ -99,17 +113,19 @@ public class FXRelationBuilder extends RelationBuilder {
     /**
      * Holds information about object assigned to relation in JavaFX way.
      */
-    public static class RelationInfo implements IRelationInfo {
+    public static class FXRelationInfo extends RelationInfo {
 
         /** Object's order. */
-        public SimpleIntegerProperty order = new SimpleIntegerProperty();
+        private final transient IntegerProperty order =
+                new SimpleIntegerProperty();
 
         /** Object itself. */
-        public SimpleObjectProperty<Object> object =
+        private final transient ObjectProperty<Object> object =
                 new SimpleObjectProperty<>();
 
         /** Object's role. */
-        public SimpleStringProperty role = new SimpleStringProperty();
+        private final transient StringProperty role =
+                new SimpleStringProperty();
 
         /**
          * Only constructor.
@@ -117,15 +133,10 @@ public class FXRelationBuilder extends RelationBuilder {
          * @param role object's role
          * @param object object itself
          */
-        public RelationInfo(final int order, final String role, final Object object) {
+        public FXRelationInfo(final int order, final String role, final Object object) {
             this.order.set(order);
             this.role.set(role);
             this.object.set(object);
-        }
-
-        @Override
-        public int getOrder() {
-            return order.get();
         }
 
         @Override
@@ -133,9 +144,62 @@ public class FXRelationBuilder extends RelationBuilder {
             return object.get();
         }
 
+        /**
+         * Sets assigned object.
+         * @param object new object
+         */
+        public void setObject(final Object object) {
+            this.object.set(object);
+        }
+
+        /**
+         * Returns assigned object property.
+         * @return assigned object property
+         */
+        public ObjectProperty<Object> objectProperty() {
+            return object;
+        }
+
+        @Override
+        public int getOrder() {
+            return order.get();
+        }
+
+        /**
+         * Sets assigned object's order
+         * @param order new order
+         */
+        public void setOrder(final int order) {
+            this.order.set(order);
+        }
+
+        /**
+         * Returns assigned object's order property.
+         * @return assigned object's order property
+         */
+        public IntegerProperty orderProperty() {
+            return order;
+        }
+
         @Override
         public String getRole() {
             return role.get();
+        }
+
+        /**
+         * Sets assigned object's role.
+         * @param role new role
+         */
+        public void setRole(final String role) {
+            this.role.set(role);
+        }
+
+        /**
+         * Returns assigned object's role property.
+         * @return assigned object's role property
+         */
+        public StringProperty roleProperty() {
+            return role;
         }
     }
 }

@@ -1,10 +1,12 @@
 package cz.cuni.mff.ufal.textan.core;
 
+import java.io.Serializable;
+
 /**
  * Client representation of
  * {@link cz.cuni.mff.ufal.textan.commons.models.RelationType}.
  */
-public class RelationType {
+public class RelationType implements Serializable {
 
     /** Type id. */
     private final long id;

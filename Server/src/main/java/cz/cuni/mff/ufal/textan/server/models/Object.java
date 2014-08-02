@@ -58,11 +58,12 @@ public class Object {
      * @param commonsObject the commons object
      * @return the object
      */
+    //TODO: remove?
     public static Object fromCommonsObject(cz.cuni.mff.ufal.textan.commons.models.Object commonsObject) {
         return new Object(
                 commonsObject.getId(),
                 ObjectType.fromCommonsObjectType(commonsObject.getObjectType()),
-                commonsObject.getAliases().getAlias(),
+                commonsObject.getAlias(),
                 commonsObject.isIsNew()
         );
     }
@@ -113,10 +114,7 @@ public class Object {
         cz.cuni.mff.ufal.textan.commons.models.Object commonsObject = new cz.cuni.mff.ufal.textan.commons.models.Object();
         commonsObject.setId(id);
         commonsObject.setObjectType(type.toCommonsObjectType());
-
-        cz.cuni.mff.ufal.textan.commons.models.Object.Aliases commonsAliases = new cz.cuni.mff.ufal.textan.commons.models.Object.Aliases();
-        commonsAliases.getAlias().addAll(aliases);
-        commonsObject.setAliases(commonsAliases);
+        commonsObject.getAlias().addAll(aliases);
 
         commonsObject.setIsNew(isNew);
 

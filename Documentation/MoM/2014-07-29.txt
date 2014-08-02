@@ -1,0 +1,42 @@
+Tam was late because of moving issues. Kuba is still guard at summer camp.
+
+Adam:
+- all hwk done, except for annotation
+- documentation improvements
+
+Tam:
+- nothing, just preparing for moving
+
+Peter:
+- logging works (with username)
+- interceptors are now thread save
+- getProblems now working
+- Ticket changed
+- save processed document semantics changed - all objects mentioned in relation must be included in the request! (it can be problem)
+
+Venca:
+- global version for document table added
+
+HWK:
+- Adam, linux has issues with first run - main window cannot be resized and main menus are not displayed correctly
+- Adam, remove 1/0 from pagination everyewhere
+- Adam, explore possibility of double buffering because the context menus on linux are shown before they are resized and moved
+- Adam, handle exception that will be probably added to address not working joining of objects
+- Adam, look at Texmaker for tex editing
+- Adam, add toolbar to the main window
+- Adam, include all objects check box in Report Object Step should be unchecked by default!
+- Adam, document list does not display processTime correctly - copy&paste error with filling the column
+- Adam, change the behaviour when the report is changed, so when it is saved, the old id and new text is sent so the new text is replaced
+- Adam, add warning that changes will erase progress (probably some king of visualization on slider with tooltip)
+- Peter & Venca, joining objects does not work, why? Foreign key issue?
+- Peter, send first pages to your graphic friend
+- Peter, clean server database
+- Peter, add method to webservices to save report with id and text to replace newly changed text
+- Peter, create architecture documentation from our code
+- Venca, when object is in relation with itself, the graph (both relational and objective) does not contain the relation
+- Venca, lock the whole db for write when document is added
+- Venca, add global version to DOA
+- Venca, solve issue #68
+- Kuba, temp files should be created in temp directory and should be deleted when not needed anymore
+
+Next meeting on Friday from 16:30.

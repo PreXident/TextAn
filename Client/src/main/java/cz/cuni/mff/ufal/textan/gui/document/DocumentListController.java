@@ -31,6 +31,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
@@ -43,6 +44,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
 
 /**
@@ -57,46 +59,58 @@ public class DocumentListController extends WindowController {
     static protected final String PROPERTY_ID = "documents.viewer";
 
     @FXML
-    private BorderPane root;
+    public BorderPane root;
 
     @FXML
-    private CheckBox processedCheckBox;
+    public GridPane filterPane;
 
     @FXML
-    private TextField filterField;
+    public CheckBox processedCheckBox;
 
     @FXML
-    private TableView<Document> table;
+    public TextField filterField;
 
     @FXML
-    private TableColumn<Document, Number> idColumn;
+    public Button newButton;
 
     @FXML
-    private TableColumn<Document, Date> addTimeColumn;
+    public TableView<Document> table;
 
     @FXML
-    private TableColumn<Document, Date> lastChangeTimeColumn;
+    public TableColumn<Document, Number> idColumn;
 
     @FXML
-    private TableColumn<Document, Boolean> processedColumn;
+    public TableColumn<Document, Date> addTimeColumn;
 
     @FXML
-    private TableColumn<Document, Date> processTimeColumn;
+    public TableColumn<Document, Date> lastChangeTimeColumn;
 
     @FXML
-    private TableColumn<Document, Number> countColumn;
+    public TableColumn<Document, Boolean> processedColumn;
 
     @FXML
-    private TableColumn<Document, String> textColumn;
+    public TableColumn<Document, Date> processTimeColumn;
 
     @FXML
-    private ComboBox<Integer> perPageComboBox;
+    public TableColumn<Document, Number> countColumn;
 
     @FXML
-    private Label paginationLabel;
+    public TableColumn<Document, String> textColumn;
+
+    @FXML
+    public ComboBox<Integer> perPageComboBox;
+
+    @FXML
+    public Label paginationLabel;
 
     /** Context menu for documents. */
-    protected ContextMenu contextMenu = new ContextMenu();
+    public ContextMenu contextMenu = new ContextMenu();
+
+    /** Menu item for processing the document. */
+    public MenuItem processMI;
+
+    /** Menu item for editing the document. */
+    public MenuItem editMI;
 
     /** Localization container. */
     ResourceBundle resourceBundle;
@@ -126,13 +140,13 @@ public class DocumentListController extends WindowController {
     protected Semaphore lock = new Semaphore(1);
 
     @FXML
-    private void fastForward() {
+    public void fastForward() {
         pageNo = pageCount - 1;
         filter();
     }
 
     @FXML
-    private void fastRewind() {
+    public void fastRewind() {
         pageNo = 0;
         filter();
     }
@@ -153,9 +167,9 @@ public class DocumentListController extends WindowController {
                 protected Pair<List<Document>, Integer> call() throws Exception {
                     Pair<List<Document>, Integer> pair;
                     if (object != null) {
-                        pair = client.getDocumentsList(object, processed, filter, first, size);
+                        pair = client.getDocumentsList(object, filter, first, size);
                     } else if (relation != null) {
-                        pair = client.getDocumentsList(relation, processed, filter, first, size);
+                        pair = client.getDocumentsList(relation, filter, first, size);
                     } else {
                         pair = client.getDocumentsList(processed, filter, first, size);
                     }
@@ -192,7 +206,7 @@ public class DocumentListController extends WindowController {
     }
 
     @FXML
-    private void forward() {
+    public void forward() {
         if (pageNo < pageCount - 1) {
             ++pageNo;
             filter();
@@ -200,7 +214,12 @@ public class DocumentListController extends WindowController {
     }
 
     @FXML
-    private void rewind() {
+    public void newDocument() {
+        textAnController.newDocument();
+    }
+
+    @FXML
+    public void rewind() {
         if (pageNo > 0) {
             --pageNo;
             filter();
@@ -226,11 +245,11 @@ public class DocumentListController extends WindowController {
             }
         });
         contextMenu.getItems().add(graphMI);
-        final MenuItem processMI = new MenuItem(Utils.localize(resourceBundle, "document.process"));
+        processMI = new MenuItem(Utils.localize(resourceBundle, "document.process"));
         processMI.setOnAction(e -> {
             final Document doc = table.getSelectionModel().getSelectedItem();
             if (doc != null) {
-                //TODO display new window to process the document
+                textAnController.processDocument(doc);
             }
         });
         processMI.disableProperty().bind(Bindings.createBooleanBinding(() -> {
@@ -238,6 +257,18 @@ public class DocumentListController extends WindowController {
             return doc != null ? doc.isProcessed() : true;
         }, table.getSelectionModel().selectedItemProperty()));
         contextMenu.getItems().add(processMI);
+        editMI = new MenuItem(Utils.localize(resourceBundle, "document.edit"));
+        editMI.setOnAction(e -> {
+            final Document doc = table.getSelectionModel().getSelectedItem();
+            if (doc != null) {
+                textAnController.editDocument(doc);
+            }
+        });
+        editMI.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            final Document doc = table.getSelectionModel().getSelectedItem();
+            return doc != null ? doc.isProcessed() : true;
+        }, table.getSelectionModel().selectedItemProperty()));
+        contextMenu.getItems().add(editMI);
         contextMenu.setStyle(CONTEXT_MENU_STYLE);
         contextMenu.setConsumeAutoHidingEvents(false);
         table.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
@@ -307,7 +338,7 @@ public class DocumentListController extends WindowController {
                 return Integer.parseInt(string);
             }
         }));
-        table.getColumns().remove(countColumn);
+        table.getColumns().remove(countColumn); //this will be readded if object or relation is set
         textColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, String> p) -> new ReadOnlyStringWrapper(p.getValue().getText()));
         textColumn.setCellFactory(TextFieldTableCell.forTableColumn());
     }
@@ -326,12 +357,7 @@ public class DocumentListController extends WindowController {
      */
     public void setObject(final Object object) {
         this.object = object;
-        final Window w = window != null ? window : stage.getInnerWindow();
-        Platform.runLater(() -> {
-            table.getColumns().add(table.getColumns().size() - 1, countColumn);
-            textColumn.prefWidthProperty().bind(table.widthProperty().add(idColumn.widthProperty().add(addTimeColumn.widthProperty()).add(lastChangeTimeColumn.widthProperty()).add(processedColumn.widthProperty()).add(processTimeColumn.widthProperty()).add(countColumn.widthProperty()).multiply(-1).add(-30)));
-            w.setTitle(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(object.toString()));
-        });
+        convertToOccurrenceList(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(object.toString()));
     }
 
     @Override
@@ -351,12 +377,7 @@ public class DocumentListController extends WindowController {
      */
     public void setRelation(final Relation relation) {
         this.relation = relation;
-        final Window w = window != null ? window : stage.getInnerWindow();
-        Platform.runLater(() -> {
-            table.getColumns().add(table.getColumns().size() - 1, countColumn);
-            textColumn.prefWidthProperty().bind(table.widthProperty().add(idColumn.widthProperty().add(addTimeColumn.widthProperty()).add(lastChangeTimeColumn.widthProperty()).add(processedColumn.widthProperty()).add(processTimeColumn.widthProperty()).add(countColumn.widthProperty()).multiply(-1).add(-30)));
-            w.setTitle(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(relation.toString() + ": " + relation.getAnchorString()));
-        });
+        convertToOccurrenceList(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(relation.toString() + ": " + relation.getAnchorString()));
     }
 
     /**
@@ -365,6 +386,20 @@ public class DocumentListController extends WindowController {
      */
     public void setTextAnController(final TextAnController textAnController) {
         this.textAnController = textAnController;
+    }
+
+    /**
+     * Converts the list window to occurrence list for an object/relation.
+     * @param title new title
+     */
+    protected void convertToOccurrenceList(final String title) {
+        final Window w = window != null ? window : stage.getInnerWindow();
+        Platform.runLater(() -> {
+            filterPane.getChildren().remove(processedCheckBox);
+            table.getColumns().add(table.getColumns().size() - 1, countColumn);
+            textColumn.prefWidthProperty().bind(table.widthProperty().add(idColumn.widthProperty().add(addTimeColumn.widthProperty()).add(lastChangeTimeColumn.widthProperty()).add(processedColumn.widthProperty()).add(processTimeColumn.widthProperty()).add(countColumn.widthProperty()).multiply(-1).add(-30)));
+            w.setTitle(title);
+        });
     }
 
     /**

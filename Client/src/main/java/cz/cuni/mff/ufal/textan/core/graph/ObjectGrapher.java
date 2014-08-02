@@ -38,6 +38,6 @@ public class ObjectGrapher extends AbstractGrapher {
 
     @Override
     protected Graph fetchGraph() throws IdNotFoundException {
-        return client.getGraph(rootId, distance);
+        return client.getObjectGraph(rootId, distance);
     }
 }

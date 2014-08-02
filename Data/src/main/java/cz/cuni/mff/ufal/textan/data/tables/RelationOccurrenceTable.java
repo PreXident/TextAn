@@ -2,6 +2,8 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -14,6 +16,7 @@ import java.util.Objects;
  * @author Petr Fanta
  */
 @Entity
+@Indexed
 @Table(name = "RelationOccurrence")
 public class RelationOccurrenceTable extends AbstractTable {
     public static final String PROPERTY_NAME_ANCHOR = "anchor";
@@ -60,6 +63,7 @@ public class RelationOccurrenceTable extends AbstractTable {
     }
 
     @Column(name = "anchor", nullable = true)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     public String getAnchor() {
         return anchor;
     }
@@ -80,6 +84,7 @@ public class RelationOccurrenceTable extends AbstractTable {
     @ManyToOne
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_relation", nullable = false)
+    @IndexedEmbedded
     public RelationTable getRelation() {
         return relation;
     }

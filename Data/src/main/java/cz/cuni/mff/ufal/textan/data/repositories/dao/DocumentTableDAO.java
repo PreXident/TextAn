@@ -73,6 +73,70 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                 .collect(Collectors.toList());
     }
 
+    private Query findAllDocumentsWithObjectByFullTextQuery(long objectId, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query queryFullText = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query queryObject = builder
+                .keyword()
+                .onField("aliasOccurrences.alias.object.id")
+                .matching(objectId)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(queryFullText)
+                .must(queryObject)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    private int getNumberOfObjectOccurrencesInDocument(long documentId, long objectId) {
+        Query hq = currentSession().createQuery(
+                "select count(*) from DocumentTable as doc "
+                        + "inner join doc.aliasOccurrences as occ "
+                        + "inner join occ.alias as alias "
+                        + "inner join alias.object as obj "
+                        +"where doc.id = :documentId and obj.id = :objectId "
+        );
+        hq.setParameter("documentId", documentId);
+        hq.setParameter("objectId", objectId);
+
+        return ((Long)hq.iterate().next()).intValue();
+    }
+
+    @Override
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObjectByFullText(long objectId, String pattern) {
+
+        @SuppressWarnings("unchecked")
+        List<DocumentTable> documents = findAllDocumentsWithObjectByFullTextQuery(objectId, pattern).list();
+
+        List<Pair<DocumentTable, Integer>> documentCountPairs = documents.stream()
+                .map(x -> new Pair<>(x, getNumberOfObjectOccurrencesInDocument(x.getId(), objectId)))
+                .collect(Collectors.toList());
+
+        return documentCountPairs;
+    }
+
+    @Override
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObjectByFullText(long objectId, String pattern, int firstResult, int maxResults) {
+        @SuppressWarnings("unchecked")
+        List<DocumentTable> documents = addPagination(findAllDocumentsWithObjectByFullTextQuery(objectId, pattern), firstResult, maxResults).list();
+
+        List<Pair<DocumentTable, Integer>> documentCountPairs = documents.stream()
+                .map(x -> new Pair<>(x, getNumberOfObjectOccurrencesInDocument(x.getId(), objectId)))
+                .collect(Collectors.toList());
+
+        return documentCountPairs;
+    }
+
     @Override
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(RelationTable relation) {
         return findAllDocumentsWithRelation(relation.getId());
@@ -108,6 +172,68 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         return result.stream()
                 .map(x ->  new Pair<>((DocumentTable) x[0], ((Long)x[1]).intValue()))
                 .collect(Collectors.toList());
+    }
+
+    private Query findAllDocumentsWithRelationByFullTextQuery(long relationId, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query queryFullText = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query queryObject = builder
+                .keyword()
+                .onField("relationOccurrences.relation.id")
+                .matching(relationId)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(queryFullText)
+                .must(queryObject)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    private int getNumberOfRelationOccurrencesInDocument(long documentId, long relationId) {
+        Query hq = currentSession().createQuery(
+                "select count(*) from DocumentTable as doc "
+                        + "inner join doc.relationOccurrences as occ "
+                        + "inner join occ.relation rel "
+                        +"where rel.id = :relationId and doc.id = :documentId"
+        );
+        hq.setParameter("documentId", documentId);
+        hq.setParameter("relationId", relationId);
+
+        return ((Long)hq.iterate().next()).intValue();
+    }
+
+    @Override
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelationByFullText(long relationId, String pattern) {
+        @SuppressWarnings("unchecked")
+        List<DocumentTable> documents = findAllDocumentsWithRelationByFullTextQuery(relationId, pattern).list();
+
+        List<Pair<DocumentTable, Integer>> documentCountPairs = documents.stream()
+                .map(x -> new Pair<>(x, getNumberOfRelationOccurrencesInDocument(x.getId(), relationId)))
+                .collect(Collectors.toList());
+
+        return documentCountPairs;
+    }
+
+    @Override
+    public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelationByFullText(long relationId, String pattern, int firstResult, int maxResults) {
+        @SuppressWarnings("unchecked")
+        List<DocumentTable> documents = addPagination(findAllDocumentsWithRelationByFullTextQuery(relationId, pattern), firstResult, maxResults).list();
+
+        List<Pair<DocumentTable, Integer>> documentCountPairs = documents.stream()
+                .map(x -> new Pair<>(x, getNumberOfRelationOccurrencesInDocument(x.getId(), relationId)))
+                .collect(Collectors.toList());
+
+        return documentCountPairs;
     }
 
     @Override
@@ -194,9 +320,9 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                 .createQuery();
 
         org.apache.lucene.search.Query query = builder
-                .keyword()
-                .onField("processedBool")
-                .matching(processed)
+                .bool()
+                .must(queryFullText)
+                .must(queryProcessed)
                 .createQuery();
 
         return fullTextSession.createFullTextQuery(query);

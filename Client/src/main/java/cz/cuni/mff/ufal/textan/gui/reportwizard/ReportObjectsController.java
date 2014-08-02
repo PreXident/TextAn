@@ -8,6 +8,7 @@ import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
+import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
@@ -133,7 +134,7 @@ public class ReportObjectsController extends ReportWizardController {
         }
         if (pipeline.lock.tryAcquire()) {
             if (builder.length() != 0) {
-                callWithContentBackup(() ->
+                callWithContentBackup(() -> {
                     createDialog()
                             .owner(getDialogOwner(root))
                             .title(Utils.localize(resourceBundle, "error.objects.unassigned"))
@@ -147,7 +148,7 @@ public class ReportObjectsController extends ReportWizardController {
                                 public void printStackTrace(PrintWriter s) {
                                     s.write(builder.toString());
                                 }
-                            }));
+                            });});
                 pipeline.lock.release();
             } else {
                 getMainNode().setCursor(Cursor.WAIT);
@@ -187,7 +188,9 @@ public class ReportObjectsController extends ReportWizardController {
         });
         allObjectsCheckBox = new CheckBox();
         allObjectsCheckBox.setText(Utils.localize(resourceBundle, "include.all.objects"));
-        allObjectsCheckBox.selectedProperty().addListener(e -> filterObjects(selectedEntity));
+        allObjectsCheckBox.selectedProperty().addListener(e -> {
+            filterObjects(selectedEntity);
+        });
         final VBox vbox = new VBox();
         vbox.getChildren().addAll(allObjectsCheckBox, dbListView);
         splitVert.getItems().addAll(vbox, newListView);
@@ -206,6 +209,11 @@ public class ReportObjectsController extends ReportWizardController {
         border.setTop(top);
         contextMenu = new ContextMenu(new CustomMenuItem(border, true));
         contextMenu.setConsumeAutoHidingEvents(false);
+    }
+
+    @Override
+    public Runnable getContainerCloser() {
+        return getSavePrompter(root);
     }
 
     @Override
@@ -491,7 +499,7 @@ public class ReportObjectsController extends ReportWizardController {
     }
 
     @Override
-    public void setWindow(final Window window) {
+    public void setWindow(final InnerWindow window) {
         super.setWindow(window);
         window.getScene().getWindow().widthProperty().addListener(e -> {
             Utils.runFXlater(() -> { textFlow.layoutChildren(); });

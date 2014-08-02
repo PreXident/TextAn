@@ -2,6 +2,8 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -17,6 +19,7 @@ import org.hibernate.annotations.OnDeleteAction;
  * @author Petr Fanta
  */
 @Entity
+@Indexed
 @Table(name = "Relation")
 public class RelationTable extends AbstractTable {
     public static final String PROPERTY_NAME_RELATION_TYPE_ID = "relationType";
@@ -61,6 +64,7 @@ public class RelationTable extends AbstractTable {
     @ManyToOne
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_relation_type", nullable = false)
+    @IndexedEmbedded
     public RelationTypeTable getRelationType() {
         return relationType;
     }
@@ -72,6 +76,7 @@ public class RelationTable extends AbstractTable {
     @OneToMany(mappedBy = "relation", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @IndexedEmbedded(includePaths = "anchor")
     public Set<RelationOccurrenceTable> getOccurrences() {
         return occurrences;
     }

@@ -48,4 +48,17 @@ public interface IRelationTableDAO extends
      */
     List<RelationTable> findAllByRelationType(RelationTypeTable type, int firstResult, int pageSize);
 
+    /**
+     * 
+     * @param version
+     * @return 
+     */
+    List<RelationTable> findAllSinceGlobalVersion(long version);
+
+    List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter);
+    List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter, int firstResult, int maxResults);
+
+
+    List<RelationTable> findAllByAnchorFullText(String anchorFilter);
+    List<RelationTable> findAllByAnchorFullText(String anchorFilter, int firstResult, int maxResults);
 }

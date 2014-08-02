@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Entity;
+import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import java.util.List;
 import java.util.Optional;
@@ -40,13 +41,24 @@ final class ReportEntitiesState extends State {
     }
 
     @Override
-    public void back(final ProcessReportPipeline pipeline) {
-        pipeline.incStepsBack();
-        pipeline.setState(ReportEditState.getInstance());
+    protected java.lang.Object readResolve() {
+        return getInstance();
     }
 
     @Override
-    public void setReportWords(final ProcessReportPipeline pipeline, final List<Word> words) {
+    public void back(final ProcessReportPipeline pipeline) {
+        if (pipeline.reportId < 1) {
+            pipeline.incStepsBack();
+            pipeline.setState(ReportEditState.getInstance());
+        } else {
+            pipeline.lock.release();
+        }
+    }
+
+    @Override
+    public void setReportWords(final ProcessReportPipeline pipeline,
+            final List<Word> words) throws DocumentChangedException,
+            DocumentAlreadyProcessedException {
         pipeline.reportWords = words;
         if (pipeline.getStepsBack() <= 0) {
             final List<Entity> ents = pipeline.reportEntities;
@@ -70,7 +82,15 @@ final class ReportEntitiesState extends State {
                 builder.index = ents.size();
                 ents.add(new Entity(alias.toString(), start, pipeline.reportText.length() - start, builder.getType()));
             }
-            pipeline.client.getObjects(pipeline.ticket, pipeline.reportText, pipeline.reportEntities);
+            if (pipeline.reportId > 0) {
+                try {
+                    pipeline.client.getObjects(pipeline.ticket, pipeline.reportId, pipeline.reportEntities);
+                } catch (IdNotFoundException ex) {
+                    throw new RuntimeException("This should never happen!", ex);
+                }
+            } else {
+                pipeline.client.getObjects(pipeline.ticket, pipeline.reportText, pipeline.reportEntities);
+            }
             for (Entity ent : pipeline.reportEntities) {
                 final Optional<Pair<Double, Object>> max = ent.getCandidates()
                         .stream().max(Entity.COMPARATOR);

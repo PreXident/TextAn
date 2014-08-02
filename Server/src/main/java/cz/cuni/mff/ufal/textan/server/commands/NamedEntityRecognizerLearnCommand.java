@@ -26,7 +26,7 @@ public class NamedEntityRecognizerLearnCommand extends Command {
 
         NamedEntityRecognizerLearnCommand command = (NamedEntityRecognizerLearnCommand) obj;
 
-        return receiver == command.receiver;
+        return receiver.equals(command.receiver);
         //return !(receiver != null ? !receiver.equals(that.receiver) : that.receiver != null);
     }
 

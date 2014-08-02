@@ -61,6 +61,8 @@ public class StateChangedListener implements IStateChangedListener {
 
     {
         fxmlMapping.put(StateType.LOAD, new StateInfo("01_ReportLoad.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01_ReportLoad", "report.wizard.load.title"));
+        fxmlMapping.put(StateType.SELECT_FILE, new StateInfo("01a_SelectFile.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01a_SelectFile", "report.wizard.selectfile.title"));
+        fxmlMapping.put(StateType.SELECT_DOCUMENT, new StateInfo("01b_SelectDocument.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.01b_SelectDocument", "report.wizard.selectdocument.title"));
         fxmlMapping.put(StateType.EDIT_REPORT, new StateInfo("02_ReportEdit.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.02_ReportEdit", "report.wizard.edit.title"));
         fxmlMapping.put(StateType.EDIT_ENTITIES, new StateInfo("03_ReportEntities.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.03_ReportEntities", "report.wizard.entities.title"));
         fxmlMapping.put(StateType.EDIT_OBJECTS, new StateInfo("04_ReportObjects.fxml", "cz.cuni.mff.ufal.textan.gui.reportwizard.04_ReportObjects", "report.wizard.objects.title"));
@@ -119,7 +121,7 @@ public class StateChangedListener implements IStateChangedListener {
     }
 
     @Override
-    public void stateChanged(State newState) {
+    public void stateChanged(final State oldState, final State newState) {
         Platform.runLater(() -> {
             if (newState.getType() == StateType.DONE) {
                 if (window != null) {
@@ -160,7 +162,11 @@ public class StateChangedListener implements IStateChangedListener {
                         .title(Utils.localize(resourceBundle, "error.next.page"))
                         .showException(e);
             }
-            pipeline.lock.release();
+            //if lock locked, unlock
+            if (oldState != null && oldState.getType().isLocking()) {
+                pipeline.lock.release();
+            }
+            controller.nowInControl();
         });
     }
 

@@ -13,13 +13,7 @@
         <xs:sequence>
             <xs:element name="id" type="xs:long"/>
             <xs:element ref="objectType" />
-            <xs:element name="aliases">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="alias" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
+            <xs:element name="alias" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
             <xs:element name="isJoined" type="xs:boolean"/>
         </xs:sequence>
         <xs:attribute name="isNew" type="xs:boolean" default="false" /> 

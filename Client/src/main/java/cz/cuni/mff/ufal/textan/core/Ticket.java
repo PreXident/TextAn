@@ -1,16 +1,19 @@
 package cz.cuni.mff.ufal.textan.core;
 
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Client representation of
  * {@link cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket}.
  */
-public class Ticket {
+public class Ticket implements Serializable {
 
     /** Ticket timestamp. */
     private final Date timestamp;
+    /** Server state */
+    private final long version;
 
     /**
      * Only constructor.
@@ -18,6 +21,7 @@ public class Ticket {
      */
     public Ticket(final EditingTicket ticket) {
         timestamp = ticket.getTimestamp();
+        version = ticket.getVersion();
     }
 
     /**
@@ -36,6 +40,7 @@ public class Ticket {
         final cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket result =
                 new cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket();
         result.setTimestamp(timestamp);
+        result.setVersion(version);
         return result;
     }
 }
