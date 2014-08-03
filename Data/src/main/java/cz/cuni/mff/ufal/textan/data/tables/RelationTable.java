@@ -10,6 +10,8 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Relation itself
@@ -73,7 +75,8 @@ public class RelationTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "relation", orphanRemoval = true)
-    @Cascade(CascadeType.DELETE)
+    @Cascade(CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @IndexedEmbedded(includePaths = "anchor")
     @ContainedIn
     public Set<RelationOccurrenceTable> getOccurrences() {
@@ -84,7 +87,7 @@ public class RelationTable extends AbstractTable {
         this.occurrences = occurrences;
     }
 
-    @OneToMany(mappedBy = "relation")
+    @OneToMany(mappedBy = "relation", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
     public Set<InRelationTable> getObjectsInRelation() {
         return objectsInRelation;

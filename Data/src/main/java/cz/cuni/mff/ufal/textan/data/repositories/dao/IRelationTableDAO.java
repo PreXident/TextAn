@@ -10,7 +10,9 @@ import java.util.List;
  * DAO interface to get Relations
  * 
  */
-public interface IRelationTableDAO extends IObjectRelationDAO<RelationTable> {
+public interface IRelationTableDAO extends 
+        IObjectRelationDAO<RelationTable>,
+        IGlobalVersionedTableDAO<RelationTable> {
 
     /**
      * finds all relations of specified type

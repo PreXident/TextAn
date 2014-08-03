@@ -7,6 +7,10 @@ import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
+import org.hibernate.annotations.GenericGenerator;
+
+
+
 
 /**
  * Table that is able to cover joining two objects into one
@@ -57,7 +61,8 @@ public class JoinedObjectsTable extends AbstractTable {
     }
 
     @Id
-    @Column(name = "id_new_object", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id_joined_object", nullable = false, unique = true)
     public long getId() {
         return id;
     }
@@ -88,7 +93,7 @@ public class JoinedObjectsTable extends AbstractTable {
 
     @OneToOne
     @Cascade(CascadeType.SAVE_UPDATE)
-    @PrimaryKeyJoinColumn(name = "id_new_object")
+    @JoinColumn(name = "id_new_object", nullable = false)
     public ObjectTable getNewObject() {
         return newObject;
     }
@@ -131,9 +136,11 @@ public class JoinedObjectsTable extends AbstractTable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 83 * hash + (int) (this.id ^ (this.id >>> 32));
-        hash = 83 * hash + Objects.hashCode(this.newObject);
+        int hash = 3;
+        hash = 37 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 37 * hash + Objects.hashCode(this.from);
+        hash = 37 * hash + Objects.hashCode(this.to);
+        hash = 37 * hash + (int) (this.globalVersion ^ (this.globalVersion >>> 32));
         return hash;
     }
 
@@ -149,8 +156,19 @@ public class JoinedObjectsTable extends AbstractTable {
         if (this.id != other.id) {
             return false;
         }
-        return Objects.equals(this.newObject, other.newObject);
+        if (!Objects.equals(this.from, other.from)) {
+            return false;
+        }
+        if (!Objects.equals(this.to, other.to)) {
+            return false;
+        }
+        if (this.globalVersion != other.globalVersion) {
+            return false;
+        }
+        return true;
     }
+
+    
 
     @Override
     public String toString() {

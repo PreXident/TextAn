@@ -102,8 +102,8 @@ public class DocumentTable extends AbstractTable {
         this.text = text;
     }
 
-    @OneToMany(mappedBy = "document")
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @OneToMany(mappedBy = "document", orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
     @IndexedEmbedded(includePaths = "relation.id")
     public Set<RelationOccurrenceTable> getRelationOccurrences() {
         return relationOccurrences;
@@ -113,8 +113,8 @@ public class DocumentTable extends AbstractTable {
         this.relationOccurrences = relationOccurrences;
     }
 
-    @OneToMany(mappedBy = "document")
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @OneToMany(mappedBy = "document", orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
     @IndexedEmbedded(includePaths = "alias.object.id")
     public Set<AliasOccurrenceTable> getAliasOccurrences() {
         return aliasOccurrences;

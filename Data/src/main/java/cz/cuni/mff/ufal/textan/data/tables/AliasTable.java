@@ -9,6 +9,8 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Alias of an entity. For a person it could be "Karel", "Kája" or "The butcher"
@@ -73,7 +75,7 @@ public class AliasTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "alias", orphanRemoval = true)
-    @Cascade({CascadeType.DELETE})
+    @Cascade({CascadeType.ALL})
     @ContainedIn
     public Set<AliasOccurrenceTable> getOccurrences() {
         return occurrences;

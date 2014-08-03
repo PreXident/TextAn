@@ -7,7 +7,15 @@
 package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IGlobalVersionTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.*;
+import cz.cuni.mff.ufal.textan.data.test.common.Utils;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.Arrays;
+import org.hibernate.SessionFactory;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -26,6 +35,22 @@ public class DataTest {
 
     @Autowired
     private Data data;
+
+    @Autowired
+    private SessionFactory sessionFactory;    
+    
+    @Autowired
+    IObjectTableDAO objectTableDAO;
+
+    @Autowired
+    IRelationTypeTableDAO relationTypeTableDAO;
+        
+    @Autowired
+    IDocumentTableDAO documentTableDAO;
+
+    @Autowired
+    IGlobalVersionTableDAO globalVersionDAO;
+
     
     private DocumentTable document;
     private RelationTypeTable relationType;
@@ -35,6 +60,7 @@ public class DataTest {
     private ObjectTable object;
     private AliasTable alias;
     private AliasOccurrenceTable aliasOccurrence;
+
     
     @Before
     public void setUp() {
@@ -62,6 +88,7 @@ public class DataTest {
     @After
     public void tearDown() {
          System.out.println("\n\nClean");
+         /*
          assertTrue(data.deleteRecord(relationOccurrence));
          assertTrue(data.deleteRecord(aliasOccurrence));
          assertTrue(data.deleteRecord(document));
@@ -70,6 +97,12 @@ public class DataTest {
          assertTrue(data.deleteRecord(alias));
          assertTrue(data.deleteRecord(object));
          assertTrue(data.deleteRecord(object.getObjectType()));
+         */
+         
+
+         
+         System.out.println(" clearAllTables");
+         Utils.clearAllTables(sessionFactory);
     }
 
     // TODO add test methods here.
@@ -357,21 +390,48 @@ public class DataTest {
 
         }
     }
+    
+    /*
+    @Test
+    public void deleteTestValuesTest() {
+         System.out.println("deleteTestValuesTest");
 
+         System.out.println("relation types: " + relationTypeTableDAO.findAll().size());
+         System.out.println("documents: " + documentTableDAO.findAll().size());
+         System.out.println("objects: " + objectTableDAO.findAll().size());
+
+         System.out.println("deleting...");
+         Utils.deleteTestValues(sessionFactory);
+
+         System.out.println("relation types: " + relationTypeTableDAO.findAll().size());
+         System.out.println("documents: " + documentTableDAO.findAll().size());
+         System.out.println("objects: " + objectTableDAO.findAll().size());
+
+         
+         Assert.assertEquals("There is an test Document left", 0, documentTableDAO.findAllDocumentsByFullText("[TEST]").size());
+         
+         //Assert.assertEquals("There is an test Relation Type left", 0, relationTypeTableDAO.("[TEST]").size());
+         
+         Assert.assertEquals("There is an test Object left", 0, objectTableDAO.findAllByAliasSubstring("[TEST]").size());
+    }
+    */
+/*
     @Test
     public void addAndRemoveJoinedObjectsTest() {
         System.out.println("\n\naddAndRemoveJoinedObjectsTest");
         JoinedObjectsTable user = new JoinedObjectsTable(object, object, object);
+        System.out.println("user = " + user);
         assertTrue("Object type already exists or cant be added", data.addRecord(user));
         long id = user.getId();
+        System.out.println("user.id = " + id);
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
         JoinedObjectsTable user2 = null;
         user2 = data.getRecordById(JoinedObjectsTable.class, id);
-        assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
+        assertTrue("user2.equals(user):\nuser1 = " + user + ";\nuser2 = " + user2, user2.equals(user));
         assertTrue("data.deleteRecord(user2)", data.deleteRecord(user2));
     }
-    
+  */  
     
     // TODO:IsInRelationBidirectionalTest
     

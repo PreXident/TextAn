@@ -1,0 +1,56 @@
+Kuba is missing.
+
+Adam:
+- pagination fix (1/1 instead of 1/0)
+- Include All Objects check box in Report Object Step is now unchecked by default
+- it is now possible to force report text even if it was modified by someone else
+- added warning about losing progress to pipeline when going back
+- (de)maximalization now layouts textflow children
+- relation type context menu now never has list item in italics
+- processedTime column fix in document list
+
+Venca:
+- all hwk done, except for joining (WiP) and locking
+
+Tam:
+- not much, refactored source for easy reading
+
+HWK:
+- Adam, linux problems:
+	- issues with first run - main window cannot be resized and main menus are not displayed correctly
+	- explore possibility of double buffering because the context menus on linux are shown before they are resized and moved
+- Adam, add toolbar to the main window
+- Adam, (optional) combobox for relation roles (so it is easy to add objects with the same role)
+- Adam, (optional)
+- Peter, check datatest.addAndRemoveJoinedObjectTest
+- Peter, it looks like filtering objects does not work, various problems
+- Peter, write email to Ondrej
+- Peter, clean db, clean server and still class not found exception for Triple
+- Venca, saving now always throws version error
+- Venca, get aliases from all objects joined with it
+- Venca, audit table needs column date
+- Venca, when document changed update change date
+- Venca, versioning is wrong (by one error) - return result + 1
+
+- All, annotate!!!
+- All, test!!!
+- All, think about presentation
+
+(Czech or English?)
+Outline of presentation:
+- introduction
+	- motivation - Police work
+	- generalization - use outside the Police
+		- transition to the next point
+- specification
+- demo (data in db)
+	- pipeline - assignment test, new object type,
+	- document list
+	- object list
+	- graphs
+	- search
+- technical details:
+	- architecture?
+	- text processing - TextPro (Tam?), Nametag
+
+Next meeting on Tuesday at 16:30 (maybe transfer in response for Bojar's email)

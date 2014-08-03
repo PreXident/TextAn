@@ -11,12 +11,13 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Object (entity) itself
  *
  * @author Vaclav Pernicka
- * @author Petr Fanta
  */
 @Entity
 @Indexed
@@ -110,7 +111,7 @@ public class ObjectTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "object", orphanRemoval = true)
-    @Cascade(CascadeType.DELETE)
+    @Cascade(CascadeType.ALL)
     @IndexedEmbedded(includePaths = "alias")
     @ContainedIn
     public Set<AliasTable> getAliases() {
