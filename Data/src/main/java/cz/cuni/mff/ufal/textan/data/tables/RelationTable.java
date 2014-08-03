@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -74,6 +75,7 @@ public class RelationTable extends AbstractTable {
     @OneToMany(mappedBy = "relation", orphanRemoval = true)
     @Cascade(CascadeType.DELETE)
     @IndexedEmbedded(includePaths = "anchor")
+    @ContainedIn
     public Set<RelationOccurrenceTable> getOccurrences() {
         return occurrences;
     }

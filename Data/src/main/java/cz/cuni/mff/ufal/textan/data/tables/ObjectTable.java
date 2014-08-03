@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -111,6 +112,7 @@ public class ObjectTable extends AbstractTable {
     @OneToMany(mappedBy = "object", orphanRemoval = true)
     @Cascade(CascadeType.DELETE)
     @IndexedEmbedded(includePaths = "alias")
+    @ContainedIn
     public Set<AliasTable> getAliases() {
         return aliases;
     }

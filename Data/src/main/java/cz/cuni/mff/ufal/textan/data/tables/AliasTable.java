@@ -17,7 +17,6 @@ import java.util.Set;
  * @author Petr Fanta
  */
 @Entity
-@Indexed
 @Table(name = "Alias")
 public class AliasTable extends AbstractTable {
     public static final String PROPERTY_NAME_ALIAS = "alias";
@@ -64,6 +63,7 @@ public class AliasTable extends AbstractTable {
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object", nullable = false)
     @IndexedEmbedded
+    @ContainedIn
     public ObjectTable getObject() {
         return object;
     }
@@ -74,6 +74,7 @@ public class AliasTable extends AbstractTable {
 
     @OneToMany(mappedBy = "alias", orphanRemoval = true)
     @Cascade({CascadeType.DELETE})
+    @ContainedIn
     public Set<AliasOccurrenceTable> getOccurrences() {
         return occurrences;
     }

@@ -56,6 +56,7 @@ public class RelationTypeTable extends AbstractTable {
 
     @OneToMany(mappedBy = "relationType", orphanRemoval = true)
     @Cascade(CascadeType.DELETE)
+    @ContainedIn
     public Set<RelationTable> getRelationsOfThisType() {
         return relationsOfThisType;
     }

@@ -2,10 +2,8 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Store;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -59,6 +57,7 @@ public class ObjectTypeTable extends AbstractTable {
 
     @OneToMany(mappedBy = "objectType", orphanRemoval = true)
     @Cascade(CascadeType.DELETE)
+    @ContainedIn
     public Set<ObjectTable> getObjectsOfThisType() {
         return objectsOfThisType;
     }

@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -14,7 +15,6 @@ import javax.persistence.*;
  * @author Petr Fanta
  */
 @Entity
-@Indexed
 @Table(name = "AliasOccurrence")
 public class AliasOccurrenceTable extends AbstractTable {
     /**
@@ -101,6 +101,7 @@ public class AliasOccurrenceTable extends AbstractTable {
     @ManyToOne
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_document", nullable = false)
+    @ContainedIn
     public DocumentTable getDocument() {
         return document;
     }
