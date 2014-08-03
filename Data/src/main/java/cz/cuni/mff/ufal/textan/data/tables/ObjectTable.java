@@ -76,6 +76,7 @@ public class ObjectTable extends AbstractTable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_root_object")
+    @ContainedIn
     public ObjectTable getRootObject() {
         return rootObject;
     }
@@ -87,6 +88,16 @@ public class ObjectTable extends AbstractTable {
     @Transient
     public boolean isRootObject() {
         return this == rootObject;
+    }
+
+    @OneToMany(mappedBy = "rootObject")
+    @IndexedEmbedded(includePaths = "aliases.alias")
+    public Set<ObjectTable> getRootOfObjects() {
+        return rootOfObjects;
+    }
+
+    public void setRootOfObjects(Set<ObjectTable> rootOfObjects) {
+        this.rootOfObjects = rootOfObjects;
     }
 
     @Column(name = "globalversion", nullable = false)
@@ -209,15 +220,6 @@ public class ObjectTable extends AbstractTable {
             result.addAll(getNewObject().getOldObject2().getObjectsThisWasJoinedFrom());
         }
         return result;
-    }
-
-    @OneToMany(mappedBy = "rootObject")
-    public Set<ObjectTable> getRootOfObjects() {
-        return rootOfObjects;
-    }
-
-    public void setRootOfObjects(Set<ObjectTable> rootOfObjects) {
-        this.rootOfObjects = rootOfObjects;
     }
 
     @Override

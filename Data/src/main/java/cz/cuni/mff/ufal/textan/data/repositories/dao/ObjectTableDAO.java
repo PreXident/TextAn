@@ -179,7 +179,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
         QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
         org.apache.lucene.search.Query query = builder
                 .phrase()
-                .onField("aliases.alias")
+                .onField("rootOfObjects.aliases.alias")
                 .sentence(pattern)
                 .createQuery();
 
@@ -192,7 +192,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
         QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
         org.apache.lucene.search.Query fullTextQuery = builder
                 .phrase()
-                .onField("aliases.alias")
+                .onField("rootOfObjects.aliases.alias")
                 .sentence(pattern)
                 .createQuery();
 
