@@ -93,6 +93,7 @@ public class GraphFactory {
     }
     
     @SuppressWarnings({"rawtypes"})
+    @Transactional(readOnly = true)
     private Graph getGraphFromObject(long objectId, int depth, Set<Node> passedNodes) {
         if (depth <= 0) {
             return new Graph().add(new ObjectNode(objectTableDAO.find(objectId)));
