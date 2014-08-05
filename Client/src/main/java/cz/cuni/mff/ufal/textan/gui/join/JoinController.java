@@ -336,6 +336,9 @@ public class JoinController extends WindowController {
         //
         typeComboBox.valueProperty().addListener((ov, oldVal, newVal) -> {
             leftPageNo = 0;
+            rightPageNo = 0;
+            leftFilter();
+            rightFilter();
         });
         joinButton.prefWidthProperty().bind(root.widthProperty());
     }
