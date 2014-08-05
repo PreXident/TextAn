@@ -191,16 +191,17 @@ public class TextPro implements ITextPro {
             /* Assign value */
             /***************** ASSIGN VALUE *********************************/
             List<Pair<Long, Double>> entityScore = new ArrayList<>();
-            for (int i = 0; i < test.getObjectListID().size(); i++){
-                Instance in = instances.get(i);
+            for (int test_id = 0; test_id < test.getObjectListID().size();  test_id++){
+                Instance in = instances.get(test_id);
                 Object predictedClassValue = this.model.classify(in);
                 
                 /*
                  * OK, make it dump, no learning at all.
+                 * The id of object has to be test_id, associated with two parallel list, 
+                 * not the id of entity
                 */
                 if(predictedClassValue.toString().equalsIgnoreCase("1") || true) {
-
-                    entityScore.add(new Pair<>(test.getObjectListID().get(i), test.getObjectListScore().get(i)));
+                    entityScore.add(new Pair<>(test.getObjectListID().get(test_id), test.getObjectListScore().get(test_id)));
                 }
             }
             eMap.put(e, entityScore);
