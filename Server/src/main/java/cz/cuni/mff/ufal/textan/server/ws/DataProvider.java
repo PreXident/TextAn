@@ -409,7 +409,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
             @WebParam(partName = "getObjectsByIdsRequest", name = "getObjectsByIdsRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetObjectsByIdsRequest getObjectsByIdsRequest) throws IdNotFoundException {
 
-        LOG.info("Executing operation getDocumentsContainsObjectById: {}", getObjectsByIdsRequest);
+        LOG.info("Executing operation getObjectsByIds: {}", getObjectsByIdsRequest);
 
         try {
             Set<Object> objects = new HashSet<>(getObjectsByIdsRequest.getObjectIds().size());
@@ -422,11 +422,11 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
                 response.getObjects().add(object.toCommonsObject());
             }
 
-            LOG.info("Executed operation getDocumentsContainsObjectById: {}", response);
+            LOG.info("Executed operation getObjectsByIds: {}", response);
             return response;
 
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
-            LOG.warn("Problem in operation getDocumentsContainsObjectById.", e);
+            LOG.warn("Problem in operation getObjectsByIds.", e);
             throw translateIdNotFoundException(e);
         }
     }
