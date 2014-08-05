@@ -38,9 +38,6 @@ public class ReportLoadController extends ReportWizardController {
     @FXML
     private ToggleGroup loadToggleGroup;
 
-    /** Localization container. */
-    ResourceBundle resourceBundle;
-
     @FXML
     private void next() {
         final Toggle toggled = loadToggleGroup.getSelectedToggle();
@@ -94,6 +91,6 @@ public class ReportLoadController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        resourceBundle = rb;
+        super.initialize(url, rb);
     }
 }

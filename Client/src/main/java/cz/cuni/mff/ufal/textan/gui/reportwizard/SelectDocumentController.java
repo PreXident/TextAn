@@ -6,19 +6,16 @@ import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import cz.cuni.mff.ufal.textan.gui.Window;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentListController;
 import java.net.URL;
 import java.util.Date;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -72,9 +69,6 @@ public class SelectDocumentController extends ReportWizardController {
     @FXML
     private Label paginationLabel;
 
-    @FXML
-    private Slider slider;
-
     /** Controller of the document list. */
     protected DocumentListController listController;
 
@@ -122,7 +116,7 @@ public class SelectDocumentController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        super.initialize(url, rb);
         slider.setLabelFormatter(new SliderLabelFormatter() {
             @Override
             public String toString(Double val) {
