@@ -48,6 +48,21 @@ public class RelationType implements Serializable {
         return name;
     }
 
+    @Override
+    public boolean equals(final java.lang.Object other) {
+        if (other == null || !(other instanceof RelationType)) {
+            return false;
+        }
+        return id == ((RelationType) other).id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 61 * hash + (int) (this.id ^ (this.id >>> 32));
+        return hash;
+    }
+
     /**
      * Creates new commons RelationType.
      * @return new commons RelationType

@@ -32,7 +32,7 @@
 								<TableView fx:id="table">
 									<columns>
 										<TableColumn fx:id="orderColumn" text="%order" resizable="false" prefWidth="60" />
-										<TableColumn fx:id="roleColumn" text="%role" resizable="false" prefWidth="100" />
+										<TableColumn fx:id="roleColumn" text="%role" resizable="false" prefWidth="120" />
 										<TableColumn fx:id="objectColumn" text="%object" resizable="false" />
 									</columns>
 									<placeholder>
