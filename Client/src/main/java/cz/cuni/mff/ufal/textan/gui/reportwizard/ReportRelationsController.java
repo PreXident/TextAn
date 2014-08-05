@@ -49,12 +49,14 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
@@ -271,6 +273,17 @@ public class ReportRelationsController extends ReportWizardController {
             textFlow.layoutChildren();
         });
         table.setEditable(true);
+        table.setRowFactory(t -> {
+            final TableRow<FXRelationInfo> row = new TableRow<>();
+            row.setOnMouseClicked(e -> {
+                if (e.getButton().equals(MouseButton.PRIMARY)
+                        && e.getClickCount() == 2
+                        && row.getItem() == null) {
+                    add();
+                }
+            });
+            return row;
+        });
         objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().add(roleColumn.prefWidthProperty()) .multiply(-1).add(-2)));
         orderColumn.setCellValueFactory((CellDataFeatures<FXRelationInfo, Number> p) -> p.getValue().orderProperty());
         orderColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {
