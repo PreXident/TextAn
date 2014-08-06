@@ -164,9 +164,9 @@ public class ReportObjectsController extends ReportWizardController {
         splitVert.setOrientation(Orientation.HORIZONTAL);
         dbListView = new ListView<>();
         dbListView.setPrefHeight(100);
-        dbListView.setTooltip(new Tooltip());
         newListView = new ListView<>();
         newListView.setPrefHeight(100);
+        newListView.setMinWidth(30);
         final Button add = new Button("+");
         add.setOnAction(e -> {
             contextMenu.hide();
