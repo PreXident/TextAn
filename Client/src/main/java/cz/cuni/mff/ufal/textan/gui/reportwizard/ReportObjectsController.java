@@ -282,7 +282,8 @@ public class ReportObjectsController extends ReportWizardController {
             if (ev.getCode() == KeyCode.ENTER) {
                 contextMenu.hide();
                 final Pair<Double, Object> p = dbListView.getSelectionModel().getSelectedItem();
-                setObjectAsSelectedEntityCandidate(p.getSecond());
+                final Object obj = p != null ? p.getSecond() : null;
+                setObjectAsSelectedEntityCandidate(obj);
             }
         });
         dbListView.setCellFactory(new Callback<ListView<Pair<Double, Object>>, ListCell<Pair<Double, Object>>>() {
@@ -291,21 +292,22 @@ public class ReportObjectsController extends ReportWizardController {
                 return new ListCell<Pair<Double, Object>>() {
                     {
                         this.setOnMousePressed((MouseEvent e) -> {
+                            final Pair<Double, Object> item = this.getItem();
+                            final Object obj = item != null ? item.getSecond() : null;
                             if (e.isPrimaryButtonDown()) {
                                 contextMenu.hide();
-                                @SuppressWarnings("unchecked")
-                                final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
-                                setObjectAsSelectedEntityCandidate(p.getSecond());
+                                setObjectAsSelectedEntityCandidate(obj);
                             } else {
-                                objectForGraph.set(this.getItem().getSecond());
+                                objectForGraph.set(obj);
                             }
                         });
                         this.setOnMouseEntered(e -> {
-                            @SuppressWarnings("unchecked")
-                            final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
+                            final Pair<Double, Object> p = this.getItem();
                             if (p != null) {
                                 dbTooltip.setText(p.getSecond().toString());
                                 dbListView.setTooltip(dbTooltip);
+                            } else {
+                                dbListView.setTooltip(null);
                             }
                         });
                         this.setOnMouseExited(e -> {
@@ -340,16 +342,16 @@ public class ReportObjectsController extends ReportWizardController {
                     {
                         this.setOnMouseClicked((MouseEvent t) -> {
                             contextMenu.hide();
-                            @SuppressWarnings("unchecked")
-                            final Object obj = ((ListCell<Object>) t.getSource()).getItem();
+                            final Object obj = this.getItem();
                             setNewObjectAsSelectedEntityCandidate(obj);
                         });
                         this.setOnMouseEntered(e -> {
-                            @SuppressWarnings("unchecked")
-                            final Object o = ((ListCell<Object>) e.getSource()).getItem();
+                            final Object o = this.getItem();
                             if (o != null) {
                                 newTooltip.setText(o.toString());
                                 newListView.setTooltip(newTooltip);
+                            } else {
+                                newListView.setTooltip(null);
                             }
                         });
                         this.setOnMouseExited(e -> {
@@ -378,11 +380,10 @@ public class ReportObjectsController extends ReportWizardController {
      * @param object new candidate
      */
     private void setNewObjectAsSelectedEntityCandidate(final Object object) {
-        if (object instanceof NewObject) {
+        if (object != null && object instanceof NewObject) {
             ++((NewObject) object).refCount;
         }
-        /*final Entity ent = */setObjectAsSelectedEntityCandidate(object);
-        //object.getAliases().add(ent.getValue());
+        setObjectAsSelectedEntityCandidate(object);
     }
 
     /**
