@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -244,7 +245,7 @@ public class SaveService {
                 throw new IdNotFoundException("objectId", objectId);
             }
 
-            List<AliasTable> aliases = aliasTableDAO.findAllAliasesOfObject(objectTable);
+            List<AliasTable> aliases = new LinkedList<>(objectTable.getAliases());
             AliasTable aliasTable = null;
             for (AliasTable alias : aliases) {
                 if (occurrence.getValue().equals(alias.getAlias())) {
