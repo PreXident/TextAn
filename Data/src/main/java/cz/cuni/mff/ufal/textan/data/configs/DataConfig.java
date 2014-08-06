@@ -18,7 +18,9 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.io.File;
@@ -123,19 +125,7 @@ public class DataConfig {
 
         //sessionFactory.getConfiguration().setInterceptor(logInterceptor());
 
-        SessionFactory factory = sessionFactory.getObject();
-
-        //Initialize of fulltext indexes (TODO: better place)
-        Session session = factory.openSession();
-        FullTextSession fullTextSession = Search.getFullTextSession(session);
-        try {
-            fullTextSession.createIndexer().startAndWait();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        session.close();
-
-        return factory;
+        return sessionFactory.getObject();
     }
 
     /**
@@ -194,5 +184,23 @@ public class DataConfig {
     @SuppressWarnings("unused")
     public GraphFactory graphFactory(IObjectTableDAO objectTableDAO) throws PropertyVetoException, IOException {
         return new GraphFactory(sessionFactory(), objectTableDAO);
+    }
+
+    @Autowired
+    SessionFactory factory;
+
+    @PostConstruct
+    public void updateIndexes() {
+        Session session = factory.openSession();
+        FullTextSession fullTextSession = Search.getFullTextSession(session);
+        try {
+            fullTextSession.createIndexer().startAndWait();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 }
