@@ -82,8 +82,8 @@ public class ProcessReportPipeline implements Serializable {
     /** Id of the replacing id. */
     protected long replacingReportId = -1;
 
-    /** Report text. TODO change test content to empty string */
-    protected String reportText = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
+    /** Report text. */
+    protected String reportText = "";
 
     /** Report words. */
     protected List<Word> reportWords = new ArrayList<>();

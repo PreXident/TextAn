@@ -25,19 +25,6 @@ public class Problems implements Serializable {
     private final List<JoinedObject> joinedObjects;
 
     /**
-     * Testing constructor.
-     */
-    //TODO remove testing constructor
-    public Problems() {
-        this.newObjects = Arrays.asList(new Object(-1, new ObjectType(-1, "XXX"), Arrays.asList("xxx", "zzz")));
-        this.newRelations = Arrays.asList(new Relation(-1, new RelationType(-1, "qqq")));
-        this.newRelations.get(0).getObjects().add(
-                new Triple<>(0, "test", new Object(-1, new ObjectType(-1, "aaa"), Arrays.asList("bla", "ups")))
-        );
-        this.joinedObjects = Arrays.asList(new JoinedObject());
-    }
-
-    /**
      * Constructs Problems from GetProblemsResponse.
      * @param response blue print
      */

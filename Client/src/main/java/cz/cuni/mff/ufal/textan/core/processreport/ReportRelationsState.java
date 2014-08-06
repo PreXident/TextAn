@@ -85,10 +85,7 @@ final class ReportRelationsState extends State {
             pipeline.decStepsBack();
         }
         if (pipeline.result) {
-            //TODO remove testing displaying of errors
-            //pipeline.setState(DoneState.getInstance());
-            pipeline.setState(ReportErrorState.getInstance());
-            pipeline.problems = new Problems();
+            pipeline.setState(DoneState.getInstance());
         } else {
             pipeline.problems = pipeline.client.getProblems(pipeline.ticket);
             pipeline.setState(ReportErrorState.getInstance());
