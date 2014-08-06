@@ -19,6 +19,7 @@ import org.hibernate.annotations.OnDeleteAction;
  * @author Petr Fanta
  */
 @Entity
+@Indexed
 @Table(name = "Alias")
 public class AliasTable extends AbstractTable {
     public static final String PROPERTY_NAME_ALIAS = "alias";
@@ -62,7 +63,7 @@ public class AliasTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade(CascadeType.ALL)
     @JoinColumn(name = "id_object", nullable = false)
     @IndexedEmbedded
     @ContainedIn

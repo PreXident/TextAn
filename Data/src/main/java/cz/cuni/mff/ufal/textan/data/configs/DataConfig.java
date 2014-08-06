@@ -179,6 +179,7 @@ public class DataConfig {
         properties.setProperty("hibernate.search.default.directory_provider", dataProperties().getProperty("hibernate.search.default.directory_provider"));
         properties.setProperty("hibernate.search.default.indexBase", dataProperties().getProperty("hibernate.search.default.indexBase"));
         properties.setProperty("hibernate.search.analyzer", dataProperties().getProperty("hibernate.search.analyzer"));
+        properties.setProperty("hibernate.search.lucene_version", "LUCENE_CURRENT");
 
         return properties;
     }

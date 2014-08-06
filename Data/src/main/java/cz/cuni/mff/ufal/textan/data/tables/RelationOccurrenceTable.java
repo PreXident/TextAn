@@ -16,6 +16,7 @@ import java.util.Objects;
  * @author Petr Fanta
  */
 @Entity
+@Indexed
 @Table(name = "RelationOccurrence")
 public class RelationOccurrenceTable extends AbstractTable {
     public static final String PROPERTY_NAME_ANCHOR = "anchor";

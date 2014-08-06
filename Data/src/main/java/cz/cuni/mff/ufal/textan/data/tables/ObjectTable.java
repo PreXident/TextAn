@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.data.tables;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -20,7 +21,7 @@ import org.hibernate.annotations.OnDeleteAction;
  * @author Vaclav Pernicka
  */
 @Entity
-@Indexed
+@Indexed(index = "ObjectIndex")
 @Table(name = "Object")
 public class ObjectTable extends AbstractTable {
 
@@ -56,6 +57,7 @@ public class ObjectTable extends AbstractTable {
 
     @Id
     @GeneratedValue
+    @DocumentId
     @Column(name = "id_object", nullable = false, unique = true)
     public long getId() {
         return id;

@@ -18,7 +18,7 @@ import java.util.Set;
  * @author Petr Fanta
  */
 @Entity
-@Indexed
+@Indexed(index = "DocumentIndex")
 @Table(name = "Document")
 public class DocumentTable extends AbstractTable {
 
@@ -48,6 +48,7 @@ public class DocumentTable extends AbstractTable {
 
     @Id
     @GeneratedValue
+    @DocumentId
     @Column(name = "id_document", nullable = false)
     public long getId() {
         return id;
