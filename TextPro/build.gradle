@@ -37,6 +37,9 @@ dependencies {
     }
     compile group: 'org.springframework', name: 'spring-web', version: springVersion
 
+    // weka
+    compile group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.7.5'
+    
     //logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
     runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'

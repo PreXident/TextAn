@@ -4,18 +4,18 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
+import cz.cuni.mff.ufal.textan.textpro.data.EntityInfo;
 import cz.cuni.mff.ufal.textan.textpro.learning.Test;
 import cz.cuni.mff.ufal.textan.textpro.learning.Train;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.sf.javaml.classification.Classifier;
 import net.sf.javaml.core.Instance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A simple example of an implementation of the ITextPro interface as a Spring bean.
@@ -225,5 +225,38 @@ public class TextPro implements ITextPro {
         }
         return ID;
     }
+    
+    
+    public Map<Entity, List<Pair<Long, Double>>> InterpolateRanking(String document, List<Entity> eList, int topK) {
+        
+        LOG.debug("Starting TexPro weka ranking.");
+
+        // Initialize the eMap - final result
+        Map<Entity, List<Pair<Long, Double>>> eMap = new HashMap<>();
+        
+        // Initialize the list of entity info
+        List<EntityInfo> eInfoList = new ArrayList<>();
+        for (Entity e:eList){
+            List<Long> oListID = getCloseObjectID(e);
+            Map<Long,Double> score = new HashMap<Long,Double>();
+            
+            // Initialize everything is 1
+            for(Long oID:oListID){
+                score.put(oID, 1.0);
+            }
+            // Add the current info to final list
+            eInfoList.add(new EntityInfo(e,score));
+        }
+        
+        /********************** REGULAR RANKING **************************/
+        
+        /********************** MACHINE LEARNING *************************/
+        
+        
+        
+        
+    }
+
+    
     
 }

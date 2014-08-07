@@ -28,4 +28,6 @@ public interface ITextPro {
     // The main class of TextPro
     // The result of double ranking is a map from entity to the id value of 
     public Map<Entity, List<Pair<Long, Double>>> DoubleRanking(String document, List<Entity> eList, int topK);
+    
+    public Map<Entity, List<Pair<Long, Double>>> InterpolateRanking(String document, List<Entity> eList, int topK);
 }
