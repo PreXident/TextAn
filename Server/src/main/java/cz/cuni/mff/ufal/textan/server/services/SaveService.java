@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -190,9 +189,10 @@ public class SaveService {
     }
 
     private boolean checkChanges(EditingTicket ticket) {
-        return ((objectTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0 )||
-                (relationTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0) ||
-                (joinedObjectsTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0));
+        long nextVersion = ticket.getVersion() + 1;
+        return ((objectTableDAO.findAllSinceGlobalVersion(nextVersion).size() > 0 )||
+                (relationTableDAO.findAllSinceGlobalVersion(nextVersion).size() > 0) ||
+                (joinedObjectsTableDAO.findAllSinceGlobalVersion(nextVersion).size() > 0));
     }
 
     private boolean innerSave(
@@ -363,15 +363,16 @@ public class SaveService {
     }
 
     public Problems getProblems(EditingTicket ticket) {
-        List<Object> newObjects = objectTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+        long nextVersion = ticket.getVersion() + 1;
+        List<Object> newObjects = objectTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
                 .map(Object::fromObjectTable)
                 .collect(Collectors.toList());
 
-        List<Relation> newRelations = relationTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+        List<Relation> newRelations = relationTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
                 .map(Relation::fromRelationTable)
                 .collect(Collectors.toList());
 
-        List<JoinedObject> newJoinedObjects = joinedObjectsTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+        List<JoinedObject> newJoinedObjects = joinedObjectsTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
                 .map(x -> new JoinedObject(
                         Object.fromObjectTable(x.getNewObject()),
                         Object.fromObjectTable(x.getOldObject1()),
