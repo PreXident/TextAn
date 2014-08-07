@@ -1,0 +1,60 @@
+%This section cotains the system architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% (80 char rule :D)
+
+%For every one: use as many diagrams as possible :) (author Petr)
+
+The architecture of \textan\ is based on client-server model. Two main components
+are the \textan\ server and \textan\ client which communicate via W3C web services
+(SOAP protokol).
+
+\subsection{Server architecture}
+
+The server architecture is based on a logical multilayered architecture. It
+consists from a presentation layer, a service layer, a business logic layer, 
+a persistence layer and a data layer.
+
+%TODO where to place commands in architecture?? (author Petr)
+
+%TODO server achitecture image: assignee: Petr (author Petr)
+
+%TODO description of layers
+% assignee: Petr, Venca (persistence layer) (author Petr)
+
+\subsubsection{Named entity recognizer architecture}
+
+%TODO here should be description of nametag integration (recognizing, leraning etc.), nametag..
+% assignee: Jakub (author Petr) 
+
+\subsubsection{Object assigner architecture} %or simply TextPro?
+
+%TODO here should be description of TextPro 
+% assignee: Tam (author Petr)
+
+\subsection{Client architecture}
+
+%TODO here should be description of client architecture (MVC etc.)
+% assignee: Adam (author Petr)
+
+\textan\ Client is a JavaFX application which naturaly forces Model-View-Controller
+pattern.
+
+Model classes can be found in package cz.cuni.mff.ufal.textan.core. It contains
+mainly client side representation of object, entity, relation etc. This way
+clients do not have to use directly websevice representation, so when it is
+altered, changes needed in client side are localized into this package. Moreover
+there is Client class which completely hides the webservices and transformation
+webservice data representation to client side representation.
+
+Subpackages of the Core package focus on individual client side tasks, like
+displaying graphs and processing report in a pipeline. The pipeline/wizard
+approach was chosen because because amount of choices and required tasks would
+be overhelming to users if they are all provided at once.
+
+View descriptions are located in cz.cuni.mff.ufal.textan.gui in resources
+directory, mainly names *.fxml and *.css. They also uses several custom and
+modified components located in main cz.cuni.mff.ufal.textan.gui package along
+with controller classes.
+
+Controller classes are concentrated into cz.cuni.mff.ufal.textan.gui package,
+mainly named *Controller. There are also some custom and modified view classes
+used by view descriptions.

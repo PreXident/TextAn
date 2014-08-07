@@ -83,6 +83,58 @@
 					</Menu>
 				</menus>
 			</MenuBar>
+			<ToolBar>
+				<Button onAction="#reportWizard" prefHeight="35">
+					<graphic>
+						<ImageView>
+							<Image url="@placeholder.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%report.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#graph" prefHeight="35">
+					<graphic>
+						<ImageView>
+							<Image url="@placeholder.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%graph.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#displayDocuments" prefHeight="35">
+					<graphic>
+						<ImageView>
+							<Image url="@placeholder.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%document.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#join" prefHeight="35" >
+					<graphic>
+						<ImageView>
+							<Image url="@placeholder.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%join.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#relations" prefHeight="35" >
+					<graphic>
+						<ImageView>
+							<Image url="@placeholder.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%relation.wizard" />
+					</tooltip>
+				</Button>
+			</ToolBar>
 		</VBox>
 	</top>
 	<center>

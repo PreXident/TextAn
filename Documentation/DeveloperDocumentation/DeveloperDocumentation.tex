@@ -11,6 +11,8 @@
 %TODO select color coresponding to logo
 \definecolor{titlepagecolor}{cmyk}{1,.60,0,.40}
 
+\usepackage{textcomp}
+
 \backgroundsetup{
 scale=1,
 angle=0,
@@ -50,6 +52,7 @@ contents={
 }
 
 \setkeys{Gin}{resolution=96}
+\newcommand{\textan}{\emph{TextAn}}
 
 \begin{document}
 
@@ -91,7 +94,7 @@ Ondřej Bojar\vspace{40pt} \\
 \pagenumbering{roman}
 \tableofcontents
 
-\setlength{\parskip}{1em}
+%\setlength{\parskip}{1em}
 %\chapter*{Intro}
 %\addcontentsline{toc}{chapter}{Intro}
 
@@ -102,7 +105,10 @@ Ondřej Bojar\vspace{40pt} \\
 \section{Introduction to the project}
 \input{Sections/IntroductionToTheProject}
 \section{Work on the project}
+
 \section{Adopted solutions and decisions}
+\input{Sections/AdoptedSolutions}
+
 \section{Related work}
 \input{Sections/RelatedWork}
 %..
@@ -113,6 +119,7 @@ Ondřej Bojar\vspace{40pt} \\
 \chapter{Requirement specification}
 
 \chapter{Architecture}
+\input{Sections/Architecture}
 
 \chapter{Developer notes}
 

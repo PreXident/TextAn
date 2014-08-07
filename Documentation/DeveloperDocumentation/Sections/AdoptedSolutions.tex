@@ -1,0 +1,99 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Used Technologies}
+
+This section lists all technologies and libraries used in \textan.
+
+%TODO are links to the libraries missing intentionally? Adam
+\paragraph{Apache CXF}
+Apache CXF is an open-source Web services framework. CXF implements the JAX-WS 
+standard APIs, is configurable through Spring and can be embedded into Jetty,
+Tomcat or other servlet containers.
+
+\paragraph{ControlsFX}
+ControlsFX is a Java8 open source library aiming at enhancing the programming
+experience with standard JavaFX. It provides wide selection of new and improved
+components to make everyday use of JavaFX even easier. \textan\ uses it mainly for
+its high quality and user-friendly standard dialogs which are incomprehensibly
+and sorely missing in JavaFX.
+
+\paragraph{Hibernate ORM}
+%TODO Venca
+Hibernate ORM (Hibernate in short) is an object-relational mapping library for
+the Java language, providing a framework for mapping an object-oriented domain
+model to a traditional relational database. Hibernate solves object-relational
+impedance mismatch problems by replacing direct persistence-related database
+accesses with high-level object handling functions.
+
+\paragraph{Hibernate Search}
+Hibernate Search is a library (or Hibernate ORM extension), which integrates
+the full text library functionality from Apache Lucene in the Hibernate and
+JPA model. It offers full-text search support for objects stored by Hibernate
+ORM, Infinispan and other sources. Think of it as Google\texttrademark\ for
+entities: search words with text, order results by relevance and find by
+approximation (fuzzy search).
+
+\paragraph{Java-ML}
+%TODO Kuba/Tam
+Java-ML is a machine learning library for Java. It is a collection of machine
+learning and data mining algorithms.
+
+\paragraph{Jetty}
+Jetty is a pure Java-based HTTP (Web) server and Java Servlet container. It can
+be embedded into other applications through Jetty API.
+
+\paragraph{JUNG}
+JUNG (Java Universal Network/Graph Framework) is older Java library for
+displaying graphs, still widely used in Java world, well documented and easily
+extensible. Sadly, it does not support JavaFX, but only older Java GUI framework
+SWING. Fortunately, thanks to new JavaFX8 SwingNode enabling usage of SWING
+components in JavaFX scenes it was possible to seaminglessly integrate JUNG into
+JavaFX \textan\ Client.
+
+\paragraph{JFXtras}
+JFXtras is another JavaFX8 enhancing project. \textan\ Client uses it mostly for
+its window management capabilities enabling extensible use of inner windows
+embedded into the main window. Another used component is BigDecimalField which
+brings common Spinner component into JavaFX.
+
+\paragraph{MorphoDiTa}
+Morphological Dictionary and Tagger is an open-source tool for morphological
+analysis of natural language texts. It performs morphological analysis, 
+morphological generation, tagging and tokenization and is distributed as
+a standalone tool or a library, along with trained linguistic models. In
+the Czech language, MorphoDiTa achieves state-of-the-art results with 
+a throughput around 10-200K words per second. MorphoDiTa is a free software
+under LGPL license and the linguistic models are free for non-commercial use
+and distributed under CC BY-NC-SA license, although for some models the original
+data used to create the model may impose additional licensing conditions.
+
+\paragraph{NameTag}
+NameTag is an open-source tool for named entity recognition (NER). NameTag 
+identifies proper names in text and classifies them into predefined categories,
+such as names of persons, locations, organizations, etc. NameTag is distributed
+as a standalone tool or a library, along with trained linguistic models.
+In the Czech language, NameTag achieves state-of-the-art performance
+(Straková et al. 2013). NameTag is a free software under LGPL license and the 
+linguistic models are free for non-commercial use and distributed under CC 
+BY-NC-SA license, although for some models the original data used to create
+the model may impose additional licensing conditions.
+
+\paragraph{PretopoLib}
+Although JUNG is mature and well thought library, it lacks one important feature
+out-of-the-box: displaying hypergraphs. For this reason JUNG graph rendering
+part of PretopoLib is used. PretopoLib is a library mainly focusing on
+pretopology and graph displaying is rather byproduct. However it fully meets our
+requirements and its author kindly provided us the sources so we could fix one
+inconvenient detail.
+
+\paragraph{SLF4J \& Logback}
+Simple Logging Facade for Java (SLF4J) provides a Java logging API by means
+of a simple facade pattern. The underlying logging backend is determined
+at runtime by adding the desired binding to the classpath and may be
+java.util.logging, log4j or logback.
+
+\paragraph{Spring Framework}
+The Spring Framework is an open source application framework and inversion
+of control container for the Java platform. The framework's core features
+can be used by any Java application, but there are extensions for building
+web applications on top of the Java EE platform.

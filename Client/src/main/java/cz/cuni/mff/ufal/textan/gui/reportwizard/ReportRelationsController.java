@@ -49,17 +49,20 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import javafx.util.converter.DefaultStringConverter;
 
 /**
  * Controls editing the report relations.
@@ -172,6 +175,12 @@ public class ReportRelationsController extends ReportWizardController {
     /** Object to display graph for. */
     ObjectProperty<Object> objectForGraph = new SimpleObjectProperty<>();
 
+    /** List of roles for role column comboboxes. */
+    ObservableList<String> preferredRoles = FXCollections.observableArrayList();
+
+    /** Mapping RelationType -> roles from db. */
+    Map<RelationType, List<String>> typeRoles = new HashMap<>();
+
     @FXML
     private void add() {
         if (selectedRelation != null) {
@@ -264,6 +273,17 @@ public class ReportRelationsController extends ReportWizardController {
             textFlow.layoutChildren();
         });
         table.setEditable(true);
+        table.setRowFactory(t -> {
+            final TableRow<FXRelationInfo> row = new TableRow<>();
+            row.setOnMouseClicked(e -> {
+                if (e.getButton().equals(MouseButton.PRIMARY)
+                        && e.getClickCount() == 2
+                        && row.getItem() == null) {
+                    add();
+                }
+            });
+            return row;
+        });
         objectColumn.prefWidthProperty().bind(table.widthProperty().add(orderColumn.prefWidthProperty().add(roleColumn.prefWidthProperty()) .multiply(-1).add(-2)));
         orderColumn.setCellValueFactory((CellDataFeatures<FXRelationInfo, Number> p) -> p.getValue().orderProperty());
         orderColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Number>() {
@@ -282,7 +302,12 @@ public class ReportRelationsController extends ReportWizardController {
                         t.getTablePosition().getRow()).setOrder(t.getNewValue().intValue());
         });
         roleColumn.setCellValueFactory((CellDataFeatures<FXRelationInfo, String> p) -> p.getValue().roleProperty());
-        roleColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        roleColumn.setCellFactory(column -> {
+            final ComboBoxTableCell<FXRelationInfo, String> cell =
+                    new ComboBoxTableCell<>(new DefaultStringConverter(), preferredRoles);
+            cell.comboBoxEditableProperty().set(true);
+            return cell;
+        });
         roleColumn.setOnEditCommit(
             (CellEditEvent<FXRelationInfo, String> t) -> {
                 t.getTableView().getItems().get(
@@ -642,12 +667,17 @@ public class ReportRelationsController extends ReportWizardController {
      * @return roles for given relation type
      */
     protected List<String> fetchRoles(final RelationType type) {
-        try {
-            return pipeline.getClient().getRolesForRelationType(type);
-        } catch (IdNotFoundException e) {
-            e.printStackTrace();
-            return Collections.emptyList();
+        List<String> roles = typeRoles.get(type);
+        if (roles == null) {
+            try {
+                roles = pipeline.getClient().getRolesForRelationType(type);
+                typeRoles.put(type, roles);
+            } catch (IdNotFoundException e) {
+                e.printStackTrace();
+                return Collections.emptyList();
+            }
         }
+        return roles;
     }
 
     /**
@@ -679,6 +709,8 @@ public class ReportRelationsController extends ReportWizardController {
                 })
                 .forEach(t -> Utils.styleTextBackground(t, id));
         table.setItems(selectedRelation.getData());
+        preferredRoles.clear();
+        preferredRoles.addAll(fetchRoles(selectedRelation.getType()));
     }
 
     /**

@@ -8,6 +8,7 @@ import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
@@ -336,6 +337,9 @@ public class JoinController extends WindowController {
         //
         typeComboBox.valueProperty().addListener((ov, oldVal, newVal) -> {
             leftPageNo = 0;
+            rightPageNo = 0;
+            leftFilter();
+            rightFilter();
         });
         joinButton.prefWidthProperty().bind(root.widthProperty());
     }
@@ -373,9 +377,13 @@ public class JoinController extends WindowController {
         node.setCursor(Cursor.WAIT);
         final GetTypesTask task = new GetTypesTask(textAnController.getClient());
         task.setOnSucceeded(e -> {
-            final ObservableList<ObjectType> types =
-                    FXCollections.observableArrayList(task.getValue());
-            typeComboBox.setItems(types);
+            final List<ObjectType> types = task.getValue();
+            types.remove(0); //remove null
+            typeComboBox.getItems().clear();
+            typeComboBox.getItems().addAll(types);
+            if (types.size() > 0) {
+                typeComboBox.getSelectionModel().select(0);
+            }
             node.setCursor(Cursor.DEFAULT);
             leftFilter();
             rightFilter();
