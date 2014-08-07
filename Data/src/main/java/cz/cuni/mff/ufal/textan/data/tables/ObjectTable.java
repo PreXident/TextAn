@@ -12,8 +12,6 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Object (entity) itself
@@ -47,6 +45,7 @@ public class ObjectTable extends AbstractTable {
 
     public ObjectTable() {
         rootObject = this;
+        rootOfObjects.add(this);
     }
 
     public ObjectTable(String data, ObjectTypeTable objectType) {

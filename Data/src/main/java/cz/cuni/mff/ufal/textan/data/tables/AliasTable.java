@@ -2,15 +2,13 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.search.annotations.*;
-import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
 
 /**
  * Alias of an entity. For a person it could be "Karel", "Kája" or "The butcher"
@@ -19,7 +17,6 @@ import org.hibernate.annotations.OnDeleteAction;
  * @author Petr Fanta
  */
 @Entity
-@Indexed
 @Table(name = "Alias")
 public class AliasTable extends AbstractTable {
     public static final String PROPERTY_NAME_ALIAS = "alias";
@@ -44,6 +41,7 @@ public class AliasTable extends AbstractTable {
     @Id
     @GeneratedValue
     @Column(name = "id_alias", nullable = false, unique = true)
+    @DocumentId
     public long getId() {
         return id;
     }

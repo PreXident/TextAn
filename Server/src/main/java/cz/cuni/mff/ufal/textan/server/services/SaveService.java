@@ -245,9 +245,8 @@ public class SaveService {
                 throw new IdNotFoundException("objectId", objectId);
             }
 
-            List<AliasTable> aliases = new LinkedList<>(objectTable.getAliases());
             AliasTable aliasTable = null;
-            for (AliasTable alias : aliases) {
+            for (AliasTable alias : objectTable.getAliases()) {
                 if (occurrence.getValue().equals(alias.getAlias())) {
                     aliasTable = alias;
                 }
@@ -255,10 +254,14 @@ public class SaveService {
 
             if (aliasTable == null) {
                 aliasTable = new AliasTable(objectTable, occurrence.getValue());
+                objectTable.getAliases().add(aliasTable);
                 aliasTableDAO.add(aliasTable);
             }
 
             AliasOccurrenceTable aliasOccurrenceTable = new AliasOccurrenceTable(occurrence.getPosition(), aliasTable, documentTable);
+            aliasTable.getOccurrences().add(aliasOccurrenceTable);
+            documentTable.getAliasOccurrences().add(aliasOccurrenceTable);
+
             aliasOccurrenceTableDAO.add(aliasOccurrenceTable);
         }
 
@@ -329,7 +332,11 @@ public class SaveService {
 
                     //todo: add test: can be object in relation more than once?
                     if (!alreadyInRelation.contains(objectInRelationTable.getId())) {
-                        inRelationTableDAO.add(new InRelationTable(role, order, relationTable, objectInRelationTable));
+                        InRelationTable inRelationTable = new InRelationTable(role, order, relationTable, objectInRelationTable);
+                        inRelationTableDAO.add(inRelationTable);
+                        relationTable.getObjectsInRelation().add(inRelationTable);
+                        objectInRelationTable.getRelations().add(inRelationTable);
+
                         alreadyInRelation.add(objectInRelationTable.getId());
                     }
                 }
@@ -344,6 +351,8 @@ public class SaveService {
                 relationOccurrenceTable.setRelation(relationTable);
             }
             relationOccurrenceTableDAO.add(relationOccurrenceTable);
+            documentTable.getRelationOccurrences().add(relationOccurrenceTable);
+            relationTable.getOccurrences().add(relationOccurrenceTable);
         }
 
         //register re-learn command for named entity recognizer and text pro

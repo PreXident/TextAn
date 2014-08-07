@@ -2,15 +2,12 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.search.annotations.*;
-import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.search.annotations.DocumentId;
 
 /**
  * Type of a relation (killed, lived, was engaged, ...)
@@ -38,7 +35,7 @@ public class RelationTypeTable extends AbstractTable {
     @Id
     @GeneratedValue
     @Column(name = "id_relation_type")
-    @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
+    @DocumentId
     public long getId() {
         return id;
     }
@@ -57,7 +54,7 @@ public class RelationTypeTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "relationType", orphanRemoval = true)
-    @ContainedIn
+    //@ContainedIn // -> immutable object
     @Cascade(CascadeType.ALL)
     public Set<RelationTable> getRelationsOfThisType() {
         return relationsOfThisType;

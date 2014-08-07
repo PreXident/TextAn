@@ -18,7 +18,6 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -170,6 +169,7 @@ public class DataConfig {
         properties.setProperty("hibernate.search.default.indexBase", dataProperties().getProperty("hibernate.search.default.indexBase"));
         properties.setProperty("hibernate.search.analyzer", dataProperties().getProperty("hibernate.search.analyzer"));
         properties.setProperty("hibernate.search.lucene_version", "LUCENE_CURRENT");
+        //properties.setProperty("hibernate.search.enable_dirty_check", "false");
 
         return properties;
     }

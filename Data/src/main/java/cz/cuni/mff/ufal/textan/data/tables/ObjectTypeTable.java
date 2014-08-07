@@ -9,8 +9,6 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Type of the object (person, adress, ...)
@@ -59,7 +57,7 @@ public class ObjectTypeTable extends AbstractTable {
 
     @OneToMany(mappedBy = "objectType", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
-    @ContainedIn
+    //@ContainedIn // -> immutable object
     public Set<ObjectTable> getObjectsOfThisType() {
         return objectsOfThisType;
     }
