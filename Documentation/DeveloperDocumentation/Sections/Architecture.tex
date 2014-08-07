@@ -10,7 +10,7 @@ are the \textan\ server and \textan\ client which communicate via W3C web servic
 \subsection{Server architecture}
 
 The server architecture is based on a logical multilayered architecture. It
-consists from a presentation layer, a service layer, a business logic layer, 
+consists of 5 layers: a presentation layer, a service layer, a business logic layer, 
 a persistence layer and a data layer.
 
 %TODO where to place commands in architecture?? (author Petr)
@@ -34,6 +34,7 @@ a persistence layer and a data layer.
 
 %TODO here should be description of client architecture (MVC etc.)
 % assignee: Adam (author Petr)
+%NOTE: your sentences are way too long :) (author Tam)
 
 \textan\ Client is a JavaFX application which naturaly forces Model-View-Controller
 pattern.
@@ -47,14 +48,14 @@ webservice data representation to client side representation.
 
 Subpackages of the Core package focus on individual client side tasks, like
 displaying graphs and processing report in a pipeline. The pipeline/wizard
-approach was chosen because because amount of choices and required tasks would
-be overhelming to users if they are all provided at once.
+approach was chosen because the amount of choices and required tasks would
+be overhelming to users if they were all provided at once.
 
 View descriptions are located in cz.cuni.mff.ufal.textan.gui in resources
 directory, mainly names *.fxml and *.css. They also uses several custom and
 modified components located in main cz.cuni.mff.ufal.textan.gui package along
 with controller classes.
 
-Controller classes are concentrated into cz.cuni.mff.ufal.textan.gui package,
+Controller classes concentrate on cz.cuni.mff.ufal.textan.gui package,
 mainly named *Controller. There are also some custom and modified view classes
 used by view descriptions.
