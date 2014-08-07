@@ -1,6 +1,6 @@
-#appRoot {
+#content {
 	display: block;
-	-fx-background-image: url("logo.jpg");
+	-fx-background-image: url("logo.png");
         -fx-background-repeat: stretch;
         -fx-background-position: center center;
 }
