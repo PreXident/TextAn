@@ -35,7 +35,7 @@ public class MergeService {
         ObjectTable objectTable1 = objectTableDAO.find(object1Id);
         if (objectTable1 == null) {
             throw new IdNotFoundException("object1Id", object1Id);
-        } else if (!objectTable1.isRootObject()) {
+        } else if (!objectTable1.isRoot()) {
             //TODO throw some exception
             return -1;
         }
@@ -43,7 +43,7 @@ public class MergeService {
         ObjectTable objectTable2 = objectTableDAO.find(object2Id);
         if (objectTable2 == null) {
             throw new IdNotFoundException("object2Id", object2Id);
-        } else if (!objectTable2.isRootObject()) {
+        } else if (!objectTable2.isRoot()) {
             //TODO: throw some exception
             return -1;
         }

@@ -87,7 +87,7 @@ public class ObjectTable extends AbstractTable {
     }
 
     @Transient
-    public boolean isRootObject() {
+    public boolean isRoot() {
         return this == rootObject;
     }
 
