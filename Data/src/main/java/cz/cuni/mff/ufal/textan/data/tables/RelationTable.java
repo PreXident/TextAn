@@ -2,13 +2,17 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 /**
  * Relation itself
@@ -17,7 +21,7 @@ import java.util.Set;
  * @author Petr Fanta
  */
 @Entity
-@Indexed
+@Indexed(index = "RelationIndex")
 @Table(name = "Relation")
 public class RelationTable extends AbstractTable {
     public static final String PROPERTY_NAME_RELATION_TYPE_ID = "relationType";
@@ -41,6 +45,7 @@ public class RelationTable extends AbstractTable {
 
     @Id
     @GeneratedValue
+    @DocumentId
     @Column(name = "id_relation", nullable = false, unique = true)
     public long getId() {
         return id;
@@ -72,8 +77,10 @@ public class RelationTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "relation", orphanRemoval = true)
-    @Cascade(CascadeType.DELETE)
+    @Cascade(CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @IndexedEmbedded(includePaths = "anchor")
+    @ContainedIn
     public Set<RelationOccurrenceTable> getOccurrences() {
         return occurrences;
     }
@@ -82,7 +89,7 @@ public class RelationTable extends AbstractTable {
         this.occurrences = occurrences;
     }
 
-    @OneToMany(mappedBy = "relation")
+    @OneToMany(mappedBy = "relation", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
     public Set<InRelationTable> getObjectsInRelation() {
         return objectsInRelation;

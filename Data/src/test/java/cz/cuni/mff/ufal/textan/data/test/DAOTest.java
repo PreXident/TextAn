@@ -12,9 +12,12 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.GlobalVersionTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IGlobalVersionTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.*;
+import cz.cuni.mff.ufal.textan.data.test.common.Utils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +29,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.util.AssertionErrors;
 
 import java.util.List;
+import org.hibernate.SessionFactory;
 import org.junit.Assert;
 
 import static org.junit.Assert.assertTrue;
@@ -38,6 +42,9 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration(classes = {DataConfig.class, Data.class}, loader = AnnotationConfigContextLoader.class)
 public class DAOTest {
     @Autowired
+    SessionFactory sessionFactory;
+    
+    @Autowired
     Data data;
 
     @Autowired
@@ -47,6 +54,9 @@ public class DAOTest {
     IRelationTableDAO relationTableDAO;
 
     @Autowired
+    IRelationTypeTableDAO relationTypeTableDAO;
+        
+    @Autowired
     IAliasTableDAO aliasTableDAO;
 
     @Autowired
@@ -54,6 +64,9 @@ public class DAOTest {
 
     @Autowired
     IGlobalVersionTableDAO globalVersionDAO;
+    
+    @Autowired
+    IJoinedObjectsTableDAO joinedObjectsDAO;
     
     private DocumentTable document;
     private RelationTypeTable relationType;
@@ -67,6 +80,7 @@ public class DAOTest {
     private ObjectTypeTable objectTypeEmpty;
     private DocumentTable documentEmpty;
     private RelationTypeTable relationTypeEmpty;
+    private ObjectTable object2;
 
     @Before
     public void setUp() {
@@ -77,6 +91,7 @@ public class DAOTest {
         relationOccurrence = new RelationOccurrenceTable(withRelation, document, 26, "with");
         objectType = new ObjectTypeTable("__[TEST]objecttype1");
         object = new ObjectTable("__[TEST] letter", objectType);
+        object2 = new ObjectTable("__[TEST] letter2", objectType);        
         alias = new AliasTable(object, "document");
         aliasOccurrence = new AliasOccurrenceTable(17, alias, document);
 
@@ -91,7 +106,8 @@ public class DAOTest {
         assertTrue(data.addRecord(withRelation));
         assertTrue(data.addRecord(relationOccurrence));
         assertTrue(data.addRecord(object));
-
+        assertTrue(data.addRecord(object2));
+        
         assertTrue(data.addRecord(alias));
         assertTrue(data.addRecord(aliasOccurrence));
         
@@ -103,18 +119,24 @@ public class DAOTest {
     
     @After
     public void tearDown() {
+        
          System.out.println("\n\nClean");
-         assertTrue(data.deleteRecord(relationOccurrence));
+         /*assertTrue(data.deleteRecord(relationOccurrence));
          assertTrue(data.deleteRecord(aliasOccurrence));
          assertTrue(data.deleteRecord(document));
          assertTrue(data.deleteRecord(withRelation));
          assertTrue(data.deleteRecord(withRelation.getRelationType()));
          assertTrue(data.deleteRecord(alias));
          assertTrue(data.deleteRecord(object));
+         assertTrue(data.deleteRecord(object2));         
          assertTrue(data.deleteRecord(object.getObjectType()));
 
          assertTrue(data.deleteRecord(objectTypeEmpty));
          assertTrue(data.deleteRecord(documentEmpty));
+         */
+
+         System.out.println(" clearAllTables");
+         Utils.clearAllTables(sessionFactory);
     }
     
     
@@ -309,5 +331,49 @@ public class DAOTest {
         Assert.assertNotEquals("global version is not 0", 0, globalVersionDAO.getCurrentVersion());
 
     }
+    
+    @Test
+    public void addAndRemoveJoinedObjectsTest() {
+        System.out.println("\n\naddAndRemoveJoinedObjectsTest");
+        JoinedObjectsTable user = new JoinedObjectsTable(object, object, object);
+        System.out.println("user = " + user);
+        assertTrue("Object type already exists or cant be added", joinedObjectsDAO.add(user) > 0);
+        long id = user.getId();
+        System.out.println("user.id = " + id);
+        assertTrue("id > 0", id > 0);
+        //System.out.println("id: " + id);
+        JoinedObjectsTable user2 = null;
+        user2 = joinedObjectsDAO.find(id);
+        
+        // TODO: wtf this doesnt work?
+        // assertTrue("user2.equals(user):\nuser1 = " + user + ";\nuser2 = " + user2, user2.equals(user));
+        
+        //joinedObjectsDAO.delete(user2);
+    }
+    
+    @Test
+    public void joinObjectsTest() {
+        System.out.println("\n\nJoinObjectTest");
+
+        System.out.println("Object: " + object);
+        System.out.println("Object2: " + object2);
+        
+        System.out.println("Joining...");
+        ObjectTable joinedObj = joinedObjectsDAO.join(object, object2);
+        
+        System.out.println("Joined Object: " + joinedObj);
+        System.out.println("Object: " + object);
+        System.out.println("Object2: " + object2);
+        
+        Assert.assertNotNull("Joined object is null", joinedObj);
+        Assert.assertEquals(object.getRootObject(), joinedObj);
+        Assert.assertEquals(object2.getRootObject(), joinedObj);
+        
+        //joinedObjectsDAO.delete(joinedObj.getNewObject());
+        //objectTableDAO.delete(joinedObj);
+    }
+    
+    
+
 }
 

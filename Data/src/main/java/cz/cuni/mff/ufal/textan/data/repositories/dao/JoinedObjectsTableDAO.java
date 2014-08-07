@@ -11,6 +11,7 @@ import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import java.util.List;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class JoinedObjectsTableDAO extends AbstractHibernateDAO<JoinedObjectsTable, Long> implements IJoinedObjectsTableDAO {
 
+    @Autowired
+    IObjectTableDAO objectDAO;
+    
     /**
      *  constructor
      */
@@ -36,6 +40,8 @@ public class JoinedObjectsTableDAO extends AbstractHibernateDAO<JoinedObjectsTab
         JoinedObjectsTable joinedObj = new JoinedObjectsTable(newObj, obj1, obj2);
         
         //todo lock
+        
+        objectDAO.add(newObj);
         add(joinedObj);
         
         setRootInSubTree(obj1, newObj);

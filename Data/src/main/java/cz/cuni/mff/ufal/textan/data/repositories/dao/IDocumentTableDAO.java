@@ -18,7 +18,9 @@ import java.util.List;
  * @author Vaclav Pernicka
  * @author Petr Fanta
  */
-public interface IDocumentTableDAO extends IOperations<DocumentTable, Long> {
+public interface IDocumentTableDAO 
+    extends IOperations<DocumentTable, Long>,
+        IGlobalVersionedTableDAO<DocumentTable> {
 
     /**
      * finds all documents in which is occurred specified object

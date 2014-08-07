@@ -37,7 +37,7 @@ public class TextAn extends Application {
     static final String RESOURCE_BUNDLE = "cz.cuni.mff.ufal.textan.gui.TextAn";
 
     /** Resource containing application icon. */
-    static final String ICON_RES = "/cz/cuni/mff/ufal/textan/gui/logo.jpg";
+    static final String ICON_RES = "/cz/cuni/mff/ufal/textan/gui/icon.png";
 
     /**
      * The main() method is ignored in correctly deployed JavaFX application.

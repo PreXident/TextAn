@@ -45,10 +45,16 @@ public class AliasTableDAO extends AbstractHibernateDAO<AliasTable, Long> implem
     @Override
     @SuppressWarnings("unchecked")
     public List<AliasTable> findAllAliasesOfObject(Long objectId) {
-                return findAllCriteria()
-                .createAlias(getAliasPropertyName(AliasTable.PROPERTY_NAME_OBJECT_ID), "obj", JoinType.INNER_JOIN)
-                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("obj", ObjectTable.PROPERTY_NAME_ID), objectId))
-                .list();
+                return currentSession().createQuery(
+                "select distinct al "
+              + "from ObjectTable as obj "
+                        + "inner join obj.rootObject as root "
+                        + "inner join root.rootOfObjects as rootOf "
+                        + "inner join rootOf.aliases as al "
+              + "where obj.id = :objId"
+        )        
+        .setParameter("objId", objectId)
+        .list();
     }
 
  

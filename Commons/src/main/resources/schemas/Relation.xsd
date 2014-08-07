@@ -12,11 +12,11 @@
         <xs:sequence>
             <xs:element name="id" type="xs:long"/>
             <xs:element ref="relationType"/>
-            <xs:element name="inRelation" minOccurs="2" maxOccurs="unbounded"> <!-- TODO: better name -->
+            <xs:element name="inRelation" minOccurs="2" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="objectId" type="xs:long"/>
-                        <xs:element name="order" type="xs:int"/>   <!-- TODO: remove -->
+                        <xs:element name="order" type="xs:int"/>
                         <xs:element name="role" type="xs:string"/>
                     </xs:sequence>
                 </xs:complexType>

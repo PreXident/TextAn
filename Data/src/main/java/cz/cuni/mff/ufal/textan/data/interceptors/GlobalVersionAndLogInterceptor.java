@@ -80,17 +80,17 @@ public class GlobalVersionAndLogInterceptor extends LogInterceptor {
                 .list().get(0);
         
         //get version
-        long result = gvt.getVersion();
+        long newVersion = gvt.getVersion() + 1;
         
         // update version
-        gvt.setVersion(result + 1);
+        gvt.setVersion(newVersion);
         //session.update(gvt);
         session.saveOrUpdate(gvt);
 
         tx.commit();
         session.close();
         
-        return result;
+        return newVersion;
     }
     
     private boolean isGlobalVersionTable(Object entity) {

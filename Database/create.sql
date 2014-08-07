@@ -98,19 +98,20 @@ CREATE TABLE IsInRelation
 );
 
 CREATE TABLE JoinedObjects
-(
-        id_new_object int PRIMARY KEY,
+(       
+        id_joined_object int PRIMARY KEY AUTO_INCREMENT,
+        id_new_object int,
           CONSTRAINT FK_PK_JOINEDOBJECTS_ID
             FOREIGN KEY (id_new_object)
-                  REFERENCES Object(id_object),
+                  REFERENCES Object(id_object), 
         id_old_object1 int NOT NULL,
           CONSTRAINT FK_JOINEDOBJECTS_OLDOBJ1
             FOREIGN KEY (id_old_object1)
-                  REFERENCES Object(id_object),
+                  REFERENCES Object(id_object), 
         id_old_object2 int NOT NULL,
           CONSTRAINT FK_JOINEDOBJECTS_OLDOBJ2
             FOREIGN KEY (id_old_object2)
-                  REFERENCES Object(id_object),
+                  REFERENCES Object(id_object), 
         from_date datetime NOT NULL,
         to_date datetime,
 	      globalversion int DEFAULT 0 NOT NULL
@@ -149,7 +150,3 @@ GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE, SHOW VIEW
   ON textan.* TO 'textan_user'@'%' IDENTIFIED BY 'textanpassword';
 
 FLUSH PRIVILEGES;
-
--- For remove user use (from superuser account):
--- DROP USER 'textan_user'@'localhost';
--- DROP USER 'textan_user'@'%';

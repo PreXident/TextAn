@@ -16,7 +16,6 @@ import java.util.Objects;
  * @author Petr Fanta
  */
 @Entity
-@Indexed
 @Table(name = "RelationOccurrence")
 public class RelationOccurrenceTable extends AbstractTable {
     public static final String PROPERTY_NAME_ANCHOR = "anchor";
@@ -85,6 +84,7 @@ public class RelationOccurrenceTable extends AbstractTable {
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_relation", nullable = false)
     @IndexedEmbedded
+    @ContainedIn
     public RelationTable getRelation() {
         return relation;
     }
@@ -96,6 +96,7 @@ public class RelationOccurrenceTable extends AbstractTable {
     @ManyToOne
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_document", nullable = false)
+    @ContainedIn
     public DocumentTable getDocument() {
         return document;
     }

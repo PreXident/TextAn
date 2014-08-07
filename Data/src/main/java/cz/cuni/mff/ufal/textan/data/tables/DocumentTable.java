@@ -18,7 +18,7 @@ import java.util.Set;
  * @author Petr Fanta
  */
 @Entity
-@Indexed
+@Indexed(index = "DocumentIndex")
 @Table(name = "Document")
 public class DocumentTable extends AbstractTable {
 
@@ -48,6 +48,7 @@ public class DocumentTable extends AbstractTable {
 
     @Id
     @GeneratedValue
+    @DocumentId
     @Column(name = "id_document", nullable = false)
     public long getId() {
         return id;
@@ -102,8 +103,8 @@ public class DocumentTable extends AbstractTable {
         this.text = text;
     }
 
-    @OneToMany(mappedBy = "document")
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @OneToMany(mappedBy = "document", orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
     @IndexedEmbedded(includePaths = "relation.id")
     public Set<RelationOccurrenceTable> getRelationOccurrences() {
         return relationOccurrences;
@@ -113,8 +114,8 @@ public class DocumentTable extends AbstractTable {
         this.relationOccurrences = relationOccurrences;
     }
 
-    @OneToMany(mappedBy = "document")
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @OneToMany(mappedBy = "document", orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
     @IndexedEmbedded(includePaths = "alias.object.id")
     public Set<AliasOccurrenceTable> getAliasOccurrences() {
         return aliasOccurrences;

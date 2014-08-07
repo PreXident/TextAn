@@ -26,14 +26,4 @@ public class JoinedObject {
                 .map(Object::new)
                 .collect(Collectors.toList());
     }
-
-    /**
-     * Test constructor.
-     */
-    //TODO remove testing constructor
-    public JoinedObject() {
-        root = new Object(-1, new ObjectType(-1, "XXX"), Arrays.asList("xxx", "zzz"));
-        children = Arrays.asList(new Object(-1, new ObjectType(-1, "QQQ"), Arrays.asList("aaa", "bbb")),
-                new Object(-1, new ObjectType(-1, "WWW"), Arrays.asList("ccc", "ddd")));
-    }
 }

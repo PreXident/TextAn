@@ -40,7 +40,6 @@
 
     <xs:complexType name="RelationOccurrence">
         <xs:sequence>
-            <!-- TODO: make sure if it's all -->
             <xs:element name="relationId" type="xs:long" />
             <xs:element name="anchor" type="Occurrence" nillable="true"/>
         </xs:sequence>

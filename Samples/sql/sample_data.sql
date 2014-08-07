@@ -1,3 +1,5 @@
+USE textan;
+
 -- inserts
 
 INSERT INTO `Document`(`id_document`,`added`,`processed`,`text`)
@@ -15,7 +17,6 @@ INSERT INTO `ObjectType`(`id_object_type`,`name`) VALUES(9, "Podnik");
 INSERT INTO `ObjectType`(`id_object_type`,`name`) VALUES(10, "Zákon");
 INSERT INTO `ObjectType`(`id_object_type`,`name`) VALUES(11, "Droga");
 
--- TODO: better names for relation types
 INSERT INTO `RelationType`(`id_relation_type`,`name`) VALUES(1, "narozen");
 INSERT INTO `RelationType`(`id_relation_type`,`name`) VALUES(2, "viděn");
 INSERT INTO `RelationType`(`id_relation_type`,`name`) VALUES(3, "poškozoval");
@@ -57,12 +58,6 @@ INSERT INTO `Relation`(`id_relation`,`id_relation_type`) VALUES (1, 1);
 	INSERT INTO `IsInRelation`(`id_is_in_relation`, `id_relation`, `id_object`,`order_in_relation`) VALUES (1, 1, 1, 0);
 	INSERT INTO `IsInRelation`(`id_is_in_relation`, `id_relation`, `id_object`,`order_in_relation`) VALUES (2, 1, 2, 0);
 
-
-
--- todo: finish
-
--- cleaning
--- todo:
 
 
 

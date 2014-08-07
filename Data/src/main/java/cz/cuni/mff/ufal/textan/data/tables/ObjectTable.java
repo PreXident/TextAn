@@ -2,6 +2,8 @@ package cz.cuni.mff.ufal.textan.data.tables;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -15,10 +17,9 @@ import java.util.Set;
  * Object (entity) itself
  *
  * @author Vaclav Pernicka
- * @author Petr Fanta
  */
 @Entity
-@Indexed
+@Indexed(index = "ObjectIndex")
 @Table(name = "Object")
 public class ObjectTable extends AbstractTable {
 
@@ -44,6 +45,7 @@ public class ObjectTable extends AbstractTable {
 
     public ObjectTable() {
         rootObject = this;
+        rootOfObjects.add(this);
     }
 
     public ObjectTable(String data, ObjectTypeTable objectType) {
@@ -54,6 +56,7 @@ public class ObjectTable extends AbstractTable {
 
     @Id
     @GeneratedValue
+    @DocumentId
     @Column(name = "id_object", nullable = false, unique = true)
     public long getId() {
         return id;
@@ -74,6 +77,7 @@ public class ObjectTable extends AbstractTable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_root_object")
+    @ContainedIn
     public ObjectTable getRootObject() {
         return rootObject;
     }
@@ -83,8 +87,18 @@ public class ObjectTable extends AbstractTable {
     }
 
     @Transient
-    public boolean isRootObject() {
+    public boolean isRoot() {
         return this == rootObject;
+    }
+
+    @OneToMany(mappedBy = "rootObject")
+    @IndexedEmbedded(includePaths = "aliases.alias")
+    public Set<ObjectTable> getRootOfObjects() {
+        return rootOfObjects;
+    }
+
+    public void setRootOfObjects(Set<ObjectTable> rootOfObjects) {
+        this.rootOfObjects = rootOfObjects;
     }
 
     @Column(name = "globalversion", nullable = false)
@@ -109,8 +123,9 @@ public class ObjectTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "object", orphanRemoval = true)
-    @Cascade(CascadeType.DELETE)
+    @Cascade(CascadeType.ALL)
     @IndexedEmbedded(includePaths = "alias")
+    @ContainedIn
     public Set<AliasTable> getAliases() {
         return aliases;
     }
@@ -206,15 +221,6 @@ public class ObjectTable extends AbstractTable {
             result.addAll(getNewObject().getOldObject2().getObjectsThisWasJoinedFrom());
         }
         return result;
-    }
-
-    @OneToMany(mappedBy = "rootObject")
-    public Set<ObjectTable> getRootOfObjects() {
-        return rootOfObjects;
-    }
-
-    public void setRootOfObjects(Set<ObjectTable> rootOfObjects) {
-        this.rootOfObjects = rootOfObjects;
     }
 
     @Override
