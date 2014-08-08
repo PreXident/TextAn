@@ -76,14 +76,14 @@
 								</HBox>
 							</content>
 						</CustomMenuItem>
-                                                <CustomMenuItem hideOnClick="false" text="%graph.distance">
+						<CustomMenuItem hideOnClick="false" text="%graph.distance">
 							<content>
 								<HBox alignment="CENTER_LEFT" spacing="10" >
 									<Label text="%graph.distance" styleClass="menu-item-label"/>
 									<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="65" />
 								</HBox>
-                                                        </content>
-                                                </CustomMenuItem>
+							</content>
+						</CustomMenuItem>
 						<CustomMenuItem hideOnClick="false" text="Login">
 							<content>
 								<HBox alignment="CENTER_LEFT" spacing="10" >
