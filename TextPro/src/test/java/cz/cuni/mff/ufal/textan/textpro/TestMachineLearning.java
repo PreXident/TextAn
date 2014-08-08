@@ -73,11 +73,11 @@ public class TestMachineLearning {
         assertEquals("1 entity to match", 1, eList.size());
         
         // Run the ranking
-        Map<Entity, List<Pair<Long, Double>>> result = textPro.DoubleRanking("Empty", eList, 5);
+        Map<Entity, List<Pair<Long, Double>>> result = textPro.InterpolateRanking("Empty", eList, 5);
         
         List<Pair<Long, Double>> Olist = result.get(e);
-        //assertEquals("1 entity to match", 0, result.keySet().size());
-        //assertEquals("2 one object", 0, Olist.size());
+        //assertEquals("1 entity to match", 1, result.keySet().size());
+        //assertEquals("2 one object", 1, Olist.size());
         //assertEquals("2 zero object", 1, Olist.keySet().size());
     }
     

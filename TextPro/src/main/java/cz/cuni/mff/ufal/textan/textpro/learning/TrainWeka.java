@@ -86,6 +86,8 @@ public class TrainWeka {
             isTrainingSet.add(ins);
             isTrainingSet.add(ins_reverse);
         }
+        
+        // Create a model
         Classifier cModel = (Classifier)new IBk();
         try {
             cModel.buildClassifier(isTrainingSet);

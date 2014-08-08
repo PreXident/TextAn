@@ -258,6 +258,7 @@ public class TextPro implements ITextPro {
         }
         
         /********************** REGULAR RANKING **************************/
+        //TODO: Implement the Regular Ranking here
         
         /********************** MACHINE LEARNING *************************/
         
@@ -286,7 +287,7 @@ public class TextPro implements ITextPro {
             Set<Long>entityTopK = new HashSet<>();
             for(int iteration = 0; iteration < topK; iteration++) {
                 double highestScore = 0;
-                long highestID = 0;
+                long highestID = -1;
                 for(Pair p:entityScore) {
                     long thisID = (long)p.getFirst();
                     if(entityTopK.contains(thisID)) {
@@ -298,8 +299,10 @@ public class TextPro implements ITextPro {
                         highestID = thisID;
                     }
                 }
-                entityTopK.add(highestID);
-                entityScoreTopK.add(new Pair<>(highestID,highestScore));
+                if(highestID > -1) {
+                    entityTopK.add(highestID);
+                    entityScoreTopK.add(new Pair<>(highestID,highestScore));
+                }
             }
             // Return
             eMap.put(eInfo.e, entityScoreTopK);
