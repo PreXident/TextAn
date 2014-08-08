@@ -101,50 +101,80 @@
 				</menus>
 			</MenuBar>
 			<ToolBar>
-				<Button onAction="#reportWizard" prefHeight="35">
+				<Button onAction="#newReport">
+					<graphic>
+						<ImageView >
+							<Image url="@new.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%new" />
+					</tooltip>
+				</Button>
+				<Button onAction="#load">
 					<graphic>
 						<ImageView>
-							<Image url="@placeholder.png"/>
+							<Image url="@load.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%load" />
+					</tooltip>
+				</Button>
+				<Button onAction="#importReport">
+					<graphic>
+						<ImageView>
+							<Image url="@import.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%import" />
+					</tooltip>
+				</Button>
+				<Button onAction="#reportWizard">
+					<graphic>
+						<ImageView>
+							<Image url="@pipeline.png"/>
 						</ImageView>
 					</graphic>
 					<tooltip>
 						<Tooltip text="%report.wizard" />
 					</tooltip>
 				</Button>
-				<Button onAction="#graph" prefHeight="35">
+				<Button onAction="#join">
 					<graphic>
 						<ImageView>
-							<Image url="@placeholder.png"/>
-						</ImageView>
-					</graphic>
-					<tooltip>
-						<Tooltip text="%graph.wizard" />
-					</tooltip>
-				</Button>
-				<Button onAction="#displayDocuments" prefHeight="35">
-					<graphic>
-						<ImageView>
-							<Image url="@placeholder.png"/>
-						</ImageView>
-					</graphic>
-					<tooltip>
-						<Tooltip text="%document.wizard" />
-					</tooltip>
-				</Button>
-				<Button onAction="#join" prefHeight="35" >
-					<graphic>
-						<ImageView>
-							<Image url="@placeholder.png"/>
+							<Image url="@merge.png"/>
 						</ImageView>
 					</graphic>
 					<tooltip>
 						<Tooltip text="%join.wizard" />
 					</tooltip>
 				</Button>
-				<Button onAction="#relations" prefHeight="35" >
+				<Button onAction="#graph">
 					<graphic>
 						<ImageView>
-							<Image url="@placeholder.png"/>
+							<Image url="@objects.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%graph.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#displayDocuments">
+					<graphic>
+						<ImageView>
+							<Image url="@documents.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%document.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#relations">
+					<graphic>
+						<ImageView>
+							<Image url="@relations.png"/>
 						</ImageView>
 					</graphic>
 					<tooltip>
