@@ -78,6 +78,10 @@ final class ReportRelationsState extends State {
                 builder.index = ++counter;
                 rels.add(builder);
             }
+            //set ids of the unanchored relations
+            for (RelationBuilder rel : unanchoredRelations) {
+                rel.index = ++counter;
+            }
             rels.addAll(unanchoredRelations);
             pipeline.reportRelations = rels;
             saveReport(pipeline, false);
