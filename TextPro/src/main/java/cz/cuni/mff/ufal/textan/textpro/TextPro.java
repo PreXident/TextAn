@@ -10,8 +10,10 @@ import cz.cuni.mff.ufal.textan.textpro.learning.Train;
 import cz.cuni.mff.ufal.textan.textpro.learning.TrainWeka;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -277,9 +279,31 @@ public class TextPro implements ITextPro {
                 
                 Pair probability = new Pair<>(eInfo.match_object.get(ot),score);
                 entityScore.add(probability);
-                
             }
-            eMap.put(eInfo.e, entityScore);
+            
+            // Select topK
+            List<Pair<Long, Double>> entityScoreTopK = new ArrayList<>();
+            Set<Long>entityTopK = new HashSet<>();
+            for(int iteration = 0; iteration < topK; iteration++) {
+                double highestScore = 0;
+                long highestID = 0;
+                for(Pair p:entityScore) {
+                    long thisID = (long)p.getFirst();
+                    if(entityTopK.contains(thisID)) {
+                        continue;
+                    }
+                    double thisScore = (double)p.getSecond();
+                    if(thisScore > highestScore){
+                        highestScore = thisScore;
+                        highestID = thisID;
+                    }
+                }
+                entityTopK.add(highestID);
+                entityScoreTopK.add(new Pair<>(highestID,highestScore));
+            }
+            // Return
+            eMap.put(eInfo.e, entityScoreTopK);
+            
         }
         
         return eMap;
