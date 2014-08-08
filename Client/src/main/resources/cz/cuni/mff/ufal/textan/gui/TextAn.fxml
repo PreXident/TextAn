@@ -23,6 +23,21 @@
 			<MenuBar fx:id="menuBar" >
 				<menus>
 					<Menu text="%file" >
+						<MenuItem text="%new" onAction="#newReport">
+							<accelerator>
+								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="N"/>
+							</accelerator>
+						</MenuItem>
+						<MenuItem text="%load" onAction="#load">
+							<accelerator>
+								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="L"/>
+							</accelerator>
+						</MenuItem>
+						<MenuItem text="%import" onAction="#importReport">
+							<accelerator>
+								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="I"/>
+							</accelerator>
+						</MenuItem>
 						<MenuItem text="%close" onAction="#close">
 							<accelerator>
 								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="X"/>
@@ -31,9 +46,11 @@
 					</Menu>
 					<Menu text="%wizards" >
 						<MenuItem text="%report.wizard" onAction="#reportWizard" />
+						<MenuItem text="%join.wizard" onAction="#join" />
+					</Menu>
+					<Menu text="%dials" >
 						<MenuItem text="%graph.wizard" onAction="#graph" />
 						<MenuItem text="%document.wizard" onAction="#displayDocuments" />
-						<MenuItem text="%join.wizard" onAction="#join" />
 						<MenuItem text="%relation.wizard" onAction="#relations" />
 					</Menu>
 					<Menu fx:id="windowsMenu" text="%windows" />
