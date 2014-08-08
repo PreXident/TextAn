@@ -31,6 +31,7 @@ import weka.core.Instances;
 public class TrainWeka {
     
     FastVector fvWekaAttributes;
+    public Instances isTrainingSet;
     /*
      * Default constructor
      */
@@ -60,7 +61,7 @@ public class TrainWeka {
     * Function doTraining, the same function as previous version, but different classifier
     */
     public Classifier doTraining(IObjectTableDAO objectTableDAO, IAliasTableDAO aliasTableDAO) {
-        Instances isTrainingSet = new Instances("Rel", this.fvWekaAttributes, 10);
+        isTrainingSet = new Instances("Rel", this.fvWekaAttributes, 10);
         // Create the list of all objects
         List<ObjectTable> objectTable = objectTableDAO.findAll();
         
@@ -95,7 +96,7 @@ public class TrainWeka {
         return cModel;
     }
     
-    Instance CreateInstanceBasic
+    public Instance CreateInstanceBasic
         (Entity e, ObjectTable obj, IAliasTableDAO aliasTableDAO, 
                 IObjectTableDAO objectTableDAO, String target) {
         

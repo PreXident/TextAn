@@ -7,15 +7,17 @@ import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import cz.cuni.mff.ufal.textan.textpro.data.EntityInfo;
 import cz.cuni.mff.ufal.textan.textpro.learning.Test;
 import cz.cuni.mff.ufal.textan.textpro.learning.Train;
+import cz.cuni.mff.ufal.textan.textpro.learning.TrainWeka;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.sf.javaml.classification.Classifier;
-import net.sf.javaml.core.Instance;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
+import weka.classifiers.Classifier;
+import weka.core.Instance;
 
 /**
  * A simple example of an implementation of the ITextPro interface as a Spring bean.
@@ -53,8 +55,11 @@ public class TextPro implements ITextPro {
     /** Provides access to RelationType table in database */
     IRelationTypeTableDAO typeTableDAO;
     
+    /*8 Train Weka */
+    TrainWeka train;
     /** Training model **/
     Classifier model ;
+    
     
     /**
      * Instantiates a new TextPro.
@@ -95,11 +100,10 @@ public class TextPro implements ITextPro {
         LOG.debug("Starting TexPro learning.");
 
         /*** Create the train model**/
-        Train train = new Train();
+        this.train = new TrainWeka();
         
         /*** Train the model **/
-        model = train.doTraining(this.objectTableDAO, this.aliasTableDAO);
-
+        this.model = train.doTraining(this.objectTableDAO, this.aliasTableDAO);
 
         LOG.debug("Finished TexPro learning.");
     }
@@ -180,7 +184,6 @@ public class TextPro implements ITextPro {
             /* Get the test list */
             
             Test test = new Test(e, oList, oListID, score, minscore);
-            List<Instance> instances = test.CreateTestSet(e, aliasTableDAO, objectTableDAO);
             
             /* Running the classifier, but it is included in the assigning value already
             for(Instance in:instances){
@@ -192,15 +195,7 @@ public class TextPro implements ITextPro {
             /***************** ASSIGN VALUE *********************************/
             List<Pair<Long, Double>> entityScore = new ArrayList<>();
             for (int test_id = 0; test_id < test.getObjectListID().size();  test_id++){
-                Instance in = instances.get(test_id);
-                Object predictedClassValue = this.model.classify(in);
-                
-                /*
-                 * OK, make it dump, no learning at all.
-                 * The id of object has to be test_id, associated with two parallel list, 
-                 * not the id of entity
-                */
-                if(predictedClassValue.toString().equalsIgnoreCase("1") || true) {
+                if(true) {
                     entityScore.add(new Pair<>(test.getObjectListID().get(test_id), test.getObjectListScore().get(test_id)));
                 }
             }
@@ -227,6 +222,10 @@ public class TextPro implements ITextPro {
     }
     
     
+    /*
+    * Interpolate ranking make use of Weka, not JavaML
+    */
+    @Override
     public Map<Entity, List<Pair<Long, Double>>> InterpolateRanking(String document, List<Entity> eList, int topK) {
         
         LOG.debug("Starting TexPro weka ranking.");
@@ -237,24 +236,53 @@ public class TextPro implements ITextPro {
         // Initialize the list of entity info
         List<EntityInfo> eInfoList = new ArrayList<>();
         for (Entity e:eList){
+            
             List<Long> oListID = getCloseObjectID(e);
             Map<Long,Double> score = new HashMap<Long,Double>();
-            
-            // Initialize everything is 1
-            for(Long oID:oListID){
-                score.put(oID, 1.0);
+            Map<ObjectTable,Long> match = new HashMap<ObjectTable,Long>();
+            List<ObjectTable> oList = getCloseObject(e);
+
+            // Initialize 
+            for(int oID = 0; oID < oListID.size(); oID++){
+                long objectID = oListID.get(oID);
+                ObjectTable object = oList.get(oID);
+                score.put(objectID, 1.0);
+                match.put(object, objectID);
             }
+            
             // Add the current info to final list
-            eInfoList.add(new EntityInfo(e,score));
+            eInfoList.add(new EntityInfo(e, score, oList, match));
+            
         }
         
         /********************** REGULAR RANKING **************************/
         
         /********************** MACHINE LEARNING *************************/
         
+        for(EntityInfo eInfo:eInfoList){
+            List<Pair<Long, Double>> entityScore = new ArrayList<>();
+            for(ObjectTable ot:eInfo.objects){
+                // Everything is positive , it does not matter
+                Instance ins = train.CreateInstanceBasic(eInfo.e, ot, aliasTableDAO,objectTableDAO, "positive");
+                ins.setDataset(train.isTrainingSet);
+                
+                // Assign value
+                double score = 0.0;
+                try {
+                    double[] fDistribution = model.distributionForInstance(ins);
+                    score = fDistribution[0];
+                } catch (Exception ex) {
+                    System.out.println("Something wrong here" + ex.getMessage());
+                }
+                
+                Pair probability = new Pair<>(eInfo.match_object.get(ot),score);
+                entityScore.add(probability);
+                
+            }
+            eMap.put(eInfo.e, entityScore);
+        }
         
-        
-        
+        return eMap;
     }
 
     
