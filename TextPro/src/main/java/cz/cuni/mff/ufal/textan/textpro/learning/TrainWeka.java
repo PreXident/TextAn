@@ -122,10 +122,10 @@ public class TrainWeka {
         
         // Feature 2: The type comparison
         double typeCom = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getId());
-        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(0), typeCom);
+        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(1), typeCom);
         
         // The class
-        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(3), target);
+        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(2), target);
         
         return thisInstance;
     }
