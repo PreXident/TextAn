@@ -172,7 +172,7 @@ public class AppConfig implements ApplicationContextAware {
      * @see cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer
      */
     @Bean(initMethod = "init")
-    @DependsOn("transactionManager")
+    @DependsOn({"transactionManager", "exceptionTranslation"})
     public NamedEntityRecognizer namedEntityRecognizer() {
         return new NamedEntityRecognizer(objectTypeTableDAO, entityViewDAO, documentTableDAO);
     }

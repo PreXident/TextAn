@@ -6,20 +6,14 @@ import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import cz.cuni.mff.ufal.textan.textpro.data.EntityInfo;
 import cz.cuni.mff.ufal.textan.textpro.learning.Test;
-import cz.cuni.mff.ufal.textan.textpro.learning.Train;
 import cz.cuni.mff.ufal.textan.textpro.learning.TrainWeka;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
+
+import java.util.*;
 
 /**
  * A simple example of an implementation of the ITextPro interface as a Spring bean.
@@ -65,7 +59,7 @@ public class TextPro implements ITextPro {
     
     /**
      * Instantiates a new TextPro.
-     * Uses a constructor injection for an initialization of data access object ({@link cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig#textPro()}
+     * Uses a constructor injection for an initialization of data access object ({@link cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig#textPro(cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasOccurrenceTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationOccurrenceTableDAO)}
      *
      * @param aliasOccurrenceTableDAO the alias occurrence table DAO
      * @param typeTableDAO the type table DAO
@@ -222,7 +216,6 @@ public class TextPro implements ITextPro {
         }
         return ID;
     }
-    
     
     /*
     * Interpolate ranking make use of Weka, not JavaML
