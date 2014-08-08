@@ -38,7 +38,7 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-web', version: springVersion
 
     // weka
-    compile group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.7.5'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version: '3.6.11'
     
     //logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
