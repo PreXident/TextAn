@@ -22,6 +22,7 @@
 - říct, že je to bezstavové (čili klient není úplně tenký)
 - zdůraznit, že se řeší konflikty apod.
 - že je to omezení jen nametagem, jiné řeči snadno (a konfigurací lucene, pozn. Adam)
+- úspěch závisí na modelu světa
 
 Zdeňkovy poznámky:
 - neztrácet čas na startu
