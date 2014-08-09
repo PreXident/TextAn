@@ -61,7 +61,7 @@ public class AliasTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.ALL)
+    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object", nullable = false)
     @IndexedEmbedded
     @ContainedIn
