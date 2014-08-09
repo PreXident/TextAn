@@ -8,12 +8,11 @@ import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
 import org.apache.cxf.transport.servlet.CXFServlet;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.BlockingArrayQueue;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.springframework.beans.BeansException;
@@ -114,7 +113,7 @@ public class AppConfig implements ApplicationContextAware {
 
         BlockingQueue<Runnable> acceptQueue = null;
         String acceptQueueSizeProperty = serverProperties().getProperty("server.acceptQueue.size");
-        if (acceptQueueSizeProperty != null) {
+        if (acceptQueueSizeProperty != null && !acceptQueueSizeProperty.isEmpty()) {
             int acceptQueueSize = Integer.parseInt(acceptQueueSizeProperty);
             int capacity = Math.max(maxThreads, minThreads);
             int grow = Math.min(maxThreads, minThreads);
@@ -126,8 +125,33 @@ public class AppConfig implements ApplicationContextAware {
         ThreadPool threadPool = new QueuedThreadPool(maxThreads, minThreads, idleTimeout, acceptQueue);
         Server server = new Server(threadPool);
 
-        //TODO: what about SSL connector?
-        ServerConnector connector = new ServerConnector(server);
+        boolean useSsl = false;
+        String sslProperty = serverProperties().getProperty("server.ssl");
+        if (sslProperty != null && !sslProperty.isEmpty()) {
+            useSsl = Boolean.parseBoolean(sslProperty);
+        }
+
+        ServerConnector connector;
+        if (useSsl) {
+            HttpConfiguration https = new HttpConfiguration();
+            https.addCustomizer(new SecureRequestCustomizer());
+
+            SslContextFactory sslContextFactory = new SslContextFactory();
+            sslContextFactory.setKeyStorePath(serverProperties().getProperty("server.ssl.keyStore.path"));
+            sslContextFactory.setKeyStorePassword(serverProperties().getProperty("server.ssl.keyStore.password"));
+            sslContextFactory.setKeyManagerPassword(serverProperties().getProperty("server.ssl.keyManager.password"));
+            sslContextFactory.setKeyStoreType(serverProperties().getProperty("server.ssl.keyStore.type", "JKS"));
+            //sslContextFactory.setCertAlias();
+
+            connector = new ServerConnector(
+                    server,
+                    new SslConnectionFactory(sslContextFactory, "http/1.1"),
+                    new HttpConnectionFactory(https)
+            );
+        } else {
+            connector = new ServerConnector(server);
+        }
+
         connector.setPort(Integer.parseInt(serverProperties().getProperty("server.connector.port")));
         connector.setHost(serverProperties().getProperty("server.connector.host"));
 
