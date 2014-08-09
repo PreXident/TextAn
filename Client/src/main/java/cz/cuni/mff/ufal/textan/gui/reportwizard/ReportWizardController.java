@@ -171,7 +171,16 @@ public abstract class ReportWizardController extends WindowController {
                 closeContainer();
             });
         } catch (Exception e) {
-            wrapException(e);
+            final ResourceBundle rb = ResourceBundle.getBundle(RESOURCE_BUNDLE_PATH);
+            PlatformUtil.runAndWait(() -> {
+                callWithContentBackup(() -> {
+                    createDialog()
+                            .owner(getDialogOwner(root))
+                            .title(Utils.localize(rb, "error"))
+                            .message(e.getLocalizedMessage())
+                            .showException(e);
+                });
+            });
         }
     }
 
@@ -240,6 +249,7 @@ public abstract class ReportWizardController extends WindowController {
                 createDialog()
                         .owner(getDialogOwner(root))
                         .title(Utils.localize(finalRB, "error"))
+                        .message(e.getLocalizedMessage())
                         .showException(e);
             });
         }
@@ -260,7 +270,7 @@ public abstract class ReportWizardController extends WindowController {
      * Wraps the exception e into RuntimeException and rethrows.
      * @param e exception to wrap and rethrow
      */
-    public void wrapException(final Exception e) {
+    protected void wrapException(final Exception e) {
         final ResourceBundle rb = ResourceBundle.getBundle(RESOURCE_BUNDLE_PATH);
         throw new RuntimeException(Utils.localize(rb, "error"), e);
     }
@@ -318,6 +328,5 @@ public abstract class ReportWizardController extends WindowController {
             }
             return 0D;
         }
-
     }
 }

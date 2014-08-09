@@ -21,6 +21,7 @@ import cz.cuni.mff.ufal.textan.gui.join.JoinStage;
 import cz.cuni.mff.ufal.textan.gui.join.JoinWindow;
 import cz.cuni.mff.ufal.textan.gui.relation.RelationListStage;
 import cz.cuni.mff.ufal.textan.gui.relation.RelationListWindow;
+import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportLoadController;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
@@ -177,6 +178,17 @@ public class TextAnController implements Initializable {
     }
 
     @FXML
+    private void importReport() {
+        try {
+            final ProcessReportPipeline pipeline = client.createNewReportPipeline();
+            pipeline.selectFileDatasource();
+            displayPipeline(pipeline);
+        } catch (WebServiceException e) {
+            handleWebserviceException(e);
+        }
+    }
+
+    @FXML
     private void independentWindows() {
         settings.setProperty(INDEPENDENT_WINDOW, menuItemIndependentWindows.isSelected() ? "true" : "false");
     }
@@ -199,8 +211,45 @@ public class TextAnController implements Initializable {
     }
 
     @FXML
+    private void load() {
+        try {
+            final ProcessReportPipeline pipeline = client.createNewReportPipeline();
+            final ResourceBundle rb = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.reportwizard.01_ReportLoad");
+            final boolean loaded = ReportLoadController.loadReport(rb, settings, stage, pipeline);
+            if (loaded) {
+                displayPipeline(pipeline);
+            }
+        } catch (WebServiceException e) {
+            handleWebserviceException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Dialogs.create()
+                    .owner(stage)
+                    .lightweight()
+                    .title(Utils.localize(resourceBundle, "error"))
+                    .showException(e);
+        }
+    }
+
+    @FXML
+    private void newReport() {
+        try {
+            final ProcessReportPipeline pipeline = client.createNewReportPipeline();
+            pipeline.selectEmptyDatasource();
+            displayPipeline(pipeline);
+        } catch (WebServiceException e) {
+            handleWebserviceException(e);
+        }
+    }
+
+    @FXML
     private void reportWizard() {
-        processDocument(null);
+        try {
+            final ProcessReportPipeline pipeline = client.createNewReportPipeline();
+            displayPipeline(pipeline);
+        } catch (WebServiceException e) {
+            handleWebserviceException(e);
+        }
     }
 
     @FXML
@@ -519,6 +568,30 @@ public class TextAnController implements Initializable {
     }
 
     /**
+     *
+     * @param pipeline
+     */
+    private void displayPipeline(final ProcessReportPipeline pipeline) {
+        StateChangedListener listener;
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final ReportWizardWindow wizard = new ReportWizardWindow(settings);
+            content.getChildren().add(wizard);
+            listener = new StateChangedListener(this, settings, pipeline, wizard);
+        } else {
+            final ReportWizardStage stage = new ReportWizardStage(settings);
+            children.add(stage);
+            stage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(stage);
+                }
+            });
+            listener = new StateChangedListener(this, settings, pipeline, stage);
+            stage.show();
+        }
+        pipeline.addStateChangedListener(listener);
+    }
+
+    /**
      * Returns default graph distance.
      * @return default graph distance
      */
@@ -564,39 +637,29 @@ public class TextAnController implements Initializable {
     public void processDocument(final Document document) {
         try {
             final ProcessReportPipeline pipeline = client.createNewReportPipeline();
-            if (document != null) {
-                pipeline.selectDatabaseDatasource();
-                try {
-                    pipeline.setReport(document);
-                } catch (DocumentChangedException | DocumentAlreadyProcessedException e) { //this should be very rare
-                    e.printStackTrace(); //let the reportwizard package handle errors
-                }
+            pipeline.selectDatabaseDatasource();
+            try {
+                pipeline.setReport(document);
+            } catch (DocumentChangedException | DocumentAlreadyProcessedException e) { //this should be very rare
+                e.printStackTrace(); //let the reportwizard package handle errors
             }
-            StateChangedListener listener;
-            if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
-                final ReportWizardWindow wizard = new ReportWizardWindow(settings);
-                content.getChildren().add(wizard);
-                listener = new StateChangedListener(this, settings, pipeline, wizard);
-            } else {
-                final ReportWizardStage stage = new ReportWizardStage(settings);
-                children.add(stage);
-                stage.showingProperty().addListener((ov, oldVal, newVal) -> {
-                    if (!newVal) {
-                        children.remove(stage);
-                    }
-                });
-                listener = new StateChangedListener(this, settings, pipeline, stage);
-                stage.show();
-            }
-            pipeline.addStateChangedListener(listener);
+            displayPipeline(pipeline);
         } catch (WebServiceException e) {
-            e.printStackTrace();
-            Dialogs.create()
-                    .owner(stage)
-                    .lightweight()
-                    .title(Utils.localize(resourceBundle, "webservice.error"))
-                    .showException(e);
+            handleWebserviceException(e);
         }
+    }
+
+    /**
+     * Prints the stack trace and shows error dialog.
+     * @param exception exception to handle
+     */
+    protected void handleWebserviceException(final WebServiceException exception) {
+        exception.printStackTrace();
+        Dialogs.create()
+                .owner(stage)
+                .lightweight()
+                .title(Utils.localize(resourceBundle, "webservice.error"))
+                .showException(exception);
     }
 
     /**
