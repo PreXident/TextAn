@@ -22,6 +22,13 @@ public class Graph {
     private final Set<Relation> edges = new HashSet<>();
 
     /**
+     * Constructs emtpy graph.
+     */
+    public Graph() {
+        //nothing
+    }
+
+    /**
      * Constructs graph from commons blue print
      * @param graph graph blue print
      */

@@ -5,27 +5,21 @@ import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.DocumentData;
 import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
+import cz.cuni.mff.ufal.textan.core.Object;
+import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Provides information about graphs for documents.
  */
-public class DocumentGrapher implements IGrapher {
-
-    /** Client for communication with the server. */
-    final protected Client client;
+public class DocumentGrapher extends AbstractGrapher {
 
     /** Displayed document. */
     final protected Document document;
 
-    /** Graph distance. It has no meaning to displaying the graph. */
-    protected int distance;
-
     /** Information about displayed document. */
     protected DocumentData documentData;
-
-    /** Graph built from document data. */
-    protected Graph graph;
 
     /**
      * Only constructor.
@@ -33,33 +27,14 @@ public class DocumentGrapher implements IGrapher {
      * @param document document to display
      */
     public DocumentGrapher(final Client client, final Document document) {
-        this.client = client;
+        super(client);
         this.document = document;
+        setDistance(0);
     }
 
     @Override
-    public Predicate<Object> getCenterer() {
+    public Predicate<java.lang.Object> getCenterer() {
         return (obj) -> false;
-    }
-
-    @Override
-    public int getDistance() {
-        return distance;
-    }
-
-    @Override
-    public void setDistance(int distance) {
-        this.distance = distance;
-    }
-
-    @Override
-    public Graph getGraph() throws IdNotFoundException {
-        if (documentData == null || graph == null) {
-            documentData = client.getDocumentData(document.getId());
-            graph = new Graph(documentData.getObjects(),
-                    documentData.getRelations().values());
-        }
-        return graph;
     }
 
     @Override
@@ -68,17 +43,25 @@ public class DocumentGrapher implements IGrapher {
     }
 
     @Override
-    public long getRootId() {
-        return -1;
-    }
-
-    @Override
-    public void setRootId(long id) {
-        //nothing
-    }
-
-    @Override
     public String getTitle() {
         return String.valueOf(document.getId()) + ": " + document.getText();
+    }
+
+    @Override
+    protected Graph fetchGraph() throws IdNotFoundException {
+        if (documentData == null || graph == null) {
+            documentData = client.getDocumentData(document.getId());
+            return new Graph(documentData.getObjects(),
+                    documentData.getRelations().values());
+        }
+        return graph;
+    }
+
+    @Override
+    protected Graph filterGraph() {
+        final List<Object> roots = graph.getNodes().values().stream()
+                .filter(obj -> !ignoredObjectTypes.contains(obj.getType()))
+                .collect(Collectors.toList());
+        return filterGraph(roots);
     }
 }
