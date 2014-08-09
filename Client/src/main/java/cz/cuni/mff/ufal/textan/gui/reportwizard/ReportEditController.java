@@ -58,4 +58,9 @@ public class ReportEditController extends ReportWizardController {
         textArea.setText(pipeline.getReportText().replace("\r", ""));
         textArea.textProperty().addListener(e -> resetStepsBack());
     }
+
+    @Override
+    public void nowInControl() {
+        textArea.requestFocus();
+    }
 }
