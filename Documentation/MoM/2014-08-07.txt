@@ -1,0 +1,33 @@
+Venca and Kuba are missing.
+
+Presentation done. See the attached documents.
+
+Adam:
+- a few NPEs, minor stuff
+
+Tam:
+- documentation tweaks
+- JavaML documentation
+
+Peter:
+- update problem fix!!!
+- documentation
+- presentation
+
+HWK:
+- Peter, add presentation to the documentation
+- Peter, add ssl encoding
+- Peter, update presentation according to the feedback
+- Peter, integrate new design to documentation
+- Adam, prepare certificate for server/client communicaiton
+- Adam, scan and rewrite Ondrej's notes
+- Adam, refactor layout of the main menu
+- Tam, better way to loop
+- Tam, add struct for entity info
+- Tam & Peter & Venca, use method for getting direct neighbours of object, if it exists (maybe transfer it from graph)
+- Tam, try to get probability from weka or JavaML
+
+!PRIORITY HWK!
+- Venca & Kuba, our guest demanded to try to move TextAn to other domain. Think relation types and object types needed to annonate Movie Database (eg. person, movie, series, ...) or think up any suitable domain which can be used to do stress tests.
+
+Next meeting on Monday from 17:00.

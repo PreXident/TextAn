@@ -23,6 +23,21 @@
 			<MenuBar fx:id="menuBar" >
 				<menus>
 					<Menu text="%file" >
+						<MenuItem text="%new" onAction="#newReport">
+							<accelerator>
+								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="N"/>
+							</accelerator>
+						</MenuItem>
+						<MenuItem text="%load" onAction="#load">
+							<accelerator>
+								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="L"/>
+							</accelerator>
+						</MenuItem>
+						<MenuItem text="%import" onAction="#importReport">
+							<accelerator>
+								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="I"/>
+							</accelerator>
+						</MenuItem>
 						<MenuItem text="%close" onAction="#close">
 							<accelerator>
 								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="X"/>
@@ -31,9 +46,11 @@
 					</Menu>
 					<Menu text="%wizards" >
 						<MenuItem text="%report.wizard" onAction="#reportWizard" />
+						<MenuItem text="%join.wizard" onAction="#join" />
+					</Menu>
+					<Menu text="%dials" >
 						<MenuItem text="%graph.wizard" onAction="#graph" />
 						<MenuItem text="%document.wizard" onAction="#displayDocuments" />
-						<MenuItem text="%join.wizard" onAction="#join" />
 						<MenuItem text="%relation.wizard" onAction="#relations" />
 					</Menu>
 					<Menu fx:id="windowsMenu" text="%windows" />
@@ -59,14 +76,14 @@
 								</HBox>
 							</content>
 						</CustomMenuItem>
-                                                <CustomMenuItem hideOnClick="false" text="%graph.distance">
+						<CustomMenuItem hideOnClick="false" text="%graph.distance">
 							<content>
 								<HBox alignment="CENTER_LEFT" spacing="10" >
 									<Label text="%graph.distance" styleClass="menu-item-label"/>
 									<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="65" />
 								</HBox>
-                                                        </content>
-                                                </CustomMenuItem>
+							</content>
+						</CustomMenuItem>
 						<CustomMenuItem hideOnClick="false" text="Login">
 							<content>
 								<HBox alignment="CENTER_LEFT" spacing="10" >
@@ -84,50 +101,80 @@
 				</menus>
 			</MenuBar>
 			<ToolBar>
-				<Button onAction="#reportWizard" prefHeight="35">
+				<Button onAction="#newReport">
+					<graphic>
+						<ImageView >
+							<Image url="@new.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%new" />
+					</tooltip>
+				</Button>
+				<Button onAction="#load">
 					<graphic>
 						<ImageView>
-							<Image url="@placeholder.png"/>
+							<Image url="@load.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%load" />
+					</tooltip>
+				</Button>
+				<Button onAction="#importReport">
+					<graphic>
+						<ImageView>
+							<Image url="@import.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%import" />
+					</tooltip>
+				</Button>
+				<Button onAction="#reportWizard">
+					<graphic>
+						<ImageView>
+							<Image url="@pipeline.png"/>
 						</ImageView>
 					</graphic>
 					<tooltip>
 						<Tooltip text="%report.wizard" />
 					</tooltip>
 				</Button>
-				<Button onAction="#graph" prefHeight="35">
+				<Button onAction="#join">
 					<graphic>
 						<ImageView>
-							<Image url="@placeholder.png"/>
-						</ImageView>
-					</graphic>
-					<tooltip>
-						<Tooltip text="%graph.wizard" />
-					</tooltip>
-				</Button>
-				<Button onAction="#displayDocuments" prefHeight="35">
-					<graphic>
-						<ImageView>
-							<Image url="@placeholder.png"/>
-						</ImageView>
-					</graphic>
-					<tooltip>
-						<Tooltip text="%document.wizard" />
-					</tooltip>
-				</Button>
-				<Button onAction="#join" prefHeight="35" >
-					<graphic>
-						<ImageView>
-							<Image url="@placeholder.png"/>
+							<Image url="@merge.png"/>
 						</ImageView>
 					</graphic>
 					<tooltip>
 						<Tooltip text="%join.wizard" />
 					</tooltip>
 				</Button>
-				<Button onAction="#relations" prefHeight="35" >
+				<Button onAction="#graph">
 					<graphic>
 						<ImageView>
-							<Image url="@placeholder.png"/>
+							<Image url="@objects.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%graph.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#displayDocuments">
+					<graphic>
+						<ImageView>
+							<Image url="@documents.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%document.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#relations">
+					<graphic>
+						<ImageView>
+							<Image url="@relations.png"/>
 						</ImageView>
 					</graphic>
 					<tooltip>

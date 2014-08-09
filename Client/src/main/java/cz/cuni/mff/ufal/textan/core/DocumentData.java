@@ -115,7 +115,12 @@ public class DocumentData {
             id = occurrence.getRelationId();
             type = OccurrenceType.RELATION;
             position = occurrence.getAnchor().getPosition();
-            length = occurrence.getAnchor().getValue().length();
+            final String anchor = occurrence.getAnchor().getValue();
+            if (anchor != null) {
+                length = anchor.length();
+            } else {
+                length = 0;
+            }
             last = position + length;
         }
     }

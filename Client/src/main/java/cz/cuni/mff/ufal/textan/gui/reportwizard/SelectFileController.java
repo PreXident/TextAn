@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.FileType;
+import cz.cuni.mff.ufal.textan.core.processreport.load.ImportManager;
+import cz.cuni.mff.ufal.textan.core.processreport.load.Importer;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class SelectFileController extends ReportWizardController {
     ScrollPane scrollPane;
 
     @FXML
-    ComboBox<FileType> typeComboBox;
+    ComboBox<Importer> typeComboBox;
 
     /** File content. */
     byte[] data;
@@ -66,17 +67,17 @@ public class SelectFileController extends ReportWizardController {
                 return super.toString(val);
             }
         });
-        typeComboBox.setConverter(new StringConverter<FileType>() {
+        typeComboBox.setConverter(new StringConverter<Importer>() {
             @Override
-            public String toString(final FileType t) {
-                return Utils.localize(resourceBundle, "type." + t.toString());
+            public String toString(final Importer t) {
+                return Utils.localize(resourceBundle, "type." + t.getId());
             }
             @Override
-            public FileType fromString(final String string) {
-                return FileType.TEXT_UTF8; //should not happen anyway
+            public Importer fromString(final String string) {
+                throw new RuntimeException("This should never happen!");
             }
         });
-        typeComboBox.getItems().addAll(FileType.values());
+        typeComboBox.getItems().addAll(ImportManager.getImporters());
         typeComboBox.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
             if (newVal == null) {
                 textArea.setText("");
@@ -123,14 +124,14 @@ public class SelectFileController extends ReportWizardController {
             final String lastType = settings.getProperty("selectfile.extension." + extension + ".type");
             if (lastType != null) {
                 try {
-                    final FileType type = FileType.valueOf(lastType);
+                    final Importer type = ImportManager.getImporter(lastType);
                     typeComboBox.getSelectionModel().select(type);
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 }
             }
             if (typeComboBox.getSelectionModel().getSelectedItem() == null) {
-                typeComboBox.getSelectionModel().select(FileType.getForExtension(extension));
+                typeComboBox.getSelectionModel().select(ImportManager.getDefaultForExtension(extension));
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -73,7 +73,9 @@ public class DocumentViewController extends WindowController {
      * @param list items to which add the style class
      */
     static void addClass(final String clazz, final Iterable<? extends Node> list) {
-        list.forEach(node -> node.getStyleClass().add(clazz));
+        if (list != null) {
+            list.forEach(node -> node.getStyleClass().add(clazz));
+        }
     }
 
     /**
@@ -98,7 +100,9 @@ public class DocumentViewController extends WindowController {
      * @param list items from which remove the style class
      */
     static void removeClass(final String clazz, final Iterable<? extends Node> list) {
-        list.forEach(node -> node.getStyleClass().remove(clazz));
+        if (list != null) {
+            list.forEach(node -> node.getStyleClass().remove(clazz));
+        }
     }
 
     /**
