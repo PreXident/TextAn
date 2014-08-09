@@ -18,6 +18,9 @@ public abstract class AbstractGrapher implements IGrapher {
     /** Client connecting to webservices. */
     final protected Client client;
 
+    /** Flag indicating whether the graph is fetched and matches current parameters. */
+    protected boolean fetched = false;
+
     /** Wrapped graph. */
     protected Graph graph;
 
@@ -31,8 +34,9 @@ public abstract class AbstractGrapher implements IGrapher {
 
     @Override
     public Graph getGraph() throws IdNotFoundException {
-        if (graph == null) {
+        if (!fetched) {
             graph = fetchGraph();
+            fetched = true;
         }
         return graph;
     }
@@ -44,7 +48,10 @@ public abstract class AbstractGrapher implements IGrapher {
 
     @Override
     public void setDistance(int distance) {
-        this.distance = distance;
+        if (this.distance != distance) {
+            fetched = false;
+            this.distance = distance;
+        }
     }
 
     @Override
@@ -59,7 +66,10 @@ public abstract class AbstractGrapher implements IGrapher {
 
     @Override
     public void setRootId(long rootId) {
-        this.rootId = rootId;
+        if (this.rootId != rootId) {
+            fetched = false;
+            this.rootId = rootId;
+        }
     }
 
     /**
