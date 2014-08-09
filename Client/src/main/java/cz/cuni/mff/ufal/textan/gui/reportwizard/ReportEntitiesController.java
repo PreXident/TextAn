@@ -10,6 +10,7 @@ import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.s
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import static cz.cuni.mff.ufal.textan.gui.reportwizard.ReportRelationsController.SELECTED;
 import java.net.URL;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -177,6 +178,10 @@ public class ReportEntitiesController extends ReportWizardController {
                 Utils.styleText(text, "ENTITY", word.getEntity().getType().getId());
             }
             text.setOnMousePressed(e -> {
+                if (e.isSecondaryButtonDown() && text.getStyleClass().contains(SELECTED)) {
+                    contextMenu.show(text, Side.BOTTOM, 0, 0);
+                    filterField.requestFocus();
+                }
                 if (!text.getStyleClass().contains(SELECTED)) {
                     removeSelectedClass(texts);
                     dragging = true;
