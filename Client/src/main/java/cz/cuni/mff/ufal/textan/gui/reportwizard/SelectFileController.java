@@ -84,7 +84,7 @@ public class SelectFileController extends ReportWizardController {
                 return;
             }
             textArea.setText(pipeline.extractText(data, newVal));
-            settings.setProperty("selectfile.extension." + extension + ".type", newVal.toString());
+            settings.setProperty("selectfile.extension." + extension + ".type", newVal.getId());
         });
     }
 
