@@ -33,12 +33,14 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
@@ -55,9 +57,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
@@ -68,6 +75,9 @@ import javafx.util.converter.DefaultStringConverter;
  * Controls editing the report relations.
  */
 public class ReportRelationsController extends ReportWizardController {
+
+    /** Custom data format to be used in ClipBoard. */
+    private static final DataFormat OBJECT_FORMAT = new DataFormat("textan.object");
 
     /** Style class for selected words. */
     static final String SELECTED = "selected";
@@ -127,6 +137,9 @@ public class ReportRelationsController extends ReportWizardController {
     @FXML
     ListView<FXRelationBuilder> relationsListView;
 
+    @FXML
+    Button addButton;
+
     /** Texts's tooltip. */
     Tooltip tooltip = new Tooltip("");
 
@@ -183,10 +196,7 @@ public class ReportRelationsController extends ReportWizardController {
 
     @FXML
     private void add() {
-        if (selectedRelation != null) {
-            resetStepsBack();
-            selectedRelation.getData().add(new FXRelationInfo(0, "", null));
-        }
+        add(null);
     }
 
     @FXML
@@ -272,6 +282,27 @@ public class ReportRelationsController extends ReportWizardController {
         scrollPane.vvalueProperty().addListener(e -> {
             textFlow.layoutChildren();
         });
+        EventHandler<DragEvent> dragOver = e -> {
+            if (e.getGestureSource() instanceof Text
+                    && e.getDragboard().hasContent(OBJECT_FORMAT)) {
+                e.acceptTransferModes(TransferMode.LINK);
+            }
+            e.consume();
+        };
+        EventHandler<DragEvent> dragDropped = e -> {
+            Dragboard db = e.getDragboard();
+            boolean success = false;
+            if (db.hasContent(OBJECT_FORMAT) && selectedRelation != null) {
+                add((Object) db.getContent(OBJECT_FORMAT));
+                success = true;
+            }
+            e.setDropCompleted(success);
+            e.consume();
+        };
+        addButton.setOnDragOver(dragOver);
+        addButton.setOnDragDropped(dragDropped);
+        table.setOnDragOver(dragOver);
+        table.setOnDragDropped(dragDropped);
         table.setEditable(true);
         table.setRowFactory(t -> {
             final TableRow<FXRelationInfo> row = new TableRow<>();
@@ -280,6 +311,23 @@ public class ReportRelationsController extends ReportWizardController {
                         && e.getClickCount() == 2
                         && row.getItem() == null) {
                     add();
+                }
+            });
+            row.setOnDragOver(e -> {
+                if (e.getGestureSource() instanceof Text
+                        && e.getDragboard().hasContent(OBJECT_FORMAT)
+                        && row.getItem() != null) {
+                    e.acceptTransferModes(TransferMode.LINK);
+                    e.consume();
+                }
+            });
+            row.setOnDragDropped((DragEvent event) -> {
+                Dragboard db = event.getDragboard();
+                if (db.hasContent(OBJECT_FORMAT) && row.getItem() != null) {
+                    Object obj = (Object) db.getContent(OBJECT_FORMAT);
+                    addObjectToRelationInfo(obj, row.getItem());
+                    event.setDropCompleted(true);
+                    event.consume();
                 }
             });
             return row;
@@ -316,21 +364,7 @@ public class ReportRelationsController extends ReportWizardController {
         objectColumn.setCellValueFactory((CellDataFeatures<FXRelationInfo, Object> p) -> p.getValue().objectProperty());
         objectColumn.setOnEditCommit(
             (CellEditEvent<FXRelationInfo, Object> t) -> {
-                resetStepsBack();
-                final Object oldObj = t.getOldValue();
-                final List<Text> oldTexts = objectWords.get(oldObj);
-                if (oldTexts != null) {
-                    oldTexts.stream().forEach(Utils::unstyleTextBackground);
-                }
-                t.getTableView().getItems().get(
-                        t.getTablePosition().getRow()).setObject(t.getNewValue());
-                final RelationType type = selectedRelation.getType();
-                final long id = type.getId();
-                final Object newObj = t.getNewValue();
-                final List<Text> newTexts = objectWords.get(newObj);
-                if (newTexts != null) {
-                    newTexts.stream().forEach(txt -> Utils.styleTextBackground(txt, id));
-                }
+                addObjectToRelationInfo(t.getNewValue(), t.getRowValue());
         });
         //create popup
         BorderPane border = new BorderPane();
@@ -439,6 +473,17 @@ public class ReportRelationsController extends ReportWizardController {
                 tooltip.hide();
             });
             text.setOnMousePressed(e -> {
+                if (word.getEntity() != null) {
+                    if (e.isSecondaryButtonDown()) {
+                        final int entityIndex = word.getEntity().getIndex();
+                        final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
+                        if (obj != null) {
+                            objectForGraph.set(obj);
+                            objectContextMenu.show(text, Side.BOTTOM, 0, 0);
+                        }
+                    }
+                    return;
+                }
                 clearSelectedRelationBackground();
                 selectedRelation = null;
                 relationsListView.getSelectionModel().select(-1);
@@ -464,17 +509,22 @@ public class ReportRelationsController extends ReportWizardController {
                     selectedRelation = null;
                     table.setItems(null);
                 }
-                if (e.isSecondaryButtonDown() && word.getEntity() != null) {
-                    final int entityIndex = word.getEntity().getIndex();
-                    final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
-                    if (obj != null) {
-                        objectForGraph.set(obj);
-                        objectContextMenu.show(text, Side.BOTTOM, 0, 0);
-                    }
-                }
             });
-            text.setOnDragDetected(e -> {
-                text.startFullDrag();
+            text.setOnDragDetected((e) -> {
+                if (word.getEntity() == null) {
+                    text.startFullDrag();
+                    return;
+                }
+                final int entityIndex = word.getEntity().getIndex();
+                final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
+                if (obj == null) {
+                    return;
+                }
+                Dragboard db = text.startDragAndDrop(TransferMode.LINK);
+                ClipboardContent content = new ClipboardContent();
+                content.put(OBJECT_FORMAT, obj);
+                db.setContent(content);
+                e.consume();
             });
             text.setOnMouseDragEntered(e -> {
                 if (dragging) {
@@ -603,6 +653,39 @@ public class ReportRelationsController extends ReportWizardController {
         objectContextMenu = new ObjectContextMenu(textAnController);
         objectContextMenu.setOnAction(e -> contextMenu.hide());
         objectContextMenu.objectProperty().bind(objectForGraph);
+    }
+
+    /**
+     * Adds object to the selected relation.
+     * @param object object to add to relation
+     */
+    protected void add(final Object object) {
+        if (selectedRelation != null) {
+            resetStepsBack();
+            selectedRelation.getData().add(new FXRelationInfo(0, "", object));
+        }
+    }
+
+    /**
+     * Adds object to relation info.
+     * @param object object to add
+     * @param relationInfo relation info to add to
+     */
+    protected void addObjectToRelationInfo(final Object object,
+            final FXRelationInfo relationInfo) {
+        resetStepsBack();
+        final Object oldObj = relationInfo.getObject();
+        final List<Text> oldTexts = objectWords.get(oldObj);
+        if (oldTexts != null) {
+            oldTexts.stream().forEach(Utils::unstyleTextBackground);
+        }
+        relationInfo.setObject(object);
+        final RelationType type = selectedRelation.getType();
+        final long id = type.getId();
+        final List<Text> newTexts = objectWords.get(object);
+        if (newTexts != null) {
+            newTexts.stream().forEach(txt -> Utils.styleTextBackground(txt, id));
+        }
     }
 
     /**
