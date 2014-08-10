@@ -26,6 +26,8 @@ import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.TextFlow;
+import cz.cuni.mff.ufal.textan.gui.settings.ColorsStage;
+import cz.cuni.mff.ufal.textan.gui.settings.ColorsWindow;
 import cz.cuni.mff.ufal.textan.gui.settings.SettingsStage;
 import cz.cuni.mff.ufal.textan.gui.settings.SettingsWindow;
 import java.net.URL;
@@ -126,6 +128,23 @@ public class TextAnController implements Initializable {
             s.toFront();
         }
     };
+
+    @FXML
+    private void colors() {
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final ColorsWindow colorsWindow = new ColorsWindow(this, settings);
+            content.getChildren().add(colorsWindow);
+        } else {
+            final ColorsStage colorsStage = new ColorsStage(this, settings);
+            children.add(colorsStage);
+            colorsStage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(colorsStage);
+                }
+            });
+            colorsStage.show();
+        }
+    }
 
     @FXML
     private void close() {

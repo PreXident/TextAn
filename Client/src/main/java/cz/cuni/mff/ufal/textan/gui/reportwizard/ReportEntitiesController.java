@@ -10,7 +10,7 @@ import static cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.s
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import static cz.cuni.mff.ufal.textan.gui.reportwizard.ReportRelationsController.SELECTED;
+import cz.cuni.mff.ufal.textan.gui.Utils.IdType;
 import java.net.URL;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -175,7 +175,7 @@ public class ReportEntitiesController extends ReportWizardController {
         for (Word word: words) {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
-                Utils.styleText(text, "ENTITY", word.getEntity().getType().getId());
+                Utils.styleText(settings, text, "ENTITY", IdType.ENTITY, word.getEntity().getType().getId());
             }
             text.setOnMousePressed(e -> {
                 if (e.isSecondaryButtonDown() && text.getStyleClass().contains(SELECTED)) {
@@ -311,7 +311,7 @@ public class ReportEntitiesController extends ReportWizardController {
             final Pair<Integer, Integer> bounds =
                     e.add(words, firstSelectedIndex, lastSelectedIndex, clearer);
             for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
-                Utils.styleText(texts.get(i), "ENTITY", id);
+                Utils.styleText(settings, texts.get(i), "ENTITY", IdType.ENTITY, id);
             }
         } catch (SplitException ex) {
             callWithContentBackup(() -> {

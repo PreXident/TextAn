@@ -15,6 +15,7 @@ import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import cz.cuni.mff.ufal.textan.gui.Utils.IdType;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.FXRelationBuilder.FXRelationInfo;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -433,10 +434,11 @@ public class ReportRelationsController extends ReportWizardController {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
                 final long entityId = word.getEntity().getType().getId();
-                Utils.styleText(text, "ENTITY", entityId);
+                Utils.styleText(settings, text, "ENTITY", IdType.ENTITY, entityId); //TODO style by type?
                 //
                 final int entityIndex = word.getEntity().getIndex();
                 final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
+                Utils.styleText(settings, text, "ENTITY", IdType.OBJECT, obj.getId()); //TODO style by candidate?
                 List<Text> objTexts = objectWords.get(obj);
                 if (objTexts == null) {
                     objTexts = new ArrayList<>();
@@ -446,7 +448,7 @@ public class ReportRelationsController extends ReportWizardController {
             }
             if (word.getRelation() != null) {
                 final RelationType type = word.getRelation().getType();
-                Utils.styleText(text, "RELATION", ~type.getId());
+                Utils.styleText(settings, text, "RELATION", Utils.IdType.RELATION, type.getId());
             }
             text.setOnMouseEntered((MouseEvent t) -> {
                 if (word.getEntity() != null) {
@@ -684,7 +686,7 @@ public class ReportRelationsController extends ReportWizardController {
         final long id = type.getId();
         final List<Text> newTexts = objectWords.get(object);
         if (newTexts != null) {
-            newTexts.stream().forEach(txt -> Utils.styleTextBackground(txt, id));
+            newTexts.stream().forEach(txt -> Utils.styleTextBackground(settings, txt, id));
         }
     }
 
@@ -712,7 +714,7 @@ public class ReportRelationsController extends ReportWizardController {
             for (int i = bounds.getFirst(); i <= bounds.getSecond(); ++i) {
                 final Text t = texts.get(i);
                 Utils.unstyleText(t);
-                Utils.styleText(t, "RELATION", ~relation.getId());
+                Utils.styleText(settings, t, "RELATION", IdType.RELATION, relation.getId());
             }
             selectRelation(builder);
         } catch (SplitException ex) {
@@ -794,7 +796,7 @@ public class ReportRelationsController extends ReportWizardController {
                     final List<Text> words = objectWords.get(relInfo.getObject());
                     return words != null ? words.stream() : Stream.empty();
                 })
-                .forEach(t -> Utils.styleTextBackground(t, id));
+                .forEach(t -> Utils.styleTextBackground(settings, t, id));
         table.setItems(selectedRelation.getData());
         preferredRoles.clear();
         preferredRoles.addAll(fetchRoles(selectedRelation.getType()));
@@ -850,7 +852,7 @@ public class ReportRelationsController extends ReportWizardController {
                                 Object item = cell.getItem();
                                 if (item != null) {
                                     objectWords.get(item).stream()
-                                        .forEach(t -> Utils.styleTextBackground(t, id));
+                                        .forEach(t -> Utils.styleTextBackground(settings, t, id));
                                 }
                             });
                             cell.setOnMouseExited(e -> {

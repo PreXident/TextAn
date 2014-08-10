@@ -12,6 +12,7 @@ import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import cz.cuni.mff.ufal.textan.gui.Utils.IdType;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -217,7 +218,7 @@ public class ReportObjectsController extends ReportWizardController {
                 final long entityId = entity.getType().getId();
                 final int entityIndex = entity.getIndex();
                 final Entity ent = pipeline.getReportEntities().get(entityIndex);
-                Utils.styleText(text, "ENTITY", entityId);
+                Utils.styleText(settings, text, "ENTITY", IdType.ENTITY, entityId);
 
                 EntityInfo entityInfo = entityLists.get(word.getEntity());
                 if (entityInfo == null) {
