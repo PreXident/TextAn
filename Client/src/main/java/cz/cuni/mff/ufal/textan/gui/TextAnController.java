@@ -26,7 +26,8 @@ import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardStage;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportWizardWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.StateChangedListener;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.TextFlow;
-import java.math.BigDecimal;
+import cz.cuni.mff.ufal.textan.gui.settings.SettingsStage;
+import cz.cuni.mff.ufal.textan.gui.settings.SettingsWindow;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -36,7 +37,6 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -46,17 +46,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javax.xml.ws.WebServiceException;
-import jfxtras.labs.scene.control.BigDecimalField;
 import jfxtras.labs.scene.control.window.Window;
 import org.controlsfx.dialog.Dialogs;
 
@@ -84,28 +80,7 @@ public class TextAnController implements Initializable {
     private Pane content;
 
     @FXML
-    private CheckMenuItem menuItemIndependentWindows;
-
-    @FXML
-    private CheckMenuItem menuItemHypergraphs;
-
-    @FXML
-    private CheckMenuItem menuItemClearFilters;
-
-    @FXML
-    protected TextField loginTextField;
-
-    @FXML
-    private ComboBox<String> localizationCombo;
-
-    @FXML
     private Menu windowsMenu;
-
-    @FXML
-    private Menu settingsMenu;
-
-    @FXML
-    private BigDecimalField distanceField;
 
     /** Properties with application settings. */
     protected Properties settings = null;
@@ -153,11 +128,6 @@ public class TextAnController implements Initializable {
     };
 
     @FXML
-    private void clearFilters() {
-        settings.setProperty(CLEAR_FILTERS, menuItemClearFilters.isSelected() ? "true" : "false");
-    }
-
-    @FXML
     private void close() {
         Platform.exit();
     }
@@ -168,13 +138,25 @@ public class TextAnController implements Initializable {
     }
 
     @FXML
-    private void graph() {
-        displayGraph(-1, -1);
+    private void generalSettings() {
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final SettingsWindow settingsWindow = new SettingsWindow(this, settings);
+            content.getChildren().add(settingsWindow);
+        } else {
+            final SettingsStage settingsStage = new SettingsStage(this, settings);
+            children.add(settingsStage);
+            settingsStage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(settingsStage);
+                }
+            });
+            settingsStage.show();
+        }
     }
 
     @FXML
-    private void hypergraphs() {
-        settings.setProperty(HYPER_GRAPHS, menuItemHypergraphs.isSelected() ? "true" : "false");
+    private void graph() {
+        displayGraph(-1, -1);
     }
 
     @FXML
@@ -186,11 +168,6 @@ public class TextAnController implements Initializable {
         } catch (WebServiceException e) {
             handleWebserviceException(e);
         }
-    }
-
-    @FXML
-    private void independentWindows() {
-        settings.setProperty(INDEPENDENT_WINDOW, menuItemIndependentWindows.isSelected() ? "true" : "false");
     }
 
     @FXML
@@ -287,9 +264,6 @@ public class TextAnController implements Initializable {
             }
         });
         resourceBundle = rb;
-        distanceField.numberProperty().addListener((ov, oldVal, newVal) -> {
-            settings.setProperty("graph.distance", newVal.toString());
-        });
         content.getChildren().addListener((ListChangeListener.Change<? extends Node> c) -> {
             if (movingToFront) {
                 return;
@@ -342,52 +316,6 @@ public class TextAnController implements Initializable {
      */
     public void setSettings(final Properties settings) {
         this.settings = settings;
-        menuItemIndependentWindows.setSelected(
-                settings.getProperty(INDEPENDENT_WINDOW, "false").equals("true"));
-        menuItemHypergraphs.setSelected(
-                settings.getProperty(HYPER_GRAPHS, "false").equals("true"));
-        menuItemClearFilters.setSelected(
-                settings.getProperty(CLEAR_FILTERS, "false").equals("true"));
-        loginTextField.setText(settings.getProperty("username", System.getProperty("user.name")));
-        loginTextField.focusedProperty().addListener((ov, oldVal, newVal) -> {
-            if (oldVal) {
-                final String login = loginTextField.getText();
-                if (login == null || login.isEmpty() || login.trim().isEmpty()) {
-                    loginTextField.setText(settings.getProperty("username"));
-                    settingsMenu.hide();
-                    Dialogs.create()
-                            .owner(stage)
-                            .title(TextAnController.TITLE)
-                            .masthead(Utils.localize(resourceBundle, "username.error.title"))
-                            .message(Utils.localize(resourceBundle, "username.error.text"))
-                            .lightweight()
-                            .showError();
-                } else {
-                    settings.setProperty("username", login);
-                    settingsMenu.hide();
-                    Dialogs.create()
-                        .owner(stage)
-                        .lightweight()
-                        .message(Utils.localize(resourceBundle,"restart.change"))
-                        .showWarning();
-                }
-            }
-        });
-        localizationCombo.getSelectionModel().select(settings.getProperty("locale.language", "cs"));
-        localizationCombo.valueProperty().addListener(
-            (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
-                Platform.runLater(
-                        () -> {
-                            settingsMenu.hide();
-                            Dialogs.create()
-                                .owner(stage)
-                                .lightweight()
-                                .message(Utils.localize(resourceBundle,"restart.change"))
-                                .showWarning();
-                            });
-                settings.setProperty("locale.language", newVal);
-        });
-        distanceField.setNumber(new BigDecimal(settings.getProperty("graph.distance", "5")));
         client = new Client(settings);
     }
 
@@ -429,7 +357,6 @@ public class TextAnController implements Initializable {
     }
 
     public void setUsername(final String username) {
-        loginTextField.setText(username);
         client.setUsername(username);
         settings.setProperty("username", username);
     }
