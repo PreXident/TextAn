@@ -8,12 +8,14 @@ import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
 import org.apache.cxf.transport.servlet.CXFServlet;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.BlockingArrayQueue;
+import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.springframework.beans.BeansException;
@@ -28,6 +30,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 
@@ -114,7 +118,7 @@ public class AppConfig implements ApplicationContextAware {
 
         BlockingQueue<Runnable> acceptQueue = null;
         String acceptQueueSizeProperty = serverProperties().getProperty("server.acceptQueue.size");
-        if (acceptQueueSizeProperty != null) {
+        if (acceptQueueSizeProperty != null && !acceptQueueSizeProperty.isEmpty()) {
             int acceptQueueSize = Integer.parseInt(acceptQueueSizeProperty);
             int capacity = Math.max(maxThreads, minThreads);
             int grow = Math.min(maxThreads, minThreads);
@@ -126,12 +130,53 @@ public class AppConfig implements ApplicationContextAware {
         ThreadPool threadPool = new QueuedThreadPool(maxThreads, minThreads, idleTimeout, acceptQueue);
         Server server = new Server(threadPool);
 
-        //TODO: what about SSL connector?
-        ServerConnector connector = new ServerConnector(server);
-        connector.setPort(Integer.parseInt(serverProperties().getProperty("server.connector.port")));
-        connector.setHost(serverProperties().getProperty("server.connector.host"));
+        boolean useSsl = false;
+        String sslProperty = serverProperties().getProperty("server.ssl");
+        if (sslProperty != null && !sslProperty.isEmpty()) {
+            useSsl = Boolean.parseBoolean(sslProperty);
+        }
 
-        server.setConnectors(new Connector[]{connector});
+        List<ServerConnector> connectors = new ArrayList<>(2);
+        if (useSsl) {
+            int sslPort = Integer.parseInt(serverProperties().getProperty("server.ssl.port"));
+
+            HttpConfiguration httpConfig = new HttpConfiguration();
+            httpConfig.setSecureScheme("https");
+            httpConfig.setSecurePort(sslPort);
+
+            ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+            http.setPort(Integer.parseInt(serverProperties().getProperty("server.connector.port")));
+            http.setHost(serverProperties().getProperty("server.connector.host"));
+
+            HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
+            httpsConfig.addCustomizer(new SecureRequestCustomizer());
+
+            SslContextFactory sslContextFactory = new SslContextFactory();
+            sslContextFactory.setKeyStorePath(serverProperties().getProperty("server.ssl.keyStore.path"));
+            sslContextFactory.setKeyStorePassword(serverProperties().getProperty("server.ssl.keyStore.password"));
+            sslContextFactory.setKeyManagerPassword(serverProperties().getProperty("server.ssl.keyManager.password"));
+            sslContextFactory.setKeyStoreType(serverProperties().getProperty("server.ssl.keyStore.type", "JKS"));
+            //sslContextFactory.setCertAlias();
+
+            ServerConnector https = new ServerConnector(
+                    server,
+                    new SslConnectionFactory(sslContextFactory, "http/1.1"),
+                    new HttpConnectionFactory(httpsConfig)
+            );
+            https.setPort(Integer.parseInt(serverProperties().getProperty("server.ssl.port")));
+            https.setHost(serverProperties().getProperty("server.connector.host"));
+
+            connectors.add(http);
+            connectors.add(https);
+        } else {
+            ServerConnector connector = new ServerConnector(server);
+            connector.setPort(Integer.parseInt(serverProperties().getProperty("server.connector.port")));
+            connector.setHost(serverProperties().getProperty("server.connector.host"));
+
+            connectors.add(connector);
+        }
+
+        server.setConnectors(connectors.toArray(new ServerConnector[connectors.size()]));
 
         ServletHolder servletHolder = new ServletHolder(new CXFServlet());
 
@@ -140,12 +185,26 @@ public class AppConfig implements ApplicationContextAware {
         servletContextHandler.setContextPath("/");
         servletContextHandler.addServlet(servletHolder, "/soap/*");
         servletContextHandler.setInitParameter("contextConfigLocation", WebAppConfig.class.getName());
+        //servletContextHandler.setErrorHandler(); FIXME
+
+        if (useSsl) {
+            Constraint constraint = new Constraint();
+            constraint.setDataConstraint(2);
+
+            ConstraintMapping mapping = new ConstraintMapping();
+            mapping.setConstraint(constraint);
+            mapping.setPathSpec("/*");
+
+            ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
+            securityHandler.addConstraintMapping(mapping);
+
+            servletContextHandler.setSecurityHandler(securityHandler);
+        }
 
         //Create root spring's web application context for servlets
         AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
         webContext.setParent(context);
         webContext.setServletContext(servletContextHandler.getServletContext());
-
         //Register root context
         servletContextHandler.addEventListener(new ContextLoaderListener(webContext));
 
