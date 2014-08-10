@@ -76,22 +76,22 @@ public class TestMachineLearning {
         Map<Entity, List<Pair<Long, Double>>> result = textPro.InterpolateRanking("Empty", eList, 5);
         
         List<Pair<Long, Double>> Olist = result.get(e);
-        //assertEquals("1 entity to match", 1, result.keySet().size());
-        //assertEquals("2 one object", 1, Olist.size());
+        assertEquals("1: entity to match", 1, result.keySet().size());
+        assertEquals("2: one object found", 1, Olist.size());
         //assertEquals("2 zero object", 1, Olist.keySet().size());
     }
     
     @Test
     public void TestGetCloseObject() {
         // Learn from database
-        textPro.learn();
+        //textPro.learn();
         
         // Create fake test
-        Entity e = new Entity("Emily", 0, 0 , 1);
+        Entity e = new Entity("", 0, 0 , 1);
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         List<ObjectTable> oList = objectTableDAO.findAllByAliasSubstring(e.getText());
-        //assertEquals("1 objst to find close", 1, oList.size());   
+        assertEquals("1 objst to find close", 1, oList.size());   
     }
     
 }

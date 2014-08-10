@@ -51,8 +51,10 @@ public class TrainWeka {
 
         
         // Declare the feature vector
-        fvWekaAttributes = new FastVector(3);
+        fvWekaAttributes = new FastVector(5);
         fvWekaAttributes.addElement(StringSimilarityMaximum);
+        fvWekaAttributes.addElement(StringSimilarityMinimum);
+        fvWekaAttributes.addElement(StringSimilarityAverage);
         fvWekaAttributes.addElement(TypeComparison);
         fvWekaAttributes.addElement(ClassAttribute);
     }
@@ -62,6 +64,8 @@ public class TrainWeka {
     */
     public Classifier doTraining(IObjectTableDAO objectTableDAO, IAliasTableDAO aliasTableDAO) {
         isTrainingSet = new Instances("Rel", this.fvWekaAttributes, 10);
+        isTrainingSet.add(CreateFakeYesInstanceBasic());
+        
         // Create the list of all objects
         List<ObjectTable> objectTable = objectTableDAO.findAll();
         
@@ -70,7 +74,9 @@ public class TrainWeka {
 
             long type = obt.getObjectType().getId(); 
             Set<AliasTable> als = obt.getAliases();
-            
+            if(als.isEmpty()) {
+                continue;
+            }
             String first_alias_text = als.iterator().next().getAlias(); //first_alias.getAlias();
             
             // Create a fake entity for training yes
@@ -103,7 +109,7 @@ public class TrainWeka {
                 IObjectTableDAO objectTableDAO, String target) {
         
         // Instance    
-        Instance thisInstance = new Instance(4);
+        Instance thisInstance = new Instance(5);
         
         // Compute value of instance
         FeaturesComputeValue fcv = new FeaturesComputeValue();
@@ -112,21 +118,41 @@ public class TrainWeka {
 
         // Feature 1: The similarity between entity text and object alias
         double highestSim = 0;
+        double lowestSim = 1000;
+        double sum = 0;
+        double number = 0;
         for (AliasTable at : aliasTable) {
             double sim = fcv.EntityTextAndObjectAlias(e.getText(), at.getAlias());
             if (sim > highestSim) {
                 highestSim = sim;
             }
+            if(sim < lowestSim) {
+                lowestSim = sim;
+            }
+            sum += sim;
+            number += 1;
         }
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(0), highestSim);
+        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(1), lowestSim);
+        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(2), (sum+0.2)/(number+0.2));
         
         // Feature 2: The type comparison
         double typeCom = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getId());
-        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(1), typeCom);
+        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(3), typeCom);
         
         // The class
-        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(2), target);
+        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(4), target);
         
+        return thisInstance;
+    }
+        
+    public Instance CreateFakeYesInstanceBasic(){
+        Instance thisInstance = new Instance(5);
+        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(0), 100);
+        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(1), 100);
+        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(2), 100);
+        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(3), 1);
+        thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(4), "positive");
         return thisInstance;
     }
 

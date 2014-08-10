@@ -25,6 +25,4 @@ public class EntityInfo {
         this.objects = _objects;
         this.match_object = _match_object;
     }
-    
-    
 }
