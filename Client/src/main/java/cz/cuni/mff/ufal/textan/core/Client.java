@@ -230,11 +230,32 @@ public class Client {
     }
 
     /**
+     * Inits ssl communication.
+     */
+    private void initSSL() {
+        if (settings.getProperty("ssl", "").equals("true")) {
+            final String ts = settings.getProperty("ssl.trustStore", "");
+            if (!ts.isEmpty()) {
+                System.setProperty("javax.net.ssl.trustStore", ts);
+            }
+            final String passwd = settings.getProperty("ssl.trustStore.password", "");
+            if (!passwd.isEmpty()) {
+                System.setProperty("javax.net.ssl.trustStorePassword", passwd);
+            }
+            final String type = settings.getProperty("ssl.trustStore.type", "");
+            if (!type.isEmpty()) {
+                System.setProperty("javax.net.ssl.trustStoreType", type);
+            }
+        }
+    }
+
+    /**
      * Returns {@link #documentProcessor}, it is created if needed.
      * @return document processor
      */
     private IDocumentProcessor getDocumentProcessor() {
         if (documentProcessor == null) {
+            initSSL();
             try {
                 Service service = Service.create(
                         new URL(settings.getProperty("url.document.wsdl", "http://textan.ms.mff.cuni.cz:9500/soap/document?wsdl")),
@@ -263,6 +284,7 @@ public class Client {
      */
     private IDataProvider getDataProvider() {
         if (dataProvider == null) {
+            initSSL();
             try {
                 Service service = Service.create(
                         new URL(settings.getProperty("url.data.wsdl", "http://textan.ms.mff.cuni.cz:9500/soap/data?wsdl")),
