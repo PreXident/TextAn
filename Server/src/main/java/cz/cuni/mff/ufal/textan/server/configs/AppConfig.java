@@ -6,6 +6,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.IEntityViewDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
+import cz.cuni.mff.ufal.textan.server.web.TextanWelcomePage;
 import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.security.ConstraintMapping;
@@ -185,7 +186,8 @@ public class AppConfig implements ApplicationContextAware {
         servletContextHandler.setContextPath("/");
         servletContextHandler.addServlet(servletHolder, "/soap/*");
         servletContextHandler.setInitParameter("contextConfigLocation", WebAppConfig.class.getName());
-        //servletContextHandler.setErrorHandler(); FIXME
+        servletContextHandler.addServlet(TextanWelcomePage.class, "/");
+        //servletContextHandler.setErrorHandler(new TextanErrorHandler()); //FIXME
 
         if (useSsl) {
             Constraint constraint = new Constraint();
