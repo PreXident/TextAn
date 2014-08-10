@@ -67,4 +67,43 @@ public class Problems implements Serializable {
     public List<JoinedObject> getJoinedObjects() {
         return joinedObjects;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("New objects:\n");
+        for (Object obj : newObjects) {
+            builder.append("* ");
+            builder.append(obj.toString());
+            builder.append('\n');
+        }
+        builder.append("New relations:\n");
+        for (Relation relation : newRelations) {
+            builder.append("* ");
+            builder.append(relation.toString());
+            builder.append('\n');
+            for (Triple<Integer, String, Object> triple : relation.getObjects()) {
+                builder.append("\t+ ");
+                builder.append(triple.getFirst());
+                builder.append(" - ");
+                builder.append(triple.getSecond());
+                builder.append(" - ");
+                builder.append(triple.getThird());
+                builder.append('\n');
+            }
+        }
+        builder.append("Joined objects:\n");
+        for (JoinedObject joined : joinedObjects) {
+            builder.append("* ");
+            builder.append(joined.root);
+            builder.append('\n');
+            for (Object object : joined.children) {
+                builder.append("\t+ ");
+                builder.append(object);
+                builder.append('\n');
+            }
+            builder.append('\n');
+        }
+        return builder.toString();
+    }
 }

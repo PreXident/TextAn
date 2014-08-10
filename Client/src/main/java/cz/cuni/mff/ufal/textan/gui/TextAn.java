@@ -147,7 +147,7 @@ public class TextAn extends Application {
                     Platform.exit();
                     return;
                 }
-            } while (login == null || login.isEmpty() || login.trim().isEmpty());
+            } while (login.isEmpty() || login.trim().isEmpty());
             final String trimmed = login.trim();
             controller.setUsername(trimmed);
         }

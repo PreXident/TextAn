@@ -22,6 +22,7 @@ dependencies {
 	compile group: 'net.sf.jung', name: 'jung-graph-impl', version: '2.0.1'
 	compile group: 'net.sf.jung', name: 'jung-api', version: '2.0.1'
 	compile group: 'net.sf.jung', name: 'jung-visualization', version: '2.0.1'
+	compile group: 'com.beust', name: 'jcommander', version: '1.35'
 	compile project(':Commons')
 	compile name: 'PretopoLib'
 }
