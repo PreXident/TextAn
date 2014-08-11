@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import static cz.cuni.mff.ufal.textan.Utils.extractExtension;
 import cz.cuni.mff.ufal.textan.core.processreport.load.ImportManager;
 import cz.cuni.mff.ufal.textan.core.processreport.load.Importer;
 import cz.cuni.mff.ufal.textan.gui.Utils;
@@ -86,19 +87,6 @@ public class SelectFileController extends ReportWizardController {
             textArea.setText(pipeline.extractText(data, newVal));
             settings.setProperty("selectfile.extension." + extension + ".type", newVal.getId());
         });
-    }
-
-    /**
-     * Extracts extension from file name.
-     * @param name file name
-     * @return extension from file name
-     */
-    protected String extractExtension(final String name) {
-        final int dot = name.lastIndexOf('.');
-        if (dot == -1) {
-            return "";
-        }
-        return name.substring(dot + 1);
     }
 
     @Override

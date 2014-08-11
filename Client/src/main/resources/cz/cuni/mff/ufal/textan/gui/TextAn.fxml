@@ -55,43 +55,8 @@
 					</Menu>
 					<Menu fx:id="windowsMenu" text="%windows" />
 					<Menu fx:id="settingsMenu" text="%settings" style="-fx-skin: 'cz.cuni.mff.ufal.textan.gui.MyMenuButtonSkin';" >
-						<CheckMenuItem fx:id="menuItemIndependentWindows" text="%independent.windows" onAction="#independentWindows" />
-						<CheckMenuItem fx:id="menuItemHypergraphs" text="%hypergraphs" onAction="#hypergraphs" />
-						<CheckMenuItem fx:id="menuItemClearFilters" text="%clear.filters" onAction="#clearFilters" />
-						<CustomMenuItem hideOnClick="false" text="%localization" style="-fx-background-color: red">
-							<content>
-								<HBox alignment="CENTER_LEFT" spacing="10" >
-									<Label text="%localization" styleClass="menu-item-label"/>
-									<ComboBox fx:id="localizationCombo" editable="true" prefWidth="75" >
-										<items>
-											<FXCollections fx:factory="observableArrayList">
-												<String fx:value="cs" />
-												<String fx:value="en" />
-											</FXCollections>
-										</items>
-										<value>
-											<String fx:value="cs" />
-										</value>
-									</ComboBox>
-								</HBox>
-							</content>
-						</CustomMenuItem>
-						<CustomMenuItem hideOnClick="false" text="%graph.distance">
-							<content>
-								<HBox alignment="CENTER_LEFT" spacing="10" >
-									<Label text="%graph.distance" styleClass="menu-item-label"/>
-									<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="65" />
-								</HBox>
-							</content>
-						</CustomMenuItem>
-						<CustomMenuItem hideOnClick="false" text="Login">
-							<content>
-								<HBox alignment="CENTER_LEFT" spacing="10" >
-									<Label text="%login.label" styleClass="menu-item-label"/>
-									<TextField fx:id="loginTextField" prefWidth="110"/>
-								</HBox>
-							</content>
-						</CustomMenuItem>
+						<MenuItem text="%settings.general" onAction="#generalSettings" />
+						<MenuItem text="%settings.colors" onAction="#colors" />
 						<MenuItem text="%reset.sizepos" onAction="#resetSizePos">
 							<accelerator>
 								<KeyCodeCombination alt="DOWN" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="HOME"/>

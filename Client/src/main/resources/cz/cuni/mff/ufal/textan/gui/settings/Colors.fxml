@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import java.net.URL ?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.text.*?>
+<?import jfxtras.labs.scene.control.BigDecimalField?>
+
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
+			fx:controller="cz.cuni.mff.ufal.textan.gui.settings.ColorsController" styleClass="root" >
+	<stylesheets >
+		<URL value="@Colors.css" />
+	</stylesheets>
+	<center>
+		<SplitPane>
+			<items>
+			    <VBox>
+				    <Label text="%objects"/>
+				    <TableView fx:id="objectTable" minHeight="30" VBox.vgrow="ALWAYS" >
+					    <columns>
+						    <TableColumn fx:id="objectIdColumn" text="%table.id" prefWidth="60" />
+						    <TableColumn fx:id="objectNameColumn" text="%table.name" prefWidth="120" />
+						    <TableColumn fx:id="objectColorColumn" text="%table.color" sortable="false" />
+					    </columns>
+					    <placeholder>
+						    <Label text="" />
+					    </placeholder>
+				    </TableView>
+			    </VBox>
+			    <VBox>
+				    <Label text="%relations"/>
+				    <TableView fx:id="relationTable" minHeight="30" VBox.vgrow="ALWAYS">
+					    <columns>
+						    <TableColumn fx:id="relationIdColumn" text="%table.id" prefWidth="60" />
+						    <TableColumn fx:id="relationNameColumn" text="%table.name" prefWidth="120" />
+						    <TableColumn fx:id="relationColorColumn" text="%table.color" sortable="false" />
+					    </columns>
+					    <placeholder>
+						    <Label text="" />
+					    </placeholder>
+				    </TableView>
+			    </VBox>
+			</items>
+		</SplitPane>
+	</center>
+</BorderPane>
