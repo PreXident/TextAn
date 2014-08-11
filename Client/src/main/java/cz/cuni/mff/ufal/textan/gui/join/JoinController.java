@@ -15,8 +15,6 @@ import java.util.concurrent.Semaphore;
 import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -33,7 +31,7 @@ import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 
 /**
- * Controls selecting object to be displayed in the graph.
+ * Controls joining of two objects.
  */
 public class JoinController extends WindowController {
 

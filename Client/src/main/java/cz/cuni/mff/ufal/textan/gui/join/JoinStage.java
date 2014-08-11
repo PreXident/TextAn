@@ -14,7 +14,7 @@ import javafx.scene.Parent;
 import org.controlsfx.dialog.Dialogs;
 
 /**
- * Class for displaying Report Wizard in independent window.
+ * Stage for joining objects.
  */
 public class JoinStage extends OuterStage {
 

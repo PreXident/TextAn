@@ -42,7 +42,7 @@
 							</center>
 							<bottom>
 								<HBox>
-									<Button text="%add" onAction="#add" />
+									<Button fx:id="addButton" text="%add" onAction="#add" />
 									<Button text="%remove" onAction="#remove" />
 								</HBox>
 							</bottom>

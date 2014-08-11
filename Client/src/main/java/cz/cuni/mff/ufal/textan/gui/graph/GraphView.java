@@ -7,6 +7,7 @@ import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
+import cz.cuni.mff.ufal.textan.gui.Utils.IdType;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -169,7 +170,10 @@ public class GraphView extends SwingNode {
                 hypergraphs ? new PseudoHypergraph<>(g) : (Graph<Object, Relation>) g
         );
         //
-        final Transformer<Object, Paint> vertexPaint = obj -> Utils.idToAWTColor(obj.getType().getId());
+        final Transformer<Object, Paint> vertexPaint = obj -> {
+            final IdType type = obj instanceof RelationObject? IdType.RELATION : IdType.ENTITY;
+            return Utils.resolveColorAWT(settings, type, obj.getType().getId());
+        };
         float dash[] = {10.0f};
         final Stroke edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
         Transformer<Relation, Stroke> edgeStrokeTransformer = (Relation s) -> edgeStroke;

@@ -1,8 +1,12 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.utils.Triple;
+import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.Object;
+import cz.cuni.mff.ufal.textan.core.ObjectType;
+import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
@@ -11,25 +15,34 @@ import static cz.cuni.mff.ufal.textan.gui.Utils.CONTEXT_MENU_STYLE;
 import cz.cuni.mff.ufal.textan.gui.Window;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
+import java.util.stream.Collectors;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.util.StringConverter;
 import jfxtras.labs.internal.scene.control.skin.BigDecimalFieldSkin;
 import jfxtras.labs.scene.control.BigDecimalField;
 
@@ -65,6 +78,12 @@ public class GraphViewController extends GraphController {
     @FXML
     private HBox rightToolbar;
 
+    @FXML
+    private ListView<Pair<BooleanProperty, ObjectType>> objectTypesListView;
+
+    @FXML
+    private ListView<Pair<BooleanProperty, RelationType>> relationTypesListView;
+
     /** Graph container. */
     GraphView graphView;
 
@@ -83,12 +102,22 @@ public class GraphViewController extends GraphController {
     }
 
     @FXML
-    private void newDistance() {
+    private void filter() {
         if (lock.tryAcquire()) {
             final Node node = getMainNode();
             node.setCursor(Cursor.WAIT);
             grapher.setDistance(distanceField.getNumber().intValue());
-            new Thread(new GraphGetter(), "GraphGetter").start();
+            final List<ObjectType> ignoredObjects = objectTypesListView.getItems().stream()
+                    .filter(p -> !p.getFirst().get())
+                    .map(Pair::getSecond)
+                    .collect(Collectors.toList());
+            grapher.setIgnoredObjectTypes(ignoredObjects);
+            final List<RelationType> ignoredRelations = relationTypesListView.getItems().stream()
+                    .filter(p -> !p.getFirst().get())
+                    .map(Pair::getSecond)
+                    .collect(Collectors.toList());
+            grapher.setIgnoredRelationTypes(ignoredRelations);
+            new Thread(new GraphGetter(false), "GraphGetter").start();
         }
     }
 
@@ -125,6 +154,41 @@ public class GraphViewController extends GraphController {
                 home();
             }
         });
+        //
+        objectTypesListView.setCellFactory(CheckBoxListCell.forListView(
+                p -> p.getFirst(),
+                new StringConverter<Pair<BooleanProperty, ObjectType>>() {
+                    @Override
+                    public String toString(Pair<BooleanProperty, ObjectType> pair) {
+                        if (pair != null && pair.getSecond() != null) {
+                            return pair.getSecond().getName();
+                        } else {
+                            return "";
+                        }
+                    }
+                    @Override
+                    public Pair<BooleanProperty, ObjectType> fromString(String string) {
+                        throw new RuntimeException("This should never happen!");
+                    }
+                }
+        ));
+        relationTypesListView.setCellFactory(CheckBoxListCell.forListView(
+                p -> p.getFirst(),
+                new StringConverter<Pair<BooleanProperty, RelationType>>() {
+                    @Override
+                    public String toString(Pair<BooleanProperty, RelationType> pair) {
+                        if (pair != null && pair.getSecond() != null) {
+                            return pair.getSecond().getName();
+                        } else {
+                            return "";
+                        }
+                    }
+                    @Override
+                    public Pair<BooleanProperty, RelationType> fromString(String string) {
+                        throw new RuntimeException("This should never happen!");
+                    }
+                }
+        ));
     }
 
     @Override
@@ -133,7 +197,7 @@ public class GraphViewController extends GraphController {
         distanceField.setNumber(new BigDecimal(grapher.getDistance()));
         final Node node = getMainNode();
         node.setCursor(Cursor.WAIT);
-        new Thread(new GraphGetter(), "GraphGetter").start();
+        new Thread(new GraphGetter(true), "GraphGetter").start();
     }
 
     @Override
@@ -146,10 +210,21 @@ public class GraphViewController extends GraphController {
      */
     protected class GraphGetter extends Task<Graph> {
 
+        /** Got object types. */
+        public List<ObjectType> objectTypes;
+
+        /** Got relation types. */
+        public List<RelationType> relationTypes;
+
+        /** Flag indicating whether types need to be fetched. */
+        public boolean getTypes = false;
+
         /**
          * Only constructor.
+         * @param getTypes should getter get the types as well?
          */
-        public GraphGetter() {
+        public GraphGetter(final boolean getTypes) {
+            this.getTypes = getTypes;
             setOnSucceeded(e -> {
                 final Graph g = getValue();
                 graphView = new GraphView(settings,
@@ -185,6 +260,18 @@ public class GraphViewController extends GraphController {
                     });
                 });
                 graphView.setRelationContextMenu(relationContextMenu);
+                //
+                if (this.getTypes) {
+                    for (ObjectType objType : objectTypes) {
+                        objectTypesListView.getItems().add(
+                                new Pair<>(new SimpleBooleanProperty(true), objType));
+                    }
+                    for (RelationType relType : relationTypes) {
+                        relationTypesListView.getItems().add(
+                                new Pair<>(new SimpleBooleanProperty(true), relType));
+                    }
+                }
+                //
                 lock.release();
             });
             setOnFailed(e -> {
@@ -202,6 +289,15 @@ public class GraphViewController extends GraphController {
 
         @Override
         protected Graph call() throws Exception {
+            if (getTypes) {
+                final Client client = textAnController.getClient();
+                final Collator collator = Collator.getInstance();
+                relationTypes = textAnController.getClient().getRelationTypesList();
+                relationTypes.sort((rt1, rt2) -> collator.compare(rt1.getName(), rt2.getName()));
+                objectTypes = client.getObjectTypesList();
+                objectTypes.sort((ot1, ot2) -> collator.compare(ot1.getName(), ot2.getName()));
+            }
+            //
             return grapher.getGraph();
         }
     }

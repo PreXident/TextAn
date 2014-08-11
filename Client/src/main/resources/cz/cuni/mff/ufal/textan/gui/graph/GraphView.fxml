@@ -61,7 +61,7 @@
 			<HBox fx:id="rightToolbar" styleClass="distance-box" alignment="CENTER_RIGHT" >
 				<Label styleClass="distance-label" text="%distance" />
 				<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="80" />
-				<Button alignment="CENTER_RIGHT" text="%go" onAction="#newDistance" />
+				<Button alignment="CENTER_RIGHT" text="%go" onAction="#filter" />
 			</HBox>
 		</ToolBar>
 	</top>
@@ -74,4 +74,10 @@
 			</center>
 		</BorderPane>
 	</center>
+	<left>
+		<ListView fx:id="objectTypesListView" />
+	</left>
+	<right>
+		<ListView fx:id="relationTypesListView" />
+	</right>
 </BorderPane>
