@@ -302,15 +302,15 @@ public class NamedEntityRecognizer {
             LOG.debug("New model path: {}", modelLocation);
 
             LearningParameters learningParameters = new LearningParameters(trainingExecutable, trainingDirectory, trainingDirectory);
-            File trainingDataFile = new File(TRAINING_DIR, TRAINING_DATA_PREFIX + sdf.format(date) + TRAINING_DATA_EXTENSION).getAbsoluteFile();
+            File trainingDataFile = File.createTempFile(TRAINING_DATA_PREFIX,TRAINING_DATA_EXTENSION);
             if ((new File(TRAINING_DIR).isDirectory()) || (new File(TRAINING_DIR).mkdir())) {
                 if (learningParameters.useDefaultTrainingData()) {
-                    LOG.info("Copying default training data from {}", learningParameters.getTrainingData().getPath());
+                    LOG.info("Copying default training data from {} to {}", learningParameters.getTrainingData().getPath(), trainingDataFile.getPath());
                     if (!copyFile(learningParameters.getTrainingData(), trainingDataFile)) {
                         return false;
                     }
                 }
-                prepareLearningData(trainingDataFile);
+                //prepareLearningData(trainingDataFile);
             } else {
                 LOG.error("Can't create training data folder");
                 return false;
