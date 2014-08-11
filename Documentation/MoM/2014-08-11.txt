@@ -41,4 +41,4 @@ HWK:
 
 - all, write documentation
 
-Next meeting will be discussed with Ondrej, probably on Wednesday
+Next meeting will be on Wednesday at 15:00.
