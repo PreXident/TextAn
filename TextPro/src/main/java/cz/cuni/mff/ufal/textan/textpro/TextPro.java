@@ -2,18 +2,19 @@ package cz.cuni.mff.ufal.textan.textpro;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import cz.cuni.mff.ufal.textan.textpro.data.EntityInfo;
 import cz.cuni.mff.ufal.textan.textpro.learning.Test;
 import cz.cuni.mff.ufal.textan.textpro.learning.TrainWeka;
+
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
-
-import java.util.*;
 
 /**
  * A simple example of an implementation of the ITextPro interface as a Spring bean.
@@ -51,7 +52,10 @@ public class TextPro implements ITextPro {
     /** Provides access to RelationType table in database */
     IRelationTypeTableDAO typeTableDAO;
     
-    /*8 Train Weka */
+    /** Provides access to DocumentTable table in database */
+    IDocumentTableDAO documentTableDAO;
+    
+    /* Train Weka */
     TrainWeka train;
     /** Training model **/
     Classifier model ;
@@ -69,6 +73,7 @@ public class TextPro implements ITextPro {
      * @param objectTypeTableDAO the object type table DAO
      * @param relationOccurrenceTableDAO the relation occurrence table DAO
      * @param relationTableDAO the relation table DAO
+     * @param documentTableDAO
      */
     public TextPro(
             IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
@@ -78,7 +83,8 @@ public class TextPro implements ITextPro {
             IObjectTableDAO objectTableDAO,
             IObjectTypeTableDAO objectTypeTableDAO,
             IRelationOccurrenceTableDAO relationOccurrenceTableDAO,
-            IRelationTableDAO relationTableDAO) {
+            IRelationTableDAO relationTableDAO,
+            IDocumentTableDAO documentTableDAO) {
 
         this.aliasOccurrenceTableDAO = aliasOccurrenceTableDAO;
         this.typeTableDAO = typeTableDAO;
@@ -88,6 +94,7 @@ public class TextPro implements ITextPro {
         this.objectTypeTableDAO = objectTypeTableDAO;
         this.relationOccurrenceTableDAO = relationOccurrenceTableDAO;
         this.relationTableDAO = relationTableDAO;
+        this.documentTableDAO = documentTableDAO;
         
     }
     
@@ -122,82 +129,96 @@ public class TextPro implements ITextPro {
      */
     @Override
     //public Map<Entity, Map<Long, Double>> DoubleRanking(String document, List<Entity> eList, int topK){
-    public Map<Entity, List<Pair<Long, Double>>> DoubleRanking(String document, List<Entity> eList, int topK){
+    public Map<Entity, List<Pair<Long, Double>>> Ranking(String document, List<Entity> eList, int topK){
 
         LOG.debug("Starting TexPro ranking.");
 
-        /*
-         * Assign value to the mapping
-         */
         /********************** REGULAR RANKING **************************/
         // Initialize the eMap - final result
         Map<Entity, List<Pair<Long, Double>>> eMap = new HashMap<>();
 
-        for (int id = 0; id < eList.size(); id++) {
-            /********************** REGULAR RANKING **************************/
-            Entity e = eList.get(id);
-            List<ObjectTable> oList = getCloseObject(e); // List of object closed to the entity
-            List<Long> oListID = getCloseObjectID(e);
+        // Initialize the list of entity info
+        List<EntityInfo> eInfoList = new ArrayList<>();
+        for (Entity e:eList){
             
-            //List<Double> score = new ArrayList<Double>();
-            /** Initialize all value is 1 for one matching **/
-            Double[] score = new Double[oList.size()];
-            int size = 0;
-            for(ObjectTable o: oList) {
-                score[size] = 1.0;
-                size++; // funny way to loop :)
+            List<Long> oListID = getCloseObjectID(e);
+            Map<Long,Double> score = new HashMap<Long,Double>();
+            Map<ObjectTable,Long> match = new HashMap<ObjectTable,Long>();
+            List<ObjectTable> oList = getCloseObject(e);
+
+            // Initialize 
+            for(int oID = 0; oID < oListID.size(); oID++){
+                long objectID = oListID.get(oID);
+                ObjectTable object = oList.get(oID);
+                score.put(objectID, 1.0);
+                match.put(object, objectID);
             }
             
-            /* Increate the score of value if they share the same object */ 
-            for(Entity e_other : eList) {
-                if(e_other.equals(e)){
-                    continue;
+            // Add the current info to final list
+            eInfoList.add(new EntityInfo(e, score, oList, match));
+        }
+        
+        /********************** REGULAR RANKING **************************/
+        for(EntityInfo eInfo:eInfoList){
+            //List<Pair<Long, Double>> entityScore = new ArrayList<>();
+            Map<Long,Double> score = eInfo.score;
+            
+            String eText = eInfo.e.getText();
+            
+            // Repeatitive update the score
+            for(EntityInfo eOtherInfo:eInfoList){
+                String eOtherText = eOtherInfo.e.getText();
+                if(eText.equalsIgnoreCase(eOtherText)) {
+                    continue; // Check if they have the same text, not just same entity
                 }
-                List<Long> oListID_other = getCloseObjectID(e_other);
-                for(int id_o = 0; id_o < oList.size(); id_o++) {
-                    if(oListID_other.indexOf(oList.get(id_o)) != -1) {
-                        score[id_o] += 1.0;
+                for(ObjectTable oTable:eInfo.objects) {
+                    for(ObjectTable oOtherTable:eOtherInfo.objects){
+                        if(checkRelation(oTable, oOtherTable)){
+                            // Increate the score by 1
+                            score.put(oTable.getId(), score.get(oTable.getId()) + 1.0);
+                        }
                     }
                 }
             }
             
-            /* Normalize the value */
-            double sum = 0;
-            double minscore = 0; // the minimum value of score will be taken
-            for (int i = 0; i < size; i++) {
-                sum+= score[i];
-                
-            }
-            for (int i = 0; i < size; i++) {
-                score[i] = score[i]/sum;
-            }
-            if(size > topK) {
-                Double[] sort_score= score.clone();
-                minscore = sort_score[topK];
-            }
-            /********************** MACHINE LEARNING **************************/
-            
-            /* Get the test list */
-            
-            Test test = new Test(e, oList, oListID, score, minscore);
-            
-            /* Running the classifier, but it is included in the assigning value already
-            for(Instance in:instances){
-                Object predictedClassValue = ml.classify(in);
-                System.out.println("Predict: " + predictedClassValue.toString());
-            }
-            */
-            /* Assign value */
-            /***************** ASSIGN VALUE *********************************/
-            List<Pair<Long, Double>> entityScore = new ArrayList<>();
-            for (int test_id = 0; test_id < test.getObjectListID().size();  test_id++){
-                if(true) {
-                    entityScore.add(new Pair<>(test.getObjectListID().get(test_id), test.getObjectListScore().get(test_id)));
+            // Select topK
+            List<Pair<Long, Double>> entityScoreTopK = new ArrayList<>();
+            Set<Long>entityTopK = new HashSet<>();
+            for(int iteration = 0; iteration < topK; iteration++) {
+                double highestScore = 0;
+                long highestID = -1;
+                for(long thisID:score.keySet()) {
+                    if(entityTopK.contains(thisID)) {
+                        continue;
+                    }
+                    double thisScore = score.get(thisID);
+                    if(thisScore > highestScore){
+                        highestScore = thisScore;
+                        highestID = thisID;
+                    }
+                }
+                if(highestID > -1) {
+                    entityTopK.add(highestID);
+                    entityScoreTopK.add(new Pair<>(highestID,highestScore));
                 }
             }
-            eMap.put(e, entityScore);
+            
+            // Normalize TopK and add to value
+            List<Pair<Long, Double>> entityScoreTopKNormalize = new ArrayList<>();
+            double sum = 0;
+            for(Pair p:entityScoreTopK){
+                sum += (double)p.getSecond();
+            }
+            if(sum <= 0){
+                eMap.put(eInfo.e, entityScoreTopK);
+            } else {
+                for(Pair p:entityScoreTopK){
+                    entityScoreTopKNormalize.add(new Pair<>((long)p.getFirst(),((double)p.getSecond()/sum)));
+                }
+                eMap.put(eInfo.e, entityScoreTopKNormalize);
+            }
         }
-
+        
         LOG.debug("Finished TexPro ranking.");
 
         // Return the value
@@ -205,7 +226,11 @@ public class TextPro implements ITextPro {
     }
     
     public List<ObjectTable> getCloseObject(Entity e){
-        return this.objectTableDAO.findAllByAliasSubstring(e.getText());
+        List<ObjectTable> matchFullText = this.objectTableDAO.findAllByAliasFullText(e.getText());
+        if(matchFullText.isEmpty()){
+            return this.objectTableDAO.findAllByAliasSubstring(e.getText());
+        } 
+        return matchFullText;
     }
     
     public ArrayList<Long> getCloseObjectID(Entity e){
@@ -221,7 +246,7 @@ public class TextPro implements ITextPro {
     * Interpolate ranking make use of Weka, not JavaML
     */
     @Override
-    public Map<Entity, List<Pair<Long, Double>>> InterpolateRanking(String document, List<Entity> eList, int topK) {
+    public Map<Entity, List<Pair<Long, Double>>> MachineLearning(String document, List<Entity> eList, int topK) {
         
         LOG.debug("Starting TexPro weka ranking.");
 
@@ -247,7 +272,6 @@ public class TextPro implements ITextPro {
             
             // Add the current info to final list
             eInfoList.add(new EntityInfo(e, score, oList, match));
-            
         }
         
         /********************** REGULAR RANKING **************************/
@@ -305,6 +329,29 @@ public class TextPro implements ITextPro {
         return eMap;
     }
 
-    
+    /*
+    * Check relationship between two object
+    * Method: Check if they share any documents
+    * If two objects happen to be in the same document, they have relation
+    * If two objects does not share the document, they are not related
+    */
+    boolean checkRelation(ObjectTable o1, ObjectTable o2) {
+        List<Pair<DocumentTable, Integer>> o1Docs = documentTableDAO.findAllDocumentsWithObject(o1);
+        List<Pair<DocumentTable, Integer>> o2Docs = documentTableDAO.findAllDocumentsWithObject(o2);
+        
+        // Create a set of document
+        Set<DocumentTable> o1DocsTable = new HashSet<DocumentTable>();
+        for(Pair p:o1Docs){
+            DocumentTable doc1 = (DocumentTable)p.getFirst();
+            o1DocsTable.add(doc1);
+        }
+        for(Pair p:o2Docs){
+            DocumentTable doc2 = (DocumentTable)p.getFirst();
+            if(o1DocsTable.contains(doc2)) {
+                return true;
+            }
+        }
+        return false;
+    }
     
 }

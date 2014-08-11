@@ -15,7 +15,7 @@ import java.util.Map;
 public class EntityInfo {
     public Entity e;
     
-    Map<Long, Double> score;
+    public Map<Long, Double> score;
     
     public List<ObjectTable> objects;
     public Map<ObjectTable,Long> match_object;
