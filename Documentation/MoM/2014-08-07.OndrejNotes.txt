@@ -9,7 +9,7 @@
 16:44 - ukázka
 - barvy entit nejsou vidět, tooltipy mají malé písmo, ale to není zásadní
 16:48 - ručně označit entity
-  ? může je skutečně ??? objektu? (nečitelné, bylo to o tom noži?, pozn. Adam)
+  - nůž je skutečně instance objektu?
     ... to je filozofická otázka a závisí na doméně
   - zdůrazňovat, co se děje automaricky a co už ne (vztahy)
 16:52 - ukázka vykreslování grafů
