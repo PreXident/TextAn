@@ -380,7 +380,7 @@ public class DocumentViewController extends WindowController {
                 final Relation finRel = rel;
                 text.setOnMouseEntered((MouseEvent t) -> {
                     if (finObj != null) {
-                        final String newTip = finObj.toString();
+                        final String newTip = finObj.getType().getName() + " - " + finObj.toString();
                         tooltip.setText(newTip);
                         Bounds bounds = text.getLayoutBounds();
                         final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());

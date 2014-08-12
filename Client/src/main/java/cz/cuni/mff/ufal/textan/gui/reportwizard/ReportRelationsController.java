@@ -438,11 +438,10 @@ public class ReportRelationsController extends ReportWizardController {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
                 final long entityId = word.getEntity().getType().getId();
-                Utils.styleText(settings, text, "ENTITY", IdType.ENTITY, entityId); //TODO style by type?
+                Utils.styleText(settings, text, "ENTITY", IdType.ENTITY, entityId);
                 //
                 final int entityIndex = word.getEntity().getIndex();
                 final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
-                Utils.styleText(settings, text, "ENTITY", IdType.OBJECT, obj.getId()); //TODO style by candidate?
                 List<Text> objTexts = objectWords.get(obj);
                 if (objTexts == null) {
                     objTexts = new ArrayList<>();
@@ -459,7 +458,7 @@ public class ReportRelationsController extends ReportWizardController {
                     final int entityIndex = word.getEntity().getIndex();
                     final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
                     if (obj != null) {
-                        final String newTip = obj.toString();
+                        final String newTip = word.getEntity().getType().getName() + " - " + obj.toString();
                         tooltip.setText(newTip);
                         Bounds bounds = text.getLayoutBounds();
                         final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
