@@ -8,6 +8,10 @@
 
 package cz.cuni.mff.ufal.morphodita;
 
+import cz.cuni.mff.ufal.utils.SystemInfo;
+
+import java.io.File;
+
 public class morphodita_javaJNI {
   public final static native long new_Forms__SWIG_0();
   public final static native long new_Forms__SWIG_1(long jarg1);
@@ -128,13 +132,31 @@ public class morphodita_javaJNI {
   public final static native long TagsetConverter_newStripLemmaCommentConverter(long jarg1, Morpho jarg1_);
   public final static native long TagsetConverter_newStripLemmaIdConverter(long jarg1, Morpho jarg1_);
 
-  static {
-    java.io.File localMorphodita = new java.io.File("lib/" + System.mapLibraryName("morphodita_java"));
+    static {
+        final String libName = "morphodita_java";
+        final String libDir = "lib";
 
-    if (localMorphodita.exists())
-      System.load(localMorphodita.getAbsolutePath());
-    else
-      System.loadLibrary("morphodita_java");
-  }
+        String dir;
+        if (SystemInfo.getJVMArch() == SystemInfo.JVMArch.x64) {
+            dir = libDir + "/" + "x64";
+        } else if (SystemInfo.getJVMArch() == SystemInfo.JVMArch.x86) {
+            dir = libDir + "/" + "x86";
+        } else {
+            dir = libDir;
+        }
+
+        File localMorphodita = new File(dir, System.mapLibraryName(libName));
+
+        if (localMorphodita.exists()) {
+            System.load(localMorphodita.getAbsolutePath());
+        } else {
+            File standardLocalMorphodita = new File(libDir, System.mapLibraryName(libName));
+            if (standardLocalMorphodita.exists()) {
+                System.load(standardLocalMorphodita.getAbsolutePath());
+            } else {
+                System.loadLibrary(libName);
+            }
+        }
+    }
 
 }

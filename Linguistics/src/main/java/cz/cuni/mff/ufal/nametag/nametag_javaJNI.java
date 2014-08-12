@@ -8,6 +8,10 @@
 
 package cz.cuni.mff.ufal.nametag;
 
+import cz.cuni.mff.ufal.utils.SystemInfo;
+
+import java.io.File;
+
 public class nametag_javaJNI {
   public final static native long new_Forms__SWIG_0();
   public final static native long new_Forms__SWIG_1(long jarg1);
@@ -76,12 +80,29 @@ public class nametag_javaJNI {
   public final static native long Ner_newTokenizer(long jarg1, Ner jarg1_);
 
     static {
-        java.io.File localNametag = new java.io.File("lib/" + System.mapLibraryName("nametag_java"));
+        final String libName = "nametag_java";
+        final String libDir = "lib";
 
-        if (localNametag.exists())
+        String dir;
+        if (SystemInfo.getJVMArch() == SystemInfo.JVMArch.x64) {
+            dir = libDir + "/" + "x64";
+        } else if (SystemInfo.getJVMArch() == SystemInfo.JVMArch.x86) {
+            dir = libDir + "/" + "x86";
+        } else {
+            dir = libDir;
+        }
+
+        File localNametag = new File(dir, System.mapLibraryName(libName));
+
+        if (localNametag.exists()) {
             System.load(localNametag.getAbsolutePath());
-        else
-            System.loadLibrary("nametag_java");
+        } else {
+            File standardLocalNametag = new File(libDir, System.mapLibraryName(libName));
+            if (standardLocalNametag.exists()) {
+                System.load(standardLocalNametag.getAbsolutePath());
+            } else {
+                System.loadLibrary(libName);
+            }
+        }
     }
-
 }

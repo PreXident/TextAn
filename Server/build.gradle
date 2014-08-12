@@ -53,8 +53,7 @@ task copyLinguisticsLibs(type: Copy) {
     run.dependsOn name
 
     from (new File(project(':Linguistics').projectDir, 'lib')) {
-        include System.mapLibraryName("nametag_java")
-        include System.mapLibraryName("morphodita_java")
+        include "**/*"
     }
     into new File(buildDir, 'lib')
 }
