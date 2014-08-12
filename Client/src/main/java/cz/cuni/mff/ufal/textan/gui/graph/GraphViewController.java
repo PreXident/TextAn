@@ -13,6 +13,7 @@ import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import static cz.cuni.mff.ufal.textan.gui.Utils.CONTEXT_MENU_STYLE;
 import cz.cuni.mff.ufal.textan.gui.Window;
+import cz.cuni.mff.ufal.textan.gui.graph.string.Handler;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.Collator;
@@ -41,6 +42,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import jfxtras.labs.internal.scene.control.skin.BigDecimalFieldSkin;
 import jfxtras.labs.scene.control.BigDecimalField;
@@ -49,6 +51,15 @@ import jfxtras.labs.scene.control.BigDecimalField;
  * Controls GraphView.
  */
 public class GraphViewController extends GraphController {
+
+    /** Checkbox style class. */
+    static private final String CHECKBOX = "-check-box-";
+
+    /** Object checkbox style class. */
+    static private final String OBJECT_CHECKBOX = "object" + CHECKBOX;
+
+    /** Relation checkbox style class. */
+    static private final String RELATION_CHECKBOX = "relation" + CHECKBOX;
 
     @FXML
     private BorderPane root;
@@ -182,40 +193,62 @@ public class GraphViewController extends GraphController {
             }
         });
         //
-        objectTypesListView.setCellFactory(CheckBoxListCell.forListView(
-                p -> p.getFirst(),
-                new StringConverter<Pair<BooleanProperty, ObjectType>>() {
-                    @Override
-                    public String toString(Pair<BooleanProperty, ObjectType> pair) {
-                        if (pair != null && pair.getSecond() != null) {
-                            return pair.getSecond().getName();
-                        } else {
-                            return "";
+        objectTypesListView.setCellFactory(list -> {
+            final CheckBoxListCell<Pair<BooleanProperty, ObjectType>> result = new CheckBoxListCell<>(
+                    p -> p.getFirst(),
+                    new StringConverter<Pair<BooleanProperty, ObjectType>>() {
+                        @Override
+                        public String toString(Pair<BooleanProperty, ObjectType> pair) {
+                            if (pair != null && pair.getSecond() != null) {
+                                return pair.getSecond().getName();
+                            } else {
+                                return "";
+                            }
+                        }
+                        @Override
+                        public Pair<BooleanProperty, ObjectType> fromString(String string) {
+                            throw new RuntimeException("This should never happen!");
                         }
                     }
-                    @Override
-                    public Pair<BooleanProperty, ObjectType> fromString(String string) {
-                        throw new RuntimeException("This should never happen!");
-                    }
+            );
+            result.itemProperty().addListener((ov, oldVal, newVal) -> {
+                if (oldVal != null) {
+                    result.getStyleClass().remove(OBJECT_CHECKBOX + oldVal.getSecond().getId());
                 }
-        ));
-        relationTypesListView.setCellFactory(CheckBoxListCell.forListView(
-                p -> p.getFirst(),
-                new StringConverter<Pair<BooleanProperty, RelationType>>() {
-                    @Override
-                    public String toString(Pair<BooleanProperty, RelationType> pair) {
-                        if (pair != null && pair.getSecond() != null) {
-                            return pair.getSecond().getName();
-                        } else {
-                            return "";
+                if (newVal != null) {
+                    result.getStyleClass().add(OBJECT_CHECKBOX + newVal.getSecond().getId());
+                }
+            });
+            return result;
+        });
+        relationTypesListView.setCellFactory(list -> {
+            final CheckBoxListCell<Pair<BooleanProperty, RelationType>> result = new CheckBoxListCell<>(
+                    p -> p.getFirst(),
+                    new StringConverter<Pair<BooleanProperty, RelationType>>() {
+                        @Override
+                        public String toString(Pair<BooleanProperty, RelationType> pair) {
+                            if (pair != null && pair.getSecond() != null) {
+                                return pair.getSecond().getName();
+                            } else {
+                                return "";
+                            }
+                        }
+                        @Override
+                        public Pair<BooleanProperty, RelationType> fromString(String string) {
+                            throw new RuntimeException("This should never happen!");
                         }
                     }
-                    @Override
-                    public Pair<BooleanProperty, RelationType> fromString(String string) {
-                        throw new RuntimeException("This should never happen!");
-                    }
+            );
+            result.itemProperty().addListener((ov, oldVal, newVal) -> {
+                if (oldVal != null) {
+                    result.getStyleClass().remove(RELATION_CHECKBOX + oldVal.getSecond().getId());
                 }
-        ));
+                if (newVal != null) {
+                    result.getStyleClass().add(RELATION_CHECKBOX + newVal.getSecond().getId());
+                }
+            });
+            return result;
+        });
     }
 
     @Override
@@ -300,13 +333,34 @@ public class GraphViewController extends GraphController {
                 graphView.setRelationContextMenu(relationContextMenu);
                 //
                 if (this.getTypes) {
+                    final StringBuilder builder = new StringBuilder();
                     for (ObjectType objType : objectTypes) {
                         objectTypesListView.getItems().add(
                                 new Pair<>(new SimpleBooleanProperty(true), objType));
+                        final Color color =
+                                Utils.resolveEntityColorFX(settings, objType.getId());
+                        final String stringColor = Utils.colorToString(color);
+                        builder.append(String.format(
+                                ".%s%s *.box { -fx-background-color: %s; }\n",
+                                OBJECT_CHECKBOX, objType.getId(), stringColor));
                     }
                     for (RelationType relType : relationTypes) {
                         relationTypesListView.getItems().add(
                                 new Pair<>(new SimpleBooleanProperty(true), relType));
+                        final Color color =
+                                Utils.resolveRelationColorFX(settings, relType.getId());
+                        final String stringColor = Utils.colorToString(color);
+                        builder.append(String.format(
+                                ".%s%s *.box { -fx-background-color: %s; }\n",
+                                RELATION_CHECKBOX, relType.getId(), stringColor));
+                    }
+                    final String backup = System.getProperty("java.protocol.handler.pkgs");
+                    System.setProperty("java.protocol.handler.pkgs",
+                            cz.cuni.mff.ufal.textan.Utils.removeExtension(Handler.class.getPackage().getName()));
+                    Handler.registerString("GraphView.css", builder.toString());
+                    root.getStylesheets().add("string:GraphView.css");
+                    if (backup != null) {
+                        System.setProperty("java.protocol.handler.pkgs", backup);
                     }
                 }
                 //

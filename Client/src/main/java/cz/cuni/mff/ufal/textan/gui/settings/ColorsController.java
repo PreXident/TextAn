@@ -179,10 +179,7 @@ public class ColorsController extends WindowController {
      * @param color color
      */
     protected void storeColor(final IdType type, final long id, final Color color) {
-        final String s =String.format( "#%02X%02X%02X",
-            (int)( color.getRed() * 255 ),
-            (int)( color.getGreen() * 255 ),
-            (int)( color.getBlue() * 255 ) );
+        final String s = Utils.colorToString(color);
         settings.put(type + ".color." + id, s);
     }
 

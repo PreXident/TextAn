@@ -59,6 +59,18 @@ public class Utils {
     }
 
     /**
+     * Converts color to string suitable for storing in settings.
+     * @param color color to convert
+     * @return string representation of the color
+     */
+    static public String colorToString(final Color color) {
+        return String.format( "#%02X%02X%02X",
+            (int)( color.getRed() * 255 ),
+            (int)( color.getGreen() * 255 ),
+            (int)( color.getBlue() * 255 ) );
+    }
+
+    /**
      * Converts id to Color.
      * @param id long to covert
      * @return Color created from id hash
