@@ -48,8 +48,16 @@
 			<bottom>
 				<GridPane>
 					<HBox GridPane.columnIndex="0" GridPane.rowIndex="0" >
-						<Button text="|&lt;&lt;" onAction="#fastRewind" />
-						<Button text="&lt;" onAction="#rewind" />
+						<Button text="|&lt;&lt;" onAction="#fastRewind">
+							<HBox.margin>
+								<Insets top="5" right="2.5"/>
+							</HBox.margin>
+						</Button>
+						<Button text="&lt;" onAction="#rewind">
+							<HBox.margin>
+								<Insets top="5" left="2.5"/>
+							</HBox.margin>
+						</Button>
 					</HBox>
 					<Label fx:id="paginationLabel" GridPane.hgrow="ALWAYS" GridPane.halignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 					<HBox alignment="CENTER" spacing="10" GridPane.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1" >
@@ -69,8 +77,16 @@
 						</ComboBox>
 					</HBox>
 					<HBox GridPane.columnIndex="2" GridPane.rowIndex="0" >
-						<Button text="&gt;" onAction="#forward" />
-						<Button text="&gt;&gt;|" onAction="#fastForward" />
+						<Button text="&gt;" onAction="#forward">
+							<HBox.margin>
+								<Insets top="5" right="2.5"/>
+							</HBox.margin>
+						</Button>
+						<Button text="&gt;&gt;|" onAction="#fastForward">
+							<HBox.margin>
+								<Insets top="5" left="2.5"/>
+							</HBox.margin>
+						</Button>
 					</HBox>
 				</GridPane>
 			</bottom>
@@ -79,13 +95,21 @@
 	<bottom>
 		<BorderPane>
 			<left>
-				<Button text="%back" visible="false" />
+				<Button text="%back" visible="false">
+					<BorderPane.margin>
+						<Insets top="5"/>
+					</BorderPane.margin>
+				</Button>
 			</left>
 			<center>
 				<Slider fx:id="slider" min="0" max="4" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="0" majorTickUnit="1" minorTickCount="0" />
 			</center>
 			<right>
-				<Button text="%continue" onAction="#next"/>
+				<Button text="%continue" onAction="#next">
+					<BorderPane.margin>
+						<Insets top="5"/>
+					</BorderPane.margin>
+				</Button>
 			</right>
 		</BorderPane>
 	</bottom>

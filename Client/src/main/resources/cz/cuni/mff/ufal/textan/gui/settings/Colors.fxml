@@ -22,8 +22,12 @@
 	<center>
 		<SplitPane>
 			<items>
-			    <VBox>
-				    <Label text="%objects"/>
+				<VBox>
+					<Label text="%objects">
+						<VBox.margin>
+							<Insets top="5" right="5" bottom="5" left="5"/>
+						</VBox.margin>
+					</Label>
 				    <TableView fx:id="objectTable" minHeight="30" VBox.vgrow="ALWAYS" >
 					    <columns>
 						    <TableColumn fx:id="objectIdColumn" text="%table.id" prefWidth="60" />
@@ -34,9 +38,13 @@
 						    <Label text="" />
 					    </placeholder>
 				    </TableView>
-			    </VBox>
-			    <VBox>
-				    <Label text="%relations"/>
+				</VBox>
+				<VBox>
+					<Label text="%relations">
+						<VBox.margin>
+							<Insets top="5" right="5" bottom="5" left="5"/>
+						</VBox.margin>
+					</Label>
 				    <TableView fx:id="relationTable" minHeight="30" VBox.vgrow="ALWAYS">
 					    <columns>
 						    <TableColumn fx:id="relationIdColumn" text="%table.id" prefWidth="60" />
@@ -47,7 +55,7 @@
 						    <Label text="" />
 					    </placeholder>
 				    </TableView>
-			    </VBox>
+				</VBox>
 			</items>
 		</SplitPane>
 	</center>
