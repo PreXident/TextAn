@@ -253,8 +253,12 @@ public class ReportRelationsController extends ReportWizardController {
                 final FXRelationInfo remove = selectedRelation.getData().remove(index);
                 //remove selection background
                 final Object obj = remove.getObject();
+                final boolean unstyle = obj != null
+                        && !selectedRelation.getData().stream()
+                                .map(FXRelationInfo::getObject)
+                                .anyMatch(obj::equals);
                 final List<Text> texts = objectWords.get(obj);
-                if (texts != null) {
+                if (texts != null && unstyle) {
                     texts.forEach(Utils::unstyleTextBackground);
                 }
             }
@@ -664,7 +668,9 @@ public class ReportRelationsController extends ReportWizardController {
     protected void add(final Object object) {
         if (selectedRelation != null) {
             resetStepsBack();
-            selectedRelation.getData().add(new FXRelationInfo(0, "", object));
+            final FXRelationInfo info = new FXRelationInfo(0, "", object);
+            selectedRelation.getData().add(info);
+            addObjectToRelationInfo(object, info);
         }
     }
 
@@ -678,10 +684,14 @@ public class ReportRelationsController extends ReportWizardController {
         resetStepsBack();
         final Object oldObj = relationInfo.getObject();
         final List<Text> oldTexts = objectWords.get(oldObj);
-        if (oldTexts != null) {
+        relationInfo.setObject(object);
+        final boolean unstyle = oldObj != null
+                && !selectedRelation.getData().stream()
+                        .map(FXRelationInfo::getObject)
+                        .anyMatch(oldObj::equals);
+        if (oldTexts != null && unstyle) {
             oldTexts.stream().forEach(Utils::unstyleTextBackground);
         }
-        relationInfo.setObject(object);
         final RelationType type = selectedRelation.getType();
         final long id = type.getId();
         final List<Text> newTexts = objectWords.get(object);
