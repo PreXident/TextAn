@@ -17,15 +17,14 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -79,6 +78,12 @@ public class GraphViewController extends GraphController {
     private HBox rightToolbar;
 
     @FXML
+    private HBox leftPanel;
+
+    @FXML
+    private HBox rightPanel;
+
+    @FXML
     private ListView<Pair<BooleanProperty, ObjectType>> objectTypesListView;
 
     @FXML
@@ -95,6 +100,28 @@ public class GraphViewController extends GraphController {
 
     /** Context menu for edges. */
     ContextMenu relationContextMenu;
+
+    @FXML
+    private void toggleObjectFilter() {
+        final boolean hidden = objectTypesListView.getParent() == null;
+        settings.setProperty("graph.viewer.objectfilter", hidden ? "true" : "false");
+        if (hidden) {
+            leftPanel.getChildren().add(0, objectTypesListView);
+        } else {
+            leftPanel.getChildren().remove(objectTypesListView);
+        }
+    }
+
+    @FXML
+    private void toggleRelationFilter() {
+        final boolean hidden = relationTypesListView.getParent() == null;
+        settings.setProperty("graph.viewer.relationfilter", hidden ? "true" : "false");
+        if (hidden) {
+            rightPanel.getChildren().add(relationTypesListView);
+        } else {
+            rightPanel.getChildren().remove(relationTypesListView);
+        }
+    }
 
     @FXML
     private void home() {
@@ -198,6 +225,17 @@ public class GraphViewController extends GraphController {
         final Node node = getMainNode();
         node.setCursor(Cursor.WAIT);
         new Thread(new GraphGetter(true), "GraphGetter").start();
+    }
+
+    @Override
+    public void setSettings(final Properties settings) {
+        super.setSettings(settings);
+        if (settings.getProperty("graph.viewer.objectfilter", "true").equals("false")) {
+            leftPanel.getChildren().remove(objectTypesListView);
+        }
+        if (settings.getProperty("graph.viewer.relationfilter", "true").equals("false")) {
+            rightPanel.getChildren().remove(relationTypesListView);
+        }
     }
 
     @Override
