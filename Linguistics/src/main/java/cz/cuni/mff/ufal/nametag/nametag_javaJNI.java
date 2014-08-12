@@ -87,9 +87,10 @@ public class nametag_javaJNI {
         final String libDir = "lib";
 
         String dir;
-        if (SystemInfo.getJVMArch() == SystemInfo.JVMArch.x64) {
+        SystemInfo.JVMArch jvmArch = SystemInfo.getJVMArch();
+        if (jvmArch == SystemInfo.JVMArch.x64) {
             dir = libDir + "/" + "x64";
-        } else if (SystemInfo.getJVMArch() == SystemInfo.JVMArch.x86) {
+        } else if (jvmArch == SystemInfo.JVMArch.x86) {
             dir = libDir + "/" + "x86";
         } else {
             dir = libDir;
@@ -99,12 +100,12 @@ public class nametag_javaJNI {
         try {
             System.load(localNametag.getAbsolutePath());
         } catch (UnsatisfiedLinkError e) {
-            LOG.warn("Try to recover from: " + e.getMessage());
+            LOG.warn("Try to recover from: {}", e.getMessage());
             File standardLocalNametag = new File(libDir, System.mapLibraryName(libName));
             try {
                 System.load(standardLocalNametag.getAbsolutePath());
             } catch (UnsatisfiedLinkError e1) {
-                LOG.warn("Try to recover from: " + e1.getMessage());
+                LOG.warn("Try to recover from: {}", e1.getMessage());
                 System.loadLibrary(libName);
             }
         }
