@@ -45,7 +45,7 @@ public class JoinController extends WindowController {
     static protected final int MIN_HEIGHT = 400;
 
     /** Minimal width of the join window. */
-    static protected final int MIN_WIDTH = 530;
+    static protected final int MIN_WIDTH = 570;
 
     @FXML
     private BorderPane root;
