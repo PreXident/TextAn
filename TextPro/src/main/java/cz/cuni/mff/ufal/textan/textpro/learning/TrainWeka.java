@@ -64,6 +64,7 @@ public class TrainWeka {
     */
     public Classifier doTraining(IObjectTableDAO objectTableDAO, IAliasTableDAO aliasTableDAO) {
         isTrainingSet = new Instances("Rel", this.fvWekaAttributes, 10);
+        isTrainingSet.setClassIndex(4);
         isTrainingSet.add(CreateFakeYesInstanceBasic());
         
         // Create the list of all objects
