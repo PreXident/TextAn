@@ -6,7 +6,6 @@ import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.textpro.data.Entity;
 import cz.cuni.mff.ufal.textan.textpro.data.EntityInfo;
-import cz.cuni.mff.ufal.textan.textpro.learning.Test;
 import cz.cuni.mff.ufal.textan.textpro.learning.TrainWeka;
 
 import java.util.*;

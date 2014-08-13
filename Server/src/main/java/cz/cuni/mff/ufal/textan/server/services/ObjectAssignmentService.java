@@ -60,7 +60,7 @@ public class ObjectAssignmentService {
     private List<Assignment> getAssignmentsInner(String text, List<Entity> entities) {
 
         Map<cz.cuni.mff.ufal.textan.textpro.data.Entity, List<Pair<Long, Double>>> textProAssignments =
-                textPro.DoubleRanking(
+                textPro.MachineLearning(
                         text,
                         entities.stream().map(Entity::toTextProEntity).collect(Collectors.toList()),
                         50
