@@ -121,13 +121,11 @@ public class TextPro implements ITextPro {
      * Double ranking is the main function of TextPro
      * It takes the input as a documents, a list of entity and the number of wanted result
      * It produces the output as a Map between the entity and the id of object, along with it scores
-     * MAP<Entity, Map<Object ID, Score>>
      * @param document
      * @param eList
      * @return the result of DoubleRank
      */
     @Override
-    //public Map<Entity, Map<Long, Double>> DoubleRanking(String document, List<Entity> eList, int topK){
     public Map<Entity, List<Pair<Long, Double>>> Ranking(String document, List<Entity> eList, int topK){
 
         LOG.debug("Starting TexPro ranking.");
@@ -223,31 +221,14 @@ public class TextPro implements ITextPro {
         // Return the value
         return eMap;
     }
-    
-    public List<ObjectTable> getCloseObject(Entity e){
-        List<ObjectTable> matchFullText = this.objectTableDAO.findAllByAliasFullText(e.getText());
-        if(matchFullText.isEmpty()){
-            return this.objectTableDAO.findAllByAliasSubstring(e.getText());
-        } 
-        return matchFullText;
-    }
-    
-    public ArrayList<Long> getCloseObjectID(Entity e){
-        List<ObjectTable> oList =  getCloseObject(e);
-        ArrayList<Long> ID = new ArrayList<Long>();
-        for(ObjectTable o:oList) {
-            ID.add(o.getId());
-        }
-        return ID;
-    }
-    
     /*
-    * Interpolate ranking make use of Weka, not JavaML
+    * Machine Learning with Weka, not JavaML
+    * Return the same kind of value as Ranking
     */
     @Override
     public Map<Entity, List<Pair<Long, Double>>> MachineLearning(String document, List<Entity> eList, int topK) {
         
-        LOG.debug("Starting TexPro weka ranking.");
+        LOG.debug("Starting TexPro weka learning.");
 
         // Initialize the eMap - final result
         Map<Entity, List<Pair<Long, Double>>> eMap = new HashMap<>();
@@ -272,9 +253,6 @@ public class TextPro implements ITextPro {
             // Add the current info to final list
             eInfoList.add(new EntityInfo(e, score, oList, match));
         }
-        
-        /********************** REGULAR RANKING **************************/
-        //TODO: Implement the Regular Ranking here
         
         /********************** MACHINE LEARNING *************************/
         
@@ -324,7 +302,7 @@ public class TextPro implements ITextPro {
             eMap.put(eInfo.e, entityScoreTopK);
             
         }
-        
+        LOG.debug("Finishing TexPro weka learning.");
         return eMap;
     }
 
@@ -352,5 +330,25 @@ public class TextPro implements ITextPro {
         }
         return false;
     }
+    /*
+    * Function: Get the object related to an entity
+    */
+    public List<ObjectTable> getCloseObject(Entity e){
+        List<ObjectTable> matchFullText = this.objectTableDAO.findAllByAliasFullText(e.getText());
+        if(matchFullText.isEmpty()){
+            return this.objectTableDAO.findAllByAliasSubstring(e.getText());
+        } 
+        return matchFullText;
+    }
+    
+    public ArrayList<Long> getCloseObjectID(Entity e){
+        List<ObjectTable> oList =  getCloseObject(e);
+        ArrayList<Long> ID = new ArrayList<Long>();
+        for(ObjectTable o:oList) {
+            ID.add(o.getId());
+        }
+        return ID;
+    }
+    
     
 }
