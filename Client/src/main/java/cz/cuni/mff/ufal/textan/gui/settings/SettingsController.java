@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.settings;
 
+import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.HYPER_GRAPHS;
@@ -15,8 +16,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import jfxtras.labs.scene.control.BigDecimalField;
 import org.controlsfx.dialog.Dialogs;
 
@@ -31,14 +33,14 @@ public class SettingsController extends WindowController {
     /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "settings.view";
 
-    /** Minimal height of the join window. */
-    static protected final int MIN_HEIGHT = 260;
+    /** Pref height of the join window. */
+    static protected final int PREF_HEIGHT = 225;
 
-    /** Minimal width of the join window. */
-    static protected final int MIN_WIDTH = 300;
+    /** Pref width of the join window. */
+    static protected final int PREF_WIDTH = 265;
 
     @FXML
-    private BorderPane root;
+    private SettingsVBox root;
 
     @FXML
     private CheckBox independentWindowsCheckBox;
@@ -48,7 +50,7 @@ public class SettingsController extends WindowController {
 
     @FXML
     private CheckBox clearFiltersCheckBox;
-
+    
     @FXML
     protected TextField loginTextField;
 
@@ -57,7 +59,7 @@ public class SettingsController extends WindowController {
 
     @FXML
     private BigDecimalField distanceField;
-
+    
     /** Localization controller. */
     private ResourceBundle resourceBundle;
 
@@ -141,5 +143,14 @@ public class SettingsController extends WindowController {
      */
     public void setTextAnController(final TextAnController textAnController) {
         this.textAnController = textAnController;
+    }
+    
+    @Override
+    public void setWindow(final InnerWindow window) {
+        super.setWindow(window);
+        Utils.runFXlater(() -> {
+            window.setPrefWidth(root.computePrefWidth(0));
+            window.setPrefHeight(root.computePrefHeight(0) + 30); //guessed titlebar height
+        });
     }
 }
