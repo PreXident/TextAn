@@ -25,6 +25,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.Arrays;
 import org.hibernate.SessionFactory;
+import static org.junit.Assert.assertEquals;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -415,7 +416,7 @@ public class DataTest {
          Assert.assertEquals("There is an test Object left", 0, objectTableDAO.findAllByAliasSubstring("[TEST]").size());
     }
     */
-/*
+
     @Test
     public void addAndRemoveJoinedObjectsTest() {
         System.out.println("\n\naddAndRemoveJoinedObjectsTest");
@@ -426,12 +427,14 @@ public class DataTest {
         System.out.println("user.id = " + id);
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
-        JoinedObjectsTable user2 = null;
-        user2 = data.getRecordById(JoinedObjectsTable.class, id);
-        assertTrue("user2.equals(user):\nuser1 = " + user + ";\nuser2 = " + user2, user2.equals(user));
+
+        user = data.getRecordById(JoinedObjectsTable.class, id);
+        JoinedObjectsTable user2 = data.getRecordById(JoinedObjectsTable.class, id);
+        
+        assertEquals("user2.equals(user):\nuser1 = " + user + ";\nuser2 = " + user2, user, user2);
         assertTrue("data.deleteRecord(user2)", data.deleteRecord(user2));
     }
-  */  
+    
     
     // TODO:IsInRelationBidirectionalTest
     

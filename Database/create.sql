@@ -100,7 +100,7 @@ CREATE TABLE IsInRelation
 CREATE TABLE JoinedObjects
 (       
         id_joined_object int PRIMARY KEY AUTO_INCREMENT,
-        id_new_object int,
+        id_new_object int NOT NULL,
           CONSTRAINT FK_PK_JOINEDOBJECTS_ID
             FOREIGN KEY (id_new_object)
                   REFERENCES Object(id_object), 
