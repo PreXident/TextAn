@@ -7,14 +7,19 @@ Adam:
 - graph filters can now be hidden
 - graph filter checkboxes now have colored boxes
 
+Petr:
+- reworked using of binaries
+
 HWK:
 - Adam, remove maximize window icon from settings window
 - Adam, double click on window title to (de)maximize
 - Adam, at least on linux the first graph display fails
 - Adam, linux join object window too small
 - Adam, add about dialog
-- Adam & Peter - client authentication, see links bellow
-- Peter - add TODOs to documentation
+- Adam & Petr, client authentication, see links bellow
+- Petr, add TODOs to documentation
+- Petr, complete documentation and send it to Ondrej
+- Petr, find out how to sign in defense
 - Tam, improve presentation based on comments (orange color)
 - Venca, do something!!!
 - Venca, top priority!!! finish join, date_changed till Sunday!!!
