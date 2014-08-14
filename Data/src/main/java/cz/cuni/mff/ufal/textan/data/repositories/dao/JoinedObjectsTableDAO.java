@@ -6,6 +6,8 @@
 
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
+import cz.cuni.mff.ufal.textan.data.exceptions.JoiningANonRootObjectException;
+import cz.cuni.mff.ufal.textan.data.exceptions.JoiningEqualObjectsException;
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
@@ -34,8 +36,12 @@ public class JoinedObjectsTableDAO extends AbstractHibernateDAO<JoinedObjectsTab
     }
 
     @Override
-    public ObjectTable join(ObjectTable obj1, ObjectTable obj2) {
+    public ObjectTable join(ObjectTable obj1, ObjectTable obj2) throws JoiningANonRootObjectException, JoiningEqualObjectsException {
         // todo checking
+        if (!obj1.isRootObject()) throw new JoiningANonRootObjectException(obj1);
+        if (!obj2.isRootObject()) throw new JoiningANonRootObjectException(obj2);
+        if (obj1.equals(obj2)) throw new JoiningEqualObjectsException();
+        
         ObjectTable newObj = new ObjectTable("join(" + obj1.getData() + ", " + obj2.getData() + ")", obj1.getObjectType());
         JoinedObjectsTable joinedObj = new JoinedObjectsTable(newObj, obj1, obj2);
         
