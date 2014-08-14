@@ -1,4 +1,4 @@
-%Use Lualatex for interpretation!
+﻿%Use Lualatex for interpretation!
 % lualatex -interaction=nonstopmode --shell-escape UserDocumentation.tex
 
 %You have to have those fonts in your system:
@@ -448,6 +448,18 @@ url.data=http://localhost:9500/soap/data
 url.data.wsdl=http://localhost:9500/soap/data?wsdl
 \end{lstlisting}
 
+If SSL is in use, it needs to be configured like this:
+\begin{lstlisting}[frame=single,language=properties]
+#should ssl be used for communication?
+ssl=true
+#path to trust store
+ssl.trustStore=c\:/temp/clientTrustStore
+#trust store password
+ssl.trustStore.password=MYPASS
+#trust store type (default JKS)
+ssl.trustStore.type=JKS
+\end{lstlisting}
+
 \subsubsection{Starting the client}
 
 The .jar file from the distribution archive is executable,
@@ -478,6 +490,7 @@ If '-' is provided, the standard input will be read and settings will not be sto
 
 \subsubsection{TextAn.properties}
 
+TODO move this section as appendix to developer documentation, leave only reference here.
 This section contains a list of properties from configuration file that controls
 client behaviour and their brief description.
 
