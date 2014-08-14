@@ -238,13 +238,27 @@ public class Client {
             if (!ts.isEmpty()) {
                 System.setProperty("javax.net.ssl.trustStore", ts);
             }
-            final String passwd = settings.getProperty("ssl.trustStore.password", "");
-            if (!passwd.isEmpty()) {
-                System.setProperty("javax.net.ssl.trustStorePassword", passwd);
+            final String tsPass = settings.getProperty("ssl.trustStore.password", "");
+            if (!tsPass.isEmpty()) {
+                System.setProperty("javax.net.ssl.trustStorePassword", tsPass);
             }
-            final String type = settings.getProperty("ssl.trustStore.type", "");
-            if (!type.isEmpty()) {
-                System.setProperty("javax.net.ssl.trustStoreType", type);
+            final String tsType = settings.getProperty("ssl.trustStore.type", "");
+            if (!tsType.isEmpty()) {
+                System.setProperty("javax.net.ssl.trustStoreType", tsType);
+            }
+            if (settings.getProperty("ssl.clientAuth", "").equals("true")) {
+                final String ks = settings.getProperty("ssl.keyStore", "");
+                if (!ks.isEmpty()) {
+                    System.setProperty("javax.net.ssl.keyStore", ks);
+                }
+                final String ksPass = settings.getProperty("ssl.keyStore.password", "");
+                if (!ksPass.isEmpty()) {
+                    System.setProperty("javax.net.ssl.keyStorePassword", ksPass);
+                }
+                final String ksType = settings.getProperty("ssl.keyStore.type", "");
+                if (!ksType.isEmpty()) {
+                    System.setProperty("javax.net.ssl.keyStoreType", ksType);
+                }
             }
         }
     }

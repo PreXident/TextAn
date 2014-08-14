@@ -157,6 +157,19 @@ public class AppConfig implements ApplicationContextAware {
             sslContextFactory.setKeyStorePassword(serverProperties().getProperty("server.ssl.keyStore.password"));
             sslContextFactory.setKeyManagerPassword(serverProperties().getProperty("server.ssl.keyManager.password"));
             sslContextFactory.setKeyStoreType(serverProperties().getProperty("server.ssl.keyStore.type", "JKS"));
+
+            boolean clientAuth = false;
+            String clientAuthProperty = serverProperties().getProperty("server.ssl.clientAuth");
+            if (clientAuthProperty != null && !clientAuthProperty.isEmpty()) {
+                clientAuth = Boolean.parseBoolean(clientAuthProperty);
+            }
+            if (clientAuth) {
+                sslContextFactory.setNeedClientAuth(true);
+                sslContextFactory.setTrustStorePath(serverProperties().getProperty("server.ssl.trustStore.path"));
+                sslContextFactory.setTrustStorePassword(serverProperties().getProperty("server.ssl.trustStore.password"));
+                sslContextFactory.setTrustStoreType(serverProperties().getProperty("server.ssl.trustStore.type", "JKS"));
+            }
+
             //sslContextFactory.setCertAlias();
 
             ServerConnector https = new ServerConnector(
