@@ -1,4 +1,4 @@
-﻿%Use Lualatex for interpretation!
+%Use Lualatex for interpretation!
 % lualatex -interaction=nonstopmode --shell-escape UserDocumentation.tex
 
 %You have to have those fonts in your system:
@@ -154,7 +154,7 @@ TextAn (Text Analyser) serves such purpose, targeting the Police's reports.
 In other words, TextAn is a tool which supports mining structured data buried in the Police's reports. The term ``structured data'' consists of two concepts. 
 First, it contains name, street, date of birth, crime and other named entities with related to some people. 
 Second, the data contain the relations between two entities. 
-For example, the relation between a person and sis/her name, the relation between two persons. The objective of TextAn is to provide a robust tool which support the procedure, either automatically and manually.
+For example, the relation between a person and his/her name, the relation between two persons. The objective of TextAn is to provide a robust tool which support the procedure, either automatically and manually.
 
 TextAn has client-server structure. It supports following operations:
   
@@ -263,6 +263,14 @@ However, we recommend the use of \emph{Apache ProcRun's Daemon
 \paragraph{server.threadPool.minThreads} The minimum number of threads in web server thread pool. The default value is 8.
 
 \paragraph{server.threadPool.idleTimeout} The time in milliseconds that the connection can be idle before it is closed.
+
+%ssl
+\paragraph{server.ssl}
+\paragraph{server.ssl.keyStore.path}
+\paragraph{server.ssl.keyStore.password}
+\paragraph{server.ssl.keyManager.password}
+\paragraph{server.ssl.keyStore.type}
+\paragraph{server.ssl.port}
 
 \subsubsection{Database connection settings}
 
