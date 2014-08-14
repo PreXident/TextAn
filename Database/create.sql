@@ -15,6 +15,7 @@ VALUES ( 0 );
 CREATE TABLE Audit (
 	id_audit int PRIMARY KEY AUTO_INCREMENT, 
   username NVARCHAR(255) NOT NULL,
+  edit_date datetime NOT NULL,
   edittype VARCHAR(255) NOT NULL,            -- INSERT | DELETE | UPDATE
   edit text CHARSET utf8 NOT NULL
 );
