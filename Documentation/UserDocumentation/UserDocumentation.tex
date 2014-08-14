@@ -286,14 +286,18 @@ However, we recommend the use of \emph{Apache ProcRun's Daemon
 \subsubsection{Database connection settings}
 \comment[Venca]{Petr}{Add descrtion for DB properties}
 %jdbc
-\paragraph{jdbc.driverClassName} 
+\paragraph{jdbc.driverClassName}
+Name of the driver class made usually by database developers which enables to interact with database.
 
-\paragraph{jdbc.url} 
+\paragraph{jdbc.url}
+ The url that points to our database. The most common url format is like this:
+jdbc:[database type]:[hostname]:[port number]/[database name]
+and is specific to the driver we use.
 
 \paragraph{jdbc.user}
-
+Optional. Username to log into the database.
 \paragraph{jdbc.pass}
-
+Optional. Password to authorize the user.
 
 %c3p0 (http://www.mchange.com/projects/c3p0/#configuration_properties)
 \paragraph{c3p0.maxPoolSize}
@@ -316,8 +320,9 @@ However, we recommend the use of \emph{Apache ProcRun's Daemon
 
 %hibernate
 \paragraph{hibernate.dialect}
-
+The classname of a Hibernate org.hibernate.dialect.Dialect which allows to generate SQL optimized for a particular relational database.
 \paragraph{hibernate.show\_sql}
+If true all sql statements are written to console. It's an alternative for logging.
 
 %NameTag
 \subsubsection{Named entity recognizer settings}
