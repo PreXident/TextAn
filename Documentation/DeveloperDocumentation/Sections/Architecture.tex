@@ -22,8 +22,14 @@ a persistence layer and a data layer.
 
 \subsubsection{Named entity recognizer architecture}
 
-%TODO here should be description of nametag integration (recognizing, leraning etc.), nametag..
-% assignee: Jakub (author Petr) 
+Named entity architecture is divided to two parts, recognition and training.
+\paragraph{Recognition} 
+Recognition is splitted to two parts - Java part and C++ part. This is because NameTag, which we use as named entity recognizer, is written mainly in C++ and TextAn in Java, so we must use JNI to call functions from C++ through provided Java bindings. C++ part is represented by NameTag, so it has its owen documentation.
+Java part contains JNI bindings to call C++ part and than connection to TextAn. This part figures as adaptor between these two projects. Its main task is to translate recognized NameTag entities to entities stored in TextAn database. Because of optimalization, this component caches database entities.
+
+\paragraph{Training}
+Despite the fact that NameTag is in C++ and TextAn in Java, this part does not need JNI, because training is called as binary files and model is generated as file. So calling C++ functions is not needed here. Java part provides training data collecting from database and preparation, model handling (deleting old ones. binding them to NameTag).
+
 
 \subsubsection{Object assigner architecture} %or simply TextPro?
 
