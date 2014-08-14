@@ -150,13 +150,13 @@ Ondřej Bojar\\
 
 
 With the profiliferation of unstructured written texts, the need for a tool to mine the structure out of such documents is on increasing trend. 
-TextAn (Text Analyser) serves such purpose, targeting the Police's reports. 
-In other words, TextAn is a tool which supports mining structured data buried in the Police's reports. The term ``structured data'' consists of two concepts. 
+\textan{} (Text Analyser) serves such purpose, targeting the Police's reports. 
+In other words, \textan{} is a tool which supports mining structured data buried in the Police's reports. The term ``structured data'' consists of two concepts. 
 First, it contains name, street, date of birth, crime and other named entities with related to some people. 
 Second, the data contain the relations between two entities. 
-For example, the relation between a person and his/her name, the relation between two persons. The objective of TextAn is to provide a robust tool which support the procedure, either automatically and manually.
+For example, the relation between a person and his/her name, the relation between two persons. The objective of \textan{} is to provide a robust tool which support the procedure, either automatically and manually.
 
-TextAn has client-server structure. It supports following operations:
+\textan{} has client-server structure. It supports following operations:
   
   \begin{itemize}
   \item Bring new solution to the classic problem of extracting data from text.
@@ -165,11 +165,11 @@ TextAn has client-server structure. It supports following operations:
   \item Make the graphic user interface as fruitful as possible.
   \end{itemize}
 
-This documentation describes TextAn from the perspective of an user. 
+This documentation describes \textan{} from the perspective of an user. 
 All the concepts are explained in the \emph{Glossary}.
 
-To start using TextAn, user have to start the client application and log in. 
-Once user log in successfully, the main screen of TextAn is displayed.
+To start using \textan{}, user have to start the client application and log in. 
+Once user log in successfully, the main screen of \textan{} is displayed.
 
 %TODO: What's next?
 
@@ -205,23 +205,23 @@ TODO definitions of terms in documentation and applications
 \subsection{Installation guide}
 
 
-This section will show you how to install and build \textan\ server. 
-%An installation guide for a server side application of \textan.
+This section will show you how to install and build \textan{} server. 
+%An installation guide for a server side application of \textan{}.
 
 \subsubsection{Prerequisites}
 \label{sssec:SerInstPre}
 
-The \textan\ server requires installation of \emph{Java 8 JRE
+The \textan{} server requires installation of \emph{Java 8 JRE
 \footnote{We recommend to use JRE from \emph{Oracle}, available at: \url{http://www.oracle.com/technetwork/java/javase/downloads/index.html}}}
 or a later version and a relational database system (e.g. \emph{MySQL}).
 The server should be platform independent, so it runs on any system where JRE is available,
 but it depends on native and 3rd party libraries. 
-Supported operating systems in the distribution of the \textan\ server are
+Supported operating systems in the distribution of the \textan{} server are
 Linux (32 bit and 64 bit) and Windows (32 bit and 64 bit). % I am thinking ...
 
 \subsubsection{Installation}
 
-The \textan\ server distribution archive contains all files needed for \textan\ server to operate,
+The \textan{} server distribution archive contains all files needed for \textan{} server to operate,
 such as server binaries, native libraries, run scripts and additional resources.
 For installation it is sufficient to unpack its content into any directory.
 
@@ -416,25 +416,25 @@ Detect URLs and emails. If an URL or an email is detected, it is immediately mar
 
 \section{Client}
 
-This section contains all information needed to successfully install, configure and run \textan\ client side application.
-However thanks to \textan\ client-server architecture and extensive use of webservices,
+This section contains all information needed to successfully install, configure and run \textan{} client side application.
+However thanks to \textan{} client-server architecture and extensive use of webservices,
 it is easy to prepare own implementation in any programmer language desired or even use general solutions as SoapUI
 \footnote{More information can be found at \url{http://www.soapui.org/}},
-if \textan\ default client does not provide all required features, user experience or integration to legacy system is needed.
+if \textan{} default client does not provide all required features, user experience or integration to legacy system is needed.
 
 \subsection{Installation guide}
 
-This section describes how to install and configure \textan\ client on workstations of end users.
+This section describes how to install and configure \textan{} client on workstations of end users.
 
 \subsubsection{Prerequisites}
 
-The \textan\ client has the same requirement for \emph{Java 8 JRE} or later as the server (see \ref{sssec:SerInstPre}).
+The \textan{} client has the same requirement for \emph{Java 8 JRE} or later as the server (see \ref{sssec:SerInstPre}).
 However, unlike the server side, it is pure Java application so there are no other additional limitations for operating system etc.
 Any platform where JRE 8 is available can support the client.
 
 \subsubsection{Installation}
 
-Unpack an archive with the \textan\ client distribution into any directory. 
+Unpack an archive with the \textan{} client distribution into any directory. 
 The archive contains a .jar file and starting scripts for the \emph{Microsoft Windows} and Linux-based operating systems
 \footnote{run.bat for MS Windows and run.sh for Linux clones.\label{runscript_note}}.
 
