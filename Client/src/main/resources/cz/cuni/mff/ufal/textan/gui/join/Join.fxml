@@ -32,7 +32,7 @@
 				<BorderPane>
 					<top>
 						<GridPane alignment="CENTER_LEFT" hgap="10" vgap="10">
-							<padding><Insets top="0" right="0" bottom="10" left="0"/></padding>
+							<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
 							<Label text="%filter" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 							<TextField fx:id="leftFilterField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 							<Button text="%filter.execute" onAction="#leftFilter" GridPane.columnIndex="0" GridPane.rowIndex="1" />
@@ -53,8 +53,16 @@
 					<bottom>
 						<GridPane>
 							<HBox GridPane.columnIndex="0" GridPane.rowIndex="0" >
-								<Button text="|&lt;&lt;" onAction="#leftFastRewind" />
-								<Button text="&lt;" onAction="#leftRewind" />
+								<Button text="|&lt;&lt;" onAction="#leftFastRewind">
+									<HBox.margin>
+										<Insets top="5" right="2.5" left="5"/>
+									</HBox.margin>
+								</Button>
+								<Button text="&lt;" onAction="#leftRewind">
+									<HBox.margin>
+										<Insets top="5" left="2.5"/>
+									</HBox.margin>
+								</Button>
 							</HBox>
 							<Label fx:id="leftPaginationLabel" GridPane.hgrow="ALWAYS" GridPane.halignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 							<HBox alignment="CENTER" spacing="10" GridPane.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1" >
@@ -71,11 +79,22 @@
 									<value>
 										<Integer fx:value="25" />
 									</value>
+									<HBox.margin>
+										<Insets bottom="10"/>
+									</HBox.margin>
 								</ComboBox>
 							</HBox>
 							<HBox GridPane.columnIndex="2" GridPane.rowIndex="0" >
-								<Button text="&gt;" onAction="#leftForward" />
-								<Button text="&gt;&gt;|" onAction="#leftFastForward" />
+								<Button text="&gt;" onAction="#leftForward">
+									<HBox.margin>
+										<Insets top="5" right="2.5"/>
+									</HBox.margin>
+								</Button>
+								<Button text="&gt;&gt;|" onAction="#leftFastForward">
+									<HBox.margin>
+										<Insets top="5" left="2.5" right="5"/>
+									</HBox.margin>
+								</Button>
 							</HBox>
 						</GridPane>
 					</bottom>
@@ -83,7 +102,7 @@
 				<BorderPane>
 					<top>
 						<GridPane alignment="CENTER_LEFT" hgap="10" vgap="10">
-							<padding><Insets top="0" right="0" bottom="10" left="0"/></padding>
+							<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
 							<Label text="%filter" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 							<TextField fx:id="rightFilterField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 							<Button text="%filter.execute" onAction="#rightFilter" GridPane.columnIndex="0" GridPane.rowIndex="1" />
@@ -104,8 +123,16 @@
 					<bottom>
 						<GridPane>
 							<HBox GridPane.columnIndex="0" GridPane.rowIndex="0" >
-								<Button text="|&lt;&lt;" onAction="#rightFastRewind" />
-								<Button text="&lt;" onAction="#rightRewind" />
+								<Button text="|&lt;&lt;" onAction="#rightFastRewind">
+									<HBox.margin>
+										<Insets top="5" right="2.5" left="5"/>
+									</HBox.margin>
+								</Button>
+								<Button text="&lt;" onAction="#rightRewind">
+									<HBox.margin>
+										<Insets top="5" left="2.5"/>
+									</HBox.margin>
+								</Button>
 							</HBox>
 							<Label fx:id="rightPaginationLabel" GridPane.hgrow="ALWAYS" GridPane.halignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 							<HBox alignment="CENTER" spacing="10" GridPane.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -122,11 +149,22 @@
 									<value>
 										<Integer fx:value="25" />
 									</value>
+									<HBox.margin>
+										<Insets bottom="10"/>
+									</HBox.margin>
 								</ComboBox>
 							</HBox>
 							<HBox GridPane.columnIndex="2" GridPane.rowIndex="0" >
-								<Button text="&gt;" onAction="#rightForward" />
-								<Button text="&gt;&gt;|" onAction="#rightFastForward" />
+								<Button text="&gt;" onAction="#rightForward">
+									<HBox.margin>
+										<Insets top="5" right="2.5"/>
+									</HBox.margin>
+								</Button>
+								<Button text="&gt;&gt;|" onAction="#rightFastForward">
+									<HBox.margin>
+										<Insets top="5" left="2.5" right="5"/>
+									</HBox.margin>
+								</Button>
 							</HBox>
 						</GridPane>
 					</bottom>

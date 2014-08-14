@@ -253,8 +253,12 @@ public class ReportRelationsController extends ReportWizardController {
                 final FXRelationInfo remove = selectedRelation.getData().remove(index);
                 //remove selection background
                 final Object obj = remove.getObject();
+                final boolean unstyle = obj != null
+                        && !selectedRelation.getData().stream()
+                                .map(FXRelationInfo::getObject)
+                                .anyMatch(obj::equals);
                 final List<Text> texts = objectWords.get(obj);
-                if (texts != null) {
+                if (texts != null && unstyle) {
                     texts.forEach(Utils::unstyleTextBackground);
                 }
             }
@@ -434,11 +438,10 @@ public class ReportRelationsController extends ReportWizardController {
             final Text text = new Text(word.getWord());
             if (word.getEntity() != null) {
                 final long entityId = word.getEntity().getType().getId();
-                Utils.styleText(settings, text, "ENTITY", IdType.ENTITY, entityId); //TODO style by type?
+                Utils.styleText(settings, text, "ENTITY", IdType.ENTITY, entityId);
                 //
                 final int entityIndex = word.getEntity().getIndex();
                 final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
-                Utils.styleText(settings, text, "ENTITY", IdType.OBJECT, obj.getId()); //TODO style by candidate?
                 List<Text> objTexts = objectWords.get(obj);
                 if (objTexts == null) {
                     objTexts = new ArrayList<>();
@@ -455,7 +458,7 @@ public class ReportRelationsController extends ReportWizardController {
                     final int entityIndex = word.getEntity().getIndex();
                     final Object obj = pipeline.getReportEntities().get(entityIndex).getCandidate();
                     if (obj != null) {
-                        final String newTip = obj.toString();
+                        final String newTip = word.getEntity().getType().getName() + " - " + obj.toString();
                         tooltip.setText(newTip);
                         Bounds bounds = text.getLayoutBounds();
                         final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
@@ -664,7 +667,9 @@ public class ReportRelationsController extends ReportWizardController {
     protected void add(final Object object) {
         if (selectedRelation != null) {
             resetStepsBack();
-            selectedRelation.getData().add(new FXRelationInfo(0, "", object));
+            final FXRelationInfo info = new FXRelationInfo(0, "", object);
+            selectedRelation.getData().add(info);
+            addObjectToRelationInfo(object, info);
         }
     }
 
@@ -678,10 +683,14 @@ public class ReportRelationsController extends ReportWizardController {
         resetStepsBack();
         final Object oldObj = relationInfo.getObject();
         final List<Text> oldTexts = objectWords.get(oldObj);
-        if (oldTexts != null) {
+        relationInfo.setObject(object);
+        final boolean unstyle = oldObj != null
+                && !selectedRelation.getData().stream()
+                        .map(FXRelationInfo::getObject)
+                        .anyMatch(oldObj::equals);
+        if (oldTexts != null && unstyle) {
             oldTexts.stream().forEach(Utils::unstyleTextBackground);
         }
-        relationInfo.setObject(object);
         final RelationType type = selectedRelation.getType();
         final long id = type.getId();
         final List<Text> newTexts = objectWords.get(object);

@@ -8,6 +8,7 @@ import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import cz.cuni.mff.ufal.textan.data.views.EntityView;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
 import cz.cuni.mff.ufal.textan.server.models.ObjectType;
+import cz.cuni.mff.ufal.utils.SystemInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,7 @@ public class NamedEntityRecognizer {
     private static final String MODEL_FILE_EXTENSION = ".ner";
     private static final String MODEL_FILE_PREFIX = "model";
     private static final String TRAINING_DIR = "training";
+    private static final String TRAIN_NER = "train_ner";
     private static final String EXECUTABLE_DIR = "bin";
     private static final String TRAINING_DATA_EXTENSION = ".txt";
     private static final String TRAINING_DATA_PREFIX = "temporaryTrainingData";
@@ -294,15 +296,16 @@ public class NamedEntityRecognizer {
         LOG.info("Started training new NameTag model");
         boolean result;
         try {
-            File trainingExecutable = new File(EXECUTABLE_DIR).getCanonicalFile();
+            //File trainingExecutable = new File(EXECUTABLE_DIR).getCanonicalFile();
             File trainingDirectory = new File(TRAINING_DIR).getCanonicalFile();
             SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd_HH-mm-ss-SSS");
             Date date = Calendar.getInstance().getTime();
             File modelLocation = new File(MODELS_DIR, MODEL_FILE_PREFIX + sdf.format(date) + MODEL_FILE_EXTENSION).getAbsoluteFile();
             LOG.debug("New model path: {}", modelLocation);
 
-            LearningParameters learningParameters = new LearningParameters(trainingExecutable, trainingDirectory, trainingDirectory);
+            LearningParameters learningParameters = new LearningParameters(trainingDirectory, trainingDirectory);
             File trainingDataFile = File.createTempFile(TRAINING_DATA_PREFIX,TRAINING_DATA_EXTENSION);
+
             if ((new File(TRAINING_DIR).isDirectory()) || (new File(TRAINING_DIR).mkdir())) {
                 if (learningParameters.useDefaultTrainingData()) {
                     LOG.info("Copying default training data from {} to {}", learningParameters.getTrainingData().getPath(), trainingDataFile.getPath());
@@ -326,23 +329,55 @@ public class NamedEntityRecognizer {
                 return false;
             }
 
-            LOG.debug("Executing learning command: {}", String.join(" ", learningParameters.getCommand()));
+            LOG.debug("Executing learning command: {}", String.join(" ", learningParameters.getParams()));
             LOG.debug("Training data file: {}", trainingDataFile.getPath());
 
             // build process
-            ProcessBuilder pb = new ProcessBuilder(learningParameters.getCommand());
-            pb.directory(trainingDirectory);
+            String binary = mapBinaryName(TRAIN_NER);
+            String binDir;
+            SystemInfo.JVMArch jvmArch = SystemInfo.getJVMArch();
+            if (jvmArch == SystemInfo.JVMArch.x64) {
+                binDir = EXECUTABLE_DIR + "/" + "x64";
+            } else if (jvmArch == SystemInfo.JVMArch.x86) {
+                binDir = EXECUTABLE_DIR + "/" + "x86";
+            } else {
+                binDir = EXECUTABLE_DIR;
+            }
 
-            // IO redirection
+            List<String> params = learningParameters.getParams();
+            List<String> command = new ArrayList<>(params.size() + 1);
+            command.add(new File(binDir, binary).getCanonicalPath());
+            command.addAll(params);
+
+            //process setup
+            ProcessBuilder pb = new ProcessBuilder(command);
+            pb.directory(trainingDirectory);
             pb.redirectInput(trainingDataFile);
             pb.redirectOutput(modelLocation);
             pb.redirectErrorStream(false);
+
             if (waitForModel) {
                 LOG.info("Training started, waiting to be done (max {} milliseconds)", learningParameters.getWaitingTime());
             } else {
                 LOG.info("Training started, continuing in work");
             }
-            Process ps = pb.start();
+            Process ps;
+            try {
+                ps = pb.start();
+            } catch (IOException e) {
+                LOG.warn("Try to recover from: {}", e.getMessage());
+
+                //If there is problem with spefic version try if user define new train_ner
+                command.set(0, new File(EXECUTABLE_DIR, binary).getCanonicalPath());
+
+                ProcessBuilder pb1 = new ProcessBuilder(command);
+                pb1.directory(trainingDirectory);
+                pb1.redirectInput(trainingDataFile);
+                pb1.redirectOutput(modelLocation);
+                pb1.redirectErrorStream(false);
+
+                ps = pb.start();
+            }
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
             StringBuilder errorMsg = new StringBuilder();
@@ -513,5 +548,18 @@ public class NamedEntityRecognizer {
      */
     private static String encodeEntities(String text) {
         return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
+    }
+
+    /**
+     * map binary name based on OS
+     * @param binName input binary name
+     * @return mapped binary name
+     */
+    private static String mapBinaryName(String binName) {
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            return binName + ".exe";
+        } else {
+            return binName;
+        }
     }
 }

@@ -28,6 +28,7 @@
 								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="N"/>
 							</accelerator>
 						</MenuItem>
+						<SeparatorMenuItem/>
 						<MenuItem text="%load" onAction="#load">
 							<accelerator>
 								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="L"/>
@@ -38,6 +39,7 @@
 								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="I"/>
 							</accelerator>
 						</MenuItem>
+						<SeparatorMenuItem/>
 						<MenuItem text="%close" onAction="#close">
 							<accelerator>
 								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="X"/>
@@ -96,6 +98,7 @@
 						<Tooltip text="%import" />
 					</tooltip>
 				</Button>
+				<Separator/>
 				<Button onAction="#reportWizard">
 					<graphic>
 						<ImageView>
@@ -116,6 +119,7 @@
 						<Tooltip text="%join.wizard" />
 					</tooltip>
 				</Button>
+				<Separator/>
 				<Button onAction="#graph">
 					<graphic>
 						<ImageView>

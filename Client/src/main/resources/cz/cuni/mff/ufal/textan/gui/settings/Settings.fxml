@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import cz.cuni.mff.ufal.textan.gui.settings.SettingsVBox?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.geometry.Insets?>
@@ -14,38 +15,37 @@
 <?import javafx.scene.text.*?>
 <?import jfxtras.labs.scene.control.BigDecimalField?>
 
-<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
-			fx:controller="cz.cuni.mff.ufal.textan.gui.settings.SettingsController" styleClass="root" >
+<SettingsVBox fx:id="root" xmlns:fx="http://javafx.com/fxml" styleClass="root"
+			fx:controller="cz.cuni.mff.ufal.textan.gui.settings.SettingsController"
+                        alignment="CENTER" >
 	<stylesheets >
 		<URL value="@Settings.css" />
 	</stylesheets>
-	<center>
-		<VBox>
-			<CheckBox fx:id="independentWindowsCheckBox" text="%independent.windows" onAction="#independentWindows" />
-			<CheckBox fx:id="hypergraphsCheckBox" text="%hypergraphs" onAction="#hypergraphs" />
-			<CheckBox fx:id="clearFiltersCheckBox" text="%clear.filters" onAction="#clearFilters" />
-			<HBox alignment="CENTER_LEFT" spacing="10" >
-				<Label text="%localization" styleClass="menu-item-label"/>
-				<ComboBox fx:id="localizationCombo" editable="true" prefWidth="120" >
-					<items>
-						<FXCollections fx:factory="observableArrayList">
-							<String fx:value="cs" />
-							<String fx:value="en" />
-						</FXCollections>
-					</items>
-					<value>
-						<String fx:value="cs" />
-					</value>
-				</ComboBox>
-			</HBox>
-			<HBox alignment="CENTER_LEFT" spacing="10" >
-				<Label text="%graph.distance" styleClass="menu-item-label"/>
-				<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="95" />
-			</HBox>
-			<HBox alignment="CENTER_LEFT" spacing="10" >
-				<Label text="%login.label" styleClass="menu-item-label"/>
-				<TextField fx:id="loginTextField" prefWidth="150"/>
-			</HBox>
-		</VBox>
-	</center>
-</BorderPane>
+        <VBox>
+                <CheckBox fx:id="independentWindowsCheckBox" text="%independent.windows" onAction="#independentWindows" />
+                <CheckBox fx:id="hypergraphsCheckBox" text="%hypergraphs" onAction="#hypergraphs" />
+                <CheckBox fx:id="clearFiltersCheckBox" text="%clear.filters" onAction="#clearFilters" />
+                <HBox alignment="CENTER_LEFT" spacing="10" >
+                        <Label text="%localization" styleClass="menu-item-label"/>
+                        <ComboBox fx:id="localizationCombo" editable="true" prefWidth="120" >
+                                <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                                <String fx:value="cs" />
+                                                <String fx:value="en" />
+                                        </FXCollections>
+                                </items>
+                                <value>
+                                        <String fx:value="cs" />
+                                </value>
+                        </ComboBox>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10" >
+                        <Label text="%graph.distance" styleClass="menu-item-label" minWidth="-Infinity" prefWidth="-1"/>
+                        <BigDecimalField fx:id="distanceField" minValue="0" prefWidth="95" />
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10" >
+                        <Label text="%login.label" styleClass="menu-item-label" minWidth="-Infinity" prefWidth="-1"/>
+                        <TextField fx:id="loginTextField" prefWidth="150"/>
+                </HBox>
+        </VBox>
+</SettingsVBox>

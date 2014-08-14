@@ -1,16 +1,19 @@
 package cz.cuni.mff.ufal.textan.gui.settings;
 
 import cz.cuni.mff.ufal.textan.gui.InnerWindow;
+import cz.cuni.mff.ufal.textan.gui.ClickableWindowSkin;
+import cz.cuni.mff.ufal.textan.gui.MaximizeIcon;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import static cz.cuni.mff.ufal.textan.gui.settings.SettingsController.MIN_HEIGHT;
-import static cz.cuni.mff.ufal.textan.gui.settings.SettingsController.MIN_WIDTH;
+import static cz.cuni.mff.ufal.textan.gui.settings.SettingsController.PREF_HEIGHT;
+import static cz.cuni.mff.ufal.textan.gui.settings.SettingsController.PREF_WIDTH;
 import static cz.cuni.mff.ufal.textan.gui.settings.SettingsController.PROPERTY_ID;
 import static cz.cuni.mff.ufal.textan.gui.settings.SettingsController.TITLE;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import jfxtras.labs.scene.control.window.WindowIcon;
 import org.controlsfx.dialog.Dialogs;
 
 /**
@@ -26,8 +29,17 @@ public class SettingsWindow extends InnerWindow {
     public SettingsWindow(final TextAnController textAnController,
             final Properties settings) {
         super(TITLE, PROPERTY_ID, settings);
-        setMinWidth(MIN_WIDTH);
-        setMinHeight(MIN_HEIGHT);
+        this.getStyleClass().remove(CLICKABLE_CLASS);
+        this.setMinWidth(0);
+        this.setMinHeight(0);
+        this.setPrefWidth(PREF_WIDTH);
+        this.setPrefHeight(PREF_HEIGHT);
+        for (WindowIcon icon : this.getRightIcons()) {
+            if (icon instanceof MaximizeIcon) {
+                this.getRightIcons().remove(icon);
+                break;
+            }
+        }
         setResizableWindow(false);
         ResourceBundle resourceBundle = null;
         try {

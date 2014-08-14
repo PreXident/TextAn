@@ -67,6 +67,18 @@
 	</top>
 	<center>
 		<BorderPane styleClass="root" >
+			<left>
+				<HBox fx:id="leftPanel" alignment="CENTER" >
+					<ListView fx:id="objectTypesListView" />
+					<Label onMouseClicked="#toggleObjectFilter" text=" . &#10; . &#10; . "/>
+				</HBox>
+			</left>
+			<right>
+				<HBox fx:id="rightPanel" alignment="CENTER" >
+					<Label onMouseClicked="#toggleRelationFilter" text=" . &#10; . &#10; . "/>
+					<ListView fx:id="relationTypesListView" />
+				</HBox>
+			</right>
 			<center>
 				<ScrollPane fx:id="scrollPane" vbarPolicy="NEVER" hbarPolicy="NEVER" >
 					<StackPane fx:id="stackPane" />
@@ -74,10 +86,4 @@
 			</center>
 		</BorderPane>
 	</center>
-	<left>
-		<ListView fx:id="objectTypesListView" />
-	</left>
-	<right>
-		<ListView fx:id="relationTypesListView" />
-	</right>
 </BorderPane>

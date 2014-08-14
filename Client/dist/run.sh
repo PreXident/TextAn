@@ -1,2 +1,2 @@
 #!/bin/bash
-javaw -jar TextAn-client.jar "$@"
+java -jar TextAn-client.jar "$@"
