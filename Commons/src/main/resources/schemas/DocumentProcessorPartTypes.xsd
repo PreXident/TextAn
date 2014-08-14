@@ -28,6 +28,9 @@
     <xs:element name="saveProcessedDocumentFromStringRequest" type="SaveProcessedDocumentFromStringRequest"/>
     <xs:element name="saveProcessedDocumentFromStringResponse" type="SaveProcessedDocumentFromStringResponse"/>
 
+    <xs:element name="rewriteAndSaveProcessedDocumentByIdRequest" type="RewriteAndSaveProcessedDocumentByIdRequest"/>
+    <xs:element name="rewriteAndSaveProcessedDocumentByIdResponse" type="RewriteAndSaveProcessedDocumentByIdResponse"/>
+
     <xs:element name="getProblemsRequest" type="GetProblemsRequest"/>
     <xs:element name="getProblemsResponse" type="GetProblemsResponse"/>
 
@@ -85,7 +88,6 @@
 
     <xs:complexType name="GetAssignmentsFromStringResponse">
         <xs:sequence>
-            <!-- TODO: better name for element -->
             <xs:element name="assignment" type="Assignment" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
@@ -99,7 +101,6 @@
 
     <xs:complexType name="GetAssignmentsByIdResponse">
         <xs:sequence>
-            <!-- TODO: better name for element -->
             <xs:element name="assignment" type="Assignment" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
@@ -109,7 +110,7 @@
         <xs:sequence>
             <xs:element name="documentId" type="xs:long"/>
             <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="objectOccurrence" type="cms:ObjectOccurrence" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="objectOccurrence" type="cms:ObjectOccurrence" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="relationOccurrence" type="cms:RelationOccurrence" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="force" type="xs:boolean"/>
@@ -126,7 +127,7 @@
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
             <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="objectOccurrence" type="cms:ObjectOccurrence" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="objectOccurrence" type="cms:ObjectOccurrence" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="relationOccurrence" type="cms:RelationOccurrence" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="force" type="xs:boolean"/>
@@ -139,6 +140,24 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="RewriteAndSaveProcessedDocumentByIdRequest">
+        <xs:sequence>
+            <xs:element name="documentId" type="xs:long"/>
+            <xs:element name="text" type="xs:string"/>
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="objectOccurrence" type="cms:ObjectOccurrence" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="relationOccurrence" type="cms:RelationOccurrence" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="force" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RewriteAndSaveProcessedDocumentByIdResponse">
+        <xs:sequence>
+            <xs:element name="result" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+
 
     <xs:complexType name="GetProblemsRequest">
         <xs:sequence/>
@@ -146,7 +165,7 @@
 
     <xs:complexType name="GetProblemsResponse">
         <xs:sequence>
-            <xs:element name="newObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="newObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="newRelation" type="cms:Relation" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="relationObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="newJoinedObject" type="cms:JoinedObject" minOccurs="0" maxOccurs="unbounded"/>
@@ -156,11 +175,10 @@
     <!--<xs:complexType name="GetProblemsFromStringRequest">
         <xs:sequence/>
         &lt;!&ndash;<xs:sequence>&ndash;&gt;
-            &lt;!&ndash;<xs:element name="text" type="xs:string"/> &lt;!&ndash; TODO: je potreba posilat text dokumentu? &ndash;&gt;&ndash;&gt;
+            &lt;!&ndash;<xs:element name="text" type="xs:string"/>
         &lt;!&ndash;</xs:sequence>&ndash;&gt;
     </xs:complexType>
 
-    &lt;!&ndash; TODO: implement &ndash;&gt;
     <xs:complexType name="GetProblemsFromStringResponse">
         <xs:sequence>
             <xs:element name="newObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded" />
@@ -177,7 +195,7 @@
 
     <xs:complexType name="GetProblemsByIdResponse">
         <xs:sequence>
-            <xs:element name="documentProcessed" type="xs:boolean"/> &lt;!&ndash; TODO: processed and changed move to excpetions? &ndash;&gt;
+            <xs:element name="documentProcessed" type="xs:boolean"/>
             <xs:element name="documentChanged" type="xs:boolean"/>
             <xs:element name="newObject" type="cms:Object" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="newRelation" type="cms:Relation" minOccurs="0" maxOccurs="unbounded"/>

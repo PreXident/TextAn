@@ -1,0 +1,40 @@
+All here.
+
+Adam:
+- combobox for roles into object to relation assignment
+- double click on empty row add new role
+- toolbar to main window (placeholder icons)
+- a little bit documentation
+- annotated one testing message!
+
+Peter:
+- WiP lucene index update problem
+- documentation, presentation
+
+Kuba:
+- documentation
+- changed parameters for initial training data
+
+Venca:
+- get aliases from all objects joined with it
+
+Tam:
+- user documentation, introduction finished
+
+HWK:
+ - Petr, fix bad logging message in getObjectsByIds
+ - Petr, outline for presentation
+ - Petr, fix server
+ - Petr, include textpro into main server project???
+ - Petr, change documentation layout to have new logo!
+ - Venca & Petr & Adam, throw exception when already joined objects or not parent objects should be joined
+ - Adam, remove (or move) parts about textan from adopted solutions
+ - Adam, joining object dialog should have object type preselected
+ - Adam, filtering in graph (by object type and relation type)
+ - Adam, object context menu in edit object step should always contain both vertical scrollbars
+ - Tam, complete textpro architecture documentation
+ 
+ - all, javadoc!
+ - all, documentation!
+ 
+ Next meeting Thursday from 16:00 in 4th floor

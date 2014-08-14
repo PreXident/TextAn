@@ -1,0 +1,40 @@
+16:38 - počátek prezentace (mluvit hlasitěji)
+- obrázky/náčrtky jako příklad strukturované informace
+16:42 - co je TextAn
+- rovnou uvést příklady na slide! - rozdíl mezi entitou a objektem je zásadní
+	- Entity: "Pepa Novák", "J. N.", ...
+	- Objekty: 🚶 🚙
+	- Vztahy: 🚶 --vlastní-->  🚙
+- přidat schéma pipeliny
+16:44 - ukázka
+- barvy entit nejsou vidět, tooltipy mají malé písmo, ale to není zásadní
+16:48 - ručně označit entity
+  - nůž je skutečně instance objektu?
+    ... to je filozofická otázka a závisí na doméně
+  - zdůrazňovat, co se děje automaricky a co už ne (vztahy)
+16:52 - ukázka vykreslování grafů
+16:55 - konec ukázky
+  přeučení je matoucí, možná radši "přetrénování"? (znovu naučení? pozn. Adam)
+16:58 - konec
+----
+- co vám projekt přinesl, osobní zhodnocení (např. špatné zkušenosti s technologiemi, pozn. Adam)
+- obecně vycg přidal schémat kde čeho (předem pipeline, anotace, přetrénování)
+- říct, že je to bezstavové (čili klient není úplně tenký)
+- zdůraznit, že se řeší konflikty apod.
+- že je to omezení jen nametagem, jiné řeči snadno (a konfigurací lucene, pozn. Adam)
+- úspěch závisí na modelu světa
+
+Zdeňkovy poznámky:
+- neztrácet čas na startu
+- dívat se na lidi, ne do obrazovky
+- banální věci neříkat
+- barvy v prezentaci
+- terminologie: objekt? entita?
+- "přeučení"
+- technické podrobnosti - použité technologie, knihovny pro ranking/klasifikaci, ... kolik experimentů a jejich výsledky
+  - ukázat, kolik práce je v tom investováno a že se dobře orientujete v komponentách, které jsou dostupné
+- konec ... feedback od Honzy Hořínka?
+  -> nabídnout na konf. v listopadu?
+- LoC / hodiny (commity, projekt v číslech, pozn. Adam)
+? zabezpečení - přidat SSL
+? testy zlého uživatele (100 tisíc nul).

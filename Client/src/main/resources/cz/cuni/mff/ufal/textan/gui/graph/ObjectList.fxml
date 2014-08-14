@@ -26,8 +26,6 @@
 			<ComboBox fx:id="typeComboBox" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 			<Label text="%filter" GridPane.columnIndex="0" GridPane.rowIndex="1" />
 			<TextField fx:id="filterField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-			<!--<Label text="%distance" />
-			<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="100" />-->
 			<Button text="%filter.execute" onAction="#filter" GridPane.columnIndex="0" GridPane.rowIndex="2" />
 		</GridPane>
 	</top>
@@ -46,8 +44,16 @@
 	<bottom>
 		<GridPane>
 			<HBox GridPane.columnIndex="0" GridPane.rowIndex="0" >
-				<Button text="|&lt;&lt;" onAction="#fastRewind" />
-				<Button text="&lt;" onAction="#rewind" />
+				<Button text="|&lt;&lt;" onAction="#fastRewind">
+					<HBox.margin>
+						<Insets top="5" right="2.5"/>
+					</HBox.margin>
+				</Button>
+				<Button text="&lt;" onAction="#rewind">
+					<HBox.margin>
+						<Insets top="5" left="2.5"/>
+					</HBox.margin>
+				</Button>
 			</HBox>
 			<Label fx:id="paginationLabel" GridPane.hgrow="ALWAYS"
 					GridPane.halignment="CENTER" GridPane.columnIndex="1"
@@ -70,8 +76,16 @@
 				</ComboBox>
 			</HBox>
 			<HBox GridPane.columnIndex="2" GridPane.rowIndex="0" >
-				<Button text="&gt;" onAction="#forward" />
-				<Button text="&gt;&gt;|" onAction="#fastForward" />
+				<Button text="&gt;" onAction="#forward">
+					<HBox.margin>
+						<Insets top="5" right="2.5"/>
+					</HBox.margin>
+				</Button>
+				<Button text="&gt;&gt;|" onAction="#fastForward">
+					<HBox.margin>
+						<Insets top="5" left="2.5"/>
+					</HBox.margin>
+				</Button>
 			</HBox>
 		</GridPane>
 	</bottom>

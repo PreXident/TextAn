@@ -37,3 +37,7 @@
 .window {
 	-fx-glass-color: #f4f4f4;
 }
+
+.clickable-window {
+	-fx-skin: 'cz.cuni.mff.ufal.textan.gui.ClickableWindowSkin';
+}

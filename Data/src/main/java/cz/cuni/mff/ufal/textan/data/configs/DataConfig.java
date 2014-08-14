@@ -19,6 +19,7 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.io.File;
@@ -123,19 +124,7 @@ public class DataConfig {
 
         //sessionFactory.getConfiguration().setInterceptor(logInterceptor());
 
-        SessionFactory factory = sessionFactory.getObject();
-
-        //Initialize of fulltext indexes (TODO: better place)
-        Session session = factory.openSession();
-        FullTextSession fullTextSession = Search.getFullTextSession(session);
-        try {
-            fullTextSession.createIndexer().startAndWait();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        session.close();
-
-        return factory;
+        return sessionFactory.getObject();
     }
 
     /**
@@ -179,6 +168,8 @@ public class DataConfig {
         properties.setProperty("hibernate.search.default.directory_provider", dataProperties().getProperty("hibernate.search.default.directory_provider"));
         properties.setProperty("hibernate.search.default.indexBase", dataProperties().getProperty("hibernate.search.default.indexBase"));
         properties.setProperty("hibernate.search.analyzer", dataProperties().getProperty("hibernate.search.analyzer"));
+        properties.setProperty("hibernate.search.lucene_version", "LUCENE_CURRENT");
+        //properties.setProperty("hibernate.search.enable_dirty_check", "false");
 
         return properties;
     }
@@ -193,5 +184,23 @@ public class DataConfig {
     @SuppressWarnings("unused")
     public GraphFactory graphFactory(IObjectTableDAO objectTableDAO) throws PropertyVetoException, IOException {
         return new GraphFactory(sessionFactory(), objectTableDAO);
+    }
+
+    @Autowired
+    SessionFactory factory;
+
+    @PostConstruct
+    public void updateIndexes() {
+        Session session = factory.openSession();
+        FullTextSession fullTextSession = Search.getFullTextSession(session);
+        try {
+            fullTextSession.createIndexer().startAndWait();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 }

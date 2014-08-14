@@ -1,19 +1,18 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.FileType;
+import static cz.cuni.mff.ufal.textan.Utils.extractExtension;
+import cz.cuni.mff.ufal.textan.core.processreport.load.ImportManager;
+import cz.cuni.mff.ufal.textan.core.processreport.load.Importer;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.Properties;
 import java.util.ResourceBundle;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -35,13 +34,7 @@ public class SelectFileController extends ReportWizardController {
     ScrollPane scrollPane;
 
     @FXML
-    ComboBox<FileType> typeComboBox;
-
-    @FXML
-    Slider slider;
-
-    /** Localization container. */
-    ResourceBundle resourceBundle;
+    ComboBox<Importer> typeComboBox;
 
     /** File content. */
     byte[] data;
@@ -65,8 +58,7 @@ public class SelectFileController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        resourceBundle = rb;
-        slider.addEventFilter(EventType.ROOT, e -> e.consume());
+        super.initialize(url, rb);
         slider.setLabelFormatter(new SliderLabelFormatter() {
             @Override
             public String toString(Double val) {
@@ -76,38 +68,25 @@ public class SelectFileController extends ReportWizardController {
                 return super.toString(val);
             }
         });
-        typeComboBox.setConverter(new StringConverter<FileType>() {
+        typeComboBox.setConverter(new StringConverter<Importer>() {
             @Override
-            public String toString(final FileType t) {
-                return Utils.localize(resourceBundle, "type." + t.toString());
+            public String toString(final Importer t) {
+                return Utils.localize(resourceBundle, "type." + t.getId());
             }
             @Override
-            public FileType fromString(final String string) {
-                return FileType.TEXT_UTF8; //should not happen anyway
+            public Importer fromString(final String string) {
+                throw new RuntimeException("This should never happen!");
             }
         });
-        typeComboBox.getItems().addAll(FileType.values());
+        typeComboBox.getItems().addAll(ImportManager.getImporters());
         typeComboBox.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
             if (newVal == null) {
                 textArea.setText("");
                 return;
             }
             textArea.setText(pipeline.extractText(data, newVal));
-            settings.setProperty("selectfile.extension." + extension + ".type", newVal.toString());
+            settings.setProperty("selectfile.extension." + extension + ".type", newVal.getId());
         });
-    }
-
-    /**
-     * Extracts extension from file name.
-     * @param name file name
-     * @return extension from file name
-     */
-    protected String extractExtension(final String name) {
-        final int dot = name.lastIndexOf('.');
-        if (dot == -1) {
-            return "";
-        }
-        return name.substring(dot + 1);
     }
 
     @Override
@@ -133,14 +112,14 @@ public class SelectFileController extends ReportWizardController {
             final String lastType = settings.getProperty("selectfile.extension." + extension + ".type");
             if (lastType != null) {
                 try {
-                    final FileType type = FileType.valueOf(lastType);
+                    final Importer type = ImportManager.getImporter(lastType);
                     typeComboBox.getSelectionModel().select(type);
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 }
             }
             if (typeComboBox.getSelectionModel().getSelectedItem() == null) {
-                typeComboBox.getSelectionModel().select(FileType.getForExtension(extension));
+                typeComboBox.getSelectionModel().select(ImportManager.getDefaultForExtension(extension));
             }
         } catch (IOException e) {
             e.printStackTrace();

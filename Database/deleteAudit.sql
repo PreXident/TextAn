@@ -1,1 +1,1 @@
-delete from Audit
+delete from Audit;

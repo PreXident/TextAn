@@ -8,7 +8,13 @@
 
     <xs:complexType name="UsernameToken">
         <xs:sequence>
-            <xs:element name="username" type="xs:string"/> <!--TODO: add no empty spring restriction -->
+            <xs:element name="username">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="(\s*\S\s/)+"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>

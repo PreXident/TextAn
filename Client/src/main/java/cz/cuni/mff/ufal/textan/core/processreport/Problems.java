@@ -25,19 +25,6 @@ public class Problems implements Serializable {
     private final List<JoinedObject> joinedObjects;
 
     /**
-     * Testing constructor.
-     */
-    //TODO remove testing constructor
-    public Problems() {
-        this.newObjects = Arrays.asList(new Object(-1, new ObjectType(-1, "XXX"), Arrays.asList("xxx", "zzz")));
-        this.newRelations = Arrays.asList(new Relation(-1, new RelationType(-1, "qqq")));
-        this.newRelations.get(0).getObjects().add(
-                new Triple<>(0, "test", new Object(-1, new ObjectType(-1, "aaa"), Arrays.asList("bla", "ups")))
-        );
-        this.joinedObjects = Arrays.asList(new JoinedObject());
-    }
-
-    /**
      * Constructs Problems from GetProblemsResponse.
      * @param response blue print
      */
@@ -79,5 +66,44 @@ public class Problems implements Serializable {
      */
     public List<JoinedObject> getJoinedObjects() {
         return joinedObjects;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("New objects:\n");
+        for (Object obj : newObjects) {
+            builder.append("* ");
+            builder.append(obj.toString());
+            builder.append('\n');
+        }
+        builder.append("New relations:\n");
+        for (Relation relation : newRelations) {
+            builder.append("* ");
+            builder.append(relation.toString());
+            builder.append('\n');
+            for (Triple<Integer, String, Object> triple : relation.getObjects()) {
+                builder.append("\t+ ");
+                builder.append(triple.getFirst());
+                builder.append(" - ");
+                builder.append(triple.getSecond());
+                builder.append(" - ");
+                builder.append(triple.getThird());
+                builder.append('\n');
+            }
+        }
+        builder.append("Joined objects:\n");
+        for (JoinedObject joined : joinedObjects) {
+            builder.append("* ");
+            builder.append(joined.root);
+            builder.append('\n');
+            for (Object object : joined.children) {
+                builder.append("\t+ ");
+                builder.append(object);
+                builder.append('\n');
+            }
+            builder.append('\n');
+        }
+        return builder.toString();
     }
 }

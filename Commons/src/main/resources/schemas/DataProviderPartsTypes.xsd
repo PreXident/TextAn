@@ -298,7 +298,6 @@
     
     <xs:complexType name="MergeObjectsResponse">
         <xs:sequence>
-            <!--<xs:element ref="cms:object"/>--> <!-- TODO: whole object or only ID? -->
             <xs:element name="objectId" type="xs:long" />
         </xs:sequence>
     </xs:complexType>

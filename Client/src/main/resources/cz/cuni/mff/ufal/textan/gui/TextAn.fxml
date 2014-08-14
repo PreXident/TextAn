@@ -23,6 +23,23 @@
 			<MenuBar fx:id="menuBar" >
 				<menus>
 					<Menu text="%file" >
+						<MenuItem text="%new" onAction="#newReport">
+							<accelerator>
+								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="N"/>
+							</accelerator>
+						</MenuItem>
+						<SeparatorMenuItem/>
+						<MenuItem text="%load" onAction="#load">
+							<accelerator>
+								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="L"/>
+							</accelerator>
+						</MenuItem>
+						<MenuItem text="%import" onAction="#importReport">
+							<accelerator>
+								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="I"/>
+							</accelerator>
+						</MenuItem>
+						<SeparatorMenuItem/>
 						<MenuItem text="%close" onAction="#close">
 							<accelerator>
 								<KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="X"/>
@@ -31,50 +48,17 @@
 					</Menu>
 					<Menu text="%wizards" >
 						<MenuItem text="%report.wizard" onAction="#reportWizard" />
+						<MenuItem text="%join.wizard" onAction="#join" />
+					</Menu>
+					<Menu text="%dials" >
 						<MenuItem text="%graph.wizard" onAction="#graph" />
 						<MenuItem text="%document.wizard" onAction="#displayDocuments" />
-						<MenuItem text="%join.wizard" onAction="#join" />
 						<MenuItem text="%relation.wizard" onAction="#relations" />
 					</Menu>
 					<Menu fx:id="windowsMenu" text="%windows" />
 					<Menu fx:id="settingsMenu" text="%settings" style="-fx-skin: 'cz.cuni.mff.ufal.textan.gui.MyMenuButtonSkin';" >
-						<CheckMenuItem fx:id="menuItemIndependentWindows" text="%independent.windows" onAction="#independentWindows" />
-						<CheckMenuItem fx:id="menuItemHypergraphs" text="%hypergraphs" onAction="#hypergraphs" />
-						<CheckMenuItem fx:id="menuItemClearFilters" text="%clear.filters" onAction="#clearFilters" />
-						<CustomMenuItem hideOnClick="false" text="%localization" style="-fx-background-color: red">
-							<content>
-								<HBox alignment="CENTER_LEFT" spacing="10" >
-									<Label text="%localization" styleClass="menu-item-label"/>
-									<ComboBox fx:id="localizationCombo" editable="true" prefWidth="75" >
-										<items>
-											<FXCollections fx:factory="observableArrayList">
-												<String fx:value="cs" />
-												<String fx:value="en" />
-											</FXCollections>
-										</items>
-										<value>
-											<String fx:value="cs" />
-										</value>
-									</ComboBox>
-								</HBox>
-							</content>
-						</CustomMenuItem>
-                                                <CustomMenuItem hideOnClick="false" text="%graph.distance">
-							<content>
-								<HBox alignment="CENTER_LEFT" spacing="10" >
-									<Label text="%graph.distance" styleClass="menu-item-label"/>
-									<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="65" />
-								</HBox>
-                                                        </content>
-                                                </CustomMenuItem>
-						<CustomMenuItem hideOnClick="false" text="Login">
-							<content>
-								<HBox alignment="CENTER_LEFT" spacing="10" >
-									<Label text="%login.label" styleClass="menu-item-label"/>
-									<TextField fx:id="loginTextField" prefWidth="110"/>
-								</HBox>
-							</content>
-						</CustomMenuItem>
+						<MenuItem text="%settings.general" onAction="#generalSettings" />
+						<MenuItem text="%settings.colors" onAction="#colors" />
 						<MenuItem text="%reset.sizepos" onAction="#resetSizePos">
 							<accelerator>
 								<KeyCodeCombination alt="DOWN" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="HOME"/>
@@ -83,6 +67,90 @@
 					</Menu>
 				</menus>
 			</MenuBar>
+			<ToolBar>
+				<Button onAction="#newReport">
+					<graphic>
+						<ImageView >
+							<Image url="@new.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%new" />
+					</tooltip>
+				</Button>
+				<Button onAction="#load">
+					<graphic>
+						<ImageView>
+							<Image url="@load.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%load" />
+					</tooltip>
+				</Button>
+				<Button onAction="#importReport">
+					<graphic>
+						<ImageView>
+							<Image url="@import.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%import" />
+					</tooltip>
+				</Button>
+				<Separator/>
+				<Button onAction="#reportWizard">
+					<graphic>
+						<ImageView>
+							<Image url="@pipeline.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%report.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#join">
+					<graphic>
+						<ImageView>
+							<Image url="@merge.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%join.wizard" />
+					</tooltip>
+				</Button>
+				<Separator/>
+				<Button onAction="#graph">
+					<graphic>
+						<ImageView>
+							<Image url="@objects.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%graph.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#displayDocuments">
+					<graphic>
+						<ImageView>
+							<Image url="@documents.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%document.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#relations">
+					<graphic>
+						<ImageView>
+							<Image url="@relations.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%relation.wizard" />
+					</tooltip>
+				</Button>
+			</ToolBar>
 		</VBox>
 	</top>
 	<center>

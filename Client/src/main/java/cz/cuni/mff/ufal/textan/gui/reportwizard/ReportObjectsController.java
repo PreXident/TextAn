@@ -12,7 +12,7 @@ import cz.cuni.mff.ufal.textan.gui.InnerWindow;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import cz.cuni.mff.ufal.textan.gui.Window;
+import cz.cuni.mff.ufal.textan.gui.Utils.IdType;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
@@ -43,7 +42,6 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -68,12 +66,6 @@ public class ReportObjectsController extends ReportWizardController {
 
     @FXML
     ScrollPane scrollPane;
-
-    @FXML
-    Slider slider;
-
-    /** Localization controller. */
-    ResourceBundle resourceBundle;
 
     /** Context menu with object selection. */
     ContextMenu contextMenu;
@@ -161,9 +153,8 @@ public class ReportObjectsController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        resourceBundle = rb;
+        super.initialize(url, rb);
         textFlow.prefWidthProperty().bind(scrollPane.widthProperty().add(-20));
-        slider.addEventFilter(EventType.ROOT, e -> e.consume());
         slider.setLabelFormatter(new SliderLabelFormatter());
         scrollPane.vvalueProperty().addListener(e -> {
             textFlow.layoutChildren();
@@ -174,9 +165,9 @@ public class ReportObjectsController extends ReportWizardController {
         splitVert.setOrientation(Orientation.HORIZONTAL);
         dbListView = new ListView<>();
         dbListView.setPrefHeight(100);
-        dbListView.setTooltip(new Tooltip());
         newListView = new ListView<>();
         newListView.setPrefHeight(100);
+        newListView.setMinWidth(30);
         final Button add = new Button("+");
         add.setOnAction(e -> {
             contextMenu.hide();
@@ -227,7 +218,7 @@ public class ReportObjectsController extends ReportWizardController {
                 final long entityId = entity.getType().getId();
                 final int entityIndex = entity.getIndex();
                 final Entity ent = pipeline.getReportEntities().get(entityIndex);
-                Utils.styleText(text, "ENTITY", entityId);
+                Utils.styleText(settings, text, "ENTITY", IdType.ENTITY, entityId);
 
                 EntityInfo entityInfo = entityLists.get(word.getEntity());
                 if (entityInfo == null) {
@@ -252,6 +243,7 @@ public class ReportObjectsController extends ReportWizardController {
                 text.setOnMousePressed(e -> {
                     selectedEntity = ei;
                     if (e.isPrimaryButtonDown()) {
+                        allObjectsCheckBox.setSelected(false);
                         filterObjects(ei);
                         contextMenu.show(text, Side.BOTTOM, 0, 0);
                         filterField.requestFocus();
@@ -291,7 +283,8 @@ public class ReportObjectsController extends ReportWizardController {
             if (ev.getCode() == KeyCode.ENTER) {
                 contextMenu.hide();
                 final Pair<Double, Object> p = dbListView.getSelectionModel().getSelectedItem();
-                setObjectAsSelectedEntityCandidate(p.getSecond());
+                final Object obj = p != null ? p.getSecond() : null;
+                setObjectAsSelectedEntityCandidate(obj);
             }
         });
         dbListView.setCellFactory(new Callback<ListView<Pair<Double, Object>>, ListCell<Pair<Double, Object>>>() {
@@ -300,21 +293,22 @@ public class ReportObjectsController extends ReportWizardController {
                 return new ListCell<Pair<Double, Object>>() {
                     {
                         this.setOnMousePressed((MouseEvent e) -> {
+                            final Pair<Double, Object> item = this.getItem();
+                            final Object obj = item != null ? item.getSecond() : null;
                             if (e.isPrimaryButtonDown()) {
                                 contextMenu.hide();
-                                @SuppressWarnings("unchecked")
-                                final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
-                                setObjectAsSelectedEntityCandidate(p.getSecond());
+                                setObjectAsSelectedEntityCandidate(obj);
                             } else {
-                                objectForGraph.set(this.getItem().getSecond());
+                                objectForGraph.set(obj);
                             }
                         });
                         this.setOnMouseEntered(e -> {
-                            @SuppressWarnings("unchecked")
-                            final Pair<Double, Object> p = ((ListCell<Pair<Double, Object>>) e.getSource()).getItem();
+                            final Pair<Double, Object> p = this.getItem();
                             if (p != null) {
                                 dbTooltip.setText(p.getSecond().toString());
                                 dbListView.setTooltip(dbTooltip);
+                            } else {
+                                dbListView.setTooltip(null);
                             }
                         });
                         this.setOnMouseExited(e -> {
@@ -349,16 +343,16 @@ public class ReportObjectsController extends ReportWizardController {
                     {
                         this.setOnMouseClicked((MouseEvent t) -> {
                             contextMenu.hide();
-                            @SuppressWarnings("unchecked")
-                            final Object obj = ((ListCell<Object>) t.getSource()).getItem();
+                            final Object obj = this.getItem();
                             setNewObjectAsSelectedEntityCandidate(obj);
                         });
                         this.setOnMouseEntered(e -> {
-                            @SuppressWarnings("unchecked")
-                            final Object o = ((ListCell<Object>) e.getSource()).getItem();
+                            final Object o = this.getItem();
                             if (o != null) {
                                 newTooltip.setText(o.toString());
                                 newListView.setTooltip(newTooltip);
+                            } else {
+                                newListView.setTooltip(null);
                             }
                         });
                         this.setOnMouseExited(e -> {
@@ -387,11 +381,10 @@ public class ReportObjectsController extends ReportWizardController {
      * @param object new candidate
      */
     private void setNewObjectAsSelectedEntityCandidate(final Object object) {
-        if (object instanceof NewObject) {
+        if (object != null && object instanceof NewObject) {
             ++((NewObject) object).refCount;
         }
-        /*final Entity ent = */setObjectAsSelectedEntityCandidate(object);
-        //object.getAliases().add(ent.getValue());
+        setObjectAsSelectedEntityCandidate(object);
     }
 
     /**
@@ -415,7 +408,7 @@ public class ReportObjectsController extends ReportWizardController {
             text.getStyleClass().remove(TEXT_HIGHLIGHT_CLASS);
         }
         entity.setCandidate(object);
-        pipeline.resetStepsBack();
+        resetStepsBack();
         return entity;
     }
 

@@ -3,9 +3,7 @@ package cz.cuni.mff.ufal.textan.server.linguistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -20,10 +18,8 @@ import java.util.Properties;
  * Class for read nametag training parameters.
  */
 public class LearningParameters {
-    private static final String TRAIN_NER = "train_ner";
     private static final String WAITING_TIME = "waiting_time";
     private static final String TRAINING_DATA = "default_training_data_file";
-    private static final String USE_DEFAULT_TRAINING_DATA = "use_default_training_data";
     private static final String MAXIMUM_STORED_MODELS = "maximum_stored_models";
     private static final String FEATURES_FILE = "featuresFile";
     private static final String FORM = "form";
@@ -43,7 +39,6 @@ public class LearningParameters {
     private static final String DEFAULT_TRAINING_DATA_PATH = "cnec2.0-all" + File.separator + "train.txt";
     private static final int DEFAULT_WAITING_TIME = 300000;
     private static final int DEFAULT_MAXIMUM_STORED_MODELS = 5;
-    private static final boolean DEFAULT_USE_DEFAULT_DATA = true;
     private static final String DEFAULT_NER_IDENTIFIER = "czech";
     private static final String DEFAULT_TAGGER = "morphodita:czech-131112-pos_only.tagger";
     private static final String DEFAULT_FEATURES_FILE = "features.txt";
@@ -85,7 +80,7 @@ public class LearningParameters {
                                       DEFAULT_HELDOUT_DATA };
     private static final String[] LEARNING_PARAM_NAMES = {"ner_identifier", "tagger", "featuresFile", "stages", "iterations", "missing_weight", "initial_learning_rage", "final_learning_rage", "gaussian", "hidden_layer", "heldout_data"};
 
-    private List<String> command;
+    private List<String> params;
 
     private File featuresFile;
     private int waitingTime;
@@ -110,13 +105,12 @@ public class LearningParameters {
 
     /**
      * Read learning parameters for nametag
-     * @param binaryDirectory directory, where learning binary is stored
      * @param dataDirectory directory, where
      * @param trainingDirectory directory, where training files are stored
      * */
-    public LearningParameters(File binaryDirectory, File dataDirectory, File trainingDirectory) {
-        command = new LinkedList<>();
-        command.add(new File(binaryDirectory, mapBinaryName(TRAIN_NER)).toString());
+    public LearningParameters(File dataDirectory, File trainingDirectory) {
+        params = new LinkedList<>();
+        //params.add(new File(binaryDirectory, mapBinaryName(TRAIN_NER)).toString());
 
 
         try (InputStream configFileStream = NamedEntityRecognizer.class.getResource("/NametagLearning.properties").openStream()){
@@ -126,11 +120,11 @@ public class LearningParameters {
             for (int i = 0; i < LEARNING_PARAM_NAMES.length; ++i) {
                 value = getStringProperty(p, LEARNING_PARAM_NAMES[i], DEFAULT_CONFIG_VALUES[i]);
                 if (!value.isEmpty()) {
-                    command.add(value);
+                    params.add(value);
                 }
             }
 
-            useDefaultTrainingData = getBooleanProperty(p, USE_DEFAULT_TRAINING_DATA, DEFAULT_USE_DEFAULT_DATA);
+            useDefaultTrainingData = !p.getProperty(TRAINING_DATA).isEmpty();
 
             if (useDefaultTrainingData) {
                 try {
@@ -171,7 +165,7 @@ public class LearningParameters {
             LOG.warn("Config file for NameTag wasn't found, using default values.", e.getMessage());
             for (int i = 0; i < LEARNING_PARAM_NAMES.length; ++i) {
                 if (!DEFAULT_CONFIG_VALUES[i].isEmpty()) {
-                    command.add(DEFAULT_CONFIG_VALUES[i]);
+                    params.add(DEFAULT_CONFIG_VALUES[i]);
                 }
             }
 
@@ -296,8 +290,8 @@ public class LearningParameters {
     /**
      * @return list of command line arguments
      */
-    public List<String> getCommand() {
-        return command;
+    public List<String> getParams() {
+        return params;
     }
 
     /**
@@ -383,20 +377,4 @@ public class LearningParameters {
     public String getURLEmailDetector() {
         return URLEmailDetector;
     }
-
-    /**
-     * map binary name based on OS
-     * @param binName input binary name
-     * @return mapped binary name
-     */
-    private static String mapBinaryName(String binName) {
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            return binName + ".exe";
-        } else {
-            return binName;
-        }
-    }
-
-
-
 }

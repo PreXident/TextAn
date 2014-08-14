@@ -18,6 +18,8 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromS
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RewriteAndSaveProcessedDocumentByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RewriteAndSaveProcessedDocumentByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentFromStringRequest;
@@ -228,11 +230,32 @@ public class Client {
     }
 
     /**
+     * Inits ssl communication.
+     */
+    private void initSSL() {
+        if (settings.getProperty("ssl", "").equals("true")) {
+            final String ts = settings.getProperty("ssl.trustStore", "");
+            if (!ts.isEmpty()) {
+                System.setProperty("javax.net.ssl.trustStore", ts);
+            }
+            final String passwd = settings.getProperty("ssl.trustStore.password", "");
+            if (!passwd.isEmpty()) {
+                System.setProperty("javax.net.ssl.trustStorePassword", passwd);
+            }
+            final String type = settings.getProperty("ssl.trustStore.type", "");
+            if (!type.isEmpty()) {
+                System.setProperty("javax.net.ssl.trustStoreType", type);
+            }
+        }
+    }
+
+    /**
      * Returns {@link #documentProcessor}, it is created if needed.
      * @return document processor
      */
     private IDocumentProcessor getDocumentProcessor() {
         if (documentProcessor == null) {
+            initSSL();
             try {
                 Service service = Service.create(
                         new URL(settings.getProperty("url.document.wsdl", "http://textan.ms.mff.cuni.cz:9500/soap/document?wsdl")),
@@ -261,6 +284,7 @@ public class Client {
      */
     private IDataProvider getDataProvider() {
         if (dataProvider == null) {
+            initSSL();
             try {
                 Service service = Service.create(
                         new URL(settings.getProperty("url.data.wsdl", "http://textan.ms.mff.cuni.cz:9500/soap/data?wsdl")),
@@ -911,6 +935,52 @@ public class Client {
             return response.isResult();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
+        }
+    }
+
+    /**
+     * Saves processed document replacing the text in the db.
+     * If returns false, check {@link #getProblems(Ticket)}.
+     * @param ticket editing ticket
+     * @param id document id
+     * @param text text replacing the old one
+     * @param reportEntities report entities
+     * @param reportRelations report relations
+     * @param force  force save?
+     * @return true if saving was successfull, false otherwise
+     * @throws IdNotFoundException if id error occurs
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
+     */
+    public synchronized boolean saveProcessedDocument(final Ticket ticket,
+            final long id, final String text, final List<Entity> reportEntities,
+            final List<RelationBuilder> reportRelations,
+            final boolean force) throws IdNotFoundException,
+            DocumentAlreadyProcessedException {
+        final RewriteAndSaveProcessedDocumentByIdRequest request =
+              new RewriteAndSaveProcessedDocumentByIdRequest();
+        final List<cz.cuni.mff.ufal.textan.commons.models.Object> objects =
+                request.getObjects();
+        final List<ObjectOccurrence> objectOccurrences =
+                request.getObjectOccurrences();
+        final List<cz.cuni.mff.ufal.textan.commons.models.Relation> relations =
+                request.getRelations();
+        final List<RelationOccurrence> relationOccurrences =
+                request.getRelationOccurrences();
+        prepareSaveRequest(reportEntities, reportRelations, objects,
+                objectOccurrences, relations, relationOccurrences);
+        request.setDocumentId(id);
+        request.setText(text);
+        request.setForce(force);
+        try {
+            final RewriteAndSaveProcessedDocumentByIdResponse response =
+                    getDocumentProcessor().rewriteAndSaveProcessedDocumentById(
+                            request,
+                            ticket.toTicket());
+            return response.isResult();
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException e) {
+            throw new DocumentAlreadyProcessedException(e);
         }
     }
 

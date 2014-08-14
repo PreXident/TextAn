@@ -58,7 +58,7 @@ public class TextPro implements ITextPro {
     
     /**
      * Instantiates a new TextPro.
-     * Uses a constructor injection for an initialization of data access object ({@link cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig#textPro()}
+     * Uses a constructor injection for an initialization of data access object ({@link cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig#textPro(cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasOccurrenceTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationOccurrenceTableDAO)} ()}
      *
      * @param aliasOccurrenceTableDAO the alias occurrence table DAO
      * @param typeTableDAO the type table DAO

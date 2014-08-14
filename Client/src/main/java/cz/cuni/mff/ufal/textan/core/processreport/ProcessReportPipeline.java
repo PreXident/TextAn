@@ -4,19 +4,16 @@ import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.Ticket;
+import cz.cuni.mff.ufal.textan.core.processreport.load.Importer;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
@@ -28,59 +25,17 @@ public class ProcessReportPipeline implements Serializable {
     /** Separators delimiting words. */
     public static final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';', '!')));
 
-    /** Supported file types. */
-    public enum FileType {
-        TEXT_UTF8 {
-            @Override
-            public String extractText(byte[] data) {
-                return new String(data, StandardCharsets.UTF_8);
-            }
-        },
-        TEXT_CP1250 {
-            @Override
-            public String extractText(byte[] data) {
-                try {
-                    return new String(data, Charset.forName("windows-1250"));
-                } catch (Exception e) {
-                    return "";
-                }
-            }
-        };
-
-        /** Default mapping of extensions to FileTypes. */
-        private static final Map<String, FileType> extensions;
-
-        static {
-            final Map<String, FileType> result = new HashMap<>();
-            result.put("txt", TEXT_UTF8);
-            extensions = Collections.unmodifiableMap(result);
-        }
-
-        /**
-         * Returns default FileType for given extension.
-         * @param extension given extension
-         * @return default FileType for given extension or null if none available
-         */
-        public static FileType getForExtension(final String extension) {
-            return extensions.get(extension);
-        }
-
-        /**
-         * Extracts text from data.
-         * @param data data with encoded text
-         * @return text extracted from data
-         */
-        public abstract String extractText(byte[] data);
-    }
-
     /** Parent Client of the pipeline. */
     protected final transient Client client;
 
     /** Report id if text comes from the db. */
     protected long reportId = -1;
 
-    /** Report text. TODO change test content to empty string */
-    protected String reportText = "Ahoj, toto je testovaci zprava urcena pro vyzkouseni vsech moznosti oznacovani textu.";
+    /** Id of the replacing id. */
+    protected long replacingReportId = -1;
+
+    /** Report text. */
+    protected String reportText = "";
 
     /** Report words. */
     protected List<Word> reportWords = new ArrayList<>();
@@ -288,11 +243,11 @@ public class ProcessReportPipeline implements Serializable {
     /**
      * Extracts text from bytes in fileType.
      * @param data file data
-     * @param fileType file's type
+     * @param importer importer to extract text
      * @return
      */
-    public String extractText(final byte[] data, final FileType fileType) {
-        return state.extractText(this, data, fileType);
+    public String extractText(final byte[] data, final Importer importer) {
+        return state.extractText(this, data, importer);
     }
 
     /**
@@ -346,9 +301,10 @@ public class ProcessReportPipeline implements Serializable {
     }
 
     /**
-     * Switches the report to new report.
+     * Switches the report to replacing report.
      */
-    public void switchToNewReport() {
+    public void switchToReplacingReport() {
+
         reportId = -1;
     }
 

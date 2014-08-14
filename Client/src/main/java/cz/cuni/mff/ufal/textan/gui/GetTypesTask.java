@@ -13,7 +13,7 @@ import java.util.List;
 import javafx.concurrent.Task;
 
 /**
- * Simple task to get sorted list of object types.
+ * Simple task to get sorted list of object types. Adds null as first value.
  */
 public class GetTypesTask extends Task<List<ObjectType>> {
 

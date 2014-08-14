@@ -31,6 +31,45 @@ public class Utils {
     /** Style for Object context menus. */
     public final static String CONTEXT_MENU_STYLE = "-fx-font-size: 12";
 
+    /** Ids can be belong to objects or relations. */
+    public enum IdType {
+        ENTITY {
+            @Override
+            public long transformId(long id) {
+                return id;
+            }
+        }, OBJECT {
+            @Override
+            public long transformId(long id) {
+                return id;
+            }
+        }, RELATION {
+            @Override
+            public long transformId(long id) {
+                return ~id;
+            }
+        };
+
+        /**
+         * Transforms id for color extracting.
+         * @param id id to transform
+         * @return transfored id
+         */
+        public abstract long transformId(long id);
+    }
+
+    /**
+     * Converts color to string suitable for storing in settings.
+     * @param color color to convert
+     * @return string representation of the color
+     */
+    static public String colorToString(final Color color) {
+        return String.format( "#%02X%02X%02X",
+            (int)( color.getRed() * 255 ),
+            (int)( color.getGreen() * 255 ),
+            (int)( color.getBlue() * 255 ) );
+    }
+
     /**
      * Converts id to Color.
      * @param id long to covert
@@ -50,7 +89,7 @@ public class Utils {
      * @param id long to covert
      * @return Color created from id hash
      */
-    static public Color idToFXColor(long id) {
+    static public Color idToFXColor(final long id) {
         final int color = idToColor(id);
         return Color.rgb((color & 0xFF0000) >> 16, (color & 0x00FF00) >> 8, color & 0x0000FF);
     }
@@ -60,7 +99,7 @@ public class Utils {
      * @param id long to covert
      * @return Color created from id hash
      */
-    static public java.awt.Color idToAWTColor(long id) {
+    static public java.awt.Color idToAWTColor(final long id) {
         final int color = idToColor(id);
         return new java.awt.Color(color);
     }
@@ -147,7 +186,10 @@ public class Utils {
                 outputList.clear();
                 outputList.addAll(FXCollections.observableList(pair.getFirst()));
                 final int objectCount = pair.getSecond();
-                final int pageCount = (int) Math.ceil(1.0 * pair.getSecond() / size);
+                int pageCount = (int) Math.ceil(1.0 * pair.getSecond() / size);
+                if (pageCount == 0) {
+                    pageCount = 1;
+                }
                 final String format = Utils.localize(resourceBundle, "pagination.label");
                 paginationLabel.setText(String.format(format, pageNo + 1, pageCount));
                 consumer.accept(objectCount, pageCount);
@@ -199,6 +241,90 @@ public class Utils {
     }
 
     /**
+     * Resolves color for type and id.
+     * @param settings application settings
+     * @param type id type
+     * @param id id to resolve
+     * @return color for type and id
+     */
+    static public java.awt.Color resolveColorAWT(final Properties settings,
+            final IdType type, final long id) {
+        final String c = settings.getProperty(type + ".color." + id);
+        if (c == null) {
+            return idToAWTColor(type.transformId(id));
+        }
+        try {
+            return java.awt.Color.decode(c);
+        } catch (Exception e) {
+            return idToAWTColor(type.transformId(id));
+        }
+    }
+
+    /**
+     * Resolves color for object id
+     * @param settings application settings
+     * @param id id to resolve
+     * @return color for id
+     */
+    static public java.awt.Color resolveEntityColorAWT(final Properties settings,
+            final long id) {
+        return resolveColorAWT(settings, IdType.ENTITY, id);
+    }
+
+    /**
+     * Resolves color for object id
+     * @param settings application settings
+     * @param id id to resolve
+     * @return color for id
+     */
+    static public java.awt.Color resolveRelationColorAWT(final Properties settings,
+            final long id) {
+        return resolveColorAWT(settings, IdType.RELATION, id);
+    }
+
+    /**
+     * Resolves color for type and id.
+     * @param settings application settings
+     * @param type id type
+     * @param id id to resolve
+     * @return color for type and id
+     */
+    static public Color resolveColorFX(final Properties settings,
+            final IdType type, final long id) {
+        final String c = settings.getProperty(type + ".color." + id);
+        if (c == null) {
+            return idToFXColor(type.transformId(id));
+        }
+        try {
+            return Color.valueOf(c);
+        } catch (Exception e) {
+            return idToFXColor(type.transformId(id));
+        }
+    }
+
+    /**
+     * Resolves color for object id
+     * @param settings application settings
+     * @param id id to resolve
+     * @return color for id
+     */
+    static public Color resolveEntityColorFX(final Properties settings,
+            final long id) {
+        return resolveColorFX(settings, IdType.ENTITY, id);
+    }
+
+    /**
+     * Resolves color for object id
+     * @param settings application settings
+     * @param id id to resolve
+     * @return color for id
+     */
+    static public Color resolveRelationColorFX(final Properties settings,
+            final long id) {
+        return resolveColorFX(settings, IdType.RELATION, id);
+    }
+
+    /**
      * Runs finalizer in FX thread after 100 ms sleep in other thread.
      * @param finalizer runnable to be run
      */
@@ -237,29 +363,35 @@ public class Utils {
     /**
      * Replaces text's styleclasses by clazz, stores fill color to user data and
      * fills text with color created from id.
+     * @param settings application settings
      * @param text text to style
      * @param clazz class to add
+     * @param type id type
      * @param id id to color
      */
-    static public void styleText(final Text text, final String clazz, final long id) {
+    static public void styleText(final Properties settings, final Text text,
+            final String clazz, final IdType type, final long id) {
         text.getStyleClass().clear();
         text.getStyleClass().add(clazz);
         text.setUserData(text.getFill());
-        text.setFill(idToFXColor(id));
+        final Color color = type == IdType.OBJECT ? idToFXColor(id) : resolveColorFX(settings, type, id);
+        text.setFill(color);
     }
 
     /**
      * Adds background to text created from id.
+     * @param settings application settings
      * @param text text to style
      * @param id id to color
      */
-    static public void styleTextBackground(final Text text, final long id) {
+    static public void styleTextBackground(final Properties settings,
+            final Text text, final long id) {
         final DropShadow dropShadow = new DropShadow();
         dropShadow.setRadius(4d);
         dropShadow.setSpread(4d);
         dropShadow.setOffsetX(0d);
         dropShadow.setOffsetY(0d);
-        dropShadow.setColor(idToFXColor(~id));
+        dropShadow.setColor(resolveRelationColorFX(settings, id));
         text.setEffect(dropShadow);
     }
 

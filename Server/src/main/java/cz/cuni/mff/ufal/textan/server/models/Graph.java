@@ -7,8 +7,6 @@ import java.util.List;
  * @author Petr Fanta
  */
 public class Graph {
-
-    //TODO: change to sets?
     private final List<Object> nodes;
     private final List<Relation> edges;
 

@@ -151,7 +151,3 @@ GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE, SHOW VIEW
   ON textan.* TO 'textan_user'@'%' IDENTIFIED BY 'textanpassword';
 
 FLUSH PRIVILEGES;
-
--- For remove user use (from superuser account):
--- DROP USER 'textan_user'@'localhost';
--- DROP USER 'textan_user'@'%';

@@ -29,8 +29,8 @@ classes/
 .project
 .settings/
 
-Data/indexes
-.*
+#Lucene indexes
+indexes/
 
 #TeX auxiliary files and output
 *.aux

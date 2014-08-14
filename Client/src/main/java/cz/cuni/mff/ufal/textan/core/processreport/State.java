@@ -2,7 +2,7 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Entity;
-import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline.FileType;
+import cz.cuni.mff.ufal.textan.core.processreport.load.Importer;
 import java.io.Serializable;
 import java.util.List;
 
@@ -82,11 +82,11 @@ public abstract class State implements Serializable {
      * Extracts text from bytes in fileType.
      * @param pipeline pipeline delegating the request
      * @param data file data
-     * @param fileType file's type
+     * @param importer importer to extract report text
      * @return
      */
     public String extractText(final ProcessReportPipeline pipeline,
-            final byte[] data, final FileType fileType) {
+            final byte[] data, final Importer importer) {
         throw new IllegalStateException("Cannot select file as report data source when in state " + getType());
     }
 
@@ -148,7 +148,7 @@ public abstract class State implements Serializable {
     }
 
     /**
-     * Sets the report's objects.
+     * Sets the report's relations.
      * @param pipeline pipeline delegating the request
      * @param words words with assigned relations
      * @param unanchoredRelations list of unanchored relations

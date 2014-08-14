@@ -37,7 +37,7 @@ public class TextAn extends Application {
     static final String RESOURCE_BUNDLE = "cz.cuni.mff.ufal.textan.gui.TextAn";
 
     /** Resource containing application icon. */
-    static final String ICON_RES = "/cz/cuni/mff/ufal/textan/gui/logo.jpg";
+    static final String ICON_RES = "/cz/cuni/mff/ufal/textan/gui/icon.png";
 
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
@@ -125,31 +125,33 @@ public class TextAn extends Application {
 
         //ask for login if needed
         if (settings.getProperty("username", "").isEmpty()) {
-            String login;
-            do {
-                login = Dialogs.create()
-                        .owner(stage)
-                        .title(TextAnController.TITLE)
-                        .masthead(localize("username.prompt"))
-                        .message(localize("username.login.label"))
-                        //.lightweight() //not lightweight as using keys to close the dialog throws silent exception for some reason
-                        .showTextInput(System.getProperty("user.name", ""));
-                if (login == null || login.isEmpty() || login.trim().isEmpty()) {
-                    Dialogs.create()
+            Utils.runFXlater(() -> {
+                String login;
+                do {
+                    login = Dialogs.create()
                             .owner(stage)
                             .title(TextAnController.TITLE)
-                            .masthead(localize("username.error.title"))
-                            .message(localize("username.error.text"))
+                            .masthead(localize("username.prompt"))
+                            .message(localize("username.login.label"))
                             //.lightweight() //not lightweight as using keys to close the dialog throws silent exception for some reason
-                            .showError();
-                }
-                if (login == null) { //dialog cancelled
-                    Platform.exit();
-                    return;
-                }
-            } while (login == null || login.isEmpty() || login.trim().isEmpty());
-            final String trimmed = login.trim();
-            controller.setUsername(trimmed);
+                            .showTextInput(System.getProperty("user.name", ""));
+                    if (login == null || login.isEmpty() || login.trim().isEmpty()) {
+                        Dialogs.create()
+                                .owner(stage)
+                                .title(TextAnController.TITLE)
+                                .masthead(localize("username.error.title"))
+                                .message(localize("username.error.text"))
+                                //.lightweight() //not lightweight as using keys to close the dialog throws silent exception for some reason
+                                .showError();
+                    }
+                    if (login == null) { //dialog cancelled
+                        Platform.exit();
+                        return;
+                    }
+                } while (login.isEmpty() || login.trim().isEmpty());
+                final String trimmed = login.trim();
+                controller.setUsername(trimmed);
+            });
         }
     }
 

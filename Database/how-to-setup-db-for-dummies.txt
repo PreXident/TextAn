@@ -21,5 +21,3 @@ Another possibility:
 3. Run database/create.sql, which create "textan" database
 4. Change user, password and url in hibernate.cfg.xml (or data.properties) as you need.
     (Please don't push your changes in GitHub.)
-
-(TODO: create user in MySql for Textan server.)

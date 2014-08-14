@@ -1,10 +1,12 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.io.File;
 import java.net.URL;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.control.RadioButton;
@@ -19,6 +21,47 @@ import jfxtras.util.PlatformUtil;
  * Controls initial loading of reports.
  */
 public class ReportLoadController extends ReportWizardController {
+
+    /**
+     * Prompts user to select the report to load.
+     * @param resourceBundle localization container
+     * @param settings application setttings
+     * @param window parent window of the file chooser
+     * @param pipeline pipeline to load to
+     * @return true if loading was successful, false on user cancel
+     */
+    static public boolean loadReport(final ResourceBundle resourceBundle,
+            final Properties settings, final Window window,
+            final ProcessReportPipeline pipeline) {
+        final FileChooser chooser = new FileChooser();
+        chooser.setTitle(Utils.localize(resourceBundle, "load.report.prompt"));
+        final String dir = settings.getProperty("loadreport.dir");
+        if (dir != null && !dir.isEmpty()) {
+            chooser.setInitialDirectory(new File(dir));
+        } else {
+            chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        }
+        final File file = chooser.showOpenDialog(window);
+        if (file == null || !file.isFile()) {
+            return false;
+        }
+        settings.setProperty("loadreport.dir", file.getParent());
+        RelationBuilder.RelationInfo.deserializator = proxy -> {
+            return PlatformUtil.runAndWait(() -> {
+                return new FXRelationBuilder.FXRelationInfo(proxy.order, proxy.role, proxy.object);
+            });
+        };
+        RelationBuilder.deserializator = proxy -> {
+            return PlatformUtil.runAndWait(() -> {
+                return new FXRelationBuilder(proxy);
+            });
+        };
+        pipeline.selectLoadDatasource(file.getAbsolutePath());
+        for (Word word : pipeline.getReportWords()) {
+            word.reregister();
+        }
+        return true;
+    }
 
     @FXML
     private BorderPane root;
@@ -38,9 +81,6 @@ public class ReportLoadController extends ReportWizardController {
     @FXML
     private ToggleGroup loadToggleGroup;
 
-    /** Localization container. */
-    ResourceBundle resourceBundle;
-
     @FXML
     private void next() {
         final Toggle toggled = loadToggleGroup.getSelectedToggle();
@@ -52,34 +92,10 @@ public class ReportLoadController extends ReportWizardController {
             } else if (toggled == emptyMessageRadioButton) {
                 pipeline.selectEmptyDatasource();
             } else if (toggled == loadRadioButton) {
-                final FileChooser chooser = new FileChooser();
-                chooser.setTitle(Utils.localize(resourceBundle, "load.report.prompt"));
-                final String dir = settings.getProperty("loadreport.dir");
-                if (dir != null && !dir.isEmpty()) {
-                    chooser.setInitialDirectory(new File(dir));
-                } else {
-                    chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-                }
-                final Window w = window != null ? window.getScene().getWindow() : stage;
-                final File file = chooser.showOpenDialog(w);
-                if (file == null || !file.isFile()) {
-                    return;
-                }
-                settings.setProperty("loadreport.dir", file.getParent());
-                RelationBuilder.RelationInfo.deserializator = proxy -> {
-                    return PlatformUtil.runAndWait(() -> {
-                        return new FXRelationBuilder.FXRelationInfo(proxy.order, proxy.role, proxy.object);
-                    });
-                };
-                RelationBuilder.deserializator = proxy -> {
-                    return PlatformUtil.runAndWait(() -> {
-                        return new FXRelationBuilder(proxy);
-                    });
-                };
-                pipeline.selectLoadDatasource(file.getAbsolutePath());
-                for (Word word : pipeline.getReportWords()) {
-                    word.reregister();
-                }
+                loadReport(resourceBundle,
+                        settings,
+                        window != null ? window.getScene().getWindow() : stage,
+                        pipeline);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,6 +110,6 @@ public class ReportLoadController extends ReportWizardController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        resourceBundle = rb;
+        super.initialize(url, rb);
     }
 }

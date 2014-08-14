@@ -2,6 +2,9 @@ package cz.cuni.mff.ufal.textan.core.graph;
 
 import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
+import cz.cuni.mff.ufal.textan.core.ObjectType;
+import cz.cuni.mff.ufal.textan.core.RelationType;
+import java.util.Collection;
 import java.util.function.Predicate;
 
 /**
@@ -54,6 +57,18 @@ public interface IGrapher {
      * @param id new root id
      */
     void setRootId(long id);
+
+    /**
+     * Sets object types to ignore.
+     * @param objectTypes object types to ignore
+     */
+    void setIgnoredObjectTypes(Collection<ObjectType> objectTypes);
+
+    /**
+     * Sets relation types to ignore.
+     * @param relationTypes relation types to ignore
+     */
+    void setIgnoredRelationTypes(Collection<RelationType> relationTypes);
 
     /**
      * Returns title of the graph.

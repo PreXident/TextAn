@@ -67,7 +67,7 @@ task wsdl2java {
 
         //target directory (for generated files)
         outputDir = file "$buildDir/generated-src/cxf"
-//        wsdlLocation = 'classpath:wsdl/' //TODO: how to define wsdl location for each wsdl file?
+//        wsdlLocation = 'classpath:wsdl/' //how to define wsdl location for each wsdl file?
 
         customParams = [
                 //customizations

@@ -122,7 +122,7 @@ public class SaveService {
         final DocumentTable documentTable = new DocumentTable(text);
         documentTableDAO.add(documentTable);
 
-        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences, ticket);
+        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences);
     }
 
     /**
@@ -155,28 +155,50 @@ public class SaveService {
             throw new IdNotFoundException("documentId", documentId);
         } else if (documentTable.isProcessed()) {
             throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
+        } if (documentTable.getGlobalVersion() > ticket.getVersion()) {
+            throw new DocumentChangedException(documentId, documentTable.getGlobalVersion(), ticket.getVersion());
         }
-
-        //TODO:throw Document Changed Exception
 
         if (!force && checkChanges(ticket)) {
             return false;
         }
 
-        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences, ticket);
+        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences);
+    }
+
+    public boolean save(
+            long documentId, String text,
+            List<Object> objects, List<Pair<Long, Occurrence>> objectOccurrences,
+            List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences,
+            boolean force, EditingTicket ticket) throws IdNotFoundException, DocumentAlreadyProcessedException {
+
+        DocumentTable documentTable = documentTableDAO.find(documentId);
+        if (documentTable == null) {
+            throw new IdNotFoundException("documentId", documentId);
+        } else if (documentTable.isProcessed()) {
+            throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
+        }
+
+        if (!force && checkChanges(ticket)) {
+            return false;
+        }
+
+        documentTable.setText(text);
+
+        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences);
     }
 
     private boolean checkChanges(EditingTicket ticket) {
-        return ((objectTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0 )||
-                (relationTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0) ||
-                (joinedObjectsTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).size() > 0));
+        long nextVersion = ticket.getVersion() + 1;
+        return ((objectTableDAO.findAllSinceGlobalVersion(nextVersion).size() > 0 )||
+                (relationTableDAO.findAllSinceGlobalVersion(nextVersion).size() > 0) ||
+                (joinedObjectsTableDAO.findAllSinceGlobalVersion(nextVersion).size() > 0));
     }
 
     private boolean innerSave(
             DocumentTable documentTable,
             List<Object> objects, List<Pair<Long, Occurrence>> objectOccurrences,
-            List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences,
-            EditingTicket ticket) throws IdNotFoundException {
+            List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences) throws IdNotFoundException {
 
         documentTable.setProcessedDateToNow();
 
@@ -223,10 +245,8 @@ public class SaveService {
                 throw new IdNotFoundException("objectId", objectId);
             }
 
-            List<AliasTable> aliases = aliasTableDAO.findAllAliasesOfObject(objectTable);
             AliasTable aliasTable = null;
-            for (AliasTable alias : aliases) {
-                //TODO: test case sensitivity! (all lowercase?, different aliases?)
+            for (AliasTable alias : objectTable.getAliases()) {
                 if (occurrence.getValue().equals(alias.getAlias())) {
                     aliasTable = alias;
                 }
@@ -234,10 +254,14 @@ public class SaveService {
 
             if (aliasTable == null) {
                 aliasTable = new AliasTable(objectTable, occurrence.getValue());
+                objectTable.getAliases().add(aliasTable);
                 aliasTableDAO.add(aliasTable);
             }
 
             AliasOccurrenceTable aliasOccurrenceTable = new AliasOccurrenceTable(occurrence.getPosition(), aliasTable, documentTable);
+            aliasTable.getOccurrences().add(aliasOccurrenceTable);
+            documentTable.getAliasOccurrences().add(aliasOccurrenceTable);
+
             aliasOccurrenceTableDAO.add(aliasOccurrenceTable);
         }
 
@@ -250,6 +274,7 @@ public class SaveService {
         HashMap<Long, RelationTable> relationIdMapping = new HashMap<>();
 
         //add relation
+        //TODO: group relations?
         for (Pair<Long, Occurrence> relationOccurrence : relationOccurrences) {
 
             RelationTable relationTable;
@@ -307,7 +332,11 @@ public class SaveService {
 
                     //todo: add test: can be object in relation more than once?
                     if (!alreadyInRelation.contains(objectInRelationTable.getId())) {
-                        inRelationTableDAO.add(new InRelationTable(role, order, relationTable, objectInRelationTable));
+                        InRelationTable inRelationTable = new InRelationTable(role, order, relationTable, objectInRelationTable);
+                        inRelationTableDAO.add(inRelationTable);
+                        relationTable.getObjectsInRelation().add(inRelationTable);
+                        objectInRelationTable.getRelations().add(inRelationTable);
+
                         alreadyInRelation.add(objectInRelationTable.getId());
                     }
                 }
@@ -322,9 +351,11 @@ public class SaveService {
                 relationOccurrenceTable.setRelation(relationTable);
             }
             relationOccurrenceTableDAO.add(relationOccurrenceTable);
+            documentTable.getRelationOccurrences().add(relationOccurrenceTable);
+            relationTable.getOccurrences().add(relationOccurrenceTable);
         }
 
-        //register re-learn command for named entity recognizer
+        //register re-learn command for named entity recognizer and text pro
         invoker.register(new TextProLearnCommand(textPro));
         invoker.register(new NamedEntityRecognizerLearnCommand(recognizer));
 
@@ -332,15 +363,16 @@ public class SaveService {
     }
 
     public Problems getProblems(EditingTicket ticket) {
-        List<Object> newObjects = objectTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+        long nextVersion = ticket.getVersion() + 1;
+        List<Object> newObjects = objectTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
                 .map(Object::fromObjectTable)
                 .collect(Collectors.toList());
 
-        List<Relation> newRelations = relationTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+        List<Relation> newRelations = relationTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
                 .map(Relation::fromRelationTable)
                 .collect(Collectors.toList());
 
-        List<JoinedObject> newJoinedObjects = joinedObjectsTableDAO.findAllSinceGlobalVersion(ticket.getVersion()).stream()
+        List<JoinedObject> newJoinedObjects = joinedObjectsTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
                 .map(x -> new JoinedObject(
                         Object.fromObjectTable(x.getNewObject()),
                         Object.fromObjectTable(x.getOldObject1()),
