@@ -19,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import jfxtras.labs.scene.control.BigDecimalField;
 import org.controlsfx.dialog.Dialogs;
 
@@ -104,20 +105,25 @@ public class SettingsController extends WindowController {
                 final String login = loginTextField.getText();
                 if (login == null || login.isEmpty() || login.trim().isEmpty()) {
                     loginTextField.setText(settings.getProperty("username"));
-                    Dialogs.create()
-                            .owner(getDialogOwner(root))
-                            .title(Utils.localize(resourceBundle, PROPERTY_ID))
-                            .masthead(Utils.localize(resourceBundle, "username.error.title"))
-                            .message(Utils.localize(resourceBundle, "username.error.text"))
-                            .lightweight()
-                            .showError();
-                } else {
+                    Platform.runLater(() -> {
+                        final Dialogs dialog = prepareDialog(Dialogs.create()
+                                .owner(getDialogOwner(root))
+                                .title(Utils.localize(resourceBundle, PROPERTY_ID))
+                                .masthead(Utils.localize(resourceBundle, "username.error.title"))
+                                .message(Utils.localize(resourceBundle, "username.error.text")));
+                        if (dialog != null) {
+                            dialog.showError();
+                        }
+                    });
+                } else if (!login.equals(settings.getProperty("username"))) {
                     settings.setProperty("username", login);
-                    Dialogs.create()
-                        .owner(getDialogOwner(root))
-                        .lightweight()
-                        .message(Utils.localize(resourceBundle,"restart.change"))
-                        .showWarning();
+                    Platform.runLater(() -> {
+                        final Dialogs dialog = prepareDialog(Dialogs.create()
+                                .message(Utils.localize(resourceBundle,"restart.change")));
+                        if (dialog != null) {
+                            dialog.showWarning();
+                        }
+                    });
                 }
             }
         });
@@ -161,5 +167,22 @@ public class SettingsController extends WindowController {
             window.setPrefWidth(root.computePrefWidth(0));
             window.setPrefHeight(root.computePrefHeight(0) + 40); //guessed titlebar height
         });
+    }
+
+    protected Dialogs prepareDialog(final Dialogs dialog) {
+        final Stage mainStage = textAnController.getStage();
+        if (!mainStage.isShowing()) {
+            return null;
+        }
+        if (window != null) {
+            final boolean alreadyClosed = window.getParent() == null;
+            dialog.owner(alreadyClosed ? mainStage : root).lightweight();
+        } else {
+            final boolean stillOpen = stage.isShowing();
+            if (stillOpen) {
+                dialog.owner(stage);
+            }
+        }
+        return dialog;
     }
 }

@@ -361,6 +361,14 @@ public class TextAnController implements Initializable {
     }
 
     /**
+     * Returns stage controlled by this controller.
+     * @return stage controlled by this controller
+     */
+    public Stage getStage() {
+        return stage;
+    }
+
+    /**
      * Sets stage controlled by this controller.
      * @param stage controlled stage
      */
