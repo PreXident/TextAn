@@ -369,6 +369,18 @@ public class DAOTest {
         Assert.assertEquals(object.getRootObject(), joinedObj);
         Assert.assertEquals(object2.getRootObject(), joinedObj);
         
+        System.out.println("object.getOldObject1:" + object.getOldObjects1());
+        System.out.println("object.getOldObject2:" + object.getOldObjects2());
+        System.out.println("object.getNewObject:" + object.getNewObject());
+
+        System.out.println("object2.getOldObject1:" + object2.getOldObjects1());
+        System.out.println("object2.getOldObject2:" + object2.getOldObjects2());
+        System.out.println("object2.getNewObject:" + object2.getNewObject());
+
+        System.out.println("joinedObj.getOldObject1:" + joinedObj.getOldObjects1());
+        System.out.println("joinedObj.getOldObject2:" + joinedObj.getOldObjects2());
+        System.out.println("joinedObj.getNewObject:" + joinedObj.getNewObject());
+        
         //joinedObjectsDAO.delete(joinedObj.getNewObject());
         //objectTableDAO.delete(joinedObj);
     }
