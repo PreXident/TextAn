@@ -1,0 +1,7 @@
+.root {
+	-fx-padding: 10 10 10 10;
+}
+
+.h1 {
+	-fx-font-weight: bold;
+}
