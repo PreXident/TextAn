@@ -2,7 +2,7 @@
 
 \subsection{Used Technologies}
 
-This section lists all technologies and libraries used in \textan.
+This section lists all technologies and libraries used in \textan{}.
 
 %TODO are links to the libraries missing intentionally? Adam
 \paragraph{Apache CXF}
@@ -11,14 +11,14 @@ standard APIs, is configurable through Spring and can be embedded into Jetty,
 Tomcat or other servlet containers.
 
 \paragraph{ControlsFX}
+%TODO: remove taxtan specific things from this section
 ControlsFX is a Java8 open source library aiming at enhancing the programming
 experience with standard JavaFX. It provides wide selection of new and improved
-components to make everyday use of JavaFX even easier. \textan\ uses it mainly for
+components to make everyday use of JavaFX even easier. \textan{} uses it mainly for
 its high quality and user-friendly standard dialogs which are incomprehensibly
 and sorely missing in JavaFX.
 
 \paragraph{Hibernate ORM}
-%TODO Venca
 Hibernate ORM (Hibernate in short) is an object-relational mapping library for
 Java language, providing a framework for mapping an object-oriented domain
 model to a traditional relational database. Hibernate solves object-relational
@@ -29,40 +29,46 @@ accesses with high-level object handling functions.
 Hibernate Search is a library (or Hibernate ORM extension), which integrates
 the full text library functionality from Apache Lucene in the Hibernate and
 JPA model. It offers full-text search support for objects stored by Hibernate
-ORM, Infinispan and other sources. Think of it as Google\texttrademark\ for
+ORM, Infinispan and other sources. Think of it as Google\texttrademark{} for
 entities: search words with text, order results by relevance and find by
 approximation (fuzzy search).
 
-\paragraph{Java-ML}
+%\paragraph{Java-ML}
 %TODO Kuba/Tam
 
 %ML (author Tam)
-First of all, let's talk Machine Learning (ML), a hot and developing subfield of computer
-science in general, of computational linguistics specifically. The key of ML is 
-that it can learn from experience to improve the performance with regards to a 
-specific task. When the amount of experience increase (collecting more data, human
-intervention, etc), the performance is like to go up as well. 
+%First of all, let's talk Machine Learning (ML), a hot and developing subfield of computer
+%science in general, of computational linguistics specifically. The key of ML is 
+%that it can learn from experience to improve the performance with regards to a 
+%specific task. When the amount of experience increase (collecting more data, human
+%intervention, etc), the performance is like to go up as well. 
 
 %JAVA-ML (author Tam)
-Java-ML is a machine learning library for Java. It is a collection of machine
-learning and data mining algorithms. It consists of a few Machine learning 
-techniques such as data pre-processing, clustering, classification, feature 
-selection, regression, ensemble learning, voting. 
+%Java-ML is a machine learning library for Java. It is a collection of machine
+%learning and data mining algorithms. It consists of a few Machine learning 
+%techniques such as data pre-processing, clustering, classification, feature 
+%selection, regression, ensemble learning, voting. 
+
+\paragraph{JCommander}
+JCommander is a very small Java framework that makes it trivial to parse command
+line parameters.
 
 \paragraph{Jetty}
 Jetty is a pure Java-based HTTP (Web) server and Java Servlet container. It can
 be embedded into other applications through Jetty API.
 
 \paragraph{JUNG}
+%TODO: remove taxtan specific things from this section
 JUNG (Java Universal Network/Graph Framework) is older Java library for
 displaying graphs, still widely used in Java world, well documented and easily
 extensible. Sadly, it does not support JavaFX, but only older Java GUI framework
 SWING. Fortunately, thanks to new JavaFX8 SwingNode enabling usage of SWING
 components in JavaFX scenes it was possible to seaminglessly integrate JUNG into
-JavaFX \textan\ Client.
+JavaFX \textan{} Client.
 
 \paragraph{JFXtras}
-JFXtras is another JavaFX8 enhancing project. \textan\ Client uses it mostly for
+%TODO: remove taxtan specific things from this section
+JFXtras is another JavaFX8 enhancing project. \textan{} Client uses it mostly for
 its window management capabilities enabling extensible use of inner windows
 embedded into the main window. Another used component is BigDecimalField which
 brings common Spinner component into JavaFX.
@@ -108,3 +114,10 @@ The Spring Framework is an open source application framework and inversion
 of control container for the Java platform. The framework's core features
 can be used by any Java application, but there are extensions for building
 web applications on top of the Java EE platform.
+
+\paragraph{WEKA}
+Weka is a collection of machine learning algorithms for data mining tasks.
+The algorithms can either be applied directly to a dataset or called from your
+own Java code. Weka contains tools for data pre-processing, classification,
+regression, clustering, association rules, and visualization. It is also
+well-suited for developing new machine learning schemes.
