@@ -72,6 +72,17 @@ contents={
   basicstyle=\small
 }
 
+%Comment macro
+%Usage:
+% \comment[_assignee_]{_author_}{_comment_}
+% \comment{_author_}{_comment_}
+\makeatletter
+\newcommand{\comment}[3][\@empty]{
+  {\color{magenta}[#3 - }
+  {\color{green}\ifx\@empty#1\relax Author: #2 \else Assignee: #1; Author: #2\fi}{\color{magenta}]}
+}
+\makeatother
+
 \newcommand{\textan}{\emph{TextAn}}
 
 \begin{document}
@@ -124,7 +135,6 @@ Ondřej Bojar\\
 
 % FOR ENTERTAIN: The spider opens his heavy eyes. He stand up, look through the lousy windows. The sun is flaring, kissing all over the earth. He said to himself: ``It's time''. Students are rushing out of the dormitory like rats desert from a sinking ship. Some are going to the public transport, waiting for the regular hooves from the distance. The bus comes and goes, its double tires sing high notes on the road. Some are visiting the car park. The wheels of the cars creaked around, then they crawled into the city centre. A man and girl are crossing street, with their arms around each other's waists. Then the man must have said something supposed to be funny because two of them are laughing like hyenas. The spider retreats from the windows. The daily screen makes him so lonesome and depressed. Another day has just begun.
 
-
 %TODO what is textan
 
 %TextAn (Text Analyser) is the product of our software project groups (consists of 5 members) at Faculty of Mathematics and Physics, Charles University in Prague (MFF UK). The tool is attributed to Software Project subject, developed in 9 months from Jan 2014 to Sep 2014, and supervised by RNDr. Ondřej Bojar, PhD. It is a client-server tool which support mining structured information from text documents. At the moment, the documents are specified to police report but TextAn could be applied to a wide range of domains. 
@@ -171,13 +181,14 @@ All the concepts are explained in the \emph{Glossary}.
 To start using \textan{}, user have to start the client application and log in. 
 Once user log in successfully, the main screen of \textan{} is displayed.
 
-%TODO: What's next?
+\comment{Tam}{What's next?} 
 
 \subsection{Glossary}
 
-TODO definitions of terms in documentation and applications
+\comment{Petr}{definitions of terms in documentation and applications}
 
-\subsection{Conventions} %is this section needed?
+\subsection{Conventions}
+\comment{Petr}{is this section needed?}
 
 \section{Client Usage}
 
@@ -198,7 +209,7 @@ TODO definitions of terms in documentation and applications
 
 \chapter{Administrator guide}
 
-%TODO client instalation guide in the administrator guide or user guide?
+\comment{Petr}{client instalation guide in the administrator guide or user guide?}
 
 \section{Server}
 
@@ -217,7 +228,7 @@ or a later version and a relational database system (e.g. \emph{MySQL}).
 The server should be platform independent, so it runs on any system where JRE is available,
 but it depends on native and 3rd party libraries. 
 Supported operating systems in the distribution of the \textan{} server are
-Linux (32 bit and 64 bit) and Windows (32 bit and 64 bit). % I am thinking ...
+Linux (32 bit and 64 bit) and Windows (32 bit and 64 bit). \comment[Petr]{Petr}{Finish this...}
 
 \subsubsection{Installation}
 
@@ -229,9 +240,9 @@ For installation it is sufficient to unpack its content into any directory.
 
 Before the first start, it is necessary to set up the server and the database.
 
-TODO write how to setup server
+\comment[Petr,Jakub,Venca]{Petr}{write how to setup server}
 
-TODO add some link to \ref{sec:ServerSettings}
+\comment[Petr]{Petr}{add some link to \ref{sec:ServerSettings}}
 
 \subsubsection{Starting the server}
 
@@ -273,7 +284,7 @@ However, we recommend the use of \emph{Apache ProcRun's Daemon
 \paragraph{server.ssl.port}
 
 \subsubsection{Database connection settings}
-
+\comment[Venca]{Petr}{Add descrtion for DB properties}
 %jdbc
 \paragraph{jdbc.driverClassName} 
 
@@ -498,7 +509,7 @@ If '-' is provided, the standard input will be read and settings will not be sto
 
 \subsubsection{TextAn.properties}
 
-TODO move this section as appendix to developer documentation, leave only reference here.
+\comment[Adam]{Adam}{move this section as appendix to developer documentation, leave only reference here}
 This section contains a list of properties from configuration file that controls
 client behaviour and their brief description.
 

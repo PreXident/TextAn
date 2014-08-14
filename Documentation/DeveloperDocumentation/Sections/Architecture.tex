@@ -13,12 +13,11 @@ The server architecture is based on a logical multilayered architecture. It
 consists of 5 layers: a presentation layer, a service layer, a business logic layer, 
 a persistence layer and a data layer.
 
-%TODO where to place commands in architecture?? (author Petr)
+\comment{Petr}{where to place commands in architecture??}
 
-%TODO server achitecture image: assignee: Petr (author Petr)
+\comment[Petr]{Petr}{server achitecture image}
 
-%TODO description of layers
-% assignee: Petr, Venca (persistence layer) (author Petr)
+\comment[Petr, Venca (persistence layer)]{Petr}{description of layers}
 
 \subsection{Named entity recognizer architecture}
 
@@ -41,22 +40,20 @@ training data collecting from database and preparation, model handling
 (deleting old ones. binding them to NameTag).
 
 
-\subsection{Object assigner architecture} %or simply TextPro?
+\subsection{Object assigner architecture} \comment{Petr}{or simply TextPro?}
 
-%TODO here should be description of TextPro 
-% assignee: Tam (author Petr)
+\comment[Tam]{Petr}{here should be description of TextPro}
 
 After the document is processed by NER, the next step is assigning the entities
 to available objects in the database. Normally, this could be done by matching
-the entity text with the alias from object. However, this method would %TODO finish?
+the entity text with the alias from object. However, this method would \comment[Tam]{Petr}{finish?}
 
 
 \section{Client architecture}
 
-%TODO here should be description of client architecture (MVC etc.)
-% assignee: Adam (author Petr)
-%NOTE: your sentences are way too long :) (author Tam)
-TODO I am not satisfied with this at all, it needs to be rewriten from scratch, Adam
+\comment[Adam]{Petr}{here should be description of client architecture (MVC etc.)}
+\comment{Tam}{NOTE: your sentences are way too long :)}
+\comment{Adam}{I am not satisfied with this at all, it needs to be rewriten from scratch}
 \textan{} Client is a JavaFX application which naturaly forces Model-View-Controller
 pattern.
 

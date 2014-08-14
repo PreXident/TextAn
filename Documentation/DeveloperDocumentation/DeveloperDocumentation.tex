@@ -75,6 +75,17 @@ contents={
   basicstyle=\small
 }
 
+%Comment macro
+%Usage:
+% \comment[_assignee_]{_author_}{_comment_}
+% \comment{_author_}{_comment_}
+\makeatletter
+\newcommand{\comment}[3][\@empty]{
+  {\color{magenta}[#3 - }
+  {\color{green}\ifx\@empty#1\relax Author: #2 \else Assignee: #1; Author: #2\fi}{\color{magenta}]}
+}
+\makeatother
+
 \newcommand{\textan}{\emph{TextAn}}
 
 \begin{document}
@@ -141,7 +152,7 @@ Ondřej Bojar\\
 \section{Functional requirements}
 \section{Non-functional requirements}
 
-%TODO where to place use cases, mockup screens etc?
+\comment{Petr}{where to place use cases, mockup screens etc?}
 
 \chapter{Architecture}
 \input{Sections/Architecture}
