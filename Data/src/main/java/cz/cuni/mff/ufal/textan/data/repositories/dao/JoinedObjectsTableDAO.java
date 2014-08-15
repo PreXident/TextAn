@@ -58,6 +58,8 @@ public class JoinedObjectsTableDAO extends AbstractHibernateDAO<JoinedObjectsTab
     
     private void setRootInSubTree(ObjectTable obj, ObjectTable root) {
         obj.setRootObject(root);
+        obj.getRootOfObjects().clear();
+        root.getRootOfObjects().add(obj);
         
         if (obj.getNewObject() == null) return;
         
