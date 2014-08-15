@@ -105,7 +105,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     @SuppressWarnings("unchecked")
     @Override
     public List<E> findAll() {
-        return currentSession().createCriteria(type).list();
+        return findAllCriteria().list();
     }
 
     /**
@@ -118,7 +118,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     @SuppressWarnings("unchecked")
     @Override
     public List<E> findAll(int firstResult, int pageSize) {
-        return currentSession().createCriteria(type)
+        return findAllCriteria()
                 .setFirstResult(firstResult)
                 .setMaxResults(pageSize)
                 .list();
