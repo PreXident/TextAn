@@ -11,6 +11,7 @@ import java.io.Writer;
 /**
  * @author Petr Fanta
  */
+@SuppressWarnings("serial")
 public class TextanWelcomePage extends HttpServlet {
 
     @Override
