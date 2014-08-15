@@ -24,6 +24,7 @@ CREATE TABLE Audit (
 CREATE TABLE Document (
 	id_document int PRIMARY KEY AUTO_INCREMENT, 
 	added datetime NOT NULL,
+	last_change datetime NOT NULL,
 	processed datetime NULL,
 	text text CHARSET utf8 NOT NULL,
 	globalversion int DEFAULT 0 NOT NULL
