@@ -6,7 +6,6 @@ import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import java.io.Serializable;
-import java.util.Iterator;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -16,7 +15,7 @@ import org.hibernate.type.Type;
  *
  * @author Vaclav Pernicka
  */
-public class GlobalVersionAndLogInterceptor extends LogInterceptor {
+public class GlobalVersionAndLogInterceptor extends DocumentLastChangeInterceptor {
     
     private static final long serialVersionUID = 20156489756124L;
     
