@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.graph.Node;
 import cz.cuni.mff.ufal.textan.data.graph.ObjectNode;
 import cz.cuni.mff.ufal.textan.data.graph.RelationNode;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
 import cz.cuni.mff.ufal.textan.server.models.Graph;
@@ -27,12 +28,14 @@ public class GraphService {
 
     private final GraphFactory graphFactory;
     private final IObjectTableDAO objectTableDAO;
+    private final IAliasTableDAO aliasTableDAO;
     private final IRelationTableDAO relationTableDAO;
 
     @Autowired
-    public GraphService(GraphFactory graphFactory, IObjectTableDAO objectTableDAO, IRelationTableDAO relationTableDAO) {
+    public GraphService(GraphFactory graphFactory, IObjectTableDAO objectTableDAO, IAliasTableDAO aliasTableDAO, IRelationTableDAO relationTableDAO) {
         this.graphFactory = graphFactory;
         this.objectTableDAO = objectTableDAO;
+        this.aliasTableDAO = aliasTableDAO;
         this.relationTableDAO = relationTableDAO;
     }
 
@@ -59,16 +62,17 @@ public class GraphService {
             throw new IdNotFoundException("relationId", relationId);
         }
 
+        //TODO: extract private method
         for (Node node : dataGraph.getNodes()) {
 
             if (node instanceof ObjectNode) {
                 long nodeObjectId = node.getId();
-                nodes.add(Object.fromObjectTable(objectTableDAO.find(nodeObjectId)));
+                nodes.add(Object.fromObjectTable(objectTableDAO.find(nodeObjectId), aliasTableDAO.findAllAliasesOfObject(nodeObjectId)));
             }
 
             if (node instanceof RelationNode) {
                 long nodeRelationId = node.getId();
-                edges.add(Relation.fromRelationTable(relationTableDAO.find(nodeRelationId)));
+                edges.add(Relation.fromRelationTable(relationTableDAO.find(nodeRelationId), aliasTableDAO));
             }
         }
 
@@ -89,12 +93,12 @@ public class GraphService {
 
             if (node instanceof ObjectNode) {
                 long nodeObjectId = node.getId();
-                nodes.add(Object.fromObjectTable(objectTableDAO.find(nodeObjectId)));
+                nodes.add(Object.fromObjectTable(objectTableDAO.find(nodeObjectId), aliasTableDAO.findAllAliasesOfObject(nodeObjectId)));
             }
 
             if (node instanceof RelationNode) {
                 long nodeRelationId = node.getId();
-                edges.add(Relation.fromRelationTable(relationTableDAO.find(nodeRelationId)));
+                edges.add(Relation.fromRelationTable(relationTableDAO.find(nodeRelationId), aliasTableDAO));
             }
         }
 

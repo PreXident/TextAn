@@ -28,6 +28,7 @@ public class DirectDataAccessService {
 
     private final IObjectTypeTableDAO objectTypeTableDAO;
     private final IObjectTableDAO objectTableDAO;
+    private final IAliasTableDAO aliasTableDAO;
 
     private final IRelationTypeTableDAO relationTypeTableDAO;
     private final IRelationTableDAO relationTableDAO;
@@ -39,6 +40,7 @@ public class DirectDataAccessService {
      * @param documentTableDAO the document table dAO
      * @param objectTypeTableDAO the object type table dAO
      * @param objectTableDAO the object table dAO
+     * @param aliasTableDAO
      * @param relationTypeTableDAO the relation type table dAO
      * @param relationTableDAO the relation table dAO
      * @param inRelationTableDAO the inRelationTableDAO
@@ -48,12 +50,13 @@ public class DirectDataAccessService {
             IDocumentTableDAO documentTableDAO,
             IObjectTypeTableDAO objectTypeTableDAO,
             IObjectTableDAO objectTableDAO,
-            IRelationTypeTableDAO relationTypeTableDAO,
+            IAliasTableDAO aliasTableDAO, IRelationTypeTableDAO relationTypeTableDAO,
             IRelationTableDAO relationTableDAO, IInRelationTableDAO inRelationTableDAO) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
         this.objectTableDAO = objectTableDAO;
+        this.aliasTableDAO = aliasTableDAO;
         this.relationTypeTableDAO = relationTypeTableDAO;
         this.relationTableDAO = relationTableDAO;
         this.inRelationTableDAO = inRelationTableDAO;
@@ -264,7 +267,7 @@ public class DirectDataAccessService {
             throw new IdNotFoundException("objectId", objectId);
         }
 
-        return Object.fromObjectTable(objectTable);
+        return Object.fromObjectTable(objectTable, aliasTableDAO.findAllAliasesOfObject(objectId));
     }
 
     /**
@@ -275,7 +278,7 @@ public class DirectDataAccessService {
     public List<Object> getObjects() {
 
         return objectTableDAO.findAll().stream()
-                .map(Object::fromObjectTable)
+                .map(x -> Object.fromObjectTable(x, aliasTableDAO.findAllAliasesOfObject(x)))
                 .collect(Collectors.toList());
 
     }
@@ -293,7 +296,7 @@ public class DirectDataAccessService {
         }
 
         return objectTableDAO.findAllByObjectType(objectTypeId).stream()
-                .map(Object::fromObjectTable)
+                .map(x -> Object.fromObjectTable(x, aliasTableDAO.findAllAliasesOfObject(x)))
                 .collect(Collectors.toList());
     }
 
@@ -334,7 +337,7 @@ public class DirectDataAccessService {
 
         return new Pair<>(
                 objects.stream()
-                    .map(Object::fromObjectTable)
+                    .map(x -> Object.fromObjectTable(x, aliasTableDAO.findAllAliasesOfObject(x)))
                     .collect(Collectors.toList()),
                 count
         );
@@ -355,12 +358,13 @@ public class DirectDataAccessService {
         Set<Object> objects = new HashSet<>();
         List<Pair<Long, Occurrence>> objectOccurrences = new ArrayList<>();
 
+        //TODO: add duplicity checking
         for (AliasOccurrenceTable aliasOccurrence : documentTable.getAliasOccurrences()) {
 
             AliasTable alias = aliasOccurrence.getAlias();
-            ObjectTable object = alias.getObject();
+            ObjectTable object = alias.getObject().getRootObject();
 
-            objects.add(Object.fromObjectTable(object));
+            objects.add(Object.fromObjectTable(object, aliasTableDAO.findAllAliasesOfObject(object)));
             objectOccurrences.add(new Pair<>(object.getId(), new Occurrence(alias.getAlias(), aliasOccurrence.getPosition())));
         }
 
@@ -388,7 +392,7 @@ public class DirectDataAccessService {
     public List<Relation> getRelations() {
 
         return relationTableDAO.findAll().stream()
-                .map(Relation::fromRelationTable)
+                .map(x -> Relation.fromRelationTable(x, aliasTableDAO))
                 .collect(Collectors.toList());
     }
 
@@ -405,7 +409,7 @@ public class DirectDataAccessService {
         }
 
         return relationTableDAO.findAllByRelationType(relationTypeId).stream()
-                .map(Relation::fromRelationTable)
+                .map(x -> Relation.fromRelationTable(x, aliasTableDAO))
                 .collect(Collectors.toList());
     }
 
@@ -446,7 +450,7 @@ public class DirectDataAccessService {
 
         return new Pair<>(
                 relations.stream()
-                    .map(Relation::fromRelationTable)
+                    .map(x -> Relation.fromRelationTable(x, aliasTableDAO))
                     .collect(Collectors.toList()),
                 count
         );
@@ -471,7 +475,7 @@ public class DirectDataAccessService {
 
             RelationTable relation = relationOccurrence.getRelation();
 
-            relations.add(Relation.fromRelationTable(relation));
+            relations.add(Relation.fromRelationTable(relation, aliasTableDAO));
             relationOccurrences.add(new Pair<>(relation.getId(), new Occurrence(relationOccurrence.getAnchor(), relationOccurrence.getPosition())));
         }
 

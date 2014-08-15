@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.models;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Triple;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import cz.cuni.mff.ufal.textan.server.services.IdNotFoundException;
@@ -45,10 +46,10 @@ public class Relation {
      * @param relationTable the relation table
      * @return the relation
      */
-    public static Relation fromRelationTable(RelationTable relationTable) {
+    public static Relation fromRelationTable(RelationTable relationTable, IAliasTableDAO aliasTableDAO) {
 
         List<Triple<Object, String, Integer>> objectsInRelation = relationTable.getObjectsInRelation().stream()
-                .map(inRelation -> new Triple<>(Object.fromObjectTable(inRelation.getObject()), inRelation.getRole(), inRelation.getOrder()))
+                .map(inRelation -> new Triple<>(Object.fromObjectTable(inRelation.getObject(), aliasTableDAO.findAllAliasesOfObject(inRelation.getObject())), inRelation.getRole(), inRelation.getOrder()))
                 .collect(Collectors.toList());
 
         //TODO: test if this is unique (distinct)

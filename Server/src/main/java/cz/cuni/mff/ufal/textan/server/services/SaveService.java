@@ -365,18 +365,18 @@ public class SaveService {
     public Problems getProblems(EditingTicket ticket) {
         long nextVersion = ticket.getVersion() + 1;
         List<Object> newObjects = objectTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
-                .map(Object::fromObjectTable)
+                .map(x -> Object.fromObjectTable(x, aliasTableDAO.findAllAliasesOfObject(x)))
                 .collect(Collectors.toList());
 
         List<Relation> newRelations = relationTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
-                .map(Relation::fromRelationTable)
+                .map(x -> Relation.fromRelationTable(x, aliasTableDAO))
                 .collect(Collectors.toList());
 
         List<JoinedObject> newJoinedObjects = joinedObjectsTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
                 .map(x -> new JoinedObject(
-                        Object.fromObjectTable(x.getNewObject()),
-                        Object.fromObjectTable(x.getOldObject1()),
-                        Object.fromObjectTable(x.getOldObject2())))
+                        Object.fromObjectTable(x.getNewObject(), aliasTableDAO.findAllAliasesOfObject(x.getNewObject())),
+                        Object.fromObjectTable(x.getOldObject1(), aliasTableDAO.findAllAliasesOfObject(x.getOldObject1())),
+                        Object.fromObjectTable(x.getOldObject2(), aliasTableDAO.findAllAliasesOfObject(x.getOldObject2()))))
                 .collect(Collectors.toList());
 
         return new Problems(newObjects, newRelations, newJoinedObjects);
