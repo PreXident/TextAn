@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 import cz.cuni.mff.ufal.textan.data.exceptions.JoiningANonRootObjectException;
@@ -11,8 +5,12 @@ import cz.cuni.mff.ufal.textan.data.exceptions.JoiningEqualObjectsException;
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
+
+import java.util.HashSet;
 import java.util.List;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +35,7 @@ public class JoinedObjectsTableDAO extends AbstractHibernateDAO<JoinedObjectsTab
 
     @Override
     public ObjectTable join(ObjectTable obj1, ObjectTable obj2) throws JoiningANonRootObjectException, JoiningEqualObjectsException {
-        // todo checking
+
         if (!obj1.isRoot()) throw new JoiningANonRootObjectException(obj1);
         if (!obj2.isRoot()) throw new JoiningANonRootObjectException(obj2);
         if (obj1.equals(obj2)) throw new JoiningEqualObjectsException();
@@ -45,26 +43,28 @@ public class JoinedObjectsTableDAO extends AbstractHibernateDAO<JoinedObjectsTab
         ObjectTable newObj = new ObjectTable("join(" + obj1.getData() + ", " + obj2.getData() + ")", obj1.getObjectType());
         JoinedObjectsTable joinedObj = new JoinedObjectsTable(newObj, obj1, obj2);
         
-        //todo lock
-        
         objectDAO.add(newObj);
         add(joinedObj);
+
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
         
-        setRootInSubTree(obj1, newObj);
-        setRootInSubTree(obj2, newObj);
+        setRootInSubTree(obj1, newObj, fullTextSession);
+        setRootInSubTree(obj2, newObj, fullTextSession);
         
         return newObj;
     }
     
-    private void setRootInSubTree(ObjectTable obj, ObjectTable root) {
+    private void setRootInSubTree(ObjectTable obj, ObjectTable root, FullTextSession fullTextSession) {
         obj.setRootObject(root);
-        obj.getRootOfObjects().clear();
+        obj.getRootOfObjects().clear(); // clear don't make persistent object dirty, so ve need make index manually, or set new empty list
         root.getRootOfObjects().add(obj);
+
+        fullTextSession.index(obj);
         
         if (obj.getNewObject() == null) return;
         
-        setRootInSubTree(obj.getNewObject().getOldObject1(), root);
-        setRootInSubTree(obj.getNewObject().getOldObject2(), root);
+        setRootInSubTree(obj.getNewObject().getOldObject1(), root, fullTextSession);
+        setRootInSubTree(obj.getNewObject().getOldObject2(), root, fullTextSession);
     }
 
     @Override
