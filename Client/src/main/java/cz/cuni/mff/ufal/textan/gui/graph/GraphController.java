@@ -25,7 +25,7 @@ abstract class GraphController extends WindowController {
     static protected final int MIN_HEIGHT = 400;
 
     /** Minimal width of the graph window. */
-    static protected final int MIN_WIDTH = 560;
+    static protected final int MIN_WIDTH = 600;
 
     /**
      * Loads FXML suitable for the grapher.

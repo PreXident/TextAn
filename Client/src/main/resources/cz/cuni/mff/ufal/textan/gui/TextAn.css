@@ -1,8 +1,8 @@
 #content {
 	display: block;
-	-fx-background-image: url("logo.png");
-        -fx-background-repeat: stretch;
-        -fx-background-position: center center;
+	-fx-background-image: url("logo2.png");
+	-fx-background-repeat: stretch;
+	-fx-background-position: left bottom;
 }
 
 .menu-item-label {

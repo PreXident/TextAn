@@ -9,6 +9,8 @@ import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
+import cz.cuni.mff.ufal.textan.gui.about.AboutStage;
+import cz.cuni.mff.ufal.textan.gui.about.AboutWindow;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentStage;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentWindow;
 import cz.cuni.mff.ufal.textan.gui.document.DocumentsStage;
@@ -84,6 +86,9 @@ public class TextAnController implements Initializable {
     @FXML
     private Menu windowsMenu;
 
+    @FXML
+    private Menu aboutMenu;
+
     /** Properties with application settings. */
     protected Properties settings = null;
 
@@ -128,6 +133,23 @@ public class TextAnController implements Initializable {
             s.toFront();
         }
     };
+
+    @FXML
+    private void about() {
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final AboutWindow aboutWindow = new AboutWindow(this, settings);
+            content.getChildren().add(aboutWindow);
+        } else {
+            final AboutStage aboutStage = new AboutStage(this, settings);
+            children.add(aboutStage);
+            aboutStage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(aboutStage);
+                }
+            });
+            aboutStage.show();
+        }
+    }
 
     @FXML
     private void colors() {
@@ -336,6 +358,14 @@ public class TextAnController implements Initializable {
     public void setSettings(final Properties settings) {
         this.settings = settings;
         client = new Client(settings);
+    }
+
+    /**
+     * Returns stage controlled by this controller.
+     * @return stage controlled by this controller
+     */
+    public Stage getStage() {
+        return stage;
     }
 
     /**

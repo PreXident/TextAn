@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cz.cuni.mff.ufal.textan.gui.settings.SettingsVBox?>
+<?import cz.cuni.mff.ufal.textan.gui.ExposingVBox?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.geometry.Insets?>
@@ -15,7 +15,7 @@
 <?import javafx.scene.text.*?>
 <?import jfxtras.labs.scene.control.BigDecimalField?>
 
-<SettingsVBox fx:id="root" xmlns:fx="http://javafx.com/fxml" styleClass="root"
+<ExposingVBox fx:id="root" xmlns:fx="http://javafx.com/fxml" styleClass="root"
 			fx:controller="cz.cuni.mff.ufal.textan.gui.settings.SettingsController"
                         alignment="CENTER" >
 	<stylesheets >
@@ -48,4 +48,4 @@
                         <TextField fx:id="loginTextField" prefWidth="150"/>
                 </HBox>
         </VBox>
-</SettingsVBox>
+</ExposingVBox>

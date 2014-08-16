@@ -1,11 +1,11 @@
-package cz.cuni.mff.ufal.textan.gui.settings;
+package cz.cuni.mff.ufal.textan.gui;
 
 import javafx.scene.layout.VBox;
 
 /**
  * Simply extends VBox to get to computePref* methods.
  */
-public class SettingsVBox extends VBox {
+public class ExposingVBox extends VBox {
 
     @Override
     public double computePrefHeight(final double d) {

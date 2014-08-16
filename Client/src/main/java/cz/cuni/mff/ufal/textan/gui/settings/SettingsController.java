@@ -1,6 +1,8 @@
 package cz.cuni.mff.ufal.textan.gui.settings;
 
+import cz.cuni.mff.ufal.textan.gui.ExposingVBox;
 import cz.cuni.mff.ufal.textan.gui.InnerWindow;
+import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.CLEAR_FILTERS;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.HYPER_GRAPHS;
@@ -16,9 +18,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 import jfxtras.labs.scene.control.BigDecimalField;
 import org.controlsfx.dialog.Dialogs;
 
@@ -40,7 +41,7 @@ public class SettingsController extends WindowController {
     static protected final int PREF_WIDTH = 265;
 
     @FXML
-    private SettingsVBox root;
+    private ExposingVBox root;
 
     @FXML
     private CheckBox independentWindowsCheckBox;
@@ -50,7 +51,7 @@ public class SettingsController extends WindowController {
 
     @FXML
     private CheckBox clearFiltersCheckBox;
-    
+
     @FXML
     protected TextField loginTextField;
 
@@ -59,7 +60,7 @@ public class SettingsController extends WindowController {
 
     @FXML
     private BigDecimalField distanceField;
-    
+
     /** Localization controller. */
     private ResourceBundle resourceBundle;
 
@@ -104,20 +105,25 @@ public class SettingsController extends WindowController {
                 final String login = loginTextField.getText();
                 if (login == null || login.isEmpty() || login.trim().isEmpty()) {
                     loginTextField.setText(settings.getProperty("username"));
-                    Dialogs.create()
-                            .owner(getDialogOwner(root))
-                            .title(Utils.localize(resourceBundle, PROPERTY_ID))
-                            .masthead(Utils.localize(resourceBundle, "username.error.title"))
-                            .message(Utils.localize(resourceBundle, "username.error.text"))
-                            .lightweight()
-                            .showError();
-                } else {
+                    Platform.runLater(() -> {
+                        final Dialogs dialog = prepareDialog(Dialogs.create()
+                                .owner(getDialogOwner(root))
+                                .title(Utils.localize(resourceBundle, PROPERTY_ID))
+                                .masthead(Utils.localize(resourceBundle, "username.error.title"))
+                                .message(Utils.localize(resourceBundle, "username.error.text")));
+                        if (dialog != null) {
+                            dialog.showError();
+                        }
+                    });
+                } else if (!login.equals(settings.getProperty("username"))) {
                     settings.setProperty("username", login);
-                    Dialogs.create()
-                        .owner(getDialogOwner(root))
-                        .lightweight()
-                        .message(Utils.localize(resourceBundle,"restart.change"))
-                        .showWarning();
+                    Platform.runLater(() -> {
+                        final Dialogs dialog = prepareDialog(Dialogs.create()
+                                .message(Utils.localize(resourceBundle,"restart.change")));
+                        if (dialog != null) {
+                            dialog.showWarning();
+                        }
+                    });
                 }
             }
         });
@@ -144,13 +150,39 @@ public class SettingsController extends WindowController {
     public void setTextAnController(final TextAnController textAnController) {
         this.textAnController = textAnController;
     }
-    
+
+    @Override
+    public void setStage(final OuterStage stage) {
+        super.setStage(stage);
+        Utils.runFXlater(() -> {
+            stage.getInnerWindow().setPrefWidth(root.computePrefWidth(0));
+            stage.getInnerWindow().setPrefHeight(root.computePrefHeight(0) + 40); //guessed titlebar height
+        });
+    }
+
     @Override
     public void setWindow(final InnerWindow window) {
         super.setWindow(window);
         Utils.runFXlater(() -> {
             window.setPrefWidth(root.computePrefWidth(0));
-            window.setPrefHeight(root.computePrefHeight(0) + 30); //guessed titlebar height
+            window.setPrefHeight(root.computePrefHeight(0) + 40); //guessed titlebar height
         });
+    }
+
+    protected Dialogs prepareDialog(final Dialogs dialog) {
+        final Stage mainStage = textAnController.getStage();
+        if (!mainStage.isShowing()) {
+            return null;
+        }
+        if (window != null) {
+            final boolean alreadyClosed = window.getParent() == null;
+            dialog.owner(alreadyClosed ? mainStage : root).lightweight();
+        } else {
+            final boolean stillOpen = stage.isShowing();
+            if (stillOpen) {
+                dialog.owner(stage);
+            }
+        }
+        return dialog;
     }
 }

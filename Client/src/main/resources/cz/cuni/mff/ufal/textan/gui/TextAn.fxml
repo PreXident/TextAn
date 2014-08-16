@@ -65,6 +65,11 @@
 							</accelerator>
 						</MenuItem>
 					</Menu>
+					<Menu>
+						<graphic>
+							<Label text="%about" onMouseClicked="#about"/>
+						</graphic>
+					</Menu>
 				</menus>
 			</MenuBar>
 			<ToolBar>
