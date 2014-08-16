@@ -8,6 +8,8 @@ package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.data.exceptions.JoiningANonRootObjectException;
+import cz.cuni.mff.ufal.textan.data.exceptions.JoiningEqualObjectsException;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.GlobalVersionTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
@@ -352,7 +354,7 @@ public class DAOTest {
     }
     
     @Test
-    public void joinObjectsTest() {
+    public void joinObjectsTest() throws JoiningANonRootObjectException, JoiningEqualObjectsException {
         System.out.println("\n\nJoinObjectTest");
 
         System.out.println("Object: " + object);
