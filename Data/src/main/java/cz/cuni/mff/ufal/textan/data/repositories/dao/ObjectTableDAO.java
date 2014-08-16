@@ -9,9 +9,11 @@ package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
+import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
 import cz.cuni.mff.ufal.textan.data.tables.*;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
@@ -46,8 +48,12 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ObjectTable> findAllByAliasFullText(String pattern, int firstResult, int pageSize) {
-        return addPagination(findAllByAliasFullTextQuery(pattern), firstResult, pageSize).list();
+    public ResultPagination<ObjectTable> findAllByAliasFullTextWithPagination(String pattern, int firstResult, int pageSize) {
+        FullTextQuery query = findAllByAliasFullTextQuery(pattern);
+        List<ObjectTable> results = addPagination(query, firstResult, pageSize).list();
+        int count = query.getResultSize();
+
+        return new ResultPagination<>(firstResult, pageSize, results, count);
     }
 
     @Override
@@ -58,8 +64,12 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern, int firstResult, int pageSize) {
-        return addPagination(findAllByObjTypeAndAliasFullTextQuery(objectTypeId, pattern), firstResult, pageSize).list();
+    public ResultPagination<ObjectTable> findAllByObjTypeAndAliasFullTextWithPagination(long objectTypeId, String pattern, int firstResult, int pageSize) {
+        FullTextQuery query = findAllByObjTypeAndAliasFullTextQuery(objectTypeId, pattern);
+        List<ObjectTable> results = addPagination(query, firstResult, pageSize).list();
+        int count = query.getResultSize();
+
+        return new ResultPagination<>(firstResult, pageSize, results, count);
     }
 
     @Override
@@ -70,8 +80,12 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ObjectTable> findAllByObjectTypeAndAliasSubStr(long objectTypeId, String aliasSubstring, int firstResult, int pageSize) {
-        return addPagination(findAllByObjectTypeAndAliasSubStrQuery(objectTypeId, aliasSubstring), firstResult, pageSize).list();
+    public ResultPagination<ObjectTable> findAllByObjectTypeAndAliasSubStrWithPagination(long objectTypeId, String aliasSubstring, int firstResult, int pageSize) {
+        Query query = findAllByObjectTypeAndAliasSubStrQuery(objectTypeId, aliasSubstring);
+        int count = query.list().size();
+        List<ObjectTable> results = addPagination(query, firstResult, pageSize).list();
+
+        return new ResultPagination<>(firstResult, pageSize, results, count);
     }
 
     @Override
@@ -85,13 +99,18 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ObjectTable> findAllByObjectType(long objectTypeId, int firstResult, int pageSize) {
-        return findAllCriteria()
+    public ResultPagination<ObjectTable> findAllByObjectTypeWithPagination(long objectTypeId, int firstResult, int pageSize) {
+        Criteria criteria = findAllCriteria()
                 .createAlias(getAliasPropertyName(ObjectTable.PROPERTY_NAME_OBJECT_TYPE_ID), "objType", JoinType.INNER_JOIN)
-                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", ObjectTypeTable.PROPERTY_NAME_ID), objectTypeId))
-                .setFirstResult(firstResult)
-                .setMaxResults(pageSize)
-                .list();
+                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", ObjectTypeTable.PROPERTY_NAME_ID), objectTypeId));
+        int count = criteria.list().size();
+
+        criteria.setMaxResults(firstResult);
+        criteria.setMaxResults(pageSize);
+
+        List<ObjectTable> results = criteria.list();
+
+        return new ResultPagination<>(firstResult, pageSize, results, count);
     }
 
     @Override
@@ -100,8 +119,8 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     }
 
     @Override
-    public List<ObjectTable> findAllByObjectType(ObjectTypeTable type, int firstResult, int pageSize) {
-        return findAllByObjectType(type.getId(), firstResult, pageSize);
+    public ResultPagination<ObjectTable> findAllByObjectTypeWithPagination(ObjectTypeTable type, int firstResult, int pageSize) {
+        return findAllByObjectTypeWithPagination(type.getId(), firstResult, pageSize);
     }
 
     @Override
@@ -173,7 +192,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
                 .add(Restrictions.eqProperty(ObjectTable.PROPERTY_NAME_ID, 
                                              ObjectTable.PROPERTY_NAME_ROOT_OBJECT_ID));
     }
-    private Query findAllByAliasFullTextQuery(String pattern) {
+    private FullTextQuery findAllByAliasFullTextQuery(String pattern) {
         FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 
         QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
@@ -186,7 +205,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
         return fullTextSession.createFullTextQuery(query);
     }
     
-    private Query findAllByObjTypeAndAliasFullTextQuery(long objectTypeId, String pattern) {
+    private FullTextQuery findAllByObjTypeAndAliasFullTextQuery(long objectTypeId, String pattern) {
         FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 
         QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
