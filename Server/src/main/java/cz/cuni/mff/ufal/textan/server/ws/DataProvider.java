@@ -6,6 +6,7 @@ import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
+import cz.cuni.mff.ufal.textan.commons.ws.InvalidMergeException;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.services.DirectDataAccessService;
@@ -674,7 +675,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public MergeObjectsResponse mergeObjects(
             @WebParam(partName = "mergeObjects", name = "mergeObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            MergeObjectsRequest mergeObjectsRequest) throws IdNotFoundException {
+            MergeObjectsRequest mergeObjectsRequest) throws IdNotFoundException, InvalidMergeException {
 
         LOG.info("Executing operation mergeObjects: {}", mergeObjectsRequest);
 
@@ -689,6 +690,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation mergeObjects.", e);
             throw translateIdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.InvalidMergeException e) {
+            LOG.warn("Problem in operation mergeObjects.", e);
+            throw translateInvalidMergeException(e);
         }
     }
 
@@ -698,5 +702,12 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         exceptionBody.setFieldValue(e.getFieldValue());
 
         return new IdNotFoundException(e.getMessage(), exceptionBody);
+    }
+
+    private static InvalidMergeException translateInvalidMergeException(cz.cuni.mff.ufal.textan.server.services.InvalidMergeException e) {
+        cz.cuni.mff.ufal.textan.commons.models.dataprovider.InvalidMergeException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.dataprovider.InvalidMergeException();
+        exceptionBody.setObjectId(e.getObjectId());
+
+        return new InvalidMergeException(e.getMessage(), exceptionBody);
     }
 }

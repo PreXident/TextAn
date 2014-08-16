@@ -27,6 +27,7 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDoc
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
+import cz.cuni.mff.ufal.textan.commons.ws.InvalidMergeException;
 import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
@@ -1003,6 +1004,9 @@ public class Client {
             return response.getObjectId();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
+        } catch (InvalidMergeException e) {
+            e.printStackTrace(); //FIXME: handle exception
+            return -1;
         }
     }
 

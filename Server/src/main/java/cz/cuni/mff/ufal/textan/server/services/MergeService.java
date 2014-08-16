@@ -1,5 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.services;
 
+import cz.cuni.mff.ufal.textan.data.exceptions.JoiningANonRootObjectException;
+import cz.cuni.mff.ufal.textan.data.exceptions.JoiningEqualObjectsException;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
@@ -30,25 +32,27 @@ public class MergeService {
      * @param object2Id the identifier of the second object
      * @return the identifier of the new object
      */
-    public long mergeObjects(long object1Id, long object2Id) throws IdNotFoundException {
+    public long mergeObjects(long object1Id, long object2Id) throws IdNotFoundException, InvalidMergeException {
 
         ObjectTable objectTable1 = objectTableDAO.find(object1Id);
         if (objectTable1 == null) {
             throw new IdNotFoundException("object1Id", object1Id);
-        } else if (!objectTable1.isRoot()) {
-            //TODO throw some exception
-            return -1;
         }
 
         ObjectTable objectTable2 = objectTableDAO.find(object2Id);
         if (objectTable2 == null) {
             throw new IdNotFoundException("object2Id", object2Id);
-        } else if (!objectTable2.isRoot()) {
-            //TODO: throw some exception
-            return -1;
         }
 
-        return joinedObjectsTableDAO.join(objectTable1, objectTable2).getId();
+        try {
+            return joinedObjectsTableDAO.join(objectTable1, objectTable2).getId();
+        } catch (JoiningANonRootObjectException e) {
+            long invalidObjectId = ((ObjectTable)e.getTag()).getId();
+            throw new InvalidMergeException("The object with id '" + invalidObjectId + "' is not a root object.", invalidObjectId);
+        } catch (JoiningEqualObjectsException e) {
+            long invalidObjectId = ((ObjectTable)e.getTag()).getId();
+            throw new InvalidMergeException("Merging objects are equal.", invalidObjectId);
+        }
     }
 
     /**

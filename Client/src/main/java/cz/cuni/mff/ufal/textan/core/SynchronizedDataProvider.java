@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.commons.models.dataprovider.*;
 import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
+import cz.cuni.mff.ufal.textan.commons.ws.InvalidMergeException;
 
 import javax.jws.WebParam;
 
@@ -194,7 +195,7 @@ public class SynchronizedDataProvider implements IDataProvider {
     @Override
     synchronized public MergeObjectsResponse mergeObjects(
             final MergeObjectsRequest mergeObjectsRequest)
-            throws IdNotFoundException {
+            throws IdNotFoundException, InvalidMergeException {
         return innerDP.mergeObjects(mergeObjectsRequest);
     }
 }
