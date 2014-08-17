@@ -131,11 +131,13 @@ public class DirectDataAccessService {
      *@param maxResults @return a list of documents
      * @throws IdNotFoundException thrown when object with given id not exists
      */
-    public Pair<List<Pair<Document, Integer>>, Integer> getDocumentsContainingObject(long objectId, int firstResult, int maxResults) throws IdNotFoundException {
+    public Pair<List<Pair<Document, Integer>>, Integer> getDocumentsContainingObject(long objectId, int firstResult, int maxResults) throws IdNotFoundException, NonRootObjectException {
 
         ObjectTable objectTable = objectTableDAO.find(objectId);
         if (objectTable == null) {
             throw new IdNotFoundException("objectId", objectId);
+        } if (!objectTable.isRoot()) {
+            throw new NonRootObjectException(objectId, objectTable.getRootObject().getId());
         }
 
         ResultPagination<Pair<DocumentTable, Integer>> documents = documentTableDAO.findAllDocumentsWithObjectWithPagination(objectId, firstResult, maxResults);
@@ -149,11 +151,13 @@ public class DirectDataAccessService {
 
 
 
-    public Pair<List<Pair<Document, Integer>>, Integer> getFilteredDocumentsContainingObject(long objectId, String pattern, int firstResult, int maxResults) throws IdNotFoundException {
+    public Pair<List<Pair<Document, Integer>>, Integer> getFilteredDocumentsContainingObject(long objectId, String pattern, int firstResult, int maxResults) throws IdNotFoundException, NonRootObjectException {
 
         ObjectTable objectTable = objectTableDAO.find(objectId);
         if (objectTable == null) {
             throw new IdNotFoundException("objectId", objectId);
+        } if (!objectTable.isRoot()) {
+            throw new NonRootObjectException(objectId, objectTable.getRootObject().getId());
         }
 
         ResultPagination<Pair<DocumentTable, Integer>> documents;

@@ -32,7 +32,7 @@ public class MergeService {
      * @param object2Id the identifier of the second object
      * @return the identifier of the new object
      */
-    public long mergeObjects(long object1Id, long object2Id) throws IdNotFoundException, InvalidMergeException {
+    public long mergeObjects(long object1Id, long object2Id) throws IdNotFoundException, InvalidMergeException, NonRootObjectException {
 
         ObjectTable objectTable1 = objectTableDAO.find(object1Id);
         if (objectTable1 == null) {
@@ -47,8 +47,8 @@ public class MergeService {
         try {
             return joinedObjectsTableDAO.join(objectTable1, objectTable2).getId();
         } catch (JoiningANonRootObjectException e) {
-            long invalidObjectId = ((ObjectTable)e.getTag()).getId();
-            throw new InvalidMergeException("The object with id '" + invalidObjectId + "' is not a root object.", invalidObjectId);
+            ObjectTable invalidObject = (ObjectTable)e.getTag();
+            throw new NonRootObjectException(invalidObject.getId(), invalidObject.getRootObject().getId());
         } catch (JoiningEqualObjectsException e) {
             long invalidObjectId = ((ObjectTable)e.getTag()).getId();
             throw new InvalidMergeException("Merging objects are equal.", invalidObjectId);
@@ -61,7 +61,7 @@ public class MergeService {
      * @param objectId the identifier of merged object
      * @return true if object was split, false otherwise
      */
-    public boolean splitObject(long objectId) throws IdNotFoundException {
+    public boolean splitObject(long objectId) throws IdNotFoundException, NonRootObjectException {
         //TODO: implement
         throw new UnsupportedOperationException("Not implemented yet");
     }

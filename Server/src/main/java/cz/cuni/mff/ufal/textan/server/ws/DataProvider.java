@@ -7,6 +7,7 @@ import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.commons.ws.InvalidMergeException;
+import cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.services.DirectDataAccessService;
@@ -240,7 +241,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public GetGraphByObjectIdResponse getGraphByObjectId(
             @WebParam(partName = "getGraphById", name = "getGraphById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetGraphByObjectIdRequest getGraphByObjectIdRequest) throws IdNotFoundException {
+            GetGraphByObjectIdRequest getGraphByObjectIdRequest) throws IdNotFoundException, NonRootObjectException {
 
         LOG.info("Executing operation getGraphByObjectId: {}", getGraphByObjectIdRequest);
 
@@ -254,13 +255,16 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getGraphById.", e);
             throw translateIdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.NonRootObjectException e) {
+            LOG.warn("Problem in operation getGraphById.", e);
+            throw translateNonRootObjectException(e);
         }
     }
 
     @Override
     public GetFilteredDocumentsContainingObjectByIdResponse getFilteredDocumentsContainingObjectById(
             @WebParam(partName = "getFilteredDocumentsContainingObjectByIdRequest", name = "getFilteredDocumentsContainingObjectByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetFilteredDocumentsContainingObjectByIdRequest getFilteredDocumentsContainingObjectByIdRequest) throws IdNotFoundException {
+            GetFilteredDocumentsContainingObjectByIdRequest getFilteredDocumentsContainingObjectByIdRequest) throws IdNotFoundException, NonRootObjectException {
         LOG.info("Executing operation getFilteredDocumentsContainingObjectById: {}", getFilteredDocumentsContainingObjectByIdRequest);
 
         try {
@@ -286,6 +290,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getFilteredDocumentsContainingObjectById.", e);
             throw translateIdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.NonRootObjectException e) {
+            LOG.warn("Problem in operation getFilteredDocumentsContainingObjectById.", e);
+            throw translateNonRootObjectException(e);
         }
     }
 
@@ -293,7 +300,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     public GetRelatedObjectsByIdResponse getRelatedObjectsById(
             @WebParam(partName = "getRelatedObjectsById", name = "getRelatedObjectsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
             GetRelatedObjectsByIdRequest getRelatedObjectsByIdRequest)
-            throws IdNotFoundException {
+            throws IdNotFoundException, NonRootObjectException {
 
         LOG.info("Executing operation getRelatedObjectsById: {}", getRelatedObjectsByIdRequest);
         try {
@@ -306,6 +313,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getRelatedObjectsById.", e);
             throw translateIdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.NonRootObjectException e) {
+            LOG.warn("Problem in operation getRelatedObjectsById.", e);
+            throw translateNonRootObjectException(e);
         }
     }
 
@@ -376,7 +386,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public GetDocumentsContainingObjectByIdResponse getDocumentsContainingObjectById(
             @WebParam(partName = "getDocumentsContainsObjectByIdRequest", name = "getDocumentsContainsObjectByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetDocumentsContainingObjectByIdRequest getDocumentsContainingObjectByIdRequest) throws IdNotFoundException {
+            GetDocumentsContainingObjectByIdRequest getDocumentsContainingObjectByIdRequest) throws IdNotFoundException, NonRootObjectException {
 
         LOG.info("Executing operation getDocumentsContainsObjectById: {}", getDocumentsContainingObjectByIdRequest);
 
@@ -402,6 +412,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getDocumentsContainsObjectById.", e);
             throw translateIdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.NonRootObjectException e) {
+            LOG.warn("Problem in operation getDocumentsContainsObjectById.", e);
+            throw translateNonRootObjectException(e);
         }
     }
 
@@ -467,7 +480,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public SplitObjectResponse splitObject(
             @WebParam(partName = "splitObject", name = "splitObject", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            SplitObjectRequest splitObjectRequest) throws IdNotFoundException {
+            SplitObjectRequest splitObjectRequest) throws IdNotFoundException, NonRootObjectException {
 
         LOG.info("Executing operation splitObject: {}", splitObjectRequest);
 
@@ -483,6 +496,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation splitObject.", e);
             throw translateIdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.NonRootObjectException e) {
+            LOG.warn("Problem in operation splitObject.", e);
+            throw translateNonRootObjectException(e);
         }
     }
 
@@ -511,7 +527,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public GetPathByIdResponse getPathById(
             @WebParam(partName = "getPathById", name = "getPathById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            GetPathByIdRequest getPathByIdRequest) throws IdNotFoundException {
+            GetPathByIdRequest getPathByIdRequest) throws IdNotFoundException, NonRootObjectException {
 
         LOG.info("Executing operation getPathById: {}", getPathByIdRequest);
 
@@ -525,6 +541,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         } catch (cz.cuni.mff.ufal.textan.server.services.IdNotFoundException e) {
             LOG.warn("Problem in operation getPathById.", e);
             throw translateIdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.NonRootObjectException e) {
+            LOG.warn("Problem in operation getPathById.", e);
+            throw translateNonRootObjectException(e);
         }
     }
 
@@ -675,7 +694,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
     @Override
     public MergeObjectsResponse mergeObjects(
             @WebParam(partName = "mergeObjects", name = "mergeObjects", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/dataProvider")
-            MergeObjectsRequest mergeObjectsRequest) throws IdNotFoundException, InvalidMergeException {
+            MergeObjectsRequest mergeObjectsRequest) throws IdNotFoundException, InvalidMergeException, NonRootObjectException {
 
         LOG.info("Executing operation mergeObjects: {}", mergeObjectsRequest);
 
@@ -693,6 +712,9 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         } catch (cz.cuni.mff.ufal.textan.server.services.InvalidMergeException e) {
             LOG.warn("Problem in operation mergeObjects.", e);
             throw translateInvalidMergeException(e);
+        } catch (cz.cuni.mff.ufal.textan.server.services.NonRootObjectException e) {
+            LOG.warn("Problem in operation mergeObjects.", e);
+            throw translateNonRootObjectException(e);
         }
     }
 
@@ -709,5 +731,13 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
         exceptionBody.setObjectId(e.getObjectId());
 
         return new InvalidMergeException(e.getMessage(), exceptionBody);
+    }
+
+    private static NonRootObjectException translateNonRootObjectException(cz.cuni.mff.ufal.textan.server.services.NonRootObjectException e) {
+        cz.cuni.mff.ufal.textan.commons.models.NonRootObjectException exceptionBody = new cz.cuni.mff.ufal.textan.commons.models.NonRootObjectException();
+        exceptionBody.setObjectId(e.getObjectId());
+        exceptionBody.setRootObjectId(e.getRootObjectId());
+
+        return new NonRootObjectException(e.getMessage(), exceptionBody);
     }
 }
