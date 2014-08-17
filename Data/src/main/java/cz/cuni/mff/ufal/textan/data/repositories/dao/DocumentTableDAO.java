@@ -304,11 +304,13 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
     
     private Query findAllDocumentsWithObjectQuery(long objectId) {
         Query hq = currentSession().createQuery(
-                "select doc, count(occ) as num from DocumentTable as doc "
+                "select doc, count(occ) as num "
+                + "from DocumentTable as doc "
                         + "inner join doc.aliasOccurrences as occ "
                         + "inner join occ.alias as alias "
                         + "inner join alias.object as obj "
-                        +"where obj.id = :objectId "
+                        + "inner join obj.rootObject as root "
+                + "where root.id = :objectId "
                 + "group by doc.id "
                 + "order by num desc"
         );
@@ -323,7 +325,8 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                         + "inner join doc.aliasOccurrences as occ "
                         + "inner join occ.alias as alias "
                         + "inner join alias.object as obj "
-                        + "where doc.id = :documentId and obj.id = :objectId "
+                        + "inner join obj.rootObject as root"
+                + "where doc.id = :documentId and root.id = :objectId "
         );
         hq.setParameter("documentId", documentId);
         hq.setParameter("objectId", objectId);
