@@ -24,6 +24,8 @@
 \usepackage{titlesec}
 \usepackage{fontspec}
 \usepackage{epstopdf,epsfig} 
+\usepackage{enumitem}
+\setlist[description]{leftmargin=\parindent,labelindent=!}
 
 \definecolor{TextanDarkRed}{cmyk}{.37,.94,.83,.59}
 \definecolor{TextanRed}{cmyk}{.0,.879,.844,.220}
@@ -434,20 +436,17 @@ All inputs are assumed to be in UTF-8 encoding.
 
 
 \paragraph{ner\_identifier}
-Identifier of the named entity recognizer type. This affects the tokenizer used in this model, and in theory any other aspect of the recognizer. Supported values are:
-\begin{description}
-\item[$\cdot$] czech
-\item[$\cdot$] english
-\item[$\cdot$] generic
-\end{description}
+Identifier of the named entity recognizer type. This affects the tokenizer used
+in this model, and in theory any other aspect of the recognizer. Supported values
+are: \emph{czech}, \emph{english}, \emph{generic}.
 
 \paragraph{tagger}
 Identifier of tagger. NameTag can utilize several taggers to obtain the tags and lemmas:
 
 \begin{description}
-\item[$\cdot$ trivial] Do not use any tagger. The lemma is the same as the given form and there is no part of speech tag.
-\item[$\cdot$ external] Use some external tagger. The input "forms" can contain multiple tab-separated values, first being the form, second the lemma and the rest is part of speech tag. The part of speech tag is optional. The lemma is also optional and if missing, the form itself is used as a lemma.
-\item[$\cdot$ morphodita:model] Use MorphoDiTa as a tagger with the specified model. This tagger model is embedded in resulting named entity recognizer model. The lemmatizer model of MorphoDiTa is recommended, because it is very fast, small and detailed part of speech tags do not improve the performance of the named entity recognizer significantly.
+\item[trivial] Do not use any tagger. The lemma is the same as the given form and there is no part of speech tag.
+\item[external] Use some external tagger. The input "forms" can contain multiple tab-separated values, first being the form, second the lemma and the rest is part of speech tag. The part of speech tag is optional. The lemma is also optional and if missing, the form itself is used as a lemma.
+\item[morphodita:model] Use MorphoDiTa as a tagger with the specified model. This tagger model is embedded in resulting named entity recognizer model. The lemmatizer model of MorphoDiTa is recommended, because it is very fast, small and detailed part of speech tags do not improve the performance of the named entity recognizer significantly.
 \end{description}
 
 \paragraph{featuresFile}
