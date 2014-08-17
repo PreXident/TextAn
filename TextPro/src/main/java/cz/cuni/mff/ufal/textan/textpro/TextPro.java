@@ -20,7 +20,8 @@ import weka.core.Instance;
  * @author Petr Fanta
  * @see cz.cuni.mff.ufal.textan.textpro.ITextPro
  * @author Tam Hoang
- * Implement the first ranking scheme DoubleRanking(document, list of entities, number of K)
+ * Implement the ranking scheme HeuristicRanking(document, list of entities, number of K)
+ * Implement the machine learning scheme MachineLearning 
  */
 @Transactional
 public class TextPro implements ITextPro {
@@ -97,6 +98,9 @@ public class TextPro implements ITextPro {
         
     }
     
+    /*
+    * Learn function: Run machine learning and build the model from database
+    */
     @Override
     public void learn() {
         LOG.debug("Starting TexPro learning.");
@@ -109,20 +113,23 @@ public class TextPro implements ITextPro {
 
         LOG.debug("Finished TexPro learning.");
     }
-    //TODO: implement or change interface method
 
-
+    /*
+    * TokenizeDoc: split the document into a list of tokens
+    * For now: not needed yet.
+    */
     @Override
     public List<String> TokenizeDoc(String document) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
     
     /**
-     * Double ranking is the main function of TextPro
+     * HeuristicRanking: Run a simple ranking schema to get the reusult
      * It takes the input as a documents, a list of entity and the number of wanted result
      * It produces the output as a Map between the entity and the id of object, along with it scores
      * @param document
      * @param eList
+     * @param topK
      * @return the result of DoubleRank
      */
     @Override
@@ -223,7 +230,7 @@ public class TextPro implements ITextPro {
     }
     /*
     * Machine Learning with Weka, not JavaML
-    * Return the same kind of value as Ranking
+    * Return the same kind of value as HeuristicRanking
     */
     @Override
     public Map<Entity, List<Pair<Long, Double>>> MachineLearning(String document, List<Entity> eList, int topK) {
@@ -330,8 +337,9 @@ public class TextPro implements ITextPro {
         }
         return false;
     }
+
     /*
-    * Function: Get the object related to an entity
+    * getCloseObject: Get the object related to an entity by searching its alias
     */
     public List<ObjectTable> getCloseObject(Entity e){
         List<ObjectTable> matchFullText = this.objectTableDAO.findAllByAliasFullText(e.getText());
@@ -341,6 +349,9 @@ public class TextPro implements ITextPro {
         return matchFullText;
     }
     
+    /*
+    * getCloseObjectID: Get the object ID related to an entity by searching its alias
+    */    
     public ArrayList<Long> getCloseObjectID(Entity e){
         List<ObjectTable> oList =  getCloseObject(e);
         ArrayList<Long> ID = new ArrayList<Long>();
