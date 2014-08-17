@@ -5,6 +5,7 @@ import cz.cuni.mff.ufal.textan.commons.models.dataprovider.Void;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.commons.ws.InvalidMergeException;
+import cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException;
 
 import javax.jws.WebParam;
 
@@ -83,21 +84,21 @@ public class SynchronizedDataProvider implements IDataProvider {
     @Override
     synchronized public GetGraphByObjectIdResponse getGraphByObjectId(
             final GetGraphByObjectIdRequest getGraphByIdRequest)
-            throws IdNotFoundException {
+            throws IdNotFoundException, NonRootObjectException {
         return innerDP.getGraphByObjectId(getGraphByIdRequest);
     }
 
     @Override
     synchronized public GetFilteredDocumentsContainingObjectByIdResponse getFilteredDocumentsContainingObjectById(
             final GetFilteredDocumentsContainingObjectByIdRequest getFilteredDocumentsContainingObjectByIdRequest)
-            throws IdNotFoundException {
+            throws IdNotFoundException, NonRootObjectException {
         return innerDP.getFilteredDocumentsContainingObjectById(getFilteredDocumentsContainingObjectByIdRequest);
     }
 
     @Override
     synchronized public GetRelatedObjectsByIdResponse getRelatedObjectsById(
             final GetRelatedObjectsByIdRequest getRelatedObjectsByIdRequest)
-            throws IdNotFoundException {
+            throws IdNotFoundException, NonRootObjectException {
         return innerDP.getRelatedObjectsById(getRelatedObjectsByIdRequest);
     }
 
@@ -117,7 +118,7 @@ public class SynchronizedDataProvider implements IDataProvider {
     @Override
     synchronized public GetDocumentsContainingObjectByIdResponse getDocumentsContainingObjectById(
             final GetDocumentsContainingObjectByIdRequest getDocumentsContainingObjectByIdRequest)
-            throws IdNotFoundException {
+            throws IdNotFoundException, NonRootObjectException {
         return innerDP.getDocumentsContainingObjectById(getDocumentsContainingObjectByIdRequest);
     }
 
@@ -137,7 +138,7 @@ public class SynchronizedDataProvider implements IDataProvider {
     @Override
     synchronized public SplitObjectResponse splitObject(
             final SplitObjectRequest splitObjectRequest)
-            throws IdNotFoundException {
+            throws IdNotFoundException, NonRootObjectException {
         return innerDP.splitObject(splitObjectRequest);
     }
 
@@ -150,7 +151,7 @@ public class SynchronizedDataProvider implements IDataProvider {
 
     @Override
     synchronized public GetPathByIdResponse getPathById(
-            final GetPathByIdRequest getPathByIdRequest) throws IdNotFoundException {
+            final GetPathByIdRequest getPathByIdRequest) throws IdNotFoundException, NonRootObjectException {
         return innerDP.getPathById(getPathByIdRequest);
     }
 
@@ -195,7 +196,7 @@ public class SynchronizedDataProvider implements IDataProvider {
     @Override
     synchronized public MergeObjectsResponse mergeObjects(
             final MergeObjectsRequest mergeObjectsRequest)
-            throws IdNotFoundException, InvalidMergeException {
+            throws IdNotFoundException, InvalidMergeException, NonRootObjectException {
         return innerDP.mergeObjects(mergeObjectsRequest);
     }
 }
