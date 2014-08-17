@@ -47,4 +47,9 @@ public interface ITextPro {
     */
     public void learn();    
     
+    /*
+    * FinalRanking: The combination of heuristic ranking and machine learning, in case we want something interesting
+    */
+    public Map<Entity, List<Pair<Long, Double>>> FinalRanking(String document, List<Entity> eList, int topK);
+    
 }

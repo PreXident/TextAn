@@ -59,7 +59,7 @@ public class TestMachineLearning {
     ITextPro textPro;
 
     /*
-     Test the ranking and learning
+     Test the learning
      */
     @Test
     public void TestML() {
@@ -92,6 +92,28 @@ public class TestMachineLearning {
         eList.add(e);
         List<ObjectTable> oList = objectTableDAO.findAllByAliasSubstring(e.getText());
         assertEquals("1 objst to find close", 1000, oList.size());   
+    }
+    
+    /*
+     Test the ranking and learning
+     */
+    @Test
+    public void TestFinalRanking() {
+        // Learn from database
+        textPro.learn();
+        
+        // Create fake test
+        Entity e = new Entity("Emily", 0, 0 , 1);
+        List<Entity> eList = new ArrayList<>();
+        eList.add(e);
+        
+        // Run the ranking
+        Map<Entity, List<Pair<Long, Double>>> result = textPro.FinalRanking("Empty", eList, 5);
+        // If everything is alright, it will call both ML and HR
+        List<Pair<Long, Double>> Olist = result.get(e);
+        //assertEquals("1: entity to match", 1, result.keySet().size());
+        //assertEquals("2: one object found", 1, Olist.size());
+        //assertEquals("2 zero object", 1, Olist.keySet().size());
     }
     
 }

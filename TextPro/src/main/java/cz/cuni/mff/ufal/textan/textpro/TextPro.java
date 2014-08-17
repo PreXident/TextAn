@@ -361,5 +361,67 @@ public class TextPro implements ITextPro {
         return ID;
     }
     
+    /*
+    * Combine Ranking: Combine the ML and HR
+    * Method: If the object co-occur in two list, the result is the sum, 
+              otherwise get the result of machine learning
+    */
+    @Override
+    public Map<Entity, List<Pair<Long, Double>>> FinalRanking(String document, List<Entity> eList, int topK) {
+        Map<Entity, List<Pair<Long, Double>>> mapHR = HeuristicRanking(document, eList, 2*topK);
+        Map<Entity, List<Pair<Long, Double>>> mapML = MachineLearning(document, eList, 2*topK);
+        Map<Entity, List<Pair<Long, Double>>> mapFinal = new HashMap<Entity, List<Pair<Long, Double>>>();
+        for(Entity e:mapML.keySet()) {
+            if(!mapHR.containsKey(e)) {
+                // There is some exception there if two lists does not contain the same key
+            } else {
+                List<Pair<Long, Double>> listHR = mapHR.get(e);
+                List<Pair<Long, Double>> listML = mapML.get(e);
+                
+                // Create two list from the pair list of Machine Learning
+                List<Long> listIdML = new ArrayList();
+                List<Double> listScoreML = new ArrayList();
+                Map<Long,Double> eMapML = new HashMap();
+                for(Pair<Long, Double> p:listML) {
+                    listIdML.add(p.getFirst());
+                    listScoreML.add(p.getSecond());
+                    eMapML.put(p.getFirst(), p.getSecond());
+                }
+                
+                // Update the list of eMapML from the list of HR
+                for(Pair<Long, Double> p:listHR) {
+                    if(eMapML.containsKey(p.getFirst())) {
+                        eMapML.put(p.getFirst(), eMapML.get(p.getFirst()) + p.getSecond());
+                    }
+                }
+                
+                // Select the top K
+                List<Pair<Long, Double>> finalTopK = new ArrayList<>();
+                Set<Long> acceptTopK = new HashSet<>();
+                for (int iter = 0; iter < topK; iter++) {
+                    double highestScore = 0;
+                    long highestId = -1;
+                    for (Long objectId : eMapML.keySet()) {
+                        if(acceptTopK.contains(objectId)) {
+                            continue;
+                        }
+                        double objectScore = eMapML.get(objectId);
+                        if(objectScore > highestScore) {
+                            highestScore = objectScore;
+                            highestId = objectId;
+                        }
+                    }
+                    
+                    // add to list
+                    if(highestId > -1) {
+                        finalTopK.add(new Pair<>(highestId, highestScore));
+                        acceptTopK.add(highestId);
+                    }
+                }
+                mapFinal.put(e, finalTopK);
+            }
+        }
+        return mapFinal;
+    }
     
 }
