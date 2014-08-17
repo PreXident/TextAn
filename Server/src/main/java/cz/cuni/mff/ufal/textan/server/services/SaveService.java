@@ -234,11 +234,15 @@ public class SaveService {
                     objectIdMapping.put(objectId, objectTable);
                 } else {
                     objectTable = objectIdMapping.get(objectId);
+                    //todo: test if object is still root?
                 }
 
             } else {
                 //find object in db
                 objectTable = objectTableDAO.find(objectId);
+                if (!objectTable.isRoot()) {
+                    objectTable = objectTable.getRootObject();
+                }
             }
 
             if (objectTable == null) {
