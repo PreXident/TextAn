@@ -1,8 +1,6 @@
 package cz.cuni.mff.ufal.textan.data.test.common;
 
-import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.DocumentTableDAO;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

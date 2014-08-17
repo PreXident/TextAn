@@ -325,6 +325,45 @@ public class DAOTest {
         assertTrue("Document not found", false);
 
     }
+
+    @Test
+    public void findAllDocumentsWithObjectTest() {
+        List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithObject(object);
+        for (Pair<DocumentTable, Integer> objectTableCountPair : res) {
+            if (objectTableCountPair.getFirst().equals(document)) {
+                Assert.assertEquals("Count is not 1", 1, objectTableCountPair.getSecond().intValue());
+                return;
+            }
+        }
+        assertTrue("Document not found", false);
+
+    }
+    
+    @Test
+    public void findAllDocumentsWithObjectByFullTextTest() {
+        List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithObjectByFullText(object.getId(), "document");
+        for (Pair<DocumentTable, Integer> objectTableCountPair : res) {
+            if (objectTableCountPair.getFirst().equals(document)) {
+                Assert.assertEquals("Count is not 1", 1, objectTableCountPair.getSecond().intValue());
+                return;
+            }
+        }
+        assertTrue("Document not found", false);
+
+    }
+    
+    @Test
+    public void findAllDocumentsWithObjectByFullTextFailTest() {
+        List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithObjectByFullText(object.getId(), "documentBlamBlum");
+        for (Pair<DocumentTable, Integer> objectTableCountPair : res) {
+            if (objectTableCountPair.getFirst().equals(document)) {
+                Assert.assertEquals("Count is not 0", 0, objectTableCountPair.getSecond().intValue());
+                return;
+            }
+        }
+        assertTrue("Document not found", false);
+
+    }
     
     @Test
     public void globalVersionTest() {
