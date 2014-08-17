@@ -126,7 +126,7 @@ public class TextPro implements ITextPro {
      * @return the result of DoubleRank
      */
     @Override
-    public Map<Entity, List<Pair<Long, Double>>> Ranking(String document, List<Entity> eList, int topK){
+    public Map<Entity, List<Pair<Long, Double>>> HeuristicRanking(String document, List<Entity> eList, int topK){
 
         LOG.debug("Starting TexPro ranking.");
 
