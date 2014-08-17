@@ -23,6 +23,14 @@
             <xs:element name="fieldValue" nillable="true" type="xs:long"/>
         </xs:sequence>
     </xs:complexType>
+    
+    <xs:element name="nonRootObjectException" type="NonRootObjectException"/>
+    <xs:complexType name="NonRootObjectException">
+        <xs:sequence>
+            <xs:element name="objectId" type="xs:long"/>
+            <xs:element name="rootObjectId" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="Occurrence">
         <xs:sequence>

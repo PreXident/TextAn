@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The root spring configuration.
@@ -249,5 +251,10 @@ public class AppConfig implements ApplicationContextAware {
     @DependsOn("transactionManager")
     public NamedEntityRecognizer namedEntityRecognizer() {
         return new NamedEntityRecognizer(objectTypeTableDAO, entityViewDAO, documentTableDAO);
+    }
+
+    @Bean
+    public Lock writeLock() {
+        return new ReentrantLock();
     }
 }

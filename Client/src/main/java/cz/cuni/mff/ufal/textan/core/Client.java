@@ -28,6 +28,7 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.commons.ws.InvalidMergeException;
+import cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException;
 import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
@@ -394,6 +395,9 @@ public class Client {
             return new Pair<>(list, response.getTotalNumberOfResults());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
+        } catch (NonRootObjectException e) {
+            e.printStackTrace(); //FIXME: handle exception
+            return null;
         }
     }
 
@@ -494,6 +498,9 @@ public class Client {
             return new Graph(response.getGraph());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
+        } catch (NonRootObjectException e) {
+            e.printStackTrace(); //FIXME: handle exception
+            return null;
         }
     }
 
@@ -1019,6 +1026,9 @@ public class Client {
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
         } catch (InvalidMergeException e) {
+            e.printStackTrace(); //FIXME: handle exception
+            return -1;
+        } catch (NonRootObjectException e) {
             e.printStackTrace(); //FIXME: handle exception
             return -1;
         }

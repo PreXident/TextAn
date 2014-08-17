@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
+import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable;
 
@@ -29,7 +30,7 @@ public interface IRelationTableDAO extends
      * @param pageSize
      * @return 
      */
-    List<RelationTable> findAllByRelationType(long relationTypeId, int firstResult, int pageSize);
+    ResultPagination<RelationTable> findAllByRelationTypeWithPagination(long relationTypeId, int firstResult, int pageSize);
     
     /**
      * finds all relations of specified type
@@ -46,7 +47,7 @@ public interface IRelationTableDAO extends
      * @param pageSize
      * @return 
      */
-    List<RelationTable> findAllByRelationType(RelationTypeTable type, int firstResult, int pageSize);
+    ResultPagination<RelationTable> findAllByRelationTypeWithPagination(RelationTypeTable type, int firstResult, int pageSize);
 
     /**
      * 
@@ -56,9 +57,9 @@ public interface IRelationTableDAO extends
     List<RelationTable> findAllSinceGlobalVersion(long version);
 
     List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter);
-    List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter, int firstResult, int maxResults);
+    ResultPagination<RelationTable> findAllByRelTypeAndAnchorFullTextWithPagination(long relationTypeId, String anchorFilter, int firstResult, int maxResults);
 
 
     List<RelationTable> findAllByAnchorFullText(String anchorFilter);
-    List<RelationTable> findAllByAnchorFullText(String anchorFilter, int firstResult, int maxResults);
+    ResultPagination<RelationTable> findAllByAnchorFullTextWithPagination(String anchorFilter, int firstResult, int maxResults);
 }

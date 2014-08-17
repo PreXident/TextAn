@@ -7,6 +7,7 @@ import cz.cuni.mff.ufal.textan.data.graph.RelationNode;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.server.models.Graph;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.models.Relation;
@@ -39,15 +40,15 @@ public class GraphService {
         this.relationTableDAO = relationTableDAO;
     }
 
-    public Graph getPath(long startObjectId, long targetObjectId) throws IdNotFoundException {
+    public Graph getPath(long startObjectId, long targetObjectId) throws IdNotFoundException, NonRootObjectException {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public Graph getGraphFromObject(long objectId, int distance) throws IdNotFoundException {
+    public Graph getGraphFromObject(long objectId, int distance) throws IdNotFoundException, NonRootObjectException {
         return getGraphInner(objectId, distance);
     }
 
-    public Graph getRelatedObjects(long objectId) throws IdNotFoundException {
+    public Graph getRelatedObjects(long objectId) throws IdNotFoundException, NonRootObjectException {
         return getGraphInner(objectId, 1);
     }
 
@@ -79,15 +80,18 @@ public class GraphService {
         return new Graph(nodes, edges);
     }
 
-    private Graph getGraphInner(long objectId, int distance) throws IdNotFoundException {
+    private Graph getGraphInner(long objectId, int distance) throws IdNotFoundException, NonRootObjectException {
         List<Object> nodes = new ArrayList<>();
         List<Relation> edges = new ArrayList<>();
 
-        cz.cuni.mff.ufal.textan.data.graph.Graph dataGraph = graphFactory.getGraphFromObject(objectId, distance);
-
-        if (dataGraph.getNodes().isEmpty()) {
+        ObjectTable objectTable = objectTableDAO.find(objectId);
+        if (objectTable == null) {
             throw new IdNotFoundException("objectId", objectId);
+        } else if (!objectTable.isRoot()) {
+            throw new NonRootObjectException(objectId, objectTable.getRootObject().getId());
         }
+
+        cz.cuni.mff.ufal.textan.data.graph.Graph dataGraph = graphFactory.getGraphFromObject(objectId, distance);
 
         for (Node node : dataGraph.getNodes()) {
 
