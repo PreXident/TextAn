@@ -50,6 +50,10 @@ public class MergeService {
             throw new IdNotFoundException("object2Id", object2Id);
         }
 
+        if (!objectTable1.getObjectType().equals(objectTable2.getObjectType())) {
+            throw new InvalidMergeException("Objects have different type.");
+        }
+
         writeLock.lock();
         try {
             return joinedObjectsTableDAO.join(objectTable1, objectTable2).getId();
