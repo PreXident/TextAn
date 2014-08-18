@@ -357,11 +357,11 @@ public class DAOTest {
         List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithObjectByFullText(object.getId(), "documentBlamBlum");
         for (Pair<DocumentTable, Integer> objectTableCountPair : res) {
             if (objectTableCountPair.getFirst().equals(document)) {
-                Assert.assertEquals("Count is not 0", 0, objectTableCountPair.getSecond().intValue());
+                Assert.fail("Found some shit bro" + objectTableCountPair);
                 return;
             }
         }
-        assertTrue("Document not found", false);
+        
 
     }
     

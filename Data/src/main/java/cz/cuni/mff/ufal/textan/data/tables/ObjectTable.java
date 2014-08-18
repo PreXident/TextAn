@@ -124,7 +124,7 @@ public class ObjectTable extends AbstractTable {
         this.objectType = objectType;
     }
 
-    @OneToMany(mappedBy = "object", orphanRemoval = true)
+    @OneToMany(mappedBy = "object")
     @Cascade(CascadeType.ALL)
     @IndexedEmbedded(includePaths = "alias")
     @ContainedIn
@@ -136,7 +136,7 @@ public class ObjectTable extends AbstractTable {
         this.aliases = aliases;
     }
 
-    @OneToMany(mappedBy = "object", orphanRemoval = true)
+    @OneToMany(mappedBy = "object")
     @Cascade(CascadeType.DELETE)
     public Set<InRelationTable> getRelations() {
         return relations;
@@ -146,7 +146,7 @@ public class ObjectTable extends AbstractTable {
         this.relations = relations;
     }
 
-    @OneToOne(mappedBy = "newObject", orphanRemoval = true)
+    @OneToOne(mappedBy = "newObject")
     @Cascade(CascadeType.DELETE)
     public JoinedObjectsTable getNewObject() {
         return newObject;
@@ -156,7 +156,7 @@ public class ObjectTable extends AbstractTable {
         this.newObject = newObject;
     }
 
-    @OneToMany(mappedBy = "oldObject1", orphanRemoval = true)
+    @OneToMany(mappedBy = "oldObject1")
     @Cascade(CascadeType.DELETE)
     public Set<JoinedObjectsTable> getOldObjects1() {
         return oldObjects1;
@@ -166,7 +166,7 @@ public class ObjectTable extends AbstractTable {
         this.oldObjects1 = oldObjects1;
     }
 
-    @OneToMany(mappedBy = "oldObject2", orphanRemoval = true)
+    @OneToMany(mappedBy = "oldObject2")
     @Cascade(CascadeType.DELETE)
     public Set<JoinedObjectsTable> getOldObjects2() {
         return oldObjects2;

@@ -55,7 +55,7 @@ public class ObjectTypeTable extends AbstractTable {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "objectType", orphanRemoval = true)
+    @OneToMany(mappedBy = "objectType")
     @Cascade(CascadeType.ALL)
     //@ContainedIn // -> immutable object
     public Set<ObjectTable> getObjectsOfThisType() {

@@ -55,9 +55,15 @@ public class JoinedObjectsTable extends AbstractTable {
     public JoinedObjectsTable(Date from, Date to, ObjectTable newObject, ObjectTable oldObject1, ObjectTable oldObject2) {
         this.from = from;
         this.to = to;
+        
         this.setNewObject(newObject);
-        this.setOldObject1(oldObject1);
+        this.newObject.setNewObject(this);
+        
+        this.oldObject1 = oldObject1;
+        this.oldObject1.getOldObjects1().add(this);
+        
         this.setOldObject2(oldObject2);
+        this.oldObject2.getOldObjects2().add(this);
     }
 
     @Id

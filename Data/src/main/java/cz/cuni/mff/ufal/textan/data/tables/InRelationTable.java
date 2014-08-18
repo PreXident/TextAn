@@ -35,8 +35,12 @@ public class InRelationTable extends AbstractTable {
     public InRelationTable(String role, int order, RelationTable relation, ObjectTable object) {
         this.role = role;
         this.order = order;
+        
         this.relation = relation;
+        this.relation.getObjectsInRelation().add(this);
+        
         this.object = object;
+        this.object.getRelations().add(this);
     }
 
     @Id

@@ -41,6 +41,7 @@ public class RelationTable extends AbstractTable {
 
     public RelationTable(RelationTypeTable objectType) {
         this.relationType = objectType;
+        this.relationType.getRelationsOfThisType().add(this);
     }
 
     @Id
@@ -76,7 +77,7 @@ public class RelationTable extends AbstractTable {
         this.relationType = relationType;
     }
 
-    @OneToMany(mappedBy = "relation", orphanRemoval = true)
+    @OneToMany(mappedBy = "relation")
     @Cascade(CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @IndexedEmbedded(includePaths = "anchor")
@@ -89,7 +90,7 @@ public class RelationTable extends AbstractTable {
         this.occurrences = occurrences;
     }
 
-    @OneToMany(mappedBy = "relation", orphanRemoval = true)
+    @OneToMany(mappedBy = "relation")
     @Cascade(CascadeType.ALL)
     public Set<InRelationTable> getObjectsInRelation() {
         return objectsInRelation;

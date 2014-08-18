@@ -325,7 +325,7 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                         + "inner join doc.aliasOccurrences as occ "
                         + "inner join occ.alias as alias "
                         + "inner join alias.object as obj "
-                        + "inner join obj.rootObject as root"
+                        + "inner join obj.rootObject as root "
                 + "where doc.id = :documentId and root.id = :objectId "
         );
         hq.setParameter("documentId", documentId);

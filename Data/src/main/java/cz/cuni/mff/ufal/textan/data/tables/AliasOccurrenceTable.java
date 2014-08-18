@@ -46,8 +46,12 @@ public class AliasOccurrenceTable extends AbstractTable {
      */
     public AliasOccurrenceTable(int position, AliasTable alias, DocumentTable document) {
         this.position = position;
+        
         this.alias = alias;
+        this.alias.getOccurrences().add(this);
+        
         this.document = document;
+        this.document.getAliasOccurrences().add(this);
     }
 
     /**
