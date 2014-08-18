@@ -75,4 +75,7 @@ public interface IObjectTableDAO extends
      */
     List<ObjectTable> findAllByObjectType(ObjectTypeTable type);
     
+    List<ObjectTable> getNeighbors(ObjectTable object);
+    List<ObjectTable> getNeighbors(long objectId);    
+    
 }

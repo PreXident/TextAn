@@ -185,6 +185,16 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
                 .list();
                 
     }
+    
+    @Override
+    public List<ObjectTable> getNeighbors(ObjectTable object) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<ObjectTable> getNeighbors(long objectId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Override
     protected Criteria findAllCriteria() {
@@ -288,4 +298,6 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
         .setParameter("docId", documentId);
         
     }
+
+
 }
