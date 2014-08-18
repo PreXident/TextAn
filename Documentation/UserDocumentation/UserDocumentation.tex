@@ -186,11 +186,54 @@ Once user log in successfully, the main screen of \textan{} is displayed.
 \comment{Tam}{What's next?} 
 
 \subsection{Glossary}
+Terms are used in very specific manner in the documentation and in both applications,
+therefore it is really essential to understand their meaning. Otherwise, it is
+possible to misunderstand the rest of the text.
 
-\comment{Petr}{definitions of terms in documentation and applications}
+\comment[anyone]{Petr}{check if this makes sense!}
+\begin{description}
+\item[Object]
+The term "object" is representation of some unique thing in \textan{}. Consider
+for example a person with name Joseph Smith from Prague with identifier 000123/4567.
+The object refers to this person in the real world, a meat and bones.
+
+\item[Alias]
+The alias represents a designation of a object. For example: Joseph Smith, Joe
+Smith, Joey S., J. Smith or just Smith can be names of one concrete person. Names
+are aliases for the person.
+
+%\item[Alias occurrence]
+
+\item[Document]
+The document is an arbitrary text that is processed by \textan{}. E.g. a police
+report, a letter, a movie review or a judgment.
+
+\item[Entity]
+The entity is a sequence of words recognized either by a named entity recognizer
+or by a user. The entity will be later assigned to an object and it became an alias
+of the object after assigning. Consider for example a sentence: Joe Smith was seen
+in Prague on 5th September. The sentence contains 3 entities: Joe Smith (person),
+Prague (city), 5th September (date). We don't know which objects belongs to these
+entities at the moment. Prague can represent the capital city of Czech Republic,
+or a city in the USA.
+
+\item[Relation]
+The relation represents any relationship between objects mentioned in a document.
+A relation can be represented in a document by an anchor, or can be unexpressed,
+which means without any anchor in a document.
+\comment[anyone]{Petr}{Add some sentence with two relation, one with anchor, one without anchor.}
+
+\item[Anchor]
+The anchor is a word or a sequence of words that is binded to a relation between
+objects. Consider for example a sentence: Joey Smith killed Mary-Ann S. There is
+relation between Joey Smith and Mary-Ann S., which is represented by the word
+"killed". The word is the anchor.
+\end{description}
+
+\comment{Petr}{is it necessary to explain terms: assignment, object merging, alias occurence?}
+
 
 \subsection{Conventions}
-\comment{Petr}{is this section needed?}
 
 \section{Client Usage}
 
