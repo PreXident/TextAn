@@ -1,0 +1,46 @@
+Tam and Venca is missing.
+
+Adam:
+- some object highlighting issues on Relation Edit fixed
+- added separators to main window
+- controls have margin
+- graph filters can now be hidden
+- graph filter checkboxes now have colored boxes
+
+Petr:
+- reworked using of binaries
+
+HWK:
+- Adam, remove maximize window icon from settings window
+- Adam, double click on window title to (de)maximize
+- Adam, at least on linux the first graph display fails
+- Adam, linux join object window too small
+- Adam, add about dialog
+- Adam & Petr, client authentication, see links bellow
+- Petr, add TODOs to documentation
+- Petr, complete documentation and send it to Ondrej
+- Petr, find out how to sign in defense
+- Tam, improve presentation based on comments (orange color)
+- Venca, do something!!!
+- Venca, top priority!!! finish join, date_changed till Sunday!!!
+- Venca, !!!DOCUMENTATION!!!
+- Kuba, the domain transfer is not done yet!
+- Kuba, write report to Tam
+
+- all, write documentation - 20.8. DEADLINE!
+- all, glossary to documentation!!!
+- 24.8. documentation will be send to Ondrej
+
+!!!FOR SCHEMAS USE MS VISIO!!!
+- download from dreamspark, use 32bit if using 32bit office
+
+Suggestions:
+- separate table for path between objects, updated when adding relations
+- joining objects with suggestions
+
+Hibernate Search - for final slides, this features for free
+
+Next meeting on Monday at 10:00, the one after that probably on Thursday.
+
+http://stackoverflow.com/questions/20056304/in-the-jetty-server-how-can-i-obtain-the-client-certificate-used-when-client-aut
+http://stackoverflow.com/questions/1666052/java-https-client-certificate-authentication

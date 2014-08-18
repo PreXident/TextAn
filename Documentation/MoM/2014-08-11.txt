@@ -1,0 +1,44 @@
+Venca is missing.
+
+Adam:
+- all hwk done
+- graph filtering
+- scanned notes from presentation
+- main menu refactored, added icons
+- graph filtering
+- import reworked
+- drag and drop
+- certificates working
+- added batch processor
+- settings in separate window
+- color settings
+
+Peter:
+- documentation uses new style
+- ssl on server
+- new icon
+
+Kuba:
+- little bit documentation
+
+Tam:
+- prepared presentation
+- TextPro reworked, switched to WEKA
+
+HWK:
+- !all, hwk from previous MoM!
+- Adam, all controls should have margin
+- Adam, adjust minimal graph size for filters
+- Adam, graph filters should have colors for types
+- Adam, relation step should display object type color, not object id color
+- Adam, documentation client libraries rework
+- Peter, server should not accept entities without assigned objects
+- Peter, 32bit versions of binaries
+- Peter, finish analyzer
+- Tam, test
+- Kuba, learn Tam's presentation
+- Kuba, make arrangement with Ondrej when to meet next time
+
+- all, write documentation
+
+Next meeting will be on Wednesday at 15:00.

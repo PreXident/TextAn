@@ -61,12 +61,24 @@
 			<HBox fx:id="rightToolbar" styleClass="distance-box" alignment="CENTER_RIGHT" >
 				<Label styleClass="distance-label" text="%distance" />
 				<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="80" />
-				<Button alignment="CENTER_RIGHT" text="%go" onAction="#newDistance" />
+				<Button alignment="CENTER_RIGHT" text="%go" onAction="#filter" />
 			</HBox>
 		</ToolBar>
 	</top>
 	<center>
 		<BorderPane styleClass="root" >
+			<left>
+				<HBox fx:id="leftPanel" alignment="CENTER" >
+					<ListView fx:id="objectTypesListView" />
+					<Label onMouseClicked="#toggleObjectFilter" text=" . &#10; . &#10; . "/>
+				</HBox>
+			</left>
+			<right>
+				<HBox fx:id="rightPanel" alignment="CENTER" >
+					<Label onMouseClicked="#toggleRelationFilter" text=" . &#10; . &#10; . "/>
+					<ListView fx:id="relationTypesListView" />
+				</HBox>
+			</right>
 			<center>
 				<ScrollPane fx:id="scrollPane" vbarPolicy="NEVER" hbarPolicy="NEVER" >
 					<StackPane fx:id="stackPane" />

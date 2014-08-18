@@ -1,10 +1,12 @@
 package cz.cuni.mff.ufal.textan.server.services;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.*;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
+import javafx.scene.control.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,7 @@ public class DirectDataAccessService {
 
     private final IObjectTypeTableDAO objectTypeTableDAO;
     private final IObjectTableDAO objectTableDAO;
+    private final IAliasTableDAO aliasTableDAO;
 
     private final IRelationTypeTableDAO relationTypeTableDAO;
     private final IRelationTableDAO relationTableDAO;
@@ -39,6 +42,7 @@ public class DirectDataAccessService {
      * @param documentTableDAO the document table dAO
      * @param objectTypeTableDAO the object type table dAO
      * @param objectTableDAO the object table dAO
+     * @param aliasTableDAO
      * @param relationTypeTableDAO the relation type table dAO
      * @param relationTableDAO the relation table dAO
      * @param inRelationTableDAO the inRelationTableDAO
@@ -48,12 +52,13 @@ public class DirectDataAccessService {
             IDocumentTableDAO documentTableDAO,
             IObjectTypeTableDAO objectTypeTableDAO,
             IObjectTableDAO objectTableDAO,
-            IRelationTypeTableDAO relationTypeTableDAO,
+            IAliasTableDAO aliasTableDAO, IRelationTypeTableDAO relationTypeTableDAO,
             IRelationTableDAO relationTableDAO, IInRelationTableDAO inRelationTableDAO) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
         this.objectTableDAO = objectTableDAO;
+        this.aliasTableDAO = aliasTableDAO;
         this.relationTypeTableDAO = relationTypeTableDAO;
         this.relationTableDAO = relationTableDAO;
         this.inRelationTableDAO = inRelationTableDAO;
@@ -101,33 +106,21 @@ public class DirectDataAccessService {
 
     public Pair<List<Document>,Integer> getFilteredDocuments(String pattern, ProcessedFilter processedFilter, int firstResult, int maxResults) {
 
-        List<DocumentTable> documentTables;
-        int count;
+        ResultPagination<DocumentTable> documentTables;
 
         if ((pattern != null && !pattern.isEmpty()) && (processedFilter != null && processedFilter != ProcessedFilter.ALL)) {
-
-            count = documentTableDAO.findAllProcessedDocumentsByFullText(processedFilter == ProcessedFilter.PROCESSED, pattern).size();
-            documentTables = documentTableDAO.findAllProcessedDocumentsByFullText(processedFilter == ProcessedFilter.PROCESSED, pattern, firstResult, maxResults);
-
+            documentTables = documentTableDAO.findAllProcessedDocumentsByFullTextWithPagination(processedFilter == ProcessedFilter.PROCESSED, pattern, firstResult, maxResults);
         } else if (pattern != null && !pattern.isEmpty()) {
-
-            count = documentTableDAO.findAllDocumentsByFullText(pattern).size();
-            documentTables = documentTableDAO.findAllDocumentsByFullText(pattern, firstResult, maxResults);
-
+            documentTables = documentTableDAO.findAllDocumentsByFullTextWithPagination(pattern, firstResult, maxResults);
         } else if (processedFilter != null && processedFilter != ProcessedFilter.ALL) {
-
-            count = documentTableDAO.findAllProcessedDocuments(processedFilter == ProcessedFilter.PROCESSED).size();
-            documentTables = documentTableDAO.findAllProcessedDocuments(processedFilter == ProcessedFilter.PROCESSED, firstResult, maxResults);
-
+            documentTables = documentTableDAO.findAllProcessedDocumentsWithPagination(processedFilter == ProcessedFilter.PROCESSED, firstResult, maxResults);
         } else {
-
-            count = documentTableDAO.findAll().size();
-            documentTables = documentTableDAO.findAll(firstResult, maxResults);
+            documentTables = documentTableDAO.findAllWithPagination(firstResult, maxResults);
         }
 
         return new Pair<>(
-                documentTables.stream().map(Document::fromDocumentTable).collect(Collectors.toList()),
-                count
+                documentTables.getResults().stream().map(Document::fromDocumentTable).collect(Collectors.toList()),
+                documentTables.getTotalNumberOfResults()
         );
     }
 
@@ -138,45 +131,48 @@ public class DirectDataAccessService {
      *@param maxResults @return a list of documents
      * @throws IdNotFoundException thrown when object with given id not exists
      */
-    public Pair<List<Pair<Document, Integer>>, Integer> getDocumentsContainingObject(long objectId, int firstResult, int maxResults) throws IdNotFoundException {
+    public Pair<List<Pair<Document, Integer>>, Integer> getDocumentsContainingObject(long objectId, int firstResult, int maxResults) throws IdNotFoundException, NonRootObjectException {
 
         ObjectTable objectTable = objectTableDAO.find(objectId);
         if (objectTable == null) {
             throw new IdNotFoundException("objectId", objectId);
+        } if (!objectTable.isRoot()) {
+            throw new NonRootObjectException(objectId, objectTable.getRootObject().getId());
         }
 
-        int count = documentTableDAO.findAllDocumentsWithObject(objectId).size();
-        List<Pair<Document, Integer>> documents = documentTableDAO.findAllDocumentsWithObject(objectId, firstResult, maxResults).stream()
-                .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
-                .collect(Collectors.toList());
-
-        return new Pair<>(documents, count);
+        ResultPagination<Pair<DocumentTable, Integer>> documents = documentTableDAO.findAllDocumentsWithObjectWithPagination(objectId, firstResult, maxResults);
+        return new Pair<>(
+                documents.getResults().stream()
+                    .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
+                    .collect(Collectors.toList()),
+                documents.getTotalNumberOfResults()
+        );
     }
 
 
 
-    public Pair<List<Pair<Document, Integer>>, Integer> getFilteredDocumentsContainingObject(long objectId, String pattern, int firstResult, int maxResults) throws IdNotFoundException {
+    public Pair<List<Pair<Document, Integer>>, Integer> getFilteredDocumentsContainingObject(long objectId, String pattern, int firstResult, int maxResults) throws IdNotFoundException, NonRootObjectException {
 
         ObjectTable objectTable = objectTableDAO.find(objectId);
         if (objectTable == null) {
             throw new IdNotFoundException("objectId", objectId);
+        } if (!objectTable.isRoot()) {
+            throw new NonRootObjectException(objectId, objectTable.getRootObject().getId());
         }
 
-        int count;
-        List<Pair<DocumentTable, Integer>> documents;
+        ResultPagination<Pair<DocumentTable, Integer>> documents;
 
         if (pattern != null && !pattern.isEmpty()) {
-            count = documentTableDAO.findAllDocumentsWithObjectByFullText(objectId, pattern).size();
-            documents = documentTableDAO.findAllDocumentsWithObjectByFullText(objectId, pattern, firstResult, maxResults);
+            documents = documentTableDAO.findAllDocumentsWithObjectByFullTextWithPagination(objectId, pattern, firstResult, maxResults);
         } else {
-            count = documentTableDAO.findAllDocumentsWithObject(objectId).size();
-            documents = documentTableDAO.findAllDocumentsWithObject(objectId, firstResult, maxResults);
+            documents = documentTableDAO.findAllDocumentsWithObjectWithPagination(objectId, firstResult, maxResults);
         }
 
-        return new Pair<>(documents.stream()
+        return new Pair<>(documents.getResults().stream()
                 .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
                 .collect(Collectors.toList()),
-                count);
+                documents.getTotalNumberOfResults()
+        );
     }
 
     public Pair<List<Pair<Document, Integer>>, Integer> getDocumentsContainingRelation(long relationId, int firstResult, int maxResults) throws IdNotFoundException {
@@ -185,12 +181,14 @@ public class DirectDataAccessService {
             throw new IdNotFoundException("relationId", relationId);
         }
 
-        int count = documentTableDAO.findAllDocumentsWithRelation(relationId).size();
-        List<Pair<Document, Integer>> documents = documentTableDAO.findAllDocumentsWithRelation(relationId, firstResult, maxResults).stream()
-                .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
-                .collect(Collectors.toList());
+        ResultPagination<Pair<DocumentTable, Integer>> documents = documentTableDAO.findAllDocumentsWithRelationWithPagination(relationId, firstResult, maxResults);
 
-        return new Pair<>(documents, count);
+        return new Pair<>(
+                documents.getResults().stream()
+                        .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
+                        .collect(Collectors.toList()),
+                documents.getTotalNumberOfResults()
+        );
     }
 
     public Pair<List<Pair<Document,Integer>>,Integer> getFilteredDocumentsContainingRelation(long relationId, String pattern, int firstResult, int maxResults) throws IdNotFoundException {
@@ -199,22 +197,19 @@ public class DirectDataAccessService {
             throw new IdNotFoundException("relationId", relationId);
         }
 
-        int count;
-        List<Pair<DocumentTable, Integer>> documents;
+        ResultPagination<Pair<DocumentTable, Integer>> documents;
 
         if (pattern != null && !pattern.isEmpty()) {
-            count = documentTableDAO.findAllDocumentsWithRelationByFullText(relationId, pattern).size();
-            documents = documentTableDAO.findAllDocumentsWithRelationByFullText(relationId, pattern, firstResult, maxResults);
+            documents = documentTableDAO.findAllDocumentsWithRelationByFullTextWithPagination(relationId, pattern, firstResult, maxResults);
         } else {
-            count = documentTableDAO.findAllDocumentsWithRelation(relationId).size();
-            documents = documentTableDAO.findAllDocumentsWithRelation(relationId, firstResult, maxResults);
+            documents = documentTableDAO.findAllDocumentsWithRelationWithPagination(relationId, firstResult, maxResults);
         }
 
         return new Pair<>(
-                documents.stream()
+                documents.getResults().stream()
                     .map(x -> new Pair<>(Document.fromDocumentTable(x.getFirst()), x.getSecond()))
                     .collect(Collectors.toList()),
-                count
+                documents.getTotalNumberOfResults()
         );
     }
 
@@ -264,7 +259,7 @@ public class DirectDataAccessService {
             throw new IdNotFoundException("objectId", objectId);
         }
 
-        return Object.fromObjectTable(objectTable);
+        return Object.fromObjectTable(objectTable, aliasTableDAO.findAllAliasesOfObject(objectId));
     }
 
     /**
@@ -275,7 +270,7 @@ public class DirectDataAccessService {
     public List<Object> getObjects() {
 
         return objectTableDAO.findAll().stream()
-                .map(Object::fromObjectTable)
+                .map(x -> Object.fromObjectTable(x, aliasTableDAO.findAllAliasesOfObject(x)))
                 .collect(Collectors.toList());
 
     }
@@ -293,7 +288,7 @@ public class DirectDataAccessService {
         }
 
         return objectTableDAO.findAllByObjectType(objectTypeId).stream()
-                .map(Object::fromObjectTable)
+                .map(x -> Object.fromObjectTable(x, aliasTableDAO.findAllAliasesOfObject(x)))
                 .collect(Collectors.toList());
     }
 
@@ -306,37 +301,27 @@ public class DirectDataAccessService {
                 throw new IdNotFoundException("objectTypeId", objectTypeId);
             }
         }
-
-        int count;
-        List<ObjectTable> objects;
+        ResultPagination<ObjectTable> objects;
 
         if (objectTypeId != null && (aliasFilter != null && !aliasFilter.isEmpty())) {
-
-            count = objectTableDAO.findAllByObjTypeAndAliasFullText(objectTypeId, aliasFilter).size();
-            objects = objectTableDAO.findAllByObjTypeAndAliasFullText(objectTypeId, aliasFilter, firstResult, maxResults);
+            objects = objectTableDAO.findAllByObjTypeAndAliasFullTextWithPagination(objectTypeId, aliasFilter, firstResult, maxResults);
 
         } else if (objectTypeId != null) {
-
-            count = objectTableDAO.findAllByObjectType(objectTypeId).size();
-            objects = objectTableDAO.findAllByObjectType(objectTypeId, firstResult, maxResults);
+            objects = objectTableDAO.findAllByObjectTypeWithPagination(objectTypeId, firstResult, maxResults);
 
         } else if (aliasFilter != null && !aliasFilter.isEmpty()) {
-
-            count = objectTableDAO.findAllByAliasFullText(aliasFilter).size();
-            objects = objectTableDAO.findAllByAliasFullText(aliasFilter, firstResult, maxResults);
+            objects = objectTableDAO.findAllByAliasFullTextWithPagination(aliasFilter, firstResult, maxResults);
 
         } else {
-
-            count = objectTableDAO.findAll().size();
-            objects = objectTableDAO.findAll(firstResult, maxResults);
+            objects = objectTableDAO.findAllWithPagination(firstResult, maxResults);
 
         }
 
         return new Pair<>(
-                objects.stream()
-                    .map(Object::fromObjectTable)
+                objects.getResults().stream()
+                    .map(x -> Object.fromObjectTable(x, aliasTableDAO.findAllAliasesOfObject(x)))
                     .collect(Collectors.toList()),
-                count
+                objects.getTotalNumberOfResults()
         );
     }
 
@@ -355,12 +340,13 @@ public class DirectDataAccessService {
         Set<Object> objects = new HashSet<>();
         List<Pair<Long, Occurrence>> objectOccurrences = new ArrayList<>();
 
+        //TODO: add duplicity checking
         for (AliasOccurrenceTable aliasOccurrence : documentTable.getAliasOccurrences()) {
 
             AliasTable alias = aliasOccurrence.getAlias();
-            ObjectTable object = alias.getObject();
+            ObjectTable object = alias.getObject().getRootObject();
 
-            objects.add(Object.fromObjectTable(object));
+            objects.add(Object.fromObjectTable(object, aliasTableDAO.findAllAliasesOfObject(object)));
             objectOccurrences.add(new Pair<>(object.getId(), new Occurrence(alias.getAlias(), aliasOccurrence.getPosition())));
         }
 
@@ -388,7 +374,7 @@ public class DirectDataAccessService {
     public List<Relation> getRelations() {
 
         return relationTableDAO.findAll().stream()
-                .map(Relation::fromRelationTable)
+                .map(x -> Relation.fromRelationTable(x, aliasTableDAO))
                 .collect(Collectors.toList());
     }
 
@@ -405,7 +391,7 @@ public class DirectDataAccessService {
         }
 
         return relationTableDAO.findAllByRelationType(relationTypeId).stream()
-                .map(Relation::fromRelationTable)
+                .map(x -> Relation.fromRelationTable(x, aliasTableDAO))
                 .collect(Collectors.toList());
     }
 
@@ -418,37 +404,23 @@ public class DirectDataAccessService {
             }
         }
 
-        int count;
-        List<RelationTable> relations;
+        ResultPagination<RelationTable> relations;
 
         if (relationTypeId != null && (anchorFilter != null && !anchorFilter.isEmpty())) {
-
-            count = relationTableDAO.findAllByRelTypeAndAnchorFullText(relationTypeId, anchorFilter).size();
-            relations = relationTableDAO.findAllByRelTypeAndAnchorFullText(relationTypeId, anchorFilter, firstResult, maxResults);
-
+            relations = relationTableDAO.findAllByRelTypeAndAnchorFullTextWithPagination(relationTypeId, anchorFilter, firstResult, maxResults);
         } else if (relationTypeId != null) {
-
-            count = relationTableDAO.findAllByRelationType(relationTypeId).size();
-            relations = relationTableDAO.findAllByRelationType(relationTypeId, firstResult, maxResults);
-
+            relations = relationTableDAO.findAllByRelationTypeWithPagination(relationTypeId, firstResult, maxResults);
         } else if (anchorFilter != null && !anchorFilter.isEmpty()) {
-
-            count = relationTableDAO.findAllByAnchorFullText(anchorFilter).size();
-            relations = relationTableDAO.findAllByAnchorFullText(anchorFilter, firstResult, maxResults);
-
+            relations = relationTableDAO.findAllByAnchorFullTextWithPagination(anchorFilter, firstResult, maxResults);
         } else {
-
-            count = relationTableDAO.findAll().size();
-            relations = relationTableDAO.findAll(firstResult, maxResults);
-
+            relations = relationTableDAO.findAllWithPagination(firstResult, maxResults);
         }
 
-
         return new Pair<>(
-                relations.stream()
-                    .map(Relation::fromRelationTable)
+                relations.getResults().stream()
+                    .map(x -> Relation.fromRelationTable(x, aliasTableDAO))
                     .collect(Collectors.toList()),
-                count
+                relations.getTotalNumberOfResults()
         );
     }
 
@@ -471,7 +443,7 @@ public class DirectDataAccessService {
 
             RelationTable relation = relationOccurrence.getRelation();
 
-            relations.add(Relation.fromRelationTable(relation));
+            relations.add(Relation.fromRelationTable(relation, aliasTableDAO));
             relationOccurrences.add(new Pair<>(relation.getId(), new Occurrence(relationOccurrence.getAnchor(), relationOccurrence.getPosition())));
         }
 

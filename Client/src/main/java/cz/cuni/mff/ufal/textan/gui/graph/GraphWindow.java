@@ -7,6 +7,7 @@ import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.GRAPH_PROPERTY_ID;
 import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.MIN_HEIGHT;
+import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.MIN_WIDTH;
 import static cz.cuni.mff.ufal.textan.gui.graph.GraphController.TITLE;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -34,6 +35,7 @@ public class GraphWindow extends InnerWindow {
         super(TITLE, GRAPH_PROPERTY_ID, settings);
         this.grapher = grapher;
         setMinHeight(MIN_HEIGHT);
+        setMinWidth(MIN_WIDTH);
         ResourceBundle resourceBundle = null;
         try {
             final Pair<Parent, GraphController> loaded = GraphController.loadFXML(grapher);

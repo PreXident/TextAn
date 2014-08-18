@@ -36,7 +36,7 @@ public interface IOperations<E, K extends Serializable> {
      * @param pageSize maximum count of returned results
      * @return the list of entities
      */
-    List<E> findAll(int firstResult, int pageSize);
+    ResultPagination<E> findAllWithPagination(int firstResult, int pageSize);
 
     /**
      * Adds an entity into a repository.

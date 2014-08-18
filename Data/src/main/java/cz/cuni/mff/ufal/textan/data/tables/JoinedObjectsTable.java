@@ -100,7 +100,7 @@ public class JoinedObjectsTable extends AbstractTable {
 
     public void setNewObject(ObjectTable newObject) {
         this.newObject = newObject;
-        this.setId(newObject.getId());
+        //this.setId(newObject.getId());
     }
 
     @ManyToOne

@@ -2,6 +2,7 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.geometry.Insets?>
 <?import cz.cuni.mff.ufal.textan.gui.reportwizard.TextFlow?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
@@ -42,7 +43,7 @@
 							</center>
 							<bottom>
 								<HBox>
-									<Button text="%add" onAction="#add" />
+									<Button fx:id="addButton" text="%add" onAction="#add" />
 									<Button text="%remove" onAction="#remove" />
 								</HBox>
 							</bottom>
@@ -66,13 +67,21 @@
 	<bottom>
 		<BorderPane>
 			<left>
-				<Button text="%back" onAction="#back"/>
+				<Button text="%back" onAction="#back">
+					<BorderPane.margin>
+						<Insets top="5"/>
+					</BorderPane.margin>
+				</Button>
 			</left>
 			<center>
 				<Slider fx:id="slider" min="1" max="4" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="4" majorTickUnit="1" minorTickCount="0" />
 			</center>
 			<right>
-				<Button text="%continue" onAction="#next"/>
+				<Button text="%continue" onAction="#next">
+					<BorderPane.margin>
+						<Insets top="5"/>
+					</BorderPane.margin>
+				</Button>
 			</right>
 		</BorderPane>
 	</bottom>

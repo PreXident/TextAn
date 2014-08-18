@@ -1,17 +1,46 @@
+%Use Lualatex for interpretation!
+% lualatex -interaction=nonstopmode --shell-escape DeveloperDocumentation.tex
+
+%You have to have those fonts in your system:
+% - Calibri (standard windows font)
+% - Trebuchet MS (standard windows font)
+% - GROTESKIA (http://www.dafont.com/groteskia.font)
+
 \documentclass[12pt,a4paper]{report}
 
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+%\usepackage[utf8]{inputenc} % for old latex interpreters
+%\usepackage[english]{babel}
 
+\usepackage{polyglossia}
+\setdefaultlanguage[variant=american]{english} % or ?british
+\setotherlanguage{czech}
+
+\usepackage{url}
 \usepackage{geometry}
-\usepackage{xcolor}
+\usepackage[cmyk]{xcolor}
 \usepackage{amsmath}
 \usepackage[some]{background}
-\setlength\parindent{0pt}
-%TODO select color coresponding to logo
-\definecolor{titlepagecolor}{cmyk}{1,.60,0,.40}
+\usepackage{listings}
+\usepackage[stable]{footmisc}
+\usepackage{titlesec}
+\usepackage{fontspec}
+\usepackage{epstopdf,epsfig} 
 
-\usepackage{textcomp}
+\definecolor{TextanDarkRed}{cmyk}{.37,.94,.83,.59}
+\definecolor{TextanRed}{cmyk}{.0,.879,.844,.220}
+\definecolor{javagreen}{rgb}{0.25,0.5,0.35}
+
+\newfontfamily\chapterfont{GROTESKIA}
+\newfontfamily\sectionfont{Trebuchet MS}
+
+\titleformat{\chapter}{\chapterfont\fontsize{36pt}{1pt}\selectfont\color{TextanRed}}
+  {\thechapter}{20pt}{\chapterfont\fontsize{36pt}{1pt}\selectfont\MakeUppercase}
+\titlespacing{\chapter}{0pt}{0pt}{20pt}
+\titleformat*{\section}{\LARGE\sectionfont\color{TextanDarkRed}}
+\titleformat*{\subsection}{\fontsize{14pt}{1pt}\selectfont\sectionfont\itshape\color{TextanDarkRed}}
+%\titleformat*{\subsubsection}{\sectionfont\color{TextanDarkRed}}
+
+\setmainfont{Calibri}
 
 \backgroundsetup{
 scale=1,
@@ -19,74 +48,78 @@ angle=0,
 opacity=1,
 contents={
 \begin{tikzpicture}[remember picture,overlay]
-  \path [fill=titlepagecolor] (current page.west)rectangle (current page.north east); 
-  \draw [color=white, very thick] (5,0)--(5,0.5\paperheight);
+  \path [fill=TextanDarkRed] (-0.5\paperwidth,-0.5\paperheight)rectangle (-0.37\paperwidth,0.5\paperheight);
  \end{tikzpicture}}
 }
 
-\DeclareFixedFont{\bigsf}{T1}{phv}{b}{n}{1.5cm}
-
 \usepackage[unicode,colorlinks=true]{hyperref}
-\hypersetup{pdftitle=TextAn - developer documentation}
+\hypersetup{pdftitle=TextAn - user documentation}
 \hypersetup{pdfauthor={Petr Fanta, Duc Tam Hoang, Adam Huječek, Václav Pernička, Jakub Vlček}}
 \hypersetup{linkcolor=black, citecolor=black, urlcolor=black, filecolor=black}
-
-\makeatletter
-\def\@makechapterhead#1{
-  {\parindent \z@ \raggedright \normalfont
-   \Huge\bfseries \thechapter. #1
-   \par\nobreak
-   \vskip 20\p@
-}}
-\def\@makeschapterhead#1{
-  {\parindent \z@ \raggedright \normalfont
-   \Huge\bfseries #1
-   \par\nobreak
-   \vskip 20\p@
-}}
-\makeatother
 
 \def\chapwithtoc#1{
 \chapter*{#1}
 \addcontentsline{toc}{chapter}{#1}
 }
 
-\setkeys{Gin}{resolution=96}
+% sets numbering for subsubsection
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\lstdefinelanguage{properties}{% new language for listings
+  basicstyle=\ttfamily,
+  sensitive=false,
+  morecomment=[l]{\#},      % comment
+  morestring=[b]",          % string def
+  commentstyle=\color{javagreen},
+  basicstyle=\small
+}
+
+%Comment macro
+%Usage:
+% \comment[_assignee_]{_author_}{_comment_}
+% \comment{_author_}{_comment_}
+\makeatletter
+\newcommand{\comment}[3][\@empty]{
+  {\color{magenta}[#3 - }
+  {\color{green}\ifx\@empty#1\relax Author: #2 \else Assignee: #1; Author: #2\fi}{\color{magenta}]}
+}
+\makeatother
+
 \newcommand{\textan}{\emph{TextAn}}
 
 \begin{document}
 
-%TODO better titlepage
 \begin{titlepage}
 \BgThispage
+\newgeometry{left=4.5cm,top=7cm,bottom=3cm}
 
-\newgeometry{left=2cm,right=6cm,bottom=2cm}
-\vspace*{0.3\textheight}
+\begin{figure}
+ \includegraphics{../Logos/TEXTAN_logo_grey_B}
+\end{figure}
 \noindent
-\textcolor{white}{\bigsf TextAn}
+\textcolor{TextanRed}{\chapterfont\fontsize{48pt}{1pt}\selectfont\MakeUppercase{Developer documentation}}\\[15pt]
+\textcolor{TextanDarkRed}{\sectionfont\LARGE\MakeUppercase{Version 0.1}}
 
-\vspace*{1cm}
+\vfill
 \noindent
-\textcolor{white}{\Huge\textbf{\textsf{Developer Documentation}}}
-
-\vspace*{2cm}\par
-\noindent
-\begin{minipage}{0.35\linewidth}
-\textbf{Authors} \\
-Petr Fanta \\
-Duc Tam Hoang \\
-Adam Huječek \\
-Václav Pernička \\
-Jakub Vlček\vspace{40pt} \\
+\begin{minipage}[b]{.75\textwidth}
+\textbf{Authors}\\
+Petr Fanta\\
+Duc Tam Hoang\\
+Adam Huječek\\
+Václav Pernička\\
+Jakub Vlček
+\end{minipage}% This must go next to `\end{minipage}`
+\begin{minipage}[b]{.25\textwidth}
 \textbf{Supervisor} \\
-Ondřej Bojar\vspace{40pt} \\
-\textbf{Version} \\
-0.1\vspace{40pt} \\
-\textbf{Date} \\
-\today \\
+Ondřej Bojar\\
+%\vfill
+\\
+\\
+\textbf{Date}\\
+\today
 \end{minipage}
-
-%TODO add logo
 
 \end{titlepage}
 \restoregeometry
@@ -104,7 +137,6 @@ Ondřej Bojar\vspace{40pt} \\
 
 \section{Introduction to the project}
 \input{Sections/IntroductionToTheProject}
-\section{Work on the project}
 
 \section{Adopted solutions and decisions}
 \input{Sections/AdoptedSolutions}
@@ -116,16 +148,24 @@ Ondřej Bojar\vspace{40pt} \\
 \section{Glossary}
 %...
 
-\chapter{Requirement specification}
+\chapter{Requirements specification}
+\section{Functional requirements}
+\section{Non-functional requirements}
+
+\comment{Petr}{where to place use cases, mockup screens etc?}
 
 \chapter{Architecture}
 \input{Sections/Architecture}
 
 \chapter{Developer notes}
+\section{Work on the project}
+\section{Decisions}
 
 \chapter{Possibilities of future extensions}
 
-
+\appendix
+\chapter{Client Properties in TextAn.properties}
+\input{Sections/ClientProperties}
 
 
 \end{document}

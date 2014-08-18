@@ -3,44 +3,58 @@
 
 %For every one: use as many diagrams as possible :) (author Petr)
 
-The architecture of \textan\ is based on client-server model. Two main components
-are the \textan\ server and \textan\ client which communicate via W3C web services
+The architecture of \textan{} is based on client-server model. Two main components
+are the \textan{} server and \textan{} client which communicate via W3C web services
 (SOAP protokol).
 
-\subsection{Server architecture}
+\section{Server architecture}
 
 The server architecture is based on a logical multilayered architecture. It
 consists of 5 layers: a presentation layer, a service layer, a business logic layer, 
 a persistence layer and a data layer.
 
-%TODO where to place commands in architecture?? (author Petr)
+\comment{Petr}{where to place commands in architecture??}
 
-%TODO server achitecture image: assignee: Petr (author Petr)
+\comment[Petr]{Petr}{server achitecture image}
 
-%TODO description of layers
-% assignee: Petr, Venca (persistence layer) (author Petr)
+\comment[Petr, Venca (persistence layer)]{Petr}{description of layers}
 
-\subsubsection{Named entity recognizer architecture}
+\subsection{Named entity recognizer architecture}
 
-%TODO here should be description of nametag integration (recognizing, leraning etc.), nametag..
-% assignee: Jakub (author Petr) 
+Named entity architecture is divided to two parts, recognition and training.
+\paragraph{Recognition} 
+Recognition is splitted to two parts - Java part and C++ part. This is because
+NameTag, which we use as named entity recognizer, is written mainly in C++ and
+TextAn in Java, so we must use JNI to call functions from C++ through provided
+Java bindings. C++ part is represented by NameTag, so it has its owen documentation.
+Java part contains JNI bindings to call C++ part and than connection to TextAn.
+This part figures as adaptor between these two projects. Its main task is
+to translate recognized NameTag entities to entities stored in TextAn database.
+Because of optimalization, this component caches database entities.
 
-\subsubsection{Object assigner architecture} %or simply TextPro?
+\paragraph{Training}
+Despite the fact that NameTag is in C++ and TextAn in Java, this part does 
+not need JNI, because training is called as binary files and model is generated
+as file. So calling C++ functions is not needed here. Java part provides
+training data collecting from database and preparation, model handling
+(deleting old ones. binding them to NameTag).
 
-%TODO here should be description of TextPro 
-% assignee: Tam (author Petr)
 
-After the document is processed by NER, the next step is assigning the entities to available objects in the database. 
-Normally, this could be done by matching the entity text with the alias from object. However, this method would 
+\subsection{Object assigner architecture} \comment{Petr}{or simply TextPro?}
+
+\comment[Tam]{Petr}{here should be description of TextPro}
+
+After the document is processed by NER, the next step is assigning the entities
+to available objects in the database. Normally, this could be done by matching
+the entity text with the alias from object. However, this method would \comment[Tam]{Petr}{finish?}
 
 
-\subsection{Client architecture}
+\section{Client architecture}
 
-%TODO here should be description of client architecture (MVC etc.)
-% assignee: Adam (author Petr)
-%NOTE: your sentences are way too long :) (author Tam)
-
-\textan\ Client is a JavaFX application which naturaly forces Model-View-Controller
+\comment[Adam]{Petr}{here should be description of client architecture (MVC etc.)}
+\comment{Tam}{NOTE: your sentences are way too long :)}
+\comment{Adam}{I am not satisfied with this at all, it needs to be rewriten from scratch}
+\textan{} Client is a JavaFX application which naturaly forces Model-View-Controller
 pattern.
 
 Model classes can be found in package cz.cuni.mff.ufal.textan.core. It contains

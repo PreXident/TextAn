@@ -16,6 +16,9 @@ import javafx.scene.layout.Region;
  */
 public class InnerWindow extends Window {
 
+    /** First class of the InnerWindow to provide ClickableWindowSkin. */
+    protected final String CLICKABLE_CLASS = "clickable-window";
+    
     /** Minimal width of inner widows. */
     static final int MIN_WIDTH = 450;
 
@@ -72,6 +75,7 @@ public class InnerWindow extends Window {
         this.settings = settings;
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
         this.setContainerCloser(() -> close());
+        this.getStyleClass().add(0, CLICKABLE_CLASS);
         //
         parentProperty().addListener(
             (ObservableValue<? extends Parent> ov, Parent oldVal, Parent newVal) -> {

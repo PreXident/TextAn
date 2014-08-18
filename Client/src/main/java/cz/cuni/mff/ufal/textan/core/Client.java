@@ -27,6 +27,7 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDoc
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
+import cz.cuni.mff.ufal.textan.commons.ws.InvalidMergeException;
 import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
@@ -230,11 +231,46 @@ public class Client {
     }
 
     /**
+     * Inits ssl communication.
+     */
+    private void initSSL() {
+        if (settings.getProperty("ssl", "").equals("true")) {
+            final String ts = settings.getProperty("ssl.trustStore", "");
+            if (!ts.isEmpty()) {
+                System.setProperty("javax.net.ssl.trustStore", ts);
+            }
+            final String tsPass = settings.getProperty("ssl.trustStore.password", "");
+            if (!tsPass.isEmpty()) {
+                System.setProperty("javax.net.ssl.trustStorePassword", tsPass);
+            }
+            final String tsType = settings.getProperty("ssl.trustStore.type", "");
+            if (!tsType.isEmpty()) {
+                System.setProperty("javax.net.ssl.trustStoreType", tsType);
+            }
+            if (settings.getProperty("ssl.clientAuth", "").equals("true")) {
+                final String ks = settings.getProperty("ssl.keyStore", "");
+                if (!ks.isEmpty()) {
+                    System.setProperty("javax.net.ssl.keyStore", ks);
+                }
+                final String ksPass = settings.getProperty("ssl.keyStore.password", "");
+                if (!ksPass.isEmpty()) {
+                    System.setProperty("javax.net.ssl.keyStorePassword", ksPass);
+                }
+                final String ksType = settings.getProperty("ssl.keyStore.type", "");
+                if (!ksType.isEmpty()) {
+                    System.setProperty("javax.net.ssl.keyStoreType", ksType);
+                }
+            }
+        }
+    }
+
+    /**
      * Returns {@link #documentProcessor}, it is created if needed.
      * @return document processor
      */
     private IDocumentProcessor getDocumentProcessor() {
         if (documentProcessor == null) {
+            initSSL();
             try {
                 Service service = Service.create(
                         new URL(settings.getProperty("url.document.wsdl", "http://textan.ms.mff.cuni.cz:9500/soap/document?wsdl")),
@@ -263,6 +299,7 @@ public class Client {
      */
     private IDataProvider getDataProvider() {
         if (dataProvider == null) {
+            initSSL();
             try {
                 Service service = Service.create(
                         new URL(settings.getProperty("url.data.wsdl", "http://textan.ms.mff.cuni.cz:9500/soap/data?wsdl")),
@@ -332,20 +369,21 @@ public class Client {
 
     /**
      * Returns documents containing given object.
-     * @param object object whose document should be returned
+     * @param objectId object whose document should be returned
      * @param filter document text filter
      * @param first index of the first object
      * @param size maximal number of objects
      * @return list of documents containing object with given id
      * @throws IdNotFoundException if id error occurs
+     * @throws NonRootObjectException if object is no longer root
      */
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
-            final Object object, final String filter,
-            final int first, final int size) throws IdNotFoundException {
+            final long objectId, final String filter,
+            final int first, final int size) throws IdNotFoundException, NonRootObjectException {
         try {
             final GetFilteredDocumentsContainingObjectByIdRequest request =
                     new GetFilteredDocumentsContainingObjectByIdRequest();
-            request.setObjectId(object.getId());
+            request.setObjectId(objectId);
             request.setFirstResult(first);
             request.setMaxResults(size);
             request.setPattern(filter);
@@ -357,6 +395,8 @@ public class Client {
             return new Pair<>(list, response.getTotalNumberOfResults());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException e) {
+            throw new NonRootObjectException(e);
         }
     }
 
@@ -445,9 +485,10 @@ public class Client {
      * @param distance maximal distance from center
      * @return centered graph with limited distance
      * @throws IdNotFoundException if object id is not found
+     * @throws NonRootObjectException if object is no longer root
      */
     public synchronized Graph getObjectGraph(final long centerId, final int distance)
-            throws IdNotFoundException {
+            throws IdNotFoundException, NonRootObjectException {
         final GetGraphByObjectIdRequest request = new GetGraphByObjectIdRequest();
         request.setDistance(distance);
         request.setObjectId(centerId);
@@ -457,6 +498,8 @@ public class Client {
             return new Graph(response.getGraph());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException e) {
+            throw new NonRootObjectException(e);
         }
     }
 
@@ -506,6 +549,24 @@ public class Client {
         }
     }
 
+    /**
+     * Returns object with the given id.
+     * @param objectId object id to find
+     * @return object with the given id
+     * @throws IdNotFoundException if object with given id was not found
+     */
+    public synchronized Object getObject(final long objectId)
+            throws IdNotFoundException {
+        final GetObjectRequest request = new GetObjectRequest();
+        request.setObjectId(objectId);
+        try {
+            final GetObjectResponse response = getDataProvider().getObject(request);
+            return new Object(response.getObject());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
+    }
+    
     /**
      * Fills candidates of entities.
      *
@@ -968,9 +1029,10 @@ public class Client {
      * @param id2 second object id
      * @return joined object id
      * @throws IdNotFoundException if id error occurs
+     * @throws NonRootObjectException if any object is no longer root
      */
     public long joinObjects(final long id1, final long id2)
-            throws IdNotFoundException {
+            throws IdNotFoundException, NonRootObjectException {
         final MergeObjectsRequest request =
                 new MergeObjectsRequest();
         request.setObject1Id(id1);
@@ -981,6 +1043,11 @@ public class Client {
             return response.getObjectId();
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
+        } catch (InvalidMergeException e) {
+            e.printStackTrace(); //FIXME: handle exception
+            return -1;
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException e) {
+            throw new NonRootObjectException(e);
         }
     }
 

@@ -3,13 +3,14 @@ package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
+import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable;
-import org.hibernate.Query;
-import org.hibernate.cfg.annotations.QueryBinder;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
@@ -44,13 +45,18 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     }
     @Override
     @SuppressWarnings("unchecked")
-    public List<RelationTable> findAllByRelationType(long relationTypeId, int firstResult, int pageSize) {
-        return findAllCriteria()
+    public ResultPagination<RelationTable> findAllByRelationTypeWithPagination(long relationTypeId, int firstResult, int pageSize) {
+        Criteria criteria = findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_RELATION_TYPE_ID), "objType", JoinType.INNER_JOIN)
-                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", RelationTypeTable.PROPERTY_NAME_ID), relationTypeId))
-                .setFirstResult(firstResult)
-                .setMaxResults(pageSize)
-                .list();
+                .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", RelationTypeTable.PROPERTY_NAME_ID), relationTypeId));
+        int count = criteria.list().size();
+
+        criteria.setFirstResult(firstResult);
+        criteria.setMaxResults(pageSize);
+
+        List<RelationTable> results = criteria.list();
+
+        return new ResultPagination<>(firstResult, pageSize, results, count);
     }
 
     @Override
@@ -58,8 +64,8 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
         return findAllByRelationType(relationType.getId());
     }
     @Override
-    public List<RelationTable> findAllByRelationType(RelationTypeTable relationType, int firstResult, int pageSize) {
-        return findAllByRelationType(relationType.getId(), firstResult, pageSize);
+    public ResultPagination<RelationTable> findAllByRelationTypeWithPagination(RelationTypeTable relationType, int firstResult, int pageSize) {
+        return findAllByRelationTypeWithPagination(relationType.getId(), firstResult, pageSize);
     }
 
     @Override
@@ -144,7 +150,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
                 .list();
     }
 
-    private Query findAllByRelTypeAndAnchorFullTextQuery(long relationTypeId, String pattern) {
+    private FullTextQuery findAllByRelTypeAndAnchorFullTextQuery(long relationTypeId, String pattern) {
         FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 
         QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
@@ -177,11 +183,15 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter, int firstResult, int maxResults) {
-        return addPagination(findAllByRelTypeAndAnchorFullTextQuery(relationTypeId, anchorFilter), firstResult, maxResults).list();
+    public ResultPagination<RelationTable> findAllByRelTypeAndAnchorFullTextWithPagination(long relationTypeId, String anchorFilter, int firstResult, int maxResults) {
+        FullTextQuery query = findAllByRelTypeAndAnchorFullTextQuery(relationTypeId, anchorFilter);
+        List<RelationTable> results = addPagination(query, firstResult, maxResults).list();
+        int count = query.getResultSize();
+
+        return new ResultPagination<>(firstResult, maxResults, results, count);
     }
 
-    private Query findAllByAnchorFullTextQuery(String pattern) {
+    private FullTextQuery findAllByAnchorFullTextQuery(String pattern) {
         FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 
         QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
@@ -202,7 +212,11 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<RelationTable> findAllByAnchorFullText(String anchorFilter, int firstResult, int maxResults) {
-        return addPagination(findAllByAnchorFullTextQuery(anchorFilter), firstResult, maxResults).list();
+    public ResultPagination<RelationTable> findAllByAnchorFullTextWithPagination(String anchorFilter, int firstResult, int maxResults) {
+        FullTextQuery query = findAllByAnchorFullTextQuery(anchorFilter);
+        List<RelationTable> results = addPagination(query, firstResult, maxResults).list();
+        int count = query.getResultSize();
+
+        return new ResultPagination<>(firstResult, maxResults, results, count);
     }
 }

@@ -8,6 +8,8 @@ package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.data.exceptions.JoiningANonRootObjectException;
+import cz.cuni.mff.ufal.textan.data.exceptions.JoiningEqualObjectsException;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.GlobalVersionTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
@@ -352,7 +354,7 @@ public class DAOTest {
     }
     
     @Test
-    public void joinObjectsTest() {
+    public void joinObjectsTest() throws JoiningANonRootObjectException, JoiningEqualObjectsException {
         System.out.println("\n\nJoinObjectTest");
 
         System.out.println("Object: " + object);
@@ -368,6 +370,18 @@ public class DAOTest {
         Assert.assertNotNull("Joined object is null", joinedObj);
         Assert.assertEquals(object.getRootObject(), joinedObj);
         Assert.assertEquals(object2.getRootObject(), joinedObj);
+        
+        System.out.println("object.getOldObject1:" + object.getOldObjects1());
+        System.out.println("object.getOldObject2:" + object.getOldObjects2());
+        System.out.println("object.getNewObject:" + object.getNewObject());
+
+        System.out.println("object2.getOldObject1:" + object2.getOldObjects1());
+        System.out.println("object2.getOldObject2:" + object2.getOldObjects2());
+        System.out.println("object2.getNewObject:" + object2.getNewObject());
+
+        System.out.println("joinedObj.getOldObject1:" + joinedObj.getOldObjects1());
+        System.out.println("joinedObj.getOldObject2:" + joinedObj.getOldObjects2());
+        System.out.println("joinedObj.getNewObject:" + joinedObj.getNewObject());
         
         //joinedObjectsDAO.delete(joinedObj.getNewObject());
         //objectTableDAO.delete(joinedObj);

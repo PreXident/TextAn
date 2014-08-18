@@ -73,7 +73,9 @@ public class DocumentViewController extends WindowController {
      * @param list items to which add the style class
      */
     static void addClass(final String clazz, final Iterable<? extends Node> list) {
-        list.forEach(node -> node.getStyleClass().add(clazz));
+        if (list != null) {
+            list.forEach(node -> node.getStyleClass().add(clazz));
+        }
     }
 
     /**
@@ -98,7 +100,9 @@ public class DocumentViewController extends WindowController {
      * @param list items from which remove the style class
      */
     static void removeClass(final String clazz, final Iterable<? extends Node> list) {
-        list.forEach(node -> node.getStyleClass().remove(clazz));
+        if (list != null) {
+            list.forEach(node -> node.getStyleClass().remove(clazz));
+        }
     }
 
     /**
@@ -359,7 +363,7 @@ public class DocumentViewController extends WindowController {
                                 objectWords.put(obj, t);
                             }
                             t.add(text);
-                            Utils.styleText(text, "ENTITY", obj.getId());
+                            Utils.styleText(settings, text, "ENTITY", Utils.IdType.OBJECT, obj.getId());
                         } else /* if (occ.type == DocumentData.OccurrenceType.RELATION)*/ {
                             rel = documentData.getRelations().get(occ.id);
                             List<Text> t = relationWords.get(rel);
@@ -368,7 +372,7 @@ public class DocumentViewController extends WindowController {
                                 relationWords.put(rel, t);
                             }
                             t.add(text);
-                            Utils.styleText(text, "RELATION", ~rel.getType().getId());
+                            Utils.styleText(settings, text, "RELATION", Utils.IdType.RELATION, rel.getType().getId());
                         }
                     }
                 }
@@ -376,7 +380,7 @@ public class DocumentViewController extends WindowController {
                 final Relation finRel = rel;
                 text.setOnMouseEntered((MouseEvent t) -> {
                     if (finObj != null) {
-                        final String newTip = finObj.toString();
+                        final String newTip = finObj.getType().getName() + " - " + finObj.toString();
                         tooltip.setText(newTip);
                         Bounds bounds = text.getLayoutBounds();
                         final Point2D p =text.localToScreen(bounds.getMaxX(), bounds.getMaxY());
@@ -463,7 +467,7 @@ public class DocumentViewController extends WindowController {
                     final List<Text> words = objectWords.get(triple.getThird());
                     return words != null ? words.stream() : Stream.empty();
                 })
-                .forEach(t -> Utils.styleTextBackground(t, id));
+                .forEach(t -> Utils.styleTextBackground(settings, t, id));
         table.getItems().clear();
         table.getItems().addAll(selectedRelation.getObjects());
     }

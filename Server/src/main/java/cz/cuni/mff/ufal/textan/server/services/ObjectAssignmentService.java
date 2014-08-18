@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.services;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
@@ -28,12 +29,14 @@ import java.util.stream.Collectors;
 public class ObjectAssignmentService {
 
     private final IObjectTableDAO objectTableDAO;
+    private final IAliasTableDAO aliasTableDAO;
     private final IDocumentTableDAO documentTableDAO;
     private final ITextPro textPro;
 
     @Autowired
-    public ObjectAssignmentService(IObjectTableDAO objectTableDAO, IDocumentTableDAO documentTableDAO, ITextPro textPro) {
+    public ObjectAssignmentService(IObjectTableDAO objectTableDAO, IAliasTableDAO aliasTableDAO, IDocumentTableDAO documentTableDAO, ITextPro textPro) {
         this.objectTableDAO = objectTableDAO;
+        this.aliasTableDAO = aliasTableDAO;
         this.documentTableDAO = documentTableDAO;
         this.textPro = textPro;
     }
@@ -70,7 +73,7 @@ public class ObjectAssignmentService {
         for (Entity entity : entities) {
             List<Pair<Long, Double>> objectScorePairs = textProAssignments.get(entity.toTextProEntity());
             List<Pair<Object, Float>> ratedObjects = objectScorePairs.stream()
-                    .map(x -> new Pair<>(Object.fromObjectTable(objectTableDAO.find(x.getFirst())), x.getSecond().floatValue()))
+                    .map(x -> new Pair<>(Object.fromObjectTable(objectTableDAO.find(x.getFirst()), aliasTableDAO.findAllAliasesOfObject(x.getFirst())), x.getSecond().floatValue()))
                     .collect(Collectors.toList());
             assignments.add(new Assignment(entity, ratedObjects));
         }

@@ -21,8 +21,11 @@ abstract class GraphController extends WindowController {
     /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
     static protected final String GRAPH_PROPERTY_ID = "graph.viewer";
 
-    /** Minimal width of the graph window. */
+    /** Minimal height of the graph window. */
     static protected final int MIN_HEIGHT = 400;
+
+    /** Minimal width of the graph window. */
+    static protected final int MIN_WIDTH = 600;
 
     /**
      * Loads FXML suitable for the grapher.

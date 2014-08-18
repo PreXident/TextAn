@@ -29,8 +29,8 @@ classes/
 .project
 .settings/
 
-Data/indexes
-.*
+#Lucene indexes
+indexes/
 
 #TeX auxiliary files and output
 *.aux
@@ -41,3 +41,4 @@ Data/indexes
 Manual.pdf
 DeveloperDocumentation.pdf
 UserDocumentation.pdf
+*-eps-converted-to.*

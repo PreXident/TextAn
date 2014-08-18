@@ -76,6 +76,7 @@ public class ObjectTable extends AbstractTable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_root_object")
     @ContainedIn
     public ObjectTable getRootObject() {
@@ -92,6 +93,7 @@ public class ObjectTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "rootObject")
+    @Cascade(CascadeType.SAVE_UPDATE)
     @IndexedEmbedded(includePaths = "aliases.alias")
     public Set<ObjectTable> getRootOfObjects() {
         return rootOfObjects;

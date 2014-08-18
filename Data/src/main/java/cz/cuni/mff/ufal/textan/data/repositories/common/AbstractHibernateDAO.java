@@ -105,7 +105,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     @SuppressWarnings("unchecked")
     @Override
     public List<E> findAll() {
-        return currentSession().createCriteria(type).list();
+        return findAllCriteria().list();
     }
 
     /**
@@ -117,11 +117,14 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
-    public List<E> findAll(int firstResult, int pageSize) {
-        return currentSession().createCriteria(type)
+    public ResultPagination<E> findAllWithPagination(int firstResult, int pageSize) {
+
+        int count = findAllCriteria().list().size(); //FIXME
+        List<E> results = findAllCriteria()
                 .setFirstResult(firstResult)
                 .setMaxResults(pageSize)
                 .list();
+        return new ResultPagination<>(firstResult, pageSize, results, count);
     }    
 
     /**

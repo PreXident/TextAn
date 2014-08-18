@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Client.Processed;
 import cz.cuni.mff.ufal.textan.core.Document;
+import cz.cuni.mff.ufal.textan.core.NonRootObjectException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
@@ -165,9 +166,21 @@ public class DocumentListController extends WindowController {
             final Task<Pair<List<Document>, Integer>> task = new Task<Pair<List<Document>, Integer>>() {
                 @Override
                 protected Pair<List<Document>, Integer> call() throws Exception {
-                    Pair<List<Document>, Integer> pair;
+                    Pair<List<Document>, Integer> pair = null;
                     if (object != null) {
-                        pair = client.getDocumentsList(object, filter, first, size);
+                        long objectId = object.getId();
+                        while (pair == null) {
+                            try {
+                                pair = client.getDocumentsList(objectId, filter, first, size);
+                            } catch (NonRootObjectException e) {
+                                objectId = e.getNewRootId();
+                            }
+                        }
+                        if (objectId != object.getId()) {
+                            object = client.getObject(objectId);
+                            final Window w = window != null ? window : stage.getInnerWindow();
+                            w.setTitle(createTitleForObject());
+                        }
                     } else if (relation != null) {
                         pair = client.getDocumentsList(relation, filter, first, size);
                     } else {
@@ -357,7 +370,7 @@ public class DocumentListController extends WindowController {
      */
     public void setObject(final Object object) {
         this.object = object;
-        convertToOccurrenceList(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(object.toString()));
+        convertToOccurrenceList(createTitleForObject());
     }
 
     @Override
@@ -402,6 +415,14 @@ public class DocumentListController extends WindowController {
         });
     }
 
+    /**
+     * Returns suitable title for object document list.
+     * @return suitable title for object document list
+     */
+    protected String createTitleForObject() {
+        return Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(object.toString());
+    }
+    
     /**
      * Simple date to string converter.
      */

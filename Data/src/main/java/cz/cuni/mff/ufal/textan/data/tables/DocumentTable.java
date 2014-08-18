@@ -32,6 +32,7 @@ public class DocumentTable extends AbstractTable {
     private long globalVersion;
 
     private Date addedDate = Calendar.getInstance().getTime();
+    private Date lastChangeDate = Calendar.getInstance().getTime();
     private Date processedDate;
     private String text;
 
@@ -65,6 +66,16 @@ public class DocumentTable extends AbstractTable {
 
     public void setGlobalVersion(long globalVersion) {
         this.globalVersion = globalVersion;
+    }
+
+    @Column(name = "last_change", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getLastChangeDate() {
+        return lastChangeDate;
+    }
+
+    public void setLastChangeDate(Date lastChangeDate) {
+        this.lastChangeDate = lastChangeDate;
     }
 
     @Column(name = "added", nullable = false)
