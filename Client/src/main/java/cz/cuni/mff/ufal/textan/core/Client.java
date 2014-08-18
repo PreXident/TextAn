@@ -28,7 +28,6 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.commons.ws.InvalidMergeException;
-import cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException;
 import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
@@ -370,20 +369,21 @@ public class Client {
 
     /**
      * Returns documents containing given object.
-     * @param object object whose document should be returned
+     * @param objectId object whose document should be returned
      * @param filter document text filter
      * @param first index of the first object
      * @param size maximal number of objects
      * @return list of documents containing object with given id
      * @throws IdNotFoundException if id error occurs
+     * @throws NonRootObjectException if object is no longer root
      */
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
-            final Object object, final String filter,
-            final int first, final int size) throws IdNotFoundException {
+            final long objectId, final String filter,
+            final int first, final int size) throws IdNotFoundException, NonRootObjectException {
         try {
             final GetFilteredDocumentsContainingObjectByIdRequest request =
                     new GetFilteredDocumentsContainingObjectByIdRequest();
-            request.setObjectId(object.getId());
+            request.setObjectId(objectId);
             request.setFirstResult(first);
             request.setMaxResults(size);
             request.setPattern(filter);
@@ -395,9 +395,8 @@ public class Client {
             return new Pair<>(list, response.getTotalNumberOfResults());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
-        } catch (NonRootObjectException e) {
-            e.printStackTrace(); //FIXME: handle exception
-            return null;
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException e) {
+            throw new NonRootObjectException(e);
         }
     }
 
@@ -486,9 +485,10 @@ public class Client {
      * @param distance maximal distance from center
      * @return centered graph with limited distance
      * @throws IdNotFoundException if object id is not found
+     * @throws NonRootObjectException if object is no longer root
      */
     public synchronized Graph getObjectGraph(final long centerId, final int distance)
-            throws IdNotFoundException {
+            throws IdNotFoundException, NonRootObjectException {
         final GetGraphByObjectIdRequest request = new GetGraphByObjectIdRequest();
         request.setDistance(distance);
         request.setObjectId(centerId);
@@ -498,9 +498,8 @@ public class Client {
             return new Graph(response.getGraph());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
-        } catch (NonRootObjectException e) {
-            e.printStackTrace(); //FIXME: handle exception
-            return null;
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException e) {
+            throw new NonRootObjectException(e);
         }
     }
 
@@ -550,6 +549,24 @@ public class Client {
         }
     }
 
+    /**
+     * Returns object with the given id.
+     * @param objectId object id to find
+     * @return object with the given id
+     * @throws IdNotFoundException if object with given id was not found
+     */
+    public synchronized Object getObject(final long objectId)
+            throws IdNotFoundException {
+        final GetObjectRequest request = new GetObjectRequest();
+        request.setObjectId(objectId);
+        try {
+            final GetObjectResponse response = getDataProvider().getObject(request);
+            return new Object(response.getObject());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        }
+    }
+    
     /**
      * Fills candidates of entities.
      *
@@ -1012,9 +1029,10 @@ public class Client {
      * @param id2 second object id
      * @return joined object id
      * @throws IdNotFoundException if id error occurs
+     * @throws NonRootObjectException if any object is no longer root
      */
     public long joinObjects(final long id1, final long id2)
-            throws IdNotFoundException {
+            throws IdNotFoundException, NonRootObjectException {
         final MergeObjectsRequest request =
                 new MergeObjectsRequest();
         request.setObject1Id(id1);
@@ -1028,9 +1046,8 @@ public class Client {
         } catch (InvalidMergeException e) {
             e.printStackTrace(); //FIXME: handle exception
             return -1;
-        } catch (NonRootObjectException e) {
-            e.printStackTrace(); //FIXME: handle exception
-            return -1;
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException e) {
+            throw new NonRootObjectException(e);
         }
     }
 

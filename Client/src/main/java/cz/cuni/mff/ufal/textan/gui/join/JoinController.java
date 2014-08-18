@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.join;
 
+import cz.cuni.mff.ufal.textan.core.NonRootObjectException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.gui.GetTypesTask;
@@ -138,7 +139,7 @@ public class JoinController extends WindowController {
     private void join() {
         final Object leftObject = leftTable.getSelectionModel().getSelectedItem();
         final Object rightObject = rightTable.getSelectionModel().getSelectedItem();
-        if (leftObject == null || rightObject == null) {
+        if (leftObject == null || rightObject == null || leftObject.equals(rightObject)) {
             return;
         }
         if (!leftObject.getType().equals(rightObject.getType())) {
@@ -150,9 +151,25 @@ public class JoinController extends WindowController {
             return;
         }
         try {
-            final long joinedObject = textAnController.getClient().joinObjects(
-                    leftObject.getId(), rightObject.getId()
-            );
+            long joinedObject = -1;
+            long leftObjectId = leftObject.getId();
+            long rightObjectId = rightObject.getId();
+            while (joinedObject == -1) {
+                try {
+                    joinedObject = textAnController.getClient().joinObjects(
+                            leftObjectId, rightObjectId
+                    );
+                } catch (NonRootObjectException e) {
+                    final long problematicId = e.getObjectId();
+                    if (leftObjectId == problematicId) {
+                        leftObjectId = e.getNewRootId();
+                    } else if (rightObjectId == problematicId) {
+                        rightObjectId = e.getNewRootId();
+                    } else {
+                        throw e;
+                    }
+                }
+            }
             final Action response = createDialog()
                     .owner(getDialogOwner(root))
                     .title(Utils.localize(resourceBundle, "join.done.title"))
