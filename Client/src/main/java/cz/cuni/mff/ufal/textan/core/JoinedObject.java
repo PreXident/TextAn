@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.core;
 
-import java.util.Arrays;
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
  * Client side representation of
  * {@link cz.cuni.mff.ufal.textan.commons.models.JoinedObject}.
  */
-public class JoinedObject {
+public class JoinedObject implements Serializable {
 
     /** Root object. */
     public final Object root;
