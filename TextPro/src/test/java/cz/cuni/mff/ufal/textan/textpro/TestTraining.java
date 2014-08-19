@@ -65,7 +65,7 @@ public class TestTraining {
     ITextPro textPro;
 
     @Test
-    public void TestRank() {
+    public void TestVectors() {
         TrainWeka train = new TrainWeka();
         Instance thisInstance = new Instance(5);
         thisInstance.setValue((Attribute)train.fvWekaAttributes.elementAt(0), 1.0);
