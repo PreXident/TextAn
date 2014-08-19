@@ -1,0 +1,53 @@
+%This section contains work progress
+In this section is described work progress in each month.
+\subsection{October}
+TextAn team visited policeman Honza Horinek, who introduce us his work and show us existing inadequate software, which we should reimplemented. Basis of the project should be process police reports - recognize entities and match them to existing objects in database. He promised us models and example data inputs and expected outputs. We divided the work as follows:
+\begin{itemize}
+\item \textbf{Petr Fanta} - entities recognition and input parsing, look for useful existing solutions
+\item \textbf{Adam Hujecek} - GUI validation, component schema and communication
+\item \textbf{Vaclav Pernicka} - database
+\item \textbf{Peter Sipos} - web service, graph GUI, testing
+\item \textbf{Jakub Vlcek} - entities recognition and input parsing, look for useful existing solutions
+\end{itemize}
+We made some decisions and requirements for each component:
+\paragraph{Database}
+%attach document schema here?
+At the beginning, we made database schema, which was approved after few iterations. We paid attention mainly on schema generality because we want support more than one (police) domain.\\
+Database should support versioning, parallel processing, partial records. We decided to create special layer between server and database because of generality (it will be easier to change database system).
+Next supported thing should be logging (users, changes).
+Problem will be with merging two objects into new one, so we should create special functionality and table n database.
+
+\paragraph{Client}
+We decided for pipeline model. This means, that report processing will consist of more successive phases:
+\begin{enumerate}
+\item Report insertion
+\item Report editing
+\item (Auto) Entity recognition
+\item Entity editing (entity types, ranges, creating new ones)
+\item (Auto) Object recognition
+\item Object editing (adding new ones, repair bad connections between entities and objects)
+\item (Auto) Relationships recognition
+\item Relationships editing
+\item Report confirmation and sent to server
+\end{enumerate}
+Changes in each phase are not stored into database immediately but they are stored locally and write to database follows after confirmation. Problem is with machine recognitions, because models are not trained to newly added items, so they are preferred over recognized ones.
+ 
+\subsection{November}
+In November, we mainly choosing and testing technologies which could we use.
+Peter Sipos left TextAn, but Duc Tam Hoang joined us. His specialization is machine learning so he will be really useful for our project. Because he is Vietnamese student we must change project language to English. His main task will be NER and entity-object matching
+We were trying different entity recognizers, but for Czech, there are not many applicable. Milan Straka promised us his project NameTag. It is named entity recognizer for czech, so exactly what we need. Problem is, that it is not finished yet and in C++ language, so there must be layer between Java and C++.
+We research possibilities about entity-object matching. Program will get entity and assign it possible candidates from objects. This part could not be purely automatic because of ambiguity, but if there will be high probability, program should match object entity pair automatically. \\
+Possible solutions for this entity-object matching are machine learning  methods ranking or classification.
+We looked for suitable Java library which provides machine learning techniques. Candidates were JavaML and Weka. After testing these two libraries, we choose JavaML, because it provides more machine learnig algorithms (some of them uses Weka library). Weka's problem is that it was created for teaching purposes so it's performance is not as good as JavaML.
+There were two possible server architectures: standalone or embedded webserver (Tomcat or Jetty). We considered usage of some technologies like Spring, CXF and Hibernate for database layer.
+\subsection{December}
+After choosing technologies, we made some prototypes of each component.We made lot of discussions about APIs (we need tham for testing). For testing purposes, we must provide some mock objects, so everyone implement mock of his component.
+NameTag was published, so we can started testing it and integrated it to our project.
+\subsection{January}
+\subsection{February}
+\subsection{March}
+\subsection{April}
+\subsection{May}
+\subsection{June}
+\subsection{July}
+\subsection{August}
