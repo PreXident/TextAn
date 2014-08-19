@@ -66,7 +66,7 @@ public class TestRanking {
     @Test
     public void TestRank() {
         // Create fake test
-        Entity e = new Entity("Emily", 0, 0 , 1);
+        Entity e = new Entity("Ema", 0, 0 , 1);
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         assertEquals("1 entity to match", 1, eList.size());

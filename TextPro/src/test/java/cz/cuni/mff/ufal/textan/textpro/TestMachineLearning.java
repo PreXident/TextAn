@@ -68,7 +68,7 @@ public class TestMachineLearning {
         textPro.learn();
         
         // Create fake test
-        Entity e = new Entity("Emily", 0, 0 , 1);
+        Entity e = new Entity("Ema", 0, 0 , 1);
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         assertEquals("1 entity to match", 1, eList.size());
@@ -92,7 +92,7 @@ public class TestMachineLearning {
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         List<ObjectTable> oList = objectTableDAO.findAllByAliasSubstring(e.getText());
-        assertEquals("1 objst to find close", 1000, oList.size());   
+        assertEquals("1 objst to find close", 1, oList.size());   
     }
     
     /*
@@ -112,9 +112,8 @@ public class TestMachineLearning {
         Map<Entity, List<Pair<Long, Double>>> result = textPro.FinalRanking("Empty", eList, 5);
         // If everything is alright, it will call both ML and HR
         List<Pair<Long, Double>> Olist = result.get(e);
-        //assertEquals("1: entity to match", 1, result.keySet().size());
-        //assertEquals("2: one object found", 1, Olist.size());
-        //assertEquals("2 zero object", 1, Olist.keySet().size());
+        assertEquals("1: entity to match", 1, result.keySet().size());
+        assertEquals("2: one object found", 1, Olist.size());
     }
     
 }
