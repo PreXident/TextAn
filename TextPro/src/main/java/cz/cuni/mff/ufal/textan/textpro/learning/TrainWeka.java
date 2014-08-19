@@ -30,7 +30,7 @@ import weka.core.Instances;
  */
 public class TrainWeka {
     
-    FastVector fvWekaAttributes;
+    public FastVector fvWekaAttributes;
     public Instances isTrainingSet;
     /*
      * Default constructor

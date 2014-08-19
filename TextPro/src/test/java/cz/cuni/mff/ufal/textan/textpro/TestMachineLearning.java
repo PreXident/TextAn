@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import static org.junit.Assert.assertEquals;
-
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +53,9 @@ public class TestMachineLearning {
     @Autowired
     IRelationTypeTableDAO typeTableDAO;
 
+    @Autowired
+    IDocumentTableDAO documentTableDAO;
+    
     @Autowired
     ITextPro textPro;
 
