@@ -350,14 +350,22 @@ login takes effect after restarting the application.
 
 Wizard for report processing is accessible from the main menu. It guides
 users in complicated procedure of processing a report. The procedure is divided
-into several steps described in this section. Users can return to previous
-steps, but if any changes are done, the progress in following steps are lost.
+into several steps described in this section (see figure \ref{fig:Pipeline}).
+Users can return to previous steps, but if any changes are done, the progress
+in following steps are lost.
 
 In Edit Report step and later when the report processing is interrupted, save
 dialog is shown if desired. Report processing is then saved into selected file
 and can continue later by selecting Unfinished Report in Report Source step (see
 \ref{sssec:ReportSource}). The processing continues in the step where it was
 saved.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[height=20cm,keepaspectratio]{Images/pipeline}
+        \caption{Schema of report processing.}
+        \label{fig:Pipeline}
+\end{figure}
 
 \comment[Adam]{Adam}{add a pipeline schema here!}
 
@@ -366,7 +374,7 @@ saved.
 
 \begin{figure}[!htb]
         \centering
-        \includegraphics[width=\textwidth]{Images/source}
+        \includegraphics{Images/source}
         \caption{Choosing report source.}
         \label{fig:Source}
 \end{figure}
@@ -563,7 +571,7 @@ for the selected object (see \ref{ssec:Graphs}) or for displaying list of docume
 
 \begin{figure}[!htb]
         \centering
-        \includegraphics[width=\textwidth]{Images/objectlist}
+        \includegraphics{Images/objectlist}
         \caption{List of objects.}
         \label{fig:ObjectList}
 \end{figure}
