@@ -77,3 +77,40 @@ with controller classes.
 Controller classes concentrate on cz.cuni.mff.ufal.textan.gui package,
 mainly named *Controller. There are also some custom and modified view classes
 used by view descriptions.
+
+\subsection{Used Libraries}
+
+\comment[Adam]{Adam}{Find a suitable place for this section and refactor it.}
+
+\paragraph{ControlsFX\footnote{\url{http://fxexperience.com/controlsfx/}}}
+ControlsFX is a Java8 open source library aiming at enhancing the programming
+experience with standard JavaFX. It provides wide selection of new and improved
+components to make everyday use of JavaFX even easier. \textan{} uses it mainly
+for its high quality and user-friendly standard dialogs which are
+incomprehensibly and sorely missing in JavaFX.
+
+\paragraph{JCommander\footnote{\url{http://jcommander.org/}}}
+JCommander is a very small Java framework that makes it trivial to parse command
+line parameters.
+
+\paragraph{JUNG\footnote{\url{http://jung.sourceforge.net/}}}
+JUNG (Java Universal Network/Graph Framework) is older Java library for
+displaying graphs, still widely used in Java world, well documented and easily
+extensible. Sadly, it does not support JavaFX, but only older Java GUI framework
+SWING. Fortunately, thanks to new JavaFX8 SwingNode enabling usage of SWING
+components in JavaFX scenes it was possible to seaminglessly integrate JUNG into
+JavaFX \textan{} Client.
+
+\paragraph{JFXtras\footnote{\url{http://jfxtras.org/}}}
+JFXtras is another JavaFX8 enhancing project. \textan{} Client uses it mostly
+for its window management capabilities enabling extensible use of inner windows
+embedded into the main window. Another used component is BigDecimalField which
+brings common Spinner component into JavaFX.
+
+\paragraph{PretopoLib\footnote{\url{http://pretopolib.complexica.net/}}}
+Although JUNG is mature and well thought library, it lacks one important feature
+out-of-the-box: displaying hypergraphs. For this reason JUNG graph rendering
+part of PretopoLib is used. PretopoLib is a library mainly focusing on
+pretopology and graph displaying is rather byproduct. However it fully meets our
+requirements and its author kindly provided us the sources so we could fix one
+inconvenient detail.

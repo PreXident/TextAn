@@ -10,12 +10,9 @@ standard APIs, is configurable through Spring and can be embedded into Jetty,
 Tomcat or other servlet containers.
 
 \paragraph{ControlsFX\footnote{\url{http://fxexperience.com/controlsfx/}}}
-\comment[Adam]{Petr}{remove taxtan specific things from this section}
 ControlsFX is a Java8 open source library aiming at enhancing the programming
 experience with standard JavaFX. It provides wide selection of new and improved
-components to make everyday use of JavaFX even easier. \textan{} uses it mainly for
-its high quality and user-friendly standard dialogs which are incomprehensibly
-and sorely missing in JavaFX.
+components to make everyday use of JavaFX even easier.
 
 \paragraph{Hibernate ORM\footnote{\url{http://hibernate.org/orm/}}}
 Hibernate ORM (Hibernate in short) is an object-relational mapping library for
@@ -41,20 +38,13 @@ Jetty is a pure Java-based HTTP (Web) server and Java Servlet container. It can
 be embedded into other applications through Jetty API.
 
 \paragraph{JUNG\footnote{\url{http://jung.sourceforge.net/}}}
-\comment[Adam]{Petr}{remove taxtan specific things from this section}
 JUNG (Java Universal Network/Graph Framework) is older Java library for
-displaying graphs, still widely used in Java world, well documented and easily
-extensible. Sadly, it does not support JavaFX, but only older Java GUI framework
-SWING. Fortunately, thanks to new JavaFX8 SwingNode enabling usage of SWING
-components in JavaFX scenes it was possible to seaminglessly integrate JUNG into
-JavaFX \textan{} Client.
+displaying graphs for Swing framework, still widely used in Java world, well documented and easily extensible.
 
 \paragraph{JFXtras\footnote{\url{http://jfxtras.org/}}}
-\comment[Adam]{Petr}{remove taxtan specific things from this section}
-JFXtras is another JavaFX8 enhancing project. \textan{} Client uses it mostly for
-its window management capabilities enabling extensible use of inner windows
-embedded into the main window. Another used component is BigDecimalField which
-brings common Spinner component into JavaFX.
+JFXtras is another JavaFX8 enhancing project providing components that
+developers often need in their day-to-day work, but that are currently missing
+from JavaFX.
 
 \paragraph{MorphoDiTa\footnote{\url{http://ufal.mff.cuni.cz/morphodita}}}
 Morphological Dictionary and Tagger is an open-source tool for morphological
@@ -79,12 +69,9 @@ BY-NC-SA license, although for some models the original data used to create
 the model may impose additional licensing conditions.
 
 \paragraph{PretopoLib\footnote{\url{http://pretopolib.complexica.net/}}}
-Although JUNG is mature and well thought library, it lacks one important feature
-out-of-the-box: displaying hypergraphs. For this reason JUNG graph rendering
-part of PretopoLib is used. PretopoLib is a library mainly focusing on
-pretopology and graph displaying is rather byproduct. However it fully meets our
-requirements and its author kindly provided us the sources so we could fix one
-inconvenient detail.
+PretopoLib is JAVA library based on pretopology which is mathematical theory for
+analysis, modeling and simulation in several domains: human and social sciences,
+game theory, graph theory extension, networks, discrete spaces.
 
 \paragraph{SLF4J \& Logback\footnote{\url{http://www.slf4j.org/}, \url{http://logback.qos.ch/}}}
 Simple Logging Facade for Java (SLF4J) provides a Java logging API by means
