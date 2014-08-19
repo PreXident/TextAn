@@ -18,6 +18,7 @@ import org.hibernate.search.annotations.DocumentId;
 @Table(name = "RelationType")
 public class RelationTypeTable extends AbstractTable {
     public static final String PROPERTY_NAME_ID = "id";
+    public static final String PROPERTY_NAME_TYPE_NAME = "name";
 
     private long id;
     private String name;
