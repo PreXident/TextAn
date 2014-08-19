@@ -69,9 +69,9 @@ public class TestTraining {
         TrainWeka train = new TrainWeka();
         Instance thisInstance = new Instance(5);
         thisInstance.setValue((Attribute)train.fvWekaAttributes.elementAt(0), 1.0);
+        thisInstance.setValue((Attribute)train.fvWekaAttributes.elementAt(1), 1.0);
         thisInstance.setValue((Attribute)train.fvWekaAttributes.elementAt(2), 1.0);
         thisInstance.setValue((Attribute)train.fvWekaAttributes.elementAt(3), 1.0);
-        thisInstance.setValue((Attribute)train.fvWekaAttributes.elementAt(4), 1.0);
         thisInstance.setValue((Attribute)train.fvWekaAttributes.elementAt(4), "positive");
         //TODO: TEST
     }
