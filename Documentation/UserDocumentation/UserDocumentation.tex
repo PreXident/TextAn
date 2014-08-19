@@ -233,8 +233,6 @@ relation between Joey Smith and Mary-Ann S., which is represented by the word
 \comment{Petr}{is it necessary to explain terms: assignment, object merging, alias occurence?}
 
 
-\subsection{Conventions}
-
 \section{Client Usage}
 
 This section contains all information needed by end users to sucessfully use
@@ -694,8 +692,25 @@ joining itself.
 
 \chapter{Administrator guide}
 
-\section{Target domain}
+\section{Domain and conventions}
+Because \textan{} is very universal, it is necessary to use right configuration.
+\textan{} system can be a really powerful tool, but it must be configured properly
+for your domain to achieve the best results. Also it is important to establish
+some convention that describes usage of the configuration.
+
+The domain is represented by object types and relation types, eventually by roles
+of relation types. \comment[Petr]{Petr}{Example: types for police reports vs types for movie descriptions}
+
+If you define too big set of types, it can be difficult for users to understand
+their usage. Otherwise, if you define too small set of types, it can be select
+anything. It is very difficult to select suitable set of types.
+
+In addition, every user has his own opinion when to use certain type. In this
+situation, it can be useful to define the convention. The convention should contain
+explanation how to use each concrete type.
+
 \section{Language}
+\comment{Petr}{Add some info about supported languages}
 \section{Security}
 \label{sec:Security}
 
@@ -726,7 +741,8 @@ For client the following must be set. Most importantly property \emph{ssl} must
 be set to \emph{true}. Then these properties will be used by the server:
 \emph{ssl.trustStore} must point to the trust store containing the certificate
 of the server. Its type is determined by the content of property
-\emph{ssl.trustStore.type}. Property \emph{ssl.trustStore.password} specifies password to the trust store.
+\emph{ssl.trustStore.type}. Property \emph{ssl.trustStore.password} specifies
+password to the trust store.
 
 \subsection{Client Authentication}
 
@@ -751,16 +767,14 @@ the server. Its type is determined by the content of property
 \emph{ssl.keyStore.type}. Property \emph{ssl.keyStore.password} specifies password to the key store.
 
 \section{Web service API}
+\comment{Petr}{Add some description of server ws(soap) api}\\
+
 
 \section{Server}
 This section contains all information to successfully install, configure and run
 \textan{} server side application.
 \comment[anyone]{Petr}{add short introduction for this section, remind configuration
 options, complexity atc.}
-
-\comment{Petr}{Add some description of server ws(soap) api}\\
-\comment{Petr}{Add some info about security, when we have it}\\
-\comment{Petr}{Add some info about supported languages}
 
 \subsection{Installation guide}
 
