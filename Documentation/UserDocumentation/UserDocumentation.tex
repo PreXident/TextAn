@@ -214,7 +214,7 @@ or by a user. The entity will be later assigned to an object and it became an al
 of the object after assigning. Consider for example a sentence: Joe Smith was seen
 in Prague on 5th September. The sentence contains 3 entities: Joe Smith (person),
 Prague (city), 5th September (date). We don't know which objects belongs to these
-entities at the moment. Prague can represent the capital city of Czech Republic,
+entities at the moment. Prague can represent the capital city of the Czech Republic,
 or a city in the USA.
 
 \item[Relation]
@@ -264,7 +264,8 @@ The \textan{} client's application working space is very simple and intuitive.
 The main window (see figure \ref{fig:MainWindow}) contains main menu bar with
 all commands needed to control the application. The individual items are sorted
 out into categories to make the orientation easier. There is also toolbar with
-icons for mostly used commands to speed up the access to them.
+icons for mostly used commands to speed up the access to them. Hover over the
+toolbar icons to see action names.
 
 \begin{figure}[!htb]
         \centering
@@ -285,7 +286,7 @@ The Dials menu contains items to display objects, documents and relations
 stored in the database (see \ref{ssec:ViewDatabase}).
 
 The Windows menu contains the list of currently displayed application windows
-to easily bring the windows to front.
+to easily bring certain window to front.
 
 The Settings menu contains items to customize \textan{} client appearance and
 behaviour. For more information see \ref{ssec:Settings}. It also contains
@@ -305,7 +306,7 @@ controls for changing the behaviour and appearance of the application.
 
 \begin{figure}[!htb]
         \centering
-        \includegraphics[width=\textwidth]{Images/general}
+        \includegraphics{Images/general}
         \caption{General Settings Window}
         \label{fig:GeneralSettings}
 \end{figure}
@@ -315,7 +316,7 @@ secondary windows will not be embedded into the main window, but separate
 independent system windows will be used.
 
 \paragraph{Hypergraphs} This control affects the rendering of hyperedges%
-\footnote{Hyperedge is an edge in a hypergraph. It is a generalization of
+\footnote{Hyperedge is an edge in a hypergraph which is a generalization of
 term graph. The difference is that edges in hypergraphs can connect any number
 of nodes, but in graph they always connect two nodes.}
 in graphs (see figure \ref{fig:Hypergraphs}). The default rendering transforms
@@ -351,6 +352,8 @@ Wizard for report processing is accessible from the main menu. It guides
 users in complicated procedure of processing a report. The procedure is divided
 into several steps described in this section. Users can return to previous
 steps, but if any changes are done, the progress in following steps are lost.
+
+\comment[Adam]{Adam}{add a pipeline schema here!}
 
 \subsubsection{Report Source}
 
@@ -389,7 +392,7 @@ the wizard proceeds to Report Edit step (see \ref{sssec:ReportEdit}).
 \end{figure}
 
 \paragraph{Empty Message} This option proceeds directly to Report Edit step
-(see \ref{sssec:ReportEdit}).
+(see \ref{sssec:ReportEdit}) with empty report.
 
 \paragraph{Unfinished Report} This option displays open file dialog for
 selecting the file with report whose processing has not been finished, but it
@@ -415,16 +418,15 @@ In this step users can edit the text of the report (see figure
 
 Before entering this step the system automatically recognizes named entities
 in the report text. Recognized entities are marked by text color. Entities of
-the same type has the same color (see \ref{fig:Entities}). Hovering over entity
+the same type have the same color (see \ref{fig:Entities}). Hovering over entity
 text will display its type.
 
 Users can correct recognized entities and add new ones by selecting the text
 of the entity by mouse and picking the entity type from the context menu.
-There is a filter field in the context menu to allow users enter part of name
-of the desired entity type to speed up the selection process. If there are only
-one item in the list left, it can be selected by pressing enter too. Pressing
-Down key in the filter field transfers focus to the list, so keybord keys Up,
-Down and Enter can be used to select the entity type.
+There is a filter field in the context menu to allow users enter substring of
+name of the desired entity type to speed up the selection process. If there are
+only one item in the list left, it can be selected by pressing enter too.
+Pressing Down key in the filter field transfers focus to the list, so keyboard keys Up, Down and Enter can be used to select the entity type.
 
 One entity cannot comprise from several separated parts and entities cannot
 overlapped.
@@ -467,7 +469,6 @@ from the context menu (see \ref{fig:ObjectMenu}) or create entirely new object.
         \label{fig:ObjectMenu}
 \end{figure}
 
-
 The report processing cannot continue unless all entities have assigned
 objects. This step is then followed by Relation Edit step (see
 \ref{sssec:EditRelations}).
@@ -485,23 +486,31 @@ and without anchor.
 \begin{figure}[!htb]
         \centering
         \includegraphics[width=\textwidth]{Images/relations}
-        \caption{Editing relations in the report.}
+        \caption{Editing relations in the report. 1) Relation list, 2) Relation with anchor, currently selected, 3) Relation withour anchor, 4) Highlighted relation anchor, note highlighted objects too, 5) Objects assigned to the selected relation}
         \label{fig:Relations}
 \end{figure}
 
 Relation with anchor can be created by selecting the words of the anchor by
 mouse and picking a relation type from context menu. Empty relation with given
 anchor and type is added to the list of relations. Empty relation without anchor
-can be added by Add button under the relation list. New relations will have
-prefilled some roles based on relations of that type already stored in the
-database. Selecting relation will highlight its anchor and assigned objects.
+can be added by Add button under the relation list and picking a relation type
+from dialog. New relations will have prefilled some roles based on relations of
+that type already stored in the database. Selecting a relation in the relation
+list highlights its anchor and assigned objects.
 
 To add an object to a relation, select the relation in the list of relations.
 Use Add button under object list to add new row to the object table. Double
 clicking the object cell opens combobox with the list of objects in the report
 to assign to the relation. Or you can drag the object from the report text and
 drop it to empty row or Add button to add new row. Dropping the object into the
-non empty row replaces the assigned object.
+non empty row replaces the assigned object. Any string can be specified as
+a role. If any roles exist for the relation in the database, combobox with
+is displayed for the role column.
+
+Order column effects displaying arrows in the graph views. For binary
+relations the arrow points from object with negative order at object with
+nonnegative order. For relations with more than two objects assigned, arrows
+point from objects with negative order and at objects with positive odd order.
 
 After finishing relation editation the document is stored to the database,
 unless some errors occur. In that case Error Step follows (see
@@ -552,11 +561,13 @@ for the selected object (see \ref{ssec:Graphs}) or for displaying list of docume
 This window contains list of documents matching filter criteria. Please note
 that not all filter controls may be visible at all situations as they are
 customized to fit the current context (see figure \ref{fig:DocumentList}.
-Please note that changing filter criteria must be confirmed by pressing Filter
+Also note that changing filter criteria must be confirmed by pressing Filter
 button. Use right mouse button click to open context menu for displaying graph
 for the selected document (see \ref{ssec:Graphs}) or for displaying the report
 itself (see \ref{sssec:DocumentView}). Other options include editing the report
-or processing it if possible. Hovering over the row displays full report text.
+or processing it if possible. Inserting new report without processing is done
+by clicking New document button. Hovering over the row displays full report
+text.
 
 \begin{figure}[!htb]
         \centering
@@ -610,7 +621,11 @@ In the top part of the window (see figure \ref{fig:Graph}) there is a toolbar
 with icons to manipulate the graph.
 
 The first icon represents Transformation and is used to manipulate the graph as a whole, eg. panning or rotating (hold CTRL while left clicking and moving the
-mouse). The second icon represents Picking and is used to manipulate subset of nodes. Hold left mouse button and drag to select multiple nodes and then click and drag to move them. Distance field can be used to change the "radius" around the central node. Use mousewheel to zoom the graph.
+mouse). The second icon represents Picking and is used to manipulate subset of
+nodes. Hold left mouse button and drag to select multiple nodes and then click
+and drag to move them. The third icon centers the view to graph center.
+Distance field can be used to change the "radius" around the central node.
+Confirm its editing by clicking Go button. Use mousewheel to zoom the graph.
 
 Nodes representing objects can be right clicked to show context menu with
 options to display their surroundings or documents. Right clicking edges or
@@ -865,7 +880,8 @@ SQL optimized for a particular relational database.
 
 %hibernate search
 \paragraph{hibernate.search.analyzer}
-\comment[Petr]{Petr}{\url{http://docs.jboss.org/hibernate/search/3.4/reference/en-US/html_single/#d0e392}}
+\url{http://docs.jboss.org/hibernate/search/3.4/reference/en-US/html_single/#d0e392}
+\comment[Petr]{Petr}{see url above}
 \comment[Petr]{Petr}{What is best analyzer for Czech and English}
 
 %NameTag
