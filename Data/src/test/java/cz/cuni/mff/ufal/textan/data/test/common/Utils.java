@@ -28,6 +28,11 @@ public class Utils {
         String[] queries = addToEach(TABLE_CLASSES_IN_DELETE_ORDER, "delete from ", "");
         doMultipleExecuteQueries(factory, queries);
     }
+     
+    public static void clearTestValues(SessionFactory factory) {
+        String[] queries = addToEach(TABLE_CLASSES_WITH_CONTENT_IN_DELETE_ORDER, "delete from ", "");
+        doMultipleExecuteQueries(factory, queries);
+    }
     
     private static void doMultipleExecuteQueries(SessionFactory factory, String[] queries) {
         Session sess = factory.openSession();

@@ -103,7 +103,7 @@ public class DataTest {
 
          
          System.out.println(" clearAllTables");
-         Utils.clearAllTables(sessionFactory);
+         Utils.clearTestValues(sessionFactory);
     }
 
     // TODO add test methods here.

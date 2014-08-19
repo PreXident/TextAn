@@ -138,7 +138,7 @@ public class DAOTest {
          */
 
          System.out.println(" clearAllTables");
-         Utils.clearAllTables(sessionFactory);
+         Utils.clearTestValues(sessionFactory);
     }
     
     
