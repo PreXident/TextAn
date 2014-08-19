@@ -353,9 +353,16 @@ users in complicated procedure of processing a report. The procedure is divided
 into several steps described in this section. Users can return to previous
 steps, but if any changes are done, the progress in following steps are lost.
 
+In Edit Report step and later when the report processing is interrupted, save
+dialog is shown if desired. Report processing is then saved into selected file
+and can continue later by selecting Unfinished Report in Report Source step (see
+\ref{sssec:ReportSource}). The processing continues in the step where it was
+saved.
+
 \comment[Adam]{Adam}{add a pipeline schema here!}
 
 \subsubsection{Report Source}
+\label{sssec:ReportSource}
 
 \begin{figure}[!htb]
         \centering
@@ -370,7 +377,13 @@ report. There are following sources:
 \paragraph{Database} This option displays (see figure \ref{fig:Database}) list
 of all unprocessed reports stored in the database (for filtering details see
 \ref{sssec:DocumentList}).
-The report cannot be edited, so the wizard then proceeds to Edit Entities step (see \ref{sssec:EditEntities}).
+The report cannot be edited, so the wizard then proceeds to Edit Entities step
+(see \ref{sssec:EditEntities}). If the report is edited while being processed
+warning message is displayed. User can decide whether the report processing
+should end or continue with the current text. In the latter case the current
+text overwrites the one in the database when processed report is saved to the
+database. It is also possible to enter Edit Report step and edit it as it will
+replace stored text anyway.
 
 \begin{figure}[!htb]
         \centering
