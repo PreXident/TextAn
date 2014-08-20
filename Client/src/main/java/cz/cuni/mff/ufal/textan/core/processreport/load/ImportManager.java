@@ -6,19 +6,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Manager for managering {@link Importer}s.
+ * Manager for managering {@link IImporter}s.
  */
 public class ImportManager {
 
     /** Mapping of extensions to default importers. */
-    private static final Map<String, Importer> extensions;
+    private static final Map<String, IImporter> extensions;
 
     /** Mapping of ids to importers. */
-    private static final Map<String, Importer> ids;
+    private static final Map<String, IImporter> ids;
 
     static {
-        final Importer cp1250 = new TextCp1250();
-        final Importer utf8 = new TextUtf8();
+        final IImporter cp1250 = new TextCp1250();
+        final IImporter utf8 = new TextUtf8();
         extensions = new HashMap<>();
         extensions.put("txt", utf8);
         ids = new HashMap<>();
@@ -31,7 +31,7 @@ public class ImportManager {
      * @param extension given extension
      * @return default FileType for given extension or null if none available
      */
-    public static Importer getDefaultForExtension(final String extension) {
+    public static IImporter getDefaultForExtension(final String extension) {
         return extensions.get(extension);
     }
 
@@ -41,7 +41,7 @@ public class ImportManager {
      * @param importer importer to register
      */
     public static void registerDefaultExtension(final String extension,
-            final Importer importer) {
+            final IImporter importer) {
         extensions.put(extension, importer);
     }
 
@@ -49,7 +49,7 @@ public class ImportManager {
      * Registers importer.
      * @param importer importer to register
      */
-    public static void registerImporter(final Importer importer) {
+    public static void registerImporter(final IImporter importer) {
         ids.put(importer.getId(), importer);
     }
 
@@ -58,7 +58,7 @@ public class ImportManager {
      * @param id importer id
      * @return importer with given id
      */
-    public static Importer getImporter(final String id) {
+    public static IImporter getImporter(final String id) {
         return ids.get(id);
     }
 
@@ -66,7 +66,14 @@ public class ImportManager {
      * Returns unmodifiable collection of importers.
      * @return unmodifiable collection of importers
      */
-    public static Collection<Importer> getImporters() {
+    public static Collection<IImporter> getImporters() {
         return Collections.unmodifiableCollection(ids.values());
+    }
+    
+    /**
+     * Utility classes need no constructor
+     */
+    private ImportManager() {
+        //nothing
     }
 }

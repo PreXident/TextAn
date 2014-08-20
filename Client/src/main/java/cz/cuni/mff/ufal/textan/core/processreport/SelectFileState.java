@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.core.processreport.load.Importer;
+import cz.cuni.mff.ufal.textan.core.processreport.load.IImporter;
 
 /**
  * {@link ProcessReportPipeline}'s {@link State} for selecting file as source.
@@ -32,7 +32,7 @@ final public class SelectFileState extends State {
 
     @Override
     public String extractText(final ProcessReportPipeline pipeline,
-            final byte[] data, final Importer importer) {
+            final byte[] data, final IImporter importer) {
         return importer.extractText(data);
     }
 
