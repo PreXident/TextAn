@@ -69,4 +69,11 @@ public class ImportManager {
     public static Collection<IImporter> getImporters() {
         return Collections.unmodifiableCollection(ids.values());
     }
+    
+    /**
+     * Utility classes need no constructor
+     */
+    private ImportManager() {
+        //nothing
+    }
 }
