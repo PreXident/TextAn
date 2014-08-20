@@ -60,10 +60,10 @@ public class JoinedObjectsTable extends AbstractTable {
         this.newObject.setNewObject(this);
         
         this.oldObject1 = oldObject1;
-        this.oldObject1.getOldObjects1().add(this);
+        this.oldObject1.setOldObjects1(this);
         
         this.setOldObject2(oldObject2);
-        this.oldObject2.getOldObjects2().add(this);
+        this.oldObject2.setOldObjects2(this);
     }
 
     @Id
@@ -109,7 +109,7 @@ public class JoinedObjectsTable extends AbstractTable {
         //this.setId(newObject.getId());
     }
 
-    @ManyToOne
+    @OneToOne
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_old_object1", nullable = false)
     public ObjectTable getOldObject1() {
@@ -120,7 +120,7 @@ public class JoinedObjectsTable extends AbstractTable {
         this.oldObject1 = oldObject1;
     }
 
-    @ManyToOne
+    @OneToOne
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_old_object2", nullable = false)
     public ObjectTable getOldObject2() {

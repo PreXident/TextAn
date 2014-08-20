@@ -40,8 +40,8 @@ public class ObjectTable extends AbstractTable {
 
     private Set<ObjectTable> rootOfObjects = new HashSet<ObjectTable>();
     private JoinedObjectsTable newObject;
-    private Set<JoinedObjectsTable> oldObjects1;
-    private Set<JoinedObjectsTable> oldObjects2;
+    private JoinedObjectsTable oldObject1;
+    private JoinedObjectsTable oldObject2;
 
     public ObjectTable() {
         rootObject = this;
@@ -156,39 +156,27 @@ public class ObjectTable extends AbstractTable {
         this.newObject = newObject;
     }
 
-    @OneToMany(mappedBy = "oldObject1")
+    @OneToOne(mappedBy = "oldObject1")
     @Cascade(CascadeType.DELETE)
-    public Set<JoinedObjectsTable> getOldObjects1() {
-        return oldObjects1;
+    public JoinedObjectsTable getOldObjects1() {
+        return oldObject1;
     }
 
-    public void setOldObjects1(Set<JoinedObjectsTable> oldObjects1) {
-        this.oldObjects1 = oldObjects1;
+    public void setOldObjects1(JoinedObjectsTable oldObjects1) {
+        this.oldObject1 = oldObjects1;
     }
 
-    @OneToMany(mappedBy = "oldObject2")
+    @OneToOne(mappedBy = "oldObject2")
     @Cascade(CascadeType.DELETE)
-    public Set<JoinedObjectsTable> getOldObjects2() {
-        return oldObjects2;
+    public JoinedObjectsTable getOldObjects2() {
+        return oldObject2;
     }
 
-    public void setOldObjects2(Set<JoinedObjectsTable> oldObjects2) {
-        this.oldObjects2 = oldObjects2;
+    public void setOldObjects2(JoinedObjectsTable oldObjects2) {
+        this.oldObject2 = oldObjects2;
     }
 
-    /**
-     * <b>Changes in returned set do not propagate into database!</b>
-     *
-     * @return
-     */
-    @Transient
-    public Set<JoinedObjectsTable> getJoinObjectsThisWasJoinedTo() {
-        Set<JoinedObjectsTable> result = new HashSet<>(getOldObjects1());
-        result.addAll(getOldObjects2());
-        return result;
-    }
-
-    /**
+     /**
      * <b>Changes in returned set do not propagate into database!</b>
      *
      * @return All objects this object WAS composed from
