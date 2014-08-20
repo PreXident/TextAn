@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 /**
  * Extracts reports from UTF-8.
  */
-public class TextCp1250 implements Importer {
+public class TextCp1250 implements IImporter {
 
     /** Importer id. */
     static private final String ID = "TextCp1250";

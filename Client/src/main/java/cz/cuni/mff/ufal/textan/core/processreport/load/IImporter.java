@@ -9,7 +9,7 @@ package cz.cuni.mff.ufal.textan.core.processreport.load;
 /**
  * Interface for importing report texts from various file formats.
  */
-public interface Importer {
+public interface IImporter {
 
     /**
      * Returns unique id of the importer.

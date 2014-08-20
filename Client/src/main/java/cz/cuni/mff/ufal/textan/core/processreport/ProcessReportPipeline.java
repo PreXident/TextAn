@@ -4,7 +4,7 @@ import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.Ticket;
-import cz.cuni.mff.ufal.textan.core.processreport.load.Importer;
+import cz.cuni.mff.ufal.textan.core.processreport.load.IImporter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -246,7 +246,7 @@ public class ProcessReportPipeline implements Serializable {
      * @param importer importer to extract text
      * @return
      */
-    public String extractText(final byte[] data, final Importer importer) {
+    public String extractText(final byte[] data, final IImporter importer) {
         return state.extractText(this, data, importer);
     }
 

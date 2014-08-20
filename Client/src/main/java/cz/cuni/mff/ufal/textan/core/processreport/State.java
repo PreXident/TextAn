@@ -2,7 +2,7 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Entity;
-import cz.cuni.mff.ufal.textan.core.processreport.load.Importer;
+import cz.cuni.mff.ufal.textan.core.processreport.load.IImporter;
 import java.io.Serializable;
 import java.util.List;
 
@@ -86,7 +86,7 @@ public abstract class State implements Serializable {
      * @return
      */
     public String extractText(final ProcessReportPipeline pipeline,
-            final byte[] data, final Importer importer) {
+            final byte[] data, final IImporter importer) {
         throw new IllegalStateException("Cannot select file as report data source when in state " + getType());
     }
 
