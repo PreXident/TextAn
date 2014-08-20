@@ -6,6 +6,7 @@ import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTypeTable;
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -42,19 +43,17 @@ public class Utils {
     }
      
     public static void clearTestValues(SessionFactory factory) {
-        String[] queries = addToEach(TABLE_CLASSES_WITH_CONTENT_IN_DELETE_ORDER, "delete from ", "");
         // TODO
-        Arrays.stream(TABLE_CLASSES_WITH_CONTENT_IN_DELETE_ORDER)
+        String[] queries = Arrays.stream(TABLE_CLASSES_WITH_CONTENT_IN_DELETE_ORDER)
                 .map(new Function<String, String>() {
 
             @Override
             public String apply(String t) {
                int index = Arrays.asList(TABLE_CLASSES_WITH_CONTENT_IN_DELETE_ORDER).indexOf(t);
-               
-               return "delete from " + t + 
-                      " where " + TABLE_CONTENTS_IN_DELETE_ORDER[index] + " like %[TEST]%";
+               return "delete from " + t + " as tab" + 
+                      " where tab." + TABLE_CONTENTS_IN_DELETE_ORDER[index] + " like '%[TEST]%'";
             }
-        });
+        }).toArray((int size) -> new String[size]);
         
         
         doMultipleExecuteQueries(factory, queries);
