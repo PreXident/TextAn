@@ -48,37 +48,110 @@ After the document is processed by NER, the next step is assigning the entities
 to available objects in the database. Normally, this could be done by matching
 the entity text with the alias from object. However, this method would \comment[Tam]{Petr}{finish?}
 
-
 \section{Client architecture}
 
 \comment[Adam]{Petr}{here should be description of client architecture (MVC etc.)}
+
 \comment{Tam}{NOTE: your sentences are way too long :)}
-\comment{Adam}{I am not satisfied with this at all, it needs to be rewriten from scratch}
-\textan{} Client is a JavaFX application which naturaly forces Model-View-Controller
-pattern.
 
-Model classes can be found in package cz.cuni.mff.ufal.textan.core. It contains
-mainly client side representation of object, entity, relation etc. This way
-clients do not have to use directly websevice representation, so when it is
-altered, changes needed in client side are localized into this package. Moreover
-there is Client class which completely hides the webservices and transformation
-webservice data representation to client side representation.
+\textan{} client consist of two main parts. The package
+\emph{cz.cuni.mff.ufal.textan.core} and its subpackages handle communication
+with webservices and completely hides them from the package
+\emph{cz.cuni.mff.ufal.textan.core} and its subpackages which are responsible
+for actual displaying the user interface. It means that the model representation
+is duplicite to classes generated from the WSDL by CXF into
+\emph{cz.cuni.mff.ufal.textan.commons.model} and
+\emph{cz.cuni.mff.ufal.textan.commons.ws} and their subpackages. On the other
+hand this approach has great advantage - webservice interface changes will
+require only code refactoring localized into \emph{core.*} packages. There is
+also \emph{cz.cuni.mff.ufal.textan.tui} package containing a simple batch report
+processor without user interaction.
 
-Subpackages of the Core package focus on individual client side tasks, like
-displaying graphs and processing report in a pipeline. The pipeline/wizard
-approach was chosen because the amount of choices and required tasks would
-be overhelming to users if they were all provided at once.
+\comment[Adam]{Adam}{Add overall overview figure.}
 
-View descriptions are located in cz.cuni.mff.ufal.textan.gui in resources
-directory, mainly names *.fxml and *.css. They also uses several custom and
-modified components located in main cz.cuni.mff.ufal.textan.gui package along
-with controller classes.
+For visualization itself JavaFX framework is used. It naturaly enforces
+Model-View-Controller architecture.
 
-Controller classes concentrate on cz.cuni.mff.ufal.textan.gui package,
-mainly named *Controller. There are also some custom and modified view classes
-used by view descriptions.
+In the rest of the section the most important packages will be introduced and
+described.
+
+\subsection{cz.cuni.mff.ufal.textan.core}
+
+Model classes can be found in this package. It contains mainly client side
+representation of object, entity, relation, document etc. Most important class
+is \emph{Client} which is used for communication with the webservices. It also
+serves as a factory of \emph{ProcessReportPipeline} (see
+\ref{sssec:ReportPipeline}). There are also \emph{SynchronizedDataProvider} and
+\emph{SynchronizedDocumentProcessor} to provide sychronization for
+\emph{IDataProvider} and \emph{IDocumentProcessor} created by CXF.
+
+Subpackages of the \emph{Core} package focus on individual client side tasks,
+like displaying graphs and processing report in a pipeline.
+
+\comment[Adam]{Adam}{Add package overview.}
+
+\subsubsection{cz.cuni.mff.ufal.textan.core.reportpipeline}
+\label{sssec:ReportPipeline}
+
+This package contains classes necessary for report processing. Most importantly
+there is class \emph{ProcessReportPipeline} that holds information about
+processing one report. The pipeline/wizard approach was chosen because the
+amount of choices and required tasks would be overhelming to users if they were
+all provided at once. Virtually all methods of the pipeline object are delegated
+to its \emph{State}. Descendants of the class \emph{State} are singletons. They
+contain most of the pipeline processing logic and control to which state the
+pipeline should go next. When this happens, each registered
+\emph{IStateChangedListener} is notified.
+
+\comment[Adam]{Adam}{Add reference to package overview.}
+
+\comment[Adam]{Adam}{Add modified pipeline schema.}
+
+\subsubsection{cz.cuni.mff.ufal.textan.core.reportpipeline.load}
+
+This package contains classes needed for importing report texts from extenal
+files. There is \emph{IImport} interface that provides methods for extracting
+text from an array of bytes. Custom implementations of \emph{IImporter} need
+to be registered to class \emph{ImportManager} to be selectable by users. The
+rest of the package is a few classes providing import of text files in most
+common encodings.
+
+\subsubsection{cz.cuni.mff.ufal.textan.core.graph}
+
+This package contains several classes related to creating graphs. They handle
+mostly graph filtering which is done solely on client side.
+
+\comment[Adam]{Adam}{Add complete graph package schema.}
+
+\subsection{cz.cuni.mff.ufal.textan.gui}
+
+This package and its subpackages contain controller classes and several view
+components that had to be customized to achieve specific behaviour. A hierarchy
+of controllers has been developed, mostly for code reuse. Controllers extensively use 
+
+\comment[Adam]{Adam}{Add controller hierarchy.}
+
+Resources from this package and its subpackages contains descriptions of views
+(*.fxml files), styles (*.css files) and localization (*.properties files).
+
+\comment[Adam]{Adam}{Add window hierarchy.}
+
+\subsection{cz.cuni.mff.ufal.textan.gui.graph}
+
+This package contains controllers for objects and graph views. The most
+interesting class is \emph{GraphView} which embeds JUNG Swing graph into JavaFX
+and inserts content of \emph{cz.cuni.mff.udal.textan.core.Graph} to JUNG graph.
+Also handles hypergraph conversions if needed for which it uses auxiliary
+classes \emph{DummyRelation} and \emph{RelationObject}.
+
+Its only subpackage \emph{string} contains only class \emph{Handler}. It is a
+workaround that copes with inability of JavaFX to load css style sheets from
+\emph{String} which is needed for \emph{GraphViewController} to generate styles
+for coloring filter list checkboxes. For that reason custom url schema "string"
+has been created and \emph{Handler} resolves it with strings registered to it.
 
 \subsection{Used Libraries}
+\label{ssec:UsedLibraries}
 
 \comment[Adam]{Adam}{Find a suitable place for this section and refactor it.}
 
@@ -91,7 +164,8 @@ incomprehensibly and sorely missing in JavaFX.
 
 \paragraph{JCommander\footnote{\url{http://jcommander.org/}}}
 JCommander is a very small Java framework that makes it trivial to parse command
-line parameters.
+line parameters. It was chosen because of easy to used annotaion API and no
+external dependencies.
 
 \paragraph{JUNG\footnote{\url{http://jung.sourceforge.net/}}}
 JUNG (Java Universal Network/Graph Framework) is older Java library for
