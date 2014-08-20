@@ -1,13 +1,10 @@
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
-import cz.cuni.mff.ufal.textan.commons.models.*;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
 import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -16,7 +13,6 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
-import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

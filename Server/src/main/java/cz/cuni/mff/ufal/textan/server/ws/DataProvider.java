@@ -23,7 +23,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * For now only mocking database access.
+ * A web service facade over DirectDataAccessService, GraphService and MergeService.
+ *
+ * @author Petr Fanta
+ * @see cz.cuni.mff.ufal.textan.server.services.DirectDataAccessService
+ * @see cz.cuni.mff.ufal.textan.server.services.GraphService
+ * @see cz.cuni.mff.ufal.textan.server.services.MergeService
  */
 @javax.jws.WebService(
         serviceName = "DataProviderService",
@@ -33,13 +38,24 @@ import java.util.Set;
         endpointInterface = "cz.cuni.mff.ufal.textan.commons.ws.IDataProvider")
 public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataProvider {
 
+    /** The logger for DataProvider class. */
     private static final Logger LOG = LoggerFactory.getLogger(DataProvider.class);
 
+    /** The DirectDataAccessService bean (singleton) */
     private final DirectDataAccessService dbService;
+    /** The GraphService bean (singleton)*/
     private final GraphService graphService;
+    /** The MergeService bean (singleton) */
     private final MergeService mergeService;
 
 
+    /**
+     * Instantiates a new Data provider.
+     *
+     * @param dbService the DirectDataAccessService bean
+     * @param graphService the
+     * @param mergeService the merge service
+     */
     public DataProvider(DirectDataAccessService dbService, GraphService graphService, MergeService mergeService) {
         this.dbService = dbService;
         this.graphService = graphService;
