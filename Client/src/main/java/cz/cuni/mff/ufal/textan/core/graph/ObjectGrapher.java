@@ -1,18 +1,11 @@
 package cz.cuni.mff.ufal.textan.core.graph;
 
-import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.NonRootObjectException;
 import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.Relation;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 
 /**
