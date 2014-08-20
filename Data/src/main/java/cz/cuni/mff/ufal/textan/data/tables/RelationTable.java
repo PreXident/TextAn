@@ -79,7 +79,7 @@ public class RelationTable extends AbstractTable {
 
     @OneToMany(mappedBy = "relation")
     @Cascade(CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    //@OnDelete(action = OnDeleteAction.CASCADE)
     @IndexedEmbedded(includePaths = "anchor")
     @ContainedIn
     public Set<RelationOccurrenceTable> getOccurrences() {
