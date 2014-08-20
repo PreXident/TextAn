@@ -152,7 +152,7 @@ public class DataTest {
         AliasOccurrenceTable user2 = null;
         user2 = data.getRecordById(AliasOccurrenceTable.class, id);
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
-        assertTrue("data.deleteRecord(user2)", data.deleteRecord(user2));
+        assertTrue("data.deleteRecord(user2)", data.deleteRecord(user));
     }
     
     @Test
