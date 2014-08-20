@@ -114,7 +114,7 @@ Wizard for report processing is accessible from the main menu. It guides
 users in complicated procedure of processing a report. The procedure is divided
 into several steps described in this section (see figure \ref{fig:Pipeline}).
 Users can return to previous steps, but if any changes are done, the progress
-in following steps are lost.
+in following steps is lost.
 
 \begin{figure}[!htb]
         \centering
@@ -141,19 +141,15 @@ saved.
         \label{fig:Source}
 \end{figure}
 
-This step (see figure \ref{fig:Source} allows users to chose the source of the
+This step (see figure \ref{fig:Source}) allows users to chose the source of the
 report. There are following sources:
 
 \paragraph{Database} This option displays (see figure \ref{fig:Database}) list
 of all unprocessed reports stored in the database (for filtering details see
 \ref{sssec:DocumentList}).
 The report cannot be edited, so the wizard then proceeds to Edit Entities step
-(see \ref{sssec:EditEntities}). If the report is edited while being processed
-warning message is displayed. User can decide whether the report processing
-should end or continue with the current text. In the latter case the current
-text overwrites the one in the database when processed report is saved to the
-database. It is also possible to enter Edit Report step and edit it as it will
-replace stored text anyway.
+(see \ref{sssec:EditEntities}). If the report is edited by someone else while
+being processed a warning message is displayed. User can decide whether the report processing should end or continue with the current text. In the latter case the current text overwrites the one in the database when processed report is saved to the database. It is also possible to enter Edit Report step and edit it as it will replace stored text anyway.
 
 \begin{figure}[!htb]
         \centering
@@ -213,7 +209,7 @@ Pressing Down key in the filter field transfers focus to the list, so keyboard
 keys Up, Down and Enter can be used to select the entity type.
 
 One entity cannot comprise from several separated parts and entities cannot
-overlapped.
+overlap.
 
 This step is followed by Edit Objects step (see \ref{sssec:EditObjects}).
 
@@ -228,7 +224,7 @@ This step is followed by Edit Objects step (see \ref{sssec:EditObjects}).
 \label{sssec:EditObjects}
 
 In this step the entities are assigned to real objects (see figure
-\ref{fig:Objects}. The system automatically assigns objects stored in the
+\ref{fig:Objects}). The system automatically assigns objects stored in the
 database to entities recognized in the database. If no suitable object is
 found, the entity is marked with orange background. Hovering over entity
 displays its type and assigned object if any.
@@ -249,11 +245,11 @@ from the context menu (see \ref{fig:ObjectMenu}) or create entirely new object.
 \begin{figure}[!htb]
         \centering
         \includegraphics[width=\textwidth]{Images/objectmenu}
-        \caption{Menu for selecting object. 1) Filter field, 2) List of recommended
-		 objects, if 6) is checked, list of objects of given type from database,
-		 3) List of new objects created during editation of the same type,
-		 4) Button for creating new object, 5) Menu for more information about
-		 the object.}
+        \caption{Menu for selecting object. 1) Filter field, 2) List of
+		 recommended objects (with probability of match), if 6) is checked, list
+		 of objects of given type from database, 3) List of new objects created
+		 during editation of the same type, 4) Button for creating new object,
+		 5) Menu for more information about the object.}
         \label{fig:ObjectMenu}
 \end{figure}
 
@@ -265,11 +261,8 @@ objects. This step is then followed by Relation Edit step (see
 \label{sssec:EditRelations}
 
 This is the last mandatory step during report processing (see figure
-\ref{fig:Relations}). It consist of marking relationships between objects in
-the document. There are two types of relations: with anchor%
-\footnote{Anchor is a word or phrase determining the relation, typically
-sentence predicate.}
-and without anchor.
+\ref{fig:Relations}). It consists of marking relationships between objects in
+the document.
 
 \begin{figure}[!htb]
         \centering
@@ -387,7 +380,7 @@ relation will highlight its anchor and assigned objects.
 
 This window contains list of relations matching the filter criteria (anchor
 text, relation type) paginated for more convenient work (see figure
-\ref{fig:RelationList}. Please note that changing filter criteria must be
+\ref{fig:RelationList}). Please note that changing filter criteria must be
 confirmed by pressing Filter button. Use right mouse button click to open
 context menu for displaying graph for the selected relation (see \ref{ssec:Graphs})
 or for displaying list of documents containing it (see \ref{sssec:DocumentList}).
@@ -425,7 +418,7 @@ nodes representing the relations shows context menu for centering to objects
 assigned to the relation.
 
 On the sides there are lists of object/relation types to display. Unchecking
-the type will cause objects/relations of that type to disappear when graph is refreshed by Go button. Clicking the three dots will show or hide the filter
+the type will cause objects/relations of that type to disappear when graph is refreshed by Go button. Clicking the three dots shows or hides the filter
 lists.
 
 \begin{figure}[!htb]

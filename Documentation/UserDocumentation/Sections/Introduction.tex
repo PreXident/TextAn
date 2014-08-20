@@ -113,6 +113,14 @@ The anchor is a word or a sequence of words that is binded to a relation between
 objects. Consider for example a sentence: Joey Smith killed Mary-Ann S. There is
 relation between Joey Smith and Mary-Ann S., which is represented by the word
 "killed". The word is the anchor.
+
+\item[Roles and orders]
+Each object in a relation can have a role assigned. This role is mostly used
+for visualisation and storing additional information. Moreover object can also
+have order assigned which is just an integral number used for graph
+visualization (see \ref{sssec:EditRelations}). For example relation created from
+sentence "Bill killed Joe." could be represented like this:
+Bill (-1, murderer) --kill--> (1, victim) Joe.
 \end{description}
 
 \comment{Petr}{is it necessary to explain terms: assignment, object merging, alias occurence?}
