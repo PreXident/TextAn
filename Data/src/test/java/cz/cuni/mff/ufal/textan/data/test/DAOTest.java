@@ -236,6 +236,15 @@ public class DAOTest {
     }
     
     @Test
+    public void objectgetNeighborsTest() {
+        System.out.println("\n\nobjectgetNeighborsTest");
+        List<Pair<ObjectTable, RelationTable>> res = objectTableDAO.getNeighbors(object);
+        for (Pair<ObjectTable, RelationTable> objectRelTable : res) {
+            System.out.println(objectRelTable);
+        }
+    }
+    
+    @Test
     public void relationTableFindAllByAliasEqualToTest() {
         List<RelationTable> res = relationTableDAO.findAllByAliasEqualTo("with");
         for (RelationTable objectTable : res) {
