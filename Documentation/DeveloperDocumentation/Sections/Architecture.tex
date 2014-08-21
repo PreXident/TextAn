@@ -60,12 +60,12 @@ with webservices and completely hides them from the package
 \emph{cz.cuni.mff.ufal.textan.core} and its subpackages which are responsible
 for actual displaying the user interface (see figure \ref{fig:ClientOverview}).
 It means that the model representation is duplicite to classes generated from
-the WSDL by CXF into \emph{cz.cuni.mff.ufal.textan.commons.model} and
-\emph{cz.cuni.mff.ufal.textan.commons.ws} and their subpackages. On the other
-hand this approach has great advantage - webservice interface changes will
-require only code refactoring localized into \emph{core.*} packages. There is
-also \emph{cz.cuni.mff.ufal.textan.tui} package containing a simple batch report
-processor without user interaction.
+the WSDL by CXF into \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-commons.\-model}
+and \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-commons.\-ws} and their subpackages.
+On the other hand this approach has great advantage - webservice interface
+changes will require only code refactoring localized into \emph{core.*}
+packages. There is also \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-tui} package
+containing a simple batch report processor without user interaction.
 
 \begin{figure}[!htb]
         \centering
