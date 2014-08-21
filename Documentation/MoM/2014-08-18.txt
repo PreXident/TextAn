@@ -1,0 +1,48 @@
+Venca and Kuba are missing. Tam was a bit late.
+
+Adam:
+- linux problems fixed, hopefully
+- double clicking on titlebar (de)maximizes the inner window
+- about dialog
+- client authorization
+- pagination emulation for Object Assignment context menu
+- handling NonRootObjectException
+- documentation WiP
+
+Peter:
+- documentation WiP, improved formatting
+- finished merging
+- logo tweaks
+
+Tam:
+- created function to combine heuristic ranking and machine learning ranking
+- created tests for weka features
+- code refactoring, added comments where possible
+
+HWK:
+- Peter, throw exception when objects of different types should be merged
+- Adam, check if emulated pagination filters on pressed enter, on immediately
+- Adam, explore concurrency for batch processor (only after documentation is done!)
+- Adam, add pipeline schema to user documentation
+- Adam, fix merge of documentation!!!
+- Adam, add SSL properties documentation, both client and server
+- Adam, developer documentation only Client Properties without file name
+- Adam, use cases if you have time
+- Adam, mockup screens
+- Tam, check master merged into TextPro and email Peter
+- Tam, update architecture in documentation
+
+- all, documentation!!!
+- mention in introduction that primary language is czech, but english is also supported and it is possible to add new languages
+- mention in settings how to change 
+
+!!!DOCUMENTATION DEADLINE!!!
+!!!On Wednesday midnight!!!
+!!!Get it done guys!!!
+!!!NO KIDDING!!!
+!!!DO SOMETHING!!!
+
+Next meeting on Thursday at 17:00.
+
+Link to our old test project:
+http://www.ms.mff.cuni.cz/~koutnym/school/nswi041/wiki/doku.php/

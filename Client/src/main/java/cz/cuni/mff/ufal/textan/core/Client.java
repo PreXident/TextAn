@@ -1031,7 +1031,7 @@ public class Client {
      * @throws IdNotFoundException if id error occurs
      * @throws NonRootObjectException if any object is no longer root
      */
-    public long joinObjects(final long id1, final long id2)
+    public synchronized long joinObjects(final long id1, final long id2)
             throws IdNotFoundException, NonRootObjectException {
         final MergeObjectsRequest request =
                 new MergeObjectsRequest();
@@ -1057,7 +1057,7 @@ public class Client {
      * @param text new text
      * @throws IdNotFoundException if id error occurs
      */
-    public void updateDocument(final long id, final String text)
+    public synchronized void updateDocument(final long id, final String text)
             throws IdNotFoundException {
         final UpdateDocumentRequest request = new UpdateDocumentRequest();
         request.setDocumentId(id);
@@ -1073,7 +1073,7 @@ public class Client {
      * Adds new document with given text.
      * @param text new document's text
      */
-    public void addDocument(final String text) {
+    public synchronized void addDocument(final String text) {
         final AddDocumentRequest request = new AddDocumentRequest();
         request.setText(text);
         getDataProvider().addDocument(request);
