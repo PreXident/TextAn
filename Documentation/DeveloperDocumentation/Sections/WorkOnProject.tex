@@ -1,7 +1,7 @@
 %This section contains work progress
-In this section is described work progress in each month.
+In this section is described work progress in each iteration.
 
-\subsection{October}
+\subsection{Initialization}
 \comment[anyone]{Adam}{Add proper rank of Honza}\\
 TextAn team visited policeman Jan Hořínek, who introduced us his work and showed
 us existing inadequate software whose extension we should prepare. Basis of the
@@ -49,11 +49,9 @@ We decided for pipeline model. This means that report processing will consist of
 
 Changes in each phase are not stored in the database immediately but they are
 stored locally and write to database follows confirmation. Problem is with
-machine recognition, because models are not trained to newly added items, so
-they are preferred over recognized ones.
-\comment[Jakub]{Adam}{What does the last sentence mean?}
+machine recognition, because models with newly added items are trained after final confirmation, so we can't use just machine learning output. We decided, that newly added items will be preferred over recognized ones
  
-\subsection{November}
+\subsection{Design \& technologies}
 In November, we mainly chose and tested technologies which we could use. Peter
 Sipos left \textan{}, but Duc Tam Hoang joined us. His specialization is
 linguistic and machine learning so he will be really useful for our project.
@@ -81,18 +79,30 @@ There were two possible server architectures: standalone or embedded webserver
 (Tomcat or Jetty). We considered usage of some technologies like Spring, CXF and
 Hibernate for database layer.
 
-\subsection{December}
+\subsection{Prototyping \& interconnecting}
 After choosing technologies, we made some prototypes of each component. We
 discussed a lot APIs (we need them for testing). For testing purposes, we must
 provide some mock objects, so everyone implemented mock of his component.
-NameTag was released, so we could start testing it and integrated it to our
-project.
+NameTag was released, so we started acquainting with it. After meeting with Milan Straka, where he presented us NameTag, we started becoming more familiar with it and stared testing it.
+There were problems with compiling and Java bindings, which took more time than we expected. Problem was missing documentation.
+We connected client and database to server, implemented database data browsing on client (mainly graphs viewing with JUNG).
+Tam made prototype of object matcher, but it was not integrated to server.
 
-\subsection{January}
-\subsection{February}
-\subsection{March}
-\subsection{April}
-\subsection{May}
-\subsection{June}
-\subsection{July}
-\subsection{August}
+\subsection{Main coding}
+When we made a prototype of whole program, everyone started improving his component in his own branch.
+\paragraph{Server} Server was debugged and made reliable. It starts using WSDLs so there were lot of work on server and client parts. Result was, that Java code is now generated automatically. Connection to database was reworked to use Spring Beans.
+\paragraph{Named entity recognizer} NameTag was fully integrated to server. We started editing it for our purposes (using our structures and types). There were problems with gazetteers files and translating entities from NameTag to Textan.
+After receiving information that NameTag will not support JNI to training parts, we researching how to launch training binaries from Java.
+\paragraph{Client} Client was reworked to pipeline as we need, we improved graph viewing to support oriented edges.
+\paragraph{Object matcher} TextPro (as we called entity-object matching) has first prototype. It uses ranking and than, if ranking has poor result, classification.
+\paragraph{Database} Database has new layer with DAOs, so no more need to access database directly.
+After this iteration, we released first alpha version of TextAn.
+
+\subsection{Improving}
+Alpha version of NameTag learning was implemented. There were few problems with portability because of different architectures and operating systems. After implementation of special functions in database, we made automatic data extraction for learning. For this purpose, new function to server was added - commands. It is implementation of design pattern Command, which started data generation and model training after new report insertion. Models managing implemented due to bigger size (deleting old ones) 
+Database support logging. It was done through interceptors - triggers in Hibernate layer.
+In client, there were lots of small fixes in GUI, problems were with portability between Windows and Unix-like systems, where ControlsFX and JavaFX behave differently.
+TextPro received many new features. We integrated Morphodita because we needed it's tagger for new features.
+Settings through properties files are now supported in each component.
+
+\subsection{Bugfixing \& documentation}
