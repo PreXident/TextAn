@@ -114,7 +114,7 @@ public class DataConfig {
      * @see DataConfig#dataSource()
      */
     @SuppressWarnings("WeakerAccess")
-    @Bean
+    @Bean(destroyMethod = "close")
     public SessionFactory sessionFactory() throws PropertyVetoException, IOException {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());

@@ -203,7 +203,7 @@ public class ReportObjectsController extends ReportWizardController {
         splitVert.getItems().addAll(vbox, newListView);
         border.setCenter(splitVert);
         filterField = new TextField();
-        filterField.textProperty().addListener(e -> filterObjects(selectedEntity));
+        filterField.setOnAction(e -> filterObjects(selectedEntity));
         filterField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.DOWN && dbListView.getItems().size() > 0) {
                 dbListView.getSelectionModel().select(0);

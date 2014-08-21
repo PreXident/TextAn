@@ -1,0 +1,127 @@
+% Section: Introduction
+
+% FOR ENTERTAIN: The spider opens his heavy eyes. He stand up, look through the lousy windows. The sun is flaring, kissing all over the earth. He said to himself: ``It's time''. Students are rushing out of the dormitory like rats desert from a sinking ship. Some are going to the public transport, waiting for the regular hooves from the distance. The bus comes and goes, its double tires sing high notes on the road. Some are visiting the car park. The wheels of the cars creaked around, then they crawled into the city centre. A man and girl are crossing street, with their arms around each other's waists. Then the man must have said something supposed to be funny because two of them are laughing like hyenas. The spider retreats from the windows. The daily screen makes him so lonesome and depressed. Another day has just begun.
+
+%TODO what is textan
+
+%TextAn (Text Analyser) is the product of our software project groups (consists of 5 members) at Faculty of Mathematics and Physics, Charles University in Prague (MFF UK). The tool is attributed to Software Project subject, developed in 9 months from Jan 2014 to Sep 2014, and supervised by RNDr. Ondřej Bojar, PhD. It is a client-server tool which support mining structured information from text documents. At the moment, the documents are specified to police report but TextAn could be applied to a wide range of domains. 
+
+% --> to DeveloperDocumentation
+% 
+
+%TODO basic usage
+
+
+\subsection{System overview}
+
+%What is this?
+
+%what textan do, something which is 
+
+%WHAT DOES THE POLICE WANT? OF COURSE NOT ARREST US
+
+% 
+
+% it should be something better, for example, what textan to in a : What textan to. what you can expect in the rest of documentation . If you don't need what we offer in textan, leave a comment and get away.
+
+
+
+With the profiliferation of unstructured written texts, the need for a tool to mine the structure out of such documents is on increasing trend. 
+\textan{} (Text Analyser) serves such purpose, targeting the Police reports. 
+In other words, \textan{} is a tool which supports mining structured data buried in the Police reports. The term "structured data" consists of two concepts. 
+First, it contains name, street, date of birth, crime and other named entities related to some people. 
+Second, the data contain the relations between two entities. 
+For example, the relation between a person and their date of birth, the relation between two persons. The objective of \textan{} is to provide a robust tool which supports the procedure, either automatically and manually.
+Although first impulse came from the Police needs, \textan{} is made as general
+as possible to allow easy configuration for any other domain as needed.
+
+\textan{} has client-server structure. It supports following operations:
+  
+  \begin{itemize}
+  \item Bring new solution to the classic problem of extracting data from text.
+  \item Provide the service for both automatic detection and manual adjustment.
+  \item Make the adjustment of data as simple as possible for users.
+  \item Make the graphic user interface as fruitful as possible.
+  \end{itemize}
+
+This documentation describes \textan{} from the perspective of an user. 
+All the concepts are explained in the \emph{Glossary}.
+
+To start using \textan{}, user have to start the client application and log in. 
+Once user log in successfully, the main screen of \textan{} is displayed.
+
+\comment{Tam}{What's next?} 
+
+\subsection{Glossary}
+Terms are used in very specific manner in the documentation and in both applications,
+therefore it is really essential to understand their meaning. Otherwise, it is
+possible to misunderstand the rest of the text.
+
+\comment[anyone]{Petr}{check if this makes sense!}
+\begin{description}
+\item[Object]
+The term "object" is a representation of some unique thing in \textan{}. Consider
+for example a person with name Joseph Smith from Prague with identifier 000123/4567.
+The object refers to this person in the real world, a meat and bones.
+
+\item[Alias]
+The alias represents a designation of a object. For example: Joseph Smith, Joe
+Smith, Joey S., J. Smith or just Smith can be names of one concrete person.
+Names are aliases for the person.
+
+%\item[Alias occurrence]
+
+\item[Document]
+The document is an arbitrary text that is processed by \textan{}. E.g. a police
+report, a letter, a movie review or a judgment. In the following text the terms
+document and report are used interchangeably.
+
+\item[Entity]
+The entity is a sequence of words recognized either by a named entity recognizer
+or by a user. The entity will be later assigned to an object and it became an alias
+of the object after assigning. Consider for example a sentence: Joe Smith was seen
+in Prague on 5th September. The sentence contains 3 entities: Joe Smith (person),
+Prague (city), 5th September (date). We don't know which objects belongs to these
+entities at the moment. Prague can represent the capital city of the Czech Republic,
+or a city in the USA.
+
+\item[Object/Entity Type]
+Each object and entity has a type. For example person, date, city, country etc.
+Set of types in the system depends on domain which the system is deployed to.
+There are some universal predefined ones, but the system administrator needs to
+prepare customized list to fully unleashed the power of the project.
+
+\item[Relation]
+The relation represents any relationship between objects mentioned in a document.
+A relation can be represented in a document by an anchor, or can be unexpressed,
+which means without any anchor in a document. See Anchor below.
+\comment[anyone]{Adam}{Check this sentence with two relations, one with anchor, one without anchor.}
+Consider this example: "Adam (890524/1367) is married to Eve". Three objects
+have occurrence in the sentence - persons Adam and Eve and id 890524/1367. There
+are two relations: Adam "has" 890524/1367 without anchor and Adam "marriage" Eve
+with anchor "married".
+
+\item[Relation Type]
+Each relation has a type. For example born, reside, die, kill etc. Similarly to
+object/relation types set of relation types in the system depends on domain
+which the system is deployed to. There are some universal predefined ones, but
+the system administrator needs to prepare customized list to fully unleashed the
+power of the project.
+
+\item[Anchor]
+The anchor is a word or a sequence of words that is binded to a relation between
+objects. Consider for example a sentence: Joey Smith killed Mary-Ann S. There is
+relation between Joey Smith and Mary-Ann S., which is represented by the word
+"killed". The word is the anchor.
+
+\item[Roles and orders]
+Each object in a relation can have a role assigned. This role is mostly used
+for visualisation and storing additional information. Moreover object can also
+have order assigned which is just an integral number used for graph
+visualization (see \ref{sssec:EditRelations}). For example relation created from
+sentence "Bill killed Joe." could be represented like this:
+Bill (-1, murderer) --kill--> (1, victim) Joe.
+\end{description}
+
+\comment{Petr}{is it necessary to explain terms: assignment, object merging, alias occurence?}
+\comment{Adam}{Let's wait for Ondrej's feedback}

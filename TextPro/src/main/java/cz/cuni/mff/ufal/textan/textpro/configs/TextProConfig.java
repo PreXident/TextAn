@@ -25,7 +25,7 @@ public class TextProConfig {
      * @return
      */
     @Bean(initMethod = "learn")
-    @DependsOn("transactionManager")
+    @DependsOn({"transactionManager", "exceptionTranslation"})
     @Autowired
     public ITextPro textPro(
             IObjectTypeTableDAO objectTypeTableDAO,
@@ -35,7 +35,8 @@ public class TextProConfig {
             IJoinedObjectsTableDAO joinedObjectsTableDAO,
             IRelationTypeTableDAO relationTypeTableDAO,
             IRelationTableDAO relationTableDAO,
-            IRelationOccurrenceTableDAO relationOccurrenceTableDAO
+            IRelationOccurrenceTableDAO relationOccurrenceTableDAO,
+            IDocumentTableDAO documentTableDAO
             ) {
         return new TextPro(
                 aliasOccurrenceTableDAO,
@@ -45,7 +46,8 @@ public class TextProConfig {
                 objectTableDAO,
                 objectTypeTableDAO,
                 relationOccurrenceTableDAO,
-                relationTableDAO
+                relationTableDAO,
+                documentTableDAO
         );
     }
 }
