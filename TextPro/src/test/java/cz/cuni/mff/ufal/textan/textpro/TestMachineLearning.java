@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import static org.junit.Assert.assertEquals;
-
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,42 +54,66 @@ public class TestMachineLearning {
     IRelationTypeTableDAO typeTableDAO;
 
     @Autowired
+    IDocumentTableDAO documentTableDAO;
+    
+    @Autowired
     ITextPro textPro;
 
     /*
-     Test the ranking and learning
+     Test the learning
      */
     @Test
-    public void TestRanking() {
+    public void TestML() {
         // Learn from database
-        textPro.learn();
+        //textPro.learn();
         
         // Create fake test
-        Entity e = new Entity("Emily", 0, 0 , 1);
+        Entity e = new Entity("Ema", 0, 0 , 1);
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         assertEquals("1 entity to match", 1, eList.size());
         
         // Run the ranking
-        Map<Entity, List<Pair<Long, Double>>> result = textPro.DoubleRanking("Empty", eList, 5);
+        Map<Entity, List<Pair<Long, Double>>> result = textPro.machineLearning("Empty", eList, 5);
         
         List<Pair<Long, Double>> Olist = result.get(e);
-        //assertEquals("1 entity to match", 1, result.keySet().size());
-        //assertEquals("2 one object", 1, Olist.size());
+        //assertEquals("1: entity to match", 1, result.keySet().size());
+        //assertEquals("2: one object found", 1, Olist.size());
         //assertEquals("2 zero object", 1, Olist.keySet().size());
     }
     
     @Test
     public void TestGetCloseObject() {
         // Learn from database
-        textPro.learn();
+        //textPro.learn();
         
         // Create fake test
-        Entity e = new Entity("Emily", 0, 0 , 1);
+        Entity e = new Entity("Ema", 0, 0 , 1);
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         List<ObjectTable> oList = objectTableDAO.findAllByAliasSubstring(e.getText());
-        //assertEquals("1 objst to find close", 1, oList.size());   
+        assertEquals("1 objst to find close", 1, oList.size());   
+    }
+    
+    /*
+     Test the ranking and learning
+     */
+    @Test
+    public void TestFinalRanking() {
+        // Learn from database
+        //textPro.learn();
+        
+        // Create fake test
+        Entity e = new Entity("Ema", 0, 0 , 1);
+        List<Entity> eList = new ArrayList<>();
+        eList.add(e);
+        
+        // Run the ranking
+        Map<Entity, List<Pair<Long, Double>>> result = textPro.finalRanking("Empty", eList, 5);
+        // If everything is alright, it will call both ML and HR
+        List<Pair<Long, Double>> Olist = result.get(e);
+        assertEquals("1: entity to match", 1, result.keySet().size());
+        assertEquals("2: one object found", 1, Olist.size());
     }
     
 }
