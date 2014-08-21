@@ -16,7 +16,6 @@ import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.Object;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,21 +28,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> implements IDocumentTableDAO {
 
-    private Query findAllDocumentsWithObjectQuery(long objectId) {
-        Query hq = currentSession().createQuery(
-                "select doc, count(occ) as num from DocumentTable as doc "
-                        + "inner join doc.aliasOccurrences as occ "
-                        + "inner join occ.alias as alias "
-                        + "inner join alias.object as obj "
-                        +"where obj.id = :objectId "
-                + "group by doc.id "
-                + "order by num desc"
-        );
-        hq.setParameter("objectId", objectId);
-
-        return hq;
-    }
-
+    
     @Override
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObject(ObjectTable obj) {
         return findAllDocumentsWithObject(obj.getId());
@@ -102,20 +87,6 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         return fullTextSession.createFullTextQuery(query);
     }
 
-    private int getNumberOfObjectOccurrencesInDocument(long documentId, long objectId) {
-        Query hq = currentSession().createQuery(
-                "select count(*) from DocumentTable as doc "
-                        + "inner join doc.aliasOccurrences as occ "
-                        + "inner join occ.alias as alias "
-                        + "inner join alias.object as obj "
-                        + "where doc.id = :documentId and obj.id = :objectId "
-        );
-        hq.setParameter("documentId", documentId);
-        hq.setParameter("objectId", objectId);
-
-        return ((Long)hq.iterate().next()).intValue();
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObjectByFullText(long objectId, String pattern) {
@@ -144,20 +115,6 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
     @Override
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(RelationTable relation) {
         return findAllDocumentsWithRelation(relation.getId());
-    }
-
-    private Query findAllDocumentsWithRelationQuery(long relationId) {
-        Query hq = currentSession().createQuery(
-                "select doc, count(occ) as num from DocumentTable as doc "
-                        + "inner join doc.relationOccurrences as occ "
-                        + "inner join occ.relation rel "
-                        + "where rel.id = :relationId "
-                        + "group by doc.id "
-                        + "order by num desc"
-        );
-        hq.setParameter("relationId", relationId);
-
-        return hq;
     }
 
     @Override
@@ -205,19 +162,6 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                 .createQuery();
 
         return fullTextSession.createFullTextQuery(query);
-    }
-
-    private int getNumberOfRelationOccurrencesInDocument(long documentId, long relationId) {
-        Query hq = currentSession().createQuery(
-                "select count(*) from DocumentTable as doc "
-                        + "inner join doc.relationOccurrences as occ "
-                        + "inner join occ.relation rel "
-                        + "where rel.id = :relationId and doc.id = :documentId"
-        );
-        hq.setParameter("documentId", documentId);
-        hq.setParameter("relationId", relationId);
-
-        return ((Long)hq.iterate().next()).intValue();
     }
 
     @Override
@@ -357,4 +301,64 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                 .list();
                 
     }
+    
+    private Query findAllDocumentsWithObjectQuery(long objectId) {
+        Query hq = currentSession().createQuery(
+                "select doc, count(occ) as num "
+                + "from DocumentTable as doc "
+                        + "inner join doc.aliasOccurrences as occ "
+                        + "inner join occ.alias as alias "
+                        + "inner join alias.object as obj "
+                        + "inner join obj.rootObject as root "
+                + "where root.id = :objectId "
+                + "group by doc.id, root "
+                + "order by num desc"
+        );
+        hq.setParameter("objectId", objectId);
+
+        return hq;
+    }
+    
+    private int getNumberOfObjectOccurrencesInDocument(long documentId, long objectId) {
+        Query hq = currentSession().createQuery(
+                "select count(*) from DocumentTable as doc "
+                        + "inner join doc.aliasOccurrences as occ "
+                        + "inner join occ.alias as alias "
+                        + "inner join alias.object as obj "
+                        + "inner join obj.rootObject as root "
+                + "where doc.id = :documentId and root.id = :objectId "
+        );
+        hq.setParameter("documentId", documentId);
+        hq.setParameter("objectId", objectId);
+
+        return ((Long)hq.iterate().next()).intValue();
+    }
+    
+    private int getNumberOfRelationOccurrencesInDocument(long documentId, long relationId) {
+        Query hq = currentSession().createQuery(
+                "select count(*) from DocumentTable as doc "
+                        + "inner join doc.relationOccurrences as occ "
+                        + "inner join occ.relation rel "
+                        + "where rel.id = :relationId and doc.id = :documentId"
+        );
+        hq.setParameter("documentId", documentId);
+        hq.setParameter("relationId", relationId);
+
+        return ((Long)hq.iterate().next()).intValue();
+    }
+
+    private Query findAllDocumentsWithRelationQuery(long relationId) {
+        Query hq = currentSession().createQuery(
+                "select doc, count(occ) as num from DocumentTable as doc "
+                        + "inner join doc.relationOccurrences as occ "
+                        + "inner join occ.relation rel "
+                        + "where rel.id = :relationId "
+                        + "group by doc.id "
+                        + "order by num desc"
+        );
+        hq.setParameter("relationId", relationId);
+
+        return hq;
+    }
+    
 }

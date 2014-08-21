@@ -103,7 +103,7 @@ public class DataTest {
 
          
          System.out.println(" clearAllTables");
-         Utils.clearAllTables(sessionFactory);
+         Utils.clearTestValues(sessionFactory);
     }
 
     // TODO add test methods here.
@@ -130,7 +130,7 @@ public class DataTest {
     @Test
     public void addAndRemoveObjectTypeTest() {
         System.out.println("\n\naddAndRemoveObjectType");
-        ObjectTypeTable user = new ObjectTypeTable("__Unspecified Object");
+        ObjectTypeTable user = new ObjectTypeTable("__[TEST] Unspecified Object");
         assertTrue("Object type already exists or cant be added", data.addRecord(user));
         long id = user.getId();
         assertTrue("id > 0", id > 0);
@@ -145,14 +145,14 @@ public class DataTest {
     public void addAndRemoveAliasOccurrenceTest() {
         System.out.println("\n\naddAndRemoveAliasOccurrenceTest");
         AliasOccurrenceTable user = new AliasOccurrenceTable(17, alias, document);
-        //assertTrue("Alias occurence already exists or cant be added", data.addRecord(user));
+        assertTrue("Alias occurence already exists or cant be added", data.addRecord(user));
         long id = user.getId();
-        //assertTrue("id > 0", id > 0);
+        assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
-        //AliasOccurrenceTable user2 = null;
-        //user2 = data.getRecordById(AliasOccurrenceTable.class, id);
-        //assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
-        //assertTrue("data.deleteRecord(user2)", data.deleteRecord(user2));
+        AliasOccurrenceTable user2 = null;
+        user2 = data.getRecordById(AliasOccurrenceTable.class, id);
+        assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
+        assertTrue("data.deleteRecord(user2)", data.deleteRecord(user));
     }
     
     @Test
@@ -281,7 +281,7 @@ public class DataTest {
     @Test
     public void addAndRemoveRelationTypeTest() {
         System.out.println("\n\naddAndRemoveRelationType");
-        RelationTypeTable user = new RelationTypeTable("__Unspecified Object");
+        RelationTypeTable user = new RelationTypeTable("__[TEST] Unspecified Object");
         assertTrue("Relation type already exists or cant be added", data.addRecord(user));
         long id = user.getId();
         assertTrue("id > 0", id > 0);
@@ -295,7 +295,7 @@ public class DataTest {
     @Test
     public void addAndRemoveObjectTest() {
         System.out.println("\n\naddAndRemoveObject");
-        ObjectTypeTable ott = new ObjectTypeTable("__ObjectType1");
+        ObjectTypeTable ott = new ObjectTypeTable("__[TEST] ObjectType1");
         assertTrue("Object type already exists or cant be added", data.addRecord(ott));
         System.out.println("Object typed added: " + ott);
         try {
@@ -305,7 +305,7 @@ public class DataTest {
             System.out.println("ot = " + ot);
             
             try {
-                ot = new ObjectTable("__object data XXX ###asd", ott);
+                ot = new ObjectTable("__[TEST] object data XXX ###asd", ott);
                 assertTrue("Object type already exists or cant be added: " + ot, data.addRecord(ot));
                 System.out.println("Object added: " + ot);
                 
@@ -330,42 +330,32 @@ public class DataTest {
     @Test
     public void addAndRemoveRelationTest() {
         System.out.println("\n\naddAndRemoveRelation");
-        RelationTypeTable ott = new RelationTypeTable("__RelationType1");
-        assertTrue("Object type already exists or cant be added", data.addRecord(ott));
-        System.out.println("Object typed added: " + ott);
-        try {
-            // TODO OBJECT ADD AND REMOVE
-            
-            RelationTable ot = data.getRecordById(RelationTable.class, 1L);
-            System.out.println("ot = " + ot);
-            
-            try {
-                ot = new RelationTable(ott);
-                assertTrue("Relation type already exists or cant be added: " + ot, data.addRecord(ot));
-                System.out.println("Relation added: " + ot);
-                
-            } catch (Exception e) {
-                throw e;
-            } finally {
-                assertTrue("Relation cant be deleted: " + ot, data.deleteRecord(ot));
-                System.out.println("Relation deleted: " + ot);
-            }
-            
-            
-            
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            assertTrue("data.deleteRecord(ott)", data.deleteRecord(ott));
-            System.out.println("Relation type deleted: " + ott);
+        RelationTypeTable relationType = new RelationTypeTable("__[TEST] RelationType1");
+        assertTrue("Object type already exists or cant be added", data.addRecord(relationType));
+        System.out.println("Object typed added: " + relationType);
 
-        }
+            RelationTable relation = data.getRecordById(RelationTable.class, 1L);
+            System.out.println("ot = " + relation);
+
+                relation = new RelationTable(relationType);
+                assertTrue("Relation type already exists or cant be added: " + relation, data.addRecord(relation));
+                System.out.println("Relation added: " + relation);
+                
+                //assertTrue("Relation cant be deleted: " + relation, data.deleteRecord(relation));
+                //System.out.println("Relation deleted: " + relation);
+            
+            
+
+            assertTrue("data.deleteRecord(relationType)", data.deleteRecord(relationType));
+            System.out.println("Relation type deleted: " + relationType);
+
+
     }
    
     @Test
     public void addAndRemoveDocumentTest() {
         System.out.println("\n\naddAndRemoveDocument");
-        DocumentTable document = new DocumentTable("__Extra long text from report");
+        DocumentTable document = new DocumentTable("__[TEST] Extra long text from report");
         assertTrue("Document already exists or cant be added", data.addRecord(document));
         long id = document.getId();
         assertTrue("id > 0", id > 0);
@@ -375,15 +365,15 @@ public class DataTest {
         assertTrue("doc2.equals(doc): doc = " + document + "; doc2 = " + doc2, doc2.equals(document));
         assertTrue("data.deleteRecord(user2)", data.deleteRecord(doc2));
     }
-    /*
+
     @Test
     public void addAndRemoveAliasTest() {
         System.out.println("\n\naddAndRemoveAlias");
         AliasTable ott = new AliasTable(object, "example");
-        //assertTrue("Alias already exists or cant be added", data.addRecord(ott));
+        assertTrue("Alias already exists or cant be added", data.addRecord(ott));
         System.out.println("Alias added: " + ott);
         try {
-            //assertTrue("data.deleteRecord(ott)", data.deleteRecord(ott));
+            assertTrue("data.deleteRecord(ott)", data.deleteRecord(ott));
         } catch (Exception e) {
             throw e;
         } finally {
@@ -391,7 +381,7 @@ public class DataTest {
 
         }
     }
-    */
+    
     /*
     @Test
     public void deleteTestValuesTest() {

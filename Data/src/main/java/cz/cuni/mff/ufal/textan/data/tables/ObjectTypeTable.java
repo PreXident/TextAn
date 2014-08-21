@@ -20,6 +20,7 @@ import java.util.Set;
 @Table(name = "ObjectType")
 public class ObjectTypeTable extends AbstractTable {
     public static final String PROPERTY_NAME_ID = "id";
+    public static final String PROPERTY_NAME_TYPE_NAME = "name";
 
     private long id;
     private String name;
@@ -55,7 +56,7 @@ public class ObjectTypeTable extends AbstractTable {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "objectType", orphanRemoval = true)
+    @OneToMany(mappedBy = "objectType")
     @Cascade(CascadeType.ALL)
     //@ContainedIn // -> immutable object
     public Set<ObjectTable> getObjectsOfThisType() {

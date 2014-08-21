@@ -27,6 +27,7 @@ public class DocumentTable extends AbstractTable {
     public static final String PROPERTY_NAME_RELATION_OCCURRENCES = "relationOccurrences";
     public static final String PROPERTY_NAME_PROCESSED = "processedDate";
     public static final String PROPERTY_NAME_GLOBAL_VERSION = "globalVersion";
+    public static final String PROPERTY_NAME_TEXT = "text";
 
     private long id;
     private long globalVersion;
@@ -114,7 +115,7 @@ public class DocumentTable extends AbstractTable {
         this.text = text;
     }
 
-    @OneToMany(mappedBy = "document", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "document")
     @Cascade(CascadeType.ALL)
     @IndexedEmbedded(includePaths = "relation.id")
     public Set<RelationOccurrenceTable> getRelationOccurrences() {
@@ -125,7 +126,7 @@ public class DocumentTable extends AbstractTable {
         this.relationOccurrences = relationOccurrences;
     }
 
-    @OneToMany(mappedBy = "document", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "document")
     @Cascade(CascadeType.ALL)
     @IndexedEmbedded(includePaths = "alias.object.id")
     public Set<AliasOccurrenceTable> getAliasOccurrences() {

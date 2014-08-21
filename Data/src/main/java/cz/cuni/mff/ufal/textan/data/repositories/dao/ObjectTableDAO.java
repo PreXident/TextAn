@@ -7,6 +7,7 @@
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
 import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
+import org.hibernate.transform.ResultTransformer;
 
 /**
  * @author Vaclav Pernicka
@@ -185,6 +187,41 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
                 .list();
                 
     }
+    
+    @Override
+    public List<Pair<ObjectTable, RelationTable>> getNeighbors(ObjectTable object) {
+        return getNeighbors(object.getId());
+    }
+
+    @Override
+    @SuppressWarnings({"serial", "rawtypes", "unchecked"})
+    public List<Pair<ObjectTable, RelationTable>> getNeighbors(long objectId) {
+        return currentSession().createQuery(
+                "select obj2, rel"
+                + " from ObjectTable obj"
+                + "     inner join obj.relations inRel"
+                + "     inner join inRel.relation rel"
+                + "     inner join rel.objectsInRelation inRel2"
+                + "     inner join inRel2.object obj2"
+                + " where obj.id = :pId"
+        )
+                .setParameter("pId", objectId)
+                .setResultTransformer(new ResultTransformer() {
+
+                    @Override
+                    public Object transformTuple(Object[] tuple, String[] aliases) {
+                        return new Pair<> 
+                                ((ObjectTable)tuple[0], 
+                                 (RelationTable)tuple[1]);
+                    }
+
+                    @Override
+                    public List transformList(List collection) {
+                        return collection;
+                    }
+                })
+                .list();
+    }
 
     @Override
     protected Criteria findAllCriteria() {
@@ -288,4 +325,6 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
         .setParameter("docId", documentId);
         
     }
+
+
 }
