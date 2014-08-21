@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import javafx.util.Pair;
 import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
@@ -73,12 +75,14 @@ public class TrainWeka {
         // Create YES
         for (ObjectTable obt : objectTable) {
 
-            long type = obt.getObjectType().getId(); 
-            Set<AliasTable> als = obt.getAliases();
+            long type = obt.getObjectType().getId();
+
+            //get all distinct aliases for (joined)object
+            List<String> als = aliasTableDAO.findAllAliasesOfObject(obt).stream().map(AliasTable::getAlias).distinct().collect(Collectors.toList());
             if(als.isEmpty()) {
                 continue;
             }
-            String first_alias_text = als.iterator().next().getAlias(); //first_alias.getAlias();
+            String first_alias_text = als.get(0); //first_alias.getAlias();
             
             // Create a fake entity for training yes
             Entity e = new Entity(first_alias_text, 0, 0, type);
@@ -115,15 +119,15 @@ public class TrainWeka {
         // Compute value of instance
         FeaturesComputeValue fcv = new FeaturesComputeValue();
         // Get all alias
-        List<AliasTable> aliasTable = aliasTableDAO.findAllAliasesOfObject(obj);
+        List<String> aliases = aliasTableDAO.findAllAliasesOfObject(obj).stream().map(AliasTable::getAlias).distinct().collect(Collectors.toList());
 
         // Feature 1: The similarity between entity text and object alias
         double highestSim = 0;
         double lowestSim = 1000;
         double sum = 0;
         double number = 0;
-        for (AliasTable at : aliasTable) {
-            double sim = fcv.EntityTextAndObjectAlias(e.getText(), at.getAlias());
+        for (String alias : aliases) {
+            double sim = fcv.EntityTextAndObjectAlias(e.getText(), alias);
             if (sim > highestSim) {
                 highestSim = sim;
             }
