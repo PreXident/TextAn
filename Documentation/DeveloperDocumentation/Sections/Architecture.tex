@@ -44,9 +44,53 @@ training data collecting from database and preparation, model handling
 
 \comment[Tam]{Petr}{here should be description of TextPro}
 
-After the document is processed by NER, the next step is assigning the entities
-to available objects in the database. Normally, this could be done by matching
-the entity text with the alias from object. However, this method would \comment[Tam]{Petr}{finish?}
+%After the document is processed by NER, the next step is assigning the entities
+%to available objects in the database. Normally, this could be done by matching
+%the entity text with the alias from object. However, this method would \comment[Tam]{Petr}{finish?}
+
+After running NameTag, a list of entities is extracted from the document. The
+package \emph{cz.cuni.mff.ufal.textan.textpro} is responsible for automatic
+assigning of those entities to available objects in database. At the end, for 
+each entity, the aforementioned package returns a list of potential objects along
+with their score. Two methods are provided.
+
+\paragraph{HeuristicRank}
+The most simplest solution is searching for the \textit{objects} with matching 
+\textit{alias}. However, for an array of entity, it would return an array of 
+list of unordered objects.
+Function \emph{cz.cuni.mff.ufal.textan.textpro.HeuristicRanking} loops through 
+the whole structure, promote the pair of objects which has a relation. This is 
+due to the fact that such pair of objects is more likely to appear in the same
+document. However, as a heuristic method, its main role is to guarantee a decent
+output for every input.
+
+\comment{Tam}{TODO: Picture for heuristic ranking}
+
+\paragraph{MachineLearning}
+Without extensive human effort, machine learning is the best method to achieve
+high performance from a huge database. The problem of ``matching potential objects
+to an entity'' is reformulated to fit the definition of a classification machine 
+learning. Each object is paired with the entity. Then the pair is classified as
+\emph{positive} if the object is potentially matched the entity. On the contrary,
+the pair is classified as \empth{negative}. It becomes the problem of binary 
+classification.
+
+\paragraph{Learning}
+The package \emph{cz.cuni.mff.ufal.textan.textpro.data} supports all steps for machine
+learning including training (learning). The database is extracted. 
+\emph{cz.cuni.mff.ufal.textan.textpro.data} creates 
+artificial pairs of training vectors with \textit{Weka} tool. When a new document is
+processed, new entity and object pairs is added to the database. They could be extracted
+later to train again.
+
+\paragraph{Testing}
+To assign the entity to object, function \emph{distributionForInstance} to return the 
+probability of the pair with regards to \emph{positive} class. The probability value 
+is ranked an used as the score.
+
+\comment{Tam}{TODO: Features description, maybe}
+
+
 
 \section{Client architecture}
 
