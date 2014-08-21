@@ -24,7 +24,7 @@ public class TextProConfig {
      * (This method is invoked only once at startup and than works like a singleton.)
      * @return
      */
-    @Bean//(initMethod = "learn")
+    @Bean(initMethod = "learn")
     @DependsOn({"transactionManager", "exceptionTranslation"})
     @Autowired
     public ITextPro textPro(

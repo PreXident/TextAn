@@ -72,7 +72,7 @@ public class TestRanking {
         assertEquals("1 entity to match", 1, eList.size());
         
         // Run the ranking
-        Map<Entity, List<Pair<Long, Double>>> result = textPro.HeuristicRanking("Empty", eList, 5);
+        Map<Entity, List<Pair<Long, Double>>> result = textPro.heuristicRanking("Empty", eList, 5);
         
         List<Pair<Long, Double>> Olist = result.get(e);
         assertEquals("1: entity to match", 1, result.keySet().size());

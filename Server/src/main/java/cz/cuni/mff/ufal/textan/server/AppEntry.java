@@ -50,9 +50,6 @@ public class AppEntry {
             server = context.getBean(Server.class);
             invoker = context.getBean(CommandInvoker.class);
 
-            //FIXME
-            context.getBean(ITextPro.class).learn();
-
             LOG.info("Start server");
             server.start();
             LOG.info("Server command invoker");

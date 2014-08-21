@@ -20,8 +20,8 @@ import weka.core.Instance;
  * @author Petr Fanta
  * @see cz.cuni.mff.ufal.textan.textpro.ITextPro
  * @author Tam Hoang
- * Implement the ranking scheme HeuristicRanking(document, list of entities, number of K)
- * Implement the machine learning scheme MachineLearning 
+ * Implement the ranking scheme heuristicRanking(document, list of entities, number of K)
+ * Implement the machine learning scheme machineLearning
  */
 @Transactional
 public class TextPro implements ITextPro {
@@ -63,7 +63,7 @@ public class TextPro implements ITextPro {
     
     /**
      * Instantiates a new TextPro.
-     * Uses a constructor injection for an initialization of data access object ({@link cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig#textPro(cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasOccurrenceTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationOccurrenceTableDAO)}
+     * Uses a constructor injection for an initialization of data access object ({@link cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig#textPro(cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasOccurrenceTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationOccurrenceTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO)}
      *
      * @param aliasOccurrenceTableDAO the alias occurrence table DAO
      * @param typeTableDAO the type table DAO
@@ -115,16 +115,16 @@ public class TextPro implements ITextPro {
     }
 
     /*
-    * TokenizeDoc: split the document into a list of tokens
+    * tokenizeDoc: split the document into a list of tokens
     * For now: not needed yet.
     */
     @Override
-    public List<String> TokenizeDoc(String document) {
+    public List<String> tokenizeDoc(String document) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
     
     /**
-     * HeuristicRanking: Run a simple ranking schema to get the reusult
+     * heuristicRanking: Run a simple ranking schema to get the reusult
      * It takes the input as a documents, a list of entity and the number of wanted result
      * It produces the output as a Map between the entity and the id of object, along with it scores
      * @param document
@@ -133,7 +133,7 @@ public class TextPro implements ITextPro {
      * @return the result of DoubleRank
      */
     @Override
-    public Map<Entity, List<Pair<Long, Double>>> HeuristicRanking(String document, List<Entity> eList, int topK){
+    public Map<Entity, List<Pair<Long, Double>>> heuristicRanking(String document, List<Entity> eList, int topK){
 
         LOG.debug("Starting TexPro ranking.");
 
@@ -230,10 +230,10 @@ public class TextPro implements ITextPro {
     }
     /*
     * Machine Learning with Weka, not JavaML
-    * Return the same kind of value as HeuristicRanking
+    * Return the same kind of value as heuristicRanking
     */
     @Override
-    public Map<Entity, List<Pair<Long, Double>>> MachineLearning(String document, List<Entity> eList, int topK) {
+    public Map<Entity, List<Pair<Long, Double>>> machineLearning(String document, List<Entity> eList, int topK) {
         
         LOG.debug("Starting TexPro weka learning.");
 
@@ -367,9 +367,9 @@ public class TextPro implements ITextPro {
               otherwise get the result of machine learning
     */
     @Override
-    public Map<Entity, List<Pair<Long, Double>>> FinalRanking(String document, List<Entity> eList, int topK) {
-        Map<Entity, List<Pair<Long, Double>>> mapHR = HeuristicRanking(document, eList, 2*topK);
-        Map<Entity, List<Pair<Long, Double>>> mapML = MachineLearning(document, eList, 2*topK);
+    public Map<Entity, List<Pair<Long, Double>>> finalRanking(String document, List<Entity> eList, int topK) {
+        Map<Entity, List<Pair<Long, Double>>> mapHR = heuristicRanking(document, eList, 2 * topK);
+        Map<Entity, List<Pair<Long, Double>>> mapML = machineLearning(document, eList, 2 * topK);
         Map<Entity, List<Pair<Long, Double>>> mapFinal = new HashMap<Entity, List<Pair<Long, Double>>>();
         for(Entity e:mapML.keySet()) {
             if(!mapHR.containsKey(e)) {

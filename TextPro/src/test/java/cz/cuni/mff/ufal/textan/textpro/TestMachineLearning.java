@@ -65,7 +65,7 @@ public class TestMachineLearning {
     @Test
     public void TestML() {
         // Learn from database
-        textPro.learn();
+        //textPro.learn();
         
         // Create fake test
         Entity e = new Entity("Ema", 0, 0 , 1);
@@ -74,7 +74,7 @@ public class TestMachineLearning {
         assertEquals("1 entity to match", 1, eList.size());
         
         // Run the ranking
-        Map<Entity, List<Pair<Long, Double>>> result = textPro.MachineLearning("Empty", eList, 5);
+        Map<Entity, List<Pair<Long, Double>>> result = textPro.machineLearning("Empty", eList, 5);
         
         List<Pair<Long, Double>> Olist = result.get(e);
         //assertEquals("1: entity to match", 1, result.keySet().size());
@@ -101,7 +101,7 @@ public class TestMachineLearning {
     @Test
     public void TestFinalRanking() {
         // Learn from database
-        textPro.learn();
+        //textPro.learn();
         
         // Create fake test
         Entity e = new Entity("Ema", 0, 0 , 1);
@@ -109,7 +109,7 @@ public class TestMachineLearning {
         eList.add(e);
         
         // Run the ranking
-        Map<Entity, List<Pair<Long, Double>>> result = textPro.FinalRanking("Empty", eList, 5);
+        Map<Entity, List<Pair<Long, Double>>> result = textPro.finalRanking("Empty", eList, 5);
         // If everything is alright, it will call both ML and HR
         List<Pair<Long, Double>> Olist = result.get(e);
         assertEquals("1: entity to match", 1, result.keySet().size());
