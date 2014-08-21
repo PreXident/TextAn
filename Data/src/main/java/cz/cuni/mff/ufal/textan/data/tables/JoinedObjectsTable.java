@@ -142,11 +142,9 @@ public class JoinedObjectsTable extends AbstractTable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 37 * hash + (int) (this.id ^ (this.id >>> 32));
-        hash = 37 * hash + Objects.hashCode(this.from);
-        hash = 37 * hash + Objects.hashCode(this.to);
-        hash = 37 * hash + (int) (this.globalVersion ^ (this.globalVersion >>> 32));
+        int hash = 7;
+        hash = 47 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 47 * hash + (int) (this.globalVersion ^ (this.globalVersion >>> 32));
         return hash;
     }
 
@@ -160,12 +158,6 @@ public class JoinedObjectsTable extends AbstractTable {
         }
         final JoinedObjectsTable other = (JoinedObjectsTable) obj;
         if (this.id != other.id) {
-            return false;
-        }
-        if (!Objects.equals(this.from, other.from)) {
-            return false;
-        }
-        if (!Objects.equals(this.to, other.to)) {
             return false;
         }
         if (this.globalVersion != other.globalVersion) {

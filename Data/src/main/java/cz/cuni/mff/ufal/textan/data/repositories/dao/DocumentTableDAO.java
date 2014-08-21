@@ -311,7 +311,7 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                         + "inner join alias.object as obj "
                         + "inner join obj.rootObject as root "
                 + "where root.id = :objectId "
-                + "group by doc.id "
+                + "group by doc.id, root "
                 + "order by num desc"
         );
         hq.setParameter("objectId", objectId);
