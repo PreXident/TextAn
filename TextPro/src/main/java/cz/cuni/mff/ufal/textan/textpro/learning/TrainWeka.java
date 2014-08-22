@@ -99,7 +99,7 @@ public class TrainWeka {
         }
         
         // Create a model
-        Classifier cModel = (Classifier)new IBk();
+        Classifier cModel = new IBk();
         try {
             cModel.buildClassifier(isTrainingSet);
         } catch (Exception ex) {
@@ -117,7 +117,7 @@ public class TrainWeka {
         Instance thisInstance = new Instance(5);
         
         // Compute value of instance
-        FeaturesComputeValue fcv = new FeaturesComputeValue();
+        //FeaturesComputeValue fcv = new FeaturesComputeValue();
         // Get all alias
         List<String> aliases = aliasTableDAO.findAllAliasesOfObject(obj).stream().map(AliasTable::getAlias).distinct().collect(Collectors.toList());
 
@@ -127,7 +127,7 @@ public class TrainWeka {
         double sum = 0;
         double number = 0;
         for (String alias : aliases) {
-            double sim = fcv.EntityTextAndObjectAlias(e.getText(), alias);
+            double sim = FeaturesComputeValue.EntityTextAndObjectAlias(e.getText(), alias);
             if (sim > highestSim) {
                 highestSim = sim;
             }
@@ -142,7 +142,7 @@ public class TrainWeka {
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(2), (sum+0.2)/(number+0.2));
         
         // Feature 2: The type comparison
-        double typeCom = fcv.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getId());
+        double typeCom = FeaturesComputeValue.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getId());
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(3), typeCom);
         
         // The class

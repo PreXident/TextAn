@@ -39,14 +39,14 @@ public class TextProConfig {
             IDocumentTableDAO documentTableDAO
             ) {
         return new TextPro(
-                aliasOccurrenceTableDAO,
-                relationTypeTableDAO,
+                //aliasOccurrenceTableDAO,
+                //relationTypeTableDAO,
                 aliasTableDAO,
-                joinedObjectsTableDAO,
+                //joinedObjectsTableDAO,
                 objectTableDAO,
-                objectTypeTableDAO,
-                relationOccurrenceTableDAO,
-                relationTableDAO,
+                //objectTypeTableDAO,
+                //relationOccurrenceTableDAO,
+                //relationTableDAO,
                 documentTableDAO
         );
     }
