@@ -50,6 +50,14 @@ public class RelationOccurrenceTable extends AbstractTable {
         this.document.getRelationOccurrences().add(this);
     }
 
+    public RelationOccurrenceTable(RelationTable relation, DocumentTable document) {
+        this.relation = relation;
+        this.relation.getOccurrences().add(this);
+
+        this.document = document;
+        this.document.getRelationOccurrences().add(this);
+    }
+
     public RelationOccurrenceTable(RelationTable relation, DocumentTable document, int position, int length) {
         this(relation, document, position, document.getText().substring(position, position+length));
     }

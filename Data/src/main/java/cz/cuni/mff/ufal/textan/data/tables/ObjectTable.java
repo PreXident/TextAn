@@ -48,10 +48,17 @@ public class ObjectTable extends AbstractTable {
         rootOfObjects.add(this);
     }
 
+    public ObjectTable(ObjectTypeTable objectType) {
+        this();
+        this.objectType = objectType;
+        objectType.getObjectsOfThisType().add(this);
+    }
+
     public ObjectTable(String data, ObjectTypeTable objectType) {
         this();
         this.data = data;
         this.objectType = objectType;
+        objectType.getObjectsOfThisType().add(this);
     }
 
     @Id
