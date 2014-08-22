@@ -5,6 +5,8 @@ package cz.cuni.mff.ufal.textan.server.services;
  */
 public class NonRootObjectException extends Exception {
 
+    private static final long serialVersionUID = -3876726841931601548L;
+
     private long objectId;
     private long rootObjectId;
 
