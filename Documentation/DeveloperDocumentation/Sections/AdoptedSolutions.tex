@@ -5,9 +5,13 @@
 This section lists all technologies and libraries used in \textan{}.
 
 \paragraph{Apache CXF\footnote{\url{http://cxf.apache.org/}}}
-Apache CXF is an open-source Web services framework. CXF implements the JAX-WS 
-standard APIs, is configurable through Spring and can be embedded into Jetty,
+%Apache CXF is an open-source Web services framework. CXF implements the JAX-WS 
+%standard APIs, is configurable through Spring and can be embedded into Jetty,
+%Tomcat or other servlet containers.
+Apache CXF is an open-source Web services framework. It implements the JAX-WS 
+standard APIs. Apache CXF is not only able to configured through Spring but also can be embedded into Jetty,
 Tomcat or other servlet containers.
+\comment[Petr]{Tam}{Approved?}
 
 \paragraph{ControlsFX\footnote{\url{http://fxexperience.com/controlsfx/}}}
 ControlsFX is a Java8 open source library aiming at enhancing the programming
@@ -16,18 +20,24 @@ components to make everyday use of JavaFX even easier.
 
 \paragraph{Hibernate ORM\footnote{\url{http://hibernate.org/orm/}}}
 Hibernate ORM (Hibernate in short) is an object-relational mapping library for
-Java language, providing a framework for mapping an object-oriented domain
+%Java language, providing a framework for mapping an object-oriented domain
+Java language. It provides a framework for mapping an object-oriented domain
 model to a traditional relational database. Hibernate solves object-relational
 impedance mismatch problems by replacing direct persistence-related database
 accesses with high-level object handling functions.
+\comment[Petr]{Tam}{Approved?}
 
 \paragraph{Hibernate Search\footnote{\url{http://hibernate.org/search/}}}
-Hibernate Search is a library (or Hibernate ORM extension), which integrates
+%Hibernate Search is a library (or Hibernate ORM extension), which integrates
+Hibernate Search is a library (or Hibernate ORM extension). It integrates
 the full text library functionality from Apache Lucene in the Hibernate and
-JPA model. It offers full-text search support for objects stored by Hibernate
-ORM, Infinispan and other sources. Think of it as Google\texttrademark{} for
+%JPA model. It offers full-text search support for objects stored by Hibernate
+JPA model. It offers full-text search which supports objects stored by Hibernate
+%ORM, Infinispan and other sources. Think of it as Google\texttrademark{} for
+ORM, Infinispan and other sources. It could be referred as Google\texttrademark{} for
 entities: search words with text, order results by relevance and find by
 approximation (fuzzy search).
+\comment[Petr]{Tam}{Approved?}
 
 \paragraph{JCommander\footnote{\url{http://jcommander.org/}}}
 JCommander is a very small Java framework that makes it trivial to parse command
@@ -38,13 +48,16 @@ Jetty is a pure Java-based HTTP (Web) server and Java Servlet container. It can
 be embedded into other applications through Jetty API.
 
 \paragraph{JUNG\footnote{\url{http://jung.sourceforge.net/}}}
-JUNG (Java Universal Network/Graph Framework) is older Java library for
+JUNG (Java Universal Network/Graph Framework) is an older Java library for
 displaying graphs for Swing framework, still widely used in Java world, well documented and easily extensible.
+\comment[Petr]{Tam}{Older than what? Or just old?}
 
 \paragraph{JFXtras\footnote{\url{http://jfxtras.org/}}}
 JFXtras is another JavaFX8 enhancing project providing components that
-developers often need in their day-to-day work, but that are currently missing
+%developers often need in their day-to-day work, but that are currently missing
+most JAVA developers need in daily work, but it is currently missing
 from JavaFX.
+\comment[Petr]{Tam}{Approved?}
 
 \paragraph{MorphoDiTa\footnote{\url{http://ufal.mff.cuni.cz/morphodita}}}
 Morphological Dictionary and Tagger is an open-source tool for morphological
@@ -56,6 +69,8 @@ a throughput around 10-200K words per second. MorphoDiTa is a free software
 under LGPL license and the linguistic models are free for non-commercial use
 and distributed under CC BY-NC-SA license, although for some models the original
 data used to create the model may impose additional licensing conditions.
+\comment[Petr]{Tam}{This paragraph is flawless. Do we need a quotation here? (maybe other tools as well)}
+
 
 \paragraph{NameTag\footnote{\url{http://ufal.mff.cuni.cz/nametag}}}
 NameTag is an open-source tool for named entity recognition (NER). NameTag 
@@ -67,17 +82,24 @@ In the Czech language, NameTag achieves state-of-the-art performance
 linguistic models are free for non-commercial use and distributed under CC 
 BY-NC-SA license, although for some models the original data used to create
 the model may impose additional licensing conditions.
+\comment[Petr]{Tam}{This paragraph is flawless. Do we need a quotation here? (maybe other tools as well)}
+
 
 \paragraph{PretopoLib\footnote{\url{http://pretopolib.complexica.net/}}}
-PretopoLib is JAVA library based on pretopology which is mathematical theory for
-analysis, modeling and simulation in several domains: human and social sciences,
-game theory, graph theory extension, networks, discrete spaces.
+PretopoLib is a JAVA library based on pretopology. It provides the mathematical 
+theory which supports
+analysis, modelling and simulation in several domains: human and social sciences,
+game theory, graph theory extension, networks and discrete spaces.
+\comment[Petr]{Tam}{Approved?}
+
 
 \paragraph{SLF4J \& Logback\footnote{\url{http://www.slf4j.org/}, \url{http://logback.qos.ch/}}}
-Simple Logging Facade for Java (SLF4J) provides a Java logging API by means
-of a simple facade pattern. The underlying logging backend is determined
+Simple Logging Facade for Java (SLF4J) provides a Java logging API in the form of
+a simple facade pattern. The underlying logging backend is determined
 at runtime by adding the desired binding to the classpath and may be
 java.util.logging, log4j or logback.
+\comment[Petr]{Tam}{Approved?, it could be found on the internet too }
+
 
 \paragraph{Spring Framework\footnote{\url{http://projects.spring.io/spring-framework/}}}
 The Spring Framework is an open source application framework and inversion
