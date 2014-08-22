@@ -32,6 +32,13 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
     }
 
     @Override
+    synchronized public GetRelationsFromStringResponse getRelationsFromString(
+            final GetRelationsFromStringRequest getRelationsFromStringRequest,
+            final EditingTicket editingTicket) {
+        return innerDP.getRelationsFromString(getRelationsFromStringRequest, editingTicket);
+    }
+
+    @Override
     synchronized public SaveProcessedDocumentByIdResponse saveProcessedDocumentById(
             final SaveProcessedDocumentByIdRequest saveProcessedDocumentByIdRequest,
             final EditingTicket editingTicket) throws IdNotFoundException, DocumentChangedException, DocumentAlreadyProcessedException {
@@ -57,6 +64,14 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
             final GetAssignmentsFromStringRequest getAssignmentsFromStringRequest,
             final EditingTicket editingTicket) {
         return innerDP.getAssignmentsFromString(getAssignmentsFromStringRequest, editingTicket);
+    }
+
+    @Override
+    synchronized public GetRelationsByIdResponse getRelationsById(
+            final GetRelationsByIdRequest getRelationsByIdRequest,
+            final EditingTicket editingTicket)
+            throws DocumentChangedException, DocumentAlreadyProcessedException, IdNotFoundException {
+        return innerDP.getRelationsById(getRelationsByIdRequest, editingTicket);
     }
 
     @Override
