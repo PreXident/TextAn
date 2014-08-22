@@ -10,7 +10,6 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.exceptions.JoiningANonRootObjectException;
 import cz.cuni.mff.ufal.textan.data.exceptions.JoiningEqualObjectsException;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.GlobalVersionTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IGlobalVersionTableDAO;
@@ -428,16 +427,16 @@ public class DAOTest {
         Assert.assertEquals(object.getRootObject(), joinedObj);
         Assert.assertEquals(object2.getRootObject(), joinedObj);
         
-        System.out.println("object.getOldObject1:" + object.getOldObjects1());
-        System.out.println("object.getOldObject2:" + object.getOldObjects2());
+        System.out.println("object.getOldObject1:" + object.getOldObject1());
+        System.out.println("object.getOldObject2:" + object.getOldObject2());
         System.out.println("object.getNewObject:" + object.getNewObject());
 
-        System.out.println("object2.getOldObject1:" + object2.getOldObjects1());
-        System.out.println("object2.getOldObject2:" + object2.getOldObjects2());
+        System.out.println("object2.getOldObject1:" + object2.getOldObject1());
+        System.out.println("object2.getOldObject2:" + object2.getOldObject2());
         System.out.println("object2.getNewObject:" + object2.getNewObject());
 
-        System.out.println("joinedObj.getOldObject1:" + joinedObj.getOldObjects1());
-        System.out.println("joinedObj.getOldObject2:" + joinedObj.getOldObjects2());
+        System.out.println("joinedObj.getOldObject1:" + joinedObj.getOldObject1());
+        System.out.println("joinedObj.getOldObject2:" + joinedObj.getOldObject2());
         System.out.println("joinedObj.getNewObject:" + joinedObj.getNewObject());
         
         //joinedObjectsDAO.delete(joinedObj.getNewObject());

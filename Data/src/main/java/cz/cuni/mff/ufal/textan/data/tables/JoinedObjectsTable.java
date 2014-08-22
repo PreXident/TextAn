@@ -6,10 +6,6 @@ import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
-import org.hibernate.annotations.GenericGenerator;
-
-
 
 
 /**
@@ -60,10 +56,10 @@ public class JoinedObjectsTable extends AbstractTable {
         this.newObject.setNewObject(this);
         
         this.oldObject1 = oldObject1;
-        this.oldObject1.setOldObjects1(this);
+        this.oldObject1.setOldObject1(this);
         
         this.setOldObject2(oldObject2);
-        this.oldObject2.setOldObjects2(this);
+        this.oldObject2.setOldObject2(this);
     }
 
     @Id

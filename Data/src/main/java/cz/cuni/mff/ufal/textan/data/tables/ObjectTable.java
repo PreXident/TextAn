@@ -158,22 +158,22 @@ public class ObjectTable extends AbstractTable {
 
     @OneToOne(mappedBy = "oldObject1")
     @Cascade(CascadeType.DELETE)
-    public JoinedObjectsTable getOldObjects1() {
+    public JoinedObjectsTable getOldObject1() {
         return oldObject1;
     }
 
-    public void setOldObjects1(JoinedObjectsTable oldObjects1) {
-        this.oldObject1 = oldObjects1;
+    public void setOldObject1(JoinedObjectsTable oldObject1) {
+        this.oldObject1 = oldObject1;
     }
 
     @OneToOne(mappedBy = "oldObject2")
     @Cascade(CascadeType.DELETE)
-    public JoinedObjectsTable getOldObjects2() {
+    public JoinedObjectsTable getOldObject2() {
         return oldObject2;
     }
 
-    public void setOldObjects2(JoinedObjectsTable oldObjects2) {
-        this.oldObject2 = oldObjects2;
+    public void setOldObject2(JoinedObjectsTable oldObject2) {
+        this.oldObject2 = oldObject2;
     }
 
      /**
