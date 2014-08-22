@@ -1,4 +1,4 @@
-%This section cotains the system architecture
+%This section contains the system architecture
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% (80 char rule :D)
 
 %For every one: use as many diagrams as possible :) (author Petr)
@@ -13,13 +13,29 @@ The server architecture is based on a logical multilayered architecture. It
 consists of 5 layers: a presentation layer, a service layer, a business logic layer, 
 a persistence layer and a data layer.
 
-\comment{Petr}{where to place commands in architecture??}
-
-\comment[Petr]{Petr}{server achitecture image}
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/ServerComponentOverview}
+        \caption{Overview of the server layered architecture.}
+        \label{fig:ServerComponentOverview}
+\end{figure}
 
 \comment[Petr, Venca (persistence layer)]{Petr}{description of layers}
 
-\subsection{Named entity recognizer architecture}
+\subsection{Web service layer}
+
+\comment[Petr]{Petr}{CXF, java code generation form wsdl, web services implementation
+ ->  facade over services, jetty}
+
+\subsection{Service layer}
+
+\comment[Petr]{Petr}{Describe all services}
+
+\subsection{Business layer}
+
+\comment[someone]{Petr}{Add small intro, 2 components ect.}
+
+\subsubsection{Named entity recognizer architecture}
 
 Named entity architecture is divided to two parts, recognition and training.
 \paragraph{Recognition} 
@@ -40,7 +56,7 @@ training data collecting from database and preparation, model handling
 (deleting old ones. binding them to NameTag).
 
 
-\subsection{Object assigner architecture} \comment{Petr}{or simply TextPro?}
+\subsubsection{Object assigner architecture} \comment{Petr}{or simply TextPro?}
 
 \comment[Tam]{Petr}{here should be description of TextPro}
 
@@ -90,6 +106,21 @@ is ranked an used as the score.
 
 \comment{Tam}{TODO: Features description, maybe}
 
+\subsection{Scheduler}
+
+\comment[Petr]{Petr}{Describe re-learning process, command inwoker}
+
+\subsection{Persistence layer}
+
+\comment[Venca]{Petr}{Describe DAOs, database mapping, underlying database etc.}
+
+\comment[Petr]{Petr}{Describe full text indexing: hibernate search, lucene, a their mappings}
+
+\comment[Petr]{Petr}{Describe new Czech analyzer}
+
+\subsection{Database}
+
+\comment[Venca]{Petr}{Describe database: database schema etc.}
 
 
 \section{Client architecture}
@@ -263,3 +294,7 @@ part of PretopoLib is used. PretopoLib is a library mainly focusing on
 pretopology and graph displaying is rather byproduct. However it fully meets our
 requirements and its author kindly provided us the sources so we could fix one
 inconvenient detail.
+
+\section{Comunication}
+\comment[Petr(& Adam)]{Petr}{Describe communication pattern between clint and server,
+sequence diagram etc.}
