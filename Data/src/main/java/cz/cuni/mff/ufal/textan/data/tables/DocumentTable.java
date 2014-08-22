@@ -106,6 +106,7 @@ public class DocumentTable extends AbstractTable {
     }
 
     @Column(name = "text", columnDefinition = "text", nullable = false)
+    @Lob
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     public String getText() {
         return text;
