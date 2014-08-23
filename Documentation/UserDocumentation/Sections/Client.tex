@@ -3,11 +3,11 @@
 This section contains all information needed to successfully install, configure
 and run \textan{} JavaFX client side application. However thanks to \textan{}
 client-server architecture and extensive use of webservices, it is easy to
-prepare own implementation in any programmer language desired or even use
+prepare own implementation in any programming language desired or even use
 general solutions as SoapUI%
 \footnote{More information can be found at \url{http://www.soapui.org/}},
 if \textan{} default client does not provide all required features, user
-experience or integration to legacy system is needed.
+experience or if some integration to a legacy system is needed.
 
 \subsection{Installation guide}
 
@@ -18,15 +18,15 @@ workstations of end users.
 
 The \textan{} client has the same requirement for \emph{Java 8 JRE} or later
 as the server (see \ref{sssec:SerInstPre}). However, unlike the server side,
-it is pure Java application so there are no other additional limitations for
-operating system etc. Any platform where JRE 8 is available can support the
+it is a pure Java application so there are no other additional limitations for
+operating system. Any platform where JRE 8 is available can support the
 client.
 
 \subsubsection{Installation}
 
 Unpack an archive with the \textan{} client distribution into any directory. 
-The archive contains a .jar file and starting scripts for the
-\emph{Microsoft Windows} and Linux-based operating systems%
+The archive contains a .jar file and starting scripts for both
+\emph{Microsoft Windows} and \emph{Linux-based} operating systems
 \footnote{run.bat for MS Windows and run.sh for Linux clones.\label{runscript_note}}.
 
 \subsubsection{Basic configuration}
@@ -82,14 +82,15 @@ For more information about security, please consult \ref{sec:Security}.
 
 The .jar file from the distribution archive is executable,
 but we recommend to use starting scripts\footref{runscript_note}.
-Please consult documentation of your Java Platform provider,
+\comment{Ondrej}{This is confusing, when on next page, use ``see note X on page Y''}
+Please consult the documentation of your Java Platform provider,
 if running scripts are not available for your system.
 For description of command line arguments see \ref{ssec:CliCmdArg}
 
 \subsubsection{Uninstallation}
 
 The client application does not use any files or resources outside its install
-directory, unless explicitly told to do otherwise.
+directory, unless explicitly told to do so.
 To uninstall the client just delete its installation folder and all files
 explicitly used as configuration storage.
 
@@ -102,9 +103,9 @@ properties format.
 \subsubsection{Command line arguments}
 \label{ssec:CliCmdArg}
 
-The client has one command line option (-h, --help, /H, /?) which displays the
+The client has one command line option (-h, -{}-help, /H, /?) which displays the
 usage information. Apart from that it takes only one command line argument
-which is the location of settings file. If no file is specified, default
+which is the location of settings file. If no file is specified, the default
 property file \emph{TextAn.properties} will be used. If '-' is provided, the
 standard input will be read and settings will not be stored.
 

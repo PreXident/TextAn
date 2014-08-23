@@ -1,13 +1,16 @@
 %This section contains work progress
-In this section is described work progress in each month.
+%In this section is described work progress in each iteration.
+This section provides details of the work progress in each iteration
+\comment[Petr]{Tam}{Approved? The whole section need to revised again (and again)}
 
-\subsection{October}
+\subsection{Initialization}
 \comment[anyone]{Adam}{Add proper rank of Honza}\\
 TextAn team visited policeman Jan Hořínek, who introduced us his work and showed
-us existing inadequate software whose extension we should prepare. Basis of the
-project should be processing police reports - recognize entities and match them
-to existing objects in the database. We should use Webservices to provide easy
-way to integrate the project to the current system. He promised us models and
+%us existing inadequate software whose extension we should prepare. Basis of the
+us the existing inadequate software. We were given the task of preparing an extension. Basis of the
+project was to police reports - recognize entities and match them
+to existing objects in the database. We were advised to use Webservices for an easy integration of 
+the project to the current system. He promised us models and
 example data inputs and expected outputs. We divided the work as follows:
 
 \begin{itemize}
@@ -18,22 +21,25 @@ example data inputs and expected outputs. We divided the work as follows:
 \item \textbf{Jakub Vlček} - entities recognition and input parsing, look for useful existing solutions
 \end{itemize}
 
+
 We made some decisions and requirements for each component:
 
 \paragraph{Database}
 \comment{Jakub}{attach document schema here?}
 At the beginning, we made database schema, which was approved after a few
-iterations. We paid attention mainly on schema generality because we want to
-support more than one (police) domain.\\
-Database should support versioning, parallel processing, partial records. We
+iterations. The main attention was paid on schema generality because we want to
+support more than one domain (not just police report).\\
+Database should support versioning, parallel processing and partial records. We
 decided to create special layer between server and database because of
 generality (it will be easier to change database system). Logging (users,
-changes) support should not be missing. Problem could be with merging two
-objects into new one, so we should create special functionality and table in the
+changes) support is also required. It would be a problem merging two objects into 
+one, so we created special functionality and table in the
 database.
+\comment[Petr]{Tam}{Need to revised again}
 
 \paragraph{Client}
-We decided for pipeline model. This means that report processing will consist of more successive phases:
+We decided to use pipeline model. %This means that report processing will consist of more successive phases:
+In other words, the report processing consists of several phrases:
 
 \begin{enumerate}
 \item Report insertion
@@ -47,17 +53,18 @@ We decided for pipeline model. This means that report processing will consist of
 \item Report confirmed and sent to server
 \end{enumerate}
 
-Changes in each phase are not stored in the database immediately but they are
-stored locally and write to database follows confirmation. Problem is with
-machine recognition, because models are not trained to newly added items, so
-they are preferred over recognized ones.
-\comment[Jakub]{Adam}{What does the last sentence mean?}
+Changes in each phase are not stored in the database immediately but
+stored locally. They would be written to database after confirmation. There was problem with
+machine recognition, because models with newly added items are trained after final 
+confirmation, so it is impractical to learn from the output. 
+We decided, that newly added items will be preferred over recognized ones
+\comment[Petr]{Tam}{Need to revised again} 
  
-\subsection{November}
+\subsection{Design \& technologies}
 In November, we mainly chose and tested technologies which we could use. Peter
 Sipos left \textan{}, but Duc Tam Hoang joined us. His specialization is
 linguistic and machine learning so he will be really useful for our project.
-Because he is Vietnamese student we had to changed project language to English.
+Because of Tam's limitation in Czech, the document language was changed to English.
 His main task will be NER and entity-object matching. We were trying different
 entity recognizers, but there are not many applicable for Czech. Milan Straka
 promised us his project NameTag. It is named entity recognizer for Czech, so
@@ -68,12 +75,14 @@ entity and assign it possible candidates from objects. This part could not be
 purely automatic because of ambiguity, but if there will be high probability,
 program should match object entity pair automatically.
 
-Possible solutions for this entity-object matching are machine learning  methods
+Possible solutions for entity-object matching are machine learning  methods
 ranking or classification.
 
+\comment{Petr}{This is not true! In the end we use WEKA, because JavaML project is probably dead.
+Also new versions of WEKA are probably more powerful and fits our needs (provide probability from classification) }
 We looked for suitable Java library which provides machine learning techniques.
 Candidates were JavaML and Weka. After testing these two libraries, we chose
-JavaML, because it provides more machine learnig algorithms (some of them uses
+JavaML, because it provides more machine learning algorithms (some of them uses
 Weka library). Weka's problem is that it was created for teaching purposes so
 it's performance is not as good as JavaML.
 
@@ -81,18 +90,31 @@ There were two possible server architectures: standalone or embedded webserver
 (Tomcat or Jetty). We considered usage of some technologies like Spring, CXF and
 Hibernate for database layer.
 
-\subsection{December}
-After choosing technologies, we made some prototypes of each component. We
-discussed a lot APIs (we need them for testing). For testing purposes, we must
+\subsection{Prototyping \& interconnecting}
+After the technologies were chosen, we made some prototypes of each component. We
+discussed a lot of APIs (we need them for testing). For testing purposes, we must
 provide some mock objects, so everyone implemented mock of his component.
-NameTag was released, so we could start testing it and integrated it to our
-project.
+NameTag was released, so we tried to get acquaintance. We met Milan Straka, the author of NameTag.
+He presented and helped us get familiar with NameTag. We started stared testing it.
+There were problems with compiling and Java bindings, which took more time than we expected. Problem was missing documentation.
+We connected client and database to server, implemented database data browsing on client (mainly graphs viewing with JUNG).
+Tam made prototype of object matcher, but it was not integrated to server.
 
-\subsection{January}
-\subsection{February}
-\subsection{March}
-\subsection{April}
-\subsection{May}
-\subsection{June}
-\subsection{July}
-\subsection{August}
+\subsection{Main coding}
+When we made a prototype of whole program, everyone started improving his component in his own branch.
+\paragraph{Server} Server was debugged and made reliable. It starts using WSDLs so there were lot of work on server and client parts. Result was, that Java code is now generated automatically. Connection to database was reworked to use Spring Beans.
+\paragraph{Named entity recognizer} NameTag was fully integrated to server. We started editing it for our purposes (using our structures and types). There were problems with gazetteers files and translating entities from NameTag to Textan.
+After receiving information that NameTag will not support JNI to training parts, we researching how to launch training binaries from Java.
+\paragraph{Client} Client was reworked to pipeline as we need, we improved graph viewing to support oriented edges.
+\paragraph{Object matcher} TextPro (as we called entity-object matching) has first prototype. It uses a simple ranking method, which resulted in a poor performance. 
+\paragraph{Database} Database has new layer with DAOs, so no more need to access database directly.
+After this iteration, we released first alpha version of TextAn.
+
+\subsection{Improving}
+Alpha version of NameTag learning was implemented. There were few problems with portability because of different architectures and operating systems. After implementing special functions in database, we made automatic data extraction for learning. For this purpose, new function to server was added - commands. It is the implementation of design pattern Command, which started data generation and model training after new report insertion. Models managing implemented due to bigger size (deleting old ones) 
+Database support logging. It was done through interceptors - triggers in Hibernate layer.
+In client, there were lots of small fixes in GUI, problems were with portability between Windows and Unix-like systems, where ControlsFX and JavaFX behave differently.
+TextPro received many new features. We integrated Morphodita because we needed its tagger for new features.
+Settings through properties files are now supported in each component.
+
+\subsection{Bugfixing \& documentation}
