@@ -63,7 +63,6 @@ public class AliasTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object", nullable = false)
     @IndexedEmbedded
     @ContainedIn
@@ -76,7 +75,6 @@ public class AliasTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "alias")
-    @Cascade({CascadeType.ALL})
     @ContainedIn
     public Set<AliasOccurrenceTable> getOccurrences() {
         return occurrences;

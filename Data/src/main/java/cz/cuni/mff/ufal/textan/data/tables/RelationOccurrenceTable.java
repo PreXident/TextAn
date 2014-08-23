@@ -85,7 +85,6 @@ public class RelationOccurrenceTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_relation", nullable = false)
     @IndexedEmbedded
     @ContainedIn

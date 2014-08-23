@@ -66,7 +66,6 @@ public class RelationTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_relation_type", nullable = false)
     @IndexedEmbedded
     public RelationTypeTable getRelationType() {
@@ -78,7 +77,6 @@ public class RelationTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "relation")
-    @Cascade(CascadeType.ALL)
     //@OnDelete(action = OnDeleteAction.CASCADE)
     @IndexedEmbedded(includePaths = "anchor")
     @ContainedIn
@@ -91,7 +89,6 @@ public class RelationTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "relation")
-    @Cascade(CascadeType.ALL)
     public Set<InRelationTable> getObjectsInRelation() {
         return objectsInRelation;
     }
