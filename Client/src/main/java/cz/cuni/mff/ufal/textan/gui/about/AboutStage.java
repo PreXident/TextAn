@@ -40,7 +40,7 @@ public class AboutStage extends OuterStage {
             final AboutController controller = loader.getController();
             controller.setStage(this);
             controller.setSettings(settings);
-            getInnerWindow().setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            getInnerWindow().setTitleFixed(Utils.localize(resourceBundle, PROPERTY_ID));
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

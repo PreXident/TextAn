@@ -45,7 +45,8 @@ CREATE TABLE Object (
 	id_object_type int NOT NULL,
 	data NVARCHAR (255),
     CONSTRAINT FK_OBJECT_TO_TYPE FOREIGN KEY (id_object_type)
-  		REFERENCES ObjectType(id_object_type),
+  		REFERENCES ObjectType(id_object_type)
+      ON DELETE CASCADE,
 	globalversion int DEFAULT 0 NOT NULL,
   id_root_object int -- ,  -- root of the joined tree
     /*CONSTRAINT FK_OBJECT_ROOT FOREIGN KEY (id_root_object)
@@ -59,6 +60,7 @@ CREATE TABLE Alias (
   CONSTRAINT FK_ALIAS_ID_OBJECT
    FOREIGN KEY (id_object)
 		REFERENCES Object(id_object)
+    ON DELETE CASCADE
 );
 
 
@@ -69,10 +71,12 @@ CREATE TABLE AliasOccurrence (
 	position int NOT NULL,
   CONSTRAINT FK_ALIASOCCURRENCE_IDALIAS
    FOREIGN KEY (id_alias)
-		REFERENCES Alias(id_alias),
+		REFERENCES Alias(id_alias)
+    ON DELETE CASCADE,
   CONSTRAINT FK_ALIASOCCURRENCE_IDDOCUMENT
    FOREIGN KEY (id_document)
 		REFERENCES Document(id_document)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE Relation
@@ -80,7 +84,8 @@ CREATE TABLE Relation
         id_relation int PRIMARY KEY AUTO_INCREMENT,
         id_relation_type int NOT NULL,
         CONSTRAINT FK_RELATION_RELTYPE FOREIGN KEY (id_relation_type)
-                REFERENCES RelationType (id_relation_type),
+                REFERENCES RelationType (id_relation_type)
+                ON DELETE CASCADE,
 	      globalversion int DEFAULT 0 NOT NULL
 );
 
@@ -90,11 +95,13 @@ CREATE TABLE IsInRelation
         id_relation int NOT NULL,
         CONSTRAINT FK_ISINRELATION_RELATION
           FOREIGN KEY (id_relation)
-                REFERENCES Relation(id_relation),
+                REFERENCES Relation(id_relation)
+                ON DELETE CASCADE,
         id_object int NOT NULL,
         CONSTRAINT FK_ISINRELATION_OBJECT
           FOREIGN KEY (id_object)
-                REFERENCES Object(id_object),
+                REFERENCES Object(id_object)
+                ON DELETE CASCADE,
         role NVARCHAR(255),
         order_in_relation int NOT NULL
 );
@@ -105,15 +112,18 @@ CREATE TABLE JoinedObjects
         id_new_object int NOT NULL,
           CONSTRAINT FK_PK_JOINEDOBJECTS_ID
             FOREIGN KEY (id_new_object)
-                  REFERENCES Object(id_object), 
+                  REFERENCES Object(id_object)
+                  ON DELETE CASCADE, 
         id_old_object1 int NOT NULL,
           CONSTRAINT FK_JOINEDOBJECTS_OLDOBJ1
             FOREIGN KEY (id_old_object1)
-                  REFERENCES Object(id_object), 
+                  REFERENCES Object(id_object)
+                  ON DELETE CASCADE, 
         id_old_object2 int NOT NULL,
           CONSTRAINT FK_JOINEDOBJECTS_OLDOBJ2
             FOREIGN KEY (id_old_object2)
-                  REFERENCES Object(id_object), 
+                  REFERENCES Object(id_object)
+                  ON DELETE CASCADE, 
         from_date datetime NOT NULL,
         to_date datetime,
 	      globalversion int DEFAULT 0 NOT NULL
@@ -129,11 +139,13 @@ CREATE TABLE RelationOccurrence
         id_relation int NOT NULL,
         CONSTRAINT FK_RELOCCURRENCE_RELATION
           FOREIGN KEY (id_relation)
-            REFERENCES Relation(id_relation),
+            REFERENCES Relation(id_relation)
+            ON DELETE CASCADE,
         id_document int NOT NULL,
         CONSTRAINT FK_RELOCCURRENCE_DOCUMENT
           FOREIGN KEY (id_document)
-                REFERENCES Document(id_document),
+                REFERENCES Document(id_document)
+                ON DELETE CASCADE,
         position int,
         anchor NVARCHAR(255)
 );

@@ -35,6 +35,8 @@ public class AliasTable extends AbstractTable {
 
     public AliasTable(ObjectTable object, String alias) {
         this.object = object;
+        this.object.getAliases().add(this);
+        
         this.alias = alias;
     }
 
@@ -61,7 +63,6 @@ public class AliasTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object", nullable = false)
     @IndexedEmbedded
     @ContainedIn
@@ -73,8 +74,7 @@ public class AliasTable extends AbstractTable {
         this.object = object;
     }
 
-    @OneToMany(mappedBy = "alias", orphanRemoval = true)
-    @Cascade({CascadeType.ALL})
+    @OneToMany(mappedBy = "alias")
     @ContainedIn
     public Set<AliasOccurrenceTable> getOccurrences() {
         return occurrences;

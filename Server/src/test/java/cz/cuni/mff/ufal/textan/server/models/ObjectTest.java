@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.models;
 
 import cz.cuni.mff.ufal.textan.data.tables.AliasTable;
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import org.junit.Assert;
@@ -15,13 +16,13 @@ public class ObjectTest {
 
     @Test
     public void testFromObjectTable() {
-
-        List<AliasTable> aliases = new ArrayList<>();
-        aliases.add(new AliasTable(null, "alias"));
-        aliases.add(new AliasTable(null, "alias"));
-
         ObjectTypeTable objectTypeTable = new ObjectTypeTable("Type");
         ObjectTable objectTable = new ObjectTable("", objectTypeTable);
+
+        List<AliasTable> aliases = new ArrayList<>();
+
+        aliases.add(new AliasTable(objectTable, "alias"));
+        aliases.add(new AliasTable(objectTable, "alias"));
 
         Object object = Object.fromObjectTable(objectTable, aliases);
 

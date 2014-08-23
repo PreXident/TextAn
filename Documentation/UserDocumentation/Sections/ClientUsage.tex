@@ -1,16 +1,16 @@
 % Section: Client Usage
-This section contains all information needed by end users to sucessfully use
+This section contains all information needed by end users to successfully use
 the \textan{} client application. For instructions to actual run the client
 see \ref{sssec:StartClient}.
 
 \subsection{First Run}
 
-On the first \textan{} client run users are promted to enter their username
+On the first run of \textan{} client, users are prompted to enter their username
 (see figure \ref{fig:Login}, which is used by the system to identify the users.
 The login name is stored in settings and the login dialog is not shown again
-next runs. It can be changed later in settings (see \ref{ssec:Settings}). The
+in following runs. The name can be changed in settings (see \ref{ssec:Settings}). A
 valid name is required, ie. not empty and not whitespace characters only. If
-users enter invalid login, a warning is displayed and they can enter other
+users enter invalid login, a warning is displayed and they may enter other
 login or the application quits.
 
 \begin{figure}[!htb]
@@ -23,10 +23,10 @@ login or the application quits.
 \subsection{Working Space}
 
 The \textan{} client's application working space is very simple and intuitive.
-The main window (see figure \ref{fig:MainWindow}) contains main menu bar with
+The main window (see figure \ref{fig:MainWindow}) contains the main menubar with
 all commands needed to control the application. The individual items are sorted
-out into categories to make the orientation easier. There is also toolbar with
-icons for mostly used commands to speed up the access to them. Hover over the
+out into categories to make the orientation easier. There is also a toolbar with
+icons for mostly used commands to speed up the access. Hover over the
 toolbar icons to see action names.
 
 \begin{figure}[!htb]
@@ -37,8 +37,8 @@ toolbar icons to see action names.
 \end{figure}
 
 The File menu contains items to create new report, import report from external
-file and load report whose processing was not finished, but saved to continue
-later. For more information about report processing see \ref{ssec:ProcessReport}.
+file and load report whose processing was not finished, but was saved to continue
+later. For more information about report processing, see \ref{ssec:ProcessReport}.
 
 The Wizards menu contains items starting wizards to guide the users in more
 complicated tasks, like processing report (see \ref{ssec:ProcessReport}) and
@@ -51,7 +51,7 @@ The Windows menu contains the list of currently displayed application windows
 to easily bring certain window to front.
 
 The Settings menu contains items to customize \textan{} client appearance and
-behaviour. For more information see \ref{ssec:Settings}. It also contains
+behaviour. For more information, see \ref{ssec:Settings}. It also contains
 shortcut to reset the position and size of the main window.
 
 \subsection{Settings}
@@ -64,7 +64,7 @@ main menu Settings.
 \label{sssec:GeneralSettings}
 
 The General Settings window (see figure \ref{fig:GeneralSettings}) contains
-controls for changing the behaviour and appearance of the application.
+controls for changing the behavior and appearance of the application.
 
 \begin{figure}[!htb]
         \centering
@@ -176,7 +176,7 @@ the wizard proceeds to Report Edit step (see \ref{sssec:ReportEdit}).
 \paragraph{Unfinished Report} This option displays open file dialog for
 selecting the file with report whose processing has not been finished, but it
 was stored to continue later. The wizards then proceeds to step where report
-processing has been interupted.
+processing has been interrupted.
 
 \subsubsection{Edit Report}
 \label{sssec:ReportEdit}
@@ -431,7 +431,7 @@ lists.
 \subsection{Joining Objects}
 \label{ssec:JoinObjects}
 
-There can be situations when it is discovered that two objects originaly
+There can be situations when it is discovered that two objects originally
 thought to be independent are in fact one object. For such cases there is Join
 Object wizard (see figure \ref{fig:Join}). For more information about object
 lists see \ref{sssec:ObjectList}.
@@ -446,3 +446,12 @@ lists see \ref{sssec:ObjectList}.
 The objects to merge must have common type. Select one object in left object
 list and the other one in right object list. The button Join will start the
 joining itself.
+
+\subsection{Path Wizard}
+This wizard displays window similar to Joining Objects. Select two objects
+for which you want to try to find path of relations and objects connecting them.
+If such path is found, the graph displaying it is shown.
+
+\comment[Adam]{Adam}{Add figure with path wizard.}
+
+\comment[Adam]{Adam}{Add figure with path graph.}

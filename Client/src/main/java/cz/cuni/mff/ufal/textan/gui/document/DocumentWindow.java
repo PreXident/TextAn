@@ -40,7 +40,7 @@ public class DocumentWindow extends InnerWindow {
             controller.setTextAnController(textAnController);
             controller.setClient(client);
             controller.setDocument(document);
-            setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            setTitleFixed(Utils.localize(resourceBundle, PROPERTY_ID));
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

@@ -48,6 +48,12 @@ public class DocumentGrapher extends AbstractGrapher {
     }
 
     @Override
+    public void clearCache() {
+        super.clearCache();
+        documentData = null;
+    }
+
+    @Override
     protected Graph fetchGraph() throws IdNotFoundException {
         if (documentData == null || graph == null) {
             documentData = client.getDocumentData(document.getId());

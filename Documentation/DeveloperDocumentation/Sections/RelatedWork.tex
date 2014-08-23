@@ -41,18 +41,20 @@ Besides, it stores annotations in each single XML files.
 By doing so, authors claim that the tool is agile and flexible.
 The project hierachy is designed to be the file/directory structures.
 The application provides an automatic detection of named entities.
-Users could change/add details to the annotation by mouse or keyboard.
-Language choice is English.
+Users can change/add details to the annotation by mouse or keyboard.
+Anafora was designed for English.
 
 The limitation of Anafora lies in the data structure.
-The complicated definition like relations (or relation properties) among entities are not supported.
-It may be the trade-off when authors want to develop a light tools based on a simple data structure such as XML.
+Complicated definitions like relations (or relation properties) among entities are not supported.
+It may be the trade-off when authors want to develop lightweight tools based on a simple data structure such as XML.
+
+\comment{Ondrej}{XML can be complicated too}
 
 % http://brat.nlplab.org/
 
 BRAT rapid annotation tool is a web-based tool for text annotation,
 most useful to add notes to existing text documents (taken from the introduction of BRAT).
-It is developed by Japanese University of Tokio.
+It is developed by the University of Tokio.
 This tool does support the linking relation between two entities and even the link from entities to a definition outside documents (such as Wikipedia).
 
 \begin{figure}[!htb]
@@ -64,9 +66,9 @@ This tool does support the linking relation between two entities and even the li
 
 The strong point of BRAT is the simplicity of usage.
 The tool offers a comprehensive visualization with mouse-based activities,
-a linking method to an external resources (such as Freebase, Wikipedia, and Open Biomedical Ontologies).
+a method for linking to an external resources (such as Freebase, Wikipedia, and Open Biomedical Ontologies).
 A number of other useful functions are \textit{save, export from standoff format, search}.
-The brat standoff format is a simple format developed for the visualization of the tool,
+The brat \comment{Ondrej}{BRAT?} standoff format is a simple format developed for the visualization of the tool,
 in which data is stored in two files: a text file \textit{.txt} and an annotation file \textit{.ann}.
 
 The weak point of the tool is that it does not support any automatic recognition of entities.

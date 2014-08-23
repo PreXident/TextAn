@@ -38,7 +38,7 @@ public class EditDocumentWindow extends InnerWindow {
             controller.setSettings(settings);
             controller.setTextAnController(textAnController);
             controller.setDocument(document);
-            setTitle(controller.getTitle());
+            setTitleFixed(controller.getTitle());
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

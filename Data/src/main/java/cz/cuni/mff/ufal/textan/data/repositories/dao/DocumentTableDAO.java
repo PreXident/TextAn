@@ -1,13 +1,10 @@
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
-import cz.cuni.mff.ufal.textan.commons.models.*;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
 import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.data.tables.RelationOccurrenceTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -16,11 +13,9 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
-import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.Object;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,21 +28,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> implements IDocumentTableDAO {
 
-    private Query findAllDocumentsWithObjectQuery(long objectId) {
-        Query hq = currentSession().createQuery(
-                "select doc, count(occ) as num from DocumentTable as doc "
-                        + "inner join doc.aliasOccurrences as occ "
-                        + "inner join occ.alias as alias "
-                        + "inner join alias.object as obj "
-                        +"where obj.id = :objectId "
-                + "group by doc.id "
-                + "order by num desc"
-        );
-        hq.setParameter("objectId", objectId);
-
-        return hq;
-    }
-
+    
     @Override
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObject(ObjectTable obj) {
         return findAllDocumentsWithObject(obj.getId());
@@ -81,45 +62,6 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         return new ResultPagination<>(firstResult, maxResults, results, count);
     }
 
-    private FullTextQuery findAllDocumentsWithObjectByFullTextQuery(long objectId, String pattern) {
-        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
-
-        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
-        org.apache.lucene.search.Query queryFullText = builder
-                .phrase()
-                .onField("text")
-                .sentence(pattern)
-                .createQuery();
-
-        org.apache.lucene.search.Query queryObject = builder
-                .keyword()
-                .onField("aliasOccurrences.alias.object.id") //FIXME!!
-                .matching(objectId)
-                .createQuery();
-
-        org.apache.lucene.search.Query query = builder
-                .bool()
-                .must(queryFullText)
-                .must(queryObject)
-                .createQuery();
-
-        return fullTextSession.createFullTextQuery(query);
-    }
-
-    private int getNumberOfObjectOccurrencesInDocument(long documentId, long objectId) {
-        Query hq = currentSession().createQuery(
-                "select count(*) from DocumentTable as doc "
-                        + "inner join doc.aliasOccurrences as occ "
-                        + "inner join occ.alias as alias "
-                        + "inner join alias.object as obj "
-                        + "where doc.id = :documentId and obj.id = :objectId "
-        );
-        hq.setParameter("documentId", documentId);
-        hq.setParameter("objectId", objectId);
-
-        return ((Long)hq.iterate().next()).intValue();
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObjectByFullText(long objectId, String pattern) {
@@ -150,20 +92,6 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         return findAllDocumentsWithRelation(relation.getId());
     }
 
-    private Query findAllDocumentsWithRelationQuery(long relationId) {
-        Query hq = currentSession().createQuery(
-                "select doc, count(occ) as num from DocumentTable as doc "
-                        + "inner join doc.relationOccurrences as occ "
-                        + "inner join occ.relation rel "
-                        + "where rel.id = :relationId "
-                        + "group by doc.id "
-                        + "order by num desc"
-        );
-        hq.setParameter("relationId", relationId);
-
-        return hq;
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(long relationId) {
@@ -184,44 +112,6 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                 .collect(Collectors.toList());
 
         return new ResultPagination<>(firstResult, maxResults, results,count);
-    }
-
-    private FullTextQuery findAllDocumentsWithRelationByFullTextQuery(long relationId, String pattern) {
-        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
-
-        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
-        org.apache.lucene.search.Query queryFullText = builder
-                .phrase()
-                .onField("text")
-                .sentence(pattern)
-                .createQuery();
-
-        org.apache.lucene.search.Query queryObject = builder
-                .keyword()
-                .onField("relationOccurrences.relation.id")
-                .matching(relationId)
-                .createQuery();
-
-        org.apache.lucene.search.Query query = builder
-                .bool()
-                .must(queryFullText)
-                .must(queryObject)
-                .createQuery();
-
-        return fullTextSession.createFullTextQuery(query);
-    }
-
-    private int getNumberOfRelationOccurrencesInDocument(long documentId, long relationId) {
-        Query hq = currentSession().createQuery(
-                "select count(*) from DocumentTable as doc "
-                        + "inner join doc.relationOccurrences as occ "
-                        + "inner join occ.relation rel "
-                        + "where rel.id = :relationId and doc.id = :documentId"
-        );
-        hq.setParameter("documentId", documentId);
-        hq.setParameter("relationId", relationId);
-
-        return ((Long)hq.iterate().next()).intValue();
     }
 
     @Override
@@ -248,19 +138,6 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                 .collect(Collectors.toList());
 
         return new ResultPagination<>(firstResult, maxResults, documentCountPairs, count);
-    }
-    
-    private FullTextQuery findAllDocumentsByFullTextQuery(String pattern) {
-        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
-
-        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
-        org.apache.lucene.search.Query query = builder
-                .phrase()
-                .onField("text")
-                .sentence(pattern)
-                .createQuery();
-
-        return fullTextSession.createFullTextQuery(query);
     }
 
     @Override
@@ -312,7 +189,141 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         return new ResultPagination<>(firstResult, maxResults, results, count);
     }
 
-    public FullTextQuery findAllProcessedDocumentsByFullTextQuery(boolean processed, String pattern) {
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern) {
+        return findAllProcessedDocumentsByFullTextQuery(processed, pattern).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ResultPagination<DocumentTable> findAllProcessedDocumentsByFullTextWithPagination(boolean processed, String pattern, int firstResult, int maxResults) {
+        FullTextQuery query = findAllProcessedDocumentsByFullTextQuery(processed, pattern);
+        List<DocumentTable> results = addPagination(query, firstResult, maxResults).list();
+        int count = query.getResultSize();
+
+        return new ResultPagination<>(firstResult, maxResults, results, count);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DocumentTable> findAllSinceGlobalVersion(long version) {
+        return findAllCriteria()
+                .add(Restrictions.ge(DocumentTable.PROPERTY_NAME_GLOBAL_VERSION, version))
+                .list();
+                
+    }
+    
+    private Query findAllDocumentsWithObjectQuery(long objectId) {
+        Query hq = currentSession().createQuery(
+                "select doc, count(occ) as num "
+                + "from DocumentTable as doc "
+                        + "inner join doc.aliasOccurrences as occ "
+                        + "inner join occ.alias as alias "
+                        + "inner join alias.object as obj "
+                        + "inner join obj.rootObject as root "
+                + "where root.id = :objectId "
+                + "group by doc.id "
+                + "order by num desc"
+        );
+        hq.setParameter("objectId", objectId);
+
+        return hq;
+    }
+    
+    private int getNumberOfObjectOccurrencesInDocument(long documentId, long objectId) {
+        Query hq = currentSession().createQuery(
+                "select count(*) from DocumentTable as doc "
+                        + "inner join doc.aliasOccurrences as occ "
+                        + "inner join occ.alias as alias "
+                        + "inner join alias.object as obj "
+                        + "inner join obj.rootObject as root "
+                + "where doc.id = :documentId and root.id = :objectId "
+        );
+        hq.setParameter("documentId", documentId);
+        hq.setParameter("objectId", objectId);
+
+        return ((Long)hq.iterate().next()).intValue();
+    }
+    
+    private int getNumberOfRelationOccurrencesInDocument(long documentId, long relationId) {
+        Query hq = currentSession().createQuery(
+                "select count(*) from DocumentTable as doc "
+                        + "inner join doc.relationOccurrences as occ "
+                        + "inner join occ.relation rel "
+                        + "where rel.id = :relationId and doc.id = :documentId"
+        );
+        hq.setParameter("documentId", documentId);
+        hq.setParameter("relationId", relationId);
+
+        return ((Long)hq.iterate().next()).intValue();
+    }
+
+    private Query findAllDocumentsWithRelationQuery(long relationId) {
+        Query hq = currentSession().createQuery(
+                "select doc, count(occ) as num from DocumentTable as doc "
+                        + "inner join doc.relationOccurrences as occ "
+                        + "inner join occ.relation rel "
+                        + "where rel.id = :relationId "
+                        + "group by doc.id "
+                        + "order by num desc"
+        );
+        hq.setParameter("relationId", relationId);
+
+        return hq;
+    }
+
+    private FullTextQuery findAllDocumentsWithObjectByFullTextQuery(long objectId, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query queryFullText = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query queryObject = builder
+                .keyword()
+                .onField("aliasOccurrences.alias.object.rootObject.id")
+                .matching(objectId)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(queryFullText)
+                .must(queryObject)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    private FullTextQuery findAllDocumentsWithRelationByFullTextQuery(long relationId, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query queryFullText = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query queryObject = builder
+                .keyword()
+                .onField("relationOccurrences.relation.id")
+                .matching(relationId)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(queryFullText)
+                .must(queryObject)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    private FullTextQuery findAllProcessedDocumentsByFullTextQuery(boolean processed, String pattern) {
         FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 
         QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
@@ -337,28 +348,16 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         return fullTextSession.createFullTextQuery(query);
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern) {
-        return findAllProcessedDocumentsByFullTextQuery(processed, pattern).list();
-    }
+    private FullTextQuery findAllDocumentsByFullTextQuery(String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public ResultPagination<DocumentTable> findAllProcessedDocumentsByFullTextWithPagination(boolean processed, String pattern, int firstResult, int maxResults) {
-        FullTextQuery query = findAllProcessedDocumentsByFullTextQuery(processed, pattern);
-        List<DocumentTable> results = addPagination(query, firstResult, maxResults).list();
-        int count = query.getResultSize();
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query query = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
 
-        return new ResultPagination<>(firstResult, maxResults, results, count);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<DocumentTable> findAllSinceGlobalVersion(long version) {
-        return findAllCriteria()
-                .add(Restrictions.ge(DocumentTable.PROPERTY_NAME_GLOBAL_VERSION, version))
-                .list();
-                
+        return fullTextSession.createFullTextQuery(query);
     }
 }

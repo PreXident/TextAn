@@ -234,15 +234,16 @@ public class SaveService {
             if (object != null && object.isNew()) {
 
                 if (!objectIdMapping.containsKey(objectId)) {
-                    //add object
-                    objectTable = new ObjectTable();
+                    //get object type
                     ObjectTypeTable objectTypeTable = objectTypeTableDAO.find(object.getType().getId());
                     if (objectTypeTable == null) {
                         throw new IdNotFoundException("objectTypeId", object.getType().getId());
                     }
-                    objectTable.setObjectType(objectTypeTable);
 
+                    //add object
+                    objectTable = new ObjectTable(objectTypeTable);
                     objectTableDAO.add(objectTable);
+
                     objectIdMapping.put(objectId, objectTable);
                 } else {
                     objectTable = objectIdMapping.get(objectId);
@@ -270,14 +271,10 @@ public class SaveService {
 
             if (aliasTable == null) {
                 aliasTable = new AliasTable(objectTable, occurrence.getValue());
-                objectTable.getAliases().add(aliasTable);
                 aliasTableDAO.add(aliasTable);
             }
 
             AliasOccurrenceTable aliasOccurrenceTable = new AliasOccurrenceTable(occurrence.getPosition(), aliasTable, documentTable);
-            aliasTable.getOccurrences().add(aliasOccurrenceTable);
-            documentTable.getAliasOccurrences().add(aliasOccurrenceTable);
-
             aliasOccurrenceTableDAO.add(aliasOccurrenceTable);
         }
 
@@ -302,17 +299,14 @@ public class SaveService {
             if (relation != null && relation.isNew()) {
 
                 if (!relationIdMapping.containsKey(relationId)) {
-
-                    relationTable = new RelationTable();
-
-                    RelationTypeTable relationTypeTable = relationTypeTableDAO.find(relation.getType().getId());
+                    RelationTypeTable relationTypeTable = relationTypeTableDAO.find(relation.getType().getId()); //fixme
                     if (relationTypeTable == null) {
                         throw new IdNotFoundException("relationTypeId", relation.getType().getId());
                     }
 
-                    relationTable.setRelationType(relationTypeTable);
-
+                    relationTable = new RelationTable(relationTypeTable);
                     relationTableDAO.add(relationTable);
+
                     relationIdMapping.put(relationId, relationTable);
                 } else {
                     relationTable = relationIdMapping.get(relationId);
@@ -350,8 +344,6 @@ public class SaveService {
                     if (!alreadyInRelation.contains(objectInRelationTable.getId())) {
                         InRelationTable inRelationTable = new InRelationTable(role, order, relationTable, objectInRelationTable);
                         inRelationTableDAO.add(inRelationTable);
-                        relationTable.getObjectsInRelation().add(inRelationTable);
-                        objectInRelationTable.getRelations().add(inRelationTable);
 
                         alreadyInRelation.add(objectInRelationTable.getId());
                     }
@@ -362,13 +354,9 @@ public class SaveService {
             if (occurrence != null) {
                 relationOccurrenceTable = new RelationOccurrenceTable(relationTable, documentTable, occurrence.getPosition(), occurrence.getValue());
             } else {
-                relationOccurrenceTable = new RelationOccurrenceTable();
-                relationOccurrenceTable.setDocument(documentTable);
-                relationOccurrenceTable.setRelation(relationTable);
+                relationOccurrenceTable = new RelationOccurrenceTable(relationTable, documentTable);
             }
             relationOccurrenceTableDAO.add(relationOccurrenceTable);
-            documentTable.getRelationOccurrences().add(relationOccurrenceTable);
-            relationTable.getOccurrences().add(relationOccurrenceTable);
         }
 
         //register re-learn command for named entity recognizer and text pro

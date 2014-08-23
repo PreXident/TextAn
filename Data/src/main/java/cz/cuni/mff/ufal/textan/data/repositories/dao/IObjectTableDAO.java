@@ -1,8 +1,10 @@
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
+import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 
 import java.util.List;
 
@@ -74,5 +76,9 @@ public interface IObjectTableDAO extends
      * @return 
      */
     List<ObjectTable> findAllByObjectType(ObjectTypeTable type);
+    
+    
+    List<Pair<ObjectTable, RelationTable>> getNeighbors(ObjectTable object);
+    List<Pair<ObjectTable, RelationTable>> getNeighbors(long objectId);    
     
 }
