@@ -117,7 +117,6 @@ public class DocumentTable extends AbstractTable {
     }
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "document")
-    @Cascade(CascadeType.ALL)
     @IndexedEmbedded(includePaths = "relation.id")
     public Set<RelationOccurrenceTable> getRelationOccurrences() {
         return relationOccurrences;
@@ -128,8 +127,7 @@ public class DocumentTable extends AbstractTable {
     }
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "document")
-    @Cascade(CascadeType.ALL)
-    @IndexedEmbedded(includePaths = {"alias.object.id", "alias.object.rootObject.id"})
+    @IndexedEmbedded(includePaths = "alias.object.id")
     public Set<AliasOccurrenceTable> getAliasOccurrences() {
         return aliasOccurrences;
     }

@@ -77,11 +77,18 @@ public class DataTest {
         System.out.println("Setup");
         //System.out.println("If class Method fails, be sure you started the database.");
         assertTrue("You have probably not run the database or the connection is not set properly", data.addRecord(document));
+        assertTrue(data.addRecord(relationType));
         assertTrue(data.addRecord(withRelation));
         assertTrue(data.addRecord(relationOccurrence));
+        
+        assertTrue(data.addRecord(objectType));
         assertTrue(data.addRecord(object));
+
+        
         assertTrue(data.addRecord(alias));
         assertTrue(data.addRecord(aliasOccurrence));
+        
+
         //withRelation.getObjectsInRelation().add(object);
 
     }

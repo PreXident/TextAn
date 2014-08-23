@@ -90,7 +90,6 @@ public class AliasOccurrenceTable extends AbstractTable {
      * @return alias
      */
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_alias", nullable = false)
     @IndexedEmbedded
     public AliasTable getAlias() {
@@ -102,7 +101,6 @@ public class AliasOccurrenceTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_document", nullable = false)
     @ContainedIn
     public DocumentTable getDocument() {

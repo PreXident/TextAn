@@ -56,7 +56,6 @@ public class RelationTypeTable extends AbstractTable {
 
     @OneToMany(mappedBy = "relationType")
     //@ContainedIn // -> immutable object
-    @Cascade(CascadeType.ALL)
     public Set<RelationTable> getRelationsOfThisType() {
         return relationsOfThisType;
     }

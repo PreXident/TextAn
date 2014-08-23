@@ -121,7 +121,6 @@ public class ObjectTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object_type", nullable = false)
     @IndexedEmbedded
     public ObjectTypeTable getObjectType() {
@@ -133,7 +132,6 @@ public class ObjectTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "object")
-    @Cascade(CascadeType.ALL)
     @IndexedEmbedded(includePaths = "alias")
     @ContainedIn
     public Set<AliasTable> getAliases() {
@@ -145,7 +143,6 @@ public class ObjectTable extends AbstractTable {
     }
 
     @OneToMany(mappedBy = "object")
-    @Cascade(CascadeType.DELETE)
     public Set<InRelationTable> getRelations() {
         return relations;
     }

@@ -73,7 +73,6 @@ public class InRelationTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_relation", nullable = false)
     public RelationTable getRelation() {
         return relation;
@@ -84,7 +83,6 @@ public class InRelationTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object", nullable = false)
     public ObjectTable getObject() {
         return object;
