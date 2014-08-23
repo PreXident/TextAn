@@ -1,12 +1,12 @@
-package cz.cuni.mff.ufal.textan.gui.document;
+package cz.cuni.mff.ufal.textan.gui.path;
 
-import cz.cuni.mff.ufal.textan.core.Client;
-import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.gui.OuterStage;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
-import static cz.cuni.mff.ufal.textan.gui.document.EditDocumentController.PROPERTY_ID;
-import static cz.cuni.mff.ufal.textan.gui.document.EditDocumentController.TITLE;
+import static cz.cuni.mff.ufal.textan.gui.path.PathController.MIN_HEIGHT;
+import static cz.cuni.mff.ufal.textan.gui.path.PathController.MIN_WIDTH;
+import static cz.cuni.mff.ufal.textan.gui.path.PathController.PROPERTY_ID;
+import static cz.cuni.mff.ufal.textan.gui.path.PathController.TITLE;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
@@ -14,31 +14,31 @@ import javafx.scene.Parent;
 import org.controlsfx.dialog.Dialogs;
 
 /**
- * Class for displaying Report Wizard in independent window.
+ * Stage for joining objects.
  */
-public class EditDocumentStage extends OuterStage {
+public class PathStage extends OuterStage {
 
     /**
      * Only constructor.
      * @param textAnController application controller
      * @param settings properties with settings
-     * @param document document
      */
-    public EditDocumentStage(final TextAnController textAnController,
-            final Properties settings, final Document document) {
+    public PathStage(final TextAnController textAnController,
+            final Properties settings) {
         super(TITLE, PROPERTY_ID, settings);
         ResourceBundle resourceBundle = null;
         try {
-            resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.document.EditDocument");
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("EditDocument.fxml"), resourceBundle);
+            resourceBundle = ResourceBundle.getBundle("cz.cuni.mff.ufal.textan.gui.path.Path");
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("Path.fxml"), resourceBundle);
             final Parent loadedRoot = (Parent) loader.load();
             getInnerWindow().getContentPane().getChildren().add(loadedRoot);
-            final EditDocumentController controller = loader.getController();
+            getInnerWindow().setMinHeight(MIN_HEIGHT);
+            getInnerWindow().setMinWidth(MIN_WIDTH);
+            final PathController controller = loader.getController();
             controller.setStage(this);
             controller.setSettings(settings);
             controller.setTextAnController(textAnController);
-            controller.setDocument(document);
-            getInnerWindow().setTitleFixed(controller.getTitle());
+            getInnerWindow().setTitleFixed(Utils.localize(resourceBundle, PROPERTY_ID));
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

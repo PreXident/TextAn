@@ -50,6 +50,15 @@ url.data=http://localhost:9500/soap/data
 url.data.wsdl=http://localhost:9500/soap/data?wsdl
 \end{lstlisting}
 
+It is also possible to set timeouts for communication with server, if default
+values (60,000 ms) are not suitable. Specify -1 for disabling timeout.
+\begin{lstlisting}[frame=single,language=properties]
+#timeout for connecting in ms (default 60000)
+connect.timeout=10000
+#timeout for request in ms (default 60000)
+request.timeout=10000
+\end{lstlisting}
+
 If SSL is in use, it needs to be configured by setting following properties:
 \begin{lstlisting}[frame=single,language=properties]
 #should ssl be used for communication?

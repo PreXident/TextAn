@@ -1,9 +1,11 @@
-package cz.cuni.mff.ufal.textan.gui.join;
+package cz.cuni.mff.ufal.textan.gui.path;
 
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.NonRootObjectException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
+import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
+import cz.cuni.mff.ufal.textan.core.graph.PathGrapher;
 import cz.cuni.mff.ufal.textan.gui.GetTypesTask;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
@@ -17,7 +19,6 @@ import java.util.concurrent.Semaphore;
 import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -37,18 +38,18 @@ import org.controlsfx.dialog.Dialog;
 /**
  * Controls joining of two objects.
  */
-public class JoinController extends WindowController {
+public class PathController extends WindowController {
 
     /** Initial title of the wizard. */
-    static protected final String TITLE = "Object join";
+    static protected final String TITLE = "Path Wizard";
 
     /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
-    static protected final String PROPERTY_ID = "join.view";
+    static protected final String PROPERTY_ID = "path.wizard";
 
-    /** Minimal height of the join window. */
+    /** Minimal height of the path window. */
     static protected final int MIN_HEIGHT = 400;
 
-    /** Minimal width of the join window. */
+    /** Minimal width of the path window. */
     static protected final int MIN_WIDTH = 570;
 
     @FXML
@@ -97,10 +98,13 @@ public class JoinController extends WindowController {
     private Label rightPaginationLabel;
 
     @FXML
-    private ComboBox<ObjectType> typeComboBox;
+    private ComboBox<ObjectType> leftTypeComboBox;
 
     @FXML
-    private Button joinButton;
+    private ComboBox<ObjectType> rightTypeComboBox;
+
+    @FXML
+    private Button pathButton;
 
     /** Localization controller. */
     private ResourceBundle resourceBundle;
@@ -142,58 +146,37 @@ public class JoinController extends WindowController {
     protected Semaphore lock = new Semaphore(1);
 
     @FXML
-    private void join() {
+    private void path() {
         final Object leftObject = leftTable.getSelectionModel().getSelectedItem();
         final Object rightObject = rightTable.getSelectionModel().getSelectedItem();
         if (leftObject == null || rightObject == null || leftObject.equals(rightObject)) {
             return;
         }
-        if (!leftObject.getType().equals(rightObject.getType())) {
-            createDialog()
-                    .owner(getDialogOwner(root))
-                    .title(Utils.localize(resourceBundle, "join.error.typemismatch.title"))
-                    .message(Utils.localize(resourceBundle, "join.error.typemismatch.message"))
-                    .showError();
-            return;
-        }
+        getMainNode().setCursor(Cursor.WAIT);
+        final PathGrapher grapher =
+                new PathGrapher(textAnController.getClient());
+        grapher.setRootId(leftObject.getId());
+        grapher.setTargetId(rightObject.getId());
+        grapher.setDistance(Integer.MAX_VALUE); //TODO reasonable value
 
         if (lock.tryAcquire()) {
-            getMainNode().setCursor(Cursor.WAIT);
-            final Task<Long> task = new Task<Long>() {
+            final Task<Graph> task = new Task<Graph>() {
                 @Override
-                protected Long call() throws Exception {
-                    long joinedObject = -1;
-                    long leftObjectId = leftObject.getId();
-                    long rightObjectId = rightObject.getId();
-                    while (joinedObject == -1) {
-                        try {
-                            joinedObject = textAnController.getClient().joinObjects(
-                                    leftObjectId, rightObjectId
-                            );
-                        } catch (NonRootObjectException e) {
-                            final long problematicId = e.getObjectId();
-                            if (leftObjectId == problematicId) {
-                                leftObjectId = e.getNewRootId();
-                            } else if (rightObjectId == problematicId) {
-                                rightObjectId = e.getNewRootId();
-                            } else {
-                                throw e;
-                            }
-                        }
-                    }
-                    return joinedObject;
+                protected Graph call() throws Exception {
+                    return grapher.getGraph();
                 }
             };
             task.setOnSucceeded(e -> {
-                final Action response = createDialog()
+                if (task.getValue().getNodes().size() < 2) {
+                    getMainNode().setCursor(Cursor.DEFAULT);
+                    createDialog()
                         .owner(getDialogOwner(root))
-                        .title(Utils.localize(resourceBundle, "join.done.title"))
-                        .message(Utils.localize(resourceBundle, "join.done.message"))
-                        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-                        .showConfirm();
-                closeContainer();
-                if (response == Dialog.Actions.YES) {
-                    textAnController.displayGraph(task.getValue());
+                        .title(Utils.localize(resourceBundle, "path.none.title"))
+                        .message(Utils.localize(resourceBundle, "path.none.message"))
+                        .showInformation();
+                } else {
+                    closeContainer();
+                    textAnController.displayGraph(grapher);
                 }
                 lock.release();
             });
@@ -201,11 +184,11 @@ public class JoinController extends WindowController {
                 task.getException().printStackTrace();
                 createDialog()
                         .owner(getDialogOwner(root))
-                        .title(Utils.localize(resourceBundle, "join.error"))
+                        .title(Utils.localize(resourceBundle, "path.error"))
                         .showException(task.getException());
                 lock.release();
             });
-            new Thread(task, "ObjectJoined").start();
+            new Thread(task, "ObjectPath").start();
         }
     }
 
@@ -224,7 +207,7 @@ public class JoinController extends WindowController {
     @FXML
     private void leftFilter() {
         Utils.filterObjects(textAnController.getClient(), this, leftLock,
-                getMainNode(), root, typeComboBox.getValue(),
+                getMainNode(), root, leftTypeComboBox.getValue(),
                 leftFilterField.getText(), leftPerPageComboBox.getValue(),
                 leftPageNo, resourceBundle, leftPaginationLabel,
                 (objectCount, pageCount) -> {
@@ -270,7 +253,7 @@ public class JoinController extends WindowController {
     @FXML
     private void rightFilter() {
         Utils.filterObjects(textAnController.getClient(), this, rightLock,
-                getMainNode(), root, typeComboBox.getValue(),
+                getMainNode(), root, rightTypeComboBox.getValue(),
                 rightFilterField.getText(), rightPerPageComboBox.getValue(),
                 rightPageNo, resourceBundle, rightPaginationLabel,
                 (objectCount, pageCount) -> {
@@ -382,13 +365,7 @@ public class JoinController extends WindowController {
             rightFilter();
         });
         //
-        typeComboBox.valueProperty().addListener((ov, oldVal, newVal) -> {
-            leftPageNo = 0;
-            rightPageNo = 0;
-            leftFilter();
-            rightFilter();
-        });
-        joinButton.prefWidthProperty().bind(root.widthProperty());
+        pathButton.prefWidthProperty().bind(root.widthProperty());
     }
 
     @Override
@@ -425,12 +402,6 @@ public class JoinController extends WindowController {
         final GetTypesTask task = new GetTypesTask(textAnController.getClient());
         task.setOnSucceeded(e -> {
             final List<ObjectType> types = task.getValue();
-            types.remove(0); //remove null
-            typeComboBox.getItems().clear();
-            typeComboBox.getItems().addAll(types);
-            if (types.size() > 0) {
-                typeComboBox.getSelectionModel().select(0);
-            }
             node.setCursor(Cursor.DEFAULT);
             leftFilter();
             rightFilter();

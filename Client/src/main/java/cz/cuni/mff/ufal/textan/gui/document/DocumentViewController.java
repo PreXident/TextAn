@@ -320,7 +320,7 @@ public class DocumentViewController extends WindowController {
         task.setOnSucceeded(e -> {
             documentData = task.getValue();
             final Window w = window == null ? stage.getInnerWindow() : window;
-            w.setTitle(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + document.getId());
+            w.setTitleFixed(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + document.getId());
             relationsListView.setCellFactory(lv -> {
                 return new ListCell<Relation>() {
                     @Override

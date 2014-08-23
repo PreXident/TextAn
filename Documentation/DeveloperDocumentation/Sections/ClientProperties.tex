@@ -1,9 +1,15 @@
 This apendix contains a list of properties from configuration file that controls
 client behaviour and their brief description.
 
-\comment[Adam]{Adam}{Add window properties for settings and about windows.}
-
 \begin{lstlisting}[frame=single,language=properties]
+#about window height
+about.view.height=225.0
+#about window width
+about.view.width=265.0
+#about window x-pos
+about.view.x=878.0
+#about window y-pos
+about.view.y=154.0
 #main application window height
 application.height=600.0
 #is main application window maximized?
@@ -14,6 +20,18 @@ application.width=800.0
 application.x=192.0
 #main application window y-pos
 application.y=119.0
+#color settings window height
+colors.view.height=300.0
+#is color settings window maximized?
+colors.view.maximized=true
+#color settings window width
+colors.view.width=450.0
+#color settings window x-pos
+colors.view.x=0.0
+#color settings window y-pos
+colors.view.y=0.0
+#timeout for connecting in ms (default 60000)
+connect.timeout=10000
 #indicator whether the filters in context menus in pipeline
 #should be cleared when item is selected
 clear.filters=true
@@ -96,11 +114,21 @@ objects.per.page.right=100
 #number of documents to list on one page
 #in object list window
 objects.per.page=100
+#path window height
+path.wizard.height=586.0
+#is path window maximized?
+path.wizard.maximized=true
+#path window width
+path.wizard.width=865.0
+#path window x-pos
+path.wizard.x=295.0
+#path window y-pos
+path.wizard.y=60.0
 #user wants Relation Type with id 1 to be displayed as white
 RELATION.color.1=#FFFFFF
 #relation list window height
 relation.view.height=741.0
-#is relation list window maximized
+#is relation list window maximized?
 relation.view.maximized=true
 #relation list window width
 relation.view.width=722.0
@@ -118,7 +146,9 @@ report.wizard.width=843.0
 report.wizard.x=397.0
 #report wizard pipeline window y-pos
 report.wizard.y=70.0
-#report wizard pipeline window height
+#timeout for request in ms (default 60000)
+request.timeout=10000
+#last directory with imported file
 selectfile.dir=C\:\\temp
 #should ssl be used for communication?
 ssl=true
@@ -132,6 +162,14 @@ ssl.trustStore.type=JKS
 #encoded in Windows-1250 encoding; only other valid value for
 #now is TEXT_UTF8 for utf-8 encoding
 selectfile.extension.txt.type=TEXT_CP1250
+#settings window height
+settings.view.height=225.0
+#settings window width
+settings.view.width=265.0
+#settings window x-pos
+settings.view.x=869.0
+#settings window y-pos
+settings.view.y=390.0
 #url of the data provider wsdl
 url.data.wsdl=http\://localhost\:9500/soap/data?wsdl
 #url of the data provider

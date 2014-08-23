@@ -133,6 +133,13 @@ public abstract class AbstractGrapher implements IGrapher {
         }
     }
 
+    @Override
+    public void clearCache() {
+        fetched = false;
+        graph = null;
+        filteredGraph = null;
+    }
+
     /**
      * Calls relevant methods of client to get the graph.
      * @return graph to be wrapped by this grapher

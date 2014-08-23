@@ -59,7 +59,6 @@ public class RelationGrapher extends AbstractGrapher {
         if (ignoredObjectTypes.isEmpty() && ignoredRelationTypes.isEmpty()) {
             return graph;
         }
-        final Map<Long, Object> nodes = graph.getNodes();
         final Set<Relation> edges = graph.getEdges();
         final Relation root = edges.stream()
                 .filter(e -> e.getId() == rootId).findFirst().orElse(null);

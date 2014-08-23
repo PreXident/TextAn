@@ -108,6 +108,12 @@ public class ObjectListController extends GraphController {
     }
 
     @FXML
+    private void refresh() {
+        pageNo = 0;
+        filter();
+    }
+
+    @FXML
     private void rewind() {
         if (pageNo > 0) {
             --pageNo;

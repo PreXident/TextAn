@@ -42,7 +42,7 @@ public class GraphWindow extends InnerWindow {
             getContentPane().getChildren().add(loaded.getFirst());
             final GraphController controller = loaded.getSecond();
             resourceBundle = controller.resourceBundle;
-            setTitle(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID));
+            setTitleFixed(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID));
             controller.setTextAnController(textAnController);
             controller.setWindow(this);
             controller.setSettings(settings);

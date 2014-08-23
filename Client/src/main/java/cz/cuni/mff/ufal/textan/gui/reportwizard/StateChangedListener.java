@@ -148,12 +148,12 @@ public class StateChangedListener implements IStateChangedListener {
                     window.getContentPane().getChildren().clear();
                     controller.setWindow(window);
                     window.getContentPane().getChildren().add(loadedRoot);
-                    window.setTitle(title);
+                    window.setTitleFixed(title);
                 } else /* if (stage != null) */ {
                     controller.setStage(stage);
                     stage.getInnerWindow().getContentPane().getChildren().clear();
                     stage.getInnerWindow().getContentPane().getChildren().add(loadedRoot);
-                    stage.getInnerWindow().setTitle(title);
+                    stage.getInnerWindow().setTitleFixed(title);
                 }
                 hackFixTextFlow(controller);
             } catch (IOException e) {

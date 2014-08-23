@@ -37,5 +37,6 @@
 		<Label text="http://www.iconarchive.com" minWidth="-Infinity" prefWidth="-1"/>
 		<Label text="http://www.freepik.com" minWidth="-Infinity" prefWidth="-1"/>
 		<Label text="http://www.downloadclipart.net" minWidth="-Infinity" prefWidth="-1"/>
+		<Label text="http://t3k.co/RnD/" minWidth="-Infinity" prefWidth="-1"/>
         </VBox>
 </ExposingVBox>

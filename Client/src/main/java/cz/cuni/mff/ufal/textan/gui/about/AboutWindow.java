@@ -49,7 +49,7 @@ public class AboutWindow extends InnerWindow {
             final AboutController controller = loader.getController();
             controller.setWindow(this);
             controller.setSettings(settings);
-            setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            setTitleFixed(Utils.localize(resourceBundle, PROPERTY_ID));
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()
