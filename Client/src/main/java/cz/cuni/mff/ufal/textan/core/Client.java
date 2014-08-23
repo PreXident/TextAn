@@ -566,7 +566,7 @@ public class Client {
             throw new IdNotFoundException(e);
         }
     }
-    
+
     /**
      * Fills candidates of entities.
      *
@@ -700,6 +700,20 @@ public class Client {
         return response.getObjectTypes().stream()
                 .map(ObjectType::new)
                 .collect(Collectors.toCollection(HashSet::new));
+    }
+
+    /**
+     * Returns graph connecting the given two objects.
+     * @param object1 first object
+     * @param object2 second object
+     * @return graph connecting the given two objects
+     * @throws IdNotFoundException on id error
+     * @throws NonRootObjectException if given objects are no longer roots
+     */
+    public synchronized Graph getPathGraph(final long object1, final long object2)
+            throws IdNotFoundException, NonRootObjectException {
+        //TODO call proper methods when ready
+        return new Graph();
     }
 
     /**

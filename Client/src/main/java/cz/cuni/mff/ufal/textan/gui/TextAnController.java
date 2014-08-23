@@ -21,6 +21,8 @@ import cz.cuni.mff.ufal.textan.gui.graph.GraphStage;
 import cz.cuni.mff.ufal.textan.gui.graph.GraphWindow;
 import cz.cuni.mff.ufal.textan.gui.join.JoinStage;
 import cz.cuni.mff.ufal.textan.gui.join.JoinWindow;
+import cz.cuni.mff.ufal.textan.gui.path.PathStage;
+import cz.cuni.mff.ufal.textan.gui.path.PathWindow;
 import cz.cuni.mff.ufal.textan.gui.relation.RelationListStage;
 import cz.cuni.mff.ufal.textan.gui.relation.RelationListWindow;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.ReportLoadController;
@@ -261,6 +263,23 @@ public class TextAnController implements Initializable {
     }
 
     @FXML
+    private void path() {
+        if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
+            final PathWindow pathWindow = new PathWindow(this, settings);
+            content.getChildren().add(pathWindow);
+        } else {
+            final PathStage pathStage = new PathStage(this, settings);
+            children.add(pathStage);
+            pathStage.showingProperty().addListener((ov, oldVal, newVal) -> {
+                if (!newVal) {
+                    children.remove(pathStage);
+                }
+            });
+            pathStage.show();
+        }
+    }
+
+    @FXML
     private void reportWizard() {
         try {
             final ProcessReportPipeline pipeline = client.createNewReportPipeline();
@@ -478,7 +497,7 @@ public class TextAnController implements Initializable {
      * Displays graph from given grapher.
      * @param grapher grapher with graph
      */
-    private void displayGraph(final IGrapher grapher) {
+    public void displayGraph(final IGrapher grapher) {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final GraphWindow graphWindow = new GraphWindow(this, settings, grapher);
             content.getChildren().add(graphWindow);
