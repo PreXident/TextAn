@@ -232,6 +232,12 @@ public class DocumentListController extends WindowController {
     }
 
     @FXML
+    public void refresh() {
+        pageNo = 0;
+        filter();
+    }
+
+    @FXML
     public void rewind() {
         if (pageNo > 0) {
             --pageNo;
@@ -422,7 +428,7 @@ public class DocumentListController extends WindowController {
     protected String createTitleForObject() {
         return Utils.localize(resourceBundle, PROPERTY_ID) + " - " + Utils.shortString(object.toString());
     }
-    
+
     /**
      * Simple date to string converter.
      */

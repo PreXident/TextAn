@@ -222,6 +222,12 @@ public class JoinController extends WindowController {
     }
 
     @FXML
+    private void leftRefresh() {
+        leftPageNo = 0;
+        leftFilter();
+    }
+
+    @FXML
     private void leftRewind() {
         if (leftPageNo > 0) {
             --leftPageNo;
@@ -259,6 +265,12 @@ public class JoinController extends WindowController {
             ++rightPageNo;
             rightFilter();
         }
+    }
+
+    @FXML
+    private void rightRefresh() {
+        rightPageNo = 0;
+        rightFilter();
     }
 
     @FXML

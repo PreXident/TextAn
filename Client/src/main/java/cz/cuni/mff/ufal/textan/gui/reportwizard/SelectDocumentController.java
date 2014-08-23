@@ -93,6 +93,11 @@ public class SelectDocumentController extends ReportWizardController {
     }
 
     @FXML
+    private void refresh() {
+        listController.refresh();
+    }
+
+    @FXML
     private void rewind() {
         listController.rewind();
     }

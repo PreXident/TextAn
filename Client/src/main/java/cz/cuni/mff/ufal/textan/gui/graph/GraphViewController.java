@@ -140,6 +140,12 @@ public class GraphViewController extends GraphController {
     }
 
     @FXML
+    private void refresh() {
+        grapher.clearCache();
+        filter();
+    }
+
+    @FXML
     private void filter() {
         if (lock.tryAcquire()) {
             final Node node = getMainNode();
