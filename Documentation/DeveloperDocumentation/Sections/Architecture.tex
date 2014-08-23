@@ -161,7 +161,7 @@ Model-View-Controller architecture.
 In the rest of the section the most important packages will be introduced and
 described.
 
-\subsection{cz.cuni.mff.ufal.textan.core}
+\subsection{Model - cz.cuni.mff.ufal.textan.core}
 
 Model classes can be found in this package. It contains mainly client side
 representation of object, entity, relation, document etc. (see figure \ref{fig:CorePackage}). Most important class
@@ -224,7 +224,7 @@ mostly graph filtering which is done solely on client side. See figure
         \label{fig:Graph}
 \end{figure}
 
-\subsection{cz.cuni.mff.ufal.textan.gui}
+\subsection{Controller and View - cz.cuni.mff.ufal.textan.gui}
 
 This package and its subpackages contain controller classes and several view
 components that had to be customized to achieve specific behaviour. A hierarchy
@@ -248,7 +248,7 @@ Resources from this package and its subpackages contains descriptions of views
         \label{fig:Windows}
 \end{figure}
 
-\subsection{cz.cuni.mff.ufal.textan.gui.graph}
+\subsubsection{cz.cuni.mff.ufal.textan.gui.graph}
 
 This package contains controllers for objects and graph views. The most
 interesting class is \emph{GraphView} which embeds JUNG Swing graph into JavaFX
