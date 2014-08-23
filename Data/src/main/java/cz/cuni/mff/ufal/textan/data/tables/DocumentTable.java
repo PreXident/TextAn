@@ -116,7 +116,7 @@ public class DocumentTable extends AbstractTable {
         this.text = text;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "document")
+    @OneToMany(mappedBy = "document")
     @IndexedEmbedded(includePaths = "relation.id")
     public Set<RelationOccurrenceTable> getRelationOccurrences() {
         return relationOccurrences;
@@ -126,8 +126,8 @@ public class DocumentTable extends AbstractTable {
         this.relationOccurrences = relationOccurrences;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "document")
-    @IndexedEmbedded(includePaths = "alias.object.id")
+    @OneToMany(mappedBy = "document")
+    @IndexedEmbedded(includePaths = {"alias.object.id", "alias.object.rootObject.id"})
     public Set<AliasOccurrenceTable> getAliasOccurrences() {
         return aliasOccurrences;
     }

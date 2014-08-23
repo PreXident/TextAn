@@ -360,17 +360,11 @@ public class DAOTest {
         List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithObjectByFullText(object.getId(), "document");
         for (Pair<DocumentTable, Integer> objectTableCountPair : res) {
             if (objectTableCountPair.getFirst().equals(document)) {
-                
-                System.out.println(
-                    documentTableDAO.find(document.getId()).getAliasOccurrences()
-                );
-                
                 Assert.assertEquals("Count is not 1", 1, objectTableCountPair.getSecond().intValue());
                 return;
             }
         }
         assertTrue("Document not found", false);
-
     }
     
     @Test
@@ -382,8 +376,6 @@ public class DAOTest {
                 return;
             }
         }
-        
-
     }
     
     @Test
