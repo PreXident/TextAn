@@ -129,7 +129,7 @@ public class DocumentTable extends AbstractTable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "document")
     @Cascade(CascadeType.ALL)
-    @IndexedEmbedded(includePaths = "alias.object.id")
+    @IndexedEmbedded(includePaths = {"alias.object.id", "alias.object.rootObject.id"})
     public Set<AliasOccurrenceTable> getAliasOccurrences() {
         return aliasOccurrences;
     }

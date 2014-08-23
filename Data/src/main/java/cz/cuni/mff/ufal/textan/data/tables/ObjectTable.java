@@ -86,6 +86,7 @@ public class ObjectTable extends AbstractTable {
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_root_object")
     @ContainedIn
+    @IndexedEmbedded(includePaths = "id")
     public ObjectTable getRootObject() {
         return rootObject;
     }

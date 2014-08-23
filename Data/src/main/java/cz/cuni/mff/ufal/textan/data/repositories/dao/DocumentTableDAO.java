@@ -62,31 +62,6 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         return new ResultPagination<>(firstResult, maxResults, results, count);
     }
 
-    private FullTextQuery findAllDocumentsWithObjectByFullTextQuery(long objectId, String pattern) {
-        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
-
-        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
-        org.apache.lucene.search.Query queryFullText = builder
-                .phrase()
-                .onField("text")
-                .sentence(pattern)
-                .createQuery();
-
-        org.apache.lucene.search.Query queryObject = builder
-                .keyword()
-                .onField("aliasOccurrences.alias.object.id") //FIXME!!
-                .matching(objectId)
-                .createQuery();
-
-        org.apache.lucene.search.Query query = builder
-                .bool()
-                .must(queryFullText)
-                .must(queryObject)
-                .createQuery();
-
-        return fullTextSession.createFullTextQuery(query);
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObjectByFullText(long objectId, String pattern) {
@@ -139,31 +114,6 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         return new ResultPagination<>(firstResult, maxResults, results,count);
     }
 
-    private FullTextQuery findAllDocumentsWithRelationByFullTextQuery(long relationId, String pattern) {
-        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
-
-        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
-        org.apache.lucene.search.Query queryFullText = builder
-                .phrase()
-                .onField("text")
-                .sentence(pattern)
-                .createQuery();
-
-        org.apache.lucene.search.Query queryObject = builder
-                .keyword()
-                .onField("relationOccurrences.relation.id")
-                .matching(relationId)
-                .createQuery();
-
-        org.apache.lucene.search.Query query = builder
-                .bool()
-                .must(queryFullText)
-                .must(queryObject)
-                .createQuery();
-
-        return fullTextSession.createFullTextQuery(query);
-    }
-
     @Override
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelationByFullText(long relationId, String pattern) {
         @SuppressWarnings("unchecked")
@@ -188,19 +138,6 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                 .collect(Collectors.toList());
 
         return new ResultPagination<>(firstResult, maxResults, documentCountPairs, count);
-    }
-    
-    private FullTextQuery findAllDocumentsByFullTextQuery(String pattern) {
-        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
-
-        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
-        org.apache.lucene.search.Query query = builder
-                .phrase()
-                .onField("text")
-                .sentence(pattern)
-                .createQuery();
-
-        return fullTextSession.createFullTextQuery(query);
     }
 
     @Override
@@ -252,31 +189,6 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         return new ResultPagination<>(firstResult, maxResults, results, count);
     }
 
-    public FullTextQuery findAllProcessedDocumentsByFullTextQuery(boolean processed, String pattern) {
-        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
-
-        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
-        org.apache.lucene.search.Query queryFullText = builder
-                .phrase()
-                .onField("text")
-                .sentence(pattern)
-                .createQuery();
-
-        org.apache.lucene.search.Query queryProcessed = builder
-                .keyword()
-                .onField("processedBool")
-                .matching(processed)
-                .createQuery();
-
-        org.apache.lucene.search.Query query = builder
-                .bool()
-                .must(queryFullText)
-                .must(queryProcessed)
-                .createQuery();
-
-        return fullTextSession.createFullTextQuery(query);
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern) {
@@ -311,7 +223,7 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                         + "inner join alias.object as obj "
                         + "inner join obj.rootObject as root "
                 + "where root.id = :objectId "
-                + "group by doc.id, root "
+                + "group by doc.id "
                 + "order by num desc"
         );
         hq.setParameter("objectId", objectId);
@@ -360,5 +272,92 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
 
         return hq;
     }
-    
+
+    private FullTextQuery findAllDocumentsWithObjectByFullTextQuery(long objectId, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query queryFullText = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query queryObject = builder
+                .keyword()
+                .onField("aliasOccurrences.alias.object.rootObject.id")
+                .matching(objectId)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(queryFullText)
+                .must(queryObject)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    private FullTextQuery findAllDocumentsWithRelationByFullTextQuery(long relationId, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query queryFullText = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query queryObject = builder
+                .keyword()
+                .onField("relationOccurrences.relation.id")
+                .matching(relationId)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(queryFullText)
+                .must(queryObject)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    private FullTextQuery findAllProcessedDocumentsByFullTextQuery(boolean processed, String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query queryFullText = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        org.apache.lucene.search.Query queryProcessed = builder
+                .keyword()
+                .onField("processedBool")
+                .matching(processed)
+                .createQuery();
+
+        org.apache.lucene.search.Query query = builder
+                .bool()
+                .must(queryFullText)
+                .must(queryProcessed)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
+
+    private FullTextQuery findAllDocumentsByFullTextQuery(String pattern) {
+        FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
+
+        QueryBuilder builder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(type).get();
+        org.apache.lucene.search.Query query = builder
+                .phrase()
+                .onField("text")
+                .sentence(pattern)
+                .createQuery();
+
+        return fullTextSession.createFullTextQuery(query);
+    }
 }

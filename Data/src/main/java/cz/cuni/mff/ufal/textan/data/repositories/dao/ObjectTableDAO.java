@@ -226,9 +226,10 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     @Override
     protected Criteria findAllCriteria() {
         return super.findAllCriteria()
-                .add(Restrictions.eqProperty(ObjectTable.PROPERTY_NAME_ID, 
+                .add(Restrictions.eqProperty(ObjectTable.PROPERTY_NAME_ID,
                                              ObjectTable.PROPERTY_NAME_ROOT_OBJECT_ID));
     }
+
     private FullTextQuery findAllByAliasFullTextQuery(String pattern) {
         FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 
