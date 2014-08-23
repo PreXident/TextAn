@@ -80,6 +80,20 @@ public class Client {
     /** Data provider Port. */
     private static final QName DATA_PROVIDER_PORT = new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService", "DataProviderPort");
 
+    /**
+     * Parses string to integer, if invalid def is returned.
+     * @param string string to parse
+     * @param def default value
+     * @return string converted to integer, or default if invalid
+     */
+    private static int parseInt(final String string, final int def) {
+        try {
+            return Integer.parseInt(string);
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
     /** Values for document processed filtering. */
     public enum Processed {
         YES {
@@ -191,7 +205,7 @@ public class Client {
      * Adds JAX-WS Handler which adds UsernameToken header into SOAP message.
      * @param binding JAW-WS bindings (from web service port)
      */
-    private void addSOAPHandler(Binding binding) {
+    private void addSOAPHandler(final Binding binding) {
         final UsernameToken token = new UsernameToken();
         token.setUsername(username);
 
@@ -282,7 +296,24 @@ public class Client {
                 final IDocumentProcessor processor =
                         service.getPort(IDocumentProcessor.class);
 
-                Binding documentProcessorBinding = ((BindingProvider) processor).getBinding();
+                final BindingProvider provider = ((BindingProvider) processor);
+                final int connectTimeout =
+                        parseInt(settings.getProperty("connect.timeout", "60000"), 60000);
+                provider.getRequestContext().put(
+                        "com.sun.xml.ws.connect.timeout",
+                        connectTimeout);
+                provider.getRequestContext().put(
+                        "com.sun.xml.internal.ws.connect.timeout",
+                        connectTimeout);
+                final int requestTimeout =
+                        parseInt(settings.getProperty("request.timeout", "60000"), 60000);
+                provider.getRequestContext().put(
+                        "com.sun.xml.ws.request.timeout",
+                        requestTimeout);
+                provider.getRequestContext().put(
+                        "com.sun.xml.internal.ws.request.timeout",
+                        requestTimeout);
+                Binding documentProcessorBinding = provider.getBinding();
                 addSOAPHandler(documentProcessorBinding);
                 documentProcessor = new SynchronizedDocumentProcessor(processor);
             } catch (MalformedURLException e) {
@@ -308,12 +339,28 @@ public class Client {
                 String endpointAddress = settings.getProperty("url.data", "http://textan.ms.mff.cuni.cz:9500/soap/data");
                 // Add a port to the Service
                 service.addPort(DATA_PROVIDER_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
-                final IDataProvider provider = service.getPort(IDataProvider.class);
+                final IDataProvider data = service.getPort(IDataProvider.class);
 
-                Binding dataProviderBinding = ((BindingProvider) provider).getBinding();
+                final BindingProvider provider = ((BindingProvider) data);
+                final int connectTimeout =
+                        parseInt(settings.getProperty("connect.timeout", "60000"), 60000);
+                provider.getRequestContext().put(
+                        "com.sun.xml.ws.connect.timeout",
+                        connectTimeout);
+                provider.getRequestContext().put(
+                        "com.sun.xml.internal.ws.connect.timeout",
+                        connectTimeout);
+                final int requestTimeout =
+                        parseInt(settings.getProperty("request.timeout", "60000"), 60000);
+                provider.getRequestContext().put(
+                        "com.sun.xml.ws.request.timeout",
+                        requestTimeout);
+                provider.getRequestContext().put(
+                        "com.sun.xml.internal.ws.request.timeout",
+                        requestTimeout);
+                Binding dataProviderBinding = provider.getBinding();
                 addSOAPHandler(dataProviderBinding);
-                dataProvider = new SynchronizedDataProvider(provider);
-
+                dataProvider = new SynchronizedDataProvider(data);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new WebServiceException("Malformed URL!", e);
