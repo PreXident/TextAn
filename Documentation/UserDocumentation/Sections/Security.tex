@@ -36,7 +36,7 @@ For limiting the access to the webservices, client authentication can be turned
 on. Only client that provides certificate from authority trusted by the server
 will be served.
 
-For server the following setting must be accomplished. Most importantly
+For server the following setting is required. Most importantly
 \emph{server.ssl.clientAuth} must be set to \emph{true}. Then these properties
 will be used by the server: \emph{server.ssl.trustStore.path} must point to the
 trust store containing certificate of the trusted certificate authority for
@@ -45,7 +45,7 @@ server. Its type is determined by the content of property
 \emph{server.ssl.trustStore.password} specifies the password to the trust
 store.
 
-For client the following setting must be accomplished. Most importantly property
+For client the following setting is required. Most importantly property
 \emph{ssl.clientAuth} must be set to \emph{true}. Then these properties will be
 used by the server: \emph{ssl.keyStore} must point to the key store containing
 the private key and certificate signed by the certificate authority trusted by
