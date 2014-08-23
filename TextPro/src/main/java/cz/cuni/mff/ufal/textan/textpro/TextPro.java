@@ -342,9 +342,9 @@ public class TextPro implements ITextPro {
     * getCloseObject: Get the object related to an entity by searching its alias
     */
     public List<ObjectTable> getCloseObject(Entity e){
-        List<ObjectTable> matchFullText = this.objectTableDAO.findAllByAliasFullText(e.getText());
+        List<ObjectTable> matchFullText = this.objectTableDAO.findAllByObjTypeAndAliasFullText(e.getType(), e.getText());
         if(matchFullText.isEmpty()){
-            return this.objectTableDAO.findAllByAliasSubstring(e.getText());
+            return this.objectTableDAO.findAllByObjectTypeAndAliasSubStr(e.getType(), e.getText());
         } 
         return matchFullText;
     }
