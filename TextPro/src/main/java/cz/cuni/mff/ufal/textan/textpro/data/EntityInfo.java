@@ -16,10 +16,10 @@ public class EntityInfo {
     public Entity e;
     
     public Map<Long, Double> score;
-    
     public List<ObjectTable> objects;
     public Map<ObjectTable,Long> match_object;
-    public EntityInfo(Entity _e, Map _score, List _objects, Map _match_object){
+
+    public EntityInfo(Entity _e, Map<Long,Double> _score, List<ObjectTable> _objects, Map<ObjectTable,Long> _match_object){
         this.e = _e;
         this.score = _score;
         this.objects = _objects;

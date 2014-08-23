@@ -187,6 +187,34 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
     }
 
     @Override
+    public GetRelationsFromStringResponse getRelationsFromString(
+            @WebParam(partName = "getRelationsFromStringRequest", name = "getRelationsFromStringRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            GetRelationsFromStringRequest getRelationsFromStringRequest,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
+            EditingTicket editingTicket) {
+
+        LOG.info("Executing operation getRelationsFromString: {} {}", getRelationsFromStringRequest, editingTicket);
+        GetRelationsFromStringResponse response = new GetRelationsFromStringResponse();
+        LOG.info("Executed operation getRelationsFromString: {}", response);
+        return response;
+    }
+
+
+
+    @Override
+    public GetRelationsByIdResponse getRelationsById(
+            @WebParam(partName = "getRelationsByIdRequest", name = "getRelationsByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
+            GetRelationsByIdRequest getRelationsByIdRequest,
+            @WebParam(partName = "editingTicket", name = "editingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor", header = true)
+            EditingTicket editingTicket) throws DocumentChangedException, DocumentAlreadyProcessedException, IdNotFoundException {
+
+        LOG.info("Executing operation getRelationsById: {} {}", getRelationsByIdRequest, editingTicket);
+        GetRelationsByIdResponse response = new GetRelationsByIdResponse();
+        LOG.info("Executed operation getRelationsById: {}", response);
+        return response;
+    }
+
+    @Override
     public SaveProcessedDocumentFromStringResponse saveProcessedDocumentFromString(
             @WebParam(partName = "saveProcessedDocumentFromString", name = "saveProcessedDocumentFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
             SaveProcessedDocumentFromStringRequest saveProcessedDocumentFromStringRequest,

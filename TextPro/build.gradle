@@ -1,5 +1,7 @@
 apply plugin: 'java'
 
+[compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
+
 repositories {
     mavenCentral()
 }

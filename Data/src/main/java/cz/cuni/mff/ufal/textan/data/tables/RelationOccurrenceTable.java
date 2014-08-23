@@ -40,10 +40,22 @@ public class RelationOccurrenceTable extends AbstractTable {
      * @param anchor
      */
     public RelationOccurrenceTable(RelationTable relation, DocumentTable document, Integer position, String anchor) {
-        this.relation = relation;
-        this.document = document;
         this.position = position;
         this.anchor = anchor;
+
+        this.relation = relation;
+        this.relation.getOccurrences().add(this);
+        
+        this.document = document;
+        this.document.getRelationOccurrences().add(this);
+    }
+
+    public RelationOccurrenceTable(RelationTable relation, DocumentTable document) {
+        this.relation = relation;
+        this.relation.getOccurrences().add(this);
+
+        this.document = document;
+        this.document.getRelationOccurrences().add(this);
     }
 
     public RelationOccurrenceTable(RelationTable relation, DocumentTable document, int position, int length) {
@@ -81,7 +93,6 @@ public class RelationOccurrenceTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_relation", nullable = false)
     @IndexedEmbedded
     @ContainedIn

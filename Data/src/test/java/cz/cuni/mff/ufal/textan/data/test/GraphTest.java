@@ -71,6 +71,8 @@ public class GraphTest {
         relationType = new RelationTypeTable(TEST_PREFIX + "relation type 1");
         relation = new RelationTable(relationType);
       
+        data.addRecord(objectType);
+        data.addRecord(relationType);
         
         System.out.println("SETUP");
         for (int i = 0; i < objects.length; i++) {

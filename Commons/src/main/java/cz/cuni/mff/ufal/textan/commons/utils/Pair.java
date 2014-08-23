@@ -106,4 +106,9 @@ public class Pair<First, Second> implements Cloneable, Serializable {
         hash = 59 * hash + (this.second != null ? this.second.hashCode() : 0);
         return hash;
     }
+
+    @Override
+    public String toString() {
+        return "Pair{" + "first=" + first + ", second=" + second + '}';
+    }
 }

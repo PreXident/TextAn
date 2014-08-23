@@ -27,6 +27,7 @@ public class DocumentTable extends AbstractTable {
     public static final String PROPERTY_NAME_RELATION_OCCURRENCES = "relationOccurrences";
     public static final String PROPERTY_NAME_PROCESSED = "processedDate";
     public static final String PROPERTY_NAME_GLOBAL_VERSION = "globalVersion";
+    public static final String PROPERTY_NAME_TEXT = "text";
 
     private long id;
     private long globalVersion;
@@ -105,6 +106,7 @@ public class DocumentTable extends AbstractTable {
     }
 
     @Column(name = "text", columnDefinition = "text", nullable = false)
+    @Lob
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     public String getText() {
         return text;
@@ -114,8 +116,7 @@ public class DocumentTable extends AbstractTable {
         this.text = text;
     }
 
-    @OneToMany(mappedBy = "document", orphanRemoval = true)
-    @Cascade(CascadeType.ALL)
+    @OneToMany(mappedBy = "document")
     @IndexedEmbedded(includePaths = "relation.id")
     public Set<RelationOccurrenceTable> getRelationOccurrences() {
         return relationOccurrences;
@@ -125,9 +126,8 @@ public class DocumentTable extends AbstractTable {
         this.relationOccurrences = relationOccurrences;
     }
 
-    @OneToMany(mappedBy = "document", orphanRemoval = true)
-    @Cascade(CascadeType.ALL)
-    @IndexedEmbedded(includePaths = "alias.object.id")
+    @OneToMany(mappedBy = "document")
+    @IndexedEmbedded(includePaths = {"alias.object.id", "alias.object.rootObject.id"})
     public Set<AliasOccurrenceTable> getAliasOccurrences() {
         return aliasOccurrences;
     }

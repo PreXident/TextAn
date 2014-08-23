@@ -40,18 +40,25 @@ public class ObjectTable extends AbstractTable {
 
     private Set<ObjectTable> rootOfObjects = new HashSet<ObjectTable>();
     private JoinedObjectsTable newObject;
-    private Set<JoinedObjectsTable> oldObjects1;
-    private Set<JoinedObjectsTable> oldObjects2;
+    private JoinedObjectsTable oldObject1;
+    private JoinedObjectsTable oldObject2;
 
     public ObjectTable() {
         rootObject = this;
         rootOfObjects.add(this);
     }
 
+    public ObjectTable(ObjectTypeTable objectType) {
+        this();
+        this.objectType = objectType;
+        objectType.getObjectsOfThisType().add(this);
+    }
+
     public ObjectTable(String data, ObjectTypeTable objectType) {
         this();
         this.data = data;
         this.objectType = objectType;
+        objectType.getObjectsOfThisType().add(this);
     }
 
     @Id
@@ -79,6 +86,7 @@ public class ObjectTable extends AbstractTable {
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_root_object")
     @ContainedIn
+    @IndexedEmbedded(includePaths = "id")
     public ObjectTable getRootObject() {
         return rootObject;
     }
@@ -113,7 +121,6 @@ public class ObjectTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object_type", nullable = false)
     @IndexedEmbedded
     public ObjectTypeTable getObjectType() {
@@ -124,8 +131,7 @@ public class ObjectTable extends AbstractTable {
         this.objectType = objectType;
     }
 
-    @OneToMany(mappedBy = "object", orphanRemoval = true)
-    @Cascade(CascadeType.ALL)
+    @OneToMany(mappedBy = "object")
     @IndexedEmbedded(includePaths = "alias")
     @ContainedIn
     public Set<AliasTable> getAliases() {
@@ -136,8 +142,7 @@ public class ObjectTable extends AbstractTable {
         this.aliases = aliases;
     }
 
-    @OneToMany(mappedBy = "object", orphanRemoval = true)
-    @Cascade(CascadeType.DELETE)
+    @OneToMany(mappedBy = "object")
     public Set<InRelationTable> getRelations() {
         return relations;
     }
@@ -146,7 +151,7 @@ public class ObjectTable extends AbstractTable {
         this.relations = relations;
     }
 
-    @OneToOne(mappedBy = "newObject", orphanRemoval = true)
+    @OneToOne(mappedBy = "newObject")
     @Cascade(CascadeType.DELETE)
     public JoinedObjectsTable getNewObject() {
         return newObject;
@@ -156,39 +161,27 @@ public class ObjectTable extends AbstractTable {
         this.newObject = newObject;
     }
 
-    @OneToMany(mappedBy = "oldObject1", orphanRemoval = true)
+    @OneToOne(mappedBy = "oldObject1")
     @Cascade(CascadeType.DELETE)
-    public Set<JoinedObjectsTable> getOldObjects1() {
-        return oldObjects1;
+    public JoinedObjectsTable getOldObject1() {
+        return oldObject1;
     }
 
-    public void setOldObjects1(Set<JoinedObjectsTable> oldObjects1) {
-        this.oldObjects1 = oldObjects1;
+    public void setOldObject1(JoinedObjectsTable oldObject1) {
+        this.oldObject1 = oldObject1;
     }
 
-    @OneToMany(mappedBy = "oldObject2", orphanRemoval = true)
+    @OneToOne(mappedBy = "oldObject2")
     @Cascade(CascadeType.DELETE)
-    public Set<JoinedObjectsTable> getOldObjects2() {
-        return oldObjects2;
+    public JoinedObjectsTable getOldObject2() {
+        return oldObject2;
     }
 
-    public void setOldObjects2(Set<JoinedObjectsTable> oldObjects2) {
-        this.oldObjects2 = oldObjects2;
+    public void setOldObject2(JoinedObjectsTable oldObject2) {
+        this.oldObject2 = oldObject2;
     }
 
-    /**
-     * <b>Changes in returned set do not propagate into database!</b>
-     *
-     * @return
-     */
-    @Transient
-    public Set<JoinedObjectsTable> getJoinObjectsThisWasJoinedTo() {
-        Set<JoinedObjectsTable> result = new HashSet<>(getOldObjects1());
-        result.addAll(getOldObjects2());
-        return result;
-    }
-
-    /**
+     /**
      * <b>Changes in returned set do not propagate into database!</b>
      *
      * @return All objects this object WAS composed from

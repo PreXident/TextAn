@@ -22,6 +22,12 @@
     <xs:element name="getAssignmentsByIdRequest" type="GetAssignmentsByIdRequest"/>
     <xs:element name="getAssignmentsByIdResponse" type="GetAssignmentsByIdResponse"/>
 
+    <xs:element name="getRelationsFromStringRequest" type="GetRelationsFromStringRequest"/>
+    <xs:element name="getRelationsFromStringResponse" type="getRelationsFromStringResponse"/>
+
+    <xs:element name="getRelationsByIdRequest" type="GetRelationsByIdRequest"/>
+    <xs:element name="getRelationsByIdResponse" type="GetRelationsByIdResponse"/>
+
     <xs:element name="saveProcessedDocumentByIdRequest" type="SaveProcessedDocumentByIdRequest"/>
     <xs:element name="saveProcessedDocumentByIdResponse" type="SaveProcessedDocumentByIdResponse"/>
 
@@ -102,6 +108,36 @@
     <xs:complexType name="GetAssignmentsByIdResponse">
         <xs:sequence>
             <xs:element name="assignment" type="Assignment" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetRelationsFromStringRequest">
+        <xs:sequence>
+            <xs:element name="text" type="xs:string"/>
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="objectOccurrence" type="cms:ObjectOccurrence" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="getRelationsFromStringResponse">
+        <xs:sequence>
+            <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="relationOccurrence" type="cms:RelationOccurrence" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetRelationsByIdRequest">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element ref="cms:object" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="objectOccurrence" type="cms:ObjectOccurrence" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetRelationsByIdResponse">
+        <xs:sequence>
+            <xs:element ref="cms:relation" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="relationOccurrence" type="cms:RelationOccurrence" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
