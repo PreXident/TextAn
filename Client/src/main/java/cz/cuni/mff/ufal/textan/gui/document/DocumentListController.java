@@ -179,7 +179,7 @@ public class DocumentListController extends WindowController {
                         if (objectId != object.getId()) {
                             object = client.getObject(objectId);
                             final Window w = window != null ? window : stage.getInnerWindow();
-                            w.setTitle(createTitleForObject());
+                            w.setTitleFixed(createTitleForObject());
                         }
                     } else if (relation != null) {
                         pair = client.getDocumentsList(relation, filter, first, size);
@@ -417,7 +417,7 @@ public class DocumentListController extends WindowController {
             filterPane.getChildren().remove(processedCheckBox);
             table.getColumns().add(table.getColumns().size() - 1, countColumn);
             textColumn.prefWidthProperty().bind(table.widthProperty().add(idColumn.widthProperty().add(addTimeColumn.widthProperty()).add(lastChangeTimeColumn.widthProperty()).add(processedColumn.widthProperty()).add(processTimeColumn.widthProperty()).add(countColumn.widthProperty()).multiply(-1).add(-30)));
-            w.setTitle(title);
+            w.setTitleFixed(title);
         });
     }
 

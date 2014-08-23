@@ -40,7 +40,7 @@ public class DocumentStage extends OuterStage {
             controller.setTextAnController(textAnController);
             controller.setClient(client);
             controller.setDocument(document);
-            getInnerWindow().setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            getInnerWindow().setTitleFixed(Utils.localize(resourceBundle, PROPERTY_ID));
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()
