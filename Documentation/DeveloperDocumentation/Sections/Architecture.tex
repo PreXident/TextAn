@@ -1,5 +1,4 @@
-%This section contains the system architecture
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% (80 char rule :D)
+% Chapter: contains the system architecture
 
 %For every one: use as many diagrams as possible :) (author Petr)
 
@@ -7,7 +6,11 @@ The architecture of \textan{} is based on client-server model. Two main componen
 are the \textan{} server and \textan{} client which communicate via W3C web services
 (SOAP protokol).
 
+
+
 \comment{Ondrej}{Mention why it was split like this - a wish from outside, but in the future fully automated (tuned) annotation without client}
+
+
 
 \section{Server architecture}
 
@@ -26,9 +29,10 @@ a persistence layer and a data layer.
         \label{fig:ServerComponentOverview}
 \end{figure}
 
-\comment[Petr, Venca (persistence layer)]{Petr}{description of layers}
+
 
 \subsection{Web service layer}
+
 
 \comment[Petr]{Petr}{CXF, java code generation form wsdl, web services implementation
  ->  facade over services, jetty}
@@ -38,8 +42,11 @@ a persistence layer and a data layer.
 \comment[Petr]{Petr}{Describe all services}
 
 \subsection{Business layer}
-
-\comment[someone]{Petr}{Add small intro, 2 components ect.}
+A business layer contains components which encapsulate the main functionality
+of the system. The layer is consists of two main components, the Named Entity
+recognizer and the Object assign. Both of them use machine learning methods to solve
+their task. They access the persistence layer to obtain training data and they
+are called from the service layer and the scheduler.
 
 \subsubsection{Named entity recognizer architecture}
 
@@ -113,8 +120,19 @@ is ranked an used as the score.
 \comment{Tam}{TODO: Features description, maybe}
 
 \subsection{Scheduler}
+The scheduler is a simple component, that invokes commands asynchronously against
+requests in the servlet container. It is implemented by classes in the package
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-commands}. \comment{Petr}{Add class diagram?}
 
-\comment[Petr]{Petr}{Describe re-learning process, command inwoker}
+The component is used to invoke re-learning in components from the business layer.
+The learning is typically slow, in a matter of minutes, so it's necessary to use
+this approach due to system performance. Commands are registered from methods in
+the service layer that modify data used for learning. Commands are stored in one
+FIFO queue and are invoked in one thread, so it's possible to filter them before
+invocation. This ability ensures that only one learning command is invoked at one
+time and that learning commands are not invoked unreasonably. Components from
+the business layer use old models during learning, so the re-learning is a transparent
+operation for users.
 
 \subsection{Persistence layer}
 
