@@ -77,8 +77,8 @@ public class TestMachineLearning {
         Map<Entity, List<Pair<Long, Double>>> result = textPro.machineLearning("Empty", eList, 5);
         
         List<Pair<Long, Double>> Olist = result.get(e);
-        assertEquals("1: entity to match", 2, result.keySet().size());
-        assertEquals("2: two object found", 2, Olist.size());
+        assertEquals("1: entity to match", 1, result.keySet().size());
+        assertEquals("2: two object found", 0, Olist.size());
         //assertEquals("2 zero object", 1, Olist.keySet().size());
     }
     
@@ -88,14 +88,14 @@ public class TestMachineLearning {
         //textPro.learn();
         
         // Create fake test
-        Entity e = new Entity("Ema", 0, 0 , 1);
+        Entity e = new Entity("Em", 0, 0 , 1);
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         List<ObjectTable> oListFullText = objectTableDAO.findAllByObjTypeAndAliasFullText(e.getType(), e.getText());
-        //List<ObjectTable> oListSubStr = objectTableDAO.findAllByObjectTypeAndAliasSubStr(e.getType(), e.getText());
+        List<ObjectTable> oListSubStr = objectTableDAO.findAllByObjectTypeAndAliasSubStr(e.getType(), e.getText());
         
-        assertEquals("1 object matched full text", 1, oListFullText.size());   
-        //assertEquals("2 objects matched sub string", 2, oListSubStr.size());   
+        assertEquals("1 object matched full text", 0, oListFullText.size());   
+        assertEquals("2 objects matched sub string", 2, oListSubStr.size());   
         
     }
     
@@ -116,7 +116,7 @@ public class TestMachineLearning {
         Map<Entity, List<Pair<Long, Double>>> result = textPro.finalRanking("Empty", eList, 5);
         // If everything is alright, it will call both ML and HR
         List<Pair<Long, Double>> Olist = result.get(e);
-        assertEquals("1: entity to match", 2, result.keySet().size());
+        assertEquals("1: entity to match", 1, result.keySet().size());
         assertEquals("2: one object found", 2, Olist.size());
     }
     
