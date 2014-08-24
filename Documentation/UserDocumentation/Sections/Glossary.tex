@@ -1,0 +1,72 @@
+Terms are used in very specific manner in the documentation and in both applications,
+therefore it is really essential to understand their meaning. Otherwise, it is
+possible to misunderstand the rest of the text.
+
+\comment[anyone]{Petr}{check if this makes sense!}
+\begin{description}
+\item[Object]
+The term "object" is a representation of some unique thing in \textan{}. Consider
+for example a person with name Joseph Smith from Prague with identifier 000123/4567.
+The object refers to this person in the real world, a meat and bones.
+
+\item[Alias]
+The alias represents a designation of a object. For example: Joseph Smith, Joe
+Smith, Joey S., J. Smith or just Smith can be names of one concrete person.
+Names are aliases for the person.
+
+%\item[Alias occurrence]
+
+\item[Document]
+The document is an arbitrary text that is processed by \textan{}. E.g. a police
+report, a letter, a movie review or a judgment. In the following text the terms
+document and report are used interchangeably.
+
+\item[Entity]
+The entity is a sequence of words recognized either by a named entity recognizer
+or by a user. The entity will be later assigned to an object and it became an alias
+of the object after assigning. Consider for example a sentence: Joe Smith was seen
+in Prague on 5th September. The sentence contains 3 entities: Joe Smith (person),
+Prague (city), 5th September (date). We don't know which objects belongs to these
+entities at the moment. Prague can represent the capital city of the Czech Republic,
+or a city in the USA.
+
+\item[Object/Entity Type]
+Each object and entity has a type. For example person, date, city, country etc.
+Set of types in the system depends on domain which the system is deployed to.
+There are some universal predefined ones, but the system administrator needs to
+prepare customized list to fully unleashed the power of the project.
+
+\item[Relation]
+The relation represents any relationship between objects mentioned in a document.
+A relation can be represented in a document by an anchor, or can be unexpressed,
+which means without any anchor in a document. See Anchor below.
+\comment[anyone]{Adam}{Check this sentence with two relations, one with anchor, one without anchor.}
+Consider this example: "Adam (890524/1367) is married to Eve". Three objects
+have occurrence in the sentence - persons Adam and Eve and id 890524/1367. There
+are two relations: Adam "has" 890524/1367 without anchor and Adam "marriage" Eve
+with anchor "married".
+
+\item[Relation Type]
+Each relation has a type. For example born, reside, die, kill etc. Similarly to
+object/relation types set of relation types in the system depends on domain
+which the system is deployed to. There are some universal predefined ones, but
+the system administrator needs to prepare customized list to fully unleashed the
+power of the project.
+
+\item[Anchor]
+The anchor is a word or a sequence of words that is binded to a relation between
+objects. Consider for example a sentence: Joey Smith killed Mary-Ann S. There is
+relation between Joey Smith and Mary-Ann S., which is represented by the word
+"killed". The word is the anchor.
+
+\item[Roles and orders]
+Each object in a relation can have a role assigned. This role is mostly used
+for visualisation and storing additional information. Moreover object can also
+have order assigned which is just an integral number used for graph
+visualization (see \ref{sssec:EditRelations}). For example relation created from
+sentence "Bill killed Joe." could be represented like this:
+Bill (-1, murderer) --kill--> (1, victim) Joe.
+\end{description}
+
+\comment{Petr}{is it necessary to explain terms: assignment, object merging, alias occurence?}
+\comment{Adam}{Let's wait for Ondrej's feedback}
