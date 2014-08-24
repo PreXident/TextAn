@@ -1,6 +1,8 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.Object;
+import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.RelationType;
 import cz.cuni.mff.ufal.textan.core.processreport.RelationBuilder;
 import cz.cuni.mff.ufal.textan.core.processreport.Word;
@@ -62,6 +64,21 @@ public class FXRelationBuilder extends RelationBuilder {
          ((List)data).addAll(proxy.getData());
      }
 
+     /**
+      * Constructs builder from Relation.
+      * @param relation blue print
+      */
+     public FXRelationBuilder(final Relation relation) {
+         super(relation.getType());
+         updateStringRepresentation();
+         this.alias = relation.getAnchorString();
+         for (Triple<Integer, String, Object> triple : relation.getObjects()) {
+             final FXRelationInfo info = new FXRelationInfo(
+                     triple.getFirst(), triple.getSecond(), triple.getThird());
+             getData().add(info);
+         }
+     }
+     
     @Override
     protected List<? extends IRelationInfo> createRelationInfos() {
         return FXCollections.observableArrayList();

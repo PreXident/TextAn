@@ -18,6 +18,10 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromS
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetRelationsByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetRelationsByIdResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetRelationsFromStringRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetRelationsFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RewriteAndSaveProcessedDocumentByIdRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RewriteAndSaveProcessedDocumentByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdRequest;
@@ -28,6 +32,7 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.commons.ws.InvalidMergeException;
+import cz.cuni.mff.ufal.textan.core.DocumentData.Occurrence;
 import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
@@ -772,6 +777,91 @@ public class Client {
         final GetProblemsRequest request =  new GetProblemsRequest();
         final GetProblemsResponse response = getDocumentProcessor().getProblems(request, ticket.toTicket());
         return new Problems(response);
+    }
+
+    /**
+     * Recognizes relations into relations and occurrences lists.
+     * @param ticket editing ticket
+     * @param text report to process
+     * @param entities entities with assigned objects
+     * @param relations where to store recognized entities
+     * @param occurrences where to store relation occurrences
+     * @see IDocumentProcessor#getAssignmentsFromString(GetAssignmentsFromStringRequest, EditingTicket)
+     */
+    public synchronized void getRelations(final Ticket ticket,
+            final String text, final List<Entity> entities,
+            final List<Relation> relations, final List<Occurrence> occurrences) {
+        final GetRelationsFromStringRequest request =
+                new GetRelationsFromStringRequest();
+        request.setText(text);
+        final List<cz.cuni.mff.ufal.textan.commons.models.Object> reqObjects =
+                request.getObjects();
+        final List<ObjectOccurrence> objectOccurrences =
+                request.getObjectOccurrences();
+        final Map<Long, Object> objectMap = new HashMap<>();
+        for (Entity entity : entities) {
+            final Object object = entity.getCandidate();
+            reqObjects.add(object.toObject());
+            objectMap.put(object.getId(), object);
+            objectOccurrences.add(entity.toObjectOccurrence());
+        }
+        final GetRelationsFromStringResponse response =
+                getDocumentProcessor().getRelationsFromString(request, ticket.toTicket());
+        response.getRelations().stream()
+                .map(rel -> new Relation(rel, objectMap))
+                .forEach(relations::add);
+        response.getRelationOccurrences().stream()
+                .map(Occurrence::new)
+                .forEach(occurrences::add);
+    }
+
+    /**
+     * Recognizes relations into relations and occurrences lists.
+     * @param ticket editing ticket
+     * @param id document id
+     * @param entities entities with assigned objects
+     * @param relations where to store recognized entities
+     * @param occurrences where to store relation occurrences
+     * @throws DocumentChangedException if document has been changed under our hands
+     * @throws IdNotFoundException if id was not found
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
+     * @see IDocumentProcessor#getAssignmentsFromString(GetAssignmentsFromStringRequest, EditingTicket)
+     */
+    public synchronized void getRelations(final Ticket ticket,
+            final long id, final List<Entity> entities,
+            final List<Relation> relations, final List<Occurrence> occurrences)
+            throws IdNotFoundException, DocumentAlreadyProcessedException,
+            DocumentChangedException {
+        final GetRelationsByIdRequest request =
+                new GetRelationsByIdRequest();
+        request.setId(id);
+        final List<cz.cuni.mff.ufal.textan.commons.models.Object> reqObjects =
+                request.getObjects();
+        final List<ObjectOccurrence> objectOccurrences =
+                request.getObjectOccurrences();
+        final Map<Long, Object> objectMap = new HashMap<>();
+        for (Entity entity : entities) {
+            final Object object = entity.getCandidate();
+            reqObjects.add(object.toObject());
+            objectMap.put(object.getId(), object);
+            objectOccurrences.add(entity.toObjectOccurrence());
+        }
+        try {
+            final GetRelationsByIdResponse response =
+                    getDocumentProcessor().getRelationsById(request, ticket.toTicket());
+            response.getRelations().stream()
+                    .map(rel -> new Relation(rel, objectMap))
+                    .forEach(relations::add);
+            response.getRelationOccurrences().stream()
+                    .map(Occurrence::new)
+                    .forEach(occurrences::add);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException e) {
+            throw new DocumentAlreadyProcessedException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException e) {
+            throw new DocumentChangedException(e);
+        }
     }
 
     /**
