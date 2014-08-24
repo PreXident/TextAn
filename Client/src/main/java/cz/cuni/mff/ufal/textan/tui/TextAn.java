@@ -131,7 +131,7 @@ public class TextAn {
                         }
                     }
                 }
-                pipeline.setReportObjects(pipeline.getReportEntities());
+                pipeline.setReportObjects(pipeline.getReportEntities(), TxtRelationBuilder::new);
                 pipeline.setReportRelations(pipeline.getReportWords(), Collections.emptyList());
                 if (pipeline.getProblems() != null) {
                     if (options.force) {

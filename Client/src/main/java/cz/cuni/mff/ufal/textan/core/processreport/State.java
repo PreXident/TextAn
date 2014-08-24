@@ -2,9 +2,11 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Entity;
+import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.processreport.load.IImporter;
 import java.io.Serializable;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Abstract ancestor for states of {@link ProcessReportPipeline}.
@@ -142,8 +144,13 @@ public abstract class State implements Serializable {
      * Sets the report's objects.
      * @param pipeline pipeline delegating the request
      * @param objects objects set as candidates
+     * @param factory factory for building RelationBuilders used in application
+     * @throws DocumentChangedException if document has been changed under our hands
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
      */
-    public void setReportObjects(final ProcessReportPipeline pipeline, final List<Entity> objects) {
+    public void setReportObjects(final ProcessReportPipeline pipeline,
+            final List<Entity> objects, final Function<Relation, RelationBuilder> factory)
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
         throw new IllegalStateException("Cannot set report's objects when in state " + getType());
     }
 
