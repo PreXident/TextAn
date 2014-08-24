@@ -49,6 +49,7 @@
 					<Menu text="%wizards" >
 						<MenuItem text="%report.wizard" onAction="#reportWizard" />
 						<MenuItem text="%join.wizard" onAction="#join" />
+						<MenuItem text="%path.wizard" onAction="#path" />
 					</Menu>
 					<Menu text="%dials" >
 						<MenuItem text="%graph.wizard" onAction="#graph" />
@@ -64,6 +65,11 @@
 								<KeyCodeCombination alt="DOWN" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="HOME"/>
 							</accelerator>
 						</MenuItem>
+					</Menu>
+					<Menu>
+						<graphic>
+							<Label text="%about" onMouseClicked="#about"/>
+						</graphic>
 					</Menu>
 				</menus>
 			</MenuBar>
@@ -117,6 +123,16 @@
 					</graphic>
 					<tooltip>
 						<Tooltip text="%join.wizard" />
+					</tooltip>
+				</Button>
+				<Button onAction="#path">
+					<graphic>
+						<ImageView>
+							<Image url="@path.png"/>
+						</ImageView>
+					</graphic>
+					<tooltip>
+						<Tooltip text="%path.wizard" />
 					</tooltip>
 				</Button>
 				<Separator/>

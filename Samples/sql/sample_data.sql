@@ -2,11 +2,11 @@ USE textan;
 
 -- inserts
 
-INSERT INTO `Document`(`id_document`,`added`,`processed`,`text`)
-	VALUES (1, NOW(), NOW(), "Josef Novak, známý také pod pseudonymem Pepíček, narozen dne 19.10.1975 byl spatřen dne 18.9.2013 v ulici K novým domům v Praze 5. J. Novak upoutal pozornost postaršího páru, když poškozoval cizí majetek baseballovou pálkou. Policejní hlídka, kterou pár přivolal, po příjezdu na místo činu v 10:28 zajistila podezřelého a důkazy. Podezřelý pan Novák svým chováním poškodil dodávku Ford Tranzit s SPZ AHL 30-24 registrovanou na společnost Čistírna a prádelna Karel Novák a přilehlý stánek s rychlým občerstvením U Mrože. Podezřelý byl následně převezen do vazby a obviněn dle zákona č. 106/1999 Sb. z výtržnictví.");
+INSERT INTO `Document`(`id_document`,`added`,`processed`, `last_change`,`text`)
+	VALUES (1, NOW(), NOW(), NOW(), "Josef Novak, známý také pod pseudonymem Pepíček, narozen dne 19.10.1975 byl spatřen dne 18.9.2013 v ulici K novým domům v Praze 5. J. Novak upoutal pozornost postaršího páru, když poškozoval cizí majetek baseballovou pálkou. Policejní hlídka, kterou pár přivolal, po příjezdu na místo činu v 10:28 zajistila podezřelého a důkazy. Podezřelý pan Novák svým chováním poškodil dodávku Ford Tranzit s SPZ AHL 30-24 registrovanou na společnost Čistírna a prádelna Karel Novák a přilehlý stánek s rychlým občerstvením U Mrože. Podezřelý byl následně převezen do vazby a obviněn dle zákona č. 106/1999 Sb. z výtržnictví.");
 
-INSERT INTO `Document`(`id_document`,`added`,`processed`,`text`)
-	VALUES (2, NOW(), NOW(), "Existují Loukonosy a Juchavice. Ema má maso.");
+INSERT INTO `Document`(`id_document`,`added`,`processed`, `last_change`,`text`)
+	VALUES (2, NOW(), NOW(), NOW(), "Existují Loukonosy a Juchavice. Ema má maso.");
 
 INSERT INTO `ObjectType`(`id_object_type`,`name`) VALUES(1, "Osoba");
 INSERT INTO `ObjectType`(`id_object_type`,`name`) VALUES(2, "Datum");

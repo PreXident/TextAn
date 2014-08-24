@@ -1,0 +1,389 @@
+% Section: Server
+
+This section contains all information to successfully install, configure and run
+\textan{} server side application.
+\comment[anyone]{Petr}{add short introduction for this section, remind configuration
+options, complexity atc.}
+
+\subsection{Installation guide}
+
+This section describes how to install and configure \textan{} server on a server
+machine.
+
+\subsubsection{Prerequisites}
+\label{sssec:SerInstPre}
+
+The \textan{} server requires installation of \emph{Java 8 JRE\footnote{We
+recommend to use JRE from \emph{Oracle}, available at:
+\url{http://www.oracle.com/technetwork/java/javase/downloads/index.html}.
+Note that the application expects 64-bit JRE on 64-bit systems.}}
+or a later version and a relational database system (e.g. \emph{MySQL}).
+The server should be platform independent, so it runs on any system where JRE
+is available, but it depends on native and 3rd party libraries. Supported operating
+systems in the distribution of the \textan{} server are Linux (32 bit and 64 bit)
+and Windows (32 bit and 64 bit). \comment{Petr}{Add note about processor architecture
+or linux binaries are independent on it?} If you need to run \textan{} server on
+different operating system, see \ref{sssec:unsupport}.
+
+\subsubsection{Installation}
+
+The \textan{} server distribution archive contains all files needed for \textan{} server to operate,
+such as server binaries, native libraries, run scripts and additional resources.
+For installation it is sufficient to unpack its content into any directory.
+
+\subsubsection{Database configuration}
+\comment[Venca]{Petr}{decribe how to configure database (relational db, DBMS
+independent, mysql recomendation... etc. (check \ref{sssec:SerInstPre}))}
+
+\subsubsection{Basic configuration}
+
+Before the first start, it is necessary to set up the server and the database.
+
+\comment[Petr,Jakub,Venca]{Petr}{write how to setup server}
+
+\comment[Petr]{Petr}{add some link to \ref{sec:ServerSettings}}
+
+\subsubsection{Starting the server}
+
+The server can be started by starting scripts in its root directory. Scripts for
+different operating systems unfortunately do not provide the same functionality.
+
+The start script for the Linux-based operating system (\emph{run.sh}) runs the
+server application as daemon and can be used to run the server as system service.
+
+The start script for the Microsoft Windows OS is less powerful, only runs the
+server application. To run the server as a background process, the Windows Service
+is required. Unfortunately, there are no components shipped with \textan{}
+to make it a formal Windows Service. However, we recommend the use of \emph{Apache
+ProcRun's Daemon \footnote{More information can be found on
+\url{https://commons.apache.org/proper/commons-daemon/procrun.html} and in JavaDoc
+documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry} class.}}.
+
+\subsubsection{Uninstallation}
+The server application use only files and resources inside install directory by
+default, only exception are temporary files, which are placed in system temp folder.
+To uninstall the server just delete installation directory and files from your
+configuration.
+
+\subsubsection{Unsupported systems}
+\label{sssec:unsupport}
+It is possible to run \textan{} server on other systems than supported ones. Only
+limitations are Java 8 and 3th-party tools and libraries, specifically NameTag%
+\footnote{\url{http://ufal.mff.cuni.cz/nametag}} and MorphoDiTa%
+\footnote{\url{http://ufal.mff.cuni.cz/morphodita}}.
+
+To configure the server application for specific system follow these steps:
+\begin{itemize}
+\item Download MorphoDiTa sources and compile its Java bindings. Copy generated
+library into \emph{lib} folder in installation directory.
+\item Download NameTag sources and:
+	\begin{itemize}
+	\item compile its Java bindings and copy generated library into \emph{lib}
+	folder in installation directory.
+	\item compile NameTag and copy \emph{train\_ner} into \emph{bin} folder in
+	installation directory.
+	\end{itemize}
+\end{itemize}
+
+\subsection{Settings}
+\label{sec:ServerSettings}
+
+\subsubsection{Web server settings}
+\label{sssec:WebServerSettings}
+
+%connector
+\paragraph{server.connector.host}
+The particular interface to listen on. If not set or 0.0.0.0, the web server
+listens on port on all interfaces.
+
+\paragraph{server.connector.port}
+The port to listen on. If not set, the web server listens on port 9500.
+
+%thread pool
+\paragraph{server.threadPool.maxThreads}
+The maximum number of threads in web server thread pool. It determines a maximum
+number of simultaneously opened connections. The default value is 200.
+
+\paragraph{server.threadPool.minThreads}
+The minimum number of threads in web server thread pool. The default value is 8.
+
+\paragraph{server.threadPool.idleTimeout}
+The time in milliseconds that the connection can be idle before it is closed.
+
+%ssl
+\paragraph{server.ssl}
+Enable usage of SSL. When SSL is enabled, following properties must be set:
+server.ssl.keyStore.path, server.ssl.keyStore.password, server.ssl.keyManager.password.
+The default value is false.
+
+\paragraph{server.ssl.keyStore.path}
+The file or URL of the SSL Key store.
+\paragraph{server.ssl.keyStore.password}
+The password for the key store.
+\paragraph{server.ssl.keyManager.password}
+The password (if any) for the specific key within the key store.
+\paragraph{server.ssl.keyStore.type}
+The type of the key store. The default value is "JKS".
+
+\comment[Petr]{Petr}{Finish rest of server properties}
+\comment[Petr]{Adam}{Check the rest of server properties}
+\paragraph{server.ssl.port}
+The port to listen on when SSL communication is enabled.
+
+%ssl client auth
+\paragraph{server.ssl.clientAuth}
+Enables usage of client authentication. When enabled, following properties must
+be set: \emph{server.ssl.keyStore.path}, \emph{server.ssl.keyStore.password},
+\emph{server.ssl.keyManager.password}. Default value is \emph{false}.
+
+\paragraph{server.ssl.trustStore.path}
+Path to the trust store file.
+
+\paragraph{server.ssl.trustStore.password}
+Password to the trust store.
+
+\paragraph{server.ssl.trustStore.type}
+The type of the trust store.
+
+\vspace{0.75cm}
+For more information about security, please consult \ref{sec:Security}.
+
+\subsubsection{Database settings}
+\label{sssec:DataSettings}
+
+%jdbc
+\paragraph{jdbc.driverClassName}
+Name of the driver class made usually by database developers which enables to interact with database.
+
+\paragraph{jdbc.url}
+ The url that points to our database. The most common url format is like this:
+jdbc:[database type]:[hostname]:[port number]/[database name]
+and is specific to the driver we use.
+
+\paragraph{jdbc.user}
+Username to log into the database.
+\paragraph{jdbc.pass}
+Password to authorize the user in database.
+
+\comment{Adam}{Several these properties seem as copied from somewhere which
+does not look good IMO, at least some customization should be done, removing
+"in your application" etc.}
+
+%c3p0 (http://www.mchange.com/projects/c3p0/#configuration_properties)
+\paragraph{c3p0.maxPoolSize}
+Maximum number of Connections a pool will maintain at any given time.
+
+\paragraph{c3p0.minPoolSize}
+Minimum number of Connections a pool will maintain at any given time.
+
+\paragraph{c3p0.initialPoolSize}
+Number of Connections a pool will try to acquire upon startup. Should be between
+minPoolSize and maxPoolSize.
+
+\paragraph{c3p0.acquireIncrement}
+Determines how many connections at a time c3p0 will try to acquire when the pool
+is exhausted.
+
+\paragraph{c3p0.maxIdleTime}
+Seconds a Connection can remain pooled but unused before being discarded. Zero
+means idle connections never expire.
+
+\paragraph{c3p0.checkoutTimeout}
+The number of milliseconds a client calling getConnection() will wait for a Connection
+to be checked-in or acquired when the pool is exhausted. Zero means wait indefinitely.
+Setting any positive value will cause the getConnection() call to time-out and
+break with an SQLException after the specified number of milliseconds.
+
+\paragraph{c3p0.maxStatements}
+The size of c3p0's global PreparedStatement cache. If both maxStatements and
+maxStatementsPerConnection are zero, statement caching will not be enabled.
+If maxStatements is zero but maxStatementsPerConnection is a non-zero value,
+statement caching will be enabled, but no global limit will be enforced, only
+the per-connection maximum. maxStatements controls the total number of Statements
+cached, for all Connections. If set, it should be a fairly large number, as each
+pooled Connection requires its own, distinct flock of cached statements. As a guide,
+consider how many distinct PreparedStatements are used frequently in your application,
+and multiply that number by maxPoolSize to arrive at an appropriate value. Though
+maxStatements is the JDBC standard parameter for controlling statement caching,
+users may find c3p0's alternative maxStatementsPerConnection more intuitive to use.
+
+\paragraph{c3p0.maxStatementsPerConnection}
+The number of PreparedStatements c3p0 will cache for a single pooled Connection.
+If both maxStatements and maxStatementsPerConnection are zero, statement caching
+will not be enabled. If maxStatementsPerConnection is zero but maxStatements is
+a non-zero value, statement caching will be enabled, and a global limit enforced,
+but otherwise no limit will be set on the number of cached statements for a single
+Connection. If set, maxStatementsPerConnection should be set to about the number
+distinct PreparedStatements that are used frequently in your application, plus
+two or three extra so infrequently statements don't force the more common cached
+statements to be culled. Though maxStatements is the JDBC standard parameter for
+controlling statement caching, users may find maxStatementsPerConnection more
+intuitive to use.
+
+\paragraph{c3p0.idleConnectionTestPeriod}
+If this is a number greater than 0, c3p0 will test all idle, pooled but unchecked-out
+connections, every this number of seconds.
+
+%hibernate
+\paragraph{hibernate.dialect}
+The classname of a Hibernate org.hibernate.dialect.Dialect which allows to generate
+SQL optimized for a particular relational database.
+
+%hibernate search
+\paragraph{hibernate.search.analyzer}
+\url{http://docs.jboss.org/hibernate/search/3.4/reference/en-US/html_single/#d0e392}
+\comment[Petr]{Petr}{see url above}
+\comment[Petr]{Petr}{What is best analyzer for Czech and English}
+
+%NameTag
+\subsubsection{Named entity recognizer settings}
+\label{sssec:NametagSettings}
+This section is mainly about settings stored in NametagLearning.properties. There
+are parameters for neural network which nametag use for learning and switches for
+nametag functions. Also, there are settings affecting models storing and
+generating learning data. All inputs are assumed to be in UTF-8 encoding.
+
+\paragraph{ner\_identifier}
+Identifier of the named entity recognizer type. This affects the tokenizer used
+in this model, and in theory any other aspect of the recognizer. Supported values
+are: \emph{czech}, \emph{english}, \emph{generic}.
+
+\paragraph{tagger}
+Identifier of tagger. NameTag can utilize several taggers to obtain the tags and lemmas:
+
+\begin{description}
+\item[trivial]
+Do not use any tagger. The lemma is the same as the given form and there is no
+part of speech tag.
+\item[external]
+Use some external tagger. The input "forms" can contain multiple tab-separated
+values, first being the form, second the lemma and the rest is part of speech tag.
+The part of speech tag is optional. The lemma is also optional and if missing,
+the form itself is used as a lemma.
+\item[morphodita:model]
+Use MorphoDiTa as a tagger with the specified model. This tagger model is embedded
+in resulting named entity recognizer model. The lemmatizer model of MorphoDiTa
+is recommended, because it is very fast, small and detailed part of speech tags
+do not improve the performance of the named entity recognizer significantly.
+\end{description}
+
+\paragraph{featuresFile}
+Path of generated file, based on property file \comment{Ondrej}{something is missing here}
+The recognizer utilizes feature templates to generate features which are used as
+the input to the named entity classifier. The feature templates are specified in
+a file, one feature template on a line. Empty lines and lines starting with \# are ignored.
+
+The first space-separated column on a line is the name of the feature template,
+optionally followed by a slash and a window size. The window size specifies how
+many adjacent words can observe the feature template value of a given word, with
+default value of 0 denoting only the word in question.
+
+List of commonly used feature templates follows. Note that it is probably not
+exhaustive (see the sources in the features directory).
+
+\comment{Ondrej}{It is necessary to add an example, ideally specific for police domain}
+
+\paragraph{stages}
+The number of stages performed during recognition. Common values are either 1 or
+2. With more stages, the model is larger and recognition is slower, but more accurate.
+
+\paragraph{iterations}
+The number of iterations performed when training each stage of the recognizer.
+With more iterations, training take longer (the recognition time is unaffected),
+but the model gets over-trained when too many iterations are used. Values from 10
+to 30 or 50 are commonly used.
+
+\paragraph{missing\_weight}
+Default value of missing weights in the log-linear model. Common values are small
+negative real numbers like -0.2.
+
+\paragraph{initial\_learning\_rage} \comment{Ondrej}{raTe?}
+learning rate used in the first iteration of SGD training method of the log-linear
+model. Common value is 0.1.
+
+\paragraph{final\_learning\_rage} \comment{Ondrej}{raTe?}
+learning rate used in the last iteration of SGD training method of the log-linear
+model. Common values are in range from 0.1 to 0.001, with 0.01 working reasonably well.
+
+\paragraph{gaussian}
+The value of Gaussian prior imposed on the weights. In other words, the value of
+L2-norm regularizer. Common value is either 0 for no regularization, or a small
+real number like 0.5.
+
+\paragraph{hidden\_layer}
+Experimental support for hidden layer in the artificial neural network classifier.
+To not use the hidden layer (recommended), use 0. Otherwise, specify the number
+of neurons in the hidden layer. Please note that non-zero values will create
+enormous models, slower recognition and are not guaranteed to create models with
+better accuracy.
+
+\paragraph{heldout\_data}
+Optional parameter with heldout data in the described format \comment{Ondrej}{where it was described?}. If the heldout data
+is present, the accuracy of the heldout data classification is printed during
+training. The heldout data is not used in any other way.
+
+\paragraph{waiting\_time}
+Maximum time for learning new model (only when learning is blocking - model doesn't exist)
+
+\comment{Ondrej}{I do not understand, or I do, but common/unknowing reader would not}
+
+\paragraph{default\_training\_data\_file}
+Sample file with initial training data, which is used before training data
+generated from database are available. When this property is empty, no default training data
+are used.
+
+\paragraph{maximum\_stored\_models}
+Number of maximum stored models. When limit is exceeded, the oldest models are deleted.
+
+\paragraph{form}
+Size of window when forms are used as features (0 when they are not used)
+
+\paragraph{lemma}
+Size of window when lemma ids are used as features (0 when they are not used)
+
+\paragraph{raw\_lemma}
+Size of window when raw lemmas are used as features (0 when they are not used)
+
+\comment{Ondrej}{What is the difference between lemma and raw\_lemma?}
+
+\paragraph{raw\_lemma\_capitalization}
+Size of window when capitalization of raw lemma is used as features (0 when they are not used)
+
+\paragraph{tag}
+Size of window when tags are used as features (0 when they are not used)
+
+\paragraph{numeric\_time\_value}
+Recognize numbers which could represent hours, minutes, hour:minute time, days,
+months or years.
+
+\paragraph{czech\_lemma\_term}
+Feature template specific for Czech morphological system by Jan Hajič (Hajič 2004).
+The term information (personal name, geographic name, ...) specified in lemma comment
+are used as features.
+
+\paragraph{brown\_clusters}
+Size of window foe Brown clusters \comment{Ondrej}{reference to book/article}.
+
+\paragraph{brown\_clusters\_file}
+Use Brown clusters found in the specified file. An optional list of lengths of
+cluster prefixes to be used in addition to the full Brown cluster can be specified.
+Each line of the Brown clusters file must contain two tab-separated columns,
+the first of which is the Brown cluster label and the second is the raw lemma \comment{Ondrej}{What is it?}.
+
+\paragraph{gazetteers}
+Size of window when gazetteers are used (0 when are not used).
+
+\paragraph{gazetteers\_directory}
+Directory of gazetteers files. Each file is one gazetteer list independent
+of the others and must contain a set of lemma sequences, each on a line,
+represented as raw lemmas separated by spaces.
+
+\paragraph{previous\_stage}
+Use named entities predicted by previous stage as features.
+
+\paragraph{email\_detector}
+Detect URLs and emails. If an URL or an email is detected, it is immediately marked
+with specified named entity type and not used in further processing.
+
+\subsection{Data formats}
+

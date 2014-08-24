@@ -38,7 +38,7 @@ public class ColorsStage extends OuterStage {
             controller.setStage(this);
             controller.setSettings(settings);
             controller.setTextAnController(textAnController);
-            getInnerWindow().setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            getInnerWindow().setTitleFixed(Utils.localize(resourceBundle, PROPERTY_ID));
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

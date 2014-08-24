@@ -31,6 +31,9 @@ public class Utils {
     /** Style for Object context menus. */
     public final static String CONTEXT_MENU_STYLE = "-fx-font-size: 12";
 
+    /** Flag indicating whether the OS hosting JVM is Windows. */
+    public final static boolean isWindows = System.getProperty("os.name", "").startsWith("Windows");
+    
     /** Ids can be belong to objects or relations. */
     public enum IdType {
         ENTITY {

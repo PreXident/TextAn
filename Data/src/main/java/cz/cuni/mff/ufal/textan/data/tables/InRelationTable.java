@@ -35,8 +35,12 @@ public class InRelationTable extends AbstractTable {
     public InRelationTable(String role, int order, RelationTable relation, ObjectTable object) {
         this.role = role;
         this.order = order;
+        
         this.relation = relation;
+        this.relation.getObjectsInRelation().add(this);
+        
         this.object = object;
+        this.object.getRelations().add(this);
     }
 
     @Id
@@ -69,7 +73,6 @@ public class InRelationTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_relation", nullable = false)
     public RelationTable getRelation() {
         return relation;
@@ -80,7 +83,6 @@ public class InRelationTable extends AbstractTable {
     }
 
     @ManyToOne
-    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_object", nullable = false)
     public ObjectTable getObject() {
         return object;

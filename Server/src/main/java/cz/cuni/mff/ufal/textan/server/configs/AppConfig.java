@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The root spring configuration.
@@ -157,6 +159,19 @@ public class AppConfig implements ApplicationContextAware {
             sslContextFactory.setKeyStorePassword(serverProperties().getProperty("server.ssl.keyStore.password"));
             sslContextFactory.setKeyManagerPassword(serverProperties().getProperty("server.ssl.keyManager.password"));
             sslContextFactory.setKeyStoreType(serverProperties().getProperty("server.ssl.keyStore.type", "JKS"));
+
+            boolean clientAuth = false;
+            String clientAuthProperty = serverProperties().getProperty("server.ssl.clientAuth");
+            if (clientAuthProperty != null && !clientAuthProperty.isEmpty()) {
+                clientAuth = Boolean.parseBoolean(clientAuthProperty);
+            }
+            if (clientAuth) {
+                sslContextFactory.setNeedClientAuth(true);
+                sslContextFactory.setTrustStorePath(serverProperties().getProperty("server.ssl.trustStore.path"));
+                sslContextFactory.setTrustStorePassword(serverProperties().getProperty("server.ssl.trustStore.password"));
+                sslContextFactory.setTrustStoreType(serverProperties().getProperty("server.ssl.trustStore.type", "JKS"));
+            }
+
             //sslContextFactory.setCertAlias();
 
             ServerConnector https = new ServerConnector(
@@ -233,8 +248,13 @@ public class AppConfig implements ApplicationContextAware {
      * @see cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer
      */
     @Bean(initMethod = "init")
-    @DependsOn("transactionManager")
+    @DependsOn({"transactionManager", "exceptionTranslation"})
     public NamedEntityRecognizer namedEntityRecognizer() {
         return new NamedEntityRecognizer(objectTypeTableDAO, entityViewDAO, documentTableDAO);
+    }
+
+    @Bean
+    public Lock writeLock() {
+        return new ReentrantLock();
     }
 }

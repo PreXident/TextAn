@@ -12,12 +12,14 @@ import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.textpro.ITextPro;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +47,8 @@ public class SaveService {
     private final NamedEntityRecognizer recognizer;
     private final ITextPro textPro;
 
+    private final Lock writeLock;
+
     /**
      * Instantiates a new Save service.
      * @param documentTableDAO the document table dAO
@@ -60,6 +64,7 @@ public class SaveService {
      * @param invoker
      * @param recognizer
      * @param textPro
+     * @param writeLock
      */
     @Autowired
     public SaveService(
@@ -69,7 +74,7 @@ public class SaveService {
             IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
             IRelationTypeTableDAO relationTypeTableDAO, IRelationTableDAO relationTableDAO,
             IRelationOccurrenceTableDAO relationOccurrenceTableDAO, IInRelationTableDAO inRelationTableDAO,
-            IJoinedObjectsTableDAO joinedObjectsTableDAO, CommandInvoker invoker, NamedEntityRecognizer recognizer, ITextPro textPro) {
+            IJoinedObjectsTableDAO joinedObjectsTableDAO, CommandInvoker invoker, NamedEntityRecognizer recognizer, ITextPro textPro, @Qualifier("writeLock") Lock writeLock) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
@@ -84,12 +89,8 @@ public class SaveService {
         this.invoker = invoker;
         this.recognizer = recognizer;
         this.textPro = textPro;
+        this.writeLock = writeLock;
     }
-
-    /*
-    * TODO:
-    *  - relation occurrence?
-    * */
 
     /**
      * Saves a processed document in the database.
@@ -115,14 +116,19 @@ public class SaveService {
             List<Relation> relations, List<Pair<Long, Occurrence>> relationOccurrences,
             boolean force, EditingTicket ticket) throws IdNotFoundException {
 
-        if (!force && checkChanges(ticket)) {
-            return false;
+        writeLock.lock();
+        try {
+            if (!force && checkChanges(ticket)) {
+                return false;
+            }
+
+            final DocumentTable documentTable = new DocumentTable(text);
+            documentTableDAO.add(documentTable);
+
+            return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences);
+        } finally {
+            writeLock.unlock();
         }
-
-        final DocumentTable documentTable = new DocumentTable(text);
-        documentTableDAO.add(documentTable);
-
-        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences);
     }
 
     /**
@@ -150,20 +156,26 @@ public class SaveService {
             boolean force, EditingTicket ticket)
             throws IdNotFoundException, DocumentAlreadyProcessedException, DocumentChangedException {
 
-        DocumentTable documentTable = documentTableDAO.find(documentId);
-        if (documentTable == null) {
-            throw new IdNotFoundException("documentId", documentId);
-        } else if (documentTable.isProcessed()) {
-            throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
-        } if (documentTable.getGlobalVersion() > ticket.getVersion()) {
-            throw new DocumentChangedException(documentId, documentTable.getGlobalVersion(), ticket.getVersion());
-        }
+        writeLock.lock();
+        try {
+            DocumentTable documentTable = documentTableDAO.find(documentId);
+            if (documentTable == null) {
+                throw new IdNotFoundException("documentId", documentId);
+            } else if (documentTable.isProcessed()) {
+                throw new DocumentAlreadyProcessedException(documentId, documentTable.getProcessedDate());
+            }
+            if (documentTable.getGlobalVersion() > ticket.getVersion()) {
+                throw new DocumentChangedException(documentId, documentTable.getGlobalVersion(), ticket.getVersion());
+            }
 
-        if (!force && checkChanges(ticket)) {
-            return false;
-        }
+            if (!force && checkChanges(ticket)) {
+                return false;
+            }
 
-        return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences);
+            return innerSave(documentTable, objects, objectOccurrences, relations, relationOccurrences);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     public boolean save(
@@ -222,23 +234,28 @@ public class SaveService {
             if (object != null && object.isNew()) {
 
                 if (!objectIdMapping.containsKey(objectId)) {
-                    //add object
-                    objectTable = new ObjectTable();
+                    //get object type
                     ObjectTypeTable objectTypeTable = objectTypeTableDAO.find(object.getType().getId());
                     if (objectTypeTable == null) {
                         throw new IdNotFoundException("objectTypeId", object.getType().getId());
                     }
-                    objectTable.setObjectType(objectTypeTable);
 
+                    //add object
+                    objectTable = new ObjectTable(objectTypeTable);
                     objectTableDAO.add(objectTable);
+
                     objectIdMapping.put(objectId, objectTable);
                 } else {
                     objectTable = objectIdMapping.get(objectId);
+                    //todo: test if object is still root?
                 }
 
             } else {
                 //find object in db
                 objectTable = objectTableDAO.find(objectId);
+                if (!objectTable.isRoot()) {
+                    objectTable = objectTable.getRootObject();
+                }
             }
 
             if (objectTable == null) {
@@ -254,14 +271,10 @@ public class SaveService {
 
             if (aliasTable == null) {
                 aliasTable = new AliasTable(objectTable, occurrence.getValue());
-                objectTable.getAliases().add(aliasTable);
                 aliasTableDAO.add(aliasTable);
             }
 
             AliasOccurrenceTable aliasOccurrenceTable = new AliasOccurrenceTable(occurrence.getPosition(), aliasTable, documentTable);
-            aliasTable.getOccurrences().add(aliasOccurrenceTable);
-            documentTable.getAliasOccurrences().add(aliasOccurrenceTable);
-
             aliasOccurrenceTableDAO.add(aliasOccurrenceTable);
         }
 
@@ -286,17 +299,14 @@ public class SaveService {
             if (relation != null && relation.isNew()) {
 
                 if (!relationIdMapping.containsKey(relationId)) {
-
-                    relationTable = new RelationTable();
-
-                    RelationTypeTable relationTypeTable = relationTypeTableDAO.find(relation.getType().getId());
+                    RelationTypeTable relationTypeTable = relationTypeTableDAO.find(relation.getType().getId()); //fixme
                     if (relationTypeTable == null) {
                         throw new IdNotFoundException("relationTypeId", relation.getType().getId());
                     }
 
-                    relationTable.setRelationType(relationTypeTable);
-
+                    relationTable = new RelationTable(relationTypeTable);
                     relationTableDAO.add(relationTable);
+
                     relationIdMapping.put(relationId, relationTable);
                 } else {
                     relationTable = relationIdMapping.get(relationId);
@@ -334,8 +344,6 @@ public class SaveService {
                     if (!alreadyInRelation.contains(objectInRelationTable.getId())) {
                         InRelationTable inRelationTable = new InRelationTable(role, order, relationTable, objectInRelationTable);
                         inRelationTableDAO.add(inRelationTable);
-                        relationTable.getObjectsInRelation().add(inRelationTable);
-                        objectInRelationTable.getRelations().add(inRelationTable);
 
                         alreadyInRelation.add(objectInRelationTable.getId());
                     }
@@ -346,13 +354,9 @@ public class SaveService {
             if (occurrence != null) {
                 relationOccurrenceTable = new RelationOccurrenceTable(relationTable, documentTable, occurrence.getPosition(), occurrence.getValue());
             } else {
-                relationOccurrenceTable = new RelationOccurrenceTable();
-                relationOccurrenceTable.setDocument(documentTable);
-                relationOccurrenceTable.setRelation(relationTable);
+                relationOccurrenceTable = new RelationOccurrenceTable(relationTable, documentTable);
             }
             relationOccurrenceTableDAO.add(relationOccurrenceTable);
-            documentTable.getRelationOccurrences().add(relationOccurrenceTable);
-            relationTable.getOccurrences().add(relationOccurrenceTable);
         }
 
         //register re-learn command for named entity recognizer and text pro
@@ -365,18 +369,18 @@ public class SaveService {
     public Problems getProblems(EditingTicket ticket) {
         long nextVersion = ticket.getVersion() + 1;
         List<Object> newObjects = objectTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
-                .map(Object::fromObjectTable)
+                .map(x -> Object.fromObjectTable(x, aliasTableDAO.findAllAliasesOfObject(x)))
                 .collect(Collectors.toList());
 
         List<Relation> newRelations = relationTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
-                .map(Relation::fromRelationTable)
+                .map(x -> Relation.fromRelationTable(x, aliasTableDAO))
                 .collect(Collectors.toList());
 
         List<JoinedObject> newJoinedObjects = joinedObjectsTableDAO.findAllSinceGlobalVersion(nextVersion).stream()
                 .map(x -> new JoinedObject(
-                        Object.fromObjectTable(x.getNewObject()),
-                        Object.fromObjectTable(x.getOldObject1()),
-                        Object.fromObjectTable(x.getOldObject2())))
+                        Object.fromObjectTable(x.getNewObject(), aliasTableDAO.findAllAliasesOfObject(x.getNewObject())),
+                        Object.fromObjectTable(x.getOldObject1(), aliasTableDAO.findAllAliasesOfObject(x.getOldObject1())),
+                        Object.fromObjectTable(x.getOldObject2(), aliasTableDAO.findAllAliasesOfObject(x.getOldObject2()))))
                 .collect(Collectors.toList());
 
         return new Problems(newObjects, newRelations, newJoinedObjects);

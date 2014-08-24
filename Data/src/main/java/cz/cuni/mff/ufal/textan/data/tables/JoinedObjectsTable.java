@@ -6,10 +6,6 @@ import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
-import org.hibernate.annotations.GenericGenerator;
-
-
 
 
 /**
@@ -55,9 +51,15 @@ public class JoinedObjectsTable extends AbstractTable {
     public JoinedObjectsTable(Date from, Date to, ObjectTable newObject, ObjectTable oldObject1, ObjectTable oldObject2) {
         this.from = from;
         this.to = to;
+        
         this.setNewObject(newObject);
-        this.setOldObject1(oldObject1);
+        this.newObject.setNewObject(this);
+        
+        this.oldObject1 = oldObject1;
+        this.oldObject1.setOldObject1(this);
+        
         this.setOldObject2(oldObject2);
+        this.oldObject2.setOldObject2(this);
     }
 
     @Id
@@ -100,10 +102,10 @@ public class JoinedObjectsTable extends AbstractTable {
 
     public void setNewObject(ObjectTable newObject) {
         this.newObject = newObject;
-        this.setId(newObject.getId());
+        //this.setId(newObject.getId());
     }
 
-    @ManyToOne
+    @OneToOne
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_old_object1", nullable = false)
     public ObjectTable getOldObject1() {
@@ -114,7 +116,7 @@ public class JoinedObjectsTable extends AbstractTable {
         this.oldObject1 = oldObject1;
     }
 
-    @ManyToOne
+    @OneToOne
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_old_object2", nullable = false)
     public ObjectTable getOldObject2() {
@@ -136,11 +138,9 @@ public class JoinedObjectsTable extends AbstractTable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 37 * hash + (int) (this.id ^ (this.id >>> 32));
-        hash = 37 * hash + Objects.hashCode(this.from);
-        hash = 37 * hash + Objects.hashCode(this.to);
-        hash = 37 * hash + (int) (this.globalVersion ^ (this.globalVersion >>> 32));
+        int hash = 7;
+        hash = 47 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 47 * hash + (int) (this.globalVersion ^ (this.globalVersion >>> 32));
         return hash;
     }
 
@@ -154,12 +154,6 @@ public class JoinedObjectsTable extends AbstractTable {
         }
         final JoinedObjectsTable other = (JoinedObjectsTable) obj;
         if (this.id != other.id) {
-            return false;
-        }
-        if (!Objects.equals(this.from, other.from)) {
-            return false;
-        }
-        if (!Objects.equals(this.to, other.to)) {
             return false;
         }
         if (this.globalVersion != other.globalVersion) {

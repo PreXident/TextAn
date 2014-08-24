@@ -255,6 +255,14 @@
         <wsdl:part name="idNotFoundException" element="cms:idNotFoundException"/>
     </wsdl:message>
 
+    <wsdl:message name="nonRootObjectException">
+        <wsdl:part name="nonRootObjectException" element="cms:nonRootObjectException"/>
+    </wsdl:message>
+
+    <wsdl:message name="invalidMergeException">
+        <wsdl:part name="invalidMergeException" element="tns:invalidMergeException"/>
+    </wsdl:message>
+
     <wsdl:portType name="DataProvider">
         
         <wsdl:operation name="getObjectTypes">
@@ -333,6 +341,7 @@
             <wsdl:input message="ws:getGraphByObjectIdRequest"/>
             <wsdl:output message="ws:getGraphByObjectIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+            <wsdl:fault name="nonRootObjectException" message="ws:nonRootObjectException"/>
         </wsdl:operation>
 
         <wsdl:operation name="getGraphByRelationId">
@@ -345,24 +354,29 @@
             <wsdl:input message="ws:getRelatedObjectsByIdRequest"/>
             <wsdl:output message="ws:getRelatedObjectsByIdResponse"/>            
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+            <wsdl:fault name="nonRootObjectException" message="ws:nonRootObjectException"/>
         </wsdl:operation>
         
         <wsdl:operation name="getPathById">
             <wsdl:input message="ws:getPathByIdRequest"/>
             <wsdl:output message="ws:getPathByIdResponse"/>            
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+            <wsdl:fault name="nonRootObjectException" message="ws:nonRootObjectException"/>
         </wsdl:operation>
     
         <wsdl:operation name="mergeObjects">
             <wsdl:input message="ws:mergeObjectsRequest"/>
             <wsdl:output message="ws:mergeObjectsResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+            <wsdl:fault name="nonRootObjectException" message="ws:nonRootObjectException"/>
+            <wsdl:fault name="invalidMergeException" message="ws:invalidMergeException"/>
         </wsdl:operation>
         
         <wsdl:operation name="splitObject">
             <wsdl:input message="ws:splitObjectRequest"/>
             <wsdl:output message="ws:splitObjectResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+            <wsdl:fault name="nonRootObjectException" message="ws:nonRootObjectException"/>
         </wsdl:operation>
         
         <wsdl:operation name="addDocument">
@@ -396,12 +410,14 @@
             <wsdl:input message="ws:getDocumentsContainingObjectByIdRequest"/>
             <wsdl:output message="ws:getDocumentsContainingObjectByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+            <wsdl:fault name="nonRootObjectException" message="ws:nonRootObjectException"/>
         </wsdl:operation>
 
         <wsdl:operation name="getFilteredDocumentsContainingObjectById">
             <wsdl:input message="ws:getFilteredDocumentsContainingObjectByIdRequest"/>
             <wsdl:output message="ws:getFilteredDocumentsContainingObjectByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+            <wsdl:fault name="nonRootObjectException" message="ws:nonRootObjectException"/>
         </wsdl:operation>
 
         <wsdl:operation name="getDocumentsContainingRelationById">
@@ -603,6 +619,9 @@
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>
             </wsdl:fault>
+            <wsdl:fault name="nonRootObjectException">
+                <soap:fault name="nonRootObjectException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
 
         <wsdl:operation name="getGraphByRelationId">
@@ -631,6 +650,9 @@
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>
             </wsdl:fault>
+            <wsdl:fault name="nonRootObjectException">
+                <soap:fault name="nonRootObjectException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
     
         <wsdl:operation name="getPathById">
@@ -644,6 +666,9 @@
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="nonRootObjectException">
+                <soap:fault name="nonRootObjectException" use="literal"/>
             </wsdl:fault>
         </wsdl:operation>
         
@@ -659,6 +684,12 @@
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>
             </wsdl:fault>
+            <wsdl:fault name="nonRootObjectException">
+                <soap:fault name="nonRootObjectException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="invalidMergeException">
+                <soap:fault name="invalidMergeException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
         
         <wsdl:operation name="splitObject">
@@ -672,6 +703,9 @@
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="nonRootObjectException">
+                <soap:fault name="nonRootObjectException" use="literal"/>
             </wsdl:fault>
         </wsdl:operation>
         
@@ -748,6 +782,9 @@
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>
             </wsdl:fault>
+            <wsdl:fault name="nonRootObjectException">
+                <soap:fault name="nonRootObjectException" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
 
         <wsdl:operation name="getFilteredDocumentsContainingObjectById">
@@ -761,6 +798,9 @@
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="nonRootObjectException">
+                <soap:fault name="nonRootObjectException" use="literal"/>
             </wsdl:fault>
         </wsdl:operation>
 

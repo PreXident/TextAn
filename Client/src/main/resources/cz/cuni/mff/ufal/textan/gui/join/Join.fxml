@@ -36,6 +36,7 @@
 							<Label text="%filter" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 							<TextField fx:id="leftFilterField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 							<Button text="%filter.execute" onAction="#leftFilter" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+							<Button text="%refresh" onAction="#leftRefresh" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 						</GridPane>
 					</top>
 					<center>
@@ -106,6 +107,7 @@
 							<Label text="%filter" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 							<TextField fx:id="rightFilterField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 							<Button text="%filter.execute" onAction="#rightFilter" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+							<Button text="%refresh" onAction="#rightRefresh" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 						</GridPane>
 					</top>
 					<center>

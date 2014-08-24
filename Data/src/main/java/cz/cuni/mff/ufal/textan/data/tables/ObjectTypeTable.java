@@ -20,6 +20,7 @@ import java.util.Set;
 @Table(name = "ObjectType")
 public class ObjectTypeTable extends AbstractTable {
     public static final String PROPERTY_NAME_ID = "id";
+    public static final String PROPERTY_NAME_TYPE_NAME = "name";
 
     private long id;
     private String name;
@@ -55,8 +56,7 @@ public class ObjectTypeTable extends AbstractTable {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "objectType", orphanRemoval = true)
-    @Cascade(CascadeType.ALL)
+    @OneToMany(mappedBy = "objectType")
     //@ContainedIn // -> immutable object
     public Set<ObjectTable> getObjectsOfThisType() {
         return objectsOfThisType;
@@ -75,7 +75,7 @@ public class ObjectTypeTable extends AbstractTable {
     public boolean equals(Object o) {
         if (o instanceof ObjectTypeTable) {
             ObjectTypeTable ott = (ObjectTypeTable) o;
-            return ott.getId() == this.getId() && ott.getName().equals(this.getName());
+            return ott.getId() == this.getId();
         } else
             return false;
     }

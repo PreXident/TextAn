@@ -8,7 +8,8 @@ package cz.cuni.mff.ufal.textan.data.test;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.GlobalVersionTableDAO;
+import cz.cuni.mff.ufal.textan.data.exceptions.JoiningANonRootObjectException;
+import cz.cuni.mff.ufal.textan.data.exceptions.JoiningEqualObjectsException;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IGlobalVersionTableDAO;
@@ -103,8 +104,11 @@ public class DAOTest {
         System.out.println("Setup");
         //System.out.println("If class Method fails, be sure you started the database.");
         assertTrue("You have probably not run the database or the connection is not set properly", data.addRecord(document));
+        assertTrue(data.addRecord(relationType));
         assertTrue(data.addRecord(withRelation));
         assertTrue(data.addRecord(relationOccurrence));
+        
+        assertTrue(data.addRecord(objectType));
         assertTrue(data.addRecord(object));
         assertTrue(data.addRecord(object2));
         
@@ -136,7 +140,7 @@ public class DAOTest {
          */
 
          System.out.println(" clearAllTables");
-         Utils.clearAllTables(sessionFactory);
+         Utils.clearTestValues(sessionFactory);
     }
     
     
@@ -234,6 +238,15 @@ public class DAOTest {
     }
     
     @Test
+    public void objectgetNeighborsTest() {
+        System.out.println("\n\nobjectgetNeighborsTest");
+        List<Pair<ObjectTable, RelationTable>> res = objectTableDAO.getNeighbors(object);
+        for (Pair<ObjectTable, RelationTable> objectRelTable : res) {
+            System.out.println(objectRelTable);
+        }
+    }
+    
+    @Test
     public void relationTableFindAllByAliasEqualToTest() {
         List<RelationTable> res = relationTableDAO.findAllByAliasEqualTo("with");
         for (RelationTable objectTable : res) {
@@ -315,6 +328,7 @@ public class DAOTest {
     
     @Test
     public void documentFindAllDocumentsWithRelationTest() {
+        System.out.println("\n\ndocumentFindAllDocumentsWithRelationTest");
         List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithRelation(withRelation);
         for (Pair<DocumentTable, Integer> relationTableCountPair : res) {
             if (relationTableCountPair.getFirst().equals(document))
@@ -322,6 +336,46 @@ public class DAOTest {
         }
         assertTrue("Document not found", false);
 
+    }
+
+    @Test
+    public void findAllDocumentsWithObjectTest() {
+        System.out.println("\n\nfindAllDocumentsWithObjectTest");
+        List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithObject(object);
+        for (Pair<DocumentTable, Integer> objectTableCountPair : res) {
+            if (objectTableCountPair.getFirst().equals(document)) {
+                System.out.println(document.getAliasOccurrences());
+ 
+                Assert.assertEquals("Count is not 1", 1, objectTableCountPair.getSecond().intValue());
+                return;
+            }
+        }
+        assertTrue("Document not found", false);
+
+    }
+    
+    @Test
+    public void findAllDocumentsWithObjectByFullTextTest() {
+        System.out.println("\n\nfindAllDocumentsWithObjectByFullText");
+        List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithObjectByFullText(object.getId(), "document");
+        for (Pair<DocumentTable, Integer> objectTableCountPair : res) {
+            if (objectTableCountPair.getFirst().equals(document)) {
+                Assert.assertEquals("Count is not 1", 1, objectTableCountPair.getSecond().intValue());
+                return;
+            }
+        }
+        assertTrue("Document not found", false);
+    }
+    
+    @Test
+    public void findAllDocumentsWithObjectByFullTextFailTest() {
+        List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithObjectByFullText(object.getId(), "documentBlamBlum");
+        for (Pair<DocumentTable, Integer> objectTableCountPair : res) {
+            if (objectTableCountPair.getFirst().equals(document)) {
+                Assert.fail("Found some shit bro" + objectTableCountPair);
+                return;
+            }
+        }
     }
     
     @Test
@@ -345,14 +399,13 @@ public class DAOTest {
         JoinedObjectsTable user2 = null;
         user2 = joinedObjectsDAO.find(id);
         
-        // TODO: wtf this doesnt work?
-        // assertTrue("user2.equals(user):\nuser1 = " + user + ";\nuser2 = " + user2, user2.equals(user));
+        assertTrue("user2.equals(user):\nuser1 = " + user + ";\nuser2 = " + user2, user2.equals(user));
         
         //joinedObjectsDAO.delete(user2);
     }
     
     @Test
-    public void joinObjectsTest() {
+    public void joinObjectsTest() throws JoiningANonRootObjectException, JoiningEqualObjectsException {
         System.out.println("\n\nJoinObjectTest");
 
         System.out.println("Object: " + object);
@@ -368,6 +421,18 @@ public class DAOTest {
         Assert.assertNotNull("Joined object is null", joinedObj);
         Assert.assertEquals(object.getRootObject(), joinedObj);
         Assert.assertEquals(object2.getRootObject(), joinedObj);
+        
+        System.out.println("object.getOldObject1:" + object.getOldObject1());
+        System.out.println("object.getOldObject2:" + object.getOldObject2());
+        System.out.println("object.getNewObject:" + object.getNewObject());
+
+        System.out.println("object2.getOldObject1:" + object2.getOldObject1());
+        System.out.println("object2.getOldObject2:" + object2.getOldObject2());
+        System.out.println("object2.getNewObject:" + object2.getNewObject());
+
+        System.out.println("joinedObj.getOldObject1:" + joinedObj.getOldObject1());
+        System.out.println("joinedObj.getOldObject2:" + joinedObj.getOldObject2());
+        System.out.println("joinedObj.getNewObject:" + joinedObj.getNewObject());
         
         //joinedObjectsDAO.delete(joinedObj.getNewObject());
         //objectTableDAO.delete(joinedObj);

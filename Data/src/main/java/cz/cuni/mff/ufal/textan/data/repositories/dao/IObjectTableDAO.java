@@ -1,7 +1,10 @@
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
+import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 
 import java.util.List;
 
@@ -14,10 +17,10 @@ public interface IObjectTableDAO extends
         IGlobalVersionedTableDAO<ObjectTable> {
 
     List<ObjectTable> findAllByAliasFullText(String pattern);
-    List<ObjectTable> findAllByAliasFullText(String pattern, int firstResult, int pageSize);
+    ResultPagination<ObjectTable> findAllByAliasFullTextWithPagination(String pattern, int firstResult, int pageSize);
 
     List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern);
-    List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern, int firstResult, int pageSize);
+    ResultPagination<ObjectTable> findAllByObjTypeAndAliasFullTextWithPagination(long objectTypeId, String pattern, int firstResult, int pageSize);
 
     /**
      * finds all objects of specified type and alias
@@ -37,7 +40,7 @@ public interface IObjectTableDAO extends
      * @param pageSize
      * @return 
      */
-    List<ObjectTable> findAllByObjectTypeAndAliasSubStr(long objectTypeId, String aliasSubstring, int firstResult, int pageSize);
+    ResultPagination<ObjectTable> findAllByObjectTypeAndAliasSubStrWithPagination(long objectTypeId, String aliasSubstring, int firstResult, int pageSize);
 
     /**
      * finds all objects of specified type
@@ -47,7 +50,7 @@ public interface IObjectTableDAO extends
      * @param pageSize
      * @return 
      */
-    List<ObjectTable> findAllByObjectType(long objectTypeId, int firstResult, int pageSize);
+    ResultPagination<ObjectTable> findAllByObjectTypeWithPagination(long objectTypeId, int firstResult, int pageSize);
     /**
      * finds all objects of specified type
      * 
@@ -65,7 +68,7 @@ public interface IObjectTableDAO extends
      * @param pageSize
      * @return 
      */
-    List<ObjectTable> findAllByObjectType(ObjectTypeTable type, int firstResult, int pageSize);
+    ResultPagination<ObjectTable> findAllByObjectTypeWithPagination(ObjectTypeTable type, int firstResult, int pageSize);
     /**
      * finds all objects of specified type
      * 
@@ -73,5 +76,9 @@ public interface IObjectTableDAO extends
      * @return 
      */
     List<ObjectTable> findAllByObjectType(ObjectTypeTable type);
+    
+    
+    List<Pair<ObjectTable, RelationTable>> getNeighbors(ObjectTable object);
+    List<Pair<ObjectTable, RelationTable>> getNeighbors(long objectId);    
     
 }

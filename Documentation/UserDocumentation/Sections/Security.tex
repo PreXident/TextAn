@@ -1,0 +1,54 @@
+% Section: Security
+
+By default, the environment is assumed to be completely safe, so no security
+measures are in place. However the \textan{} supports encrypted communication
+and even client authentication.
+
+For detailed description of individual properties, see
+\ref{sssec:WebServerSettings} for server configuration and
+\ref{sssec:BasicConf} for client configuration.
+
+\subsection{SSL}
+
+Enabling secure communication consists of setting several properties, both
+on server and client side.
+
+For server the following setting is required. Most importantly \emph{server.ssl} must
+be set to \emph{true}. Then these properties will be used by the server:
+\emph{server.ssl.keyStore.path} must point to the key store containing
+certificate and private key for server to use. Its type is determined by
+the content of property \emph{server.ssl.keyStore.type}, default value is JKS.
+Property \emph{server.ssl.keyStore.password} specifies password to the key
+store and property \emph{server.ssl.keyManager.password} specifies the password
+for the private key. Port used for secure communication can beconfigured by
+\emph{server.ssl.port}.
+
+For client the following setting is required. Most importantly property \emph{ssl} must
+be set to \emph{true}. Then these properties will be used by the server:
+\emph{ssl.trustStore} must point to the trust store containing the certificate
+of the server. Its type is determined by the content of property
+\emph{ssl.trustStore.type}. Property \emph{ssl.trustStore.password} specifies
+password to the trust store.
+
+\subsection{Client Authentication}
+
+For limiting the access to the webservices, client authentication can be turned
+on. Only client that provides certificate from authority trusted by the server
+will be served.
+
+For server the following setting is required. Most importantly
+\emph{server.ssl.clientAuth} must be set to \emph{true}. Then these properties
+will be used by the server: \emph{server.ssl.trustStore.path} must point to the
+trust store containing certificate of the trusted certificate authority for
+server. Its type is determined by the content of property
+\emph{server.ssl.trustStore.type}, default value is JKS. Property
+\emph{server.ssl.trustStore.password} specifies the password to the trust
+store.
+
+For client the following setting is required. Most importantly property
+\emph{ssl.clientAuth} must be set to \emph{true}. Then these properties will be
+used by the server: \emph{ssl.keyStore} must point to the key store containing
+the private key and certificate signed by the certificate authority trusted by
+the server. Its type is determined by the content of property
+\emph{ssl.keyStore.type}. Property \emph{ssl.keyStore.password} specifies password
+to the key store.

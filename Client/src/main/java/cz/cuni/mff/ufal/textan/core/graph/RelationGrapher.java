@@ -6,10 +6,6 @@ import cz.cuni.mff.ufal.textan.core.Graph;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -63,7 +59,6 @@ public class RelationGrapher extends AbstractGrapher {
         if (ignoredObjectTypes.isEmpty() && ignoredRelationTypes.isEmpty()) {
             return graph;
         }
-        final Map<Long, Object> nodes = graph.getNodes();
         final Set<Relation> edges = graph.getEdges();
         final Relation root = edges.stream()
                 .filter(e -> e.getId() == rootId).findFirst().orElse(null);

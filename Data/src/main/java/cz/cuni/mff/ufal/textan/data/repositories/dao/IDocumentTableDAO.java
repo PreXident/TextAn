@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.common.IOperations;
+import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
@@ -42,7 +37,7 @@ public interface IDocumentTableDAO
      * @param obj object which has to be in all returned documents
      * @return list of documents with the object
      */
-    List<Pair<DocumentTable, Integer>> findAllDocumentsWithObject(ObjectTable obj, int firstResult, int maxResults);
+    ResultPagination<Pair<DocumentTable, Integer>> findAllDocumentsWithObjectWithPagination(ObjectTable obj, int firstResult, int maxResults);
     /**
      * finds all documents in which is occurred specified object
      * 
@@ -50,7 +45,7 @@ public interface IDocumentTableDAO
      * @param firstResult
      *@param maxResults @return list of documents with the object
      */
-    List<Pair<DocumentTable, Integer>> findAllDocumentsWithObject(long objectId, int firstResult, int maxResults);
+    ResultPagination<Pair<DocumentTable, Integer>> findAllDocumentsWithObjectWithPagination(long objectId, int firstResult, int maxResults);
 
     /**
      * finds all documents in which is occurred specified relation
@@ -66,23 +61,22 @@ public interface IDocumentTableDAO
      * @return 
      */
     List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(long relationId);
-    List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(long relationId, int firstResult, int maxResults);
+    ResultPagination<Pair<DocumentTable, Integer>> findAllDocumentsWithRelationWithPagination(long relationId, int firstResult, int maxResults);
 
     List<DocumentTable> findAllDocumentsByFullText(String pattern);
-    List<DocumentTable> findAllDocumentsByFullText(String pattern, int firstResult, int maxResults);
+    ResultPagination<DocumentTable> findAllDocumentsByFullTextWithPagination(String pattern, int firstResult, int maxResults);
 
     List<DocumentTable> findAllProcessedDocuments(boolean processed);
-    List<DocumentTable> findAllProcessedDocuments(boolean processed, int firstResult, int maxResults);
+    ResultPagination<DocumentTable> findAllProcessedDocumentsWithPagination(boolean processed, int firstResult, int maxResults);
 
     List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern);
-    List<DocumentTable> findAllProcessedDocumentsByFullText(boolean processed, String pattern, int firstResult, int maxResults);
-    List<DocumentTable> findAllProcessed(boolean processed);
+    ResultPagination<DocumentTable> findAllProcessedDocumentsByFullTextWithPagination(boolean processed, String pattern, int firstResult, int maxResults);
 
     List<Pair<DocumentTable,Integer>> findAllDocumentsWithObjectByFullText(long objectId, String pattern);
-    List<Pair<DocumentTable,Integer>> findAllDocumentsWithObjectByFullText(long objectId, String pattern, int firstResult, int maxResults);
+    ResultPagination<Pair<DocumentTable,Integer>> findAllDocumentsWithObjectByFullTextWithPagination(long objectId, String pattern, int firstResult, int maxResults);
 
     List<Pair<DocumentTable,Integer>> findAllDocumentsWithRelationByFullText(long relationId, String pattern);
-    List<Pair<DocumentTable,Integer>> findAllDocumentsWithRelationByFullText(long relationId, String pattern, int firstResult, int maxResults);
+    ResultPagination<Pair<DocumentTable,Integer>> findAllDocumentsWithRelationByFullTextWithPagination(long relationId, String pattern, int firstResult, int maxResults);
     
     /**
      * finds all documents newer or equal from specified version

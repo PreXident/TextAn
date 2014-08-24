@@ -65,6 +65,24 @@
     <wsdl:message name="getAssignmentsByIdResponse">
         <wsdl:part name="getAssignmentsByIdResponse" element="tns:getAssignmentsByIdResponse"/>
     </wsdl:message>
+
+    <wsdl:message name="getRelationsFromStringRequest">
+        <wsdl:part name="getRelationsFromStringRequest" element="tns:getRelationsFromStringRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
+    </wsdl:message>
+
+    <wsdl:message name="getRelationsFromStringResponse">
+        <wsdl:part name="getRelationsFromStringResponse" element="tns:getRelationsFromStringResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getRelationsByIdRequest">
+        <wsdl:part name="getRelationsByIdRequest" element="tns:getRelationsByIdRequest"/>
+        <wsdl:part name="editingTicket" element="tns:editingTicket"/>
+    </wsdl:message>
+
+    <wsdl:message name="getRelationsByIdResponse">
+        <wsdl:part name="getRelationsByIdResponse" element="tns:getRelationsByIdResponse"/>
+    </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentByIdRequest">
         <wsdl:part name="saveProcessedDocumentByIdRequest" element="tns:saveProcessedDocumentByIdRequest"/>
@@ -160,6 +178,19 @@
         <wsdl:operation name="getAssignmentsById">
             <wsdl:input message="ws:getAssignmentsByIdRequest"/>
             <wsdl:output message="ws:getAssignmentsByIdResponse"/>
+            <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
+            <wsdl:fault name="documentChangedException" message="ws:documentChangedException"/>
+            <wsdl:fault name="documentAlreadyProcessedException" message="ws:documentAlreadyProcessedException"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getRelationsFromString">
+            <wsdl:input message="ws:getRelationsFromStringRequest"/>
+            <wsdl:output message="ws:getRelationsFromStringResponse"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getRelationsById">
+            <wsdl:input message="ws:getRelationsByIdRequest"/>
+            <wsdl:output message="ws:getRelationsByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
             <wsdl:fault name="documentChangedException" message="ws:documentChangedException"/>
             <wsdl:fault name="documentAlreadyProcessedException" message="ws:documentAlreadyProcessedException"/>
@@ -272,6 +303,39 @@
             </wsdl:input>
             <wsdl:output>
                 <soap:body parts="getAssignmentsByIdResponse" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="idNotFoundException">
+                <soap:fault name="idNotFoundException" use="literal" />
+            </wsdl:fault>
+            <wsdl:fault name="documentChangedException">
+                <soap:fault name="documentChangedException" use="literal" />
+            </wsdl:fault>
+            <wsdl:fault name="documentAlreadyProcessedException">
+                <soap:fault name="documentAlreadyProcessedException" use="literal" />
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getRelationsFromString">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getRelationsFromString"/>
+            <wsdl:input>
+                <soap:body parts="getRelationsFromStringRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:getRelationsFromStringRequest" part="editingTicket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getRelationsFromStringResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getRelationsById">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/getRelationsById"/>
+            <wsdl:input>
+                <soap:body parts="getRelationsByIdRequest" use="literal"/>
+                <soap:header message="ws:usernameToken" use="literal" part="usernameToken"/>
+                <soap:header message="ws:getRelationsByIdRequest" part="editingTicket" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="getRelationsByIdResponse" use="literal"/>
             </wsdl:output>
             <wsdl:fault name="idNotFoundException">
                 <soap:fault name="idNotFoundException" use="literal" />

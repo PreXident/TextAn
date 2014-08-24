@@ -35,7 +35,7 @@ public interface IGrapher {
      * @return graph for given root and distance
      * @throws IdNotFoundException if root id is not valid
      */
-    public Graph getGraph() throws IdNotFoundException;
+    Graph getGraph() throws IdNotFoundException;
 
     /**
      * Returns whether the grapher is ready to provide graph.
@@ -75,4 +75,9 @@ public interface IGrapher {
      * @return title of the graph
      */
     String getTitle();
+
+    /**
+     * Clears cached graph if any.
+     */
+    void clearCache();
 }

@@ -10,7 +10,7 @@ import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedExcept
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
 import cz.cuni.mff.ufal.textan.core.processreport.load.ImportManager;
-import cz.cuni.mff.ufal.textan.core.processreport.load.Importer;
+import cz.cuni.mff.ufal.textan.core.processreport.load.IImporter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -113,7 +113,7 @@ public class TextAn {
             final String extension = extractExtension(file.getName());
             final ProcessReportPipeline pipeline = client.createNewReportPipeline();
             pipeline.selectFileDatasource();
-            final Importer importer = ImportManager.getDefaultForExtension(extension);
+            final IImporter importer = ImportManager.getDefaultForExtension(extension);
             final byte[] data;
             try {
                 data = Files.readAllBytes(file.toPath());
@@ -131,7 +131,7 @@ public class TextAn {
                         }
                     }
                 }
-                pipeline.setReportObjects(pipeline.getReportEntities());
+                pipeline.setReportObjects(pipeline.getReportEntities(), TxtRelationBuilder::new);
                 pipeline.setReportRelations(pipeline.getReportWords(), Collections.emptyList());
                 if (pipeline.getProblems() != null) {
                     if (options.force) {

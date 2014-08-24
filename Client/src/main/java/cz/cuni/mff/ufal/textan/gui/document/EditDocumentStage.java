@@ -38,7 +38,7 @@ public class EditDocumentStage extends OuterStage {
             controller.setSettings(settings);
             controller.setTextAnController(textAnController);
             controller.setDocument(document);
-            getInnerWindow().setTitle(controller.getTitle());
+            getInnerWindow().setTitleFixed(controller.getTitle());
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

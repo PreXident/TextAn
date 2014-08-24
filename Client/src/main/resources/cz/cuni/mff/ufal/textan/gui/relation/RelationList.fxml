@@ -27,6 +27,7 @@
 			<Label text="%filter" GridPane.columnIndex="0" GridPane.rowIndex="1" />
 			<TextField fx:id="filterField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 			<Button text="%filter.execute" onAction="#filter" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+			<Button text="%refresh" onAction="#refresh" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 		</GridPane>
 	</top>
 	<center>

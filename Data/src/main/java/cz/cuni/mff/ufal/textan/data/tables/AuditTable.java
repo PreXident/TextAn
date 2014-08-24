@@ -1,5 +1,7 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
+import java.util.Calendar;
+import java.util.Date;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -22,6 +24,7 @@ public class AuditTable extends AbstractTable {
     private String username;
     private AuditType type;
     private String edit;
+    private Date time;
 
     public AuditTable() {
     }
@@ -30,6 +33,7 @@ public class AuditTable extends AbstractTable {
         this.username = username;
         this.type = type;
         this.edit = edit;
+        this.time = Calendar.getInstance().getTime();
     }
 
     @Id
@@ -71,6 +75,18 @@ public class AuditTable extends AbstractTable {
         this.edit = edit;
     }
 
+    @Column(name = "edit_date", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    
+    
     @Override
     public int hashCode() {
         int hash = 7;

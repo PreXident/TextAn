@@ -59,7 +59,17 @@ import javafx.util.Callback;
  */
 public class ReportObjectsController extends ReportWizardController {
 
+    /** Style class for entities without assigned object. */
     static final String TEXT_HIGHLIGHT_CLASS = "text-no-object";
+
+    /** Number of db objects to display at once. */
+    static final int PAGE_SIZE = 10;
+
+    /** Indicator to display labele "&lt;--" for previous page. */
+    static final Double PREV_PAGE = Double.NEGATIVE_INFINITY;
+
+    /** Indicator to display labele "--&gt;" for next page. */
+    static final Double NEXT_PAGE = Double.POSITIVE_INFINITY;
 
     @FXML
     BorderPane root;
@@ -109,6 +119,12 @@ public class ReportObjectsController extends ReportWizardController {
     /** Object to display graph for. */
     ObjectProperty<Object> objectForGraph = new SimpleObjectProperty<>();
 
+    /** Current page for displaying all objects. */
+    int allObjectPage = 0;
+
+    /** Total count of pages for displaying all objects. */
+    int allObjectTotalPages = 0;
+
     @FXML
     public void back() {
         if (pipeline.lock.tryAcquire()) {
@@ -145,7 +161,11 @@ public class ReportObjectsController extends ReportWizardController {
             } else {
                 getMainNode().setCursor(Cursor.WAIT);
                 new Thread(() -> {
-                    pipeline.setReportObjects(pipeline.getReportEntities());
+                    handleDocumentChangedException(root, () -> {
+                        pipeline.setReportObjects(pipeline.getReportEntities(),
+                                FXRelationBuilder::new);
+                        return null;
+                    });
                 }, "FromObjectsState").start();
             }
         }
@@ -187,7 +207,7 @@ public class ReportObjectsController extends ReportWizardController {
         splitVert.getItems().addAll(vbox, newListView);
         border.setCenter(splitVert);
         filterField = new TextField();
-        filterField.textProperty().addListener(e -> filterObjects(selectedEntity));
+        filterField.setOnAction(e -> filterObjects(selectedEntity));
         filterField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.DOWN && dbListView.getItems().size() > 0) {
                 dbListView.getSelectionModel().select(0);
@@ -224,7 +244,7 @@ public class ReportObjectsController extends ReportWizardController {
                 if (entityInfo == null) {
                     entityInfo = new EntityInfo();
                     entityInfo.index = entityIndex;
-                    entityInfo.type = ent.getType().getId();
+                    entityInfo.type = ent.getType();
                     final List<Pair<Double, Object>> candidates = ent.getCandidates();
                     Collections.sort(candidates, Entity.COMPARATOR);
                     entityInfo.ranked = FXCollections.observableArrayList(candidates);
@@ -244,6 +264,7 @@ public class ReportObjectsController extends ReportWizardController {
                     selectedEntity = ei;
                     if (e.isPrimaryButtonDown()) {
                         allObjectsCheckBox.setSelected(false);
+                        allObjectPage = 0;
                         filterObjects(ei);
                         contextMenu.show(text, Side.BOTTOM, 0, 0);
                         filterField.requestFocus();
@@ -295,7 +316,19 @@ public class ReportObjectsController extends ReportWizardController {
                         this.setOnMousePressed((MouseEvent e) -> {
                             final Pair<Double, Object> item = this.getItem();
                             final Object obj = item != null ? item.getSecond() : null;
+                            final Double num = item != null ? item.getFirst() : null;
                             if (e.isPrimaryButtonDown()) {
+                                if (num != null) {
+                                    if (num.equals(PREV_PAGE)) {
+                                        --allObjectPage;
+                                        filterObjects(selectedEntity);
+                                        return;
+                                    } else if (num.equals(NEXT_PAGE)) {
+                                        ++allObjectPage;
+                                        filterObjects(selectedEntity);
+                                        return;
+                                    }
+                                }
                                 contextMenu.hide();
                                 setObjectAsSelectedEntityCandidate(obj);
                             } else {
@@ -304,7 +337,7 @@ public class ReportObjectsController extends ReportWizardController {
                         });
                         this.setOnMouseEntered(e -> {
                             final Pair<Double, Object> p = this.getItem();
-                            if (p != null) {
+                            if (p != null && p.getSecond() != null) {
                                 dbTooltip.setText(p.getSecond().toString());
                                 dbListView.setTooltip(dbTooltip);
                             } else {
@@ -322,13 +355,20 @@ public class ReportObjectsController extends ReportWizardController {
                             setText("");
                             return;
                         }
-                        if (p != null) {
+                        if (p != null && p.getSecond() != null) {
                             String prefix = "";
                             if (p.getFirst() != null) {
                                 prefix = p.getFirst().toString() + ": ";
                             }
                             setText(Utils.shortString(prefix + p.getSecond().toString()));
                             setContextMenu(objectContextMenu);
+                        } else if (p != null && p.getSecond() == null && p.getFirst() != null) {
+                            final double num = p.getFirst();
+                            if (PREV_PAGE.equals(num)) {
+                                setText(String.format(Utils.localize(resourceBundle, "allObjects.prev"), allObjectPage, allObjectTotalPages));
+                            } else if (NEXT_PAGE.equals(num)) {
+                                setText(String.format(Utils.localize(resourceBundle, "allObjects.next"), allObjectPage + 2, allObjectTotalPages));
+                            }
                         } else {
                             setContextMenu(null);
                         }
@@ -414,6 +454,7 @@ public class ReportObjectsController extends ReportWizardController {
 
     @Override
     public void setTextAnController(final TextAnController textAnController) {
+        super.setTextAnController(textAnController);
         objectContextMenu = new ObjectContextMenu(textAnController);
         objectContextMenu.setOnAction(e -> contextMenu.hide());
         objectContextMenu.objectProperty().bind(objectForGraph);
@@ -425,54 +466,46 @@ public class ReportObjectsController extends ReportWizardController {
      */
     private void filterObjects(final EntityInfo entityInfo) {
         dbListView.getItems().clear();
-        dbListView.getItems().addAll(entityInfo.ranked.filtered(p -> {
-            final String filter = filterField.getText();
-            if (filter == null || filter.isEmpty()) {
-                return true;
-            }
-            if (p == null) {
-                return false;
-            }
-            final String aliases = String.join(", ", p.getSecond().getAliases());
-            return aliases.toLowerCase().contains(filter.toLowerCase());
-        }));
-        final Set<Object> filteredSet = dbListView.getItems().stream()
-                .map(Pair::getSecond)
-                .collect(Collectors.toCollection(HashSet::new));
-
-        if (allObjectsCheckBox.isSelected()) {
-            if (entityInfo.all == null) {
-                ObservableList<Object> all = typeObjects.get(entityInfo.type);
-                if (all == null) {
-                    try {
-                        all = FXCollections.observableArrayList(
-                                pipeline.getClient().getObjectsListByTypeId(entityInfo.type));
-                        typeObjects.put(entityInfo.type, all);
-                        Collections.sort(all, (o1, o2) -> Long.compare(o1.getId(), o2.getId()));
-                    } catch (IdNotFoundException e) {
-                        e.printStackTrace();
-                        all = FXCollections.observableArrayList(all);
-                        typeObjects.put(entityInfo.type, all);
-                    }
+        if (!allObjectsCheckBox.isSelected()) {
+            dbListView.getItems().addAll(entityInfo.ranked.filtered(p -> {
+                final String filter = filterField.getText();
+                if (filter == null || filter.isEmpty()) {
+                    return true;
                 }
-                entityInfo.all = all;
-            }
-
-            entityInfo.all.stream()
-                    .filter(obj ->{
-                        final String filter = filterField.getText();
-                        if (filter == null || filter.isEmpty()) {
-                            return true;
-                        }
-                        final String aliases = String.join(", ", obj.getAliases());
-                        return aliases.toLowerCase().contains(filter.toLowerCase());
-                    })
-                    .filter(obj -> !filteredSet.contains(obj))
+                if (p == null) {
+                    return false;
+                }
+                final String aliases = String.join(", ", p.getSecond().getAliases());
+                return aliases.toLowerCase().contains(filter.toLowerCase());
+            }));
+        } else {
+            try {
+                final Pair<List<Object>, Integer> pair =
+                        textAnController.getClient().getObjectsList(
+                                entityInfo.type, filterField.getText(),
+                                allObjectPage * PAGE_SIZE, PAGE_SIZE);
+                final int allCount = pair.getSecond();
+                final List<Object> all = pair.getFirst();
+                if (allObjectPage != 0 && allCount != 0) {
+                    dbListView.getItems().add(new Pair<>(PREV_PAGE, null));
+                }
+                all.stream()
                     .map(obj -> new Pair<Double, Object>(null, obj))
                     .forEach(dbListView.getItems()::add);
+                if (allObjectPage + 1 * PAGE_SIZE < allCount) {
+                    dbListView.getItems().add(new Pair<>(NEXT_PAGE, null));
+                }
+                allObjectTotalPages = (int) Math.ceil(1.0 * pair.getSecond() / allCount);
+                if (allObjectTotalPages == 0) {
+                    allObjectTotalPages = 1;
+                }
+            } catch (Exception e) {
+                //this should never happen!
+                e.printStackTrace();
+            }
         }
         newListView.setItems(newObjects.filtered((Object o) -> {
-            return o.getType().getId() == selectedEntity.type;
+            return o.getType().equals(selectedEntity.type);
         }));
         final Entity ent = pipeline.getReportEntities().get(entityInfo.index);
         if (ent.getCandidate() != null) {
@@ -508,13 +541,13 @@ public class ReportObjectsController extends ReportWizardController {
         int index;
 
         /** Entity type. */
-        long type;
+        ObjectType type;
 
         /** List of ranked objects candidating for this entity. */
         ObservableList<Pair<Double, Object>> ranked;
 
         /** List of all suitable candidates fot this entity. */
-        ObservableList<Object> all;
+//        ObservableList<Object> all;
 
         /**
          * List of texts that must be unhighlighted when object is assigned to

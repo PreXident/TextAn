@@ -93,6 +93,8 @@
     <xs:element name="getObjectsAndRelationsOccurringInDocumentRequest" type="GetObjectsAndRelationsOccurringInDocumentRequest"/>
     <xs:element name="getObjectsAndRelationsOccurringInDocumentResponse" type="GetObjectsAndRelationsOccurringInDocumentResponse"/>
 
+    <xs:element name="invalidMergeException" type="InvalidMergeException"/>
+
     <!-- type for messages without parameters -->
     <xs:complexType name="Void">
         <xs:sequence/>
@@ -486,4 +488,9 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="InvalidMergeException">
+        <xs:sequence>
+            <xs:element name="objectId" nillable="true" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>

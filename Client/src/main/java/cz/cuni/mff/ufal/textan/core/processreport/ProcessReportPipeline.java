@@ -3,8 +3,9 @@ package cz.cuni.mff.ufal.textan.core.processreport;
 import cz.cuni.mff.ufal.textan.core.Client;
 import cz.cuni.mff.ufal.textan.core.Document;
 import cz.cuni.mff.ufal.textan.core.Entity;
+import cz.cuni.mff.ufal.textan.core.Relation;
 import cz.cuni.mff.ufal.textan.core.Ticket;
-import cz.cuni.mff.ufal.textan.core.processreport.load.Importer;
+import cz.cuni.mff.ufal.textan.core.processreport.load.IImporter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -16,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+import java.util.function.Function;
 
 /**
  * Represents pipeline handling processing documents.
@@ -246,7 +248,7 @@ public class ProcessReportPipeline implements Serializable {
      * @param importer importer to extract text
      * @return
      */
-    public String extractText(final byte[] data, final Importer importer) {
+    public String extractText(final byte[] data, final IImporter importer) {
         return state.extractText(this, data, importer);
     }
 
@@ -326,9 +328,14 @@ public class ProcessReportPipeline implements Serializable {
     /**
      * Sets report's objects.
      * @param entities objects as entity candidates
+     * @param factory factory for building RelationBuilders used in application
+     * @throws DocumentChangedException if document has been changed under our hands
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
      */
-    public void setReportObjects(final List<Entity> entities) {
-        state.setReportObjects(this, entities);
+    public void setReportObjects(final List<Entity> entities,
+            final Function<Relation, RelationBuilder> factory)
+            throws DocumentChangedException, DocumentAlreadyProcessedException {
+        state.setReportObjects(this, entities, factory);
     }
 
     /**

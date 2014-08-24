@@ -86,7 +86,7 @@ contents={
 }
 \makeatother
 
-\newcommand{\textan}{\emph{TextAn}}
+\newcommand{\textan}{\emph{Text\-An}}
 
 \begin{document}
 
@@ -95,7 +95,7 @@ contents={
 \newgeometry{left=4.5cm,top=7cm,bottom=3cm}
 
 \begin{figure}
- \includegraphics{../CommonImages/TEXTAN_logo_grey_B}
+ \includegraphics{../Logos/TEXTAN_logo_grey_B}
 \end{figure}
 \noindent
 \textcolor{TextanRed}{\chapterfont\fontsize{48pt}{1pt}\selectfont\MakeUppercase{Developer documentation}}\\[15pt]
@@ -139,31 +139,83 @@ Ondřej Bojar\\
 \input{Sections/IntroductionToTheProject}
 
 \section{Adopted solutions and decisions}
+\comment{Ondrej}{Is this right name? Shouldn't be adopted solutions and decisions placed after specification?}
 \input{Sections/AdoptedSolutions}
 
 \section{Related work}
 \input{Sections/RelatedWork}
-%..
-\section{Conventions}
+
+%\section{Conventions}
+
 \section{Glossary}
-%...
+\comment{Petr}{Copy glossary form User documentation, or remove the reference into
+Client usage.}
+
+\input{../UserDocumentation/Sections/Glossary}
 
 \chapter{Requirements specification}
-\section{Functional requirements}
-\section{Non-functional requirements}
+\input{Sections/Requirements}
 
 \comment{Petr}{where to place use cases, mockup screens etc?}
+
+\comment{Adam}{I will place use case, mockups etc. here for now...}
+
+\comment{Adam}{It could be interesting if the sequence diagram is extended to include server components too.}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/UseCase1}
+        \caption{Use case of the end-user.}
+        \label{fig:UseCase1}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/UseCase2}
+        \caption{Use case of the client.}
+        \label{fig:UseCase2}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/ClientServerCommunication}
+        \caption{Sequence diagram of Client-Server communication.}
+        \label{fig:ClientServerCommunication}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/MockupMainWindow}
+        \caption{Mockup screen of the main window.}
+        \label{fig:MockupMainWindow}
+\end{figure}
+
+\comment[Adam]{Adam}{Add more mockup screens.}
 
 \chapter{Architecture}
 \input{Sections/Architecture}
 
 \chapter{Developer notes}
 \section{Work on the project}
+\input{Sections/WorkOnProject}
 \section{Decisions}
 
 \chapter{Possibilities of future extensions}
+\input{Sections/FutureExtensions}
 
+\appendix
+\chapter{Source codes}
 
+\comment{Petr}{Change appendices from chapter to section?}
+
+\comment{Petr}{Github, DVD}
+
+\chapter{Documentation for Java Sources}
+Documentation for Java sources is not a part of this printout, but can be found
+in attached DVD in folder Javadoc.
+
+\chapter{Client Properties}
+\input{Sections/ClientProperties}
 
 
 \end{document}

@@ -52,6 +52,20 @@ public class Object {
                 );
     }
 
+    public static Object fromObjectTable(ObjectTable objectTable, List<AliasTable> aliasTables) {
+
+        List<String> aliases = aliasTables.stream()
+                .map(AliasTable::getAlias)
+                .distinct()
+                .collect(Collectors.toList());
+
+        return new Object(
+                objectTable.getId(),
+                ObjectType.fromObjectTypeTable(objectTable.getObjectType()),
+                aliases, false
+        );
+    }
+
     /**
      * Converts a {@link cz.cuni.mff.ufal.textan.commons.models.Object} to a {@link cz.cuni.mff.ufal.textan.server.models.Object}.
      *

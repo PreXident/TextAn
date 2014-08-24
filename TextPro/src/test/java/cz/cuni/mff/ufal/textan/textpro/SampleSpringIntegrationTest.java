@@ -42,6 +42,8 @@ public class SampleSpringIntegrationTest {
     @Autowired
     IRelationTypeTableDAO typeTableDAO;
 
+    @Autowired
+    IDocumentTableDAO documentTableDAO;
 
     /**
      * This is really stupid test(because it is always passed), but it shows how you can get spring beans in tests.
