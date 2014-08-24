@@ -38,11 +38,16 @@ a persistence layer and a data layer.
  ->  facade over services, jetty}
 
 \subsection{Service layer}
+The service layer is component that consists from classes which handle requests
+using underlying layers and register commands in the scheduler. These classes are
+placed in the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-services}
+and the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-models}. The layer
+is totally independent from the web service layer. \comment{Petr}{Move this sentence into section about the web service layer.}
 
 \comment[Petr]{Petr}{Describe all services}
 
 \subsection{Business layer}
-A business layer contains components which encapsulate the main functionality
+The business layer contains components which encapsulate the main functionality
 of the system. The layer is consists of two main components, the Named Entity
 recognizer and the Object assign. Both of them use machine learning methods to solve
 their task. They access the persistence layer to obtain training data and they
@@ -123,6 +128,13 @@ is ranked an used as the score.
 The scheduler is a simple component, that invokes commands asynchronously against
 requests in the servlet container. It is implemented by classes in the package
 \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-commands}. \comment{Petr}{Add class diagram?}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/Commands}
+        \caption{Overview of the scheduler classes.}
+        \label{fig:CommandsOverview}
+\end{figure}
 
 The component is used to invoke re-learning in components from the business layer.
 The learning is typically slow, in a matter of minutes, so it's necessary to use
