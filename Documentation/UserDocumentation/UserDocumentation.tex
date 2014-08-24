@@ -244,6 +244,8 @@ Before the first start, it is necessary to set up the server and the database.
 
 \comment[Petr]{Petr}{add some link to \ref{sec:ServerSettings}}
 
+There is a sql script \emph{(create.sql)} to setup the database located in folder  \emph{Database}. It should be executed to setup the database schema before the server starts. However this script is \emph{MySQL} specific \comment[Venca]{Venca}{check} and if you have other database you should replace \emph{MySQL} specific commands.
+
 \subsubsection{Starting the server}
 
 The server can be started by starting scripts in its root directory. 
@@ -284,7 +286,15 @@ However, we recommend the use of \emph{Apache ProcRun's Daemon
 \paragraph{server.ssl.port}
 
 \subsubsection{Database connection settings}
-\comment[Venca]{Petr}{Add descrtion for DB properties}
+
+Because of the server can connect to an arbitrary database, it is required to specify what type of database is used.
+In \textan{} project is used \emph{Hibernate} for object-relation mapping \emph{(ORM)}, \emph{JDBC} for relation database access and \emph{c3p0} for connection pooling.
+
+%TODO 
+\comment{Venca}{add links?}
+Properties to these three libraries can be set in the file \emph{Data/src/main/resources/data-default.properties}. The meanings of all important properties are following:
+
+
 %jdbc
 \paragraph{jdbc.driverClassName}
 Name of the driver class made usually by database developers which enables to interact with database.
