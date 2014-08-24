@@ -161,7 +161,11 @@ public class ReportObjectsController extends ReportWizardController {
             } else {
                 getMainNode().setCursor(Cursor.WAIT);
                 new Thread(() -> {
-                    pipeline.setReportObjects(pipeline.getReportEntities());
+                    handleDocumentChangedException(root, () -> {
+                        pipeline.setReportObjects(pipeline.getReportEntities(),
+                                FXRelationBuilder::new);
+                        return null;
+                    });
                 }, "FromObjectsState").start();
             }
         }
