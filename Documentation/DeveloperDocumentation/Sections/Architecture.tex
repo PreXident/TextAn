@@ -339,32 +339,32 @@ inconvenient detail.
 \comment[Petr (\& Adam)]{Petr}{Describe communication pattern between client and server,
 sequence diagram etc.}
 
-Usage of webservice interface \emph{IDataProvider} is straightforward, its
-methods are completely independent and are intended for viewing and manipulating
+Usage of webservice \emph{DataProvider} is straightforward, its operations are
+completely independent and are intended for viewing and manipulating
 the database.
 
-The interface \emph{IDocumentProcessor} is more demanding and needs its methods
+The service \emph{DocumentProcessor} is more demanding and needs its operations
 called in specific order to achieve proper recognition (see figure
 \ref{fig:ClientServerCommunication}). First of all, the client needs to obtain
 the ticket which stores information about processing and is needed for all
-following calls. For three recognition methods there are two variants. First for
-processing report already stored in the database (called\emph{*ById}) and second
-for inserting completely new document to the database (called
-\emph{*FromString}). Functions \emph{getEntities*} recognize entities in
-given report. Functions \emph{getAssignments*} assign objects from the database
-to recognized entities and finally functions \emph{getRelations*} recognize
+following calls. For three recognition operations there are two variants. First
+for processing report already stored in the database (called\emph{*ById}) and
+second for inserting completely new document to the database (called
+\emph{*FromString}). Operations \emph{getEntities*} recognize entities in
+given report. Operations \emph{getAssignments*} assign objects from the database
+to recognized entities and finally operations \emph{getRelations*} recognize
 relations between objects. Please note that \emph{getRelations*} is not
 implemented in this version of \textan{} and returns empty response with no
 relations.
 
-The recognition functions do not store anything into the database. For this
-purpose there are three methods \emph{saveProcessedDocumentFromString} and
-\emph{saveProcessedDocumentById} with similar difference as meantioned above.
-The last function \emph{rewriteAndSaveProcessedDocumentById} has as input
+The recognition operations do not store anything into the database. For this
+purpose there are three operations \emph{saveProcessedDocumentFromString} and
+\emph{saveProcessedDocumentById} with similar differences as mentioned above.
+The third operation \emph{rewriteAndSaveProcessedDocumentById} has as input
 parameters both document id and document text, because it overwrites the report
 text stored in the database. It is intended to be called when the document has
 been changed by others while being processed by the user, so the user can
-force returning to the original version or provide new one. All three methods
+force returning to the original version or provide new one. All three operations
 take \emph{force} parameter specifying whether the saving should happen even
 though there have been external changes to the database, e.g. new objects, new
 relations and newly joined objects.
@@ -372,10 +372,11 @@ relations and newly joined objects.
 If the \emph{force} parameter is \emph{false} and such external changes have
 been detected, saving returns \emph{false} and method \emph{getProblems} can be
 called to get information about the changes. After making adjustments to
-recognizing/assignments if needed, save methods can be called with \emph{force}
-parameter set to \emph{true}.
+recognizing/assignments if needed, save operations can be called with
+\emph{force} parameter set to \emph{true}.
 
-\comment[Peter]{Adam}{Is there any place with documentation of webservice interface and individual methods, like javadoc or something?}
+For more details, consult the WSDL descriptions and Javadoc of the server
+implementation.
 
 \begin{figure}[!htb]
         \centering
