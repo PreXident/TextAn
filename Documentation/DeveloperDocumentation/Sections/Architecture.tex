@@ -171,7 +171,38 @@ operation for users.
 
 \subsection{Database}
 
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/db-curr}
+        \caption{Database schema}
+        \label{fig:DatabaseSchema}
+\end{figure}
+
 \comment[Venca]{Petr}{Describe database: database schema etc.}
+This section describes the database schema (see figure \ref{fig:DatabaseSchema})
+Now we will describe each table and its meaning
+
+\paragraph{Document} The report to be processed. There are columns for the date of creation \emph{(added)}, last change and the date when have been the document processed.
+
+\paragraph{Object} Object stands for the entity e.g. Josef Novák or specific adress. It has only one meaningfull column \emph{data} that is used to describe that entity.
+
+\paragraph{Object Type} To describe if an entity is a human or an address is used the \emph{objecttype} table.
+
+\paragraph{Alias} If an entity occurs in some document, we want to know how did we call them. For instance Josef Omáčka can be called as 'Josef', 'Pepe' or 'Killer'. Table alias just represents all these possibilities (aliases) of some entity.
+
+\paragraph{Relation} Entities can have some relation to each other e.g. killer-victim, mother-son, live, use, etc. This table describes relationship between some entities. 
+
+\paragraph{IsInRelation} There can be also connected more than two entities in one relationship (killer-victim-place-time), that's why we have used the N:N relation between \emph{object} and \emph{relation} tables, which represents the \emph{isinrelation} table. To distinguish for instance between killer and victim is used the column \emph{role} (more user friendly) and \emph{order\_{}in\_{}relation} 
+
+\paragraph{RelationType} As well as objects have the type, relations have them too. Type of relation is for example \emph{kill}, \emph{live} or \emph{sell}.
+
+\paragraph{Relation and Alias Occurrences} These two tables stands for the occurrence of an alias resp. relation in a document. It contains the position in that document from beginning and an anchor for relation.
+
+\paragraph{Joined Objects} Time to time can users realize that two different entities are actually a single one. Therefore two old objects have to be joined into new one and this can be done by \emph{joinedobjects} table. However, this join can be done wrong, that's why there is also a column to\_{}date in case these some objects are separated.
+
+\paragraph{Audit} All inserts, deletes and updates in tables above are being saved into \emph{audit} table. This audit is only simple because its saved only a string of modified object. Theres also saved a username of the user who did the operation, date of the change and what kind of change has been done.
+ 
+\paragraph{Global Version} In the end of a processing the document is a check if have been added or modified another document concurrently. To perform that check we need to have some information when have been tables modified. Tables \emph{Document}, \emph{Object} and \emph{Relation} also contain a column \emph{globalversion}, int that increments with each insert, delete or update. Current global version is stored in \emph{globalversion} table where is only a single row every time.
 
 
 \section{Client architecture}
