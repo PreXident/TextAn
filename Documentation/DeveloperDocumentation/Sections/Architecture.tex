@@ -200,7 +200,7 @@ containing a simple batch report processor without user interaction.
         \label{fig:ClientOverview}
 \end{figure}
 
-For visualization itself JavaFX framework is used. It naturaly enforces
+For visualization itself JavaFX framework is used. It naturally enforces
 Model-View-Controller architecture.
 
 In the rest of the section the most important packages will be introduced and
@@ -213,7 +213,7 @@ representation of object, entity, relation, document etc. (see figure \ref{fig:C
 is \emph{Client} which is used for communication with the webservices. It also
 serves as a factory of \emph{ProcessReportPipeline} (see
 \ref{sssec:ReportPipeline}). There are also \emph{SynchronizedDataProvider} and
-\emph{SynchronizedDocumentProcessor} to provide sychronization for
+\emph{SynchronizedDocumentProcessor} to provide synchronization for
 \emph{IDataProvider} and \emph{IDocumentProcessor} created by CXF.
 
 Subpackages of the \emph{Core} package focus on individual client side tasks,
@@ -233,7 +233,7 @@ This package contains classes necessary for report processing (see figure
 \ref{fig:CorePackage}). Most importantly there is class
 \emph{ProcessReportPipeline} that holds information about processing one report.
 The pipeline/wizard approach was chosen because the amount of choices and
-required tasks would be overhelming to users if they were all provided at once.
+required tasks would be overwhelming to users if they were all provided at once.
 Virtually all methods of the pipeline object are delegated to its \emph{State}
 (see figure \ref{fig:Pipeline}). Descendants of the class \emph{State} are
 singletons. They contain most of the pipeline processing logic and control to
@@ -247,9 +247,21 @@ which state the pipeline should go next. When this happens, each registered
         \label{fig:Pipeline}
 \end{figure}
 
+For easy selecting recognized entities and relations a hierarchy of builders
+has been developed (see \ref{fig:Builders}). The word is a class representing
+independent word of the report text. It can be assigned to either an entity or
+relation. EntityBuilder also holds the assigned object if any.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/Builders}
+        \caption{Overview of the builders hierarchy.}
+        \label{fig:Builders}
+\end{figure}
+
 \subsubsection{cz.cuni.mff.ufal.textan.core.reportpipeline.load}
 
-This package contains classes needed for importing report texts from extenal
+This package contains classes needed for importing report texts from external
 files. There is \emph{IImport} interface that provides methods for extracting
 text from an array of bytes. Custom implementations of \emph{IImporter} need
 to be registered to class \emph{ImportManager} to be selectable by users. The
@@ -272,7 +284,7 @@ mostly graph filtering which is done solely on client side. See figure
 \subsection{Controller and View - cz.cuni.mff.ufal.textan.gui}
 
 This package and its subpackages contain controller classes and several view
-components that had to be customized to achieve specific behaviour. A hierarchy
+components that had to be customized to achieve specific behavior. A hierarchy
 of controllers has been developed, mostly for code reuse (see
 \ref{fig:Controllers}). Controllers extensively use \emph{core} package.
 
@@ -292,8 +304,6 @@ Resources from this package and its subpackages contains descriptions of views
         \caption{Overview of the windows hierarchy.}
         \label{fig:Windows}
 \end{figure}
-
-\comment[Adam]{Adam}{Add schema of Word->EntityBuilder/RelationBuilder hierarchy}
 
 \subsubsection{cz.cuni.mff.ufal.textan.gui.graph}
 
