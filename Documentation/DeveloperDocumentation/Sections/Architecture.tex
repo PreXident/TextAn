@@ -11,7 +11,7 @@ are the \textan{} server and \textan{} client which communicate via W3C web serv
 \comment{Ondrej}{Mention why it was split like this - a wish from outside, but in 
 the future fully automated (tuned) annotation without client}
 
-
+\comment{Petr}{This explanation should be rather in \ref{sec:Decisions}}
 
 \section{Server architecture}
 
@@ -133,12 +133,13 @@ artificial pairs of training vectors with \textit{Weka} tool. When a new documen
 processed, new entity and object pairs is added to the database. They could be extracted
 later to train again.
 
-\paragraph{Testing}
+\paragraph{Assigning}
 To assign the entity to object, function \emph{distributionForInstance} to return the 
 probability of the pair with regards to \emph{positive} class. The probability value 
 is ranked an used as the score.
 
 \comment{Tam}{TODO: Features description, maybe}
+\comment[Tam]{Adam}{Yes, the more the better ;-)}
 
 \subsection{Scheduler}
 The scheduler is a simple component, that invokes commands asynchronously against

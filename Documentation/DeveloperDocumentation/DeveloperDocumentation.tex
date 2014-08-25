@@ -138,13 +138,6 @@ Ondřej Bojar\\
 \section{Introduction to the project}
 \input{Sections/IntroductionToTheProject}
 
-\section{Adopted solutions and decisions}
-\comment{Ondrej}{Is this right name? Shouldn't be adopted solutions and decisions placed after specification?}
-\input{Sections/AdoptedSolutions}
-
-\section{Related work}
-\input{Sections/RelatedWork}
-
 %\section{Conventions}
 
 \section{Glossary}
@@ -154,6 +147,7 @@ Client usage.}
 \input{../UserDocumentation/Sections/Glossary}
 
 \chapter{Requirements specification}
+\comment{Petr}{If we need to make the documentation longer, include the whole specification}
 \input{Sections/Requirements}
 
 \comment{Petr}{where to place use cases, mockup screens etc?}
@@ -161,6 +155,7 @@ Client usage.}
 \comment{Adam}{I will place use case, mockups etc. here for now...}
 
 \comment{Adam}{It could be interesting if the sequence diagram is extended to include server components too.}
+\comment{Petr}{Maybe only for some communication, definitely not all}
 
 \begin{figure}[!htb]
         \centering
@@ -185,6 +180,15 @@ Client usage.}
 
 \comment[Adam]{Adam}{Add more mockup screens.}
 
+\chapter{Analysis}
+
+\section{Related work}
+\input{Sections/RelatedWork}
+
+\section{Adopted solutions and decisions}
+\comment{Ondrej}{Is this right name? Shouldn't be adopted solutions and decisions placed after specification?}
+\input{Sections/AdoptedSolutions}
+
 \chapter{Architecture}
 \input{Sections/Architecture}
 
@@ -192,6 +196,9 @@ Client usage.}
 \section{Work on the project}
 \input{Sections/WorkOnProject}
 \section{Decisions}
+\label{sec:Decisions}
+
+\comment{Petr}{Maybe move this section to Analysis}
 
 \chapter{Possibilities of future extensions}
 \input{Sections/FutureExtensions}
