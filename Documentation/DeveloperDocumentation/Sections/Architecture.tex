@@ -175,7 +175,7 @@ operation for users.
 
 \begin{figure}[!htb]
         \centering
-        \includegraphics[width=\textwidth]{Images/db-curr}
+        \includegraphics[width=\textwidth]{Images/DatabaseSchema}
         \caption{Database schema}
         \label{fig:DatabaseSchema}
 \end{figure}
@@ -230,6 +230,7 @@ or modified another document concurrently. To perform that check we need to have
 when have been tables modified. Tables \emph{Document}, \emph{Object} and \emph{Relation} also 
 contain a column \emph{globalversion}, int that increments with each insert, delete or update. 
 Current global version is stored in \emph{globalversion} table where is only a single row every time.
+
 
 
 \section{Client architecture}
