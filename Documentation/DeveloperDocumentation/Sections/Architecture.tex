@@ -29,20 +29,35 @@ a persistence layer and a data layer.
         \label{fig:ServerComponentOverview}
 \end{figure}
 
-
-
 \subsection{Web service layer}
+The web service layer is a component which is responsible for expose web service
+API. It is consisted from a servlet container and a implementations of particular
+web services.
 
+Jetty is used as a servlet container component. It is a very powerful a scalable
+component that support embedding into other applications and can run independently
+on a rest of the application. This is important feature, which allows, that only
+web service implementations live in a web context. It means, that there can be
+other presentations over the rest of the application at same time, e.g. from input
+command line. This component also provides security of \textan{} server over SSL.
 
-\comment[Petr]{Petr}{CXF, java code generation form wsdl, web services implementation
- ->  facade over services, jetty}
+Web service itself are implemented using Apache CXF framework. A bigger part of
+the implementation is generated from WSDL files and XML Schema files using the
+CXF wsdl2java tool at build time, these classes are placed in the package
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-commons.\-ws}, the package
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-commons.\-models} and its subpackages.
+The *.ws package contains java equivalents of a WSDL interfaces and the *.models
+package contains java equivalents of XSD complex types. These interfaces are
+implemented in classes placed the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-ws}
+and they are just adapters for the service layer. Note that underlaying layers are
+is totally independent from the web service layer. The CXF framework ensures that
+these classes are deployed as servlets.
 
 \subsection{Service layer}
-The service layer is component that consists from classes which handle requests
+The service layer is a component that consists from classes which handle requests
 using underlying layers and register commands in the scheduler. These classes are
 placed in the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-services}
-and the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-models}. The layer
-is totally independent from the web service layer. \comment{Petr}{Move this sentence into section about the web service layer.}
+and the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-models}.
 
 \comment[Petr]{Petr}{Describe all services}
 
@@ -127,7 +142,7 @@ is ranked an used as the score.
 \subsection{Scheduler}
 The scheduler is a simple component, that invokes commands asynchronously against
 requests in the servlet container. It is implemented by classes in the package
-\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-commands}. \comment{Petr}{Add class diagram?}
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-commands}.
 
 \begin{figure}[!htb]
         \centering
