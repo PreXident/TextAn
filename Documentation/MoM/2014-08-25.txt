@@ -16,12 +16,34 @@ HWK:
 - Adam, mention checking of external changes in communication
 - Adam, refactor TextPro
 - Adam, prepare autoloader (Setuper) mentioned in previous MoM as separate project, interfaces are enough
+  - clean db, run create script (add note it is intended only for mysql), load object/relation types, list types from db, rename types (by id/name), create training data (look into db for type ids, replace ids in training data with fetched types id by given mapping {mapping if names do not match}, copy them to place specified in learning properties)
 - Adam, explicitly mention that only shortest path
 - Adam, add numbers and description to main screen figure
 - Adam, mention immutability in builder diagram
-- Adam, maybe translate specification introduction into documentation introduction and add some paragraphs about who did what
+- Adam, mockups to analysis, only for pipeline and graph
+- Adam, default connection to localhost
+- Venca, find out how to do references between documents in latex
 - Venca, write and read documentation!!!
 - Venca, finish path finding!
 - Venca, class diagram for persistent layer
+- Venca, db schema in vector graphics, in best case in Visio 2013
+- Venca, rewrite db properties
+- Venca, add old db schemas into Work on the project
+- Venca, write why we do not use graph or nosql db
 - Peter, remove distance from path webservice
 - Peter, look into conditional compilation in latex to fix interdocument reference in glossary
+- Peter, rename TextPro to Assigner
+- Peter, add mention about db working in memory
+- Peter, add to appendices that there is testing server
+- Kuba, refactor WEKA mentions
+- Kuba, maybe translate specification introduction into documentation introduction and add some paragraphs about who did what
+  - motivation from police
+- Kuba, rewrite user documentation introduction, inspiration from specification
+  - only system specific
+- Kuba, training data specification into documentation
+- Kuba, add how to change language (to English or other) in nametag
+- Tam, proof reading!
+
+- all javadoc!
+
+Next meeting, check with Ondrej, probably on Thursday before 13:00. Comment the issue!
