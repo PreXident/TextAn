@@ -23,6 +23,7 @@ HWK:
 - Adam, mockups to analysis, only for pipeline and graph
 - Adam, default connection to localhost
 - Venca, find out how to do references between documents in latex
+  - found: http://tex.stackexchange.com/questions/41539/does-hyperref-work-between-two-files
 - Venca, write and read documentation!!!
 - Venca, finish path finding!
 - Venca, class diagram for persistent layer
