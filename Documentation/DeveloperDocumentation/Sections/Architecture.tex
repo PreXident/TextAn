@@ -395,6 +395,14 @@ inconvenient detail.
 \comment[Petr (\& Adam)]{Petr}{Describe communication pattern between client and server,
 sequence diagram etc.}
 
+A communication between the client and the server is stateless, because a processing
+of a document by a human may take a very long time, especially because of the saving
+of documents during processing in the client. There cannot be used sessions on
+the server side, because they can die due to timeout before end of a processing.
+For this reason,the state of a processing is placed on client side and is transferred
+with each request in situations where it is necessary.
+\comment[Adam]{Petr}{check if it's consis consistent with the rest of section.}
+
 Usage of webservice \emph{DataProvider} is straightforward, its operations are
 completely independent and are intended for viewing and manipulating
 the database.
