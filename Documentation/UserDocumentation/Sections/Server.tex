@@ -278,7 +278,7 @@ do not improve the performance of the named entity recognizer significantly.
 \end{description}
 
 \paragraph{featuresFile}
-Path of generated file, based on property file \comment{Ondrej}{something is missing here}
+Path of generated file, based on property file.
 The recognizer utilizes feature templates to generate features which are used as
 the input to the named entity classifier. The feature templates are specified in
 a file, one feature template on a line. Empty lines and lines starting with \# are ignored.
@@ -307,11 +307,11 @@ to 30 or 50 are commonly used.
 Default value of missing weights in the log-linear model. Common values are small
 negative real numbers like -0.2.
 
-\paragraph{initial\_learning\_rage} \comment{Ondrej}{raTe?}
+\paragraph{initial\_learning\_rate}
 learning rate used in the first iteration of SGD training method of the log-linear
 model. Common value is 0.1.
 
-\paragraph{final\_learning\_rage} \comment{Ondrej}{raTe?}
+\paragraph{final\_learning\_rate}
 learning rate used in the last iteration of SGD training method of the log-linear
 model. Common values are in range from 0.1 to 0.001, with 0.01 working reasonably well.
 
@@ -328,7 +328,7 @@ enormous models, slower recognition and are not guaranteed to create models with
 better accuracy.
 
 \paragraph{heldout\_data}
-Optional parameter with heldout data in the described format \comment{Ondrej}{where it was described?}. If the heldout data
+Optional parameter with heldout data in same format as training data. If the heldout data
 is present, the accuracy of the heldout data classification is printed during
 training. The heldout data is not used in any other way.
 
@@ -349,12 +349,12 @@ Number of maximum stored models. When limit is exceeded, the oldest models are d
 Size of window when forms are used as features (0 when they are not used)
 
 \paragraph{lemma}
-Size of window when lemma ids are used as features (0 when they are not used)
+Size of window when lemma ids are used as features (0 when they are not used).
+When lemma is specified, lemma IDs are used.
 
 \paragraph{raw\_lemma}
 Size of window when raw lemmas are used as features (0 when they are not used)
-
-\comment{Ondrej}{What is the difference between lemma and raw\_lemma?}
+Difference between lemma and raw lemma is, thah lemma uses lemma IDs and raw\_lemma use raw lemmas as feature.
 
 \paragraph{raw\_lemma\_capitalization}
 Size of window when capitalization of raw lemma is used as features (0 when they are not used)

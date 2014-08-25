@@ -7,6 +7,9 @@ recognition and full text searching. Both are placed in the server application
 same as other business logic.
 
 \comment[Kuba]{Petr}{Here should be some summary about changing language in nametag}
+NameTag is implemented to support english, so there is just one property, witch set language  - {\it ner\_identifier}
+and provide data in desired language. There could be problem with {\it CzechLemmaTerm}, but because we dont use this feature
+(we need numeric IDs without hierarchy which this feature provides), it works just with correctly set {\it ner\_identifier}.
 See \ref{sssec:NametagSettings} for detailed description.
 
 The second thing, that needs to be configured, is the full text search. The system

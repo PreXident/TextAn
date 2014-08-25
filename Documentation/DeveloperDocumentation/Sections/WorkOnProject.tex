@@ -77,13 +77,13 @@ program should match object entity pair automatically.
 Possible solutions for entity-object matching are machine learning  methods
 ranking or classification.
 
-\comment{Petr}{This is not true! In the end we use WEKA, because JavaML project is probably dead.
-Also new versions of WEKA are probably more powerful and fits our needs (provide probability from classification) }
 We looked for suitable Java library which provides machine learning techniques.
-Candidates were JavaML and Weka. After testing these two libraries, we chose
+Candidates were JavaML and Weka. We have tested them and at first, we chose
 JavaML, because it provides more machine learning algorithms (some of them uses
-Weka library). Weka's problem is that it was created for teaching purposes so
+WEKA library) and because of WEKA problem - WEKA  was created for teaching purposes so
 it's performance is not as good as JavaML.
+Than we found, that we don't need these functions and because JavaML seems no longer be supported and that
+new version of WEKA was released, so we choose WEKA, because it's a live project and its functionality is enough for us.
 
 There were two possible server architectures: standalone or embedded webserver
 (Tomcat or Jetty). We considered usage of some technologies like Spring, CXF and
