@@ -8,7 +8,8 @@ are the \textan{} server and \textan{} client which communicate via W3C web serv
 
 
 
-\comment{Ondrej}{Mention why it was split like this - a wish from outside, but in the future fully automated (tuned) annotation without client}
+\comment{Ondrej}{Mention why it was split like this - a wish from outside, but in 
+the future fully automated (tuned) annotation without client}
 
 
 
@@ -18,9 +19,11 @@ The server architecture is based on a logical multilayered architecture. It
 consists of 5 layers: a presentation layer, a service layer, a business logic layer, 
 a persistence layer and a data layer.
 
-\comment{Ondrej}{it definitely needs a figure here, but no generalized pictures, it needs your concrete components and connection. The 5 layers sound like textbook example}
+\comment{Ondrej}{it definitely needs a figure here, but no generalized pictures, 
+it needs your concrete components and connection. The 5 layers sound like textbook example}
 
-\comment{Adam}{The comment above was created when there were no pictures nor subsections here, but I have added it anyway, just to be sure}
+\comment{Adam}{The comment above was created when there were no pictures nor subsections 
+here, but I have added it anyway, just to be sure}
 
 \begin{figure}[!htb]
         \centering
@@ -30,31 +33,32 @@ a persistence layer and a data layer.
 \end{figure}
 
 \subsection{Web service layer}
-The web service layer is a component which is responsible for expose web service
-API. It is consisted from a servlet container and a implementations of particular
+Web service layer is the component responsible for providing web service
+API. It consists of a servlet container and implementations of particular
 web services.
 
-Jetty is used as a servlet container component. It is a very powerful a scalable
-component that support embedding into other applications and can run independently
-on a rest of the application. This is important feature, which allows, that only
-web service implementations live in a web context. It means, that there can be
-other presentations over the rest of the application at same time, e.g. from input
+Jetty is used as the servlet container component. It is a powerful and scalable
+component which supports embedding into other applications. It also can be run independently
+on the rest of the applications. This is an important feature, which allows, that only
+web service implementations live in a web context. % I don't understand
+In other words, there can be
+other implementations over the rest of the application at same time, e.g. from input
 command line. This component also provides security of \textan{} server over SSL.
 
-Web service itself are implemented using Apache CXF framework. A bigger part of
+Web service itself is implemented with Apache CXF framework. A bigger part of
 the implementation is generated from WSDL files and XML Schema files using the
-CXF wsdl2java tool at build time, these classes are placed in the package
+CXF wsdl2java tool at build time, these classes are placed in the package % which classes?
 \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-commons.\-ws}, the package
-\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-commons.\-models} and its subpackages.
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-commons.\-models} and its subpackages. % too long and a bit vague
 The *.ws package contains java equivalents of a WSDL interfaces and the *.models
 package contains java equivalents of XSD complex types. These interfaces are
 implemented in classes placed the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-ws}
 and they are just adapters for the service layer. Note that underlaying layers are
-is totally independent from the web service layer. The CXF framework ensures that
+totally independent from the web service layer. The CXF framework ensures that
 these classes are deployed as servlets.
 
 \subsection{Service layer}
-The service layer is a component that consists from classes which handle requests
+The service layer is a component that consists of classes which handle requests
 using underlying layers and register commands in the scheduler. These classes are
 placed in the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-services}
 and the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-models}.
@@ -63,18 +67,19 @@ and the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-models}.
 
 \subsection{Business layer}
 The business layer contains components which encapsulate the main functionality
-of the system. The layer is consists of two main components, the Named Entity
-recognizer and the Object assign. Both of them use machine learning methods to solve
-their task. They access the persistence layer to obtain training data and they
+of the system. The layer consists of two main components, the Named Entity
+recognizer and the Object assigner. Both of them use machine learning methods to solve
+their tasks. They access the persistence layer to obtain training data. They
 are called from the service layer and the scheduler.
 
 \subsubsection{Named entity recognizer architecture}
 
-Named entity architecture is divided to two parts, recognition and training.
+The architecture of Named entity recognizer is divided to two parts: recognition and training.
+
 \paragraph{Recognition} 
 Recognition is slitted to two parts - Java part and C++ part. This is because
-NameTag, which we use as named entity recognizer, is written mainly in C++ and
-TextAn in Java, so we must use JNI to call functions from C++ through provided
+NameTag, which is the available tool for named entity recognizer, is written mainly in C++. 
+TextAn is developed in Java, so we must use JNI to call functions from C++ through provided
 Java bindings. C++ part is represented by NameTag, so it has its own documentation.
 Java part contains JNI bindings to call C++ part and than connection to TextAn.
 This part serves as an adaptor between these two projects. Its main task is
@@ -84,7 +89,7 @@ Because of optimization, this component caches database entities.
 \paragraph{Training}
 Despite the fact that NameTag is in C++ and TextAn in Java, it is not requisite 
 to implement JNI, because training is called as binary files and the model is generated
-as file. So calling C++ functions is not needed here. Java part provides
+as file. Therefore, calling C++ functions is not needed. Java part provides
 training data collecting from database and preparation, model handling
 (deleting old ones. binding them to NameTag).
 \comment[Jakub, Petr]{Tam}{Approved?}
@@ -93,13 +98,9 @@ training data collecting from database and preparation, model handling
 
 \comment[Tam]{Petr}{here should be description of TextPro}
 
-%After the document is processed by NER, the next step is assigning the entities
-%to available objects in the database. Normally, this could be done by matching
-%the entity text with the alias from object. However, this method would \comment[Tam]{Petr}{finish?}
-
-After running NameTag, a list of entities is extracted from the document. The
-package \emph{cz.cuni.mff.ufal.textan.textpro} is responsible for automatic
-assigning of those entities to available objects in database. At the end, for 
+After calling \emph{Named entity recognizer}, a list of entities is extracted from the document. \emph{TextPro}
+package \emph{cz.cuni.mff.ufal.textan.textpro} automatically
+assigns those entities to available objects in database. As the output, for 
 each entity, the aforementioned package returns a list of potential objects along
 with their score. Two methods are provided.
 
