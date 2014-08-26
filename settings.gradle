@@ -1,2 +1,2 @@
 
-include "Commons", "Data", "Server", "Client", "Linguistics", "TextPro"
+include "Commons", "Data", "Server", "Client", "Linguistics", "TextPro", "Setuper"
