@@ -466,6 +466,18 @@ called to get information about the changes. After making adjustments to
 recognizing/assignments if needed, save operations can be called with
 \emph{force} parameter set to \emph{true}.
 
+During the processing of a document already stored in the database, other users
+can alter it in the database. If this happens, the subsequent call of processing
+operation returns fault \emph{documentChangedException} as a warning. If the
+user wants to overwrite these changes as mentioned above, the client should
+switch to \emph{*FromString} recognizing operations and save the report with
+operation \emph{rewriteAndSaveProcessedDocumentById}.
+
+If the document stored in the database has been processed by another user while
+being processed by a local user, the subsequent call of processing operation
+returns fault \emph{documentAlreadyProcessedException} and the processing must
+end as no report can be processed multiple times.
+
 For more details, consult the WSDL descriptions and Javadoc of the server
 implementation.
 
