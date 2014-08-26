@@ -141,6 +141,27 @@ is ranked an used as the score.
 \comment{Tam}{TODO: Features description, maybe}
 \comment[Tam]{Adam}{Yes, the more the better ;-)}
 
+\paragraph{Features}
+
+The feature set is selected among evaluations with regards to the pair between
+the entity and the object. A feature could be computed by comparing the entity 
+and the object. It also may be the characteristics of the entity or the object 
+alone. All the selected features are considered to form a meaningful set which
+expresses the nature of the pair. In the Assigner, the feature set is selected 
+as follow:
+
+\begin{itemize}
+\item The String distance metrics between the entity text and the object aliases. Given 
+the fact that an object may have more than one alias, the package computes three numbers for 
+\textit{similarity} between the entity text and the object aliases: the highest, the lowest and
+the average. It is to distinguish between an object with one alias and object with hundred aliases.
+\item The type comparison between object type and entity type. If a pair is \textit{positive},
+the types have to be the same. This is a crucial features. 
+\item The number of aliases that the object has.
+\item The number of documents that the object appears.  
+\end{itemize}
+
+
 \subsection{Scheduler}
 The scheduler is a simple component, that invokes commands asynchronously against
 requests in the servlet container. It is implemented by classes in the package
