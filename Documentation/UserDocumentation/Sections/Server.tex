@@ -62,6 +62,11 @@ ProcRun's Daemon \footnote{More information can be found on
 \url{https://commons.apache.org/proper/commons-daemon/procrun.html} and in JavaDoc
 documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry} class.}}.
 
+Note that a startup of the server may take a very long time, depends on the amount
+of data, because during a initialization are created full text indexes and models
+for the named entity recognizer and object assigner and the internal web server
+is started after the initialization phase.
+
 \subsubsection{Uninstallation}
 The server application use only files and resources inside install directory by
 default, only exception are temporary files, which are placed in system temp folder.
