@@ -307,9 +307,11 @@ which state the pipeline should go next. When this happens, each registered
 \end{figure}
 
 For easy selecting recognized entities and relations a hierarchy of builders
-has been developed (see \ref{fig:Builders}). The word is a class representing
-independent word of the report text. It can be assigned to either an entity or
-relation. EntityBuilder also holds the assigned object if any.
+has been developed (see \ref{fig:Builders}). This is necessary because
+\emph{Object} and \epmh{Relation} immutable. The \emph{word} is a class
+representing independent word of the report text. It can be assigned to either
+an entity or relation. \emph{EntityBuilder} also holds the assigned object if
+any.
 
 \begin{figure}[!htb]
         \centering
