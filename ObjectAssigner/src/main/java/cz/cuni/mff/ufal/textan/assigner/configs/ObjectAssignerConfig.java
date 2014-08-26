@@ -2,8 +2,8 @@ package cz.cuni.mff.ufal.textan.assigner.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
-import cz.cuni.mff.ufal.textan.assigner.ITextPro;
-import cz.cuni.mff.ufal.textan.assigner.TextPro;
+import cz.cuni.mff.ufal.textan.assigner.IObjectAssigner;
+import cz.cuni.mff.ufal.textan.assigner.ObjectAssigner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import(DataConfig.class)
-public class TextProConfig {
+public class ObjectAssignerConfig {
 
     /**
      * Creates a Spring bean with the type ITextPro.
@@ -27,7 +27,7 @@ public class TextProConfig {
     @Bean(initMethod = "learn")
     @DependsOn({"transactionManager", "exceptionTranslation"})
     @Autowired
-    public ITextPro textPro(
+    public IObjectAssigner textPro(
             IObjectTypeTableDAO objectTypeTableDAO,
             IObjectTableDAO objectTableDAO,
             IAliasTableDAO aliasTableDAO,
@@ -38,7 +38,7 @@ public class TextProConfig {
             IRelationOccurrenceTableDAO relationOccurrenceTableDAO,
             IDocumentTableDAO documentTableDAO
             ) {
-        return new TextPro(
+        return new ObjectAssigner(
                 //aliasOccurrenceTableDAO,
                 //relationTypeTableDAO,
                 aliasTableDAO,

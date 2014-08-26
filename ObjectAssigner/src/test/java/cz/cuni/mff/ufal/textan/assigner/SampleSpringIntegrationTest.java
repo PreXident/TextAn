@@ -1,7 +1,7 @@
 package cz.cuni.mff.ufal.textan.assigner;
 
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
-import cz.cuni.mff.ufal.textan.assigner.configs.TextProConfig;
+import cz.cuni.mff.ufal.textan.assigner.configs.ObjectAssignerConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +15,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
  * @author Petr Fanta
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TextProConfig.class}, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = {ObjectAssignerConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class SampleSpringIntegrationTest {
 
     @Autowired

@@ -6,11 +6,11 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.*;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.commands.NamedEntityRecognizerLearnCommand;
-import cz.cuni.mff.ufal.textan.server.commands.TextProLearnCommand;
+import cz.cuni.mff.ufal.textan.server.commands.ObjectAssignerLearnCommand;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
-import cz.cuni.mff.ufal.textan.assigner.ITextPro;
+import cz.cuni.mff.ufal.textan.assigner.IObjectAssigner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -45,7 +45,7 @@ public class SaveService {
 
     private final CommandInvoker invoker;
     private final NamedEntityRecognizer recognizer;
-    private final ITextPro textPro;
+    private final IObjectAssigner textPro;
 
     private final Lock writeLock;
 
@@ -74,7 +74,7 @@ public class SaveService {
             IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
             IRelationTypeTableDAO relationTypeTableDAO, IRelationTableDAO relationTableDAO,
             IRelationOccurrenceTableDAO relationOccurrenceTableDAO, IInRelationTableDAO inRelationTableDAO,
-            IJoinedObjectsTableDAO joinedObjectsTableDAO, CommandInvoker invoker, NamedEntityRecognizer recognizer, ITextPro textPro, @Qualifier("writeLock") Lock writeLock) {
+            IJoinedObjectsTableDAO joinedObjectsTableDAO, CommandInvoker invoker, NamedEntityRecognizer recognizer, IObjectAssigner textPro, @Qualifier("writeLock") Lock writeLock) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
@@ -360,7 +360,7 @@ public class SaveService {
         }
 
         //register re-learn command for named entity recognizer and text pro
-        invoker.register(new TextProLearnCommand(textPro));
+        invoker.register(new ObjectAssignerLearnCommand(textPro));
         invoker.register(new NamedEntityRecognizerLearnCommand(recognizer));
 
         return true;

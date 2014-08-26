@@ -12,7 +12,7 @@ import java.util.Map;
  * TextPro: Text Processing
  * Assign entity to potential objects in database (automatically)
  */
-public interface ITextPro {
+public interface IObjectAssigner {
    
     
     //  Output a list of token after processing

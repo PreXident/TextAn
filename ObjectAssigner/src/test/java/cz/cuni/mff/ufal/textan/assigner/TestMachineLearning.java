@@ -7,7 +7,7 @@ package cz.cuni.mff.ufal.textan.assigner;
 
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.assigner.configs.TextProConfig;
+import cz.cuni.mff.ufal.textan.assigner.configs.ObjectAssignerConfig;
 import cz.cuni.mff.ufal.textan.assigner.data.Entity;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
  * @author HOANGT
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TextProConfig.class}, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = {ObjectAssignerConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class TestMachineLearning {
 
     @Autowired
@@ -57,7 +57,7 @@ public class TestMachineLearning {
     IDocumentTableDAO documentTableDAO;
     
     @Autowired
-    ITextPro textPro;
+    IObjectAssigner textPro;
 
     /*
      Test the learning

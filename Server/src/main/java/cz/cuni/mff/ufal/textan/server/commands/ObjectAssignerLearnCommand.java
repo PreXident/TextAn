@@ -1,15 +1,15 @@
 package cz.cuni.mff.ufal.textan.server.commands;
 
-import cz.cuni.mff.ufal.textan.assigner.ITextPro;
+import cz.cuni.mff.ufal.textan.assigner.IObjectAssigner;
 
 /**
  * @author Petr Fanta
  */
-public class TextProLearnCommand extends Command {
+public class ObjectAssignerLearnCommand extends Command {
 
-    private final ITextPro receiver;
+    private final IObjectAssigner receiver;
 
-    public TextProLearnCommand(ITextPro receiver) {
+    public ObjectAssignerLearnCommand(IObjectAssigner receiver) {
         super(CommandFilterBehavior.BEFORE);
         this.receiver = receiver;
     }
@@ -24,7 +24,7 @@ public class TextProLearnCommand extends Command {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TextProLearnCommand that = (TextProLearnCommand) o;
+        ObjectAssignerLearnCommand that = (ObjectAssignerLearnCommand) o;
 
         return receiver.equals(that.receiver);
     }

@@ -7,7 +7,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 import cz.cuni.mff.ufal.textan.server.web.TextanWelcomePage;
-import cz.cuni.mff.ufal.textan.assigner.configs.TextProConfig;
+import cz.cuni.mff.ufal.textan.assigner.configs.ObjectAssignerConfig;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
@@ -45,7 +45,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Jakub Vlček
  */
 @Configuration
-@Import({DataConfig.class, TextProConfig.class})
+@Import({DataConfig.class, ObjectAssignerConfig.class})
 @ComponentScan("cz.cuni.mff.ufal.textan.server.services")
 public class AppConfig implements ApplicationContextAware {
 

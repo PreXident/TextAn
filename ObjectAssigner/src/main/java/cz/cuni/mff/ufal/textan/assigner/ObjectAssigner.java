@@ -22,12 +22,12 @@ import java.util.*;
  * @author Tam Hoang
  *         Implement the ranking scheme heuristicRanking(document, list of entities, number of K)
  *         Implement the machine learning scheme machineLearning
- * @see cz.cuni.mff.ufal.textan.assigner.ITextPro
+ * @see IObjectAssigner
  */
 @Transactional
-public class TextPro implements ITextPro {
+public class ObjectAssigner implements IObjectAssigner {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TextPro.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ObjectAssigner.class);
 
     /**
      * Provides access to AliasOccurrence table in database
@@ -84,13 +84,13 @@ public class TextPro implements ITextPro {
 
     /**
      * Instantiates a new TextPro.
-     * Uses a constructor injection for an initialization of data access object ({@link cz.cuni.mff.ufal.textan.assigner.configs.TextProConfig#textPro(cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasOccurrenceTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationOccurrenceTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO)}
+     * Uses a constructor injection for an initialization of data access object ({@link cz.cuni.mff.ufal.textan.assigner.configs.ObjectAssignerConfig#textPro(cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasOccurrenceTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationOccurrenceTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO)}
      *
      * @param aliasTableDAO              the alias table DAO
      * @param objectTableDAO             the object table DAO
      * @param documentTableDAO
      */
-    public TextPro(
+    public ObjectAssigner(
             //IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
             //IRelationTypeTableDAO typeTableDAO,
             IAliasTableDAO aliasTableDAO,

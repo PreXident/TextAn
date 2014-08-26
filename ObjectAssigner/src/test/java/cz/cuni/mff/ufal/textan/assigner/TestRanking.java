@@ -15,7 +15,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationOccurrenceTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO;
-import cz.cuni.mff.ufal.textan.assigner.configs.TextProConfig;
+import cz.cuni.mff.ufal.textan.assigner.configs.ObjectAssignerConfig;
 import cz.cuni.mff.ufal.textan.assigner.data.Entity;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
  * @author HOANGT
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TextProConfig.class}, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = {ObjectAssignerConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class TestRanking {
     @Autowired
     IAliasOccurrenceTableDAO aliasOccurrenceTableDAO;
@@ -61,7 +61,7 @@ public class TestRanking {
     IRelationTypeTableDAO typeTableDAO;
 
     @Autowired
-    ITextPro textPro;
+    IObjectAssigner textPro;
 
     @Test
     public void TestRank() {
