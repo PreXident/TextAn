@@ -28,6 +28,8 @@
 \usepackage{fontspec}
 \usepackage{epstopdf,epsfig} 
 
+\usepackage{xr-hyper}
+
 \definecolor{TextanDarkRed}{cmyk}{.37,.94,.83,.59}
 \definecolor{TextanRed}{cmyk}{.0,.879,.844,.220}
 \definecolor{javagreen}{rgb}{0.25,0.5,0.35}
@@ -89,6 +91,9 @@ contents={
 \makeatother
 
 \newcommand{\textan}{\emph{Text\-An}}
+
+\externaldocument[USR-]{../UserDocumentation/UserDocumentation}[../UserDocumentation/UserDocumentation.pdf]
+
 
 \begin{document}
 

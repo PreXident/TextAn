@@ -155,7 +155,7 @@ For more information about security, please consult \ref{sec:Security}.
 \label{sssec:DataSettings}
 
 Because of the server can connect to an arbitrary database, it is required to specify what type of database is used.
-In \textan{} project is used \emph{Hibernate} for object-relation mapping \emph{(ORM)}, \emph{JDBC} for relation database access and \emph{c3p0} for connection pooling.
+In \textan{} project is used \emph{Hibernate} for object-relation mapping \emph{(ORM)}, \emph{JDBC} for relation database access and \emph{c3p0} for connection pooling (see develeper documentation section \ref{DEV-sec:UsedTechnologies}).
 
 %TODO 
 \comment{Venca}{add links?}
@@ -179,6 +179,7 @@ Password to authorize the user in database.
 \comment{Adam}{Several these properties seem as copied from somewhere which
 does not look good IMO, at least some customization should be done, removing
 "in your application" etc.}
+\comment{Venca}{Is it ok now?}
 
 %c3p0 (http://www.mchange.com/projects/c3p0/#configuration_properties)
 \paragraph{c3p0.maxPoolSize}
@@ -212,11 +213,7 @@ If maxStatements is zero but maxStatementsPerConnection is a non-zero value,
 statement caching will be enabled, but no global limit will be enforced, only
 the per-connection maximum. maxStatements controls the total number of Statements
 cached, for all Connections. If set, it should be a fairly large number, as each
-pooled Connection requires its own, distinct flock of cached statements. As a guide,
-consider how many distinct PreparedStatements are used frequently in your application,
-and multiply that number by maxPoolSize to arrive at an appropriate value. Though
-maxStatements is the JDBC standard parameter for controlling statement caching,
-users may find c3p0's alternative maxStatementsPerConnection more intuitive to use.
+pooled Connection requires its own, distinct flock of cached statements.
 
 \paragraph{c3p0.maxStatementsPerConnection}
 The number of PreparedStatements c3p0 will cache for a single pooled Connection.
@@ -225,11 +222,9 @@ will not be enabled. If maxStatementsPerConnection is zero but maxStatements is
 a non-zero value, statement caching will be enabled, and a global limit enforced,
 but otherwise no limit will be set on the number of cached statements for a single
 Connection. If set, maxStatementsPerConnection should be set to about the number
-distinct PreparedStatements that are used frequently in your application, plus
+distinct PreparedStatements that are used frequently in application, plus
 two or three extra so infrequently statements don't force the more common cached
-statements to be culled. Though maxStatements is the JDBC standard parameter for
-controlling statement caching, users may find maxStatementsPerConnection more
-intuitive to use.
+statements to be culled.
 
 \paragraph{c3p0.idleConnectionTestPeriod}
 If this is a number greater than 0, c3p0 will test all idle, pooled but unchecked-out
