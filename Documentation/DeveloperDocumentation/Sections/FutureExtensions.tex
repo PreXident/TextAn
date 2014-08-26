@@ -1,27 +1,27 @@
 % Chapter: POSSIBILITIES OF FUTURE EXTENSIONS
 
 \section{Relation recognition}
-The automatic recognition of relations and objects in them is most missing thing
-in the current version of \textan{}. Because it was calculated with this task from
-the beginning of development of the system and because it is one of optional
-requirements, \textan{} contains whole infrastructure except the core component
-itself.
+The automatic recognition of relations between objects is the most missing thing
+in the current version of \textan{}. However, because this task has been taken
+into account from the very beginning of the development and because it is one of
+the optional requirements, \textan{} contains the whole infrastructure except
+the core component itself.
 
-The recognition can be based on many different things, same as relations.
-For example: a presence of objects in same document, a kind of verbs, which will
-be the anchor for relations in documents in the most cases, and their valency and
-relations which an user marked before in other documents. The component will
-be probably based on some machine learning method and above mentioned attributes.
+The recognition can be based on many different criteria, same as relations.
+For example: the presence of objects in the same document, the kind of verbs,
+which are the anchors for relations in the most cases, their valency and
+relations which users marked before in other documents. The component could be
+probably based on some machine learning method and above mentioned attributes.
 
 \section{Searching}
 Although \textan{} provides several search methods, they are weak compared to
-possibilities of graphs. Consider for example a environment of a police reports
-and a task in which you need to find all persons who know a killer. The graph
-contains these information, if there is defined a good model of the environment,
-but how can you ask for them?
+possibilities that graphs offer. Consider for example an environment of police
+reports and a task in which you need to find all persons who know a killer. The
+graph contains this information, if good model is defined for the domain, but
+how can you ask for them?
 
-It implies at least a usage of some graph query language and a creation of some
-graph indexing over the data or a usage of different data storage in a better case. 
+It implies at least usage of some graph query language and creation of some
+graph indexing over the data. Or in better case usage of different data storage. 
 
 \section{Underlaying database}
 In the case that graph operations become more important, it will be better to use
@@ -32,13 +32,13 @@ or Neo4j\footnote{\url{http://www.neo4j.org/}}.
 
 \section{Restrictions for objects in relation}
 As it is noted in user documentation \comment{Petr}{Add reference to user doc.},
-\textan{} is very universal and needs some conventions to serve good results,
+\textan{} is very universal and needs some conventions to provide good results,
 because there is no way how to enforce the proper use. The system cannot work
-properly without conventions anyway, but some software enforceable restrictions
-can improve a usage of it.
+properly without conventions anyway, but some extension enforcing restrictions
+can improve overall outcomes.
 
-The most natural is to restrict objects in relations. Consider for example a relation
-type "murder". There must probably be at least one object of a type "person" with
-a role "victim" in the relation of this type, also there should be a object of
-a type "person" with a role "murderer", a object of  a type "address" with a role
-"crime place" and so on.
+The most natural improvement is restricting objects in relations. Consider for
+example relation type "murder". There must probably be at least one object of
+type "person" with role "victim" in the relation of this type, also there
+should be an object of type "person" with role "murderer", an object of type
+"address" with role "crime place" and so on.
