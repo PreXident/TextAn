@@ -62,6 +62,11 @@ ProcRun's Daemon \footnote{More information can be found on
 \url{https://commons.apache.org/proper/commons-daemon/procrun.html} and in JavaDoc
 documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry} class.}}.
 
+Note that a startup of the server may take a very long time, depends on the amount
+of data, because during a initialization are created full text indexes and models
+for the named entity recognizer and object assigner and the internal web server
+is started after the initialization phase.
+
 \subsubsection{Uninstallation}
 The server application use only files and resources inside install directory by
 default, only exception are temporary files, which are placed in system temp folder.
@@ -93,8 +98,9 @@ library into \emph{lib} folder in installation directory.
 
 \subsubsection{Web server settings}
 \label{sssec:WebServerSettings}
-
-\comment[Petr]{Petr}{Add short introduction into server setting}
+This section contains a description of properties that can be used to configure
+the internal web server. These properties can be set in the file \emph{server.properties}
+in installation directory.
 
 %connector
 \paragraph{server.connector.host}
@@ -134,7 +140,9 @@ The password (if any) for the specific key within the key store.
 The type of the key store. The default value is "JKS".
 
 \paragraph{server.ssl.port}
-The port to listen on when SSL communication is enabled.
+The port to listen on when SSL communication is enabled. Note that the port must
+be different from server.connector.port, because HTTP connection is still possible,
+but it is immediately redirected to the SSL port.
 
 %ssl client auth
 \paragraph{server.ssl.clientAuth}
@@ -253,6 +261,7 @@ For more informations about Analyzers see \ref{sec:Lang}.
 %NameTag
 \subsubsection{Named entity recognizer settings}
 \label{sssec:NametagSettings}
+\comment{Petr}{Add link to nametag?}
 This section is mainly about settings stored in NametagLearning.properties. There
 are parameters for neural network which nametag use for learning and switches for
 nametag functions. Also, there are settings affecting models storing and
