@@ -35,6 +35,8 @@ For installation it is sufficient to unpack its content into any directory.
 \comment[Venca]{Petr}{decribe how to configure database (relational db, DBMS
 independent, mysql recomendation... etc. (check \ref{sssec:SerInstPre}))}
 
+There is a sql script \emph{(create.sql)} to setup the database located in folder  \emph{Database}. It should be executed to setup the database schema before the server starts. However this script is \emph{MySQL} specific \comment[Venca]{Venca}{check} and if you have other database you should replace \emph{MySQL} specific commands.
+
 \subsubsection{Basic configuration}
 
 Before the first start, it is necessary to set up the server and the database.
@@ -42,6 +44,7 @@ Before the first start, it is necessary to set up the server and the database.
 \comment[Petr,Jakub,Venca]{Petr}{write how to setup server}
 
 \comment[Petr]{Petr}{add some link to \ref{sec:ServerSettings}}
+
 
 \subsubsection{Starting the server}
 
@@ -90,6 +93,9 @@ library into \emph{lib} folder in installation directory.
 
 \subsubsection{Web server settings}
 \label{sssec:WebServerSettings}
+This section contains a description of properties that can be used to configure
+the internal web server. These properties can be set in the file \emph{server.properties}
+in installation directory.
 
 %connector
 \paragraph{server.connector.host}
@@ -118,17 +124,20 @@ The default value is false.
 
 \paragraph{server.ssl.keyStore.path}
 The file or URL of the SSL Key store.
+
 \paragraph{server.ssl.keyStore.password}
 The password for the key store.
+
 \paragraph{server.ssl.keyManager.password}
 The password (if any) for the specific key within the key store.
+
 \paragraph{server.ssl.keyStore.type}
 The type of the key store. The default value is "JKS".
 
-\comment[Petr]{Petr}{Finish rest of server properties}
-\comment[Petr]{Adam}{Check the rest of server properties}
 \paragraph{server.ssl.port}
-The port to listen on when SSL communication is enabled.
+The port to listen on when SSL communication is enabled. Note that the port must
+be different from server.connector.port, because HTTP connection is still possible,
+but it is immediately redirected to the SSL port.
 
 %ssl client auth
 \paragraph{server.ssl.clientAuth}
@@ -151,9 +160,23 @@ For more information about security, please consult \ref{sec:Security}.
 \subsubsection{Database settings}
 \label{sssec:DataSettings}
 
+\comment{Petr}{This settings are related to Persistence layer - it means also indexing}
+\comment[Venca]{Petr}{Add default values for each property - it can be found in data-default.properties}
+Because of the server can connect to an arbitrary database, it is required to
+specify what type of database is used. In \textan{} project is used \emph{Hibernate}
+for object-relation mapping \emph{(ORM)}, \emph{JDBC} for relation database access
+and \emph{c3p0} for connection pooling (see develeper documentation section
+\ref{DEV-sec:UsedTechnologies}).
+
+%TODO 
+\comment{Venca}{add links?}
+Properties to these three libraries can be set in the file \emph{data.properties}
+in installation directory. The meanings of all important properties are following:
+
 %jdbc
 \paragraph{jdbc.driverClassName}
-Name of the driver class made usually by database developers which enables to interact with database.
+Name of the driver class made usually by database developers which enables to
+interact with database.
 
 \paragraph{jdbc.url}
  The url that points to our database. The most common url format is like this:
@@ -168,6 +191,7 @@ Password to authorize the user in database.
 \comment{Adam}{Several these properties seem as copied from somewhere which
 does not look good IMO, at least some customization should be done, removing
 "in your application" etc.}
+\comment{Venca}{Is it ok now?}
 
 %c3p0 (http://www.mchange.com/projects/c3p0/#configuration_properties)
 \paragraph{c3p0.maxPoolSize}
@@ -201,11 +225,7 @@ If maxStatements is zero but maxStatementsPerConnection is a non-zero value,
 statement caching will be enabled, but no global limit will be enforced, only
 the per-connection maximum. maxStatements controls the total number of Statements
 cached, for all Connections. If set, it should be a fairly large number, as each
-pooled Connection requires its own, distinct flock of cached statements. As a guide,
-consider how many distinct PreparedStatements are used frequently in your application,
-and multiply that number by maxPoolSize to arrive at an appropriate value. Though
-maxStatements is the JDBC standard parameter for controlling statement caching,
-users may find c3p0's alternative maxStatementsPerConnection more intuitive to use.
+pooled Connection requires its own, distinct flock of cached statements.
 
 \paragraph{c3p0.maxStatementsPerConnection}
 The number of PreparedStatements c3p0 will cache for a single pooled Connection.
@@ -214,11 +234,9 @@ will not be enabled. If maxStatementsPerConnection is zero but maxStatements is
 a non-zero value, statement caching will be enabled, and a global limit enforced,
 but otherwise no limit will be set on the number of cached statements for a single
 Connection. If set, maxStatementsPerConnection should be set to about the number
-distinct PreparedStatements that are used frequently in your application, plus
+distinct PreparedStatements that are used frequently in application, plus
 two or three extra so infrequently statements don't force the more common cached
-statements to be culled. Though maxStatements is the JDBC standard parameter for
-controlling statement caching, users may find maxStatementsPerConnection more
-intuitive to use.
+statements to be culled.
 
 \paragraph{c3p0.idleConnectionTestPeriod}
 If this is a number greater than 0, c3p0 will test all idle, pooled but unchecked-out
@@ -231,13 +249,14 @@ SQL optimized for a particular relational database.
 
 %hibernate search
 \paragraph{hibernate.search.analyzer}
-\url{http://docs.jboss.org/hibernate/search/3.4/reference/en-US/html_single/#d0e392}
-\comment[Petr]{Petr}{see url above}
-\comment[Petr]{Petr}{What is best analyzer for Czech and English}
+A fully qualified name of Lucene Analyzer that is used for the full text indexing
+and searching. The default value is \emph{org.\-apache.\-lucene.\-analysis.\-cz.\-CzechAnalyzer}.
+For more informations about Analyzers see \ref{sec:Lang}.
 
 %NameTag
 \subsubsection{Named entity recognizer settings}
 \label{sssec:NametagSettings}
+\comment{Petr}{Add link to nametag?}
 This section is mainly about settings stored in NametagLearning.properties. There
 are parameters for neural network which nametag use for learning and switches for
 nametag functions. Also, there are settings affecting models storing and
@@ -268,7 +287,7 @@ do not improve the performance of the named entity recognizer significantly.
 \end{description}
 
 \paragraph{featuresFile}
-Path of generated file, based on property file \comment{Ondrej}{something is missing here}
+Path of generated file, based on property file.
 The recognizer utilizes feature templates to generate features which are used as
 the input to the named entity classifier. The feature templates are specified in
 a file, one feature template on a line. Empty lines and lines starting with \# are ignored.
@@ -297,11 +316,11 @@ to 30 or 50 are commonly used.
 Default value of missing weights in the log-linear model. Common values are small
 negative real numbers like -0.2.
 
-\paragraph{initial\_learning\_rage} \comment{Ondrej}{raTe?}
+\paragraph{initial\_learning\_rate}
 learning rate used in the first iteration of SGD training method of the log-linear
 model. Common value is 0.1.
 
-\paragraph{final\_learning\_rage} \comment{Ondrej}{raTe?}
+\paragraph{final\_learning\_rate}
 learning rate used in the last iteration of SGD training method of the log-linear
 model. Common values are in range from 0.1 to 0.001, with 0.01 working reasonably well.
 
@@ -318,7 +337,7 @@ enormous models, slower recognition and are not guaranteed to create models with
 better accuracy.
 
 \paragraph{heldout\_data}
-Optional parameter with heldout data in the described format \comment{Ondrej}{where it was described?}. If the heldout data
+Optional parameter with heldout data in same format as training data. If the heldout data
 is present, the accuracy of the heldout data classification is printed during
 training. The heldout data is not used in any other way.
 
@@ -339,12 +358,12 @@ Number of maximum stored models. When limit is exceeded, the oldest models are d
 Size of window when forms are used as features (0 when they are not used)
 
 \paragraph{lemma}
-Size of window when lemma ids are used as features (0 when they are not used)
+Size of window when lemma ids are used as features (0 when they are not used).
+When lemma is specified, lemma IDs are used.
 
 \paragraph{raw\_lemma}
 Size of window when raw lemmas are used as features (0 when they are not used)
-
-\comment{Ondrej}{What is the difference between lemma and raw\_lemma?}
+Difference between lemma and raw lemma is, thah lemma uses lemma IDs and raw\_lemma use raw lemmas as feature.
 
 \paragraph{raw\_lemma\_capitalization}
 Size of window when capitalization of raw lemma is used as features (0 when they are not used)

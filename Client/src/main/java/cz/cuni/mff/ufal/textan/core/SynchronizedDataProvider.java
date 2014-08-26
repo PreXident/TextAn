@@ -7,8 +7,6 @@ import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.commons.ws.InvalidMergeException;
 import cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException;
 
-import javax.jws.WebParam;
-
 /**
  * Simple wrapper around IDataProvider to provide synchronization.
  */

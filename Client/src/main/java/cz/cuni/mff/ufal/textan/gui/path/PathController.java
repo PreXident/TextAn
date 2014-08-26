@@ -47,7 +47,7 @@ public class PathController extends WindowController {
     static protected final String PROPERTY_ID = "path.wizard";
 
     /** Minimal height of the path window. */
-    static protected final int MIN_HEIGHT = 400;
+    static protected final int MIN_HEIGHT = 500;
 
     /** Minimal width of the path window. */
     static protected final int MIN_WIDTH = 570;
@@ -402,6 +402,10 @@ public class PathController extends WindowController {
         final GetTypesTask task = new GetTypesTask(textAnController.getClient());
         task.setOnSucceeded(e -> {
             final List<ObjectType> types = task.getValue();
+            leftTypeComboBox.getItems().clear();
+            leftTypeComboBox.getItems().addAll(types);
+            rightTypeComboBox.getItems().clear();
+            rightTypeComboBox.getItems().addAll(types);
             node.setCursor(Cursor.DEFAULT);
             leftFilter();
             rightFilter();

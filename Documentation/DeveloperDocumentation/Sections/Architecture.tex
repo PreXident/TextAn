@@ -1,5 +1,4 @@
-%This section contains the system architecture
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% (80 char rule :D)
+% Chapter: contains the system architecture
 
 %For every one: use as many diagrams as possible :) (author Petr)
 
@@ -7,7 +6,12 @@ The architecture of \textan{} is based on client-server model. Two main componen
 are the \textan{} server and \textan{} client which communicate via W3C web services
 (SOAP protokol).
 
-\comment{Ondrej}{Mention why it was split like this - a wish from outside, but in the future fully automated (tuned) annotation without client}
+
+
+\comment{Ondrej}{Mention why it was split like this - a wish from outside, but in 
+the future fully automated (tuned) annotation without client}
+
+\comment{Petr}{This explanation should be rather in \ref{sec:Decisions}}
 
 \section{Server architecture}
 
@@ -15,9 +19,11 @@ The server architecture is based on a logical multilayered architecture. It
 consists of 5 layers: a presentation layer, a service layer, a business logic layer, 
 a persistence layer and a data layer.
 
-\comment{Ondrej}{it definitely needs a figure here, but no generalized pictures, it needs your concrete components and connection. The 5 layers sound like textbook example}
+\comment{Ondrej}{it definitely needs a figure here, but no generalized pictures, 
+it needs your concrete components and connection. The 5 layers sound like textbook example}
 
-\comment{Adam}{The comment above was created when there were no pictures nor subsections here, but I have added it anyway, just to be sure}
+\comment{Adam}{The comment above was created when there were no pictures nor subsections 
+here, but I have added it anyway, just to be sure}
 
 \begin{figure}[!htb]
         \centering
@@ -26,28 +32,54 @@ a persistence layer and a data layer.
         \label{fig:ServerComponentOverview}
 \end{figure}
 
-\comment[Petr, Venca (persistence layer)]{Petr}{description of layers}
-
 \subsection{Web service layer}
+Web service layer is the component responsible for providing web service
+API. It consists of a servlet container and implementations of particular
+web services.
 
-\comment[Petr]{Petr}{CXF, java code generation form wsdl, web services implementation
- ->  facade over services, jetty}
+Jetty is used as the servlet container component. It is a powerful and scalable
+component which supports embedding into other applications. It also can be run independently
+on the rest of the applications. This is an important feature, which allows, that only
+web service implementations live in a web context. % I don't understand
+In other words, there can be
+other implementations over the rest of the application at same time, e.g. from input
+command line. This component also provides security of \textan{} server over SSL.
+
+Web service itself is implemented with Apache CXF framework. A bigger part of
+the implementation is generated from WSDL files and XML Schema files using the
+CXF wsdl2java tool at build time, these classes are placed in the package % which classes?
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-commons.\-ws}, the package
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-commons.\-models} and its subpackages. % too long and a bit vague
+The *.ws package contains java equivalents of a WSDL interfaces and the *.models
+package contains java equivalents of XSD complex types. These interfaces are
+implemented in classes placed the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-ws}
+and they are just adapters for the service layer. Note that underlaying layers are
+totally independent from the web service layer. The CXF framework ensures that
+these classes are deployed as servlets.
 
 \subsection{Service layer}
+The service layer is a component that consists of classes which handle requests
+using underlying layers and register commands in the scheduler. These classes are
+placed in the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-services}
+and the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-models}.
 
 \comment[Petr]{Petr}{Describe all services}
 
 \subsection{Business layer}
-
-\comment[someone]{Petr}{Add small intro, 2 components ect.}
+The business layer contains components which encapsulate the main functionality
+of the system. The layer consists of two main components, the Named Entity
+recognizer and the Object assigner. Both of them use machine learning methods to solve
+their tasks. They access the persistence layer to obtain training data. They
+are called from the service layer and the scheduler.
 
 \subsubsection{Named entity recognizer architecture}
 
-Named entity architecture is divided to two parts, recognition and training.
+The architecture of Named entity recognizer is divided to two parts: recognition and training.
+
 \paragraph{Recognition} 
 Recognition is slitted to two parts - Java part and C++ part. This is because
-NameTag, which we use as named entity recognizer, is written mainly in C++ and
-TextAn in Java, so we must use JNI to call functions from C++ through provided
+NameTag, which is the available tool for named entity recognizer, is written mainly in C++. 
+TextAn is developed in Java, so we must use JNI to call functions from C++ through provided
 Java bindings. C++ part is represented by NameTag, so it has its own documentation.
 Java part contains JNI bindings to call C++ part and than connection to TextAn.
 This part serves as an adaptor between these two projects. Its main task is
@@ -57,22 +89,18 @@ Because of optimization, this component caches database entities.
 \paragraph{Training}
 Despite the fact that NameTag is in C++ and TextAn in Java, it is not requisite 
 to implement JNI, because training is called as binary files and the model is generated
-as file. So calling C++ functions is not needed here. Java part provides
+as file. Therefore, calling C++ functions is not needed. Java part provides
 training data collecting from database and preparation, model handling
 (deleting old ones. binding them to NameTag).
 \comment[Jakub, Petr]{Tam}{Approved?}
 
-\subsubsection{Object assigner architecture} \comment{Petr}{or simply TextPro?}
+\subsubsection{Object assigner architecture}
 
 \comment[Tam]{Petr}{here should be description of TextPro}
 
-%After the document is processed by NER, the next step is assigning the entities
-%to available objects in the database. Normally, this could be done by matching
-%the entity text with the alias from object. However, this method would \comment[Tam]{Petr}{finish?}
-
-After running NameTag, a list of entities is extracted from the document. The
-package \emph{cz.cuni.mff.ufal.textan.textpro} is responsible for automatic
-assigning of those entities to available objects in database. At the end, for 
+After calling \emph{Named entity recognizer}, a list of entities is extracted from the document. \emph{TextPro}
+package \emph{cz.cuni.mff.ufal.textan.textpro} automatically
+assigns those entities to available objects in database. As the output, for 
 each entity, the aforementioned package returns a list of potential objects along
 with their score. Two methods are provided.
 
@@ -105,16 +133,35 @@ artificial pairs of training vectors with \textit{Weka} tool. When a new documen
 processed, new entity and object pairs is added to the database. They could be extracted
 later to train again.
 
-\paragraph{Testing}
+\paragraph{Assigning}
 To assign the entity to object, function \emph{distributionForInstance} to return the 
 probability of the pair with regards to \emph{positive} class. The probability value 
 is ranked an used as the score.
 
 \comment{Tam}{TODO: Features description, maybe}
+\comment[Tam]{Adam}{Yes, the more the better ;-)}
 
 \subsection{Scheduler}
+The scheduler is a simple component, that invokes commands asynchronously against
+requests in the servlet container. It is implemented by classes in the package
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-commands}.
 
-\comment[Petr]{Petr}{Describe re-learning process, command inwoker}
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/Commands}
+        \caption{Overview of the scheduler classes.}
+        \label{fig:CommandsOverview}
+\end{figure}
+
+The component is used to invoke re-learning in components from the business layer.
+The learning is typically slow, in a matter of minutes, so it's necessary to use
+this approach due to system performance. Commands are registered from methods in
+the service layer that modify data used for learning. Commands are stored in one
+FIFO queue and are invoked in one thread, so it's possible to filter them before
+invocation. This ability ensures that only one learning command is invoked at one
+time and that learning commands are not invoked unreasonably. Components from
+the business layer use old models during learning, so the re-learning is a transparent
+operation for users.
 
 \subsection{Persistence layer}
 
@@ -126,7 +173,64 @@ is ranked an used as the score.
 
 \subsection{Database}
 
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/DatabaseSchema}
+        \caption{Database schema}
+        \label{fig:DatabaseSchema}
+\end{figure}
+
 \comment[Venca]{Petr}{Describe database: database schema etc.}
+This section describes the database schema (see figure \ref{fig:DatabaseSchema})
+Now we will describe each table and its meaning
+
+\paragraph{Document} The report to be processed. There are columns for the date of 
+creation \emph{(added)}, last change and the date when the document has been processed.
+
+\paragraph{Object} Object stands for the entity e.g. Josef Novák or specific adress. 
+It has only one meaningful column \emph{data} that is used to describe that entity.
+
+\paragraph{Object Type} To describe if an entity is a human or an address is 
+used the \emph{objecttype} table.
+
+\paragraph{Alias} If an entity occurs in some document, we want to 
+know how did we call them. For instance Josef Omáčka can be called as 'Josef', 
+'Pepe' or 'Killer'. Table alias just represents all these possibilities (aliases) 
+of some entity.
+
+\paragraph{Relation} Entities may have some relation to each other e.g. killer-victim,
+mother-son, live, use, etc. This table describes relationship between the entities. 
+
+\paragraph{IsInRelation} There can be relations among more than two entities, for example 
+killer-victim-place-time, that's why we have used the N:N relation 
+between \emph{object} and \emph{relation} tables, which represents the \emph{isinrelation} 
+table. For instance, it is to distinguish between killer and victim is used the column \emph{role} 
+(more user friendly) and \emph{order\_{}in\_{}relation} % vague meaning
+
+
+\paragraph{RelationType} As well as objects have the type, relations have them too. 
+Type of relation is for example \emph{kill}, \emph{live} or \emph{sell}.
+
+\paragraph{Relation and Alias Occurrences} These two tables stands for the occurrence of an 
+alias resp. relation in a document. It contains the position in that document from beginning 
+and an anchor for relation.
+
+\paragraph{Joined Objects} It is possible that users realize two different entities are actually 
+a single one. Therefore two old objects have to be joined into new one and this can be done by 
+\emph{joinedobjects} table. However, this join can be wrong, that's why there is also a column 
+to\_{}date in case these some objects are separated.
+
+\paragraph{Audit} All inserts, deletes and updates in tables above are being saved into \emph{audit} 
+table. This audit is only simple because its saved only a string of modified object. Theres also 
+saved a username of the user who did the operation, date of the change and what kind of change has 
+been done.
+ 
+\paragraph{Global Version} In the end of a processing the document is a check if have been added 
+or modified another document concurrently. To perform that check we need to have some information
+when have been tables modified. Tables \emph{Document}, \emph{Object} and \emph{Relation} also 
+contain a column \emph{globalversion}, int that increments with each insert, delete or update. 
+Current global version is stored in \emph{globalversion} table where is only a single row every time.
+
 
 
 \section{Client architecture}
@@ -150,12 +254,12 @@ containing a simple batch report processor without user interaction.
 
 \begin{figure}[!htb]
         \centering
-        \includegraphics[width=10cm]{Images/ClientOverview}
+        \includegraphics[width=\textwidth]{Images/ClientOverview}
         \caption{Overview of the packages.}
         \label{fig:ClientOverview}
 \end{figure}
 
-For visualization itself JavaFX framework is used. It naturaly enforces
+For visualization itself JavaFX framework is used. It naturally enforces
 Model-View-Controller architecture.
 
 In the rest of the section the most important packages will be introduced and
@@ -168,7 +272,7 @@ representation of object, entity, relation, document etc. (see figure \ref{fig:C
 is \emph{Client} which is used for communication with the webservices. It also
 serves as a factory of \emph{ProcessReportPipeline} (see
 \ref{sssec:ReportPipeline}). There are also \emph{SynchronizedDataProvider} and
-\emph{SynchronizedDocumentProcessor} to provide sychronization for
+\emph{SynchronizedDocumentProcessor} to provide synchronization for
 \emph{IDataProvider} and \emph{IDocumentProcessor} created by CXF.
 
 Subpackages of the \emph{Core} package focus on individual client side tasks,
@@ -188,7 +292,7 @@ This package contains classes necessary for report processing (see figure
 \ref{fig:CorePackage}). Most importantly there is class
 \emph{ProcessReportPipeline} that holds information about processing one report.
 The pipeline/wizard approach was chosen because the amount of choices and
-required tasks would be overhelming to users if they were all provided at once.
+required tasks would be overwhelming to users if they were all provided at once.
 Virtually all methods of the pipeline object are delegated to its \emph{State}
 (see figure \ref{fig:Pipeline}). Descendants of the class \emph{State} are
 singletons. They contain most of the pipeline processing logic and control to
@@ -202,9 +306,23 @@ which state the pipeline should go next. When this happens, each registered
         \label{fig:Pipeline}
 \end{figure}
 
+For easy selecting recognized entities and relations a hierarchy of builders
+has been developed (see \ref{fig:Builders}). This is necessary because
+\emph{Object} and \emph{Relation} immutable. The \emph{word} is a class
+representing independent word of the report text. It can be assigned to either
+an entity or relation. \emph{EntityBuilder} also holds the assigned object if
+any.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/Builders}
+        \caption{Overview of the builders hierarchy.}
+        \label{fig:Builders}
+\end{figure}
+
 \subsubsection{cz.cuni.mff.ufal.textan.core.reportpipeline.load}
 
-This package contains classes needed for importing report texts from extenal
+This package contains classes needed for importing report texts from external
 files. There is \emph{IImport} interface that provides methods for extracting
 text from an array of bytes. Custom implementations of \emph{IImporter} need
 to be registered to class \emph{ImportManager} to be selectable by users. The
@@ -227,7 +345,7 @@ mostly graph filtering which is done solely on client side. See figure
 \subsection{Controller and View - cz.cuni.mff.ufal.textan.gui}
 
 This package and its subpackages contain controller classes and several view
-components that had to be customized to achieve specific behaviour. A hierarchy
+components that had to be customized to achieve specific behavior. A hierarchy
 of controllers has been developed, mostly for code reuse (see
 \ref{fig:Controllers}). Controllers extensively use \emph{core} package.
 
@@ -303,6 +421,76 @@ pretopology and graph displaying is rather byproduct. However it fully meets our
 requirements and its author kindly provided us the sources so we could fix one
 inconvenient detail.
 
-\section{Comunication}
+\section{Communication}
+\label{sec:Communication}
 \comment[Petr (\& Adam)]{Petr}{Describe communication pattern between client and server,
 sequence diagram etc.}
+
+A communication between the client and the server is stateless, because the processing
+of a document by a human user may take a very long time, especially because of the saving
+of documents during processing in the client. Sessions cannot be used on
+the server side, because they can die due to timeout before end of the processing.
+For this reason, the state of a processing is placed on client side and is transferred
+with each request in situations where it is necessary.
+
+Usage of webservice \emph{DataProvider} is straightforward, its operations are
+completely independent and are intended for viewing and manipulating
+the database.
+
+The service \emph{DocumentProcessor} is more demanding and needs its operations
+called in specific order to achieve proper recognition (see figure
+\ref{fig:ClientServerCommunication}). First of all, the client needs to obtain
+the ticket which stores information about processing and is needed for all
+following calls. For three recognition operations there are two variants. First
+for processing report already stored in the database (called\emph{*ById}) and
+second for inserting completely new document to the database (called
+\emph{*FromString}). Operations \emph{getEntities*} recognize entities in
+given report. Operations \emph{getAssignments*} assign objects from the database
+to recognized entities and finally operations \emph{getRelations*} recognize
+relations between objects. Please note that \emph{getRelations*} is not
+implemented in this version of \textan{} and returns empty response with no
+relations.
+
+The recognition operations do not store anything into the database. For this
+purpose there are three operations \emph{saveProcessedDocumentFromString} and
+\emph{saveProcessedDocumentById} with similar differences as mentioned above.
+The third operation \emph{rewriteAndSaveProcessedDocumentById} has as input
+parameters both document id and document text, because it overwrites the report
+text stored in the database. It is intended to be called when the document has
+been changed by others while being processed by the user, so the user can
+force returning to the original version or provide new one. All three operations
+take \emph{force} parameter specifying whether the saving should happen even
+though there have been external changes to the database, e.g. new objects, new
+relations and newly joined objects.
+
+If the \emph{force} parameter is \emph{false} and such external changes have
+been detected, saving returns \emph{false} and method \emph{getProblems} can be
+called to get information about the changes. After making adjustments to
+recognizing/assignments if needed, save operations can be called with
+\emph{force} parameter set to \emph{true}.
+
+During the processing of a document already stored in the database, other users
+can alter it in the database. If this happens, the subsequent call of processing
+operation returns fault \emph{documentChangedException} as a warning. If the
+user wants to overwrite these changes as mentioned above, the client should
+switch to \emph{*FromString} recognizing operations and save the report with
+operation \emph{rewriteAndSaveProcessedDocumentById}.
+
+If the document stored in the database has been processed by another user while
+being processed by a local user, the subsequent call of processing operation
+returns fault \emph{documentAlreadyProcessedException} and the processing must
+end as no report can be processed multiple times.
+
+For more details, consult the WSDL descriptions and Javadoc of the server
+implementation.
+
+
+\comment{Adam}{It could be interesting if the sequence diagram is extended to include server components too.}
+\comment{Petr}{Maybe only for some communication, definitely not all}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/ClientServerCommunication}
+        \caption{Example of Client-Server communication during report processing.}
+        \label{fig:ClientServerCommunication}
+\end{figure}

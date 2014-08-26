@@ -8,6 +8,8 @@
 
 \documentclass[12pt,a4paper]{report}
 
+\newcommand*{\DEVDOC}
+
 %\usepackage[utf8]{inputenc} % for old latex interpreters
 %\usepackage[english]{babel}
 
@@ -25,6 +27,8 @@
 \usepackage{titlesec}
 \usepackage{fontspec}
 \usepackage{epstopdf,epsfig} 
+
+\usepackage{xr-hyper}
 
 \definecolor{TextanDarkRed}{cmyk}{.37,.94,.83,.59}
 \definecolor{TextanRed}{cmyk}{.0,.879,.844,.220}
@@ -86,7 +90,10 @@ contents={
 }
 \makeatother
 
-\newcommand{\textan}{\emph{TextAn}}
+\newcommand{\textan}{\emph{Text\-An}}
+
+\externaldocument[USR-]{../UserDocumentation/UserDocumentation}[../UserDocumentation/UserDocumentation.pdf]
+
 
 \begin{document}
 
@@ -138,22 +145,41 @@ Ondřej Bojar\\
 \section{Introduction to the project}
 \input{Sections/IntroductionToTheProject}
 
-\section{Adopted solutions and decisions}
-\comment{Ondrej}{Is this right name? Shouldn't be adopted solutions and decisions placed after specification?}
-\input{Sections/AdoptedSolutions}
+%\section{Conventions}
+
+\section{Glossary}
+\input{../UserDocumentation/Sections/Glossary}
+
+\chapter{Requirements specification}
+\comment{Petr}{If we need to make the documentation longer, include the whole specification}
+\input{Sections/Requirements}
+
+\comment{Petr}{where to place use cases etc?}
+
+\comment{Adam}{I will place use case etc. here for now...}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/UseCase1}
+        \caption{Use case of the end-user.}
+        \label{fig:UseCase1}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/UseCase2}
+        \caption{Use case of the client.}
+        \label{fig:UseCase2}
+\end{figure}
+
+\chapter{Analysis}
 
 \section{Related work}
 \input{Sections/RelatedWork}
-%..
-\section{Conventions}
-\section{Glossary}
-%...
 
-\chapter{Requirements specification}
-\section{Functional requirements}
-\section{Non-functional requirements}
-
-\comment{Petr}{where to place use cases, mockup screens etc?}
+\section{Adopted solutions and decisions}
+\comment{Ondrej}{Is this right name? Shouldn't be adopted solutions and decisions placed after specification?}
+\input{Sections/AdoptedSolutions}
 
 \chapter{Architecture}
 \input{Sections/Architecture}
@@ -162,8 +188,12 @@ Ondřej Bojar\\
 \section{Work on the project}
 \input{Sections/WorkOnProject}
 \section{Decisions}
+\label{sec:Decisions}
+
+\comment{Petr}{Maybe move this section to Analysis}
 
 \chapter{Possibilities of future extensions}
+\input{Sections/FutureExtensions}
 
 \appendix
 \chapter{Source codes}
@@ -178,6 +208,7 @@ in attached DVD in folder Javadoc.
 
 \chapter{Client Properties}
 \input{Sections/ClientProperties}
+\label{app:ClientProperties}
 
 
 \end{document}

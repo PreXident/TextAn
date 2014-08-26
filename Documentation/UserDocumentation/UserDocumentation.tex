@@ -8,6 +8,8 @@
 
 \documentclass[12pt,a4paper]{report}
 
+\newcommand*{\USRDOC}
+
 %\usepackage[utf8]{inputenc} % for old latex interpreters
 %\usepackage[english]{babel}
 
@@ -25,6 +27,12 @@
 \usepackage{fontspec}
 \usepackage{epstopdf,epsfig} 
 \usepackage{enumitem}
+% refs between docs
+\usepackage{xr-hyper} 
+% \usepackage{hyperref} 
+
+
+
 \setlist[description]{leftmargin=\parindent,labelindent=!}
 
 \definecolor{TextanDarkRed}{cmyk}{.37,.94,.83,.59}
@@ -87,6 +95,9 @@ contents={
 
 \newcommand{\textan}{\emph{TextAn}}
 
+%TODO change path in final documentation
+\externaldocument[DEV-]{../DeveloperDocumentation/DeveloperDocumentation}[../DeveloperDocumentation/DeveloperDocumentation.pdf]
+
 \begin{document}
 
 \begin{titlepage}
@@ -140,14 +151,16 @@ Ondřej Bojar\\
 
 \chapter{Administrator guide}
 
-\comment{Adam}{I think this sections Language and Security should be placed
+\comment{Adam}{I think the sections Language and Security should be placed
 after the Server and Client sections as they mention changing configuration
 that it is not explained yet.}
 
 \section{Domain and conventions}
 \input{Sections/Domain}
+\label{sec:Domain}
 
 \section{Language}
+\label{sec:Lang}
 \input{Sections/Language}
 
 \section{Web services}

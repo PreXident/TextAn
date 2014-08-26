@@ -1,0 +1,57 @@
+% Chapter: POSSIBILITIES OF FUTURE EXTENSIONS
+
+\section{Relation recognition}
+The automatic recognition of relations between objects is the most missing thing
+in the current version of \textan{}. However, because this task has been taken
+into account from the very beginning of the development and because it is one of
+the optional requirements, \textan{} contains the whole infrastructure except
+the core component itself.
+
+The recognition can be based on many different criteria, same as relations.
+For example: the presence of objects in the same document, the kind of verbs,
+which are the anchors for relations in the most cases, their valency and
+relations which users marked before in other documents. The component could be
+probably based on some machine learning method and above mentioned attributes.
+
+\section{Searching}
+Although \textan{} provides several search methods, they are weak compared to
+possibilities that graphs offer. Consider for example an environment of police
+reports and a task in which you need to find all persons who know a killer. The
+graph contains this information, if good model is defined for the domain, but
+how can you ask for them?
+
+It implies at least usage of some graph query language and creation of some
+graph indexing over the data. Or in better case usage of different data storage. 
+
+\section{Underlaying database}
+In the case that graph operations become more important, it will be better to use
+a different data store, for example a NoSql database based on RDF or a graph
+database. There are many implementations of these databases, both commercial and
+open-source, e.g. OpenLink Virtuoso\footnote{\url{http://virtuoso.openlinksw.com/}},
+or Neo4j\footnote{\url{http://www.neo4j.org/}}.
+
+\section{Restrictions for objects in relation}
+As it is noted in user documentation section \ref{USR-sec:Domain},
+\textan{} is very universal and needs some conventions to provide good results,
+because there is no way how to enforce the proper use. The system cannot work
+properly without conventions anyway, but some extension enforcing restrictions
+can improve overall outcomes.
+
+The most natural improvement is restricting objects in relations. Consider for
+example relation type "murder". There must probably be at least one object of
+type "person" with role "victim" in the relation of this type, also there
+should be an object of type "person" with role "murderer", an object of type
+"address" with role "crime place" and so on.
+
+\section{Client}
+The \textan{} client could be improved in many ways as any graphic application.
+Some examples:
+
+\begin{itemize}
+	\item Filtering in documents could display exact location of matched text
+	\item There could be a mechanism to localize object and relation types and
+	relation roles
+	\item Inner windows could use some layout framework
+	\item Inner windows could transform to Outer stages and vice-versa on the
+	run
+\end{itemize}
