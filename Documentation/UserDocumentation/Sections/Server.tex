@@ -94,6 +94,8 @@ library into \emph{lib} folder in installation directory.
 \subsubsection{Web server settings}
 \label{sssec:WebServerSettings}
 
+\comment[Petr]{Petr}{Add short introduction into server setting}
+
 %connector
 \paragraph{server.connector.host}
 The particular interface to listen on. If not set or 0.0.0.0, the web server
@@ -121,15 +123,16 @@ The default value is false.
 
 \paragraph{server.ssl.keyStore.path}
 The file or URL of the SSL Key store.
+
 \paragraph{server.ssl.keyStore.password}
 The password for the key store.
+
 \paragraph{server.ssl.keyManager.password}
 The password (if any) for the specific key within the key store.
+
 \paragraph{server.ssl.keyStore.type}
 The type of the key store. The default value is "JKS".
 
-\comment[Petr]{Petr}{Finish rest of server properties}
-\comment[Petr]{Adam}{Check the rest of server properties}
 \paragraph{server.ssl.port}
 The port to listen on when SSL communication is enabled.
 
@@ -154,17 +157,23 @@ For more information about security, please consult \ref{sec:Security}.
 \subsubsection{Database settings}
 \label{sssec:DataSettings}
 
-Because of the server can connect to an arbitrary database, it is required to specify what type of database is used.
-In \textan{} project is used \emph{Hibernate} for object-relation mapping \emph{(ORM)}, \emph{JDBC} for relation database access and \emph{c3p0} for connection pooling (see develeper documentation section \ref{DEV-sec:UsedTechnologies}).
+\comment{Petr}{This settings are related to Persistence layer - it means also indexing}
+\comment[Venca]{Petr}{Add default values for each property - it can be found in data-default.properties}
+Because of the server can connect to an arbitrary database, it is required to
+specify what type of database is used. In \textan{} project is used \emph{Hibernate}
+for object-relation mapping \emph{(ORM)}, \emph{JDBC} for relation database access
+and \emph{c3p0} for connection pooling (see develeper documentation section
+\ref{DEV-sec:UsedTechnologies}).
 
 %TODO 
 \comment{Venca}{add links?}
-Properties to these three libraries can be set in the file \emph{Data/src/main/resources/data-default.properties}. The meanings of all important properties are following:
-
+Properties to these three libraries can be set in the file \emph{data.properties}
+in installation directory. The meanings of all important properties are following:
 
 %jdbc
 \paragraph{jdbc.driverClassName}
-Name of the driver class made usually by database developers which enables to interact with database.
+Name of the driver class made usually by database developers which enables to
+interact with database.
 
 \paragraph{jdbc.url}
  The url that points to our database. The most common url format is like this:
@@ -237,9 +246,9 @@ SQL optimized for a particular relational database.
 
 %hibernate search
 \paragraph{hibernate.search.analyzer}
-\url{http://docs.jboss.org/hibernate/search/3.4/reference/en-US/html_single/#d0e392}
-\comment[Petr]{Petr}{see url above}
-\comment[Petr]{Petr}{What is best analyzer for Czech and English}
+A fully qualified name of Lucene Analyzer that is used for the full text indexing
+and searching. The default value is \emph{org.\-apache.\-lucene.\-analysis.\-cz.\-CzechAnalyzer}.
+For more informations about Analyzers see \ref{sec:Lang}.
 
 %NameTag
 \subsubsection{Named entity recognizer settings}
