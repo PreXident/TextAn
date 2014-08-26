@@ -93,8 +93,9 @@ library into \emph{lib} folder in installation directory.
 
 \subsubsection{Web server settings}
 \label{sssec:WebServerSettings}
-
-\comment[Petr]{Petr}{Add short introduction into server setting}
+This section contains a description of properties that can be used to configure
+the internal web server. These properties can be set in the file \emph{server.properties}
+in installation directory.
 
 %connector
 \paragraph{server.connector.host}
@@ -134,7 +135,9 @@ The password (if any) for the specific key within the key store.
 The type of the key store. The default value is "JKS".
 
 \paragraph{server.ssl.port}
-The port to listen on when SSL communication is enabled.
+The port to listen on when SSL communication is enabled. Note that the port must
+be different from server.connector.port, because HTTP connection is still possible,
+but it is immediately redirected to the SSL port.
 
 %ssl client auth
 \paragraph{server.ssl.clientAuth}
@@ -253,6 +256,7 @@ For more informations about Analyzers see \ref{sec:Lang}.
 %NameTag
 \subsubsection{Named entity recognizer settings}
 \label{sssec:NametagSettings}
+\comment{Petr}{Add link to nametag?}
 This section is mainly about settings stored in NametagLearning.properties. There
 are parameters for neural network which nametag use for learning and switches for
 nametag functions. Also, there are settings affecting models storing and
