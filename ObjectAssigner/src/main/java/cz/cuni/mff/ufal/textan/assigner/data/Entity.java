@@ -1,5 +1,5 @@
 // *************** INTERFACE*******************
-package cz.cuni.mff.ufal.textan.textpro.data;
+package cz.cuni.mff.ufal.textan.assigner.data;
 /*
  * All characteristics of an Entity
  */

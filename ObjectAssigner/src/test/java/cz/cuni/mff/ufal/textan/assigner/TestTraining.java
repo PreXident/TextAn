@@ -4,21 +4,11 @@
  * and open the template in the editor.
  */
 
-package cz.cuni.mff.ufal.textan.textpro;
+package cz.cuni.mff.ufal.textan.assigner;
 
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasOccurrenceTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationOccurrenceTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO;
-import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
+import cz.cuni.mff.ufal.textan.assigner.configs.TextProConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;

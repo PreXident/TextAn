@@ -1,9 +1,9 @@
-package cz.cuni.mff.ufal.textan.textpro.configs;
+package cz.cuni.mff.ufal.textan.assigner.configs;
 
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
-import cz.cuni.mff.ufal.textan.textpro.ITextPro;
-import cz.cuni.mff.ufal.textan.textpro.TextPro;
+import cz.cuni.mff.ufal.textan.assigner.ITextPro;
+import cz.cuni.mff.ufal.textan.assigner.TextPro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

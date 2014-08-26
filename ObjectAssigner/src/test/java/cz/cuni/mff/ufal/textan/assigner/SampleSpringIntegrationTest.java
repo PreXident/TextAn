@@ -1,7 +1,7 @@
-package cz.cuni.mff.ufal.textan.textpro;
+package cz.cuni.mff.ufal.textan.assigner;
 
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
-import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
+import cz.cuni.mff.ufal.textan.assigner.configs.TextProConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

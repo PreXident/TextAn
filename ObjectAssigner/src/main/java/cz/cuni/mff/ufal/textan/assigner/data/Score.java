@@ -2,10 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.cuni.mff.ufal.textan.textpro.data;
+package cz.cuni.mff.ufal.textan.assigner.data;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

@@ -2,7 +2,7 @@
  * 
  */
 
-package cz.cuni.mff.ufal.textan.textpro.data;
+package cz.cuni.mff.ufal.textan.assigner.data;
 
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import java.util.List;

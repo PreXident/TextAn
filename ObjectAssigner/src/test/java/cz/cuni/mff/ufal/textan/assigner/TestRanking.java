@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package cz.cuni.mff.ufal.textan.textpro;
+package cz.cuni.mff.ufal.textan.assigner;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasOccurrenceTableDAO;
@@ -15,8 +15,8 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationOccurrenceTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO;
-import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
-import cz.cuni.mff.ufal.textan.textpro.data.Entity;
+import cz.cuni.mff.ufal.textan.assigner.configs.TextProConfig;
+import cz.cuni.mff.ufal.textan.assigner.data.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

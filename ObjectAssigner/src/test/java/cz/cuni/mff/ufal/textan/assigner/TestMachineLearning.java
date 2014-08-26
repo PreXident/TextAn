@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.cuni.mff.ufal.textan.textpro;
+package cz.cuni.mff.ufal.textan.assigner;
 
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
-import cz.cuni.mff.ufal.textan.textpro.data.Entity;
+import cz.cuni.mff.ufal.textan.assigner.configs.TextProConfig;
+import cz.cuni.mff.ufal.textan.assigner.data.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

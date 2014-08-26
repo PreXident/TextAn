@@ -1,8 +1,8 @@
-package cz.cuni.mff.ufal.textan.textpro;
+package cz.cuni.mff.ufal.textan.assigner;
 
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.textpro.data.Entity;
-import cz.cuni.mff.ufal.textan.textpro.data.EntityInfo;
+import cz.cuni.mff.ufal.textan.assigner.data.Entity;
+import cz.cuni.mff.ufal.textan.assigner.data.EntityInfo;
 import org.junit.Test;
 
 import java.util.ArrayList;

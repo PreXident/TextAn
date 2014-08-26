@@ -4,9 +4,8 @@
  * and open the template in the editor.
  */
 
-package cz.cuni.mff.ufal.textan.textpro.data;
+package cz.cuni.mff.ufal.textan.assigner.data;
 
-import cz.cuni.mff.ufal.textan.textpro.data.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

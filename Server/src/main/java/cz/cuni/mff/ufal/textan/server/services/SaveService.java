@@ -10,7 +10,7 @@ import cz.cuni.mff.ufal.textan.server.commands.TextProLearnCommand;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
-import cz.cuni.mff.ufal.textan.textpro.ITextPro;
+import cz.cuni.mff.ufal.textan.assigner.ITextPro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

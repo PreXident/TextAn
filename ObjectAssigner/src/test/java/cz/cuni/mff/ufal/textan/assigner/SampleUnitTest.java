@@ -1,10 +1,4 @@
-package cz.cuni.mff.ufal.textan.textpro;
-
-import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
-import org.jmock.Mockery;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+package cz.cuni.mff.ufal.textan.assigner;
 
 /**
  * Simple unit test (without spring).

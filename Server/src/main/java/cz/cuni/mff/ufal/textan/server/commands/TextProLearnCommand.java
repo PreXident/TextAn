@@ -1,6 +1,6 @@
 package cz.cuni.mff.ufal.textan.server.commands;
 
-import cz.cuni.mff.ufal.textan.textpro.ITextPro;
+import cz.cuni.mff.ufal.textan.assigner.ITextPro;
 
 /**
  * @author Petr Fanta

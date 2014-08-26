@@ -6,10 +6,9 @@
  * Third, The number of sharing sharing objects between the document and DBObject
  */
 
-package cz.cuni.mff.ufal.textan.textpro.data;
+package cz.cuni.mff.ufal.textan.assigner.data;
 
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
-import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import de.linuxusers.levenshtein.util.SimpleLevenshtein;
 import java.util.ArrayList;

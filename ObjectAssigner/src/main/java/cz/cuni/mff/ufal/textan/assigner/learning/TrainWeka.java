@@ -3,22 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.cuni.mff.ufal.textan.textpro.learning;
+package cz.cuni.mff.ufal.textan.assigner.learning;
 
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.AliasTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.textpro.data.Entity;
-import cz.cuni.mff.ufal.textan.textpro.data.FeaturesComputeValue;
-import java.util.Iterator;
+import cz.cuni.mff.ufal.textan.assigner.data.Entity;
+import cz.cuni.mff.ufal.textan.assigner.data.FeaturesComputeValue;
+
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javafx.util.Pair;
 import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
 import weka.core.Attribute;

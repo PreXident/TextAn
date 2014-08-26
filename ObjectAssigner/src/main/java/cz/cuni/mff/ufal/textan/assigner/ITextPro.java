@@ -1,9 +1,9 @@
-package cz.cuni.mff.ufal.textan.textpro;
+package cz.cuni.mff.ufal.textan.assigner;
 
 // *************** INTERFACE*******************
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.textpro.data.Entity;
+import cz.cuni.mff.ufal.textan.assigner.data.Entity;
 
 import java.util.List;
 import java.util.Map;
