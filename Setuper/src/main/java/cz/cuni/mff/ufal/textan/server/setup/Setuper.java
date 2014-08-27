@@ -11,12 +11,13 @@ import cz.cuni.mff.ufal.textan.server.setup.options.Options;
 import cz.cuni.mff.ufal.textan.server.setup.options.PrepareTrainingData;
 import cz.cuni.mff.ufal.textan.server.setup.options.RenameObjectTypes;
 import cz.cuni.mff.ufal.textan.server.setup.options.RenameRelationTypes;
+import cz.cuni.mff.ufal.textan.server.setup.utils.ScriptRunner;
 
 import java.sql.*;
 
 /**
  * Simple class for batch report processing.
- * For executing different commands uses visitor-like pattern.
+ * For executing different commands uses double dispatch.
  */
 public class Setuper {
 
@@ -125,6 +126,8 @@ public class Setuper {
      * @param command command options
      */
     public void cleanDB(final CleanDB command) {
+
+        ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
 
     }
 
