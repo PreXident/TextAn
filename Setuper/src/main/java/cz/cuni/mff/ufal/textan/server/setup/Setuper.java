@@ -12,54 +12,77 @@ import cz.cuni.mff.ufal.textan.server.setup.options.PrepareTrainingData;
 import cz.cuni.mff.ufal.textan.server.setup.options.RenameObjectTypes;
 import cz.cuni.mff.ufal.textan.server.setup.options.RenameRelationTypes;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 /**
  * Simple class for batch report processing.
  * For executing different commands uses visitor-like pattern.
  */
 public class Setuper {
 
+    private static final int EXIT_STATUS_HELP = 1;
+    private static final int EXIT_STATUS_MISSING_PARAM = 2;
+    private static final int EXIT_STATUS_MISSING_CLASS= 3;
+    private static final int EXIT_STATUS_SQL_PROBLEM= 3;
+
+
     /**
      * Main method.
      * @param args command line arguments
      */
     public static void main(final String[] args) {
-        //parse command line options
-        final Options options = new Options();
-        final JCommander jCommander = options.createJCommander();
-        jCommander.parse(args);
-        if (options.help || jCommander.getParsedCommand() == null) {
-            jCommander.usage();
-            return;
+
+        try {
+            //parse command line options
+            final Options options = new Options();
+            final JCommander jCommander = options.createJCommander();
+            jCommander.parse(args);
+            if (options.help || jCommander.getParsedCommand() == null) {
+                jCommander.usage();
+                System.exit(EXIT_STATUS_HELP);
+            }
+            options.processSettings();
+            if (options.driver == null) {
+                System.out.println("Database driver not specified!");
+                jCommander.usage();
+                System.exit(EXIT_STATUS_MISSING_PARAM);
+            }
+            if (options.url == null) {
+                System.out.println("Database url not specified!");
+                jCommander.usage();
+                System.exit(EXIT_STATUS_MISSING_PARAM);
+            }
+            if (options.user == null) {
+                System.out.println("Database user not specified!");
+                jCommander.usage();
+                System.exit(EXIT_STATUS_MISSING_PARAM);
+            }
+            if (options.password == null) {
+                System.out.println("Database password not specified!");
+                jCommander.usage();
+                System.exit(EXIT_STATUS_MISSING_PARAM);
+            }
+            //
+            final String commandName = jCommander.getParsedCommand();
+            final Command command = options.getCommand(commandName);
+            new Setuper(options).execute(command);
+
+        } catch (ClassNotFoundException e) {
+            System.err.println(e.getMessage());
+            System.exit(EXIT_STATUS_MISSING_CLASS);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            System.exit(EXIT_STATUS_SQL_PROBLEM);
         }
-        options.processSettings();
-        if (options.driver == null) {
-            System.out.println("Database driver not specified!");
-            jCommander.usage();
-            return;
-        }
-        if (options.url == null) {
-            System.out.println("Database url not specified!");
-            jCommander.usage();
-            return;
-        }
-        if (options.user == null) {
-            System.out.println("Database user not specified!");
-            jCommander.usage();
-            return;
-        }
-        if (options.password == null) {
-            System.out.println("Database password not specified!");
-            jCommander.usage();
-            return;
-        }
-        //
-        final String commandName = jCommander.getParsedCommand();
-        final Command command = options.getCommand(commandName);
-        new Setuper(options).execute(command);
     }
 
     /** Application options. */
     protected final Options options;
+
+    /** Database connection */
+    protected Connection connection;
 
     /**
      * Only constructor.
@@ -73,8 +96,31 @@ public class Setuper {
      * Executes command using visitor pattern.
      * @param command command to execute
      */
-    public void execute(final Command command) {
-        command.accept(this);
+    public void execute(final Command command) throws ClassNotFoundException, SQLException {
+
+        //Open db connection
+        try {
+            Class.forName(options.driver);
+        } catch (ClassNotFoundException e) {
+            System.err.println("The JDBC driver '{}' was not found.");
+            throw e;
+        }
+
+        connection = null;
+        try {
+            connection = DriverManager.getConnection(options.url, options.user, options.password);
+        } catch (SQLException e) {
+            System.err.println("Connection to database failed.");
+            throw e;
+        }
+
+        try {
+            command.accept(this);
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
     }
 
     /**
@@ -82,7 +128,7 @@ public class Setuper {
      * @param command command options
      */
     public void cleanDB(final CleanDB command) {
-        //TODO implement
+
     }
 
     /**
@@ -114,7 +160,7 @@ public class Setuper {
      * @param command command options
      */
     public void listTypes(final ListTypes command) {
-        //TODO implement
+
     }
 
     /**
