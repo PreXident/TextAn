@@ -1,5 +1,3 @@
-USE textan;
-
 DELETE FROM AliasOccurrence;
 DELETE FROM Alias;
 

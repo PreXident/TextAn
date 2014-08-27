@@ -15,10 +15,12 @@
     </wsdl:types>
         
     <wsdl:message name="usernameToken">
+        <wsdl:documentation>The message that contains information about user. It is used in every request as one of headers.</wsdl:documentation>
         <wsdl:part name="usernameToken" element="cms:usernameToken"/>
     </wsdl:message>
     
     <wsdl:message name="getObjectTypesRequest">
+
         <wsdl:part name="getObjectTypesRequest" element="tns:getObjectTypesRequest"/>
     </wsdl:message>
     

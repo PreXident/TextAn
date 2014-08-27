@@ -2,7 +2,11 @@ package cz.cuni.mff.ufal.textan.server.setup.options;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -13,40 +17,45 @@ import java.util.TreeMap;
  */
 public class Options {
 
-    /** Database driver. */
-    @Parameter(
-            description = "database driver, overwrites the one from database settings",
-            names = { "-d", "/D", "--driver" })
-    public String driver = null;
+    /** Path to a default server property file (inside jar). */
+    private static final String DEFAULT_DATA_PROPERTIES = "data-default.properties";
+    /** Path to an user server property file. The file should be relative to working directory. */
+    private static final String USER_DATA_PROPERTIES = "data.properties";
 
     /** Flag indicating whether help needs printing. */
     @Parameter(
-            description = "prints help and exits",
+            description = "Prints help and exits.",
             help = true,
             names = { "-h", "/H", "--help", "/?" })
     public boolean help = false;
 
+    /** Database driver. */
+    @Parameter(
+            description = "Database driver, overwrites the one from database settings. Note, that there is only the MySql driver by default, other drivers must be added into the classpath.",
+            names = { "-d", "/D", "--driver" })
+    public String driver = null;
+
     /** Database user. */
     @Parameter(
-            description = "database user name, overwrites the one from database settings",
+            description = "Database user name, overwrites the one from database settings.",
             names = { "-n", "/N", "--user-name" })
     public String user = null;
 
     /** Password to the database. */
     @Parameter(
-            description = "database password, overwrites the one from database settings",
+            description = "Database password, overwrites the one from database settings.",
             names = { "-p", "/P", "--password" })
     public String password = null;
 
     /** Path to file containing settings. */
-    @Parameter(
-            description = "file containing database settings",
-            names = { "-s", "/S", "--settings" })
-    public String settings = "data.properties";
+//    @Parameter(
+//            description = "file containing database settings",
+//            names = { "-s", "/S", "--settings" })
+//    public String settings = "data.properties";
 
     /** Database url. */
     @Parameter(
-            description = "database url, overwrites the one from database settings",
+            description = "Database url, overwrites the one from database settings.",
             names = { "-u", "/U", "--url" })
     public String url = null;
 
@@ -59,8 +68,8 @@ public class Options {
     public Options() {
         commands.put("clean_db", new CleanDB());
         commands.put("create_db", new CreateDB());
-        commands.put("load_objects", new LoadObjectTypes());
-        commands.put("load_relations", new LoadRelationTypes());
+        commands.put("load_object_types", new LoadObjectTypes());
+        commands.put("load_relation_types", new LoadRelationTypes());
         commands.put("list_types", new ListTypes());
         commands.put("rename_objects", new RenameObjectTypes());
         commands.put("rename_relations", new RenameRelationTypes());
@@ -99,9 +108,22 @@ public class Options {
                 && url != null) {
             return;
         }
-        final Properties properties = new Properties();
-        try (FileReader reader = new FileReader(settings)) {
-            properties.load(reader);
+
+        try {
+            //load default properties from jar
+            //DEFAULT_DATA_PROPERTIES must be in classpath
+            Properties defaults = new Properties();
+            defaults.load(getClass().getClassLoader().getResourceAsStream(DEFAULT_DATA_PROPERTIES));
+
+            //load user properties
+            Properties properties = new Properties(defaults);
+            File userPropertiesFile = new File(USER_DATA_PROPERTIES);
+            if (userPropertiesFile.exists()) {
+                try (InputStream stream = new FileInputStream(userPropertiesFile)) {
+                    properties.load(stream);
+                }
+            }
+
             if (driver == null) {
                 driver = properties.getProperty("jdbc.driverClassName");
             }
@@ -114,8 +136,9 @@ public class Options {
             if (url == null) {
                 url = properties.getProperty("jdbc.url");
             }
+
         } catch (Exception e) {
-            System.err.printf("Error while reading settings from file \"%s\"\n", settings);
+            System.err.printf("Error while reading settings from file \"%s\"\n", e.getMessage());
             e.printStackTrace();
         }
     }

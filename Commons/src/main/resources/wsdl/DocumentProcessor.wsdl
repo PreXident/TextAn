@@ -15,6 +15,9 @@
     </wsdl:types>
     
     <wsdl:message name="usernameToken">
+        <wsdl:documentation>
+            The message that contains information about user. It is used in every request as one of headers.
+        </wsdl:documentation>
         <wsdl:part name="usernameToken" element="cms:usernameToken"/>
     </wsdl:message>
     
@@ -23,100 +26,154 @@
     </wsdl:message> -->
     
     <wsdl:message name="getEditingTicketRequest">
+        <wsdl:documentation>The request message to obtaining an Editing Ticket.</wsdl:documentation>
         <wsdl:part name="getEditingTicketRequest" element="tns:getEditingTicketRequest"/>
     </wsdl:message>
     
     <wsdl:message name="getEditingTicketResponse">
+        <wsdl:documentation>The response message that contains the actual Editing Ticket.</wsdl:documentation>
         <wsdl:part name="getEditingTicketResponse" element="tns:getEditingTicketResponse"/>
     </wsdl:message>
          
     <wsdl:message name="getEntitiesFromStringRequest">
+        <wsdl:documentation>The request message to obtaining Entities from some text.</wsdl:documentation>
         <wsdl:part name="getEntitiesFromStringRequest" element="tns:getEntitiesFromStringRequest"/>
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getEntitiesFromStringResponse">
+        <wsdl:documentation>The response message that contains Entities recognized in the text.</wsdl:documentation>
         <wsdl:part name="getEntitiesFromStringResponse" element="tns:getEntitiesFromStringResponse"/>
     </wsdl:message>
     
     <wsdl:message name="getEntitiesByIdRequest">
+        <wsdl:documentation>
+            The request message to obtaining Entities from a document stored in the database.
+        </wsdl:documentation>
         <wsdl:part name="getEntitiesByIdRequest" element="tns:getEntitiesByIdRequest"/>
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
-    
+
     <wsdl:message name="getEntitiesByIdResponse">
+        <wsdl:documentation>The response message that contains Entities recognized in the text.</wsdl:documentation>
         <wsdl:part name="getEntitiesByIdResponse" element="tns:getEntitiesByIdResponse"/>
     </wsdl:message>
     
     <wsdl:message name="getAssignmentsFromStringRequest">
+        <wsdl:documentation>
+            The request message to obtaining objects assigned to entities from some test.
+        </wsdl:documentation>
         <wsdl:part name="getAssignmentsFromStringRequest" element="tns:getAssignmentsFromStringRequest"/>
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getAssignmentsFromStringResponse">
+        <wsdl:documentation>
+            The response message that contains pairs of entity and list of objects with probability.
+        </wsdl:documentation>
         <wsdl:part name="getAssignmentsFromStringResponse" element="tns:getAssignmentsFromStringResponse"/>
     </wsdl:message>
     
     <wsdl:message name="getAssignmentsByIdRequest">
+        <wsdl:documentation>
+            The request message to obtaining objects assigned to entities from a document stored in the database.
+        </wsdl:documentation>
         <wsdl:part name="getAssignmentsByIdRequest" element="tns:getAssignmentsByIdRequest"/>
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="getAssignmentsByIdResponse">
+        <wsdl:documentation>
+            The response message that contains pairs of entity and list of objects with probability.
+        </wsdl:documentation>
         <wsdl:part name="getAssignmentsByIdResponse" element="tns:getAssignmentsByIdResponse"/>
     </wsdl:message>
 
     <wsdl:message name="getRelationsFromStringRequest">
+        <wsdl:documentation>
+            The request message to obtaining recognized relations between objects in some text.
+        </wsdl:documentation>
         <wsdl:part name="getRelationsFromStringRequest" element="tns:getRelationsFromStringRequest"/>
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
 
     <wsdl:message name="getRelationsFromStringResponse">
+        <wsdl:documentation>
+            The response message that contains recognized relations between objects in some text.
+        </wsdl:documentation>
         <wsdl:part name="getRelationsFromStringResponse" element="tns:getRelationsFromStringResponse"/>
     </wsdl:message>
 
     <wsdl:message name="getRelationsByIdRequest">
+        <wsdl:documentation>
+            The request message to obtaining recognized relations between objects in a document stored in the database.
+        </wsdl:documentation>
         <wsdl:part name="getRelationsByIdRequest" element="tns:getRelationsByIdRequest"/>
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
 
     <wsdl:message name="getRelationsByIdResponse">
+        <wsdl:documentation>
+            The response message that contains recognized relations between objects in a document stored in the database.
+        </wsdl:documentation>
         <wsdl:part name="getRelationsByIdResponse" element="tns:getRelationsByIdResponse"/>
     </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentByIdRequest">
+        <wsdl:documentation>
+            The request message that contains all changes that should be stored in the system after processing of some
+            document sored in the database.
+        </wsdl:documentation>
         <wsdl:part name="saveProcessedDocumentByIdRequest" element="tns:saveProcessedDocumentByIdRequest"/>
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentByIdResponse">
+        <wsdl:documentation>
+            The response message that contains result of the saving of the processed document stored in the database.
+        </wsdl:documentation>
         <wsdl:part name="saveProcessedDocumentByIdResponse" element="tns:saveProcessedDocumentByIdResponse"/>
     </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentFromStringRequest">
+        <wsdl:documentation>
+            The request message that contains all changes that should be stored in the system after processing of some text.
+        </wsdl:documentation>
         <wsdl:part name="saveProcessedDocumentFromStringRequest" element="tns:saveProcessedDocumentFromStringRequest"/>
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
     
     <wsdl:message name="saveProcessedDocumentFromStringResponse">
+        <wsdl:documentation>
+            The response message that contains result of the saving of the processed text.
+        </wsdl:documentation>
         <wsdl:part name="saveProcessedDocumentFromStringResponse" element="tns:saveProcessedDocumentFromStringResponse"/>
     </wsdl:message>
     
     <wsdl:message name="rewriteAndSaveProcessedDocumentByIdRequest">
+        <wsdl:documentation>
+            The request message that contains all changes that should be stored in the system after processing of some text
+            and the id of a stored document that should be rewrited.
+        </wsdl:documentation>
         <wsdl:part name="rewriteAndSaveProcessedDocumentByIdRequest" element="tns:rewriteAndSaveProcessedDocumentByIdRequest"/>
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
 
     <wsdl:message name="rewriteAndSaveProcessedDocumentByIdResponse">
+        <wsdl:documentation>
+            The response message that contains result of operation rewriteAndSaveProcessedDocument.
+        </wsdl:documentation>
         <wsdl:part name="rewriteAndSaveProcessedDocumentByIdResponse" element="tns:rewriteAndSaveProcessedDocumentByIdResponse"/>
     </wsdl:message>
 
     <wsdl:message name="getProblemsRequest">
+        <wsdl:documentation>The request message to obtaining problems that occurs during saving.</wsdl:documentation>
         <wsdl:part name="getProblemsRequest" element="tns:getProblemsRequest"/>
         <wsdl:part name="editingTicket" element="tns:editingTicket"/>
     </wsdl:message>
 
     <wsdl:message name="getProblemsResponse">
+        <wsdl:documentation>The response message that contains problems that occurs during saving.</wsdl:documentation>
         <wsdl:part name="getProblemsResponse" element="tns:getProblemsResponse"/>
     </wsdl:message>
 
@@ -139,30 +196,45 @@
     </wsdl:message>-->
 
     <wsdl:message name="idNotFoundException">
+        <wsdl:documentation>
+            The message for the exception that is thrown when some id from request was not found in the database.
+        </wsdl:documentation>
         <wsdl:part name="idNotFoundException" element="cms:idNotFoundException"/>
     </wsdl:message>
 
     <wsdl:message name="documentChangedException">
+        <wsdl:documentation>
+            The message for the exception that is thrown when someone else change the document while it is being processed.
+        </wsdl:documentation>
         <wsdl:part name="documentChangedException" element="tns:documentChangedException"/>
     </wsdl:message>
     
     <wsdl:message name="documentAlreadyProcessedException">
+        <wsdl:documentation>
+            The message for the exception that is thrown when someone else already saved the document while it is being
+            processed.
+        </wsdl:documentation>
         <wsdl:part name="documentAlreadyProcessedException" element="tns:documentAlreadyProcessedException"/>
     </wsdl:message>
     
     <wsdl:portType name="DocumentProcessor">
         
-        <wsdl:operation name="getEditingTicket">            
+        <wsdl:operation name="getEditingTicket">
+            <wsdl:documentation>
+                Gets the actual Editing ticket. It should be called before any other operation from DocumentProcessor.
+            </wsdl:documentation>
             <wsdl:input message="ws:getEditingTicketRequest"/>
             <wsdl:output message="ws:getEditingTicketResponse"/>
         </wsdl:operation>
 
         <wsdl:operation name="getEntitiesFromString">
+            <wsdl:documentation>Gets entities from some text.</wsdl:documentation>
             <wsdl:input message="ws:getEntitiesFromStringRequest"/>
             <wsdl:output message="ws:getEntitiesFromStringResponse"/>
         </wsdl:operation>
         
         <wsdl:operation name="getEntitiesById">
+            <wsdl:documentation>Gets entities from a document stored in the database.</wsdl:documentation>
             <wsdl:input message="ws:getEntitiesByIdRequest"/>
             <wsdl:output message="ws:getEntitiesByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
@@ -171,11 +243,15 @@
         </wsdl:operation>
         
         <wsdl:operation name="getAssignmentsFromString">
+            <wsdl:documentation>Gets objects assigned to entities from some text.</wsdl:documentation>
             <wsdl:input message="ws:getAssignmentsFromStringRequest"/>
             <wsdl:output message="ws:getAssignmentsFromStringResponse"/>
         </wsdl:operation>
         
         <wsdl:operation name="getAssignmentsById">
+            <wsdl:documentation>
+                Gets objects assigned to entities from a document stored in the database.
+            </wsdl:documentation>
             <wsdl:input message="ws:getAssignmentsByIdRequest"/>
             <wsdl:output message="ws:getAssignmentsByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
@@ -184,11 +260,15 @@
         </wsdl:operation>
 
         <wsdl:operation name="getRelationsFromString">
+            <wsdl:documentation>Gets relations that are recognized between objects from some text.</wsdl:documentation>
             <wsdl:input message="ws:getRelationsFromStringRequest"/>
             <wsdl:output message="ws:getRelationsFromStringResponse"/>
         </wsdl:operation>
 
         <wsdl:operation name="getRelationsById">
+            <wsdl:documentation>
+                Gets relations that are recognized between objects from a document stored in the database.
+            </wsdl:documentation>
             <wsdl:input message="ws:getRelationsByIdRequest"/>
             <wsdl:output message="ws:getRelationsByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
@@ -197,12 +277,16 @@
         </wsdl:operation>
         
         <wsdl:operation name="saveProcessedDocumentFromString">
+            <wsdl:documentation>Saves a processed text into the database.</wsdl:documentation>
             <wsdl:input message="ws:saveProcessedDocumentFromStringRequest"/>
             <wsdl:output message="ws:saveProcessedDocumentFromStringResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
         </wsdl:operation>
         
         <wsdl:operation name="saveProcessedDocumentById">
+            <wsdl:documentation>
+                Saves a processed a processed document from the database into the database.
+            </wsdl:documentation>
             <wsdl:input message="ws:saveProcessedDocumentByIdRequest"/>
             <wsdl:output message="ws:saveProcessedDocumentByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
@@ -211,6 +295,9 @@
         </wsdl:operation>
 
         <wsdl:operation name="rewriteAndSaveProcessedDocumentById">
+            <wsdl:documentation>
+                Saves a processed text into the document with given id into the database.
+            </wsdl:documentation>
             <wsdl:input message="ws:rewriteAndSaveProcessedDocumentByIdRequest"/>
             <wsdl:output message="ws:rewriteAndSaveProcessedDocumentByIdResponse"/>
             <wsdl:fault name="idNotFoundException" message="ws:idNotFoundException"/>
@@ -218,6 +305,7 @@
         </wsdl:operation>
 
         <wsdl:operation name="getProblems">
+            <wsdl:documentation>Gets problems that occurs during saving.</wsdl:documentation>
             <wsdl:input message="ws:getProblemsRequest"/>
             <wsdl:output message="ws:getProblemsResponse"/>
         </wsdl:operation>
