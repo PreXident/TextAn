@@ -35,7 +35,13 @@ For installation it is sufficient to unpack its content into any directory.
 \comment[Venca]{Petr}{decribe how to configure database (relational db, DBMS
 independent, mysql recomendation... etc. (check \ref{sssec:SerInstPre}))}
 
-There is a sql script \emph{(create.sql)} to setup the database located in folder  \emph{Database}. It should be executed to setup the database schema before the server starts. However this script is \emph{MySQL} specific \comment[Venca]{Venca}{check} and if you have other database you should replace \emph{MySQL} specific commands.
+There is a sql script \emph{(create.sql)} to setup the database located in folder
+\emph{Database}. It should be executed to setup the database schema before the server
+starts. However this script is \emph{MySQL} specific \comment[Venca]{Venca}{check}
+ and if you have other database you should replace \emph{MySQL} specific commands.
+
+\comment[Venca]{Petr}{Change of  the underlying database is not so easy, you need
+to add db driver into classpath! Is it somewhere in the documentation? }
 
 \subsubsection{Basic configuration}
 
