@@ -192,7 +192,18 @@ operation for users.
 
 \comment[Petr]{Petr}{Describe new Czech analyzer}
 
+Persistence layer cares about providing data to application layer and ensure they are persistent.
+First of all this layer needs to convert data between database and objects in java. This is called Object-Relation Mapping (ORM). Java classes whose instances are stored in database tables are called persistent classes. And we need to persist these objects. That is where Hibernate comes to the scene (see section \ref{ssec:UsedLibraries}) and do that for us.
+Next thing we need take care of is to perform a transaction, for example joining two objects should first check if they are roots and if so, they are joined. All operations with database are usually done by DAOs.
+Data Access Object (DAO) is a basic design pattern for Java EE which wraps all access to data sources. It also handles the connection to data sources to get and store data. What is good for? Basically it's appreciated when the persistence layer changes. For example if we decide not to use hibernate but some other library, we don't have to remake the whole application but only the DAO and all under it.
+% TODO add pictures
+\comment{Venca}{Add pictures}
+
 \subsection{Database}
+
+\comment[Venca]{Petr}{Describe database: database schema etc.}
+This section describes the database schema (see figure \ref{fig:DatabaseSchema}), meaning of all database tables and columns.
+
 
 \begin{figure}[!htb]
         \centering
@@ -201,18 +212,16 @@ operation for users.
         \label{fig:DatabaseSchema}
 \end{figure}
 
-\comment[Venca]{Petr}{Describe database: database schema etc.}
-This section describes the database schema (see figure \ref{fig:DatabaseSchema})
-Now we will describe each table and its meaning
+
 
 \paragraph{Document} The report to be processed. There are columns for the date of 
 creation \emph{(added)}, last change and the date when the document has been processed.
 
 \paragraph{Object} Object stands for the entity e.g. Josef Novák or specific adress. 
-It has only one meaningful column \emph{data} that is used to describe that entity.
+It has only one column with content \emph{data} that is used to describe that object. Apart from that it contains reference to \emph{ObjectType} table to determine what type is the object.
 
-\paragraph{Object Type} To describe if an entity is a human or an address is 
-used the \emph{objecttype} table.
+\paragraph{Object Type} To describe if an object is a human or an address is 
+used the \emph{objecttype} table. It has only one column with name of the type and it have to be unique.
 
 \paragraph{Alias} If an entity occurs in some document, we want to 
 know how did we call them. For instance Josef Omáčka can be called as 'Josef', 
@@ -252,7 +261,8 @@ when have been tables modified. Tables \emph{Document}, \emph{Object} and \emph{
 contain a column \emph{globalversion}, int that increments with each insert, delete or update. 
 Current global version is stored in \emph{globalversion} table where is only a single row every time.
 
-
+\paragraph{} As you can see there is a little bit of redundancy in our schema. One you can see in alias table where is stored the alias of an object. But if we really want to, we could get the alias from document, where this object occurs, but that would be too complicated to get from single query and furthermore we want to get easily all aliases of an object.
+Next redundancy is \emph{Object.id\_{}root\_{}object} which is foreign key to the same table. Once we join objects in pairs and we get a new one, make this joining together a binary tree. A root of this tree is the object, of which we want to edit aliases, because we do not want to care about other objects in the tree. So we need two things: determine if a given object is a root and to get a root if this is not the root. Without that column we would have to join until we get to the root and that, as we know, can't be done in a single sql query. Now we only ask if the root of an object is the same or we simply can get the root object in one join.
 
 \section{Client architecture}
 
