@@ -4,6 +4,7 @@ import com.beust.jcommander.Parameter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public abstract class LoadTypes extends Command {
     /**
      * Prepares list of types loaded from files.
      */
-    protected void prepareTypes() {
+    protected void prepareTypes() throws IOException {
         for (File file : files) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
@@ -33,7 +34,7 @@ public abstract class LoadTypes extends Command {
                 }
             } catch (Exception e) {
                 System.out.printf("Error while loading file \"%s\"", file.getAbsolutePath());
-                e.printStackTrace();
+                throw e;
             }
         }
     }

@@ -173,16 +173,48 @@ public class Setuper {
      * Loads object types to the database.
      * @param command command options
      */
-    public void createObjectTypes(final LoadObjectTypes command) {
-        //TODO implement
+    public void createObjectTypes(final LoadObjectTypes command) throws SQLException {
+        try {
+            connection.setAutoCommit(false);
+
+            String insertObjectTypeQuery = "INSERT INTO ObjectType (name) VALUES (?)";
+            PreparedStatement statement = connection.prepareStatement(insertObjectTypeQuery);
+            for (String typeName : command.types) {
+                statement.setString(1, typeName);
+                statement.executeUpdate();
+            }
+
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
+        }
     }
 
     /**
      * Loads relation types to the database.
      * @param command command options
      */
-    public void createRelationTypes(final LoadRelationTypes command) {
-        //TODO implement
+    public void createRelationTypes(final LoadRelationTypes command) throws SQLException {
+        try {
+            connection.setAutoCommit(false);
+
+            String insertRelationTypeQuery = "INSERT INTO RelationType (name) VALUES (?)";
+            PreparedStatement statement = connection.prepareStatement(insertRelationTypeQuery);
+            for (String typeName : command.types) {
+                statement.setString(1, typeName);
+                statement.executeUpdate();
+            }
+
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
+        }
     }
 
     /**
