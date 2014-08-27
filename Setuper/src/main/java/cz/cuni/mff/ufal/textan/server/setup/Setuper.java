@@ -13,6 +13,9 @@ import cz.cuni.mff.ufal.textan.server.setup.options.RenameObjectTypes;
 import cz.cuni.mff.ufal.textan.server.setup.options.RenameRelationTypes;
 import cz.cuni.mff.ufal.textan.server.setup.utils.ScriptRunner;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.sql.*;
 
 /**
@@ -23,8 +26,12 @@ public class Setuper {
 
     private static final int EXIT_STATUS_HELP = 1;
     private static final int EXIT_STATUS_MISSING_PARAM = 2;
-    private static final int EXIT_STATUS_MISSING_CLASS= 3;
-    private static final int EXIT_STATUS_SQL_PROBLEM= 3;
+    private static final int EXIT_STATUS_MISSING_CLASS = 3;
+    private static final int EXIT_STATUS_SQL_PROBLEM = 3;
+    private static final int EXIT_STATUS_IO_PROBLEM = 4;
+
+    private static final String CREATE_SCRIPT_FILENAME = "create.sql";
+    private static final String CLEAN_SCRIPT_FILENAME = "clean.sql";
 
     /**
      * Main method.
@@ -73,6 +80,9 @@ public class Setuper {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             System.exit(EXIT_STATUS_SQL_PROBLEM);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            System.exit(EXIT_STATUS_IO_PROBLEM);
         }
     }
 
@@ -94,7 +104,7 @@ public class Setuper {
      * Executes command using visitor pattern.
      * @param command command to execute
      */
-    public void execute(final Command command) throws ClassNotFoundException, SQLException {
+    public void execute(final Command command) throws ClassNotFoundException, SQLException, IOException {
 
         //Open db connection
         try {
@@ -125,18 +135,38 @@ public class Setuper {
      * Cleans the database.
      * @param command command options
      */
-    public void cleanDB(final CleanDB command) {
-
-        ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
-
+    public void cleanDB(final CleanDB command) throws IOException, SQLException {
+        //TODO: fix script loading
+        try (Reader cleanScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CLEAN_SCRIPT_FILENAME))) {
+            connection.setAutoCommit(false);
+            ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
+            scriptRunner.runScript(cleanScriptReader);
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
+        }
     }
 
     /**
      * Creates the database.
      * @param command command options
      */
-    public void createDB(final CreateDB command) {
-        //TODO implement
+    public void createDB(final CreateDB command) throws IOException, SQLException {
+        //TODO: fix script loading
+        try (Reader createScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CLEAN_SCRIPT_FILENAME))) {
+            connection.setAutoCommit(false);
+            ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
+            scriptRunner.runScript(createScriptReader);
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
+        }
     }
 
     /**

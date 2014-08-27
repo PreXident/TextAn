@@ -111,6 +111,7 @@ public class Options {
 
         try {
             //load default properties from jar
+            //TODO: fix loading of default properties
             Properties defaults = new Properties();
             defaults.load(getClass().getClassLoader().getResourceAsStream(DEFAULT_DATA_PROPERTIES));
 
