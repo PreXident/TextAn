@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.assigner;
 
 import cz.cuni.mff.ufal.textan.assigner.configs.ObjectAssignerConfig;
@@ -18,12 +12,14 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * This testing package is devoted to Weka Features
+ * This testing package is devoted to Weka Features.
+ * TODO is this doing anything?
  * @author HOANGT
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ObjectAssignerConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class TestTraining {
+
     @Test
     public void TestVectors() {
         Attribute StringSimilarityMaximum = new Attribute("StringSimilarityMaximum");
@@ -44,10 +40,10 @@ public class TestTraining {
         fvWekaAttributes.addElement(StringSimilarityAverage);
         fvWekaAttributes.addElement(TypeComparison);
         fvWekaAttributes.addElement(ClassAttribute);
-        
+
         Instances isTrainingSet = new Instances("Rel", fvWekaAttributes, 10);
         isTrainingSet.setClassIndex(4);
-        
+
         Instance thisInstance = new Instance(5);
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(0), 1.0);
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(1), 1.0);

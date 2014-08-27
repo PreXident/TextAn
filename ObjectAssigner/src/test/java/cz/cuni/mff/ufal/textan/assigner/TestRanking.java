@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +35,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ObjectAssignerConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class TestRanking {
+
     @Autowired
     IAliasOccurrenceTableDAO aliasOccurrenceTableDAO;
 
@@ -66,22 +66,22 @@ public class TestRanking {
     @Test
     public void TestRank() {
         // Create fake test
-        Entity e = new Entity("Ema", 0, 0 , 1);
+        Entity e = new Entity("Ema", 1);
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         assertEquals("1 entity to match", 1, eList.size());
-        
+
         // Run the ranking
         Map<Entity, List<Pair<Long, Double>>> result = textPro.heuristicRanking("Empty", eList, 5);
-        
+
         List<Pair<Long, Double>> Olist = result.get(e);
-        
+
         // Number of entity to match
         assertEquals("1: entity to match", 1, result.keySet().size());
-        
+
         //number of object matched the entity e
         assertEquals("2: one object found", 2, Olist.size());
         //assertEquals("2 zero object", 1, Olist.keySet().size());
     }
-    
+
 }

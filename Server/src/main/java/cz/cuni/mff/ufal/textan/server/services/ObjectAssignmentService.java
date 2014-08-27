@@ -63,7 +63,7 @@ public class ObjectAssignmentService {
     private List<Assignment> getAssignmentsInner(String text, List<Entity> entities) {
 
         Map<cz.cuni.mff.ufal.textan.assigner.data.Entity, List<Pair<Long, Double>>> textProAssignments =
-                textPro.finalRanking(
+                textPro.createObjectRanking(
                         text,
                         entities.stream().map(Entity::toTextProEntity).collect(Collectors.toList()),
                         50

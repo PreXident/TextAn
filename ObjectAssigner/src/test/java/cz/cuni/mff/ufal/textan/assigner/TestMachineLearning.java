@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.cuni.mff.ufal.textan.assigner;
 
 import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
@@ -22,7 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /**
- *
+ * Test class for machine learning ranking.
  * @author HOANGT
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -55,69 +50,72 @@ public class TestMachineLearning {
 
     @Autowired
     IDocumentTableDAO documentTableDAO;
-    
+
     @Autowired
     IObjectAssigner textPro;
 
-    /*
-     Test the learning
+    /**
+     * Test the machine learning ranking.
      */
     @Test
     public void TestML() {
         // Learn from database
         textPro.learn();
-        
+
         // Create fake test
-        Entity e = new Entity("Emily", 0, 0 , 1);
+        Entity e = new Entity("Emily", 1);
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         assertEquals("1 entity to match", 1, eList.size());
-        
+
         // Run the ranking
-        Map<Entity, List<Pair<Long, Double>>> result = textPro.machineLearning("Empty", eList, 5);
-        
+        Map<Entity, List<Pair<Long, Double>>> result = textPro.machineLearningRanking("Empty", eList, 5);
+
         List<Pair<Long, Double>> Olist = result.get(e);
         assertEquals("1: entity to match", 1, result.keySet().size());
         assertEquals("2: two object found", 0, Olist.size());
         //assertEquals("2 zero object", 1, Olist.keySet().size());
     }
-    
+
+    /**
+     * TODO this does not call close objects! How can it test it?
+     */
     @Test
     public void TestGetCloseObject() {
         // Learn from database
         //textPro.learn();
-        
+
         // Create fake test
-        Entity e = new Entity("Em", 0, 0 , 1);
+        Entity e = new Entity("Em", 1);
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
         List<ObjectTable> oListFullText = objectTableDAO.findAllByObjTypeAndAliasFullText(e.getType(), e.getText());
         List<ObjectTable> oListSubStr = objectTableDAO.findAllByObjectTypeAndAliasSubStr(e.getType(), e.getText());
-        
-        assertEquals("1 object matched full text", 0, oListFullText.size());   
-        assertEquals("2 objects matched sub string", 2, oListSubStr.size());   
-        
+
+        assertEquals("1 object matched full text", 0, oListFullText.size());
+        assertEquals("2 objects matched sub string", 2, oListSubStr.size());
+
     }
-    
-    /*
-     Test the ranking and learning
+
+    /**
+     * Test the whole process.
      */
     @Test
     public void TestFinalRanking() {
         // Learn from database
         textPro.learn();
-        
+
         // Create fake test
-        Entity e = new Entity("Ema", 0, 0 , 1);
+        Entity e = new Entity("Ema", 1);
         List<Entity> eList = new ArrayList<>();
         eList.add(e);
-        
+
         // Run the ranking
-        Map<Entity, List<Pair<Long, Double>>> result = textPro.finalRanking("Empty", eList, 5);
+        Map<Entity, List<Pair<Long, Double>>> result = textPro.createObjectRanking("Empty", eList, 5);
         // If everything is alright, it will call both ML and HR
         List<Pair<Long, Double>> Olist = result.get(e);
         assertEquals("1: entity to match", 1, result.keySet().size());
         assertEquals("2: one object found", 2, Olist.size());
     }
-    
+
 }
