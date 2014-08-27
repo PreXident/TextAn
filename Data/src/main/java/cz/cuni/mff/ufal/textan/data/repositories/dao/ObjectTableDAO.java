@@ -272,11 +272,11 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
         Query hq = currentSession().createQuery(
                 "select distinct obj "
               + "from ObjectTable as obj "
-                        + "inner join obj.rootOfObjects as rootOf"
+                        + "inner join obj.rootOfObjects as rootOf "
                         + "inner join obj.objectType as type "
                         + "inner join rootOf.aliases as al "
               + "where lower(al.alias) like lower(:pattern) and type.id = :objectTypeId "
-                        + "and obj.root = obj.id"
+                        + "and obj.rootObject = obj.id"
         );
         hq.setParameter("pattern", DAOUtils.getLikeSubstring(aliasSubstring));
         hq.setParameter("objectTypeId", objectTypeId);

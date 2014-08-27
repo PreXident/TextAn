@@ -8,8 +8,8 @@ project(':Data').projectDir = new File('../Data')
 include ':Linguistics'
 project(':Linguistics').projectDir = new File('../Linguistics')
 
-include ':TextPro'
-project(':TextPro').projectDir = new File('../TextPro')
+include ':ObjectAssigner'
+project(':ObjectAssigner').projectDir = new File('../ObjectAssigner')
 
 include ':Setuper'
 project(':Setuper').projectDir = new File('../Setuper')
