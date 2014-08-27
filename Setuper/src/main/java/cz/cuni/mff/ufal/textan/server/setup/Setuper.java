@@ -12,9 +12,7 @@ import cz.cuni.mff.ufal.textan.server.setup.options.PrepareTrainingData;
 import cz.cuni.mff.ufal.textan.server.setup.options.RenameObjectTypes;
 import cz.cuni.mff.ufal.textan.server.setup.options.RenameRelationTypes;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Simple class for batch report processing.
@@ -26,7 +24,6 @@ public class Setuper {
     private static final int EXIT_STATUS_MISSING_PARAM = 2;
     private static final int EXIT_STATUS_MISSING_CLASS= 3;
     private static final int EXIT_STATUS_SQL_PROBLEM= 3;
-
 
     /**
      * Main method.
@@ -159,8 +156,32 @@ public class Setuper {
      * Listing object and relation types in the database.
      * @param command command options
      */
-    public void listTypes(final ListTypes command) {
+    public void listTypes(final ListTypes command) throws SQLException {
+        //TODO test if connection  != null
 
+        Statement statement = connection.createStatement();
+
+        String objectTypesQuery = "SELECT id_object_type, name FROM ObjectType";
+        ResultSet objectTypes = statement.executeQuery(objectTypesQuery);
+
+        System.out.println("Object types");
+        System.out.println("ID\tName"); //TODO better formatting
+        while (objectTypes.next()){
+            long id = objectTypes.getLong("id_object_type");
+            String name = objectTypes.getString("name");
+            System.out.printf("%s\t%s\n", id, name);
+        }
+
+        String relationTypesQuery = "SELECT id_relation_type, name FROM RelationType";
+        ResultSet relationTypes = statement.executeQuery(relationTypesQuery);
+
+        System.out.println("Relation types");
+        System.out.println("ID\tName"); //TODO better formatting
+        while (objectTypes.next()){
+            long id = objectTypes.getLong("id_relation_type");
+            String name = objectTypes.getString("name");
+            System.out.printf("%s\t%s\n", id, name);
+        }
     }
 
     /**
