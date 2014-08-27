@@ -1,12 +1,8 @@
 apply plugin: 'java'
-//apply plugin: 'application'
 compileJava.options.encoding = 'UTF-8'
 
-defaultTasks 'run'
 
 sourceCompatibility=1.8
-
-//mainClassName = 'cz.cuni.mff.ufal.textan.server.setup.Setuper'
 
 repositories {
 	mavenCentral()
@@ -26,53 +22,4 @@ if (gradle.gradleVersion.startsWith("1.")) {
 } else {
 	[compileJava, compileTestJava]*.options*.compilerArgs << '-Xlint:all'
 	[compileJava, compileTestJava]*.options*.compilerArgs << '-Xlint:-serial'
-}
-
-//run {
-//	workingDir = 'build'
-//}
-
-task megaJar (type: Jar) {
-    group = 'Distribution'
-    description = 'Creates a combined JAR of project and runtime dependencies.'
-
-    archiveName = 'Server-setup.jar'
-
-	duplicatesStrategy = 'exclude'
-	from sourceSets.main.output
-	from(configurations.compile
-			.filter { !it.toString().endsWith("jfxrt.jar") }
-			.collect { it.isDirectory() ? it : zipTree(it) }) {
-		exclude "META-INF/*.SF"
-		exclude "META-INF/*.DSA"
-		exclude "META-INF/*.RSA"
-	}
-	destinationDir = file('build/dist')
-}
-
-configure([jar, megaJar]) {
-	entryCompression = "DEFLATED"
-//	manifest {
-//		attributes 'Main-Class': mainClassName
-//	}
-}
-
-task dist(type: Copy, dependsOn: 'megaJar') {
-    group = 'Distribution'
-    description = 'Creates a client distribution.'
-
-	from 'dist'
-	into 'build/dist'
-}
-
-task zip(type: Zip, dependsOn: 'dist') {
-    group = 'Distribution'
-    description = 'Creates and packs a client distribution.'
-
-    baseName = 'Server'
-    appendix = 'setup'
-
-	from 'build/dist'
-	exclude "*.zip"
-	destinationDir = file('build/dist')
 }
