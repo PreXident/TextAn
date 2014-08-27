@@ -29,6 +29,7 @@ public class Setuper {
     private static final int EXIT_STATUS_MISSING_CLASS = 3;
     private static final int EXIT_STATUS_SQL_PROBLEM = 3;
     private static final int EXIT_STATUS_IO_PROBLEM = 4;
+    private static final int EXIT_STATUS_UNEXPECTED_PROBLEM = 100;
 
     private static final String CREATE_SCRIPT_FILENAME = "create.sql";
     private static final String CLEAN_SCRIPT_FILENAME = "clean.sql";
@@ -75,15 +76,19 @@ public class Setuper {
             new Setuper(options).execute(command);
 
         } catch (ClassNotFoundException e) {
-            System.err.println(e.getMessage());
+            System.err.println("ERROR: " + e.getMessage());
             System.exit(EXIT_STATUS_MISSING_CLASS);
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            System.err.println("ERROR: " + e.getMessage());
             System.exit(EXIT_STATUS_SQL_PROBLEM);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            System.err.println("ERROR: " + e.getMessage());
             System.exit(EXIT_STATUS_IO_PROBLEM);
+        } catch (Exception e) {
+            System.err.println("ERROR: " + e.getMessage());
+            System.exit(EXIT_STATUS_UNEXPECTED_PROBLEM);
         }
+
     }
 
     /** Application options. */
@@ -140,6 +145,8 @@ public class Setuper {
         try (Reader cleanScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CLEAN_SCRIPT_FILENAME))) {
             connection.setAutoCommit(false);
             ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
+//            scriptRunner.setLogWriter(null);
+//            scriptRunner.setErrorLogWriter(null);
             scriptRunner.runScript(cleanScriptReader);
             connection.commit();
         } catch (Exception e) {
@@ -156,9 +163,11 @@ public class Setuper {
      */
     public void createDB(final CreateDB command) throws IOException, SQLException {
         //TODO: fix script loading
-        try (Reader createScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CLEAN_SCRIPT_FILENAME))) {
+        try (Reader createScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CREATE_SCRIPT_FILENAME))) {
             connection.setAutoCommit(false);
             ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
+//            scriptRunner.setLogWriter(null);
+//            scriptRunner.setErrorLogWriter(null);
             scriptRunner.runScript(createScriptReader);
             connection.commit();
         } catch (Exception e) {
@@ -202,10 +211,11 @@ public class Setuper {
             connection.setAutoCommit(false);
 
             String insertRelationTypeQuery = "INSERT INTO RelationType (name) VALUES (?)";
-            PreparedStatement statement = connection.prepareStatement(insertRelationTypeQuery);
-            for (String typeName : command.types) {
-                statement.setString(1, typeName);
-                statement.executeUpdate();
+            try (PreparedStatement statement = connection.prepareStatement(insertRelationTypeQuery)) {
+                for (String typeName : command.types) {
+                    statement.setString(1, typeName);
+                    statement.executeUpdate();
+                }
             }
 
             connection.commit();
