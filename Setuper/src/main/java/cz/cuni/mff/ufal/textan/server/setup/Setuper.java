@@ -224,28 +224,30 @@ public class Setuper {
     public void listTypes(final ListTypes command) throws SQLException {
         //TODO test if connection  != null
 
-        Statement statement = connection.createStatement();
+        try (Statement statement = connection.createStatement()) {
+            String objectTypesQuery = "SELECT id_object_type, name FROM ObjectType ORDER BY id_object_type";
+            ResultSet objectTypes = statement.executeQuery(objectTypesQuery);
 
-        String objectTypesQuery = "SELECT id_object_type, name FROM ObjectType";
-        ResultSet objectTypes = statement.executeQuery(objectTypesQuery);
+            System.out.println("Object types");
+            System.out.println("ID\tName"); //TODO better formatting
+            while (objectTypes.next()) {
+                long id = objectTypes.getLong("id_object_type");
+                String name = objectTypes.getString("name");
+                System.out.printf("%s\t%s\n", id, name);
+            }
 
-        System.out.println("Object types");
-        System.out.println("ID\tName"); //TODO better formatting
-        while (objectTypes.next()){
-            long id = objectTypes.getLong("id_object_type");
-            String name = objectTypes.getString("name");
-            System.out.printf("%s\t%s\n", id, name);
-        }
+            System.out.println();
 
-        String relationTypesQuery = "SELECT id_relation_type, name FROM RelationType";
-        ResultSet relationTypes = statement.executeQuery(relationTypesQuery);
+            String relationTypesQuery = "SELECT id_relation_type, name FROM RelationType ORDER BY id_relation_type";
+            ResultSet relationTypes = statement.executeQuery(relationTypesQuery);
 
-        System.out.println("Relation types");
-        System.out.println("ID\tName"); //TODO better formatting
-        while (objectTypes.next()){
-            long id = objectTypes.getLong("id_relation_type");
-            String name = objectTypes.getString("name");
-            System.out.printf("%s\t%s\n", id, name);
+            System.out.println("Relation types");
+            System.out.println("ID\tName"); //TODO better formatting
+            while (relationTypes.next()) {
+                long id = relationTypes.getLong("id_relation_type");
+                String name = relationTypes.getString("name");
+                System.out.printf("%s\t%s\n", id, name);
+            }
         }
     }
 
