@@ -195,9 +195,23 @@ operation for users.
 Persistence layer cares about providing data to application layer and ensure they are persistent.
 First of all this layer needs to convert data between database and objects in java. This is called Object-Relation Mapping (ORM). Java classes whose instances are stored in database tables are called persistent classes. And we need to persist these objects. That is where Hibernate comes to the scene (see section \ref{ssec:UsedLibraries}) and do that for us.
 Next thing we need take care of is to perform a transaction, for example joining two objects should first check if they are roots and if so, they are joined. All operations with database are usually done by DAOs.
-Data Access Object (DAO) is a basic design pattern for Java EE which wraps all access to data sources. It also handles the connection to data sources to get and store data. What is good for? Basically it's appreciated when the persistence layer changes. For example if we decide not to use hibernate but some other library, we don't have to remake the whole application but only the DAO and all under it.
+Data Access Object (DAO) is a basic design pattern for most of enterprise applications and wraps all access to data sources. It also handles the connection to data sources to get and store data. What is good for? Basically it's appreciated when the persistence layer changes. For example if we decide not to use hibernate but some other library, we don't have to remake the whole application but only the DAO and all under it.
 % TODO add pictures
-\comment{Venca}{Add pictures}
+\comment{Venca}{Describe pictures \ref{fig:PersistentLayer} and \ref{fig:DatabaseDAO}}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/PersistentLayer}
+        \caption{Persistent Layer}
+        \label{fig:PersistentLayer}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/DatabaseDAO}
+        \caption{DAO Example for Document Table}
+        \label{fig:DatabaseDAO}
+\end{figure}
 
 \subsection{Database}
 
