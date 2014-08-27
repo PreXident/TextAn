@@ -195,16 +195,27 @@ operation for users.
 Persistence layer cares about providing data to application layer and ensure they are persistent.
 First of all this layer needs to convert data between database and objects in java. This is called Object-Relation Mapping (ORM). Java classes whose instances are stored in database tables are called persistent classes. And we need to persist these objects. That is where Hibernate comes to the scene (see section \ref{ssec:UsedLibraries}) and do that for us.
 Next thing we need take care of is to perform a transaction, for example joining two objects should first check if they are roots and if so, they are joined. All operations with database are usually done by DAOs.
-Data Access Object (DAO) is a basic design pattern for most of enterprise applications and wraps all access to data sources. It also handles the connection to data sources to get and store data. What is good for? Basically it's appreciated when the persistence layer changes. For example if we decide not to use hibernate but some other library, we don't have to remake the whole application but only the DAO and all under it.
-% TODO add pictures
-\comment{Venca}{Describe pictures \ref{fig:PersistentLayer} and \ref{fig:DatabaseDAO}}
-
 \begin{figure}[!htb]
         \centering
         \includegraphics[width=\textwidth]{Images/PersistentLayer}
-        \caption{Persistent Layer}
+        \caption{Persistence Layer}
         \label{fig:PersistentLayer}
 \end{figure}
+Data Access Object (DAO) is a basic design pattern for most of enterprise applications and wraps all access to data sources. It also handles the connection to data sources to get and store data. What is good for? Basically it's appreciated when the persistence layer changes. For example if we decide not to use hibernate but some other library, we don't have to remake the whole application but only the DAO and all under it.
+As you can see in figure \ref{fig:PersistentLayer} without DAO would have the application to call Hibernate functions and it would be dependent on Hibernate. Now the application don't know anything about hibernate and if we are using it or any other ORM.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/DataDecomposition}
+        \caption{Persistence Layer Decomposition}
+        \label{fig:DataDecomposition}
+\end{figure}
+
+
+
+As you can see in figure \ref{fig:DataDecomposition}, our persistence layer is covered by package \emph{cz.cuni.mff.ufal.textan.data}. In this section when we mention some subpackage, we always mean the subpackage of the package \emph{data}.
+
+The mapping between tables in database and java classes is done in subpackage \emph{tables}. Every table in database corresponds to a class that extends \emph{AbstractTable}. Hibernate did the mapping for us. 
 
 \begin{figure}[!htb]
         \centering
@@ -213,7 +224,18 @@ Data Access Object (DAO) is a basic design pattern for most of enterprise applic
         \label{fig:DatabaseDAO}
 \end{figure}
 
+To provide the data to application (server in our case) we have used the DAO pattern as we mentioned earlier. DAOs are located in subpackage \emph{repositories}. On figure \ref{fig:DatabaseDAO} is an example of a DAO pattern for document table. Interface \emph{IOperations} describe common methods for all tables and AbstractHibernateDAO implements them. Now we have for example the document table, we have interface \emph{IDocumentTableDAO} that describes all operations with document table and \emph{DocumentTableDAO} implements them for Hibernate. The application (server) itself shouldn't know about the implementations to guarantee the independence on Hibernate.
+
+Another subpackage \emph{graph} contains all necessary methods to generate a graph from database. Nodes of this graph represents objects and relations in database. Edge between an object and a relation means that this object is in that relation. We have used the factory pattern to create graph. There are methods in class \emph{GraphFactory} to generate a graph from an object to given depth and also supports finding shortest path between two objects. For this has been used the Floyd-Warshall algorithm. 
+
+%TODO finish shit about floyd warshall implementation
+\comment{Venca}{Finish shit about floyd warshall after implementation and problem with memory}
+
+Last interesting subpackage is \emph{interceptors} where are located definitions of Hibernate interceptors. Interceptor is something like trigger in a database. When there is called insert, update or delete action in hibernate, a propper method in an interceptor is called. We are using it for \emph{global version} which we discuss in next section \ref{sec:Database}.
+
+
 \subsection{Database}
+\label{sec:Database}
 
 \comment[Venca]{Petr}{Describe database: database schema etc.}
 This section describes the database schema (see figure \ref{fig:DatabaseSchema}), meaning of all database tables and columns.
