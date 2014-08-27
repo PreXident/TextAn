@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Simple class for batch report processing.
@@ -106,7 +108,7 @@ public class Setuper {
     }
 
     /**
-     * Executes command using visitor pattern.
+     * Executes command using double dispatch.
      * @param command command to execute
      */
     public void execute(final Command command) throws ClassNotFoundException, SQLException, IOException {
@@ -141,19 +143,9 @@ public class Setuper {
      * @param command command options
      */
     public void cleanDB(final CleanDB command) throws IOException, SQLException {
-        //TODO: fix script loading
+        //TODO test if connection  != null
         try (Reader cleanScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CLEAN_SCRIPT_FILENAME))) {
-            connection.setAutoCommit(false);
-            ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
-//            scriptRunner.setLogWriter(null);
-//            scriptRunner.setErrorLogWriter(null);
-            scriptRunner.runScript(cleanScriptReader);
-            connection.commit();
-        } catch (Exception e) {
-            connection.rollback();
-            throw e;
-        } finally {
-            connection.setAutoCommit(true);
+            runScript(cleanScriptReader);
         }
     }
 
@@ -162,19 +154,9 @@ public class Setuper {
      * @param command command options
      */
     public void createDB(final CreateDB command) throws IOException, SQLException {
-        //TODO: fix script loading
+        //TODO test if connection  != null
         try (Reader createScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CREATE_SCRIPT_FILENAME))) {
-            connection.setAutoCommit(false);
-            ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
-//            scriptRunner.setLogWriter(null);
-//            scriptRunner.setErrorLogWriter(null);
-            scriptRunner.runScript(createScriptReader);
-            connection.commit();
-        } catch (Exception e) {
-            connection.rollback();
-            throw e;
-        } finally {
-            connection.setAutoCommit(true);
+            runScript(createScriptReader);
         }
     }
 
@@ -183,23 +165,9 @@ public class Setuper {
      * @param command command options
      */
     public void createObjectTypes(final LoadObjectTypes command) throws SQLException {
-        try {
-            connection.setAutoCommit(false);
-
-            String insertObjectTypeQuery = "INSERT INTO ObjectType (name) VALUES (?)";
-            PreparedStatement statement = connection.prepareStatement(insertObjectTypeQuery);
-            for (String typeName : command.types) {
-                statement.setString(1, typeName);
-                statement.executeUpdate();
-            }
-
-            connection.commit();
-        } catch (Exception e) {
-            connection.rollback();
-            throw e;
-        } finally {
-            connection.setAutoCommit(true);
-        }
+        //TODO test if connection  != null
+        String insertObjectTypeQuery = "INSERT INTO ObjectType (name) VALUES (?)";
+        createTypes(insertObjectTypeQuery, command.types);
     }
 
     /**
@@ -207,24 +175,9 @@ public class Setuper {
      * @param command command options
      */
     public void createRelationTypes(final LoadRelationTypes command) throws SQLException {
-        try {
-            connection.setAutoCommit(false);
-
-            String insertRelationTypeQuery = "INSERT INTO RelationType (name) VALUES (?)";
-            try (PreparedStatement statement = connection.prepareStatement(insertRelationTypeQuery)) {
-                for (String typeName : command.types) {
-                    statement.setString(1, typeName);
-                    statement.executeUpdate();
-                }
-            }
-
-            connection.commit();
-        } catch (Exception e) {
-            connection.rollback();
-            throw e;
-        } finally {
-            connection.setAutoCommit(true);
-        }
+        //TODO test if connection  != null
+        String insertRelationTypeQuery = "INSERT INTO RelationType (name) VALUES (?)";
+        createTypes(insertRelationTypeQuery, command.types);
     }
 
     /**
@@ -239,7 +192,7 @@ public class Setuper {
             ResultSet objectTypes = statement.executeQuery(objectTypesQuery);
 
             System.out.println("Object types");
-            System.out.println("ID\tName"); //TODO better formatting
+            System.out.println("ID\tName");
             while (objectTypes.next()) {
                 long id = objectTypes.getLong("id_object_type");
                 String name = objectTypes.getString("name");
@@ -252,7 +205,7 @@ public class Setuper {
             ResultSet relationTypes = statement.executeQuery(relationTypesQuery);
 
             System.out.println("Relation types");
-            System.out.println("ID\tName"); //TODO better formatting
+            System.out.println("ID\tName");
             while (relationTypes.next()) {
                 long id = relationTypes.getLong("id_relation_type");
                 String name = relationTypes.getString("name");
@@ -265,16 +218,28 @@ public class Setuper {
      * Renames object types to the database.
      * @param command command options
      */
-    public void renameObjectTypes(final RenameObjectTypes command) {
-        //TODO implement
+    public void renameObjectTypes(final RenameObjectTypes command) throws SQLException {
+        if (command.id) {
+            String updateObjectTypesQuery = "UPDATE ObjectType SET name=? WHERE id_object_type=?";
+            renameTypesId(updateObjectTypesQuery, command.mapping);
+        } else {
+            String updateObjectTypesQuery = "UPDATE ObjectType SET name=? WHERE name=?";
+            renameTypesName(updateObjectTypesQuery, command.mapping);
+        }
     }
 
     /**
      * Renames relation types to the database.
      * @param command command options
      */
-    public void renameRelationTypes(final RenameRelationTypes command) {
-        //TODO implement
+    public void renameRelationTypes(final RenameRelationTypes command) throws SQLException {
+        if (command.id) {
+            String updateObjectTypesQuery = "UPDATE RelationType SET name=? WHERE id_relation_type=?";
+            renameTypesId(updateObjectTypesQuery, command.mapping);
+        } else {
+            String updateObjectTypesQuery = "UPDATE RelationType SET name=? WHERE name=?";
+            renameTypesName(updateObjectTypesQuery, command.mapping);
+        }
     }
 
     /**
@@ -283,5 +248,81 @@ public class Setuper {
      */
     public void prepareTrainingData(final PrepareTrainingData command) {
         //TODO implement
+    }
+
+    private void createTypes(String query, List<String> names) throws SQLException {
+        connection.setAutoCommit(false);
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            for (String typeName : names) {
+                statement.setString(1, typeName);
+                statement.executeUpdate();
+            }
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
+        }
+    }
+
+    private void renameTypesId(String query, Map<String, String> mapping) throws SQLException {
+        connection.setAutoCommit(false);
+        try (PreparedStatement statement = connection.prepareStatement(query)){
+
+            for (Map.Entry<String, String> pair : mapping.entrySet()) {
+                long id = Long.parseLong(pair.getKey());
+                String name = pair.getValue();
+
+                statement.setString(1, name);
+                statement.setLong(2, id);
+                statement.executeUpdate();
+            }
+
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
+        }
+    }
+
+    private void renameTypesName(String query, Map<String, String> mapping) throws SQLException {
+        connection.setAutoCommit(false);
+        try (PreparedStatement statement = connection.prepareStatement(query)){
+
+            for (Map.Entry<String, String> pair : mapping.entrySet()) {
+                String oldName = pair.getKey();
+                String name = pair.getValue();
+
+                statement.setString(1, name);
+                statement.setString(2, oldName);
+                statement.executeUpdate();
+            }
+
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
+        }
+    }
+
+    private void runScript(Reader script) throws SQLException, IOException {
+        connection.setAutoCommit(false);
+        try {
+            ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
+            scriptRunner.setLogWriter(null);
+            scriptRunner.setErrorLogWriter(null);
+            scriptRunner.runScript(script);
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
+        }
     }
 }
