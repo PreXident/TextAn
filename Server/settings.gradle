@@ -10,3 +10,6 @@ project(':Linguistics').projectDir = new File('../Linguistics')
 
 include ':TextPro'
 project(':TextPro').projectDir = new File('../TextPro')
+
+include ':Setuper'
+project(':Setuper').projectDir = new File('../Setuper')

@@ -1,12 +1,12 @@
 apply plugin: 'java'
-apply plugin: 'application'
+//apply plugin: 'application'
 compileJava.options.encoding = 'UTF-8'
 
 defaultTasks 'run'
 
 sourceCompatibility=1.8
 
-mainClassName = 'cz.cuni.mff.ufal.textan.server.setup.Setuper'
+//mainClassName = 'cz.cuni.mff.ufal.textan.server.setup.Setuper'
 
 repositories {
 	mavenCentral()
@@ -28,9 +28,9 @@ if (gradle.gradleVersion.startsWith("1.")) {
 	[compileJava, compileTestJava]*.options*.compilerArgs << '-Xlint:-serial'
 }
 
-run {
-	workingDir = 'build'
-}
+//run {
+//	workingDir = 'build'
+//}
 
 task megaJar (type: Jar) {
     group = 'Distribution'
@@ -52,9 +52,9 @@ task megaJar (type: Jar) {
 
 configure([jar, megaJar]) {
 	entryCompression = "DEFLATED"
-	manifest {
-		attributes 'Main-Class': mainClassName
-	}
+//	manifest {
+//		attributes 'Main-Class': mainClassName
+//	}
 }
 
 task dist(type: Copy, dependsOn: 'megaJar') {
