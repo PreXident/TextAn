@@ -36,8 +36,14 @@ public class GraphFactory {
         this.sessionFactory = sessionFactory;
     }
 
-    public Graph getShortestPathBetweenObjects(ObjectTable obj1, ObjectTable obj2) throws PathDoesNotExistException {
-        throw new PathDoesNotExistException();
+    public Graph getShortestPathBetweenObjects(ObjectTable obj1, ObjectTable obj2, int maxDepth) throws PathDoesNotExistException {
+        Graph result= getGraphFromObject(obj2, maxDepth);
+        
+        if (!result.getNodes().contains(new ObjectNode(obj1)))
+            throw new PathDoesNotExistException();
+        result.mergeIntoThis(getGraphFromObject(obj1, maxDepth));
+        
+        return result;
     }
     
     /**
