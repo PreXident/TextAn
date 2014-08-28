@@ -94,7 +94,7 @@ public class ObjectAssigner implements IObjectAssigner {
                 .forEach(ids::add);
         // Check match
         return docs2.stream()
-                .map(Pair::getFirst);
+                .map(Pair::getFirst)
                 .map(DocumentTable::getId)
                 .anyMatch(ids::contains);
     }
