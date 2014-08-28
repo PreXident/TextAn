@@ -43,7 +43,9 @@ dependencies {
     compile project(':Commons')
     compile project(':Data')
     compile project(':Linguistics')
-    compile project(':TextPro')
+    compile project(':ObjectAssigner')
+
+    runtime project(':Setuper')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
@@ -201,6 +203,7 @@ task dist(type: Copy, dependsOn: 'shadowJar') {
     //starting scripts
     from (file("$projectDir/dist")) {
         include "**/*"
+        fileMode = 0700
     }
     into file("$buildDir/dist")
 }

@@ -16,7 +16,8 @@ CREATE TABLE Audit (
 	id_audit int PRIMARY KEY AUTO_INCREMENT, 
   username NVARCHAR(255) NOT NULL,
   edit_date datetime NOT NULL,
-  edittype VARCHAR(255) NOT NULL,            -- INSERT | DELETE | UPDATE
+  -- INSERT | DELETE | UPDATE
+  edittype VARCHAR(255) NOT NULL,
   edit text CHARSET utf8 NOT NULL
 );
 
@@ -48,9 +49,10 @@ CREATE TABLE Object (
   		REFERENCES ObjectType(id_object_type)
       ON DELETE CASCADE,
 	globalversion int DEFAULT 0 NOT NULL,
-  id_root_object int -- ,  -- root of the joined tree
-    /*CONSTRAINT FK_OBJECT_ROOT FOREIGN KEY (id_root_object)
-  		REFERENCES Object(id_object)*/	
+	 -- ,  -- root of the joined tree
+    id_root_object int
+    -- CONSTRAINT FK_OBJECT_ROOT FOREIGN KEY (id_root_object)
+  	--	REFERENCES Object(id_object)
 );
 
 CREATE TABLE Alias (

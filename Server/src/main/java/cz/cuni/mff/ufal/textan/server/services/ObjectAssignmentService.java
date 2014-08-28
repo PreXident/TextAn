@@ -9,7 +9,7 @@ import cz.cuni.mff.ufal.textan.server.models.Assignment;
 import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
 import cz.cuni.mff.ufal.textan.server.models.Object;
-import cz.cuni.mff.ufal.textan.textpro.ITextPro;
+import cz.cuni.mff.ufal.textan.assigner.IObjectAssigner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,10 +31,10 @@ public class ObjectAssignmentService {
     private final IObjectTableDAO objectTableDAO;
     private final IAliasTableDAO aliasTableDAO;
     private final IDocumentTableDAO documentTableDAO;
-    private final ITextPro textPro;
+    private final IObjectAssigner textPro;
 
     @Autowired
-    public ObjectAssignmentService(IObjectTableDAO objectTableDAO, IAliasTableDAO aliasTableDAO, IDocumentTableDAO documentTableDAO, ITextPro textPro) {
+    public ObjectAssignmentService(IObjectTableDAO objectTableDAO, IAliasTableDAO aliasTableDAO, IDocumentTableDAO documentTableDAO, IObjectAssigner textPro) {
         this.objectTableDAO = objectTableDAO;
         this.aliasTableDAO = aliasTableDAO;
         this.documentTableDAO = documentTableDAO;
@@ -62,7 +62,7 @@ public class ObjectAssignmentService {
 
     private List<Assignment> getAssignmentsInner(String text, List<Entity> entities) {
 
-        Map<cz.cuni.mff.ufal.textan.textpro.data.Entity, List<Pair<Long, Double>>> textProAssignments =
+        Map<cz.cuni.mff.ufal.textan.assigner.data.Entity, List<Pair<Long, Double>>> textProAssignments =
                 textPro.finalRanking(
                         text,
                         entities.stream().map(Entity::toTextProEntity).collect(Collectors.toList()),

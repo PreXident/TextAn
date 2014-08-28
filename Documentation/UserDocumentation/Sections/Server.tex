@@ -35,7 +35,13 @@ For installation it is sufficient to unpack its content into any directory.
 \comment[Venca]{Petr}{decribe how to configure database (relational db, DBMS
 independent, mysql recomendation... etc. (check \ref{sssec:SerInstPre}))}
 
-There is a sql script \emph{(create.sql)} to setup the database located in folder  \emph{Database}. It should be executed to setup the database schema before the server starts. However this script is \emph{MySQL} specific \comment[Venca]{Venca}{check} and if you have other database you should replace \emph{MySQL} specific commands.
+There is a sql script \emph{(create.sql)} to setup the database located in folder
+\emph{Database}. It should be executed to setup the database schema before the server
+starts. However this script is \emph{MySQL} specific \comment[Venca]{Venca}{check}
+ and if you have other database you should replace \emph{MySQL} specific commands.
+
+\comment[Venca]{Petr}{Change of  the underlying database is not so easy, you need
+to add db driver into classpath! Is it somewhere in the documentation? }
 
 \subsubsection{Basic configuration}
 
@@ -61,6 +67,11 @@ to make it a formal Windows Service. However, we recommend the use of \emph{Apac
 ProcRun's Daemon \footnote{More information can be found on
 \url{https://commons.apache.org/proper/commons-daemon/procrun.html} and in JavaDoc
 documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry} class.}}.
+
+Note that a startup of the server may take a very long time, depends on the amount
+of data, because during a initialization are created full text indexes and models
+for the named entity recognizer and object assigner and the internal web server
+is started after the initialization phase.
 
 \subsubsection{Uninstallation}
 The server application use only files and resources inside install directory by
