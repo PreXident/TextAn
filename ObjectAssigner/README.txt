@@ -1,1 +1,0 @@
-Fail to automatically create the new branch in database
