@@ -416,4 +416,10 @@ Detect URLs and emails. If an URL or an email is detected, it is immediately mar
 with specified named entity type and not used in further processing.
 
 \subsection{Data formats}
-
+To train a named entity recognizer model, training data is needed. The training data must be tokenized and contain annotated name entities. The name entities are non-overlapping, consist of a sequence of words and have a specified type.
+and
+The training data must be encoded in UTF-8 encoding. The lines correspond to individual words and an empty line denotes an end of sentence. Each non-empty line contains exactly two tab-separated columns, the first is the word form the second is the annotation. The format of the annotation is taken from CoNLL-2003: the annotation {\it I-type} or {\it B-type} denotes named entity of specified type, any other annotation is ignored. The {\it I-type} and {\it B-type} annotations are equivalent except for one case – if the previous word is also a named entity of same type, then
+\begin{itemize}
+\{item}if the current word is annotated as I-type, it is part of the same named entity as the previous word (Or begin of new entity, if previous word wasn't entity),
+\{item}if the current word is annotated as B-type, it is in a different name entity than the previous word (albeit with the same type).
+\end{itemize}
