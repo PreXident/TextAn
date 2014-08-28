@@ -28,7 +28,6 @@
 \usepackage{fontspec}
 \usepackage{epstopdf,epsfig} 
 
-\usepackage{xr-hyper}
 
 \definecolor{TextanDarkRed}{cmyk}{.37,.94,.83,.59}
 \definecolor{TextanRed}{cmyk}{.0,.879,.844,.220}
@@ -56,10 +55,12 @@ contents={
  \end{tikzpicture}}
 }
 
+\usepackage{xr-hyper}
 \usepackage[unicode,colorlinks=true]{hyperref}
 \hypersetup{pdftitle=TextAn - user documentation}
 \hypersetup{pdfauthor={Petr Fanta, Duc Tam Hoang, Adam Huječek, Václav Pernička, Jakub Vlček}}
 \hypersetup{linkcolor=black, citecolor=black, urlcolor=black, filecolor=black}
+\externaldocument[USR-]{../UserDocumentation/UserDocumentation}[../UserDocumentation/UserDocumentation.pdf]
 
 \def\chapwithtoc#1{
 \chapter*{#1}
@@ -91,9 +92,6 @@ contents={
 \makeatother
 
 \newcommand{\textan}{\emph{Text\-An}}
-
-\externaldocument[USR-]{../UserDocumentation/UserDocumentation}[../UserDocumentation/UserDocumentation.pdf]
-
 
 \begin{document}
 
@@ -142,7 +140,7 @@ Ondřej Bojar\\
 \chapter{Introduction}
 \pagenumbering{arabic}
 
-\section{Introduction to the project}
+\section{Introduction to the Project}
 \input{Sections/IntroductionToTheProject}
 
 %\section{Conventions}
@@ -150,7 +148,7 @@ Ondřej Bojar\\
 \section{Glossary}
 \input{../UserDocumentation/Sections/Glossary}
 
-\chapter{Requirements specification}
+\chapter{Requirements Specification}
 \comment{Petr}{If we need to make the documentation longer, include the whole specification}
 \input{Sections/Requirements}
 
@@ -174,24 +172,24 @@ Ondřej Bojar\\
 
 \chapter{Analysis}
 
-\section{Related work}
+\section{Related Work}
 \input{Sections/RelatedWork}
 
-\section{Adopted solutions}
+\section{Adopted Solutions}
 \comment{Ondrej}{Is this right name? Shouldn't be adopted solutions and decisions placed after specification?}
 \input{Sections/AdoptedSolutions}
 
 
 \section{Decisions}
+\label{sec:Decisions}
 
-\comment{Petr}{Why we used technologies mentioned above.}
 \comment{Petr}{After all, I think it's better to have only one "decisions" which
 will contains both decisions about used libraries and architecture.}
 
 \comment[Venca]{Petr}{\huge{Write all database related decisions!}}
 
 \section{Mockup Screens}
-
+	
 This section contains mockup screens for the most important windows in \textan{}
 client.
 
@@ -204,22 +202,28 @@ client.
 
 \comment[Adam]{Adam}{Add more mockup screens.}
 
-\chapter{Architecture}
+\chapter{Overall Architecture}
+\section{Architecture Overview}
 \input{Sections/Architecture}
 
-\chapter{Developer notes}
-\section{Work on the project}
-\input{Sections/WorkOnProject}
-\section{Decisions}
-\label{sec:Decisions}
+\chapter{Server}
+\input{Sections/ServerArchitecture}
 
-\comment{Petr}{Maybe move this section to Analysis}
+\chapter{Client}
+\input{Sections/ClientArchitecture}
 
-\chapter{Possibilities of future extensions}
+%\input{Sections/Architecture}
+
+
+\chapter{Possibilities of Future Extensions}
 \input{Sections/FutureExtensions}
 
+\chapter{Developer Notes}
+\section{Work on the Project}
+\input{Sections/WorkOnProject}
+
 \appendix
-\chapter{Source codes}
+\chapter{Source Codes}
 
 \comment{Petr}{Change appendices from chapter to section?}
 

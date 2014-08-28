@@ -5,7 +5,7 @@ This section contains all information to successfully install, configure and run
 \comment[anyone]{Petr}{add short introduction for this section, remind configuration
 options, complexity atc.}
 
-\subsection{Installation guide}
+\subsection{Installation Guide}
 
 This section describes how to install and configure \textan{} server on a server
 machine.
@@ -31,7 +31,7 @@ The \textan{} server distribution archive contains all files needed for \textan{
 such as server binaries, native libraries, run scripts and additional resources.
 For installation it is sufficient to unpack its content into any directory.
 
-\subsubsection{Database configuration}
+\subsubsection{Database Configuration}
 \comment[Venca]{Petr}{decribe how to configure database (relational db, DBMS
 independent, mysql recomendation... etc. (check \ref{sssec:SerInstPre}))}
 
@@ -43,7 +43,7 @@ starts. However this script is \emph{MySQL} specific \comment[Venca]{Venca}{chec
 \comment[Venca]{Petr}{Change of  the underlying database is not so easy, you need
 to add db driver into classpath! Is it somewhere in the documentation? }
 
-\subsubsection{Basic configuration}
+\subsubsection{Basic Configuration}
 
 Before the first start, it is necessary to set up the server and the database.
 
@@ -52,7 +52,7 @@ Before the first start, it is necessary to set up the server and the database.
 \comment[Petr]{Petr}{add some link to \ref{sec:ServerSettings}}
 
 
-\subsubsection{Starting the server}
+\subsubsection{Starting the Server}
 
 The server can be started by starting scripts in its root directory. Scripts for
 different operating systems unfortunately do not provide the same functionality.
@@ -79,7 +79,7 @@ default, only exception are temporary files, which are placed in system temp fol
 To uninstall the server just delete installation directory and files from your
 configuration.
 
-\subsubsection{Unsupported systems}
+\subsubsection{Unsupported Systems}
 \label{sssec:unsupport}
 It is possible to run \textan{} server on other systems than supported ones. Only
 limitations are Java 8 and 3th-party tools and libraries, specifically NameTag%
@@ -102,7 +102,7 @@ library into \emph{lib} folder in installation directory.
 \subsection{Settings}
 \label{sec:ServerSettings}
 
-\subsubsection{Web server settings}
+\subsubsection{Web Server Settings}
 \label{sssec:WebServerSettings}
 This section contains a description of properties that can be used to configure
 the internal web server. These properties can be set in the file \emph{server.properties}
@@ -168,7 +168,7 @@ The type of the trust store.
 \vspace{0.75cm}
 For more information about security, please consult \ref{sec:Security}.
 
-\subsubsection{Database settings}
+\subsubsection{Database Settings}
 \label{sssec:DataSettings}
 
 \comment{Petr}{This settings are related to Persistence layer - it means also indexing}
@@ -265,7 +265,7 @@ and searching. The default value is \emph{org.\-apache.\-lucene.\-analysis.\-cz.
 For more informations about Analyzers see \ref{sec:Lang}.
 
 %NameTag
-\subsubsection{Named entity recognizer settings}
+\subsubsection{Named Entity Recognizer Settings}
 \label{sssec:NametagSettings}
 \comment{Petr}{Add link to nametag?}
 This section is mainly about settings stored in NametagLearning.properties. There
@@ -415,7 +415,7 @@ Use named entities predicted by previous stage as features.
 Detect URLs and emails. If an URL or an email is detected, it is immediately marked
 with specified named entity type and not used in further processing.
 
-\subsection{Data formats}
+\subsection{Data Formats}
 To train a named entity recognizer model, training data is needed. The training data must be tokenized and contain annotated name entities. The name entities are non-overlapping, consist of a sequence of words and have a specified type.
 and
 The training data must be encoded in UTF-8 encoding. The lines correspond to individual words and an empty line denotes an end of sentence. Each non-empty line contains exactly two tab-separated columns, the first is the word form the second is the annotation. The format of the annotation is taken from CoNLL-2003: the annotation {\it I-type} or {\it B-type} denotes named entity of specified type, any other annotation is ignored. The {\it I-type} and {\it B-type} annotations are equivalent except for one case – if the previous word is also a named entity of same type, then

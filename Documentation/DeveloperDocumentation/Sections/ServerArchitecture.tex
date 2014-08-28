@@ -1,0 +1,326 @@
+% Chapter: Server 
+
+\comment[Petr]{Petr}{Add some introduction to the chapter}
+
+\section{Server Architecture}
+
+The server architecture is based on a logical multilayered architecture. It
+consists of 5 layers: a presentation layer, a service layer, a business logic layer, 
+a persistence layer and a data layer.
+
+\comment{Ondrej}{it definitely needs a figure here, but no generalized pictures, 
+it needs your concrete components and connection. The 5 layers sound like textbook example}
+
+\comment{Adam}{The comment above was created when there were no pictures nor subsections 
+here, but I have added it anyway, just to be sure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/ServerComponentOverview}
+        \caption{Overview of the server layered architecture.}
+        \label{fig:ServerComponentOverview}
+\end{figure}
+
+\subsection{Web Service Layer}
+Web service layer is the component responsible for providing web service
+API. It consists of a servlet container and implementations of particular
+web services.
+
+Jetty is used as the servlet container component. It is a powerful and scalable
+component which supports embedding into other applications. It also can be run independently
+on the rest of the applications. This is an important feature, which allows, that only
+web service implementations live in a web context. % I don't understand
+In other words, there can be
+other implementations over the rest of the application at same time, e.g. from input
+command line. This component also provides security of \textan{} server over SSL.
+
+Web service itself is implemented with Apache CXF framework. A bigger part of
+the implementation is generated from WSDL files and XML Schema files using the
+CXF wsdl2java tool at build time, these classes are placed in the package % which classes?
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-commons.\-ws}, the package
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-commons.\-models} and its subpackages. % too long and a bit vague
+The *.ws package contains java equivalents of a WSDL interfaces and the *.models
+package contains java equivalents of XSD complex types. These interfaces are
+implemented in classes placed the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-ws}
+and they are just adapters for the service layer. Note that underlaying layers are
+totally independent from the web service layer. The CXF framework ensures that
+these classes are deployed as servlets.
+
+\subsection{Service Layer}
+The service layer is a component that consists of classes which handle requests
+using underlying layers and register commands in the scheduler. These classes are
+placed in the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-services}
+and the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-models}.
+
+\comment[Petr]{Petr}{Describe all services}
+
+\subsection{Business Layer}
+The business layer contains components which encapsulate the main functionality
+of the system. The layer consists of two main components, the Named Entity
+recognizer (see \autoref{sec:NamedEntityRecognizer}) and the Object assigner 
+(see \autoref{sec:ObjectAssigner}). Both of them use machine learning methods to solve
+their tasks. They access the persistence layer to obtain training data. They
+are called from the service layer and the scheduler.
+
+\subsection{Scheduler}
+The scheduler is a simple component, that invokes commands asynchronously against
+requests in the servlet container. It is implemented by classes in the package
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-commands}.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/Commands}
+        \caption{Overview of the scheduler classes.}
+        \label{fig:CommandsOverview}
+\end{figure}
+
+The component is used to invoke re-learning in components from the business layer.
+The learning is typically slow, in a matter of minutes, so it's necessary to use
+this approach due to system performance. Commands are registered from methods in
+the service layer that modify data used for learning. Commands are stored in one
+FIFO queue and are invoked in one thread, so it's possible to filter them before
+invocation. This ability ensures that only one learning command is invoked at one
+time and that learning commands are not invoked unreasonably. Components from
+the business layer use old models during learning, so the re-learning is a transparent
+operation for users.
+
+\subsection{Persistence Layer}
+
+\comment[Venca]{Petr}{Describe DAOs, database mapping, underlying database etc.}
+
+\comment[Petr]{Petr}{Describe full text indexing: hibernate search, lucene, a their mappings}
+
+\comment[Petr]{Petr}{Describe new Czech analyzer}
+
+Persistence layer cares about providing data to application layer and ensure they
+are persistent. First of all this layer needs to convert data between database and
+objects in java. This is called Object-Relation Mapping (ORM). Java classes whose
+instances are stored in database tables are called persistent classes. And we need
+to persist these objects. That is where Hibernate comes to the scene (see section
+\ref{ssec:UsedLibraries}) and do that for us. Next thing we need take care of is
+to perform a transaction, for example joining two objects should first check if
+they are roots and if so, they are joined. All operations with database are usually
+done by DAOs.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/PersistentLayer}
+        \caption{Persistence Layer}
+        \label{fig:PersistentLayer}
+\end{figure}
+
+Data Access Object (DAO) is a basic design pattern for most of enterprise applications
+and wraps all access to data sources. It also handles the connection to data sources
+to get and store data. What is good for? Basically it's appreciated when the persistence
+layer changes. For example if we decide not to use hibernate but some other library,
+we don't have to remake the whole application but only the DAO and all under it.
+As you can see in figure \ref{fig:PersistentLayer} without DAO would have the application
+to call Hibernate functions and it would be dependent on Hibernate. Now the application
+don't know anything about hibernate and if we are using it or any other ORM.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/DataDecomposition}
+        \caption{Persistence Layer Decomposition}
+        \label{fig:DataDecomposition}
+\end{figure}
+
+As you can see in figure \ref{fig:DataDecomposition}, our persistence layer is
+covered by package \emph{cz.cuni.mff.ufal.textan.data}. In this section when we
+mention some subpackage, we always mean the subpackage of the package \emph{data}.
+
+The mapping between tables in database and java classes is done in subpackage
+\emph{tables}. Every table in database corresponds to a class that extends
+\emph{AbstractTable}. Hibernate did the mapping for us. 
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/DatabaseDAO}
+        \caption{DAO Example for Document Table}
+        \label{fig:DatabaseDAO}
+\end{figure}
+
+To provide the data to application (server in our case) we have used the DAO pattern
+as we mentioned earlier. DAOs are located in subpackage \emph{repositories}. On figure
+\ref{fig:DatabaseDAO} is an example of a DAO pattern for document table. Interface
+\emph{IOperations} describe common methods for all tables and AbstractHibernateDAO
+implements them. Now we have for example the document table, we have interface
+\emph{IDocumentTableDAO} that describes all operations with document table and
+\emph{DocumentTableDAO} implements them for Hibernate. The application (server)
+itself shouldn't know about the implementations to guarantee the independence
+on Hibernate.
+
+Another subpackage \emph{graph} contains all necessary methods to generate a graph
+from database. Nodes of this graph represents objects and relations in database.
+Edge between an object and a relation means that this object is in that relation.
+We have used the factory pattern to create graph. There are methods in class
+\emph{GraphFactory} to generate a graph from an object to given depth and also
+supports finding shortest path between two objects. For this has been used the Floyd-Warshall
+algorithm. \comment{Venca}{This is not true anymore.}
+
+%TODO finish shit about floyd warshall implementation
+\comment{Venca}{Finish shit about floyd warshall after implementation and problem with memory}
+
+Last interesting subpackage is \emph{interceptors} where are located definitions
+of Hibernate interceptors. Interceptor is something like trigger in a database.
+When there is called insert, update or delete action in hibernate, a propper method
+in an interceptor is called. We are using it for \emph{global version} which we
+discuss in next section \ref{sec:Database}.
+
+\subsection{Database}
+\label{sec:Database}
+
+\comment[Venca]{Petr}{Describe database: database schema etc.}
+This section describes the database schema (see figure \ref{fig:DatabaseSchema}), meaning of all database tables and columns.
+
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/DatabaseSchema}
+        \caption{Database schema}
+        \label{fig:DatabaseSchema}
+\end{figure}
+
+\paragraph{Document} The report to be processed. In the database, there are columns for the date of 
+creation \emph{(added)}, the date for last change and the date when the document has been processed.
+
+\paragraph{Object} Object stands for the entity e.g. Josef Novák or a specific address. 
+The table has only one column with content \emph{data} which is used to describe the object. 
+Apart from that, it contains reference to \emph{ObjectType} table to determine what type the object is.
+
+\paragraph{Object Type} The \emph{objecttype} table is used to describe if an object is a human or an address. 
+It has only one column with name of the type and the type have to be unique.
+
+\paragraph{Alias} If an entity occurs in some document, we want to 
+know how did we call them. For instance Josef Omáčka can be called as 'Josef', 
+'Pepe' or 'Killer'. Alias table represents all these possibilities (aliases) 
+of a specific entity.
+
+\paragraph{Relation} There may be relations between entities, for example killer-victim,
+mother-son, live, use, etc. This table describes such relationship. 
+
+\paragraph{IsInRelation} There can be relation among more than two entities, for example 
+killer-victim-place-time. This is the reason we have used the N:N relation 
+between \emph{object} and \emph{relation} tables, which represents the \emph{isinrelation} 
+table. For instance, to distinguish between killer and victim, the column \emph{role} 
+(more user friendly) and \emph{order\_{}in\_{}relation} have been used.
+
+\paragraph{RelationType} As well as the objects have types, the relations have their type too. 
+For example \emph{kill}, \emph{live} or \emph{sell}.
+
+\paragraph{Relation and Alias Occurrences} These two tables stand for the occurrence of an 
+alias and relation in a document respectively. It contains their beginning positions in the document 
+and an anchor for relation. 
+
+\paragraph{Joined Objects} It is possible that users may realize two different entities are actually 
+a single one. In this case, two objects have to be joined into a new one. This can be done by 
+\emph{joinedobjects} table. However, this join can be a wrong decision. There is a column 
+to\_{}date in case these merged objects are separated.
+
+\paragraph{Audit} All inserts, deletes and updates in the tables above are being saved into \emph{audit} 
+table. It is a simple table because it keeps a string of modified object. It also 
+keeps username of the user who performed the operation, the date of the change and what kind 
+of change was processed.
+ 
+\paragraph{Global Version} Before finishing the process of a document, it is checked whether there
+are other documents which have been added or modified. To perform that check we need to have some information
+when the tables have been modified. Tables \emph{Document}, \emph{Object} and \emph{Relation} 
+contain a column \emph{globalversion}, which increments with each insert, delete or update. 
+Current global version is stored in \emph{globalversion} table where there is only a single row every time.
+
+\paragraph{} As you may see, there is a little bit of redundancy in our schema. There is alias table where the alias of an object is stored. But if we really want to extract the alias of an object, we could get the alias from document, which the object occurs. However, that would be too complicated to get from single query. Furthermore, we want a method to easily get all aliases of an object.
+Next redundancy is \emph{Object.id\_{}root\_{}object} which is a foreign key of the same table. Once we join objects and we get a new one, this joining together makes a binary tree. A root of the tree is the object, of which we want to edit aliases, because other objects in the tree are not taken into account. So we need two things: the determine if a given object is a root and the method to get the root if current object is not the root. Without that column we would have to join until we get to the root and that, as we know, can't be done in a single sql query. With the column, we only ask if the root of an object is the same or we simply get the root object in one join.
+
+
+\section{Named Entity Recognizer}
+\label{sec:NamedEntityRecognizer}
+
+The architecture of Named entity recognizer is divided to two parts: recognition and training.
+
+\paragraph{Recognition} 
+Recognition is slitted to two parts - Java part and C++ part. This is because
+NameTag, which is the available tool for named entity recognizer, is written mainly in C++. 
+TextAn is developed in Java, so we must use JNI to call functions from C++ through provided
+Java bindings. C++ part is represented by NameTag, so it has its own documentation.
+Java part contains JNI bindings to call C++ part and than connection to TextAn.
+This part serves as an adaptor between these two projects. Its main task is
+to translate recognized NameTag entities to entities stored in TextAn database.
+Because of optimization, this component caches database entities.
+
+\paragraph{Training}
+Despite the fact that NameTag is in C++ and TextAn in Java, it is not requisite 
+to implement JNI, because training is called as binary files and the model is generated
+as file. Therefore, calling C++ functions is not needed. Java part provides
+training data collecting from database and preparation, model handling
+(deleting old ones. binding them to NameTag).
+\comment[Jakub, Petr]{Tam}{Approved?}
+
+\section{Object Assigner}
+\label{sec:ObjectAssigner}
+
+\comment[Tam]{Petr}{here should be description of TextPro}
+
+After calling \emph{Named entity recognizer}, a list of entities is extracted from the document. \emph{TextPro}
+package \emph{cz.cuni.mff.ufal.textan.textpro} automatically
+assigns those entities to available objects in database. As the output, for 
+each entity, the aforementioned package returns a list of potential objects along
+with their score. Two methods are provided.
+
+\paragraph{HeuristicRank}
+The most simplest solution is searching for the \textit{objects} with matching 
+\textit{alias}. However, for an array of entity, it would return an array of 
+list of unordered objects.
+Function \emph{cz.cuni.mff.ufal.textan.textpro.HeuristicRanking} loops through 
+the whole structure, promote the pair of objects which has a relation. This is 
+due to the fact that such pair of objects is more likely to appear in the same
+document. However, as a heuristic method, its main role is to guarantee a decent
+output for every input.
+
+\comment{Tam}{TODO: Picture for heuristic ranking}
+
+\paragraph{MachineLearning}
+Without extensive human effort, machine learning is the best method to achieve
+high performance from a huge database. The problem of ``matching potential objects
+to an entity'' is reformulated to fit the definition of a classification machine 
+learning. Each object is paired with the entity. Then the pair is classified as
+\emph{positive} if the object is potentially matched the entity. On the contrary,
+the pair is classified as \emph{negative}. It becomes the problem of binary 
+classification.
+
+\paragraph{Learning}
+The package \emph{cz.cuni.mff.ufal.textan.textpro.data} supports all steps for machine
+learning including training (learning). The database is extracted. 
+\emph{cz.cuni.mff.ufal.textan.textpro.data} creates 
+artificial pairs of training vectors with \textit{Weka} tool. When a new document is
+processed, new entity and object pairs is added to the database. They could be extracted
+later to train again.
+
+\paragraph{Assigning}
+To assign the entity to object, function \emph{distributionForInstance} to return the 
+probability of the pair with regards to \emph{positive} class. The probability value 
+is ranked an used as the score.
+
+\comment{Tam}{TODO: Features description, maybe}
+\comment[Tam]{Adam}{Yes, the more the better ;-)}
+
+\paragraph{Features}
+
+The feature set is selected among evaluations with regards to the pair between
+the entity and the object. A feature could be computed by comparing the entity 
+and the object. It also may be the characteristics of the entity or the object 
+alone. All the selected features are considered to form a meaningful set which
+expresses the nature of the pair. In the Assigner, the feature set is selected 
+as follow:
+
+\begin{itemize}
+\item The String distance metrics between the entity text and the object aliases. Given 
+the fact that an object may have more than one alias, the package computes three numbers for 
+\textit{similarity} between the entity text and the object aliases: the highest, the lowest and
+the average. It is to distinguish between an object with one alias and object with hundred aliases.
+\item The type comparison between object type and entity type. If a pair is \textit{positive},
+the types have to be the same. This is a crucial features. 
+\item The number of aliases that the object has.
+\item The number of documents that the object appears.  
+\end{itemize}
+
+
