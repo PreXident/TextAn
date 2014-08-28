@@ -185,7 +185,7 @@ public class ObjectAssigner implements IObjectAssigner {
      * @param e entity to search close objects for
      * @return close objects
      */
-    private List<ObjectTable> getCloseObjects(Entity e){
+    public List<ObjectTable> getCloseObjects(Entity e){
         final List<ObjectTable> matchFullText =
                 objectTableDAO.findAllByObjTypeAndAliasFullText(e.getType(), e.getText());
         if(matchFullText.isEmpty()){
