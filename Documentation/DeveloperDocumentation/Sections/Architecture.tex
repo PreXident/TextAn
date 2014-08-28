@@ -4,7 +4,7 @@
 
 The architecture of \textan{} is based on client-server model. Two main components
 are the \textan{} server and \textan{} client which communicate via W3C web services
-(SOAP protokol).
+(SOAP protocol).
 
 
 
@@ -20,7 +20,7 @@ the future fully automated (tuned) annotation without client}
 \comment[Petr (\& Adam)]{Petr}{Describe communication pattern between client and server,
 sequence diagram etc.}
 
-A communication between the client and the server is stateless, because the processing
+The communication between the client and the server is stateless, because the processing
 of a document by a human user may take a very long time, especially because of the saving
 of documents during processing in the client. Sessions cannot be used on
 the server side, because they can die due to timeout before end of the processing.
@@ -32,7 +32,7 @@ completely independent and are intended for viewing and manipulating
 the database.
 
 The service \emph{DocumentProcessor} is more demanding and needs its operations
-called in specific order to achieve proper recognition (see figure
+called in specific order to achieve proper recognition (see Figure
 \ref{fig:ClientServerCommunication}). First of all, the client needs to obtain
 the ticket which stores information about processing and is needed for all
 following calls. For three recognition operations there are two variants. First

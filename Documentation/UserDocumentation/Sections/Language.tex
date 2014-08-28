@@ -9,7 +9,7 @@ same as other business logic.
 \comment[Kuba]{Petr}{Here should be some summary about changing language in nametag}
 NameTag is implemented to support more languages, so if you want use {\it NameTag} in different language, you must change property, which set language  - {\it ner\_identifier},
 specify appropriate tagger for required language and provide data in desired language.
-See \ref{sssec:NametagSettings} for detailed description.
+See Section \ref{sssec:NametagSettings} for detailed description.
 
 The second thing, that needs to be configured, is the full text search. The system
 internally use Apache Lucene, full text search engine. Lucene provides creation
@@ -19,5 +19,5 @@ stop words filtering or synonym expansion. This is done through an Analyzer. Luc
 contains Analyzers\footnote{\url{http://lucene.apache.org/core/4_7_0/analyzers-common/overview-summary.html}}
 for many common languages, or you can define your own. Selection of Analyzer in 
 \textan{} is done through property \emph{hibernate.search.analyzer} in \emph{data.properties}.
-See \ref{sssec:DataSettings}.
+See Section \ref{sssec:DataSettings}.
 

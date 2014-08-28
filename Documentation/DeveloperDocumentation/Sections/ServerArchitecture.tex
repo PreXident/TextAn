@@ -6,7 +6,8 @@
 
 The server architecture is based on a logical multilayered architecture. It
 consists of 5 layers: a presentation layer, a service layer, a business logic layer, 
-a persistence layer and a data layer.
+a persistence layer and a data layer (see Figure
+\ref{fig:ServerComponentOverview}).
 
 \comment{Ondrej}{it definitely needs a figure here, but no generalized pictures, 
 it needs your concrete components and connection. The 5 layers sound like textbook example}
@@ -65,7 +66,8 @@ are called from the service layer and the scheduler.
 \subsection{Scheduler}
 The scheduler is a simple component, that invokes commands asynchronously against
 requests in the servlet container. It is implemented by classes in the package
-\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-commands}.
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-commands} (see Figure
+\ref{fig:CommandsOverview}).
 
 \begin{figure}[!htb]
         \centering
@@ -96,7 +98,7 @@ Persistence layer cares about providing data to application layer and ensure the
 are persistent. First of all this layer needs to convert data between database and
 objects in java. This is called Object-Relation Mapping (ORM). Java classes whose
 instances are stored in database tables are called persistent classes. And we need
-to persist these objects. That is where Hibernate comes to the scene (see section
+to persist these objects. That is where Hibernate comes to the scene (see Section
 \ref{ssec:UsedLibraries}) and do that for us. Next thing we need take care of is
 to perform a transaction, for example joining two objects should first check if
 they are roots and if so, they are joined. All operations with database are usually
@@ -114,7 +116,7 @@ and wraps all access to data sources. It also handles the connection to data sou
 to get and store data. What is good for? Basically it's appreciated when the persistence
 layer changes. For example if we decide not to use hibernate but some other library,
 we don't have to remake the whole application but only the DAO and all under it.
-As you can see in figure \ref{fig:PersistentLayer} without DAO would have the application
+As you can see in Figure \ref{fig:PersistentLayer} without DAO would have the application
 to call Hibernate functions and it would be dependent on Hibernate. Now the application
 don't know anything about hibernate and if we are using it or any other ORM.
 
@@ -125,7 +127,7 @@ don't know anything about hibernate and if we are using it or any other ORM.
         \label{fig:DataDecomposition}
 \end{figure}
 
-As you can see in figure \ref{fig:DataDecomposition}, our persistence layer is
+As you can see in Figure \ref{fig:DataDecomposition}, our persistence layer is
 covered by package \emph{cz.cuni.mff.ufal.textan.data}. In this section when we
 mention some subpackage, we always mean the subpackage of the package \emph{data}.
 
@@ -158,8 +160,8 @@ We have used the factory pattern to create graph. There are methods in class
 supports finding shortest path between two objects. For this has been used the Floyd-Warshall
 algorithm. \comment{Venca}{This is not true anymore.}
 
-%TODO finish shit about floyd warshall implementation
 \comment{Venca}{Finish shit about floyd warshall after implementation and problem with memory}
+\comment[Venca]{Adam}{Rewrite the text so it matches the reality again}
 
 Last interesting subpackage is \emph{interceptors} where are located definitions
 of Hibernate interceptors. Interceptor is something like trigger in a database.
@@ -171,7 +173,7 @@ discuss in next section \ref{sec:Database}.
 \label{sec:Database}
 
 \comment[Venca]{Petr}{Describe database: database schema etc.}
-This section describes the database schema (see figure \ref{fig:DatabaseSchema}), meaning of all database tables and columns.
+This section describes the database schema (see Figure \ref{fig:DatabaseSchema}), meaning of all database tables and columns.
 
 
 \begin{figure}[!htb]
@@ -258,10 +260,10 @@ training data collecting from database and preparation, model handling
 \section{Object Assigner}
 \label{sec:ObjectAssigner}
 
-\comment[Tam]{Petr}{here should be description of TextPro}
+\comment[Tam]{Petr}{here should be description of ObjectAssigner}
 
-After calling \emph{Named entity recognizer}, a list of entities is extracted from the document. \emph{TextPro}
-package \emph{cz.cuni.mff.ufal.textan.textpro} automatically
+After calling \emph{Named entity recognizer}, a list of entities is extracted from the document. \emph{ObjectAssigner}
+package \emph{cz.cuni.mff.ufal.textan.assigner} automatically
 assigns those entities to available objects in database. As the output, for 
 each entity, the aforementioned package returns a list of potential objects along
 with their score. Two methods are provided.
@@ -270,11 +272,8 @@ with their score. Two methods are provided.
 The most simplest solution is searching for the \textit{objects} with matching 
 \textit{alias}. However, for an array of entity, it would return an array of 
 list of unordered objects.
-Function \emph{cz.cuni.mff.ufal.textan.textpro.HeuristicRanking} loops through 
-the whole structure, promote the pair of objects which has a relation. This is 
-due to the fact that such pair of objects is more likely to appear in the same
-document. However, as a heuristic method, its main role is to guarantee a decent
-output for every input.
+Function \emph{cz.cuni.mff.ufal.textan.assigner.ObjectAssigner.HeuristicRanking}
+loops through the whole structure, promote the pair of objects which has a relation. This is due to the fact that such pair of objects is more likely to appear in the same document. However, as a heuristic method, its main role is to guarantee a decent output for every input.
 
 \comment{Tam}{TODO: Picture for heuristic ranking}
 
@@ -288,9 +287,9 @@ the pair is classified as \emph{negative}. It becomes the problem of binary
 classification.
 
 \paragraph{Learning}
-The package \emph{cz.cuni.mff.ufal.textan.textpro.data} supports all steps for machine
-learning including training (learning). The database is extracted. 
-\emph{cz.cuni.mff.ufal.textan.textpro.data} creates 
+The package \emph{cz.cuni.mff.ufal.textan.assigner.data} supports all steps for
+machine learning including training (learning). The database is extracted. 
+\emph{cz.cuni.mff.ufal.textan.assigner.data} creates 
 artificial pairs of training vectors with \textit{Weka} tool. When a new document is
 processed, new entity and object pairs is added to the database. They could be extracted
 later to train again.
@@ -301,7 +300,8 @@ probability of the pair with regards to \emph{positive} class. The probability v
 is ranked an used as the score.
 
 \comment{Tam}{TODO: Features description, maybe}
-\comment[Tam]{Adam}{Yes, the more the better ;-)}
+\comment[Tam]{Adam}{Yes, the more the better ;-) it is core component so you
+are never too verbose}
 
 \paragraph{Features}
 

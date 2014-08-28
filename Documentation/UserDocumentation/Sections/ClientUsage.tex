@@ -1,17 +1,18 @@
 % Section: Client Usage
 This section contains all information needed by end users to successfully use
 the \textan{} client application. For instructions to actual run the client
-see \ref{sssec:StartClient}.
+see Section \ref{sssec:StartClient}. \comment{Ondrej}{I do not understand what
+will be there, why chapter 2 and not sooner?}
 
 \subsection{First Run}
 
 On the first run of \textan{} client, users are prompted to enter their username
 (see figure \ref{fig:Login}, which is used by the system to identify the users.
 The login name is stored in settings and the login dialog is not shown again
-in following runs. The name can be changed in settings (see \ref{ssec:Settings}). A
-valid name is required, ie. not empty and not whitespace characters only. If
-users enter invalid login, a warning is displayed and they may enter other
-login or the application quits.
+in following runs. The name can be changed in settings (see Section
+\ref{ssec:Settings}). A valid name is required, ie. not empty and not whitespace
+characters only. If users enter invalid login, a warning is displayed and they
+may enter other login or the application quits.
 
 \begin{figure}[!htb]
         \centering
@@ -23,11 +24,10 @@ login or the application quits.
 \subsection{Working Space}
 
 The \textan{} client's application working space is very simple and intuitive.
-The main window (see figure \ref{fig:MainWindow}) contains the main menubar with
-all commands needed to control the application. The individual items are sorted
-out into categories to make the orientation easier. There is also a toolbar with
+The main window (see Figure \ref{fig:MainWindow}) contains the main menubar with
+all commands needed to control the application. There is also a toolbar with
 icons for mostly used commands to speed up the access. Hover over the
-toolbar icons to see action names.
+toolbar icons to see the corresponding action names.
 
 \begin{figure}[!htb]
         \centering
@@ -38,21 +38,21 @@ toolbar icons to see action names.
 
 The File menu contains items to create new report, import report from external
 file and load report whose processing was not finished, but was saved to continue
-later. For more information about report processing, see \ref{ssec:ProcessReport}.
+later. For more information about report processing, see Section \ref{ssec:ProcessReport}.
 
 The Wizards menu contains items starting wizards to guide the users in more
-complicated tasks, like processing report (see \ref{ssec:ProcessReport}) and
-joining objects (see \ref{ssec:JoinObjects}).
+complicated tasks, like processing report (see Section \ref{ssec:ProcessReport})
+and joining objects (see Section \ref{ssec:JoinObjects}).
 
 The Dials menu contains items to display objects, documents and relations
-stored in the database (see \ref{ssec:ViewDatabase}).
+stored in the database (see Section \ref{ssec:ViewDatabase}).
 
 The Windows menu contains the list of currently displayed application windows
 to easily bring certain window to front.
 
 The Settings menu contains items to customize \textan{} client appearance and
-behaviour. For more information, see \ref{ssec:Settings}. It also contains
-shortcut to reset the position and size of the main window.
+behavior. For more information, see Section \ref{ssec:Settings}. It also
+contains shortcut to reset the position and size of the main window.
 
 \subsection{Settings}
 \label{ssec:Settings}
@@ -60,12 +60,13 @@ shortcut to reset the position and size of the main window.
 This section describes options available in individual items contained in the
 main menu Settings.
 
-\subsection{General Settings}
+\subsubsection{General Settings}
 \label{sssec:GeneralSettings}
 
-The General Settings window (see figure \ref{fig:GeneralSettings}) contains
+The General Settings window (see Figure \ref{fig:GeneralSettings}) contains
 controls for changing the behavior and appearance of the application.
 
+\comment[Adam]{Adam}{Update the image!}
 \begin{figure}[!htb]
         \centering
         \includegraphics{Images/general}
@@ -73,15 +74,15 @@ controls for changing the behavior and appearance of the application.
         \label{fig:GeneralSettings}
 \end{figure}
 
-\paragraph{Independent Windows} If this control is checked the application
+\paragraph{Independent Windows} If this control is checked, the application
 secondary windows will not be embedded into the main window, but separate
 independent system windows will be used.
 
-\paragraph{Hypergraphs} This control affects the rendering of hyperedges%
-\footnote{Hyperedge is an edge in a hypergraph which is a generalization of
-term graph. The difference is that edges in hypergraphs can connect any number
-of nodes, but in graph they always connect two nodes.}
-in graphs (see figure \ref{fig:Hypergraphs}). The default rendering transforms
+\paragraph{Hyperedges as clouds} This control affects the rendering of
+hyperedges\footnote{Hyperedge is an edge in a hypergraph which is a
+generalization of term graph. The difference is that edges in hypergraphs can
+connect any number of nodes, whereas in graph they always connect two nodes.}
+in graphs (see Figure \ref{fig:Hypergraphs}). The default rendering transforms
 hypergraphs to graphs by adding auxiliary nodes of square shape representing
 the relation. If this control is checked, the edges are rendered by graph
 background.
@@ -93,24 +94,28 @@ background.
         \label{fig:Hypergraphs}
 \end{figure}
 
-\paragraph{Clear Filters} If this control is checked the filter fields
+\paragraph{Clear Filters} If this control is checked, the filter fields
 displayed during report processing will be cleared when shown again.
 
-\paragraph{Localization} This control determines the language of the \textan{}
+\paragraph{Language} This control determines the language of the \textan{}
 client. The Czech and English localizations are currently supported. The
 default language is English. Changing localization takes effect after
 restarting the application.
 
-\paragraph{Graph Distance} This control affects default maximal length of the
-path between any node and the graph central node.
+\paragraph{Max Distance} This control affects the default maximal length of the
+path between any node and the graph central node. Nodes beyond this limit are
+not displayed.
 
 \paragraph{Login} This control enables users to change their username. Changing
 login takes effect after restarting the application.
 
+\subsubsection{Color Settings}
+\comment[Adam]{Adam}{Insert color settings description and images}
+
 \subsection{Report Processing}
 \label{ssec:ProcessReport}
 
-Wizard for report processing is accessible from the main menu. It guides
+The wizard for report processing is accessible from the main menu. It guides
 users in complicated procedure of processing a report. The procedure is divided
 into several steps described in this section (see figure \ref{fig:Pipeline}).
 Users can return to previous steps, but if any changes are done, the progress
@@ -123,9 +128,9 @@ in following steps is lost.
         \label{fig:Pipeline}
 \end{figure}
 
-In Edit Report step and later when the report processing is interrupted, save
-dialog is shown if desired. Report processing is then saved into selected file
-and can continue later by selecting Unfinished Report in Report Source step (see
+In Edit Report step and later, when the report processing is interrupted,
+\textan{} offers to save the unfinished report into a file. The processing can
+be resumed by selecting Unfinished Report in Report Source step (see Section
 \ref{sssec:ReportSource}). The processing continues in the step where it was
 saved.
 
@@ -144,10 +149,16 @@ report. There are following sources:
 
 \paragraph{Database} This option displays (see figure \ref{fig:Database}) list
 of all unprocessed reports stored in the database (for filtering details see
-\ref{sssec:DocumentList}).
+Section \ref{sssec:DocumentList}).
 The report cannot be edited, so the wizard then proceeds to Edit Entities step
-(see \ref{sssec:EditEntities}). If the report is edited by someone else while
-being processed a warning message is displayed. User can decide whether the report processing should end or continue with the current text. In the latter case the current text overwrites the one in the database when processed report is saved to the database. It is also possible to enter Edit Report step and edit it as it will replace stored text anyway.
+(see Section \ref{sssec:EditEntities}). \comment[Adam]{Ondrej}{The following is
+not completely comprehensible} If the report is edited by someone else
+externally while being processed by a local user, a warning message is
+displayed. The local user can decide whether the report processing should end or
+continue with the current text. In the latter case, the current text overwrites
+the one in the database when processed report is saved to the database. It is
+also possible to enter Edit Report step and edit it as it will replace stored
+text anyway.
 
 \begin{figure}[!htb]
         \centering
@@ -158,8 +169,8 @@ being processed a warning message is displayed. User can decide whether the repo
 
 \paragraph{Text File} This option displays open file dialog for importing
 report text from external file. The extracted text is then displayed (see
-figure \ref{fig:TextFile}, so users can chose the proper file encoding. Then
-the wizard proceeds to Report Edit step (see \ref{sssec:ReportEdit}).
+Figure \ref{fig:TextFile}, so users can chose the proper file encoding. Then
+the wizard proceeds to Report Edit step (see Section \ref{sssec:ReportEdit}).
 
 \begin{figure}[!htb]
         \centering
@@ -169,7 +180,7 @@ the wizard proceeds to Report Edit step (see \ref{sssec:ReportEdit}).
 \end{figure}
 
 \paragraph{Empty Message} This option proceeds directly to Report Edit step
-(see \ref{sssec:ReportEdit}) with empty report.
+(see Section \ref{sssec:ReportEdit}) with empty report.
 
 \paragraph{Unfinished Report} This option displays open file dialog for
 selecting the file with report whose processing has not been finished, but it
@@ -179,8 +190,8 @@ processing has been interrupted.
 \subsubsection{Edit Report}
 \label{sssec:ReportEdit}
 
-In this step users can edit the text of the report (see figure
-\ref{fig:ReportEdit}. This step is followed by Edit Entities step (see
+In this step users can edit the text of the report (see Figure
+\ref{fig:ReportEdit}. This step is followed by Edit Entities step (see Section
 \ref{sssec:EditEntities}).
 
 \begin{figure}[!htb]
@@ -195,8 +206,8 @@ In this step users can edit the text of the report (see figure
 
 Before entering this step the system automatically recognizes named entities
 in the report text. Recognized entities are marked by text color. Entities of
-the same type have the same color (see \ref{fig:Entities}). Hovering over entity
-text will display its type.
+the same type have the same color (see Figure \ref{fig:Entities}). Hovering over
+entity text will display its type.
 
 Users can correct recognized entities and add new ones by selecting the text
 of the entity by mouse and picking the entity type from the context menu.
@@ -209,7 +220,8 @@ keys Up, Down and Enter can be used to select the entity type.
 One entity cannot comprise from several separated parts and entities cannot
 overlap.
 
-This step is followed by Edit Objects step (see \ref{sssec:EditObjects}).
+This step is followed by Edit Objects step (see Section
+\ref{sssec:EditObjects}).
 
 \begin{figure}[!htb]
         \centering
@@ -221,7 +233,7 @@ This step is followed by Edit Objects step (see \ref{sssec:EditObjects}).
 \subsubsection{Edit Objects}
 \label{sssec:EditObjects}
 
-In this step the entities are assigned to real objects (see figure
+In this step the entities are assigned to real objects (see Figure
 \ref{fig:Objects}). The system automatically assigns objects stored in the
 database to entities recognized in the database. If no suitable object is
 found, the entity is marked with orange background. Hovering over entity
@@ -238,7 +250,8 @@ Right click on objects will display context menu with options to show the graph
 of the object or documents containing the object. This is also true for all following steps.
 
 To assign object to entity left click the entity and select suitable object
-from the context menu (see \ref{fig:ObjectMenu}) or create entirely new object.
+from the context menu (see Figure \ref{fig:ObjectMenu}) or create entirely new
+object.
 
 \begin{figure}[!htb]
         \centering
@@ -252,13 +265,13 @@ from the context menu (see \ref{fig:ObjectMenu}) or create entirely new object.
 \end{figure}
 
 The report processing cannot continue unless all entities have assigned
-objects. This step is then followed by Relation Edit step (see
+objects. This step is then followed by Relation Edit step (see Section
 \ref{sssec:EditRelations}).
 
 \subsubsection{Edit Relations}
 \label{sssec:EditRelations}
 
-This is the last mandatory step during report processing (see figure
+This is the last mandatory step during report processing (see Figure
 \ref{fig:Relations}). It consists of marking relationships between objects in
 the document.
 
@@ -295,14 +308,14 @@ nonnegative order. For relations with more than two objects assigned, arrows
 point from objects with negative order and at objects with positive odd order.
 
 After finishing relation editation the document is stored to the database,
-unless some errors occur. In that case Error Step follows (see
+unless some errors occur. In that case Error Step follows (see Section
 \ref{sssec:Errors}).
 
 \subsubsection{Errors}
 \label{sssec:Errors}
 
 This step takes place only if some changes to the database from other sources
-are detected (see figure \ref{fig:Errors}). The window informs user which new
+are detected (see Figure \ref{fig:Errors}). The window informs user which new
 objects and relations have been created while the report was being processed and
 which objects have been joined. Users can decide to return to previous steps
 and reconsider their edits or force the saving of the report.
@@ -314,22 +327,20 @@ and reconsider their edits or force the saving of the report.
         \label{fig:Errors}
 \end{figure}
 
-\subsection{View Database}
+\subsection{Database Exploration}
 \label{ssec:ViewDatabase}
 
 Users can use client to view data stored in the database by selecting items
 in Dials menu of the main window. Other ways include various context menus
 while processing reports etc.
 
-\subsubsection{View Objects}
+\subsubsection{Browsing Objects}
 \label{sssec:ObjectList}
 
 This window contains list of objects matching the filter criteria (alias text,
-object type) paginated for more convenient work (see figure \ref{fig:ObjectList}.
-Please note that changing filter criteria must be confirmed by pressing Filter
-button. Use right mouse button click to open context menu for displaying graph
-for the selected object (see \ref{ssec:Graphs}) or for displaying list of documents
-containing it (see \ref{sssec:DocumentList}).
+object type) paginated for more convenient work (see Figure
+\ref{fig:ObjectList}. Please note that changing filter criteria must be confirmed by pressing Filter button. Use right mouse button click to open context menu for displaying graph for the selected object (see Section \ref{ssec:Graphs}) or for displaying list of documents containing it (see
+Section \ref{sssec:DocumentList}).
 
 \begin{figure}[!htb]
         \centering
@@ -338,19 +349,17 @@ containing it (see \ref{sssec:DocumentList}).
         \label{fig:ObjectList}
 \end{figure}
 
-\subsubsection{View Documents}
+\subsubsection{Browsing Documents}
 \label{sssec:DocumentList}
 
 This window contains list of documents matching filter criteria. Please note
 that not all filter controls may be visible at all situations as they are
-customized to fit the current context (see figure \ref{fig:DocumentList}.
+customized to fit the current context (see Figure \ref{fig:DocumentList}.
 Also note that changing filter criteria must be confirmed by pressing Filter
 button. Use right mouse button click to open context menu for displaying graph
-for the selected document (see \ref{ssec:Graphs}) or for displaying the report
-itself (see \ref{sssec:DocumentView}). Other options include editing the report
-or processing it if possible. Inserting new report without processing is done
-by clicking New document button. Hovering over the row displays full report
-text.
+for the selected document (see Section \ref{ssec:Graphs}) or for displaying the
+report itself (see Section \ref{sssec:DocumentView}). Other options include
+editing the report or processing it if possible. Inserting new report without processing is done by clicking New document button. Hovering over the row displays full report text.
 
 \begin{figure}[!htb]
         \centering
@@ -359,12 +368,12 @@ text.
         \label{fig:DocumentList}
 \end{figure}
 
-\subsubsection{View Document}
+\subsubsection{Browsing Document}
 \label{sssec:DocumentView}
 
 This window displays reports with highlighted objects and relations for easier
-orientation (see \ref{fig:DocumentView}). Use right mouse click to open object
-context menu to get more information about the selected object. Selecting
+orientation (see Figure \ref{fig:DocumentView}). Use right mouse click to open
+object context menu to get more information about the selected object. Selecting
 relation will highlight its anchor and assigned objects.
 
 \begin{figure}[!htb]
@@ -374,14 +383,15 @@ relation will highlight its anchor and assigned objects.
         \label{fig:DocumentView}
 \end{figure}
 
-\subsubsection{View Relations}
+\subsubsection{Browsing Relations}
 
 This window contains list of relations matching the filter criteria (anchor
-text, relation type) paginated for more convenient work (see figure
+text, relation type) paginated for more convenient work (see Figure
 \ref{fig:RelationList}). Please note that changing filter criteria must be
 confirmed by pressing Filter button. Use right mouse button click to open
-context menu for displaying graph for the selected relation (see \ref{ssec:Graphs})
-or for displaying list of documents containing it (see \ref{sssec:DocumentList}).
+context menu for displaying graph for the selected relation (see Section
+\ref{ssec:Graphs}) or for displaying list of documents containing it (see
+Section \ref{sssec:DocumentList}).
 
 \begin{figure}[!htb]
         \centering
@@ -398,9 +408,9 @@ common way is right clicking an object/relation/document and selecting Show
 graph context menu item.
 
 The graph appearance is drastically effected by Hypergraphs settings (see
-\ref{sssec:GeneralSettings}).
+Section \ref{sssec:GeneralSettings}).
 
-In the top part of the window (see figure \ref{fig:Graph}) there is a toolbar
+In the top part of the window (see Figure \ref{fig:Graph}) there is a toolbar
 with icons to manipulate the graph.
 
 The first icon represents Transformation and is used to manipulate the graph as a whole, eg. panning or rotating (hold CTRL while left clicking and moving the
@@ -432,7 +442,7 @@ lists.
 There can be situations when it is discovered that two objects originally
 thought to be independent are in fact one object. For such cases there is Join
 Object wizard (see figure \ref{fig:Join}). For more information about object
-lists see \ref{sssec:ObjectList}.
+lists see Section \ref{sssec:ObjectList}.
 
 \begin{figure}[!htb]
         \centering
@@ -448,7 +458,7 @@ joining itself.
 \subsection{Path Wizard}
 This wizard displays window similar to Joining Objects. Select two objects
 for which you want to try to find path of relations and objects connecting them
-(see figure \ref{fig:Path}). The system looks only for the shortest route.
+(see Figure \ref{fig:Path}). The system looks only for the shortest route.
 If such path is found, the graph displaying it is shown.
 
 \begin{figure}[!htb]
