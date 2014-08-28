@@ -255,7 +255,7 @@ creation \emph{(added)}, the date for last change and the date when the document
 The table has only one column with content \emph{data} which is used to describe the object. 
 Apart from that, it contains reference to \emph{ObjectType} table to determine what type the object is.
 
-\paragraph{Object Type} The \emph{objecttype} table is used to describe if an object is a human or an address. 
+\paragraph{Object Type} The \emph{objecttype} table is used to describe if an object is for example a human or an address. 
 It has only one column with name of the type and the type have to be unique.
 
 \paragraph{Alias} If an entity occurs in some document, we want to 
@@ -269,34 +269,33 @@ mother-son, live, use, etc. This table describes such relationship.
 \paragraph{IsInRelation} There can be relation among more than two entities, for example 
 killer-victim-place-time. This is the reason we have used the N:N relation 
 between \emph{object} and \emph{relation} tables, which represents the \emph{isinrelation} 
-table. For instance, to distinguish between killer and victim, the column \emph{role} 
-(more user friendly) and \emph{order\_{}in\_{}relation} have been used.
+table. For instance, to distinguish between killer and victim, the column \emph{role} has been used. The column \emph{order\_{}in\_{}relation} is used only for client for display order.
 
 \paragraph{RelationType} As well as the objects have types, the relations have their type too. 
 For example \emph{kill}, \emph{live} or \emph{sell}.
 
 \paragraph{Relation and Alias Occurrences} These two tables stand for the occurrence of an 
-alias and relation in a document respectively. It contains their beginning positions in the document 
-and an anchor for relation. 
+alias and relation in a document. It contains their beginning positions in the document 
+and an anchor for relation. Of course there is a foreign key to the document it is occurred in. And there is also a foreign key to the \emph{Alias} resp. \emph{Relation} table. It is kind of a N:N relation for \emph{Alias-Document} and \emph{Relation-Document} with some added information.
 
 \paragraph{Joined Objects} It is possible that users may realize two different entities are actually 
 a single one. In this case, two objects have to be joined into a new one. This can be done by 
-\emph{joinedobjects} table. However, this join can be a wrong decision. There is a column 
-to\_{}date in case these merged objects are separated.
+\emph{joinedobjects} table. However, this join can be a wrong decision, that is why there is a column 
+\emph{to\_{}date} in case these merged objects are separated.
 
 \paragraph{Audit} All inserts, deletes and updates in the tables above are being saved into \emph{audit} 
 table. It is a simple table because it keeps a string of modified object. It also 
-keeps username of the user who performed the operation, the date of the change and what kind 
+keeps the username of the user who performed the operation, the date of the change and what kind 
 of change was processed.
  
-\paragraph{Global Version} Before finishing the process of a document, it is checked whether there
+\paragraph{Global Version} Before finishing the processing of a document, it is checked whether there
 are other documents which have been added or modified. To perform that check we need to have some information
 when the tables have been modified. Tables \emph{Document}, \emph{Object} and \emph{Relation} 
 contain a column \emph{globalversion}, which increments with each insert, delete or update. 
 Current global version is stored in \emph{globalversion} table where there is only a single row every time.
 
-\paragraph{} As you may see, there is a little bit of redundancy in our schema. There is alias table where the alias of an object is stored. But if we really want to extract the alias of an object, we could get the alias from document, which the object occurs. However, that would be too complicated to get from single query. Furthermore, we want a method to easily get all aliases of an object.
-Next redundancy is \emph{Object.id\_{}root\_{}object} which is a foreign key of the same table. Once we join objects and we get a new one, this joining together makes a binary tree. A root of the tree is the object, of which we want to edit aliases, because other objects in the tree are not taken into account. So we need two things: the determine if a given object is a root and the method to get the root if current object is not the root. Without that column we would have to join until we get to the root and that, as we know, can't be done in a single sql query. With the column, we only ask if the root of an object is the same or we simply get the root object in one join.
+\paragraph{} As you can see, there is a little bit of redundancy in our schema. There is alias table where the alias of an object is stored. But if we really want to extract the alias of an object, we could get the alias from document, where the object occurs. However, that would be too complicated to get from a single query. Furthermore, we want a method to easily get all aliases of an object.
+Next redundancy is \emph{Object.id\_{}root\_{}object} which is a foreign key to the same table. Once we join objects and we get a new one, this joining again and again together makes a binary tree. A root of the tree is the object, of which we want to edit aliases, because other objects in the tree are not taken into account. So we need two things: the determine if a given object is a root and the method to get the root if current object is not the root. Without that column we would have to join until we get to the root and that, as we know, can't be done in a single sql query. With the column, we only ask if the root of an object is equal to ID of this object or we simply get the root object in one join.
 
 \section{Client architecture}
 
