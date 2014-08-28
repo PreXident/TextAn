@@ -14,13 +14,6 @@ import java.util.Set;
 public class FeaturesComputeValue {
 
     /**
-     * Only constructor. TODO never used
-     */
-    public FeaturesComputeValue(){
-        // Initialize the class
-    }
-
-    /**
      * Compares the entity text and alias of object.
      * Word with one alias only
      * @param entityString entity text
@@ -28,11 +21,9 @@ public class FeaturesComputeValue {
      * @return Levenshtein distance
      */
     public static double EntityTextAndObjectAlias(String entityString, String objectString) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         //JaroWinkler algorithm = new JaroWinkler();
         //return algorithm.getSimilarity(stringA, stringB);
         return SimpleLevenshtein.getStringDistance( entityString, objectString);
-        //return 0;
     }
 
 
@@ -59,7 +50,7 @@ public class FeaturesComputeValue {
      * @param objectTableDAO
      * @return
      */
-    public double EntityAndObjectMutual(String text, List<Entity> eList, Entity e, ObjectTable o, IObjectTableDAO objectTableDAO) {
+    public static double EntityAndObjectMutual(String text, List<Entity> eList, Entity e, ObjectTable o, IObjectTableDAO objectTableDAO) {
 
         // List of all object table associated with OTHER entities
         final List<ObjectTable> finalDocList = new ArrayList<>();
@@ -91,7 +82,7 @@ public class FeaturesComputeValue {
      * @param objectTableDAO
      * @return
      */
-    public List<ObjectTable> getMutualObject(Entity e, IObjectTableDAO objectTableDAO){
+    public static List<ObjectTable> getMutualObject(Entity e, IObjectTableDAO objectTableDAO){
         return objectTableDAO.findAllByAliasSubstring(e.getText());
     }
 
@@ -101,8 +92,15 @@ public class FeaturesComputeValue {
      * @param o object
      * @return number of objects that given object is joined to
      */
-    public double NumberOfComponentObject( ObjectTable o) {
+    public static double NumberOfComponentObject( ObjectTable o) {
         final Set<ObjectTable> oList2 = o.getObjectsThisIsJoinedFrom();
         return oList2.size();
+    }
+
+    /**
+     * Utility classes need no constructor.
+     */
+    private FeaturesComputeValue(){
+        // Initialize the class
     }
 }

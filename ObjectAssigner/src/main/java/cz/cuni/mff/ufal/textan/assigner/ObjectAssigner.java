@@ -4,12 +4,18 @@ import cz.cuni.mff.ufal.textan.assigner.data.Entity;
 import cz.cuni.mff.ufal.textan.assigner.data.EntityInfo;
 import cz.cuni.mff.ufal.textan.assigner.learning.TrainWeka;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +94,7 @@ public class ObjectAssigner implements IObjectAssigner {
                 .forEach(ids::add);
         // Check match
         return docs2.stream()
-                .map(Pair::getFirst)
+                .map(Pair::getFirst);
                 .map(DocumentTable::getId)
                 .anyMatch(ids::contains);
     }
@@ -117,7 +123,7 @@ public class ObjectAssigner implements IObjectAssigner {
      * @return list of ranked candidates for each entity
      */
     @Override
-    public Map<Entity, List<Pair<Long, Double>>> createObjectRanking(
+    public Map<Entity, List<Pair<Long, Double>>> combinedObjectRanking(
             final String document,
             final List<Entity> entities,
             final int topK) {
@@ -160,6 +166,7 @@ public class ObjectAssigner implements IObjectAssigner {
                 result.put(entity, finalScores);
             } else {
                 // There is some exception there if two lists does not contain the same key
+                // This should never happen!
                 LOG.error("Ranking methods do not use the same entities!");
                 result.put(entity, listML);
             }
@@ -211,7 +218,8 @@ public class ObjectAssigner implements IObjectAssigner {
             for (int j = i + 1; j < infos.size(); ++j) {
                 final EntityInfo otherInfo = infos.get(j);
                 final String eOtherText = otherInfo.e.getText();
-                if (eText.equalsIgnoreCase(eOtherText)) {
+                if (eText.equalsIgnoreCase(eOtherText)
+                        && info.e.getType() == otherInfo.e.getType()) {
                     continue; // Check if they have the same text, not just the same entity
                 }
                 for (ObjectTable object : info.objects) {

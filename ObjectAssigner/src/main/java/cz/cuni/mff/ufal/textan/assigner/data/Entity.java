@@ -8,9 +8,7 @@ public class Entity{
     /** Entity text. */
     final private String text;
 
-    /**
-     * Entity type id.
-     */
+    /** Entity type id. */
     final long type;
 
     /**

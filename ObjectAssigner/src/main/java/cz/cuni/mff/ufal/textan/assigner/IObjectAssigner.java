@@ -1,8 +1,7 @@
 package cz.cuni.mff.ufal.textan.assigner;
 
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.assigner.data.Entity;
-
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import java.util.List;
 import java.util.Map;
 
@@ -19,13 +18,13 @@ public interface IObjectAssigner {
      * {@link #heuristicRanking(java.lang.String, java.util.List, int)
      * heuristicRanking} and
      * {@link #machineLearningRanking(java.lang.String, java.util.List, int)
-     * machineLearningRanking}. 
+     * machineLearningRanking}.
      * @param document document containing the entities
      * @param entities list of recognized named entities
      * @param topK maximal number of candidates for each entity
      * @return list of ranked candidates for each entity
      */
-    Map<Entity, List<Pair<Long, Double>>> createObjectRanking(String document, List<Entity> entities, int topK);
+    Map<Entity, List<Pair<Long, Double>>> combinedObjectRanking(String document, List<Entity> entities, int topK);
 
     /**
      * Part of creating object ranking.
@@ -35,7 +34,7 @@ public interface IObjectAssigner {
      * @param entities list of recognized named entities
      * @param topK maximal number of candidates for each entity
      * @return list of ranked candidates for each entity
-     * @see #createObjectRanking(java.lang.String, java.util.List, int)
+     * @see #combinedObjectRanking(java.lang.String, java.util.List, int)
      */
     Map<Entity, List<Pair<Long, Double>>> heuristicRanking(String document, List<Entity> entities, int topK);
 
@@ -53,7 +52,7 @@ public interface IObjectAssigner {
      * @param entities list of recognized named entities
      * @param topK maximal number of candidates for each entity
      * @return list of ranked candidates for each entity
-     * @see #createObjectRanking(java.lang.String, java.util.List, int)
+     * @see #combinedObjectRanking(java.lang.String, java.util.List, int)
      */
     Map<Entity, List<Pair<Long, Double>>> machineLearningRanking(String document, List<Entity> entities, int topK);
 }

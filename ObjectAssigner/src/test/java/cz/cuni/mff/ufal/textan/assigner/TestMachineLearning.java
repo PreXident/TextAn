@@ -111,7 +111,7 @@ public class TestMachineLearning {
         eList.add(e);
 
         // Run the ranking
-        Map<Entity, List<Pair<Long, Double>>> result = textPro.createObjectRanking("Empty", eList, 5);
+        Map<Entity, List<Pair<Long, Double>>> result = textPro.combinedObjectRanking("Empty", eList, 5);
         // If everything is alright, it will call both ML and HR
         List<Pair<Long, Double>> Olist = result.get(e);
         assertEquals("1: entity to match", 1, result.keySet().size());
