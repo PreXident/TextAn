@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.textan.assigner;
 
 import cz.cuni.mff.ufal.textan.assigner.configs.ObjectAssignerConfig;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -14,7 +15,6 @@ import weka.core.Instances;
 
 /**
  * This testing package is devoted to Weka Features.
- * TODO is this doing anything?
  * @author HOANGT
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -51,9 +51,15 @@ public class WekaTest {
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(2), 1.0);
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(3), 1);
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(4), "positive");
+        isTrainingSet.add(thisInstance);
         
         /* The installation of weka is correct*/
         assertEquals("There is 1 instance in dataset", 1, isTrainingSet.numInstances());
         assertEquals("There are 2 classes in dataset", 2, isTrainingSet.numClasses());
+        assertEquals("Class is the fifth attribute", isTrainingSet.firstInstance().classIndex(), 4);
+        assertEquals("The value of the fifth attribute is positive", isTrainingSet.firstInstance().attribute(4).indexOfValue("positive"), 0);
+        assertEquals("The value of the fifth attribute is not negative", isTrainingSet.firstInstance().attribute(4).indexOfValue("negative"), 1);
+        assertTrue("The value of the forth attribute is numeric", isTrainingSet.firstInstance().attribute(3).isNumeric());
+        
     }
 }

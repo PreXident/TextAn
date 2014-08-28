@@ -37,7 +37,7 @@ public class Entity{
         return type;
     }
 
-    //TODO check if this makes sense
+    /* Two entity is the same if they have the same text, id and offset in the same document*/
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
