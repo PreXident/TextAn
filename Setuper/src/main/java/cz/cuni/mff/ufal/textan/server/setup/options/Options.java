@@ -94,7 +94,7 @@ public class Options {
         for (Entry<String, Command> entry : commands.entrySet()) {
             jCommander.addCommand(entry.getKey(), entry.getValue());
         }
-        jCommander.setProgramName("java -jar Server-setup.jar"); //set name in usage
+        jCommander.setProgramName("java -cp TextAn-server.jar cz.cuni.mff.ufal.textan.setup.Setuper"); //set name in usage
         return jCommander;
     }
 
