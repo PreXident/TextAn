@@ -45,7 +45,21 @@ type "person" with role "victim" in the relation of this type, also there
 should be an object of type "person" with role "murderer", an object of type
 "address" with role "crime place" and so on.
 
-\comment{Ondrej}{Add support of multiple languages at once}
+\section{Multiple Languages at Once}
+Although \textan{} can be configured for multiple languages, mainly for Czech
+and English (see Section \ref{USR-sec:Lang} in the user documentation), it support
+only one language at once. It can be useful to support multiple languages at once.
+For example, when \textan{} is used by police for analyze their reports, it can
+be helpful to manage reports from foreign colleagues in same system. A similar
+example is any multinational company and their documents.
+
+This change affects multiple areas in the system, especially recognizers and
+the full text indexing and searching, because they use different procedures for
+each language and it's difficult to find any universal solution for them. It means
+that the system must know which language is currently used and must choose a right
+method for processing. It can be solved by multiple models for recognizers, one
+for each language, and multiple analyzer for the searching and the language will
+have to be defined explicitly.
 
 \section{Client}
 The \textan{} client could be improved in many ways as any graphic application.
