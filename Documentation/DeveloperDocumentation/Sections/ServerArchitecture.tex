@@ -319,8 +319,15 @@ the fact that an object may have more than one alias, the package computes three
 the average. It is to distinguish between an object with one alias and object with hundred aliases.
 \item The type comparison between object type and entity type. If a pair is \textit{positive},
 the types have to be the same. This is a crucial features. 
-\item The number of aliases that the object has.
-\item The number of documents that the object appears.  
+\item A check if the object is the root. It is a fact that the root of \textit{joined} object 
+should have higher priority than non-root object.
+\item The number of neighbors that the object have. This feature take into consideration the number 
+of relations that an object has.
+\item Document occurrences that the object appears. 
+\item Document occurrences that the entity appears.
+\item Number of documents that both the object and the entity appear together.
+\item Number of documents that the entity and neighbors of the object appear together.
+\item Number of neighbors of the objects that happen to be in the same document with the entity.
 \end{itemize}
 
 
