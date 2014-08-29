@@ -25,28 +25,10 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 public class ObjectAssignerTest {
 
     @Autowired
-    IAliasOccurrenceTableDAO aliasOccurrenceTableDAO;
-
-    @Autowired
     IAliasTableDAO aliasTableDAO;
 
     @Autowired
-    IJoinedObjectsTableDAO joinedObjectsTableDAO;
-
-    @Autowired
     IObjectTableDAO objectTableDAO;
-
-    @Autowired
-    IObjectTypeTableDAO objectTypeTableDAO;
-
-    @Autowired
-    IRelationOccurrenceTableDAO relationOccurrenceTableDAO;
-
-    @Autowired
-    IRelationTableDAO relationTableDAO;
-
-    @Autowired
-    IRelationTypeTableDAO typeTableDAO;
 
     @Autowired
     IDocumentTableDAO documentTableDAO;
@@ -92,7 +74,6 @@ public class ObjectAssignerTest {
         
         assertEquals("1 object matched full text search", 1, oListFullText1.size());
         assertEquals("1 object matched sub string search", 1, oListSubStr1.size());
-        
         
         // Create an artificial test
         Entity e2 = new Entity("Em", 1);

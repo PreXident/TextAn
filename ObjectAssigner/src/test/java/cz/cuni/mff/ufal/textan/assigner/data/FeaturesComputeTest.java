@@ -14,19 +14,19 @@ public class FeaturesComputeTest {
      * Test the similarity metrics between two strings
      */
     @Test
-    public void testEntityTextAndObjectAlias1() {
+    public void testLevenshteinDistance() {
         
-        double perfect = FeaturesComputeValue.EntityTextAndObjectAlias("xxxxx", "xxxxx");
+        double perfect = FeaturesComputeValue.LevenshteinDistance("xxxxx", "xxxxx");
         assertTrue("Two exact string has the difference 0", perfect == 0);
         
         String entityText = "John Jr.";
         String objectAlias = "John";
-        double diff = FeaturesComputeValue.EntityTextAndObjectAlias(entityText, objectAlias);
+        double diff = FeaturesComputeValue.LevenshteinDistance(entityText, objectAlias);
         boolean check = (diff > 0);
         assertTrue("The similarity is greater than 0", check);
         
         String entityText2 = "Mary Summer";
-        double diff2 = FeaturesComputeValue.EntityTextAndObjectAlias(entityText2, objectAlias);
+        double diff2 = FeaturesComputeValue.LevenshteinDistance(entityText2, objectAlias);
         boolean check3 = (diff2 > 10);
         assertTrue("John vs Mary Summer are different", check3);        
         boolean check2 = (diff < diff2);

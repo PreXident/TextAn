@@ -271,7 +271,7 @@ public class ObjectAssigner implements IObjectAssigner {
         this.train = new TrainWeka();
 
         //Train the model
-        this.model = train.doTraining(this.objectTableDAO, this.aliasTableDAO);
+        this.model = train.doTraining(this.objectTableDAO, this.aliasTableDAO, this.documentTableDAO);
 
         LOG.debug("Finished ObjectAssigner learning.");
     }
@@ -296,8 +296,9 @@ public class ObjectAssigner implements IObjectAssigner {
                     }); //already selects only topK items
 
             for (ObjectTable object : objects) {
-                // Everything is positive , it does not matter
-                Instance ins = train.CreateInstanceBasic(entity, object, aliasTableDAO, objectTableDAO, "positive");
+                Instance ins = train.CreateInstance
+                                (entity, object, this.aliasTableDAO, this.objectTableDAO, 
+                                 this.documentTableDAO, "positive");
                 ins.setDataset(train.isTrainingSet);
 
                 // Assign value
