@@ -8,7 +8,7 @@ import java.sql.SQLException;
 /**
  * Command for renaming relation types in the database.
  */
-@Parameters(commandDescription = "Renames relation types in the database")
+@Parameters(commandDescription = "Renames relation types in the database.")
 public class RenameRelationTypes extends RenameTypes {
 
     @Override

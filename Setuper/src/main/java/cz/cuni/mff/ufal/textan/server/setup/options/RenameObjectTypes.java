@@ -8,7 +8,7 @@ import java.sql.SQLException;
 /**
  * Command for renaming object types in the database.
  */
-@Parameters(commandDescription = "Renames object types in the database")
+@Parameters(commandDescription = "Renames object types in the database.")
 public class RenameObjectTypes extends RenameTypes {
 
     @Override

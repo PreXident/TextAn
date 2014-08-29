@@ -9,7 +9,7 @@ import java.sql.SQLException;
 /**
  * Command for cleaning the database.
  */
-@Parameters(commandDescription = "Cleans the database")
+@Parameters(commandDescription = "Cleans the database.")
 public class CleanDB extends Command {
 
     @Override
