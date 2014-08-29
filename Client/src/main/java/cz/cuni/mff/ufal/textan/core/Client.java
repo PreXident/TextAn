@@ -756,16 +756,30 @@ public class Client {
 
     /**
      * Returns graph connecting the given two objects.
-     * @param object1 first object
-     * @param object2 second object
+     * @param start starting object
+     * @param target target object
+     * @param maxLength maximum length of the path
      * @return graph connecting the given two objects
      * @throws IdNotFoundException on id error
      * @throws NonRootObjectException if given objects are no longer roots
      */
-    public synchronized Graph getPathGraph(final long object1, final long object2)
+    public synchronized Graph getPathGraph(final long start,
+            final long target, final int maxLength)
             throws IdNotFoundException, NonRootObjectException {
         //TODO call proper methods when ready
-        return new Graph();
+        final GetPathByIdRequest request = new GetPathByIdRequest();
+        request.setStartObjectId(start);
+        request.setTargetObjectId(target);
+        request.setMaxLength(maxLength);
+        try {
+            final GetPathByIdResponse response =
+                    getDataProvider().getPathById(request);
+            return new Graph(response.getGraph());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException e) {
+            throw new NonRootObjectException(e);
+        }
     }
 
     /**
