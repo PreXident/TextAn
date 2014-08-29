@@ -11,18 +11,18 @@ import java.util.Map;
 /**
  * Command for creating training data.
  */
-@Parameters(commandDescription = "Prepare training data")
+@Parameters(commandDescription = "Prepare training data.")
 public class PrepareTrainingData extends Command {
 
     /** Path to file containing settings. */
-    @Parameter(
-            description = "nametag learning properties",
-            names = { "-l", "/L", "--learning" })
-    public String learning = "learning.properties";
+//    @Parameter(
+//            description = "nametag learning properties",
+//            names = { "-l", "/L", "--learning" })
+//    public String learning = "learning.properties";
 
     /** File containing the mapping */
     @Parameter(
-            description = "file with mapping if types in training data does not match type names in the database",
+            description = "File with mapping if types in training data does not match type names in the database.",
             names = { "-m", "/M", "--mapping" })
     public String mappingFile = null;
 

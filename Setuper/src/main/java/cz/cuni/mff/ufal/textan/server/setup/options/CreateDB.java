@@ -11,7 +11,7 @@ import java.util.Properties;
 /**
  * Command creating the database (only for MySQL).
  */
-@Parameters(commandDescription = "Creates the 'textan' database (only for MySQL)")
+@Parameters(commandDescription = "Creates the 'textan' database (only for MySQL).")
 public class CreateDB extends Command {
 
     /** Path to a default server property file (inside jar). */
