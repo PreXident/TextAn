@@ -76,8 +76,20 @@ This section contains a list of functional must be implemented in the final solu
 	\item The system won't solve a backup.
 \end{itemize}
 
+\section{Explanations}
+
 \comment[Adam]{Ondrej}{explain main window mockup and that more things can be
 done simultaneously}
+\comment{Adam}{This needs some title probably, but what?}
+
+Due to the complexity of the tasks required from users, it is necessary to allow
+the users to browse the database while they are processing a report, so they
+can assign right objects to recognized entities. This can be realized by
+embedding inner windows into the main application window or by creating
+independent system outer stages (see Figure \ref{fig:MockupMainWindow}).
+Then multiple tasks can be performed simultaneously. Implementing both
+"inner windows" and "outer stages" approaches and letting the users choose can
+significantly improve the user experience.
 
 \begin{figure}[!htb]
         \centering
