@@ -26,7 +26,7 @@
 		<CheckBox fx:id="hypergraphsCheckBox" text="%hypergraphs" onAction="#hypergraphs" />
 		<CheckBox fx:id="clearFiltersCheckBox" text="%clear.filters" onAction="#clearFilters" />
 		<HBox alignment="CENTER_LEFT" spacing="10" >
-			<Label text="%localization" styleClass="menu-item-label"/>
+			<Label text="%localization" styleClass="menu-item-label" minWidth="-Infinity" prefWidth="-1"/>
 			<ComboBox fx:id="localizationCombo" editable="true" prefWidth="120" >
 				<items>
 					<FXCollections fx:factory="observableArrayList">
