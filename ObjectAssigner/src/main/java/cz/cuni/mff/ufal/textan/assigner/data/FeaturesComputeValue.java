@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * TODO is this ready? Most of it is never used!!!
  * @author HOANGT
  */
 public class FeaturesComputeValue {
