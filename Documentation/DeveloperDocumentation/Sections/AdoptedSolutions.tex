@@ -15,7 +15,9 @@ Tomcat or other servlet containers.
 \paragraph{ControlsFX\footnote{\url{http://fxexperience.com/controlsfx/}}}
 ControlsFX is a Java8 open source library aiming at enhancing the programming
 experience with standard JavaFX. It provides wide selection of new and improved
-components to make everyday use of JavaFX even easier.
+components to make everyday use of JavaFX even easier. \textan{} uses it mainly
+for its high quality and user-friendly standard dialogs which are
+incomprehensibly and sorely missing in JavaFX.
 
 \paragraph{Hibernate ORM\footnote{\url{http://hibernate.org/orm/}}}
 Hibernate ORM (Hibernate in short) is an object-relational mapping library for
@@ -34,7 +36,8 @@ approximation (fuzzy search).
 
 \paragraph{JCommander\footnote{\url{http://jcommander.org/}}}
 JCommander is a very small Java framework that makes it trivial to parse command
-line parameters.
+line parameters. It was chosen because of easy-to-use annotation API and no
+external dependencies.
 
 \paragraph{Jetty\footnote{\url{http://www.eclipse.org/jetty/}}}
 Jetty is a pure Java-based HTTP (Web) server and Java Servlet container. It can
@@ -42,13 +45,18 @@ be embedded into other applications through Jetty API.
 
 \paragraph{JUNG\footnote{\url{http://jung.sourceforge.net/}}}
 JUNG (Java Universal Network/Graph Framework) is an older Java library for
-displaying graphs for Swing framework, still widely used in Java world, well documented and easily extensible.
-\comment[Petr]{Tam}{Older than what? Or just old?}
+displaying graphs for Swing graphical framework, still widely used in Java
+world, well documented and easily extensible, which are main reason why it was
+chosen. Sadly, it does not support JavaFX. Fortunately, thanks to new JavaFX8
+SwingNode enabling usage of SWING components in JavaFX scenes it was possible to
+seamlessly integrate JUNG into JavaFX \textan{} Client.
 
 \paragraph{JFXtras\footnote{\url{http://jfxtras.org/}}}
 JFXtras is another JavaFX8 enhancing project providing components that
 most Java developers need in daily work, but they are currently missing
-from JavaFX.
+from JavaFX. \textan{} Client uses it mostly for its window management
+capabilities enabling extensible use of inner windows embedded into the main
+window. Also several other useful components are used.
 
 \paragraph{MorphoDiTa\footnote{\url{http://ufal.mff.cuni.cz/morphodita}}}
 Morphological Dictionary and Tagger is an open-source tool for morphological
@@ -76,11 +84,14 @@ the model may impose additional licensing conditions.
 
 
 \paragraph{PretopoLib\footnote{\url{http://pretopolib.complexica.net/}}}
-PretopoLib is a JAVA library based on pretopology. It provides the mathematical 
-theory which supports
-analysis, modelling and simulation in several domains: human and social sciences,
-game theory, graph theory extension, networks and discrete spaces.
-\comment[Petr]{Tam}{Approved?}
+PretopoLib is a Java library based on pretopology which is mathematical theory
+for analysis, modeling and simulation in several domains: human and social
+sciences, game theory, graph theory extension, networks and discrete spaces.
+Although JUNG is mature and well thought library, it lacks one important feature
+out-of-the-box: displaying hypergraphs. PretopoLib offers such functionality
+as a byproduct. However it is eye pleasing and fully meets our requirements and
+its author kindly provided us the sources so we could fix one inconvenient
+detail.
 
 \paragraph{SLF4J \& Logback\footnote{\url{http://www.slf4j.org/}, \url{http://logback.qos.ch/}}}
 Simple Logging Facade for Java (SLF4J) provides a Java logging API by means
