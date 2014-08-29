@@ -13,18 +13,19 @@ import cz.cuni.mff.ufal.textan.server.setup.options.RenameObjectTypes;
 import cz.cuni.mff.ufal.textan.server.setup.options.RenameRelationTypes;
 import cz.cuni.mff.ufal.textan.server.setup.utils.ScriptRunner;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.sql.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Simple class for batch report processing.
  * For executing different commands uses double dispatch.
  */
 public class Setuper {
+
+    private static final String USER_DATA_PROPERTIES = "data.properties";
 
     private static final int EXIT_STATUS_HELP = 1;
     private static final int EXIT_STATUS_MISSING_PARAM = 2;
@@ -144,8 +145,15 @@ public class Setuper {
      */
     public void cleanDB(final CleanDB command) throws IOException, SQLException {
         //TODO test if connection  != null
+        connection.setAutoCommit(false);
         try (Reader cleanScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CLEAN_SCRIPT_FILENAME))) {
             runScript(cleanScriptReader);
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
         }
     }
 
@@ -155,8 +163,40 @@ public class Setuper {
      */
     public void createDB(final CreateDB command) throws IOException, SQLException {
         //TODO test if connection  != null
-        try (Reader createScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CREATE_SCRIPT_FILENAME))) {
-            runScript(createScriptReader);
+        connection.setAutoCommit(false);
+        try {
+            try (Reader createScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CREATE_SCRIPT_FILENAME))) {
+                runScript(createScriptReader);
+            }
+
+            String createLocalhostUserQuery = "GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE, SHOW VIEW ON textan.* TO ?@'localhost' IDENTIFIED BY ?";
+            String createAllHostsUserQuery = "GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE, SHOW VIEW ON textan.* TO ?@'%' IDENTIFIED BY ?";
+            String flushQuery = "FLUSH PRIVILEGES";
+
+            createUser(createLocalhostUserQuery, command.username, command.password);
+            createUser(createAllHostsUserQuery, command.username, command.password);
+            try (Statement statement = connection.createStatement()) {
+                statement.executeQuery(flushQuery);
+            }
+
+            if (command.create) {
+                Properties properties = new Properties(command.defaults);
+                properties.setProperty("jdbc.driverClassName", options.driver);
+                properties.setProperty("jdbc.url", createDBUrl(options.url, "textan"));
+                properties.setProperty("jdbc.user", command.username);
+                properties.setProperty("jdbc.pass", command.password);
+
+                try (final OutputStream stream = new FileOutputStream(USER_DATA_PROPERTIES)) {
+                    properties.store(stream, null);
+                }
+            }
+
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
         }
     }
 
@@ -311,18 +351,35 @@ public class Setuper {
     }
 
     private void runScript(Reader script) throws SQLException, IOException {
-        connection.setAutoCommit(false);
-        try {
-            ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
-            scriptRunner.setLogWriter(null);
-            scriptRunner.setErrorLogWriter(null);
-            scriptRunner.runScript(script);
-            connection.commit();
-        } catch (Exception e) {
-            connection.rollback();
-            throw e;
-        } finally {
-            connection.setAutoCommit(true);
+        ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
+        scriptRunner.setLogWriter(null);
+        scriptRunner.setErrorLogWriter(null);
+        scriptRunner.runScript(script);
+    }
+
+    private void createUser(String query, String username, String password) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            statement.setString(2, password);
+            statement.executeUpdate();
         }
+    }
+
+    private String createDBUrl(String url, String schema) {
+
+        String prefix = url.trim();
+        String suffix = "";
+
+        int index = url.indexOf("?");
+        if (index != -1) {
+            prefix = url.substring(0, index);
+            suffix = url.substring(index);
+        }
+
+        if (!prefix.endsWith("/")) {
+            prefix = prefix + "/";
+        }
+
+        return prefix + schema + suffix;
     }
 }

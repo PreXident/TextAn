@@ -16,7 +16,7 @@ public abstract class RenameTypes extends Command {
 
     /** Flag indicating whether mapping is id based. */
     @Parameter(
-            description = "input files contain mapping with ids, not names",
+            description = "Input files contain mapping with ids, not names.",
             help = true,
             names = { "-i", "/I", "--id" })
     public boolean id = false;

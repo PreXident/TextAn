@@ -9,7 +9,7 @@ import java.sql.SQLException;
 /**
  * Command for loading object types to the database.
  */
-@Parameters(commandDescription = "Loads object types to the database")
+@Parameters(commandDescription = "Loads object types to the database.")
 public class LoadObjectTypes extends LoadTypes {
 
     @Override
