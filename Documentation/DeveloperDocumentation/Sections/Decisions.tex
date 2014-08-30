@@ -2,30 +2,26 @@
 
 The section describes main decisions that was made during the development. 
 
-\comment{Petr}{After all, I think it's better to have only one "decisions" which
-will contains both decisions about used libraries and architecture.}
-
-\comment{Adam}{This section must contain the following:
-1) why pipeline? maybe also mockups here
-2) why (semi)automatic processing?
-3) why state on client?}
-\comment{Petr}{I hope that the following outline fits your idea.}
-
 \subsection{Fully-automatic or Semi-automatic processing}
-
-\comment{Petr}{Describe why system need control of user}
-
-\comment{Adam}{Check if this makes any sense}
 
 Although automatic recognition can achieve very good results, there are many
 sensitive areas where it is necessary to eliminate all errors, for example
 police reports. For this reason we chose semi-automatic recognition, so users
-can correct all mistakes before the system stores data into the database and
-re-trains itself. Also if fully-automatic recognition is required, it is easy
+can correct all mistakes before the system stores data into the database. 
+Also if fully-automatic recognition is required, it is easy
 to skip the human intervention entirely at cost of little overhead caused by
-multiple calls of webservice operation because to pipeline decision described in
+multiple calls of webservice operation because of pipeline decision described in
 Section \ref{ssec:ReportPipeline}. Or a facade operation can be implemented to
 mitigate this overhead.
+
+Typical issues for a recognition are an ambiguity of words or names and a large
+granularity of types. An example of ambiguity can be word Washington, it can mean
+the state in USA, the city in USA or person with this surname. The second issue,
+the large granularity of types, can be shown similarly. Consider object types "doctor",
+"programmer" and "gardener" and a sentence with name of person. These problems are
+highly dependent on a training data, a target domain and documents from users.
+
+\subsection{Re-learning}
 
 \subsection{System Decomposition}
 
@@ -38,7 +34,6 @@ mitigate this overhead.
 
 \subsection{Stateless or Stateful Communication}
 
-\subsection{Re-learning}
 
 \comment{Petr}{At the moment, I don't know what should be here, but I think it is important. :D
 Maybe something about improving models?}
