@@ -15,11 +15,24 @@ will contains both decisions about used libraries and architecture.}
 
 \comment{Petr}{Describe why system need control of user}
 
+\comment{Adam}{Check if this makes any sense}
+
+Although automatic recognition can achieve very good results, there are many
+sensitive areas where it is necessary to eliminate all errors, for example
+police reports. For this reason we chose semi-automatic recognition, so users
+can correct all mistakes before the system stores data into the database and
+re-trains itself. Also if fully-automatic recognition is required, it is easy
+to skip the human intervention entirely at cost of little overhead caused by
+multiple calls of webservice operation because to pipeline decision described in
+Section \ref{ssec:ReportPipeline}. Or a facade operation can be implemented to
+mitigate this overhead.
+
 \subsection{System Decomposition}
 
 \comment{Petr}{Describe why recognition is on the server, why web server is embedded etc.}
 
 \subsection{Control of Processing by User}
+\label{ssec:ReportPipeline}
 
 \comment{Petr}{Pipeline? ... Or something about whole UI?}
 
@@ -34,8 +47,11 @@ Maybe something about improving models?}
 
 \comment{Petr}{There must be some thing about database}
 
-We decided to use relational database because we don't give a shit.
-\comment{Venca}{That pretty much sums it up}
-\comment[Venca]{Adam}{Well, we do not need a summary, on the contrary, elaborate
-this as much as possible, but use apropriate language}
+First problem we have to face was choosing the type of database. As you may know there are other databases then relational, called \emph{NoSQL} databases, meaning \emph{Not Only SQL}. There are a few types of them, but the type that fits the most to our problem is graph database. The standard (relational) database is based on tables and relations between them. When you create a database like this you have to know the exact schema and any further changes in schema can be very hard to perform in already running system. On the other hand, relational databases are more type safe. You just can have constraints on columns that secure you meaningful information in the records. Graph databases basically look like a graph - there are nodes and edges, both can have any additional information any kind. These are suitable especially for graph queries that can't be done easily in relational database.
+
+Anyway we decided to use the relational database for several reasons.
+The graph databases are pretty new technology, it is not so time proven and we were too afraid of bugs possibilities. Apart from that relational database are well documented, all main bugs have been solved years ago and everyone knows what to expect and what is impossible.
+We also wanted to use database for machine learning, which uses sequential access to the database. That is, as we know, faster in relational database, where can we only iterate through all records in a single table.
+
+Although we have used relational database, this decision can be wrong and through the time it can come out that graph database can be much better solution. We expected that a little bit and used the DAO design pattern enabling to change the type of database without changing the application source code. This pattern is more described in section \ref{sec:PersistentLayer} about server architecture respectively persistent layer.
 
