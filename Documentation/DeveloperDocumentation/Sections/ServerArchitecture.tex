@@ -91,7 +91,7 @@ are persistent. First of all this layer needs to convert data between database a
 objects in java. This is called Object-Relation Mapping (ORM). Java classes whose
 instances are stored in database tables are called persistent classes. And we need
 to persist these objects. That is where Hibernate comes to the scene (see Section
-\ref{ssec:UsedLibraries}) and do that for us. Next thing we need take care of is
+\ref{sec:UsedTechnologies}) and do that for us. Next thing we need take care of is
 to perform a transaction, for example joining two objects should first check if
 they are roots and if so, they are joined. All operations with database are usually
 done by DAOs.
@@ -149,9 +149,9 @@ from database. Nodes of this graph represents objects and relations in database.
 Edge between an object and a relation means that this object is in that relation.
 We have used the factory pattern to create graph. There are methods in class
 \emph{GraphFactory} to generate a graph from an object to given depth and also
-supports finding shortest path between two objects. For this has been used the Floyd-Warshall
-algorithm.
-\comment[Venca]{Adam}{Rewrite the text so it matches the reality again}
+supports finding shortest path between two objects. Many algorithms are there for this purpose. It seems that \emph{Floyd-Warshall} fits the most because we know in constant time if there exists any path between any two objects. But it needs $O(N^2)$ space where $N$ is a number of objects and because of we have a pretty much big database, we cannot afford that. We have counted that for 5 million objects we would need around 280 TB space on disk. Let's wait a few years and then we can deploy Floyd-Warshall. We have used \emph{Bidirectional search} because of we want to use as least memory as possible and it can take twice less memory than standard BFS.
+
+\comment{Venca}{TODO: implement...}
 
 Last interesting subpackage is \emph{interceptors} where are located definitions
 of Hibernate interceptors. Interceptor is something like trigger in a database.
