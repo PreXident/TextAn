@@ -166,7 +166,10 @@ This section describes the database schema (see Figure \ref{fig:DatabaseSchema})
 
 \begin{figure}[!htb]
         \centering
-        \includegraphics[width=\textwidth]{Images/DatabaseSchema}
+        \includegraphics[width=\textwidth, 
+        				 height=(\textheight - 2cm), 
+        				 keepaspectratio]
+        				 {Images/DatabaseSchemaPortrait-crop}
         \caption{Database schema}
         \label{fig:DatabaseSchema}
 \end{figure}
@@ -219,7 +222,14 @@ contain a column \emph{globalversion}, which increments with each insert, delete
 Current global version is stored in \emph{globalversion} table where there is only a single row every time.
 
 \paragraph{} As you may see, there is a little bit of redundancy in our schema. There is alias table where the alias of an object is stored. But if we really want to extract the alias of an object, we could get the alias from document, which the object occurs. However, that would be too complicated to get from single query. Furthermore, we want a method to easily get all aliases of an object.
+
 Next redundancy is \emph{Object.id\_{}root\_{}object} which is a foreign key of the same table. Once we join objects and we get a new one, this joining together makes a binary tree. A root of the tree is the object, of which we want to edit aliases, because other objects in the tree are not taken into account. So we need two things: the determine if a given object is a root and the method to get the root if current object is not the root. Without that column we would have to join until we get to the root and that, as we know, can't be done in a single sql query. With the column, we only ask if the root of an object is the same or we simply get the root object in one join.
+
+There was a discussion about the equivalence between object and relation. It seems both sides (relation type, relation, relation occurrence vs object type, object, alias, alias occurrence) look pretty much the same. Someone had an opinion that relation is just an object. But there are several reason why we have a separate table for relations.
+Relations cannot be joined like objects, we do not care too much about the alias and there could be problem in the \emph{IsInRelation} table where could be assigned two objects instead of an object and a relation.
+Relations are just way too different from objects, so we decided to give them extra table.
+
+\comment{Venca}{More discussion about schema?}
 
 
 \section{Named Entity Recognizer}
