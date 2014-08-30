@@ -252,7 +252,17 @@ After calling \emph{Named entity recognizer}, a list of entities is extracted fr
 package \emph{cz.cuni.mff.ufal.textan.assigner} automatically
 assigns those entities to available objects in database. As the output, for 
 each entity, the aforementioned package returns a list of potential objects along
-with their score. Two methods are provided.
+with their score. Figure~\ref{fig:objectassigner} illustrates 
+how the object assigner is organized. As can be seen, the package proposed 
+two methods assigning the entity to objects.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/assigner.png}
+        \caption{Object Assigner architecture}
+        \label{fig:objectassigner}
+\end{figure}
+
 
 \paragraph{HeuristicRank}
 The most simplest solution is searching for the \textit{objects} with matching 
@@ -271,6 +281,7 @@ learning. Each object is paired with the entity. Then the pair is classified as
 \emph{positive} if the object is potentially matched the entity. On the contrary,
 the pair is classified as \emph{negative}. It becomes the problem of binary 
 classification.
+
 
 \paragraph{Learning}
 The package \emph{cz.cuni.mff.ufal.textan.assigner.data} supports all steps for
