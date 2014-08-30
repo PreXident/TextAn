@@ -32,6 +32,9 @@ correct because of the correction by user. The next benefit of the re-learning a
 the user correction is that there can be empty set of training data in the deployment
 time.
 
+\comment{Petr}{At the moment, I don't know what should be here, but I think it is important. :D
+Maybe something about improving models?}
+
 \subsection{System Decomposition}
 
 \comment{Petr}{Describe why recognition is on the server, why web server is embedded etc.}
@@ -47,16 +50,92 @@ hardware. This design also enables switching the client application if default
 \textan{} client does not provide all required features, user experience or if
 some integration to a legacy system is needed.
 
-\subsection{Control of Processing by User}
+\subsection{Report Processing as a Pipeline}
 \label{ssec:ReportPipeline}
 
 \comment{Petr}{Pipeline? ... Or something about whole UI?}
+\comment{Adam}{I think pipeline is enough, it is the most interesting topic}
+
+The whole activity of processing a report is a complex task. We have though
+about ways to make the user interface not to confuse and overwhelm the users.
+We have agreed that we need to have as little requirements on users as possible
+so application can become wide spread. Eventually we decided to split the
+process into steps, so only one specific task is performed at once. This also
+means that the automatic recognition is also split into several steps which the
+users can correct sooner, so later phases can benefit from users' intervention.
+Another advantages of this approach is that concurrent processing of the same
+report could be detected sooner, so it can save some duplicate work.
+
+The basic pipeline steps are the following:
+\begin{itemize}
+	\item Selecting source of the report (see Figure \ref{fig:MockupPipelineSource})
+	\item Selecting report from database (see Figure \ref{fig:MockupPipelineDatabase})
+	\item Importing report from local file (see Figure \ref{fig:MockupPipelineImport}
+	\item Editing report text (see Figure \ref{fig:MockupPipelineText})
+	\item Editing report entities (see Figure \ref{fig:MockupPipelineEntities})
+	\item Editing report objects (see Figure \ref{fig:MockupPipelineObjects})
+	\item Editing report relations (see Figure \ref{fig:MockupPipelineRelations})
+	\item Problems that may be detected on report saving (see Figure \ref{fig:MockupPipelineErrors})
+\end{itemize}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/MockupPipelineSource}
+        \caption{Selecting source of the report.}
+        \label{fig:MockupPipelineSource}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/MockupPipelineDatabase}
+        \caption{Selecting source of the report.}
+        \label{fig:MockupPipelineDatabase}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/MockupPipelineImport}
+        \caption{Importing report from local file.}
+        \label{fig:MockupPipelineImport}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/MockupPipelineText}
+        \caption{Editing report text.}
+        \label{fig:MockupPipelineText}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/MockupPipelineEntities}
+        \caption{Editing report entities.}
+        \label{fig:MockupPipelineEntities}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/MockupPipelineObjects}
+        \caption{Editing report objects.}
+        \label{fig:MockupPipelineObjects}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/MockupPipelineRelations}
+        \caption{Editing report relations.}
+        \label{fig:MockupPipelineRelations}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/MockupPipelineErrors}
+        \caption{Problems that may be detected on report saving.}
+        \label{fig:MockupPipelineErrors}
+\end{figure}
 
 \subsection{Stateless or Stateful Communication}
 
-
-\comment{Petr}{At the moment, I don't know what should be here, but I think it is important. :D
-Maybe something about improving models?}
 
 \subsection{Database}
 
