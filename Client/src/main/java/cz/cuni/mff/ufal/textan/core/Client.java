@@ -756,10 +756,11 @@ public class Client {
 
     /**
      * Returns graph connecting the given two objects.
+     * The returned graph is empty if no path is found.
      * @param start starting object
      * @param target target object
      * @param maxLength maximum length of the path
-     * @return graph connecting the given two objects
+     * @return graph connecting the given two objects, empty if no path is found
      * @throws IdNotFoundException on id error
      * @throws NonRootObjectException if given objects are no longer roots
      */
