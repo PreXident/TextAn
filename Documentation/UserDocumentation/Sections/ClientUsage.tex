@@ -470,8 +470,10 @@ joining itself.
 \subsection{Path Wizard}
 This wizard displays window similar to Joining Objects. Select two objects
 for which you want to try to find path of relations and objects connecting them
-(see Figure \ref{fig:Path}). The system looks only for the shortest route.
-If such path is found, the graph displaying it is shown.
+(see Figure \ref{fig:Path}). You can also specify the maximal length of the
+path. The greater the maximal distance, the longer can take to find the path.
+The system looks only for the shortest route. If such path is found, the graph
+displaying it is shown (see Figure \ref{fig:PathGraph}).
 
 \begin{figure}[!htb]
         \centering
@@ -480,4 +482,9 @@ If such path is found, the graph displaying it is shown.
         \label{fig:Path}
 \end{figure}
 
-\comment[Adam]{Adam}{Add figure with path graph.}
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/pathgraph}
+        \caption{Graph displaying the path between objects.}
+        \label{fig:PathGraph}
+\end{figure}
