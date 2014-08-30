@@ -1,16 +1,8 @@
 package cz.cuni.mff.ufal.textan.tui;
 
 import com.beust.jcommander.JCommander;
-import static cz.cuni.mff.ufal.textan.Utils.extractExtension;
 import cz.cuni.mff.ufal.textan.commons.utils.UnclosableStream;
-import cz.cuni.mff.ufal.textan.core.Client;
-import cz.cuni.mff.ufal.textan.core.Entity;
-import cz.cuni.mff.ufal.textan.core.Object;
-import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
-import cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException;
-import cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline;
-import cz.cuni.mff.ufal.textan.core.processreport.load.ImportManager;
-import cz.cuni.mff.ufal.textan.core.processreport.load.IImporter;
+import cz.cuni.mff.ufal.textan.tui.ProcessReportTaskFactory.ProcessReportTask;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,12 +10,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Simple class for batch report processing.
@@ -106,45 +98,27 @@ public class TextAn {
             files.addAll(options.files);
         }
 
+        if (options.threads <= 0) { //auto set the number of threads
+            options.threads = Runtime.getRuntime().availableProcessors();
+        }
+
         //process reports
-        final Client client = new Client(settings);
+        final List<ProcessReportTask> tasks = new ArrayList<>(files.size());
+        final ProcessReportTaskFactory factory =
+                ProcessReportTaskFactory.createNewInstance(settings, options.newObjects, options.force);
         for (File file : files) {
-            System.out.printf("Processing \"%s\"...\n", file.getAbsoluteFile());
-            final String extension = extractExtension(file.getName());
-            final ProcessReportPipeline pipeline = client.createNewReportPipeline();
-            pipeline.selectFileDatasource();
-            final IImporter importer = ImportManager.getDefaultForExtension(extension);
-            final byte[] data;
-            try {
-                data = Files.readAllBytes(file.toPath());
-                pipeline.setReportTextAndParse(importer.extractText(data));
-                pipeline.setReportTextAndParse(pipeline.getReportText());
-                pipeline.setReportWords(pipeline.getReportWords());
-                if (options.newObjects) {
-                    int counter = 0;
-                    for (Entity ent : pipeline.getReportEntities()) {
-                        if (ent.getCandidate() == null) {
-                            ent.setCandidate(
-                                    new Object(--counter,
-                                            ent.getType(),
-                                            Arrays.asList(ent.getValue())));
-                        }
-                    }
-                }
-                pipeline.setReportObjects(pipeline.getReportEntities(), TxtRelationBuilder::new);
-                pipeline.setReportRelations(pipeline.getReportWords(), Collections.emptyList());
-                if (pipeline.getProblems() != null) {
-                    if (options.force) {
-                        pipeline.forceSave();
-                    } else {
-                        System.out.printf("Problems while processing \"%s\"\n", file.getAbsoluteFile());
-                        System.out.println(pipeline.getProblems());
-                    }
-                }
-            } catch (IOException | DocumentChangedException | DocumentAlreadyProcessedException ex) {
-                System.out.printf("Error while processing \"%s\"\n", file.getAbsoluteFile());
-                ex.printStackTrace();
+            tasks.add(factory.newTask(file));
+        }
+        final ExecutorService pool = Executors.newFixedThreadPool(options.threads);
+        try {
+            pool.invokeAll(tasks);
+        } catch (Exception e) {
+            synchronized(System.err) {
+                System.err.println("Error while processing!");
+                e.printStackTrace();
             }
+        } finally {
+            pool.shutdownNow();
         }
     };
 }
