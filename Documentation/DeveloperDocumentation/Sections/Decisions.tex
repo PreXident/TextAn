@@ -23,14 +23,15 @@ the large granularity of types, can be shown similarly. Consider object types "d
 highly dependent on a training data for a target domain and documents from users.
 
 \subsection{Re-learning}
-By reasons that are mentioned before (see Section \ref{ssec:processing}), it is difficult
-to create models for a recognition which will return right results in each situation.
-We decide to not use static models, but models that are periodically learned from
-data that are stored in the database to improve accuracy. This solution is possible
-due to semi-automatic processing, because every data in the database should be
-correct because of the correction by user. The next benefit of the re-learning and
-the user correction is that there can be empty set of training data in the deployment
-time.
+
+Because of reasons that are mentioned above (see Section \ref{ssec:processing}),
+it is difficult to create models for the recognition which return correct
+results in every situation. We decided not to use static models, but models that
+are periodically learned from data that are stored in the database to improve
+accuracy. This solution is possible due to semi-automatic processing, because
+all data in the database should be correct thanks to interactions with users.
+Another benefit of the re-learning and the user corrections is that there can be
+empty set of training data at the deployment time.
 
 \subsection{System Decomposition}
 
