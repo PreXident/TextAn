@@ -22,13 +22,11 @@ Names are aliases for the person.
 
 \item[Entity]
 An entity is a sequence of words recognized either by a named entity recognizer
-or by a user. \comment[Petr]{Petr}{Move to next paragraph - Object assigment}
-The entity will be later assigned to an object and it becomes an alias
-of the object. Consider for example the sentence: Joe Smith was seen
-in Prague on 5th September. The sentence contains 3 entities: Joe Smith (person),
-Prague (city), 5th September (date). We don't know which objects belong to these
-entities yet. Prague can represent the capital city of the Czech Republic,
-or a city in the USA.
+or by a user. The entity will be later assigned to an object. Consider for example
+the sentence: Joe Smith was seen in Prague on 5th September. The sentence contains
+3 entities: Joe Smith (person), Prague (city), 5th September (date). We don't know
+which objects belong to these entities yet. Prague can represent the capital city
+of the Czech Republic, or a city in the USA.
 
 \item[Object/Entity Type]
 Each object and each entity has a type. For example person, date, city, country
@@ -37,20 +35,32 @@ deployed to. There are some universal predefined \comment[author of this sentenc
 administrator needs to prepare a customized list to fully unleash the power of
 the project. \comment[Petr]{Petr}{Rewrite this paragraph}
 
-\item[Object Assigment]
-\comment[Petr]{Petr}{Description of object assigment}
+\item[Object Assignment]
+\comment{Petr}{Need check.}
+A Object assignment (or just assignment) is a process at which is some object
+assigned to some entity.  After assignment, the text that represents an entity
+in a document becames an alias of the assigned object. An entity and an assigned
+object must have a same type, this is an essential aspect of the assignment.
+For example, there is a document in which was found an entity of type "date" with
+text "14th March 2011" and an object of type "date" that represents a day with
+aliases "the Fourteenth of March, 2011", "14/3/2011" and "14/3/11". The object will
+be probably assigned to the entity, because we know that they represents same thing.
+After assignment, the object will have also the alias "14th March 2011".
 
-\item[Alias occurrence]
+\item[Alias Occurrence]
 \comment[Petr]{Petr}{Description of alias occurence}
 
 \item[Object Merging]
-\comment[Petr]{Petr}{Description of object merging}
+Because objects are based only on information from documents, there may be a situation
+in which two objects represent same thing. The operation "merge object" is used
+to solve this situation, it merge two object into one and original objects are
+replaced with the new object. The new object has aliases of both original objects.
+A reverse operation is called "split objects".
 
 \item[Relation]
 The relation represents any relationship between objects mentioned in a document.
 A relation can be represented in a document by an anchor word, or it can be
 unexpressed, which means without any anchor in a document. See Anchor below.
-\comment[anyone]{Adam}{Check this sentence with two relations, one with anchor, one without anchor.}
 Consider this example: "Adam (890524/1367) is married to Eve". Three objects
 appear in the sentence - persons Adam and Eve and the id 890524/1367. There
 are two relations: Adam "has" 890524/1367 without an anchor and Adam "marriage"
@@ -67,8 +77,9 @@ unleash the power of the project. \comment[Petr]{Petr}{Rewrite this paragraph}
 An anchor is a word or a sequence of words that is bound to a relation between
 objects. Consider for example the sentence: Joey Smith killed Mary-Ann S. There
 is a relation between Joey Smith and Mary-Ann S., which is represented by the
-word "killed". The word is the anchor. \comment{Ondrej}{Why do you not write
-about type here?}
+word "killed". The word is the anchor.
+\comment{Ondrej}{Why do you not write about type here?}
+\comment{Petr}{The example should show what is an anchor. A type isn't important in this situation.}
 
 \item[Roles and orders]
 Each object in a relation can have a role assigned. This role is mostly used
