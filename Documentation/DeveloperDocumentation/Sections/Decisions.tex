@@ -3,6 +3,7 @@
 The section describes main decisions that were made during the development. 
 
 \subsection{Fully-automatic or Semi-automatic processing}
+\label{ssec:processing}
 
 Although automatic recognition can achieve very good results, there are many
 sensitive areas where it is necessary to eliminate all errors, for example
@@ -19,9 +20,17 @@ granularity of types. An example of ambiguity can be word Washington, it can mea
 the state in USA, the city in USA or person with this surname. The second issue,
 the large granularity of types, can be shown similarly. Consider object types "doctor",
 "programmer" and "gardener" and a sentence with name of person. These problems are
-highly dependent on a training data, a target domain and documents from users.
+highly dependent on a training data for a target domain and documents from users.
 
 \subsection{Re-learning}
+By reasons that are mentioned before (see Section \ref{ssec:processing}), it is difficult
+to create models for a recognition which will return right results in each situation.
+We decide to not use static models, but models that are periodically learned from
+data that are stored in the database to improve accuracy. This solution is possible
+due to semi-automatic processing, because every data in the database should be
+correct because of the correction by user. The next benefit of the re-learning and
+the user correction is that there can be empty set of training data in the deployment
+time.
 
 \subsection{System Decomposition}
 
