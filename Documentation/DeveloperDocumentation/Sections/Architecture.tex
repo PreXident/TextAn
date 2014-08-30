@@ -6,19 +6,11 @@ The architecture of \textan{} is based on client-server model. Two main componen
 are the \textan{} server and \textan{} client which communicate via W3C web services
 (SOAP protocol).
 
-
-
-\comment{Ondrej}{Mention why it was split like this - a wish from outside, but in 
-the future fully automated (tuned) annotation without client}
-
-\comment{Petr}{This explanation should be rather in \ref{sec:Decisions}}
-
-
+\comment[Petr]{Petr}{Add overall architecture overview diagram}
 
 \section{Communication}
 \label{sec:Communication}
-\comment[Petr (\& Adam)]{Petr}{Describe communication pattern between client and server,
-sequence diagram etc.}
+\comment{Petr}{First paragraph should be probably moved into \ref{sec:Decisions}}
 
 The communication between the client and the server is stateless, because the processing
 of a document by a human user may take a very long time, especially because of the saving
@@ -77,10 +69,6 @@ end as no report can be processed multiple times.
 
 For more details, consult the WSDL descriptions and Javadoc of the server
 implementation.
-
-
-\comment{Adam}{It could be interesting if the sequence diagram is extended to include server components too.}
-\comment{Petr}{Maybe only for some communication, definitely not all}
 
 \begin{figure}[!htb]
         \centering

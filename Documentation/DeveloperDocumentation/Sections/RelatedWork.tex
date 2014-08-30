@@ -8,6 +8,7 @@ Each work focused on solving a particular problem in the big pictures with regar
 This section provides an insight into other contributions to the mining problem.
 Both research-oriented works and industry applications are taken into account.
 
+\subsection{Knowtator}
 % http://knowtator.sourceforge.net/
 % http://knowtator.sourceforge.net/docs/Ogren_HLT-NAACL06_Demo_Abstract_Final.pdf
 Knowtator is a general-purpose text annotation tool.
@@ -17,7 +18,7 @@ As an early development of tool for annotating data, Knowtator has a number of l
 The remarkable feature of Knowtator is the ability to relate annotations to each other via the slot \textit{reference}.
 The tool has been implemented as a Protégé plug-in for wider-spread usage.
 
-
+\subsection{Anafora}
 %http://www.aclweb.org/anthology/N/N13/N13-3004.pdf
 %Anafora: A Web-based General Purpose Annotation Tool
 
@@ -34,7 +35,6 @@ Anafora is a web-based tool with client-server structure. % OK, INTRODUCTION TO 
 	\label{fig:First}
 \end{figure}
 
-
 Anafora is designed for the medical domain with a medical named entity tags, not a general domain.
 It is developed with a server in Django (a Python framework) and a client in jQuery (a JavaScript library).
 Besides, it stores annotations in each single XML files.
@@ -45,11 +45,11 @@ Users can change/add details to the annotation by mouse or keyboard.
 Anafora was designed for English.
 
 The limitation of Anafora lies in the data structure.
-Complicated definitions like relations (or relation properties) among entities are not supported.
-It may be the trade-off when authors want to develop lightweight tools based on a simple data structure such as XML.
+Complicated definitions like relations (or relation properties) among entities
+are not supported. It may be the trade-off when authors want to develop lightweight
+tools based on a data structure such as XML.
 
-\comment{Ondrej}{XML can be complicated too}
-
+\subsection{BRAT}
 % http://brat.nlplab.org/
 
 BRAT rapid annotation tool is a web-based tool for text annotation,

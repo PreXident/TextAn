@@ -10,12 +10,6 @@ consists of 5 layers: a presentation layer, a service layer, a business logic la
 a persistence layer and a data layer (see Figure
 \ref{fig:ServerComponentOverview}).
 
-\comment{Ondrej}{it definitely needs a figure here, but no generalized pictures, 
-it needs your concrete components and connection. The 5 layers sound like textbook example}
-
-\comment{Adam}{The comment above was created when there were no pictures nor subsections 
-here, but I have added it anyway, just to be sure}
-
 \begin{figure}[!htb]
         \centering
         \includegraphics{Images/ServerComponentOverview}
@@ -90,11 +84,7 @@ operation for users.
 \subsection{Persistence Layer}
 \label{sec:PersistentLayer}
 
-\comment[Venca]{Petr}{Describe DAOs, database mapping, underlying database etc.}
-
 \comment[Petr]{Petr}{Describe full text indexing: hibernate search, lucene, a their mappings}
-
-\comment[Petr]{Petr}{Describe new Czech analyzer}
 
 Persistence layer cares about providing data to application layer and ensure they
 are persistent. First of all this layer needs to convert data between database and
@@ -160,9 +150,7 @@ Edge between an object and a relation means that this object is in that relation
 We have used the factory pattern to create graph. There are methods in class
 \emph{GraphFactory} to generate a graph from an object to given depth and also
 supports finding shortest path between two objects. For this has been used the Floyd-Warshall
-algorithm. \comment{Venca}{This is not true anymore.}
-
-\comment{Venca}{Finish shit about floyd warshall after implementation and problem with memory}
+algorithm.
 \comment[Venca]{Adam}{Rewrite the text so it matches the reality again}
 
 Last interesting subpackage is \emph{interceptors} where are located definitions
@@ -174,9 +162,7 @@ discuss in next section \ref{sec:Database}.
 \subsection{Database}
 \label{sec:Database}
 
-\comment[Venca]{Petr}{Describe database: database schema etc.}
 This section describes the database schema (see Figure \ref{fig:DatabaseSchema}), meaning of all database tables and columns.
-
 
 \begin{figure}[!htb]
         \centering
@@ -262,8 +248,6 @@ training data collecting from database and preparation, model handling
 \section{Object Assigner}
 \label{sec:ObjectAssigner}
 
-\comment[Tam]{Petr}{here should be description of ObjectAssigner}
-
 After calling \emph{Named entity recognizer}, a list of entities is extracted from the document. \emph{ObjectAssigner}
 package \emph{cz.cuni.mff.ufal.textan.assigner} automatically
 assigns those entities to available objects in database. As the output, for 
@@ -300,10 +284,6 @@ later to train again.
 To assign the entity to object, function \emph{distributionForInstance} to return the 
 probability of the pair with regards to \emph{positive} class. The probability value 
 is ranked an used as the score.
-
-\comment{Tam}{TODO: Features description, maybe}
-\comment[Tam]{Adam}{Yes, the more the better ;-) it is core component so you
-are never too verbose}
 
 \paragraph{Features}
 
