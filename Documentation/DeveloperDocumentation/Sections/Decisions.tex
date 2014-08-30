@@ -149,12 +149,13 @@ queries that cannot be done easily in relational databases.
 
 Anyway we decided to use the relational database for several reasons.
 The graph databases are pretty new technology, it is not so time proven and we
-were too afraid of  possible bugs. Apart from that relational database are well
+were too afraid of possible bugs. Apart from that relational database are well
 documented, all main bugs have been solved years ago and everyone knows what to
 expect and what is impossible.
 We also wanted to use the database for machine learning, which uses sequential
 access to the database. That is, as we know, faster in relational database,
 where we can only iterate through all records in a single table.
+And finally none of us have an experience with graph databases.
 
 Although we have used relational database, this decision can be proven wrong and
 through the time it can come out that graph database can be much better
@@ -162,3 +163,5 @@ solution. We expected that a little bit and used the DAO design pattern enabling
 to change the type of database without changing the application source code.
 This pattern is more described in Section \ref{sec:PersistentLayer} about server
 architecture respectively persistent layer.
+
+This project is primary destined for policemen and their reports. They have very specific domain with things and people they register. We decided to create more general model, to enable its use and spread it into world of text recognizer. The model is detailed described also in Section \ref{sec:Database} about database.
