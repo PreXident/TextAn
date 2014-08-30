@@ -47,6 +47,18 @@ public class Relation implements Serializable {
     }
 
     /**
+     * Creates copy of Relation.
+     * @param relation blue print relation
+     */
+    public Relation(final Relation relation) {
+        id = relation.getId();
+        type = relation.getType();
+        this.objects = new HashSet<>(relation.getObjects());
+        isNew = relation.isNew;
+        anchors = new ArrayList<>(relation.getAnchors());
+    }
+
+    /**
      * Creates new relation from id and relation type.
      * @param id relation id
      * @param type relation type
