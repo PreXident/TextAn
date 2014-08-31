@@ -1,24 +1,26 @@
 % Section: Language
 
 Although \textan{} is aimed particularly on the Czech language and is preset for
-it by default, it is possible to configure \textan{} for other languages, especially
-English. \comment{Ondrej}{Explicitly mention that only one language is supported
-at once} There are two areas which depend on the selected language: named entity
-recognition and full text searching. Both are placed in the server application
-same as other business logic.
+it by default, it is possible to configure \textan{} for other languages,
+especially English. However only one language at a time is supported. There are
+two areas which depend on the selected language: named entity recognition and full
+text searching. Both are placed in the server application along with other
+business logic.
 
 \comment[Kuba]{Petr}{Here should be some summary about changing language in nametag}
-NameTag is implemented to support more languages, so if you want use {\it NameTag} in different language, you must change property, which set language  - {\it ner\_identifier},
-specify appropriate tagger for required language and provide data in desired language.
-See Section \ref{sssec:NametagSettings} for detailed description.
+{\it NameTag} is implemented to support more languages, so if you want use {\it
+NameTag} in a different language, you must change property {\it ner\_identifier}
+affecting it, specify appropriate tagger for required language and provide
+training data in desired language. See Section \ref{sssec:NametagSettings} for
+detailed description.
 
 The second thing, that needs to be configured, is the full text search. The system
-internally use Apache Lucene, full text search engine. Lucene provides creation
+internally uses Apache Lucene, full text search engine. Lucene provides creation
 of full text indexes and searching in them. To get good results, it is necessary
 perform some preprocessing, such as replacing words with their stems (stemming),
-stop words filtering or synonym expansion. This is done through an Analyzer. Lucene
-contains Analyzers\footnote{\url{http://lucene.apache.org/core/4_7_0/analyzers-common/overview-summary.html}}
+stop words filtering or synonym expansion. This is done through an Analyzer.
+Lucene contains Analyzers%
+\footnote{\url{http://lucene.apache.org/core/4_7_0/analyzers-common/overview-summary.html}}
 for many common languages, or you can define your own. Selection of Analyzer in 
-\textan{} is done through property \emph{hibernate.search.analyzer} in \emph{data.properties}.
-See Section \ref{sssec:DataSettings}.
-
+\textan{} is done through property \emph{hibernate.search.analyzer} in
+\emph{data.properties}. See Section \ref{sssec:DataSettings}.
