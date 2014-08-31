@@ -40,6 +40,8 @@ There is a sql script \emph{(create.sql)} to setup the database located in folde
 \emph{Database}. It should be executed to setup the database schema before the server
 starts. However this script is \emph{MySQL} specific \comment[Venca]{Venca}{check}
  and if you have other database you should replace \emph{MySQL} specific commands.
+ 
+Furthermore you need to edit properties used to connect to the database (\emph{jdbc}) and to generate sql queries by Hibernate (\emph{hibernate.dialect}). Their meaning is described in section \ref{sssec:DataSettings}.
 
 \comment[Venca]{Petr}{Change of  the underlying database is not so easy, you need
 to add db driver into classpath! Is it somewhere in the documentation? }
