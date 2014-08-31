@@ -5,10 +5,8 @@ into introduction}
 
 \comment{Adam}{add reference to Appendix \ref{app:DVD}}
 
-Generally, the Police often generate documents with regards to a specific person (criminal records, conflict, ...). 
-In the documents, there is a lot of information such as
-person's name, their location, date of birth, name of other persons, other persons' location, etc.
-There is a need for an application to manage such documents in a convenient way and extract the important details without much human effort.
+\subsection{Motivation} In today's world, there is a large amount of unstructured written sources that contain structured information. An example are police reports. They contain information entities (names, addresses, phone numbers, weapons, drugs, etc..) and the relationships between them. This information must be transformed into representation which could be easily read by computers, for example, is written in the database and assign it to an already existing objects if they have the same meaning. This process is currently made manually, which is very time consuming. Similarly, same time-consuming processing documents can be found in other institutions or companies.
+
 This is the topic of our software project, called Text Analyser (TextAn).
 
 TextAn is a client-server application for analysing text.
@@ -30,11 +28,11 @@ The developer team consists of 5 students:
 
 \begin{itemize}
 \itemsep0em
-\item Petr Fanta
-\item Duc Tam Hoang
-\item Adam Huječek
-\item Václav Pernička
-\item Jakub Vlček
+\item Petr Fanta - server, interconnection of components
+\item Duc Tam Hoang - entity-object matcher 
+\item Adam Huječek - client
+\item Václav Pernička - databse
+\item Jakub Vlček - NameTag and MorphoDiTa integration
 \end{itemize}
 
 \comment[Petr]{Tam}{please assemble two of my introductions}
@@ -49,13 +47,13 @@ These entities do not stand alone, there are relationships between them.
 The relationships could facilitate the problem of assigning an entity from new text to an existing objects already stored in the system.
 Such problem of extracting structure information out of general documents has recently gained attention from both research and industry.
 
-Czech Police reports are typical example of unstructured sources which contain structured information.
-They are the descriptions with regard to a specific person, their profile and actions, criminal records and so on.
-Such information is by no doubt the most valuable data in the whole document.
-Currently, the extracting is done manually.
-In other words, there is a person who reads through all documents,
-looks at the database and match the description in the document with the existing data.
-This is not-surprisingly very time-consuming and labour-intensive. 
+%Czech Police reports are typical example of unstructured sources which contain structured information.
+%They are the descriptions with regard to a specific person, their profile and actions, criminal records and so on.
+%Such information is by no doubt the most valuable data in the whole document.
+%Currently, the extracting is done manually.
+%In other words, there is a person who reads through all documents,
+%looks at the database and match the description in the document with the existing data.
+%This is not-surprisingly very time-consuming and labour-intensive. 
 
 Project TextAn is devoted to build a pleasant and effective tool for extracting structured data in Czech police reports. 
 Our goal is to provide an effective extraction of structured data with user involvement.

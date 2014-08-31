@@ -24,8 +24,8 @@ example data inputs and expected outputs. We divided the work as follows:
 We made some decisions and requirements for each component:
 
 \paragraph{Database}
-\comment{Jakub}{attach document schema here?}
-At the beginning, we made database schema, which was approved \comment{Venca}{improved?} after a few
+\comment[anyone]{Jakub}{has anyone better image?}
+At the beginning, we made database schema~\ref{fig:dbpilot}, which was approved \comment{Venca}{improved?} after a few
 iterations. The main attention was paid on schema generality because we want to
 support more than one domain (not just police report).\\
 Database should support versioning, parallel processing and partial records. We
@@ -34,6 +34,12 @@ generality (it will be easier to change database system). Logging (users,
 changes) support is also required. It would be a problem merging two objects into 
 one, so we created special functionality and table in the
 database.
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/db-pilot}
+        \caption{Pilot database schema.}
+        \label{fig:dbpilot}
+\end{figure}
 \comment[Petr]{Tam}{Need to revised again}
 
 \paragraph{Client}
