@@ -15,12 +15,13 @@ multiple calls of webservice operation because of pipeline decision described in
 Section \ref{ssec:ReportPipeline}. Or a facade operation can be implemented to
 mitigate this overhead.
 
-Typical issues for a recognition are an ambiguity of words or names and a large
-granularity of types. An example of ambiguity can be word Washington, it can mean
-the state in USA, the city in USA or person with this surname. The second issue,
-the large granularity of types, can be shown similarly. Consider object types "doctor",
-"programmer" and "gardener" and a sentence with name of person. These problems are
-highly dependent on a training data for a target domain and documents from users.
+Typical issues for the recognition are the ambiguity of words or names and the
+large granularity of types. An example of ambiguity can be word Washington, that
+can mean the state in the USA, the city in the USA or person with this surname.
+The second issue, the large granularity of types, can be shown similarly.
+Consider object types "doctor", "programmer" and "gardener" and a sentence with
+name of person. These problems are highly dependent on the training data for the
+target domain and documents from users.
 
 \subsection{Re-learning}
 
@@ -28,10 +29,10 @@ Because of reasons that are mentioned above (see Section \ref{ssec:processing}),
 it is difficult to create models for the recognition which return correct
 results in every situation. We decided not to use static models, but models that
 are periodically learned from data that are stored in the database to improve
-accuracy. This solution is possible due to semi-automatic processing, because
-all data in the database should be correct thanks to interactions with users.
-Another benefit of the re-learning and the user corrections is that there can be
-empty set of training data at the deployment time.
+the accuracy. This solution is possible due to semi-automatic processing,
+because all data in the database should be correct thanks to interactions with
+users. Another benefit of the re-learning and the user corrections is that there
+can be empty set of training data at the deployment time.
 
 \subsection{System Decomposition}
 
@@ -64,8 +65,8 @@ report could be detected sooner, so it can save some duplicate work.
 The basic pipeline steps are the following:
 \begin{itemize}
 	\item Selecting source of the report (see Figure \ref{fig:MockupPipelineSource})
-	\item Selecting report from database (see Figure \ref{fig:MockupPipelineDatabase})
-	\item Importing report from local file (see Figure \ref{fig:MockupPipelineImport}
+	\item Selecting report from the database (see Figure \ref{fig:MockupPipelineDatabase})
+	\item Importing report from a local file (see Figure \ref{fig:MockupPipelineImport}
 	\item Editing report text (see Figure \ref{fig:MockupPipelineText})
 	\item Editing report entities (see Figure \ref{fig:MockupPipelineEntities})
 	\item Editing report objects (see Figure \ref{fig:MockupPipelineObjects})
@@ -90,7 +91,7 @@ The basic pipeline steps are the following:
 \begin{figure}[!htb]
         \centering
         \includegraphics{Images/MockupPipelineImport}
-        \caption{Importing report from local file.}
+        \caption{Importing report from a local file.}
         \label{fig:MockupPipelineImport}
 \end{figure}
 
@@ -131,6 +132,7 @@ The basic pipeline steps are the following:
 
 \subsection{Stateless or Stateful Communication}
 
+\comment{Adam}{Something needs to be here!}
 
 \subsection{Database}
 
@@ -164,4 +166,18 @@ to change the type of database without changing the application source code.
 This pattern is more described in Section \ref{sec:PersistentLayer} about server
 architecture respectively persistent layer.
 
-This project is primary destined for policemen and their reports. They have very specific domain with things and people they register. We decided to create more general model, to enable its use and spread it into world of text recognizer. The model is detailed described also in Section \ref{sec:Database} about database.
+This project is primary destined for policemen and their reports. They have very
+a specific domain with things and people they register. We decided to create
+a more general model, to enable its use and spread it into world of text
+recognizers. The model is also described in details in Section\ref{sec:Database}
+about the database.
+
+\subsection{Adding New Object/Relation Types}
+\label{ssec:AddingTypes}
+
+\comment{Adam}{Explain why it is done by administrators only}
+
+We decided that only administrators are allowed to add new object and relation
+types. This is because there should be a convention used by all users that could
+be ruined by uncontrolled type explosion. Limiting types manipulation should
+enforce that all interventions are well thought and conceptual.

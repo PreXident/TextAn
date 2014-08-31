@@ -1,14 +1,14 @@
 % Chapter: POSSIBILITIES OF FUTURE EXTENSIONS
 
-The chapter introduces some areas, that should be in our opinion extended or improved.
-The list don't contain all possible extensions, of course.
+The chapter introduces some areas, that should be in our opinion extended or
+improved. The list does not contain all possible extensions, of course.
 
 \section{Relation Recognition}
-The automatic recognition of relations between objects is the most missing thing
-in the current version of \textan{}. However, because this task has been taken
-into account from the very beginning of the development and because it is one of
-the optional requirements, \textan{} contains the whole infrastructure except
-the core component itself.
+The automatic recognition of relations between objects is the most missing
+feature in the current version of \textan{}. However, because this task has been
+taken into account from the very beginning of the development and because it is
+one of the optional requirements, \textan{} contains the whole infrastructure
+except for the core component itself.
 
 The recognition can be based on many different criteria, same as relations.
 For example: the presence of objects in the same document, the kind of verbs,
@@ -27,14 +27,14 @@ It implies at least usage of some graph query language and creation of some
 graph indexing over the data. Or in better case usage of different data storage. 
 
 \section{Underlaying Database}
-In the case that graph operations become more important, it will be better to use
-a different data store, for example a NoSql database based on RDF or a graph
+In the case that graph operations become more important, it will be better to
+use a different data store, for example a NoSql database based on RDF or a graph
 database. There are many implementations of these databases, both commercial and
 open-source, e.g. OpenLink Virtuoso\footnote{\url{http://virtuoso.openlinksw.com/}},
 or Neo4j\footnote{\url{http://www.neo4j.org/}}.
 
 \section{Restrictions for Objects in Relation}
-As it is noted in user documentation section \ref{USR-sec:Domain},
+As it is noted in user documentation Section \ref{USR-sec:Domain},
 \textan{} is very universal and needs some conventions to provide good results,
 because there is no way how to enforce the proper use. The system cannot work
 properly without conventions anyway, but some extension enforcing restrictions
@@ -48,19 +48,19 @@ should be an object of type "person" with role "murderer", an object of type
 
 \section{Multiple Languages at Once}
 Although \textan{} can be configured for multiple languages, mainly for Czech
-and English (see Section \ref{USR-sec:Lang} in the user documentation), it support
-only one language at once. It can be useful to support multiple languages at once.
-For example, when \textan{} is used by police for analyze their reports, it can
-be helpful to manage reports from foreign colleagues in same system. A similar
-example is any multinational company and their documents.
+and English (see Section \ref{USR-sec:Lang} in the user documentation), it
+support only one language at once. It can be useful to support multiple
+languages at once. For example, when \textan{} is used by police for analyze
+their reports, it can be helpful to manage reports from foreign colleagues in
+same system. A similar example is any multinational company and its documents.
 
 This change affects multiple areas in \textan{}, especially recognizers and
 the full text indexing and searching, because they use different procedures for
-each language and it's difficult to find any universal solution for them. It means
-that the system must know which language is currently used and must choose a right
-method for processing. It can be solved by multiple models for recognizers, one
-for each language, and multiple analyzer for the searching and the language will
-have to be defined explicitly.
+each language and it is difficult to find any universal solution for them. It
+means that the system must know which language is currently used and must choose
+the right method for processing. It can be solved by multiple models for
+recognizers, one for each language, and multiple analyzers for the searching and
+the language will have to be defined explicitly.
 
 \section{Client}
 The \textan{} client could be improved in many ways as any graphic application.
