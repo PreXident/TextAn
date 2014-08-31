@@ -24,7 +24,7 @@ client.
 
 \subsubsection{Installation}
 
-Unpack an archive with the \textan{} client distribution into any directory. 
+Unpack the archive with the \textan{} client distribution into any directory. 
 The archive contains a .jar file and starting scripts for both
 \emph{Microsoft Windows} and \emph{Linux-based} operating systems
 \footnote{run.bat for MS Windows and run.sh for Linux clones.\label{runscript_note}}.
@@ -91,23 +91,22 @@ For more information about security, please consult Section \ref{sec:Security}.
 
 The .jar file from the distribution archive is executable,
 but we recommend to use starting scripts (see note \ref{runscript_note} on page
-\pageref{runscript_note}). Please consult the documentation of your Java Platform
-provider, if running scripts are not available for your system.
-For description of command line arguments see Section \ref{ssec:CliCmdArg}
+\pageref{runscript_note}). Please consult the documentation of your Java
+Platform provider, if running scripts are not available for your system. The
+main class of the application is \emph{cz.cuni.mff.ufal.textan.gui.Textan}.
+For description of command line arguments see Section \ref{ssec:CliCmdArg}.
 
 \subsubsection{Uninstallation}
 
 The client application does not use any files or resources outside its install
-directory, unless explicitly told to do so.
-To uninstall the client just delete its installation folder and all files
-explicitly used as configuration storage.
+directory, unless explicitly told to do so. To uninstall the client just delete
+its installation folder and all files explicitly used as configuration storage.
 
 \subsection{Settings}
 \label{ssec:ClientSettings}
 
-This section describes all settings affecting the client behaviour.
-The two basic means are command line arguments and configuration file in
-properties format.
+This section describes settings affecting the client behaviour. The two basic
+means are command line arguments and configuration file in properties format.
 
 \subsubsection{Command Line Arguments}
 \label{ssec:CliCmdArg}

@@ -24,7 +24,7 @@ for the private key. Port used for secure communication can be configured by
 \emph{server.ssl.port}.
 
 For client the following setting is required. Most importantly property \emph{ssl} must
-be set to \emph{true}. Then these properties will be used by the server:
+be set to \emph{true}. Then these properties will be used by the client:
 \emph{ssl.trustStore} must point to the trust store containing the certificate
 of the server. Its type is determined by the content of property
 \emph{ssl.trustStore.type}. Property \emph{ssl.trustStore.password} specifies
@@ -33,7 +33,7 @@ password to the trust store.
 \subsection{Client Authentication}
 
 For limiting the access to the webservices, client authentication can be turned
-on. Only client that provides certificate from authority trusted by the server
+on. Only clients that provide certificate from authority trusted by the server
 will be served.
 
 For server the following setting is required. Most importantly
@@ -50,5 +50,5 @@ For client the following setting is required. Most importantly property
 used by the server: \emph{ssl.keyStore} must point to the key store containing
 the private key and certificate signed by the certificate authority trusted by
 the server. Its type is determined by the content of property
-\emph{ssl.keyStore.type}. Property \emph{ssl.keyStore.password} specifies password
-to the key store.
+\emph{ssl.keyStore.type}. Property \emph{ssl.keyStore.password} specifies
+the password to the key store.

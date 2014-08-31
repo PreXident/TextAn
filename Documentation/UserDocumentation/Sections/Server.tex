@@ -18,12 +18,13 @@ recommend to use JRE from \emph{Oracle}, available at:
 \url{http://www.oracle.com/technetwork/java/javase/downloads/index.html}.
 Note that the application expects 64-bit JRE on 64-bit systems.}}
 or a later version and a relational database system (e.g. \emph{MySQL}).
-The server should be platform independent, so it runs on any system where JRE
-is available, but it depends on native and 3rd party libraries. Supported operating
-systems in the distribution of the \textan{} server are Linux (32 bit and 64 bit)
-and Windows (32 bit and 64 bit). \comment{Petr}{Add note about processor architecture
-or linux binaries are independent on it?} If you need to run \textan{} server on
-different operating system, see Section \ref{sssec:unsupport}.
+The server is platform independent, so it runs on any system where JRE is
+available, but it depends on native and 3rd party libraries. Supported
+operating systems in the distribution of the \textan{} server are Linux (32 bit
+and 64 bit) and Windows (32 bit and 64 bit). \comment{Petr}{Add note about
+processor architecture or linux binaries are independent on it?} If you need to
+run \textan{} server on different operating system, see Section
+\ref{sssec:unsupport}.
 
 \subsubsection{Installation}
 
@@ -36,15 +37,16 @@ For installation it is sufficient to unpack its content into any directory.
 independent, mysql recomendation... etc. (check Section
 \ref{sssec:SerInstPre}))}
 
-There is a sql script \emph{(create.sql)} to setup the database located in folder
-\emph{Database}. It should be executed to setup the database schema before the server
-starts. However this script is \emph{MySQL} specific \comment[Venca]{Venca}{check}
- and if you have other database you should replace \emph{MySQL} specific commands.
+There is sql script \emph{(create.sql)} to setup the database located in the
+folder \emph{Database}. It should be executed to setup the database schema
+before the server starts. However this script is \emph{MySQL} specific
+\comment[Venca]{Venca}{check} and if you have other database you should replace
+\emph{MySQL} specific commands.
  
 Furthermore you need to edit properties used to connect to the database (\emph{jdbc}) and to generate sql queries by Hibernate (\emph{hibernate.dialect}). Their meaning is described in section \ref{sssec:DataSettings}.
 
-\comment[Venca]{Petr}{Change of  the underlying database is not so easy, you need
-to add db driver into classpath! Is it somewhere in the documentation? }
+\comment[Venca]{Petr}{Change of  the underlying database is not so easy, you
+need to add db driver into classpath! Is it somewhere in the documentation? }
 
 \subsubsection{Basic Configuration}
 
@@ -53,7 +55,6 @@ Before the first start, it is necessary to set up the server and the database.
 \comment[Petr,Jakub,Venca]{Petr}{write how to setup server}
 
 \comment[Petr]{Petr}{add some link to \ref{sec:ServerSettings}}
-
 
 \subsubsection{Starting the Server}
 
@@ -64,52 +65,56 @@ The start script for the Linux-based operating system (\emph{run.sh}) runs the
 server application as daemon and can be used to run the server as system service.
 
 The start script for the Microsoft Windows OS is less powerful, only runs the
-server application. To run the server as a background process, the Windows Service
-is required. Unfortunately, there are no components shipped with \textan{}
-to make it a formal Windows Service. However, we recommend the use of \emph{Apache
-ProcRun's Daemon \footnote{More information can be found on
-\url{https://commons.apache.org/proper/commons-daemon/procrun.html} and in JavaDoc
-documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry} class.}}.
+server application. To run the server as a background process, the Windows
+Service is required. Unfortunately, there are no components shipped with
+\textan{} to make it a formal Windows Service. However, we recommend the use of
+third party \emph{Apache ProcRun's Daemon \footnote{More information can be
+found on \url{https://commons.apache.org/proper/commons-daemon/procrun.html}
+and in JavaDoc documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry}
+class.}}.
 
-Note that a startup of the server may take a very long time, depends on the amount
-of data, because during a initialization are created full text indexes and models
-for the named entity recognizer and object assigner and the internal web server
-is started after the initialization phase.
+Note that the startup of the server may take a very long time, depending on the
+amount of data, because during the initialization full text indexes
+and models for the named entity recognizer and object assigner are created and
+the internal web server is started after the initialization phase.
 
 \subsubsection{Uninstallation}
-The server application use only files and resources inside install directory by
-default, only exception are temporary files, which are placed in system temp folder.
-To uninstall the server just delete installation directory and files from your
-configuration.
+The server application uses only files and resources inside the install
+directory by default, the only exception are temporary files, which are placed
+in system temp folder. To uninstall the server just delete the installation directory and files from your configuration.
 
 \subsubsection{Unsupported Systems}
 \label{sssec:unsupport}
-It is possible to run \textan{} server on other systems than supported ones. Only
-limitations are Java 8 and 3th-party tools and libraries, specifically NameTag%
+It is possible to run \textan{} server on other systems than supported ones.
+The only limitations are Java 8 and third party tools and libraries,
+specifically NameTag%
 \footnote{\url{http://ufal.mff.cuni.cz/nametag}} and MorphoDiTa%
 \footnote{\url{http://ufal.mff.cuni.cz/morphodita}}.
 
 To configure the server application for specific system follow these steps:
 \begin{itemize}
 \item Download MorphoDiTa sources and compile its Java bindings. Copy generated
-library into \emph{lib} folder in installation directory.
+library into \emph{lib} folder in the installation directory.
 \item Download NameTag sources and:
 	\begin{itemize}
 	\item compile its Java bindings and copy generated library into \emph{lib}
-	folder in installation directory.
+	folder in the installation directory.
 	\item compile NameTag and copy \emph{train\_ner} into \emph{bin} folder in
-	installation directory.
+	the installation directory.
 	\end{itemize}
 \end{itemize}
 
 \subsection{Settings}
 \label{sec:ServerSettings}
 
+This section contains description of available settings to configure \textan{}
+server.
+
 \subsubsection{Web Server Settings}
 \label{sssec:WebServerSettings}
-This section contains a description of properties that can be used to configure
-the internal web server. These properties can be set in the file \emph{server.properties}
-in installation directory.
+This section contains the description of properties that can be used to
+configure the internal web server. These properties can be set in the file
+\emph{server.properties} in the installation directory.
 
 %connector
 \paragraph{server.connector.host}
@@ -121,11 +126,12 @@ The port to listen on. If not set, the web server listens on port 9500.
 
 %thread pool
 \paragraph{server.threadPool.maxThreads}
-The maximum number of threads in web server thread pool. It determines a maximum
-number of simultaneously opened connections. The default value is 200.
+The maximum number of threads in web server thread pool. It determines the
+maximal number of simultaneously opened connections. The default value is 200.
 
 \paragraph{server.threadPool.minThreads}
-The minimum number of threads in web server thread pool. The default value is 8.
+The minimal number of threads in the web server thread pool. The default value
+is 8.
 
 \paragraph{server.threadPool.idleTimeout}
 The time in milliseconds that the connection can be idle before it is closed.
@@ -133,8 +139,7 @@ The time in milliseconds that the connection can be idle before it is closed.
 %ssl
 \paragraph{server.ssl}
 Enable usage of SSL. When SSL is enabled, following properties must be set:
-server.ssl.keyStore.path, server.ssl.keyStore.password, server.ssl.keyManager.password.
-The default value is false.
+\emph{server.ssl.keyStore.path}, \emph{server.ssl.keyStore.password}, \emph{server.ssl.keyManager.password}. The default value is false.
 
 \paragraph{server.ssl.keyStore.path}
 The file or URL of the SSL Key store.
@@ -150,8 +155,8 @@ The type of the key store. The default value is "JKS".
 
 \paragraph{server.ssl.port}
 The port to listen on when SSL communication is enabled. Note that the port must
-be different from server.connector.port, because HTTP connection is still possible,
-but it is immediately redirected to the SSL port.
+be different from server.connector.port, because HTTP connection is still
+possible, but it is immediately redirected to the SSL port.
 
 %ssl client auth
 \paragraph{server.ssl.clientAuth}
@@ -174,21 +179,23 @@ For more information about security, please consult Section \ref{sec:Security}.
 \subsubsection{Database Settings}
 \label{sssec:DataSettings}
 
-\comment{Petr}{This settings are related to Persistence layer - it means also indexing}
+\comment{Petr}{These settings are related to Persistence layer - it means also indexing}
 
-Because of the server can connect to an arbitrary database, it is required to
-specify what type of database is used. In \textan{} project is used \emph{Hibernate}
-for object-relation mapping \emph{(ORM)}, \emph{JDBC} for relation database access
-and \emph{c3p0} for connection pooling (see Section
+Because the server can connect to an arbitrary database, it is required to
+specify what type of database is used. In \textan{} project \emph{Hibernate}
+is used for object-relation mapping \emph{(ORM)}, \emph{JDBC} for relation
+database access and \emph{c3p0} for connection pooling (see Section
 \ref{DEV-sec:UsedTechnologies} in the developer documentation).
 
-Properties to these three libraries can be set in the file \emph{data.properties}
-in installation directory. The meanings of all important properties are following:
+The properties of these three libraries can be set in the file
+\emph{data.properties} in the installation directory. The descriptions of the
+most important properties follow:
 
 %jdbc
 \paragraph{jdbc.driverClassName}
 Name of the driver class made usually by database developers which enables to
 interact with database.
+\comment[Venca]{Adam}{Mention here the need to put the driver to the classpath?}
 
 \paragraph{jdbc.url}
  The url that points to our database. The most common url format is like this:
@@ -197,6 +204,7 @@ and is specific to the driver we use.
 
 \paragraph{jdbc.user}
 Username to log into the database.
+
 \paragraph{jdbc.pass}
 Password to authorize the user in database.
 
@@ -421,10 +429,24 @@ Detect URLs and emails. If an URL or an email is detected, it is immediately mar
 with specified named entity type and not used in further processing.
 
 \subsection{Data Formats}
-To train a named entity recognizer model, training data is needed. The training data must be tokenized and contain annotated name entities. The name entities are non-overlapping, consist of a sequence of words and have a specified type.
-and
-The training data must be encoded in UTF-8 encoding. The lines correspond to individual words and an empty line denotes an end of sentence. Each non-empty line contains exactly two tab-separated columns, the first is the word form the second is the annotation. The format of the annotation is taken from CoNLL-2003: the annotation {\it I-type} or {\it B-type} denotes named entity of specified type, any other annotation is ignored. The {\it I-type} and {\it B-type} annotations are equivalent except for one case – if the previous word is also a named entity of same type, then
+To train a named entity recognizer model, training data are needed. The training
+data must be tokenized and contain annotated name entities. The name entities
+are non-overlapping, consist of a sequence of words and have a specified type.
+The training data must be encoded in UTF-8 encoding. The lines correspond to
+individual words and an empty line denotes an end of sentence. Each non-empty
+line contains exactly two tab-separated columns, the first is the word form the
+second is the annotation. The format of the annotation is taken from CoNLL-2003:
+the annotation {\it I-type} or {\it B-type} denotes named entity of specified
+type, any other annotation is ignored. The {\it I-type} and {\it B-type}
+annotations are equivalent except for one case – if the previous word is also a
+named entity of same type, then
 \begin{itemize}
-\item{}if the current word is annotated as I-type, it is part of the same named entity as the previous word (Or begin of new entity, if previous word wasn't entity),
-\item{}if the current word is annotated as B-type, it is in a different name entity than the previous word (albeit with the same type).
+\item{}if the current word is annotated as I-type, it is part of the same named
+entity as the previous word (Or begin of new entity, if previous word was not
+entity),
+\item{}if the current word is annotated as B-type, it is in a different name
+entity than the previous word (albeit with the same type).
 \end{itemize}
+
+\comment[Kuba]{Adam}{May add an example here? I am still not sure about the
+format of I-type and B-type}
