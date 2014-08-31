@@ -17,7 +17,7 @@ import java.util.Set;
 public class Graph {
     Set<Node> nodes = new HashSet<>();
     Set<Edge> edges = new HashSet<>();
-
+    
     Graph() {
     }
 
@@ -64,23 +64,30 @@ public class Graph {
     
     static Graph merge(final Graph graph1, final Graph graph2) {
         Graph result = new Graph(graph1.nodes, graph1.edges);
-        
+
         result.nodes.addAll(graph2.nodes);
         result.edges.addAll(graph2.edges);
+        
+        return result;
+    }
+    
+    static Graph intersection(final Graph graph1, final Graph graph2) {
+        Graph result = new Graph(graph1.nodes, graph1.edges);
+        
+        result.nodes.retainAll(graph2.nodes);
+        result.edges.retainAll(graph2.edges);
 
         return result;
     }
-
-    boolean mergeIntoThis(final Graph graph) {
-        graph.nodes.removeAll(nodes);
-        
-        boolean result = !graph.nodes.isEmpty();
-        
+    
+    void unionIntoThis(final Graph graph) {
         nodes.addAll(graph.nodes);
         edges.addAll(graph.edges);
-
-        return result;
     }
-
+    void intersectIntoThis(final Graph graph) {
+        nodes.retainAll(graph.nodes);
+        edges.retainAll(graph.edges);
+    }
+    
     
 }

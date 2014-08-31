@@ -37,13 +37,17 @@ public class GraphFactory {
     }
 
     public Graph getShortestPathBetweenObjects(ObjectTable obj1, ObjectTable obj2, int maxDepth) throws PathDoesNotExistException {
-        Graph result= getGraphFromObject(obj2, maxDepth);
+        Graph result1 = getGraphFromObject(obj1, maxDepth/2);
+        Graph result2 = getGraphFromObject(obj2, maxDepth/2 + maxDepth%2);
         
-        if (!result.getNodes().contains(new ObjectNode(obj1)))
+        Graph intersection = Graph.intersection(result1, result2);
+        
+        if (!intersection.getNodes().isEmpty())
             throw new PathDoesNotExistException();
-        result.mergeIntoThis(getGraphFromObject(obj1, maxDepth));
         
-        return result;
+        result1.unionIntoThis(result2);
+        
+        return result1;
     }
     
     /**
@@ -97,7 +101,7 @@ public class GraphFactory {
         Set<Node> passedNodes = new HashSet<>(res);
         Graph result = new Graph();
         for (Node node : res) {
-            result.mergeIntoThis(getGraphFromObject(node.getId(), depth, passedNodes));
+            result.unionIntoThis(getGraphFromObject(node.getId(), depth, passedNodes));
         }
         return result;
     }
@@ -161,7 +165,7 @@ public class GraphFactory {
                 if (!passedNodes.contains(node)) {
                     passedNodes.add(node);
                     Graph nextWave = getGraphFromObject(node.getId(), depth - 1, passedNodes);
-                    result.mergeIntoThis(nextWave);
+                    result.unionIntoThis(nextWave);
                 }
             }
         }
