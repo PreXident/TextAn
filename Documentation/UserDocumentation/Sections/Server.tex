@@ -21,8 +21,7 @@ or a later version and a relational database system (e.g. \emph{MySQL}).
 The server is platform independent, so it runs on any system where JRE is
 available, but it depends on native and 3rd party libraries. Supported
 operating systems in the distribution of the \textan{} server are Linux (32 bit
-and 64 bit) and Windows (32 bit and 64 bit). \comment{Petr}{Add note about
-processor architecture or linux binaries are independent on it?} If you need to
+and 64 bit\footnote{x86 (IA-32) and x86-64}) and Windows (32 bit and 64 bit).  If you need to
 run \textan{} server on different operating system, see Section
 \ref{sssec:unsupport}.
 
@@ -33,20 +32,40 @@ such as server binaries, native libraries, run scripts and additional resources.
 For installation it is sufficient to unpack its content into any directory.
 
 \subsubsection{Database Configuration}
-\comment[Venca]{Petr}{decribe how to configure database (relational db, DBMS
-independent, mysql recomendation... etc. (check Section
-\ref{sssec:SerInstPre}))}
 
-There is sql script \emph{(create.sql)} to setup the database located in the
-folder \emph{Database}. It should be executed to setup the database schema
-before the server starts. However this script is \emph{MySQL} specific
-\comment[Venca]{Venca}{check} and if you have other database you should replace
-\emph{MySQL} specific commands.
+Before a start or a configuration of the \textan{} server, it is necessary to
+setup a database. There are two possibilities how to configure the database:
+manually, or through a simple command line tool. Both of them are \emph{MySql} specific,
+however it is possible to configure the server to use other database system.
+
+If you want to configure \emph{MySql} manually, you need to run \emph{create.sql} script
+that can be found in the \emph{Database} folder in the distribution archive. The script
+create database schema (called "textan") and all necessary  tables in it. If you
+want to create also a database user for \textan{}, you can use the script \emph{createUser.sql}
+Furthermore, you need to configure the server application to use the just created
+database in data.properties in the installation directory. Their meaning is described
+in Section \ref{sssec:DataSettings}.
+
+The second possibility, how to configure \emph{MySql}, is to use a simple setup
+commandline tool. The tool is available in the installation directory as
+the \emph{setup.sh} for Linux systems or the \emph{setup.bat} for Windows.
+The possibilities of the tool are equivalent to the manual configuration, see
+a help of the tool.
+
+If you want to use other sql database system, you have to create an equivalent
+database schema to the schema described in \emph{create.sql}, setup the server
+application and add a jdbc drivers for the database system into the classpath.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%There is sql script \emph{(create.sql)} to setup the database located in the
+%folder \emph{Database}. It should be executed to setup the database schema
+%before the server starts. However this script is \emph{MySQL} specific
+%\comment[Venca]{Venca}{check} and if you have other database you should replace
+%\emph{MySQL} specific commands.
  
-Furthermore you need to edit properties used to connect to the database (\emph{jdbc}) and to generate sql queries by Hibernate (\emph{hibernate.dialect}). Their meaning is described in section \ref{sssec:DataSettings}.
-
-\comment[Venca]{Petr}{Change of  the underlying database is not so easy, you
-need to add db driver into classpath! Is it somewhere in the documentation? }
+%Furthermore you need to edit properties used to connect to the database (over \emph{jdbc})
+%and to generate sql queries by Hibernate (\emph{hibernate.dialect}).
+%Their meaning is described in section \ref{sssec:DataSettings}.
 
 \subsubsection{Basic Configuration}
 
@@ -178,8 +197,6 @@ For more information about security, please consult Section \ref{sec:Security}.
 
 \subsubsection{Database Settings}
 \label{sssec:DataSettings}
-
-\comment{Petr}{These settings are related to Persistence layer - it means also indexing}
 
 Because the server can connect to an arbitrary database, it is required to
 specify what type of database is used. In \textan{} project \emph{Hibernate}
