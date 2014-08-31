@@ -118,7 +118,9 @@ other ORM.
 
 \begin{figure}[!htb]
         \centering
-        \includegraphics[width=\textwidth]{Images/DataDecomposition}
+        \includegraphics
+%[width=\textwidth]
+{Images/DataDecomposition}
         \caption{Persistence Layer Decomposition}
         \label{fig:DataDecomposition}
 \end{figure}
@@ -175,12 +177,9 @@ discuss in Section \ref{sec:Database}.
 
 This section describes the database schema (see Figure \ref{fig:DatabaseSchema}), meaning of all database tables and columns.
 
-\begin{figure}[!htb]
+\begin{figure}[!hp]
         \centering
-        \includegraphics[width=\textwidth, 
-        				 height=(\textheight - 2cm), 
-        				 keepaspectratio]
-        				 {Images/DatabaseSchemaPortrait-crop}
+        \includegraphics{Images/DatabaseSchema}
         \caption{Database schema}
         \label{fig:DatabaseSchema}
 \end{figure}
@@ -190,7 +189,7 @@ columns for the date of  creation \emph{(added)}, the date for last change and t
 
 \paragraph{Object} Object stands for the entity e.g. Josef Novák or a specific
 address.  The table has only one column with content \emph{data} which is used
-to describe the object \comment[Venca]{Adam}{Is it even used somewhere?}. Apart
+to describe the object \comment[Venca]{Adam}{Is it even used somewhere?} \comment{Petr}{No, only in tests.}. Apart
 from that, it contains reference to \emph{ObjectType} table to determine what
 type the object is.
 
