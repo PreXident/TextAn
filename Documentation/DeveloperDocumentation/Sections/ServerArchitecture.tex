@@ -1,5 +1,4 @@
 % Chapter: Server 
-
 This chapter explains overall architecture of the Textan sever application. It provides
 a description of all important components and their interaction.
 
@@ -120,7 +119,7 @@ don't know anything about hibernate and if we are using it or any other ORM.
 \end{figure}
 
 As you can see in Figure \ref{fig:DataDecomposition}, our persistence layer is
-covered by package \emph{cz.cuni.mff.ufal.textan.data}. In this section when we
+covered by package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-data}. In this section when we
 mention some subpackage, we always mean the subpackage of the package \emph{data}.
 
 The mapping between tables in database and java classes is done in subpackage
@@ -166,8 +165,7 @@ This section describes the database schema (see Figure \ref{fig:DatabaseSchema})
 
 \begin{figure}[!htb]
         \centering
-        \includegraphics[width=\textwidth, 
-        				 height=(\textheight - 2cm), 
+        \includegraphics[height=(\textheight - 1cm), 
         				 keepaspectratio]
         				 {Images/DatabaseSchemaPortrait-crop}
         \caption{Database schema}
@@ -259,7 +257,7 @@ training data collecting from database and preparation, model handling
 \label{sec:ObjectAssigner}
 
 After calling \emph{Named entity recognizer}, a list of entities is extracted from the document. \emph{ObjectAssigner}
-package \emph{cz.cuni.mff.ufal.textan.assigner} automatically
+package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-assigner} automatically
 assigns those entities to available objects in database. As the output, for 
 each entity, the aforementioned package returns a list of potential objects along
 with their score. Figure~\ref{fig:objectassigner} illustrates 
@@ -278,7 +276,7 @@ two methods assigning the entity to objects.
 The most simplest solution is searching for the \textit{objects} with matching 
 \textit{alias}. However, for an array of entity, it would return an array of 
 list of unordered objects.
-Function \emph{cz.cuni.mff.ufal.textan.assigner.ObjectAssigner.HeuristicRanking}
+Function \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-assigner.\-ObjectAssigner.\-HeuristicRanking}
 loops through the whole structure, promote the pair of objects which has a relation. This is due to the fact that such pair of objects is more likely to appear in the same document. However, as a heuristic method, its main role is to guarantee a decent output for every input.
 
 \comment{Tam}{TODO: Picture for heuristic ranking}
@@ -294,9 +292,9 @@ classification.
 
 
 \paragraph{Learning}
-The package \emph{cz.cuni.mff.ufal.textan.assigner.data} supports all steps for
+The package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-assigner.\-data} supports all steps for
 machine learning including training (learning). The database is extracted. 
-\emph{cz.cuni.mff.ufal.textan.assigner.data} creates 
+\emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-assigner.\-data} creates 
 artificial pairs of training vectors with \textit{Weka} tool. When a new document is
 processed, new entity and object pairs is added to the database. They could be extracted
 later to train again.
