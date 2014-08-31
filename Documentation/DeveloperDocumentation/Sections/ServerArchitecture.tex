@@ -93,17 +93,20 @@ Please, use the passive. Also, the main goals of persistence layer (and especial
 in dao pattern) is to hide how data are stored and make application independent
 from an underlying database. Furthermore, i think that we don't care about transactions,
 Spring data cares about transactions and so on.}
+\comment[Petr]{Venca}{Feel free to mark bullshits in text}
 
 \comment[Venca]{Petr}{Mark the place where I can write about Hibernate Search, I really can't find any.}
+\comment[Petr]{Venca}{Right after all my bullshits}
 
 \comment[Venca]{Petr}{Did you ever write formal text? Or did you ever read any? For example hibernate documentation?}
+\comment[Petr]{Venca}{Nope, yep, yep. Thanks for advice.}
 
 Persistence layer takes care about providing data to application layer and
 ensure they are persistent. The layer provides conversion of data between database
 records and objects in Java. This is called Object-Relation Mapping
 (ORM). Java classes whose instances are stored in database tables are called
 persistent classes. It is realized via Hibernate ORM framework (see Section
-\ref{sec:UsedTechnologies}). Next thing we need take care of is performing transactions,
+\ref{sec:UsedTechnologies}). Next thing this layer needs to take care of is performing transactions,
 for example joining two objects should first check if they are roots and if so, they
 are joined. All operations with database are usually done by DAOs.
 
@@ -117,13 +120,11 @@ are joined. All operations with database are usually done by DAOs.
 Data Access Object (DAO) is a basic design pattern for most of enterprise
 applications and wraps all access to data sources. It also handles the
 connection to data sources to get and store data. What is good for? Basically
-it is appreciated when the persistence layer changes. For example if we decide
-not to use hibernate but some other library, we do not have to remake the whole
-application but only the DAO and all under it. As you can see in Figure
+it is appreciated when the persistence layer changes. For example in case of changing the underlaying database or Hibernate ORM, it is not necessary to remake the whole
+application but only the DAO. As you can see in Figure
 \ref{fig:PersistentLayer} without DAO would have the application
 to call Hibernate functions and it would be dependent on Hibernate. Now the
-application do not know anything about hibernate and if we are using it or any
-other ORM.
+application do not know anything about Hibernate.
 
 \begin{figure}[!htb]
         \centering
@@ -135,8 +136,8 @@ other ORM.
 \end{figure}
 
 As you can see in Figure \ref{fig:DataDecomposition}, our persistence layer is
-covered by package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-data}. In this section when we
-mention some subpackage, we always mean the subpackage of the package \emph{data}.
+covered by package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-data}. In this section when it is
+mentioned some subpackage, it always mean the subpackage of the package \emph{data}.
 
 The mapping between tables in the database and Java classes is done in
 subpackage \emph{tables}. Every table in the database corresponds to a class
@@ -149,7 +150,8 @@ that extends \emph{AbstractTable}. Hibernate does the mapping for us.
         \label{fig:DatabaseDAO}
 \end{figure}
 
-To provide the data to application (server in our case) \comment[Venca]{Petr}{What about upper layers or \textan server?} we have used the DAO
+To provide the data to application (\textan{} server in our case) \comment[Venca]{Petr}{What about upper layers or \textan server?}
+\comment{Venca}{Like this?} it is used the DAO
 pattern as we mentioned earlier. DAOs are located in subpackage
 \emph{repositories}. In Figure \ref{fig:DatabaseDAO} there is an example of a
 DAO pattern for document table. Interface \emph{IOperations} describes common
@@ -164,22 +166,19 @@ the database. Edge between an object and a relation means that this object is in
 that relation. We have used the factory pattern to create the graph. There are
 methods in class \emph{GraphFactory} to generate a graph from an object to given
 depth and also methods supporting finding shortest path between two objects.
-There are many algorithms for this purpose. It seems that \emph{Floyd-Warshall}
-fits the most because we know in constant time if there exists a path between
-any two objects. But it needs $O(N^2)$ space where $N$ is a number of objects
-and because of we have a pretty much big database, we cannot afford that. We
-have counted that for 5 million objects we would need around 280 TB space on
-disk. Let us wait a few years and then we can deploy Floyd-Warshall. We have
-used \emph{Bidirectional search} because we want to use as least memory as
+There are many algorithms for this purpose. We have
+used a simplified \emph{Bidirectional search} because we want to use as least memory as
 possible and it can take twice less memory than standard BFS.
 
-\comment{Venca}{TODO: implement...} \comment[Venca]{Petr}{Remove parts that aren't implemented, there is no time to finish it}
 
 The last interesting subpackage is \emph{interceptors} containing definitions
 of Hibernate interceptors. Interceptor is something like trigger in a database.
 When insert, update or delete action are called in hibernate, a proper method
 in an interceptor is called. We are using it for \emph{global version} which we
 discuss in Section \ref{sec:Database}.
+
+\paragraph{}
+\comment{Venca}{hibernate search and lucene ?}
 
 \subsection{Database}
 \label{sec:Database}
@@ -203,7 +202,7 @@ from that, it contains reference to \emph{ObjectType} table to determine what
 type the object is.
 
 \paragraph{Object Type} The \emph{objecttype} table is used to describe if the
-object is a human or an address. It has only one column \comment[Venca]{Adam}{Id is not counted as column?} with name of the type and the types have to be
+object is a human or an address. It has only one meaningful column with name of the type and the types have to be
 unique.
 
 \paragraph{Alias} If an entity occurs in some document, we want to know what it
@@ -273,8 +272,6 @@ do not care too much about the alias and there could be problem in the
 \emph{IsInRelation} table where two objects could be assigned instead of an
 object and a relation. Relations are just way too different from objects, so we
 decided to give them extra table.
-
-\comment{Venca}{More discussion about schema?}
 
 \section{Named Entity Recognizer}
 \label{sec:NamedEntityRecognizer}
