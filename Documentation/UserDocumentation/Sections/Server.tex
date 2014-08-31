@@ -32,6 +32,7 @@ such as server binaries, native libraries, run scripts and additional resources.
 For installation it is sufficient to unpack its content into any directory.
 
 \subsubsection{Database Configuration}
+\label{sssec:DataConfig}
 
 Before a start or a configuration of the \textan{} server, it is necessary to
 setup a database. There are two possibilities how to configure the database:
@@ -61,7 +62,6 @@ while the server is running, otherwise the database can be inconsistent with
 the server application. For more information see Sections \ref{DEV-sec:PersistentLayer}
 and \ref{DEV-sec:Database} in the developer documentation.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %There is sql script \emph{(create.sql)} to setup the database located in the
 %folder \emph{Database}. It should be executed to setup the database schema
 %before the server starts. However this script is \emph{MySQL} specific
@@ -72,13 +72,30 @@ and \ref{DEV-sec:Database} in the developer documentation.
 %and to generate sql queries by Hibernate (\emph{hibernate.dialect}).
 %Their meaning is described in section \ref{sssec:DataSettings}.
 
-\subsubsection{Basic Configuration}
+\subsubsection{Basic Server Configuration}
 
-Before the first start, it is necessary to set up the server and the database.
+The \textan{} server application should be configured before the first run. There
+are three main areas of configuration: an internal web server, an internal named
+entity recognizer and types for objects (entities) and relations and default training
+data for them.
 
-\comment[Petr,Jakub,Venca]{Petr}{write how to setup server}
+The web server and the named entity recognizer can be configured through configured
+files in the installation folder, see Sections \ref{sssec:WebServerSettings} and
+\ref{sssec:NametagSettings} for information about configuration possibilities.
 
-\comment[Petr]{Petr}{add some link to \ref{sec:ServerSettings}}
+The last, but the most important thing to configure, are types and optionally
+a default training data for them. The types should be added through the command
+line setup tool\footnote{Note that if you use the tool with other database than
+\emph{MySql}, you must add jdbc drivers for the database system into the classpath.}
+mentioned in the section \ref{sssec:DataConfig}. The tool provide operations to
+add both object types and relations and simple management for them see a help of
+the tool.
+
+In the beginning of the server's live time, the recognizers haven't enough training
+data from processed documents to provide good results. This can be improved by
+using default training data for them.
+\comment[Jakub]{Petr}{...complete this paragraph after the tool will be ready for preparing the training data.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Starting the Server}
 
@@ -92,7 +109,7 @@ The start script for the Microsoft Windows OS is less powerful, only runs the
 server application. To run the server as a background process, the Windows
 Service is required. Unfortunately, there are no components shipped with
 \textan{} to make it a formal Windows Service. However, we recommend the use of
-third party \emph{Apache ProcRun's Daemon \footnote{More information can be
+third party \emph{Apache Proc\-Run's Daemon \footnote{More information can be
 found on \url{https://commons.apache.org/proper/commons-daemon/procrun.html}
 and in JavaDoc documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry}
 class.}}.
