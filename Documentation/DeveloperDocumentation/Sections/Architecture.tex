@@ -24,7 +24,7 @@ completely independent and are intended for viewing and manipulating
 the database.
 
 The service \emph{DocumentProcessor} is more demanding and needs its operations
-called in specific order to achieve proper recognition (see Figure
+called in the specific order to achieve proper recognition (see Figure
 \ref{fig:ClientServerCommunication}). First of all, the client needs to obtain
 the ticket which stores information about processing and is needed for all
 following calls. For three recognition operations there are two variants. First
@@ -35,7 +35,7 @@ given report. Operations \emph{getAssignments*} assign objects from the database
 to recognized entities and finally operations \emph{getRelations*} recognize
 relations between objects. Please note that \emph{getRelations*} is not
 implemented in this version of \textan{} and returns empty response with no
-relations.
+relations recognized.
 
 The recognition operations do not store anything into the database. For this
 purpose there are three operations \emph{saveProcessedDocumentFromString} and
