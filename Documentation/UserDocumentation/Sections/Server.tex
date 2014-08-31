@@ -41,7 +41,7 @@ however it is possible to configure the server to use other database system.
 
 If you want to configure \emph{MySql} manually, you need to run \emph{create.sql} script
 that can be found in the \emph{Database} folder in the distribution archive. The script
-create database schema (called "textan") and all necessary  tables in it. If you
+create database schema (called ``textan'') and all necessary  tables in it. If you
 want to create also a database user for \textan{}, you can use the script \emph{createUser.sql}
 Furthermore, you need to configure the server application to use the just created
 database in \emph{data.properties\footnote{A description of format of .properties file can
@@ -112,7 +112,7 @@ Service is required. Unfortunately, there are no components shipped with
 \textan{} to make it a formal Windows Service. However, we recommend the use of
 third party \emph{Apache Proc\-Run's Daemon \footnote{More information can be
 found on \url{https://commons.apache.org/proper/commons-daemon/procrun.html}
-and in JavaDoc documentation for \emph{cz.cuni.mff.ufal.textan.server.AppEntry}
+and in JavaDoc documentation for \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-AppEntry}
 class.}}.
 
 Note that the startup of the server may take a very long time, depending on the
@@ -181,7 +181,8 @@ The time in milliseconds that the connection can be idle before it is closed.
 %ssl
 \paragraph{server.ssl}
 Enable usage of SSL. When SSL is enabled, following properties must be set:
-\emph{server.ssl.keyStore.path}, \emph{server.ssl.keyStore.password}, \emph{server.ssl.keyManager.password}. The default value is false.
+\emph{server.\-ssl.\-keyStore.\-path}, \emph{server.\-ssl.\-keyStore.\-password},
+\emph{server.\-ssl.\-keyManager.\-password}. The default value is false.
 
 \paragraph{server.ssl.keyStore.path}
 The file or URL of the SSL Key store.
@@ -193,7 +194,7 @@ The password for the key store.
 The password (if any) for the specific key within the key store.
 
 \paragraph{server.ssl.keyStore.type}
-The type of the key store. The default value is "JKS".
+The type of the key store. The default value is ``JKS''.
 
 \paragraph{server.ssl.port}
 The port to listen on when SSL communication is enabled. Note that the port must
@@ -203,8 +204,8 @@ possible, but it is immediately redirected to the SSL port.
 %ssl client auth
 \paragraph{server.ssl.clientAuth}
 Enables usage of client authentication. When enabled, following properties must
-be set: \emph{server.ssl.keyStore.path}, \emph{server.ssl.keyStore.password},
-\emph{server.ssl.keyManager.password}. Default value is \emph{false}.
+be set: \emph{server.\-ssl.\-keyStore.\-path}, \emph{server.\-ssl.\-keyStore.\-password},
+\emph{server.\-ssl.\-keyManager.\-password}. Default value is \emph{false}.
 
 \paragraph{server.ssl.trustStore.path}
 Path to the trust store file.
@@ -280,7 +281,7 @@ break with an SQLException after the specified number of milliseconds.
 Default: 0.
 
 \paragraph{c3p0.maxStatements}
-The size of c3p0's global PreparedStatement cache. If both maxStatements and
+The size of c3p0's global PreparedStatement cache. If both max\-Statements and
 maxStatementsPerConnection are zero, statement caching will not be enabled.
 If maxStatements is zero but maxStatementsPerConnection is a non-zero value,
 statement caching will be enabled, but no global limit will be enforced, only
@@ -339,7 +340,7 @@ Identifier of tagger. NameTag can utilize several taggers to obtain the tags and
 Do not use any tagger. The lemma is the same as the given form and there is no
 part of speech tag.
 \item[external]
-Use some external tagger. The input "forms" can contain multiple tab-separated
+Use some external tagger. The input ``forms'' can contain multiple tab-separated
 values, first being the form, second the lemma and the rest is part of speech tag.
 The part of speech tag is optional. The lemma is also optional and if missing,
 the form itself is used as a lemma.
