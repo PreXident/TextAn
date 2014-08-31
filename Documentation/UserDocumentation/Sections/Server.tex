@@ -56,6 +56,11 @@ If you want to use other sql database system, you have to create an equivalent
 database schema to the schema described in \emph{create.sql}, setup the server
 application and add a jdbc drivers for the database system into the classpath.
 
+Note that the database should be accessed only through the \textan{} server application
+while the server is running, otherwise the database can be inconsistent with
+the server application. For more information see Sections \ref{DEV-sec:PersistentLayer}
+and \ref{DEV-sec:Database} in the developer documentation.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %There is sql script \emph{(create.sql)} to setup the database located in the
 %folder \emph{Database}. It should be executed to setup the database schema
