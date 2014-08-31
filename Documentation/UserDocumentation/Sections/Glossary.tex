@@ -10,7 +10,7 @@ report, a letter, a movie review or a judgment. In the following text the terms
 document and report are used interchangeably.
 
 \item[Object]
-The term "object" refers to our representation of some unique thing in
+The term ``object'' refers to our representation of some unique thing in
 \textan{}. Consider for example a person with name Joseph Smith from Prague with
 identifier 000123/4567. The object refers to this person in the real world, in
 meat and bones.
@@ -23,8 +23,8 @@ Names are aliases for the person.
 \item[Entity]
 The entity is a sequence of words recognized either by the named entity
 recognizer or by a user. The entity will be later assigned to an object.
-Consider for example this sentence: "Joe Smith was seen in Prague on 5th
-September". The sentence contains 3 entities: Joe Smith (person), Prague (city),
+Consider for example this sentence: ``Joe Smith was seen in Prague on 5th
+September''. The sentence contains 3 entities: Joe Smith (person), Prague (city),
 5th September (date). We do not know which objects belong to these entities yet.
 Prague can represent the capital city of the Czech Republic, or a city in the
 USA.
@@ -41,11 +41,11 @@ assigned to a recognized entity.  After the assignment, the text that represents
 the entity in a document becomes the alias of the assigned object. The entity
 and the assigned object must have the same type, this is the essential aspect of
 the assignment. For example, there is a document in which an entity of type
-"date" with text "14th March 2011" was found and there is an object in the
-database of type "date" representing the day with aliases "the Fourteenth of
-March, 2011", "14/3/2011" and "14/3/11". The object will be probably assigned to
+``date'' with text ``14th March 2011'' was found and there is an object in the
+database of type ``date'' representing the day with aliases ``the Fourteenth of
+March, 2011'', ``14/3/2011'' and ``14/3/11''. The object will be probably assigned to
 the entity, because we know that they represent the same thing. After the
-assignment, the object will also have the alias "14th March 2011".
+assignment, the object will also have the alias ``14th March 2011''.
 
 \item[Alias Occurrence]
 \comment{Petr}{How to describe this?}
@@ -53,20 +53,20 @@ assignment, the object will also have the alias "14th March 2011".
 \item[Object Merging/Joining]
 \comment{Petr}{Need check.}
 Because objects are created only based on information from documents, there may
-be a situation when two objects represent same thing. The operation "merge/join
-object" is used to solve this issue, it merges two objects into new one and
+be a situation when two objects represent same thing. The operation ``merge/join
+object'' is used to solve this issue, it merges two objects into new one and
 original objects are replaced with the new object. The new object has aliases of
-both original objects. The reverse operation is called "split objects".
+both original objects. The reverse operation is called ``split objects''.
 
 \item[Relation]
 The relation represents any relationship between objects mentioned in a
 document. The relation can be represented in the document by an anchor word or
 phrase, or it can be unexpressed, which means without any anchor in the
 document. See Anchor below.
-Consider this example: "Adam (890524/1367) is married to Eve". Three objects
+Consider this example: ``Adam (890524/1367) is married to Eve''. Three objects
 appear in the sentence - persons Adam and Eve and the id 890524/1367. There
-are two relations: Adam "has" 890524/1367 without an anchor and Adam "marriage"
-Eve with the anchor "married".
+are two relations: Adam ``has'' 890524/1367 without an anchor and Adam ``marriage''
+Eve with the anchor ``married''.
 
 \item[Relation Type]
 Each relation has a type. For example born, reside, die, kill etc. Similarly to
@@ -77,7 +77,7 @@ domain which the system is deployed to.
 The anchor is a word or a sequence of words that is bound to a relation between
 objects. Consider for example the sentence: Joey Smith killed Mary-Ann S. There
 is a relation between Joey Smith and Mary-Ann S., which is represented by the
-word "killed". The word is the anchor.
+word ``killed''. The word is the anchor.
 \comment{Ondrej}{Why do you not write about type here?}
 \comment{Petr}{The example should show what is an anchor. The type isn't important in this situation.}
 
@@ -88,7 +88,7 @@ have order assigned which is just an integral number used for graph
 visualization\ifdefined\USRDOC{} (see Section \ref{sssec:EditRelations})\fi{}
 \ifdefined\DEVDOC{} (see Section \ref{USR-sssec:EditRelations} in the user
 documentation)\fi{}. For example relation created from sentence
-"Bill killed Joe." could be represented like this:
+``Bill killed Joe.'' could be represented like this:
 Bill (-1, murderer) --kill--> (1, victim) Joe.
 
 \item[Relation Occurence]
