@@ -296,7 +296,7 @@ public class ObjectAssigner implements IObjectAssigner {
                     }); //already selects only topK items
 
             for (ObjectTable object : objects) {
-                Instance ins = train.CreateInstance
+                Instance ins = train.createInstance
                                 (entity, object, this.aliasTableDAO, this.objectTableDAO, 
                                  this.documentTableDAO, "positive");
                 ins.setDataset(train.isTrainingSet);

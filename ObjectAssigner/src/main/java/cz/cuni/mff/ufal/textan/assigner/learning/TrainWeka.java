@@ -86,7 +86,7 @@ public class TrainWeka {
         isTrainingSet = new Instances("Rel", this.fvWekaAttributes, 10000);
         isTrainingSet.setClassIndex(12);
         // Create an artificial instance as the first point
-        isTrainingSet.add(CreateArtificialInstance());
+        isTrainingSet.add(createArtificialInstance());
 
         // Create the list of all objects
         final List<ObjectTable> objectTable = objectTableDAO.findAll();
@@ -109,8 +109,8 @@ public class TrainWeka {
                     // Create another artificial entity for training no
                     Entity e_reverse = new Entity(new StringBuilder(alias_text).reverse().toString(), type - 1);
                     // create an instance from this pair
-                    Instance ins = CreateInstance(e, obt, aliasTableDAO, objectTableDAO, documentTableDAO, "positive");
-                    Instance ins_reverse = CreateInstance(e_reverse, obt, aliasTableDAO, objectTableDAO, documentTableDAO, "negative");
+                    Instance ins = createInstance(e, obt, aliasTableDAO, objectTableDAO, documentTableDAO, "positive");
+                    Instance ins_reverse = createInstance(e_reverse, obt, aliasTableDAO, objectTableDAO, documentTableDAO, "negative");
                     // Add the instance to dataset
                     isTrainingSet.add(ins);
                     isTrainingSet.add(ins_reverse);
@@ -138,7 +138,7 @@ public class TrainWeka {
      * @param target
      * @return a real instance
      */
-    public Instance CreateInstance
+    public Instance createInstance
         (Entity e, ObjectTable obj, IAliasTableDAO aliasTableDAO,
                 IObjectTableDAO objectTableDAO, 
                 IDocumentTableDAO documentTableDAO, 
@@ -155,13 +155,13 @@ public class TrainWeka {
                         .collect(Collectors.toList());
 
         // Feature 0,1,2: The similarity between entity text and object alias
-        List<Double> textVSalias = FeaturesComputeValue.EntityTextAndObjectAlias(e.getText(), aliases);       
+        List<Double> textVSalias = FeaturesComputeValue.entityTextAndObjectAlias(e.getText(), aliases);       
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(0), textVSalias.get(0)); // highest
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(1), textVSalias.get(1)); // lowest
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(2), textVSalias.get(2)); // average
 
         // Feature 3: The type comparison
-        double typeCom = FeaturesComputeValue.EntityTypeAndObjectType(e.getType(), obj.getObjectType().getId());
+        double typeCom = FeaturesComputeValue.entityTypeAndObjectType(e.getType(), obj.getObjectType().getId());
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(3), typeCom);
 
         // Feature 4: If an object is the root of joined objects, the chance for root is higher
@@ -199,15 +199,15 @@ public class TrainWeka {
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(8), enDocs);
         
         // Feature 9: Number of share documents between the entity and object
-        double enShareDocs = FeaturesComputeValue.DocumentsShare(entityDocumentList, documentList2);
+        double enShareDocs = FeaturesComputeValue.documentsOccurrenceShare(entityDocumentList, documentList2);
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(9), enShareDocs);
         
         // Feature 10: Number of documents having both entity and object neighbor 
-        double docsHave = FeaturesComputeValue.DocumentsHaveObjects(entityDocumentList, neighborsList, documentTableDAO);
+        double docsHave = FeaturesComputeValue.documentsHaveObjects(entityDocumentList, neighborsList, documentTableDAO);
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(10), docsHave);
         
         // Feature 11: Number of neighbors happening to be in the same document with the entity
-        double objectIn = FeaturesComputeValue.ObjectsInDocuments(entityDocumentList, neighborsList, documentTableDAO);
+        double objectIn = FeaturesComputeValue.objectsInDocuments(entityDocumentList, neighborsList, documentTableDAO);
         thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(11), objectIn);
         
         // The class
@@ -223,7 +223,7 @@ public class TrainWeka {
      * @param target
      * @return 
      */    
-    public Instance CreateInstanceFromList(List<Double> attributes, String target){
+    public Instance createInstanceFromList(List<Double> attributes, String target){
         Instance thisInstance = new Instance(attributes.size() + 1);
         for(int attID = 0; attID < attributes.size(); attID++) {
             thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(attID), attributes.get(attID));
@@ -238,7 +238,7 @@ public class TrainWeka {
      * @param size
      * @return an instance
      */
-    public Instance CreateInstanceFromArray(double[] attributes, String target, int size){
+    public Instance createInstanceFromArray(double[] attributes, String target, int size){
         Instance thisInstance = new Instance(size);
         for(int attID = 0; attID < size -1 ; attID++) {
             thisInstance.setValue((Attribute)fvWekaAttributes.elementAt(attID), attributes[attID]);
@@ -251,9 +251,9 @@ public class TrainWeka {
      * Create a static artificial instance to make sure the training dataset never empty
      * @return an instance
      */
-    public Instance CreateArtificialInstance(){
+    public Instance createArtificialInstance(){
         double[] attributes = new double[]{0, 10, 0.5, 1, 1, 1, 1, 1, 1, 1, 2, 3};
-        return CreateInstanceFromArray(attributes, "positive", 13);
+        return createInstanceFromArray(attributes, "positive", 13);
     }
     
 }

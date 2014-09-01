@@ -16,17 +16,17 @@ public class FeaturesComputeTest {
     @Test
     public void testLevenshteinDistance() {
         
-        double perfect = FeaturesComputeValue.LevenshteinDistance("xxxxx", "xxxxx");
+        double perfect = FeaturesComputeValue.levenshteinDistance("xxxxx", "xxxxx");
         assertTrue("Two exact string has the difference 0", perfect == 0);
         
         String entityText = "John Jr.";
         String objectAlias = "John";
-        double diff = FeaturesComputeValue.LevenshteinDistance(entityText, objectAlias);
+        double diff = FeaturesComputeValue.levenshteinDistance(entityText, objectAlias);
         boolean check = (diff > 0);
         assertTrue("The similarity is greater than 0", check);
         
         String entityText2 = "Mary Summer";
-        double diff2 = FeaturesComputeValue.LevenshteinDistance(entityText2, objectAlias);
+        double diff2 = FeaturesComputeValue.levenshteinDistance(entityText2, objectAlias);
         boolean check3 = (diff2 > 10);
         assertTrue("John vs Mary Summer are different", check3);        
         boolean check2 = (diff < diff2);
@@ -40,12 +40,12 @@ public class FeaturesComputeTest {
     public void testEntityTypeAndObjectType() {
         long entityType = 1;
         long objectType = 1;
-        double comp = FeaturesComputeValue.EntityTypeAndObjectType(entityType, objectType);
+        double comp = FeaturesComputeValue.entityTypeAndObjectType(entityType, objectType);
         boolean check = (comp == 1);
         assertTrue("Two types are the same", check);
         
         long objectType2 = 12;
-        double comp2 = FeaturesComputeValue.EntityTypeAndObjectType(entityType, objectType2);
+        double comp2 = FeaturesComputeValue.entityTypeAndObjectType(entityType, objectType2);
         boolean check2 = (comp2 == 0);
         assertTrue("Two types are different", check2);
         

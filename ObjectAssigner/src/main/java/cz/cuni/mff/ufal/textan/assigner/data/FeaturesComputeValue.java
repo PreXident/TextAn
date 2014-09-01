@@ -22,7 +22,7 @@ public class FeaturesComputeValue {
      * @param objectString object alias
      * @return Levenshtein distance
      */
-    public static double LevenshteinDistance(String entityString, String objectString) {
+    public static double levenshteinDistance(String entityString, String objectString) {
         //JaroWinkler algorithm = new JaroWinkler();
         //return algorithm.getSimilarity(stringA, stringB);
         return SimpleLevenshtein.getStringDistance( entityString, objectString);
@@ -34,13 +34,13 @@ public class FeaturesComputeValue {
      * @param aliases list of object aliases
      * @return an array of three double values
      */
-    public static List<Double> EntityTextAndObjectAlias(String entityText, List<String> aliases) {
+    public static List<Double> entityTextAndObjectAlias(String entityText, List<String> aliases) {
         double highestSim = 0;
         double lowestSim = 1000;
         double sum = 0;
         double number = 0;
         for (String alias : aliases) {
-            double sim = LevenshteinDistance(entityText, alias);
+            double sim = levenshteinDistance(entityText, alias);
             if (sim > highestSim) {
                 highestSim = sim;
             }
@@ -64,7 +64,7 @@ public class FeaturesComputeValue {
      * @param oType object type id
      * @return 1 if they are the same, 0 otherwise
      */
-    public static double EntityTypeAndObjectType(long eType, long oType) {
+    public static double entityTypeAndObjectType(long eType, long oType) {
         if(eType == oType) {
             return 1;
         }
@@ -90,7 +90,7 @@ public class FeaturesComputeValue {
      * @param doc2
      * @return
      */
-    public static double DocumentsShare(List<DocumentTable> doc1, List<DocumentTable> doc2) {
+    public static double documentsOccurrenceShare(List<DocumentTable> doc1, List<DocumentTable> doc2) {
         double count = 0;
         // Iterate through document list
         for(DocumentTable dt:doc1) {
@@ -108,7 +108,7 @@ public class FeaturesComputeValue {
      * @param documentTableDAO
     * @return
     */
-    public static double DocumentsHaveObjects(List<DocumentTable> doc, List<ObjectTable> obj, IDocumentTableDAO documentTableDAO) {
+    public static double documentsHaveObjects(List<DocumentTable> doc, List<ObjectTable> obj, IDocumentTableDAO documentTableDAO) {
         double count = 0;
         // Iterate through objects list
         for(ObjectTable o: obj) {
@@ -117,7 +117,7 @@ public class FeaturesComputeValue {
             for(Pair<DocumentTable,Integer> p:pairDocs) {
                 lst.add(p.getFirst());
             }
-            count +=  DocumentsShare(doc,lst);
+            count +=  documentsOccurrenceShare(doc,lst);
         }
         return count;
     }
@@ -129,7 +129,7 @@ public class FeaturesComputeValue {
      * @param documentTableDAO
     * @return
     */
-    public static double ObjectsInDocuments(List<DocumentTable> doc, List<ObjectTable> obj, IDocumentTableDAO documentTableDAO) {
+    public static double objectsInDocuments(List<DocumentTable> doc, List<ObjectTable> obj, IDocumentTableDAO documentTableDAO) {
         double count = 0;
         // Iterate through objects list
         for(ObjectTable o: obj) {
@@ -138,7 +138,7 @@ public class FeaturesComputeValue {
             for(Pair<DocumentTable,Integer> p:pairDocs) {
                 lst.add(p.getFirst());
             }
-            if(DocumentsShare(doc,lst) > 0) {
+            if(documentsOccurrenceShare(doc,lst) > 0) {
                 count += 1;
             }
         }
