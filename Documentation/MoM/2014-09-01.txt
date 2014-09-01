@@ -8,12 +8,12 @@ HWK
  - Kuba. add better database schema (pilot)
  - Kuba, rework intro to work on project
  - Kuba, extend section about the named entity recognizer architecture
+ - Kuba, write intorduction in both user and developer documentation
  - Adam, communication
  - Adam, architecture overview 
  - Petr, team
  - Petr, usecase
  - Petr, Redraw textpro diagram
- - Kuba, write intorduction in both user and developer documentation
  - Venca, rework all your parts in documentations
  - all, read whole documentations... at least once
  - all, run whole system, at least once
