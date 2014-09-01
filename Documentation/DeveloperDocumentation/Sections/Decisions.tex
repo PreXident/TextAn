@@ -132,7 +132,20 @@ The basic pipeline steps are the following:
 
 \subsection{Stateless or Stateful Communication}
 
-\comment{Adam}{Something needs to be here!}
+Because part of processing is done on the server side and part in the client, it
+is needed to somehow handle a state of processing. This problem is mostly solved
+by sessions on server side. This approach has one disadvantage which is timeout.
+Sessions cannot be easily implemented without any timeout due to their life cycle.
+
+The main problem with sessions in \textan{} is that documents are processed mainly
+by human users which can take a long time, especially when an unfinished processing
+of a document can be saved on the client side. Due to this problem, any timeout
+cannot be used.
+
+We decide to solve this problem by storing whole state on client side when it is
+necessary. It allows that the server is stateless. This approach has also some
+disadvantages, for example that bigger messages are transferred over a network.
+%Another big disadvantage is security.
 
 \subsection{Database}
 
