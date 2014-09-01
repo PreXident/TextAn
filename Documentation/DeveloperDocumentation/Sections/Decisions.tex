@@ -36,18 +36,18 @@ can be empty set of training data at the deployment time.
 
 \subsection{System Decomposition}
 
-\comment{Petr}{Describe why recognition is on the server, why web server is embedded etc.}
+Recently the popularity of server-client architecture has been on the rise.
+One of the reasons it suits our needs too is that machine learning demands non-trivial
+computation power and needs large sets of training data from the database. A placement of recognizers
+to the server side is not only because of an increase performance, but also makes
+re-learning of models for recognizers transparent for users. This design also enables
+switching the client application if default \textan{} client does not provide all
+required features, user experience or if some integration to a legacy system is needed.
+The next advantage of this is a simple sharing of data between users.
 
-\comment{Adam}{Check if this makes any sense}
-
-\comment{Adam}{Also should the reasoning about webservices be here?}
-
-Recently the popularity of server-client architecture has been on the rise. One
-of the reasons it suits our needs too is that machine learning demands non-
-trivial computation power, so end-users' working stations do not need expensive
-hardware. This design also enables switching the client application if default
-\textan{} client does not provide all required features, user experience or if
-some integration to a legacy system is needed.
+We also decided to make the server side as one independent executable module (except database),
+because the application doesn't need any power of an application server. This decision
+also the system easy to deploy to any supported operational system.
 
 \subsection{Report Processing as a Pipeline}
 \label{ssec:ReportPipeline}
