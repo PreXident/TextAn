@@ -365,7 +365,20 @@ default value of 0 denoting only the word in question.
 List of commonly used feature templates follows. Note that it is probably not
 exhaustive (see the sources in the features directory).
 
-\comment{Ondrej}{It is necessary to add an example, ideally specific for police domain}
+Example of gazetteer file with months:\\
+leden\\
+únor\\
+březen\\
+duben\\
+květen\\
+červen\\
+červenec\\
+srpen\\
+září\\
+říjen\\
+listopad\\
+prosinec
+
 
 \paragraph{stages}
 The number of stages performed during recognition. Common values are either 1 or
@@ -407,9 +420,9 @@ is present, the accuracy of the heldout data classification is printed during
 training. The heldout data is not used in any other way.
 
 \paragraph{waiting\_time}
-Maximum time for learning new model (only when learning is blocking - model doesn't exist)
-
-\comment{Ondrej}{I do not understand, or I do, but common/unknowing reader would not}
+Because learning is iterative and time-consuming process it took some time.
+This parameter specify, how long should program wait for new model training before it report an error.
+If there is some existing model, NameTag utilizes a previous model until a new model is learned and waiting time is disregarded.
 
 \paragraph{default\_training\_data\_file}
 Sample file with initial training data, which is used before training data
@@ -446,13 +459,14 @@ The term information (personal name, geographic name, ...) specified in lemma co
 are used as features.
 
 \paragraph{brown\_clusters}
-Size of window foe Brown clusters \comment{Ondrej}{reference to book/article}.
+Size of window for Brown clusters.
+Brown clustering is a form of hierarchical of words based on the context in which they occur in documents. \comment{Kuba}{ad reference to http://people.csail.mit.edu/pliang/papers/meng-thesis.pdf}.
 
 \paragraph{brown\_clusters\_file}
 Use Brown clusters found in the specified file. An optional list of lengths of
 cluster prefixes to be used in addition to the full Brown cluster can be specified.
 Each line of the Brown clusters file must contain two tab-separated columns,
-the first of which is the Brown cluster label and the second is the raw lemma \comment{Ondrej}{What is it?}.
+the first of which is the Brown cluster label and the second is the raw lemma.
 
 \paragraph{gazetteers}
 Size of window when gazetteers are used (0 when are not used).
@@ -489,5 +503,41 @@ entity),
 entity than the previous word (albeit with the same type).
 \end{itemize}
 
-\comment[Kuba]{Adam}{May add an example here? I am still not sure about the
-format of I-type and B-type}
+For example sentence ``Tři a půl hodiny po zápase Drnovice Bohdaneč (3:1) strávil domácí Karel Majoroš a hostující Ota Pavelka na dopingové kontrole.`` \\
+
+Tři	\_\\
+a	\_\\
+půl	\_\\
+hodiny	\_\\
+po	\_\\
+zápase	\_\\
+Drnovice	I-4\\
+Bohdaneč	B-4\\
+(	\_\\
+3	\_\\
+:	\_\\
+1	\_\\
+)	\_\\
+strávili	\_\\
+domácí	\_\\
+Karel	I-1\\
+Majoroš	I-1\\
+a	\_\\
+hostující\\
+Oto	I-1	\_\\
+Pavelka	I-1\\
+na	\_\\
+dopingové	\_\\
+kontrole	\_\\
+,	\_\\
+než	\_\\
+se	\_\\
+jim	\_\\
+podařilo	\_\\
+odevzdat	\_\\
+moč	\_\\
+.	\_\\
+
+Because ``Drnovice`` and ``Bohdaneč`` are same type of entity (4) but are not part of one entity, the second one must be note as {\it B-type}.
+Other example is ``Karel Majoroš`` and ``Oto Pavelka``, where name and surname are parts of same entity - person, so they are joined together with {\it I-type}.
+If surnames will be noted as {\it B-type}, ``Oto`` and ``Pavelka`` will be understood as two entities.

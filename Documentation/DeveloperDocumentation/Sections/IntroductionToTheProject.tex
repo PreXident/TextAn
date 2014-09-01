@@ -5,14 +5,16 @@ into introduction}
 
 \comment{Adam}{add reference to Appendix \ref{app:DVD}}
 
-\subsection{Motivation} In today's world, there is a large amount of unstructured written sources that contain structured information. An example are police reports. They contain information entities (names, addresses, phone numbers, weapons, drugs, etc..) and the relationships between them. This information must be transformed into representation which could be easily read by computers, for example, is written in the database and assign it to an already existing objects if they have the same meaning. This process is currently made manually, which is very time consuming. Similarly, same time-consuming processing documents can be found in other institutions or companies.
-
+\paragraph{Motivation} In today's world, there is a large amount of unstructured written sources that contain structured information. An example are police reports. They contain information entities (names, addresses, phone numbers, weapons, drugs, etc..) and the relationships between them. This information must be transformed into representation which could be easily read by computers, for example, is written in the database and assign it to an already existing objects if they have the same meaning. This process is currently made manually, which is very time consuming. Similarly, same time-consuming processing documents can be found in other institutions or companies. Such problem of extracting structure information out of general documents has recently gained attention from both research and industry.\\
+\\
 This is the topic of our software project, called Text Analyser (TextAn).
-
-TextAn is a client-server application for analysing text.
-It is intended to manage documents and exploit the information contained in them.
-Given a collection of written texts (typically police reports) in Czech language,
-TextAn automatically breaks down the unstructured text to exploit the structured information. 
+TextAn is a client-server application for text analysis.
+It is devoted to build a pleasant and effective tool for extracting structured data in Czech police reports. 
+Our goal is to provide an effective extraction of structured data with user involvement.
+It consists of three main contributions.
+First, an efficient design of database for structured data is implemented.
+Second, we aim to maximize the accuracy and performance of automatic detection of entities.
+Third, TextAn is designed to provide a friendly method for users to confirm or adjust the system's suggestions.
 
 Furthermore, the application allows users to add/remove/adjust the structured information.
 They can change the relations, correct mistakes or provide further information.
@@ -34,36 +36,3 @@ The developer team consists of 5 students:
 \item Václav Pernička - databse
 \item Jakub Vlček - NameTag and MorphoDiTa integration
 \end{itemize}
-
-\comment[Petr]{Tam}{please assemble two of my introductions}
-Status: An even dummer introduction - Text Analyser
-
-TextAn (Text Analyser)
-
-Generally, there is a huge amount of unstructured written texts which contain structure information.
-It ranges from newspapers, medical bills to even personal letters.
-In every written document, there are entities like names, address, dates, etc.
-These entities do not stand alone, there are relationships between them.
-The relationships could facilitate the problem of assigning an entity from new text to an existing objects already stored in the system.
-Such problem of extracting structure information out of general documents has recently gained attention from both research and industry.
-
-%Czech Police reports are typical example of unstructured sources which contain structured information.
-%They are the descriptions with regard to a specific person, their profile and actions, criminal records and so on.
-%Such information is by no doubt the most valuable data in the whole document.
-%Currently, the extracting is done manually.
-%In other words, there is a person who reads through all documents,
-%looks at the database and match the description in the document with the existing data.
-%This is not-surprisingly very time-consuming and labour-intensive. 
-
-Project TextAn is devoted to build a pleasant and effective tool for extracting structured data in Czech police reports. 
-Our goal is to provide an effective extraction of structured data with user involvement.
-It consists of three main contributions.
-\comment[Venca]{Adam}{is it efficient? :-D}
-\comment{Venca}{Not at all}
-First, an efficient design of database for structured data is implemented.
-Second, we aim to maximize the performance of automatic detection of entities.
-\comment{Tam}{This may be wrong. Think how to make it clear}
-\comment{Adam}{Seems ok to me.}
-Third, TextAn is designed to provide a friendly method for users to confirm or adjust the system's suggestions.
-At first, the second task may achieve lown recognition accuracy,
-but with the semi-automatic approach the user input together with the magic of machine learning could improve the performance significantly. 
