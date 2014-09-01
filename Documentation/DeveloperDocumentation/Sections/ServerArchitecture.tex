@@ -25,12 +25,12 @@ web services.
 
 Jetty is used as the servlet container component. It is a powerful and scalable
 component which supports embedding into other applications.
-\comment[Petr]{Adam}{What do the following sentences mean?}
-It also can be run independently on the rest of the applications. This is an
-important feature, which allows that only web service implementations live in a
-web context. In other words, there can be other implementations over the rest of
-the application at same time, e.g. from input command line. This component also
-provides security of \textan{} server over SSL.
+It also can be run independently on the rest of the application. This is an
+important feature, which allows that only web service implementations live in the
+web context. In other words, there can be at the same time other components that
+access the service layer without usage of the web service layer and still utilize
+the full potential of the system. This component also provides security of \textan
+server over SSL.
 
 Web service itself is implemented with Apache CXF framework. The bigger part of
 the implementation is generated from WSDL files and XML Schema files using the
@@ -197,11 +197,9 @@ meaning of all database tables and columns.
 columns for the date of  creation \emph{(added)}, the date for last change and
 the date when the document has been processed.
 
-\paragraph{Object} Object stands for the entity e.g. Josef Novák or a specific
-address.  The table has only one column with content \emph{data} which is used
-to describe the object \comment[Venca]{Adam}{Is it even used somewhere?} \comment{Petr}{No, only in tests.}. Apart
-from that, it contains reference to \emph{ObjectType} table to determine what
-type the object is.
+\paragraph{Object} Records in this table represent objects, e.g. concrete person
+called Josef Novák or a specific address.  It contains reference to
+\emph{ObjectType} table to determine what type the object is.
 
 \paragraph{Object Type} The \emph{objecttype} table is used to describe if the
 object is a human or an address. It has only one meaningful column with name of
@@ -339,8 +337,7 @@ high performance from a huge database. The problem of ``matching potential
 objects to an entity'' is reformulated to fit the definition of a classification
 machine learning. Each object is paired with the entity. Then the pair is
 classified as \emph{positive} if the object is potentially matched the entity.
-On the contrary, the pair is classified as \emph{negative} \comment[Tam]{Adam}
-{I am not sure what the previous sentence means}. It becomes the
+Otherwise, the pair is classified as \emph{negative}. It becomes the
 problem of binary classification.
 
 
@@ -378,11 +375,11 @@ between an object with one alias and object with hundred aliases.
 \textit{joined} object should have higher priority than non-root object.
 \item The number of neighbors that the object has. This feature takes into
 consideration the number of relations that the object has.
-\item Document occurrences that the object appears. \comment[Tam]{Adam}{I do not understand}
-\item Document occurrences that the entity appears. \comment[Tam]{Adam}{I do not understand}
-\item Number of documents where the object and the entity appear together.
-\item Number of documents that the entity and neighbors of the object appear together.
-\item Number of neighbors of the objects that happen to be in the same document with the entity.
+\item The number of Document occurrences that the object appears.
+\item The number of Document occurrences that the entity appears.
+\item The number of documents where the object and the entity appear together.
+\item The number of documents that the entity and neighbors of the object appear together.
+\item The number of neighbors of the objects that happen to be in the same document with the entity.
 \end{itemize}
 
 
