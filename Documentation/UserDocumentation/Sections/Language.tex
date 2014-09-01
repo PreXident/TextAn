@@ -1,16 +1,16 @@
 % Section: Language
 
-Although \textan{} is aimed particularly on the Czech language and is preset for
-it by default, it is possible to configure \textan{} for other languages,
-especially English. However only one language at a time is supported. There are
+Although \textan{} particularly aim at processing Czech language and is preset for
+Czech language by default, it is possible to configure \textan{} for other languages,
+especially English. However, \textit{} supports only one language at a time. There are
 two areas which depend on the selected language: named entity recognition and full
-text searching. Both are placed in the server application along with other
-business logic.
+text searching. Both of them are placed in the server application along with other
+business logics.
 
 \comment[Kuba]{Petr}{Here should be some summary about changing language in nametag}
-{\it NameTag} is implemented to support more languages, so if you want use {\it
-NameTag} in a different language, you must change property {\it ner\_identifier}
-affecting it, specify appropriate tagger for required language and provide
+The first thing needed to be re-configured for new language is {\it NameTag}. 
+You must change property {\it ner\_identifier}
+which affects it, specify appropriate tagger and provide
 training data in desired language. See Section \ref{sssec:NametagSettings} for
 detailed description.
 
