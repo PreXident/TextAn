@@ -1,0 +1,23 @@
+All here!
+
+
+HWK
+ - Petr, Venca: JavaDoc
+ - Kuba: Ondrej's comments in learning properties
+ - Kuba, Merge introduction
+ - Kuba. add better database schema (pilot)
+ - Kuba, rework intro to work on project
+ - Kuba, extend section about the named entity recognizer architecture
+ - Adam, communication
+ - Adam, architecture overview 
+ - Petr, team
+ - Petr, usecase
+ - Petr, Redraw textpro diagram
+ - Kuba, write intorduction in both user and developer documentation
+ - Venca, rework all your parts in documentations
+ - all, read whole documentations... at least once
+ - all, run whole system, at least once
+ 
+ - finish as much as possible till today 22:00
+ 
+ Next meeting on Wednesday at 11:00 am.
