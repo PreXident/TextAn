@@ -1,16 +1,25 @@
+This chapter contains the description of the development and our experiences from
+the project.
+
+\section{Team}
+\comment[Petr]{Petr}{Introduce team members and their work.}
+
+\section{Work on the Project}
+
 %This section contains work progress
 %In this section is described work progress in each iteration.
-This section provides details of the work progress in each iteration, it could be used as development diary.
+This section provides details of the work progress in each iteration, it could be
+used as development diary.
 \comment[Petr]{Tam}{Approved? The whole section need to revised again (and again)}
 
 \subsection{Initialization}
 TextAn team visited policeman plk. Ing. Jan Hořínek, who introduced us his work and showed
 %us existing inadequate software whose extension we should prepare. Basis of the
-us the existing inadequate software. We were given the task of preparing an extension. Basis of the
-project was to police reports - recognize entities and match them
-to existing objects in the database. We were advised to use Webservices for an easy integration of 
-the project to the current system. He promised us models and
-example data inputs and expected outputs. 
+us the existing inadequate software. We were given the task of preparing an extension.
+Basis of the project was to police reports - recognize entities and match them
+to existing objects in the database. We were advised to use Webservices for
+an easy integration of the project to the current system. He promised us models
+and example data inputs and expected outputs. 
 
 We made some decisions and requirements for each component:
 
@@ -57,7 +66,8 @@ We decided, that newly added items will be preferred over recognized ones
 \comment[Petr]{Tam}{Need to revised again} 
  
 \subsection{Design \& technologies}
-In November, we mainly chose and tested technologies which we could use. New member Duc Tam Hoang joined \textan{},. His specialization is
+In November, we mainly chose and tested technologies which we could use. New member
+Duc Tam Hoang joined \textan{},. His specialization is
 linguistic and machine learning so he will be really useful for our project.
 Because of Tam's limitation in Czech, the document language was changed to English.
 His main task will be NER and entity-object matching. We were trying different
@@ -78,8 +88,10 @@ Candidates were JavaML and Weka. We have tested them and at first, we chose
 JavaML, because it provides more machine learning algorithms (some of them uses
 WEKA library) and because of WEKA problem - WEKA  was created for teaching purposes so
 it's performance is not as good as JavaML.
-Than we found, that we don't need these functions and because JavaML seems no longer be supported and that
-new version of WEKA was released, so we choose WEKA, because it's a live project and its functionality is enough for us.
+Than we found, that we don't need these functions and because JavaML seems no longer
+be supported and that
+new version of WEKA was released, so we choose WEKA, because it's a live project
+and its functionality is enough for us.
 
 There were two possible server architectures: standalone or embedded webserver
 (Tomcat or Jetty). We considered usage of some technologies like Spring, CXF and
@@ -91,26 +103,47 @@ discussed a lot of APIs (we need them for testing). For testing purposes, we mus
 provide some mock objects, so everyone implemented mock of his component.
 NameTag was released, so we tried to get acquaintance. We met Milan Straka, the author of NameTag.
 He presented and helped us get familiar with NameTag. We started stared testing it.
-There were problems with compiling and Java bindings, which took more time than we expected. Problem was missing documentation.
-We connected client and database to server, implemented database data browsing on client (mainly graphs viewing with JUNG).
+There were problems with compiling and Java bindings, which took more time than 
+we expected. Problem was missing documentation.
+We connected client and database to server, implemented database data browsing
+on client (mainly graphs viewing with JUNG).
 Tam made prototype of object matcher, but it was not integrated to server.
 
 \subsection{Main coding}
-When we made a prototype of whole program, everyone started improving his component in his own branch.
-\paragraph{Server} Server was debugged and made reliable. It starts using WSDLs so there were lot of work on server and client parts. Result was, that Java code is now generated automatically. Connection to database was reworked to use Spring Beans.
-\paragraph{Named entity recognizer} NameTag was fully integrated to server. We started editing it for our purposes (using our structures and types). There were problems with gazetteers files and translating entities from NameTag to Textan.
-After receiving information that NameTag will not support JNI to training parts, we researching how to launch training binaries from Java.
-\paragraph{Client} Client was reworked to pipeline as we need, we improved graph viewing to support oriented edges.
-\paragraph{Object matcher} TextPro (as we called entity-object matching) has first prototype. It uses a simple ranking method, which resulted in a poor performance. 
-\paragraph{Database} Database has new layer with DAOs, so no more need to access database directly.
-After this iteration, we released first alpha version of TextAn.
+When we made a prototype of whole program, everyone started improving his component
+in his own branch.
+\paragraph{Server} Server was debugged and made reliable. It starts using WSDLs 
+so there were lot of work on server and client parts. Result was, that Java code
+ is now generated automatically. Connection to database was reworked to use Spring Beans.
+\paragraph{Named entity recognizer} NameTag was fully integrated to server. We 
+started editing it for our purposes (using our structures and types). There were
+problems with gazetteers files and translating entities from NameTag to Textan.
+After receiving information that NameTag will not support JNI to training parts,
+ we researching how to launch training binaries from Java.
+\paragraph{Client} Client was reworked to pipeline as we need, we improved graph
+ viewing to support oriented edges.
+\paragraph{Object matcher} TextPro (as we called entity-object matching) has first
+ prototype. It uses a simple ranking method, which resulted in a poor performance. 
+\paragraph{Database} Database has new layer with DAOs, so no more need to access
+database directly. After this iteration, we released first alpha version of TextAn.
 
 \subsection{Improving}
-Alpha version of NameTag learning was implemented. There were few problems with portability because of different architectures and operating systems. After implementing special functions in database, we made automatic data extraction for learning. For this purpose, new function to server was added - commands. It is the implementation of design pattern Command, which started data generation and model training after new report insertion. Models managing implemented due to bigger size (deleting old ones) 
-Database support logging. It was done through interceptors - triggers in Hibernate layer.
-In client, there were lots of small fixes in GUI, problems were with portability between Windows and Unix-like systems, where ControlsFX and JavaFX behave differently.
-TextPro received many new features. We integrated Morphodita because we needed its tagger for new features.
+Alpha version of NameTag learning was implemented. There were few problems with
+portability because of different architectures and operating systems. After
+implementing special functions in database, we made automatic data extraction for
+learning. For this purpose, new function to server was added - commands. It is
+the implementation of design pattern Command, which started data generation and
+model training after new report insertion. Models managing implemented due to
+bigger size (deleting old ones) Database support logging. It was done through
+interceptors - triggers in Hibernate layer. In client, there were lots of small
+fixes in GUI, problems were with portability between Windows and Unix-like systems,
+where ControlsFX and JavaFX behave differently. TextPro received many new features.
+We integrated Morphodita because we needed its tagger for new features.
 Settings through properties files are now supported in each component.
 
 \subsection{Bugfixing \& documentation}
-For final testing, we created server hosted by university with address Ttextan.ms.mff.cuni.cz. Here we always have the newest version from master branch.
+For final testing, we created server hosted by university with address textan.ms.mff.cuni.cz.
+Here we always have the newest version from master branch.
+
+\section{Lessons Learned}
+\comment[all]{Adam}{Add your experience with the project}
