@@ -13,20 +13,22 @@ are the \textan{} server and \textan{} client which communicate via W3C web serv
 
 \section{Communication}
 \label{sec:Communication}
-\comment{Petr}{First paragraph should be rewrited}
+\comment[Petr]{Adam}{First paragraph should be proof-read}
 
-The communication between the client and the server is stateless, because the processing
-of a document by a human user may take a very long time, especially because of the saving
-of documents during processing in the client. Sessions cannot be used on
-the server side, because they can die due to timeout before end of the processing.
-For this reason, the state of a processing is placed on client side and is transferred
-with each request in situations where it is necessary.
+The \textan{} server exposes two webservice interfaces for the client to use -
+\emph{DataProvider} and \emph{DocumentProcessor}. As the name suggests,
+\emph{DataProvider} offers operations for manipulating data in the database,
+for example \emph{getObject}, \emph{mergeObjects} and \emph{updateDocument}.
+The \emph{DocumentProcessor} offers all operatations related to the processing,
+such as \emph{getEditingTicket}, \emph{getEntitiesFromString} and
+\emph{saveProcessedDocumentFromString}.
 
-Usage of webservice \emph{DataProvider} is straightforward, its operations are
-completely independent and are intended for viewing and manipulating
-the database.
+For more details, consult the WSDL descriptions and Javadoc of the server
+implementation.
 
-The service \emph{DocumentProcessor} is more demanding and needs its operations
+The usage of webservice \emph{DataProvider} is straightforward, its operations
+are completely independent. On the other hand, the service
+\emph{DocumentProcessor} is more demanding and needs its operations
 called in the specific order to achieve proper recognition (see Figure
 \ref{fig:ClientServerCommunication}). First of all, the client needs to obtain
 the ticket which stores information about processing and is needed for all
@@ -69,9 +71,6 @@ If the document stored in the database has been processed by another user while
 being processed by a local user, the subsequent call of processing operation
 returns fault \emph{documentAlreadyProcessedException} and the processing must
 end as no report can be processed multiple times.
-
-For more details, consult the WSDL descriptions and Javadoc of the server
-implementation.
 
 \begin{figure}[!htb]
         \centering
