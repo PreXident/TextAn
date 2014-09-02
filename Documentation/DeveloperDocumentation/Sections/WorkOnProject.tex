@@ -33,6 +33,8 @@ to existing objects in the database. We were advised to use Webservices for
 an easy integration of the project to the current system. He promised us models
 and example data inputs and expected outputs. 
 
+\comment{Petr}{Mention about that we generalized the problem}
+
 We made some decisions and requirements for each component:
 
 \paragraph{Database}
@@ -78,6 +80,7 @@ We decided, that newly added items will be preferred over recognized ones
 \comment[Petr]{Tam}{Need to revised again} 
  
 \subsection{Design \& Technologies}
+\comment{Remove the month, in November textan didn't exists :D}
 In November, we mainly chose and tested technologies which we could use. New member
 Duc Tam Hoang joined \textan{},. His specialization is
 linguistic and machine learning so he will be really useful for our project.
@@ -106,7 +109,7 @@ new version of WEKA was released, so we choose WEKA, because it's a live project
 and its functionality is enough for us.
 
 There were two possible server architectures: standalone or embedded webserver
-(Tomcat or Jetty). We considered usage of some technologies like Spring, CXF and
+(Tomcat or Jetty) \comment{Petr}{Add final the choice}. We considered usage of some technologies like Spring, CXF and
 Hibernate for database layer.
 
 \subsection{Prototyping \& Interconnecting}
@@ -154,6 +157,7 @@ We integrated Morphodita because we needed its tagger for new features.
 Settings through properties files are now supported in each component.
 
 \subsection{Bugfixing \& Documentation}
+\comment{Petr}{Add more about testing! E.G. unit tests}
 For final testing, we created server hosted by Charles university with address textan.ms.mff.cuni.cz.
 Here we always keep the newest version from master branch.
 
