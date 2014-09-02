@@ -26,7 +26,7 @@ how can you ask for them?
 It implies at least usage of some graph query language and creation of some
 graph indexing over the data. Or in better case usage of different data storage. 
 
-\section{Underlaying Database}
+\section{Underlying Database}
 In the case that graph operations become more important, it will be better to
 use a different data store, for example a NoSql database based on RDF or a graph
 database. There are many implementations of these databases, both commercial and
@@ -62,7 +62,7 @@ the right method for processing. It can be solved by multiple models for
 recognizers, one for each language, and multiple analyzers for the searching and
 the language will have to be defined explicitly.
 
-\section{Czech Full Text Search}
+\section{Better Czech Full Text Search}
 
 Although Apache Lucene that is used for the text indexing in \textan is very
 powerful tool, it is results are highly depend on a natural language analysis.
@@ -71,15 +71,31 @@ for Czech language, but it isn't very good. We tried to implement a better analy
 based lemmatization via the MorphoDiTa tool (see Section \ref{sec:UsedTechnologies}),
 but it uses different approach then the Lucene, so it remained unfinished.
 
-\section{Client}
+\section{Client Improvements}
 The \textan{} client could be improved in many ways as any graphic application.
-Some examples:
+This section contains a few examples that could improve user experience and
+efficiency.
 
-\begin{itemize}
-	\item Filtering in documents could display exact location of matched text
-	\item There could be a mechanism to localize object and relation types and
-	relation roles
-	\item Inner windows could use some layout framework
-	\item Inner windows could transform to Outer stages and vice-versa on the
-	run
-\end{itemize}
+When users filter documents by full text, only the list of documents matching
+the criteria is displayed. No information about the position of the match etc.
+is provided. Lucene offers such functionality, so if webservice interface is
+extended, the client could be altered to display exact location of the matched
+text.
+
+Although full localization of the application is implemented, the object and
+relation type names are directly fetched from the database. This could be a
+major issue if feature ``multiple languages at once'' is implemented as it would
+be required to use names understood by all users. Hence the mechanism for
+localization of object and relation types could really improved the chances of
+success in international multilingual environment.
+
+The inner windows are only simple containers and do not have advanced layout
+possibilities that many operating system provides and users are used to.
+Therefore if more sophisticated layout framework is developed or external
+component proving such features is employed, the user experience and
+satisfaction could improve a lot.
+
+Despite the fact that users can choose whether they want to use inner windows
+or outer stages, there is no way to transform between them on the run. This is
+a feature that should not be hard to implement, but it could be used by some
+users.
