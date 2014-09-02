@@ -31,16 +31,16 @@ Model-View-Controller architecture.
 In the rest of the section the most important packages will be introduced and
 described.
 
-\section{Model - cz.cuni.mff.ufal.textan.core}
+\section{Model}
 
-Model classes can be found in this package. It contains mainly client side
-representation of object, entity, relation, document etc. (see Figure
-\ref{fig:CorePackage}). The most important class is \emph{Client} which is used
-for communication with the webservices. It also serves as a factory of
-\emph{ProcessReportPipeline} (see Figure \ref{sssec:ReportPipeline}). There are
-also \emph{SynchronizedDataProvider} and \emph{SynchronizedDocumentProcessor} to
-provide synchronization for \emph{IDataProvider} and \emph{IDocumentProcessor}
-created by CXF.
+Model classes can be found in the package \emph{cz.cuni.mff.ufal.textan.core}.
+It contains mainly client side representation of object, entity, relation,
+document etc. (see Figure \ref{fig:CorePackage}). The most important class is
+\emph{Client} which is used for communication with the webservices. It also
+serves as a factory of \emph{ProcessReportPipeline} (see Figure
+\ref{sssec:ReportPipeline}). There are also \emph{SynchronizedDataProvider} and
+\emph{SynchronizedDocumentProcessor} to provide synchronization for
+\emph{IDataProvider} and \emph{IDocumentProcessor} created by CXF.
 
 Subpackages of the \emph{Core} package focus on individual client side tasks,
 like displaying graphs and processing reports in a pipeline.
@@ -109,14 +109,14 @@ mostly graph filtering which is done solely on the client side. See Figure
         \label{fig:Graph}
 \end{figure}
 
-\section{Controller and View - cz.cuni.mff.ufal.textan.gui}
+\section{Controller and View}
 
-This package and its subpackages contain controller classes and several view
-components that had to be customized to achieve specific behavior. A hierarchy
-of controllers has been developed, mostly for code reuse (see Figure
-\ref{fig:Controllers}). Controllers extensively use \emph{core} package. For
-similar reasons as controllers, also a hierarchy of inner windows has been
-developed (see Figure \ref{fig:Windows}).
+The package \emph{cz.cuni.mff.ufal.textan.gui} and its subpackages contain
+controller classes and several view components that had to be customized to
+achieve specific behavior. A hierarchy of controllers has been developed, mostly
+for code reuse (see Figure \ref{fig:Controllers}). Controllers extensively use
+\emph{core} package. For similar reasons as controllers, also a hierarchy of
+inner windows has been developed (see Figure \ref{fig:Windows}).
 
 \begin{figure}[!htb]
         \centering
@@ -148,3 +148,9 @@ workaround that copes with an inability of JavaFX to load css style sheets from
 \emph{String} which is needed for \emph{GraphViewController} to generate styles
 for coloring filter list checkboxes. For that reason custom url schema ``string''
 has been created and \emph{Handler} resolves it with strings registered to it.
+
+\subsection{cz.cuni.mff.ufal.textan.tui}
+
+This package contains classes intended for batch processing of reports fully
+automatically without any interventions of the users. This simple utility is run
+from command line and can process more documents parallelly.
