@@ -1,0 +1,28 @@
+\comment{Ondrej}{Half page with summary: what textan is, what is described in
+documentation, some of the most important extensions}
+
+\textan{} offers semi-automatical text recognition. It extracts entities from
+documents and assigns them to objects stored in the database. It utilizes existing
+solution \emph{nametag} and \emph{MorphoDiTa} to recognize named entities and own
+implementation of object to entity assignment, both powered by machine learning.
+Its functionality is easily accessible through SOAP based webservices described by
+WSDL, either through the provided client application or through a custom
+implementation offering additional features or integration to a legacy system.
+
+This documentation presents both functional and non-functional formal
+requirements and architecture designed to meet these requirements. Many third
+party libraries are utilized to make sure the best possible results are achieved.
+Developer documentation also lists the most important decisions made during the
+development effecting various parts of the project and overall overview of the
+development progress. The section Possible Future Extensions contains several
+major enhancements that could drastically improve either user experience with the
+application or overall outcome of the system. For example the support of multiple
+languages at once would make \textan{} suitable for usage in multilingual
+companies or international organizations that have to process documents in many
+different languages. The most important extension is however recognition of
+relations between objects that could eventually lead to fully automated
+processing of report without any kind of human intervention.
+
+Although not all optional requirements have been fullfilled, \textan{}
+resulted in a coherent solution meeting the goals stated in the specification
+that could be further enhanced in potential continuation of the projects.
