@@ -2,13 +2,16 @@
 This section contains all information needed by end users to successfully use
 the \textan{} client application. For instructions to actual run the client
 see Section \ref{sssec:StartClient}. \comment{Ondrej}{I do not understand what
-will be there, why chapter 2 and not sooner?}
+will be there, why chapter 2 and not sooner?} \comment{Adam}{The administrator
+needs to setup the user environment and tell the users which icon on their
+desktop they need to double click. Users know nothing about java nor operating
+systems...}
 
 \subsection{First Run}
 
 On the first run of \textan{} client, users are prompted to enter their username
 (see Figure \ref{fig:Login}, which is used by the system to identify the users.
-The login name is stored in settings and the login dialog is not shown again
+The login name is stored in the settings and the login dialog is not shown again
 in following runs. The name can be changed in settings (see Section
 \ref{ssec:Settings}). A valid name is required, i.e. not empty and not
 whitespace characters only. If users enter invalid login, a warning is displayed
@@ -206,7 +209,7 @@ the report processing has been interrupted.
 \label{sssec:ReportEdit}
 
 In this step users can edit the text of the report (see Figure
-\ref{fig:ReportEdit}. This step is followed by Edit Entities step (see Section
+\ref{fig:ReportEdit}). This step is followed by Edit Entities step (see Section
 \ref{sssec:EditEntities}).
 
 \begin{figure}[!htb]
@@ -315,14 +318,14 @@ to assign to the relation. Or you can drag the object from the report text and
 drop it to empty row or Add button to add new row. Dropping the object into the
 non empty row replaces the assigned object. Any string can be specified as
 a role. If any roles exist for the relation in the database, combobox with
-is displayed for the role column.
+them is displayed for the role column.
 
 Order column effects displaying arrows in the graph views. For binary
 relations the arrow points from object with negative order at object with
 nonnegative order. For relations with more than two objects assigned, arrows
 point from objects with negative order and at objects with positive odd order.
 
-After finishing relation editing, the document is stored to the database,
+After finishing relation editing, the document is stored into the database,
 unless some errors occur. In that case Error Step follows (see Section
 \ref{sssec:Errors}).
 
@@ -368,7 +371,7 @@ Section \ref{sssec:DocumentList}).
 
 This window contains list of documents matching filter criteria. Please note
 that not all filter controls may be visible at all situations as they are
-customized to fit the current context (see Figure \ref{fig:DocumentList}.
+customized to fit the current context (see Figure \ref{fig:DocumentList}).
 Also note that changing filter criteria must be confirmed by pressing Filter
 button. Use right mouse button click to open context menu for displaying graph
 for the selected document (see Section \ref{ssec:Graphs}) or for displaying the
@@ -442,7 +445,7 @@ nodes representing the relations shows context menu for centering to objects
 assigned to the relation.
 
 On the sides there are lists of object/relation types to display. Unchecking
-the type will cause objects/relations of that type to disappear when graph is
+a type will cause objects/relations of that type to disappear when graph is
 refreshed or Go button is clicked. Clicking the three dots shows or hides the
 filter lists.
 

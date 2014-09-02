@@ -2,13 +2,13 @@
 
 Although \textan{} particularly aim at processing Czech language and is preset for
 Czech language by default, it is possible to configure \textan{} for other languages,
-especially English. However, \textit{} supports only one language at a time. There are
+especially English. However, \textan{} supports only one language at a time. There are
 two areas which depend on the selected language: named entity recognition and full
 text searching. Both of them are placed in the server application along with other
 business logics.
 
 \comment[Kuba]{Petr}{Here should be some summary about changing language in nametag}
-The first thing needed to be re-configured for new language is {\it NameTag}. 
+The first thing that needs to be re-configured for new language is {\it NameTag}. 
 You must change property {\it ner\_identifier}
 which affects it, specify appropriate tagger and provide
 training data in desired language. See Section \ref{sssec:NametagSettings} for
@@ -17,9 +17,9 @@ detailed description.
 The second thing, that needs to be configured, is the full text search. The system
 internally uses Apache Lucene, full text search engine. Lucene provides creation
 of full text indexes and searching in them. To get good results, it is necessary
-perform some preprocessing, such as replacing words with their stems (stemming),
-stop words filtering or synonym expansion. This is done through an Analyzer.
-Lucene contains Analyzers%
+to perform some preprocessing, such as replacing words with their stems
+(stemming), stop words filtering or synonym expansion. This is done through an
+Analyzer. Lucene contains Analyzers%
 \footnote{\url{http://lucene.apache.org/core/4_7_0/analyzers-common/overview-summary.html}}
 for many common languages, or you can define your own. Selection of Analyzer in 
 \textan{} is done through property \emph{hibernate.search.analyzer} in

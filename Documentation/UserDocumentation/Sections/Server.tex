@@ -56,7 +56,7 @@ a help of the tool.
 
 If you want to use other sql database system, you have to create an equivalent
 database schema to the schema described in \emph{create.sql}, setup the server
-application and add a jdbc drivers for the database system into the classpath.
+application and add jdbc drivers for the database system into the classpath.
 
 Note that the database should be accessed only through the \textan{} server application
 while the server is running, otherwise the database can be inconsistent with
@@ -80,21 +80,21 @@ are three main areas of configuration: an internal web server, an internal named
 entity recognizer and types for objects (entities) and relations and default training
 data for them.
 
-The web server and the named entity recognizer can be configured through configured
+The web server and the named entity recognizer can be configured through configuration
 files in the installation folder, see Sections \ref{sssec:WebServerSettings} and
 \ref{sssec:NametagSettings} for information about configuration possibilities.
 
 The last, but the most important thing to configure, are types and optionally
-a default training data for them. The types should be added through the command
+default training data for them. The types should be added through the command
 line setup tool\footnote{Note that if you use the tool with other database than
 \emph{MySql}, you must add jdbc drivers for the database system into the classpath.}
-mentioned in the section \ref{sssec:DataConfig}. The tool provide operations to
-add both object types and relations and simple management for them see a help of
-the tool.
+mentioned in the section \ref{sssec:DataConfig}. The tool provides operations to
+add both object types and relation types and a simple management for them. See
+the help of the tool.
 
-In the beginning of the server's live time, the recognizers haven't enough training
-data from processed documents to provide good results. This can be improved by
-using default training data for them.
+In the beginning of the server's live time, the recognizers do not have enough
+training data from processed documents to provide good results. This can be
+improved by using default training data for them.
 \comment[Jakub]{Petr}{...complete this paragraph after the tool will be ready for preparing the training data.}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -104,9 +104,9 @@ The server can be started by starting scripts in its root directory. Scripts for
 different operating systems unfortunately do not provide the same functionality.
 
 The start script for the Linux-based operating system (\emph{run.sh}) runs the
-server application as daemon and can be used to run the server as system service.
+server application as daemon and can be used to run the server as a system service.
 
-The start script for the Microsoft Windows OS is less powerful, only runs the
+The start script for the Microsoft Windows OS is less powerful, it only runs the
 server application. To run the server as a background process, the Windows
 Service is required. Unfortunately, there are no components shipped with
 \textan{} to make it a formal Windows Service. However, we recommend the use of
@@ -123,7 +123,8 @@ the internal web server is started after the initialization phase.
 \subsubsection{Uninstallation}
 The server application uses only files and resources inside the install
 directory by default, the only exception are temporary files, which are placed
-in system temp folder. To uninstall the server just delete the installation directory and files from your configuration.
+in system temp folder. To uninstall the server just delete the installation
+directory and files from your configuration.
 
 \subsubsection{Unsupported Systems}
 \label{sssec:unsupport}
@@ -291,14 +292,14 @@ pooled Connection requires its own, distinct flock of cached statements.
 Default: 0
 
 \paragraph{c3p0.maxStatementsPerConnection}
-The number of PreparedStatements c3p0 will cache for a single pooled Connection.
+The number of PreparedStatements c3p0 will ca\-che for a single pooled Connection.
 If both maxStatements and maxStatementsPerConnection are zero, statement caching
 will not be enabled. If maxStatementsPerConnection is zero but maxStatements is
 a non-zero value, statement caching will be enabled, and a global limit enforced,
 but otherwise no limit will be set on the number of cached statements for a single
 Connection. If set, maxStatementsPerConnection should be set to about the number
 distinct PreparedStatements that are used frequently in application, plus
-two or three extra so infrequently statements don't force the more common cached
+two or three extra so infrequently statements do not force the more common cached
 statements to be culled.
 Default: 0
 
@@ -323,7 +324,7 @@ For more informations about Analyzers see Section \ref{sec:Lang}.
 \label{sssec:NametagSettings}
 \comment{Petr}{Add link to nametag?}
 This section is mainly about settings stored in NametagLearning.properties. There
-are parameters for neural network which nametag use for learning and switches for
+are parameters for neural network which nametag uses for learning and switches for
 nametag functions. Also, there are settings affecting models storing and
 generating learning data. All inputs are assumed to be in UTF-8 encoding.
 
@@ -423,16 +424,19 @@ training. The heldout data is not used in any other way.
 
 \paragraph{waiting\_time}
 Because learning is iterative and time-consuming process it took some time.
-This parameter specify, how long should program wait for new model training before it report an error.
-If there is some existing model, NameTag utilizes a previous model until a new model is learned and waiting time is disregarded.
+This parameter specifies, how long the program should wait for new model to
+train before it reports an error. If there is an existing model, NameTag
+utilizes the previous model until the new model is learned and waiting time is
+disregarded.
 
 \paragraph{default\_training\_data\_file}
 Sample file with initial training data, which is used before training data
-generated from database are available. When this property is empty, no default training data
-are used.
+generated from database are available. When this property is empty, no default
+training data are used.
 
 \paragraph{maximum\_stored\_models}
-Number of maximum stored models. When limit is exceeded, the oldest models are deleted.
+Number of maximum stored models. When the limit is exceeded, the oldest models
+are deleted.
 
 \paragraph{form}
 Size of window when forms are used as features (0 when they are not used)
@@ -462,7 +466,7 @@ are used as features.
 
 \paragraph{brown\_clusters}
 Size of window for Brown clusters.
-Brown clustering is a form of hierarchical of words based on the context in which they occur in documents. \comment{Kuba}{ad reference to http://people.csail.mit.edu/pliang/papers/meng-thesis.pdf}.
+Brown clustering is a form of hierarchical of words based on the context in which they occur in documents. \comment{Kuba}{add reference to http://people.csail.mit.edu/pliang/papers/meng-thesis.pdf}.
 
 \paragraph{brown\_clusters\_file}
 Use Brown clusters found in the specified file. An optional list of lengths of
@@ -487,21 +491,21 @@ with specified named entity type and not used in further processing.
 
 \subsection{Data Formats}
 To train a named entity recognizer model, training data are needed. The training
-data must be tokenized and contain annotated name entities. The name entities
-are non-overlapping, consist of a sequence of words and have a specified type.
+data must be tokenized and contain annotated named entities. The named entities
+are non-overlapping, consist of a sequence of words and have type specified.
 The training data must be encoded in UTF-8 encoding. The lines correspond to
-individual words and an empty line denotes an end of sentence. Each non-empty
-line contains exactly two tab-separated columns, the first is the word form the
+individual words and an empty line denotes the end of sentence. Each non-empty
+line contains exactly two tab-separated columns, the first is the word form, the
 second is the annotation. The format of the annotation is taken from CoNLL-2003:
 the annotation {\it I-type} or {\it B-type} denotes named entity of specified
 type, any other annotation is ignored. The {\it I-type} and {\it B-type}
 annotations are equivalent except for one case – if the previous word is also a
-named entity of same type, then
+named entity of the same type, then
 \begin{itemize}
 \item{}if the current word is annotated as I-type, it is part of the same named
-entity as the previous word (Or begin of new entity, if previous word was not
-entity),
-\item{}if the current word is annotated as B-type, it is in a different name
+entity as the previous word (or beginning of new entity, if previous word was
+not entity),
+\item{}if the current word is annotated as B-type, it is in a different named
 entity than the previous word (albeit with the same type).
 \end{itemize}
 
@@ -542,6 +546,9 @@ moč	_
 .	_
 \end{lstlisting}
 
-Because ``Drnovice'' and ``Bohdaneč'' are same type of entity (4) but are not part of one entity, the second one must be note as \emph{B-type}.
-Other example is ``Karel Majoroš'' and ``Oto Pavelka'', where name and surname are parts of same entity - person, so they are joined together with \emph{I-type}.
-If surnames will be noted as {\it B-type}, ``Oto'' and ``Pavelka'' will be understood as two entities.
+Because ``Drnovice'' and ``Bohdaneč'' are the same type of entity (4) but are
+not part of one entity, the second one must be note as \emph{B-type}.
+Other example is ``Karel Majoroš'' and ``Oto Pavelka'', where name and surname
+are parts of same entity - person, so they are joined together with \emph{I-type}.
+If surnames were marked as {\it B-type}, ``Oto'' and ``Pavelka'' would be
+understood as two entities.

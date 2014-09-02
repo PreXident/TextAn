@@ -11,7 +11,7 @@ experience or if some integration to a legacy system is needed.
 
 \subsection{Installation Guide}
 
-This section describes how to install and configure \textan{} client on
+This section describes how to install and configure \textan{} client on the
 workstations of end users.
 
 \subsubsection{Prerequisites}
@@ -58,7 +58,8 @@ connect.timeout=10000
 request.timeout=10000
 \end{lstlisting}
 
-If SSL is in use, it needs to be configured by setting following properties:
+If SSL communication is in use, it needs to be configured by setting following
+properties:
 \begin{lstlisting}[frame=single,language=properties]
 #should ssl be used for communication?
 ssl=true
@@ -70,8 +71,8 @@ ssl.trustStore.password=MYPASS
 ssl.trustStore.type=JKS
 \end{lstlisting}
 
-If client authorization is in use along with SSL, it needs to be configured
-by settings following properties:
+If client authorization is in use along with SSL communication, it needs to be
+configured by setting following properties:
 \begin{lstlisting}[frame=single,language=properties]
 #should client authorization be used for communication?
 ssl.clientAuth=true
