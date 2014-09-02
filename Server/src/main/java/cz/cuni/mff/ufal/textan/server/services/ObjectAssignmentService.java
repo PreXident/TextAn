@@ -31,14 +31,14 @@ public class ObjectAssignmentService {
     private final IObjectTableDAO objectTableDAO;
     private final IAliasTableDAO aliasTableDAO;
     private final IDocumentTableDAO documentTableDAO;
-    private final IObjectAssigner textPro;
+    private final IObjectAssigner objectAssigner;
 
     @Autowired
-    public ObjectAssignmentService(IObjectTableDAO objectTableDAO, IAliasTableDAO aliasTableDAO, IDocumentTableDAO documentTableDAO, IObjectAssigner textPro) {
+    public ObjectAssignmentService(IObjectTableDAO objectTableDAO, IAliasTableDAO aliasTableDAO, IDocumentTableDAO documentTableDAO, IObjectAssigner objectAssigner) {
         this.objectTableDAO = objectTableDAO;
         this.aliasTableDAO = aliasTableDAO;
         this.documentTableDAO = documentTableDAO;
-        this.textPro = textPro;
+        this.objectAssigner = objectAssigner;
     }
 
     public List<Assignment> getAssignments(String text, List<Entity> entities, EditingTicket ticket) {
@@ -63,7 +63,7 @@ public class ObjectAssignmentService {
     private List<Assignment> getAssignmentsInner(String text, List<Entity> entities) {
 
         Map<cz.cuni.mff.ufal.textan.assigner.data.Entity, List<Pair<Long, Double>>> textProAssignments =
-                textPro.finalRanking(
+                objectAssigner.combinedObjectRanking(
                         text,
                         entities.stream().map(Entity::toTextProEntity).collect(Collectors.toList()),
                         50

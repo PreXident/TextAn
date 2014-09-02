@@ -1,444 +1,323 @@
 package cz.cuni.mff.ufal.textan.assigner;
 
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
-import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.assigner.data.Entity;
 import cz.cuni.mff.ufal.textan.assigner.data.EntityInfo;
 import cz.cuni.mff.ufal.textan.assigner.learning.TrainWeka;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 
-import java.util.*;
-
 /**
- * A simple example of an implementation of the ITextPro interface as a Spring bean.
+ * A simple example of an implementation of the IObjectAssigner interface as a
+ * Spring bean.
  *
  * @author Petr Fanta
  * @author Tam Hoang
  *         Implement the ranking scheme heuristicRanking(document, list of entities, number of K)
  *         Implement the machine learning scheme machineLearning
+ * @author Adam Huječek refactoring
  * @see IObjectAssigner
  */
 @Transactional
 public class ObjectAssigner implements IObjectAssigner {
 
+    /** Default logger. */
     private static final Logger LOG = LoggerFactory.getLogger(ObjectAssigner.class);
 
-    /**
-     * Provides access to AliasOccurrence table in database
-     */
-    //private final IAliasOccurrenceTableDAO aliasOccurrenceTableDAO;
-
-    /**
-     * Provides access to Alias table in database
-     */
+    /** Provides access to Alias table in database. */
     private final IAliasTableDAO aliasTableDAO;
 
-    /**
-     * Provides access to JoinedObjects table in database
-     */
-    //private final IJoinedObjectsTableDAO joinedObjectsTableDAO;
-
-    /**
-     * Provides access to ObjectTable table in database
-     */
+    /** Provides access to ObjectTable table in database. */
     private final IObjectTableDAO objectTableDAO;
 
-    /**
-     * Provides access to ObjectType table in database
-     */
-    //private final IObjectTypeTableDAO objectTypeTableDAO;
-
-    /**
-     * Provides access to RelationOccurrence table in database
-     */
-    //private final IRelationOccurrenceTableDAO relationOccurrenceTableDAO;
-
-    /**
-     * Provides access to Relation table in database
-     */
-    //private final IRelationTableDAO relationTableDAO;
-
-    /**
-     * Provides access to RelationType table in database
-     */
-    //private final IRelationTypeTableDAO typeTableDAO;
-
-    /**
-     * Provides access to DocumentTable table in database
-     */
+    /** Provides access to DocumentTable table in database. */
     private final IDocumentTableDAO documentTableDAO;
 
-    /* Train Weka */
+    /** Train Weka. */
     private TrainWeka train;
-    /**
-     * Training model *
-     */
+
+    /** Training model. */
     private Classifier model;
 
-
     /**
-     * Instantiates a new TextPro.
-     * Uses a constructor injection for an initialization of data access object ({@link cz.cuni.mff.ufal.textan.assigner.configs.ObjectAssignerConfig#textPro(cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasOccurrenceTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationOccurrenceTableDAO, cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO)}
+     * Instantiates a new ObjectAssigner.
+     * Uses a constructor injection for an initialization of data access object
+     * ({@link cz.cuni.mff.ufal.textan.assigner.configs.ObjectAssignerConfig#textPro(IObjectTableDAO, IAliasTableDAO, IDocumentTableDAO)}).
      *
-     * @param aliasTableDAO              the alias table DAO
-     * @param objectTableDAO             the object table DAO
-     * @param documentTableDAO
+     * @param aliasTableDAO the alias table DAO
+     * @param objectTableDAO the object table DAO
+     * @param documentTableDAO the document table DAO
      */
     public ObjectAssigner(
-            //IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
-            //IRelationTypeTableDAO typeTableDAO,
-            IAliasTableDAO aliasTableDAO,
-            //IJoinedObjectsTableDAO joinedObjectsTableDAO,
-            IObjectTableDAO objectTableDAO,
-            //IObjectTypeTableDAO objectTypeTableDAO,
-            //IRelationOccurrenceTableDAO relationOccurrenceTableDAO,
-            //IRelationTableDAO relationTableDAO,
-            IDocumentTableDAO documentTableDAO) {
-
-        //this.aliasOccurrenceTableDAO = aliasOccurrenceTableDAO;
-        //this.typeTableDAO = typeTableDAO;
+            final IAliasTableDAO aliasTableDAO,
+            final IObjectTableDAO objectTableDAO,
+            final IDocumentTableDAO documentTableDAO) {
         this.aliasTableDAO = aliasTableDAO;
-        //this.joinedObjectsTableDAO = joinedObjectsTableDAO;
         this.objectTableDAO = objectTableDAO;
-        //this.objectTypeTableDAO = objectTypeTableDAO;
-        //this.relationOccurrenceTableDAO = relationOccurrenceTableDAO;
-        //this.relationTableDAO = relationTableDAO;
         this.documentTableDAO = documentTableDAO;
     }
 
-    /*
-    * Learn function: Run machine learning and build the model from database
-    */
-    @Override
-    public void learn() {
-        LOG.debug("Starting TexPro learning.");
+    /**
+     * Checks relationship between two objects.
+     * Objects are considered related if they occured in the same document.
+     * @param o1 first object to check
+     * @param o2 second object to check
+     * @return true if o1 and o2 shares any document, false otherwise
+     */
+    protected boolean checkRelation(ObjectTable o1, ObjectTable o2) {
+        final List<Pair<DocumentTable, Integer>> docs1 =
+                documentTableDAO.findAllDocumentsWithObject(o1);
+        final List<Pair<DocumentTable, Integer>> docs2 =
+                documentTableDAO.findAllDocumentsWithObject(o2);
 
-        /*** Create the train model**/
-        this.train = new TrainWeka();
-
-        /*** Train the model **/
-        this.model = train.doTraining(this.objectTableDAO, this.aliasTableDAO);
-
-        LOG.debug("Finished TexPro learning.");
-    }
-
-    /*
-    * tokenizeDoc: split the document into a list of tokens
-    * For now: not needed yet.
-    */
-    @Override
-    public List<String> tokenizeDoc(String document) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // Create a set of document ids
+        final Set<Long> ids = new HashSet<>();
+        docs1.stream()
+                .map(Pair::getFirst)
+                .map(DocumentTable::getId)
+                .forEach(ids::add);
+        // Check match
+        return docs2.stream()
+                .map(Pair::getFirst)
+                .map(DocumentTable::getId)
+                .anyMatch(ids::contains);
     }
 
     /**
-     * heuristicRanking: Run a simple ranking schema to get the result
-     * It takes the input as a documents, a list of entity and the number of wanted result
-     * It produces the output as a Map between the entity and the id of object, along with it scores
-     *
-     * @param document
-     * @param eList
-     * @param topK
-     * @return the result of DoubleRank
+     * Creates entity infos for given entities.
+     * @param entities entities to create infos for
+     * @return entity infos for given entities
+     */
+    protected List<EntityInfo> createEntityInfos(List<Entity> entities) {
+        final List<EntityInfo> infos = new ArrayList<>();
+        for (Entity e : entities) {
+            final List<ObjectTable> objects = getCloseObjects(e);
+            infos.add(new EntityInfo(e, objects));
+        }
+        return infos;
+    }
+
+    /**
+     * Combines both ranking approaches - heuristic and machine learning.
+     * If the object occurs in both lists, its score is the sum,
+     * otherwise gets the result of machine learning.
+     * @param document document containing the entities
+     * @param entities list of recognized named entities
+     * @param topK maximal number of candidates for each entity
+     * @return list of ranked candidates for each entity
      */
     @Override
-    public Map<Entity, List<Pair<Long, Double>>> heuristicRanking(String document, List<Entity> eList, int topK) {
+    public Map<Entity, List<Pair<Long, Double>>> combinedObjectRanking(
+            final String document,
+            final List<Entity> entities,
+            final int topK) {
+        final Map<Entity, List<Pair<Long, Double>>> mapHR = heuristicRanking(document, entities, 2 * topK);
+        final Map<Entity, List<Pair<Long, Double>>> mapML = machineLearningRanking(document, entities, 2 * topK);
 
-        LOG.debug("Starting TexPro ranking.");
+        LOG.debug("Starting ObjectAssigner merge of results.");
 
-        /********************** REGULAR RANKING **************************/
-        // Initialize the eMap - final result
-        Map<Entity, List<Pair<Long, Double>>> eMap = new HashMap<>();
-
-        // Initialize the list of entity info
-        List<EntityInfo> eInfoList = new ArrayList<>();
-        for (Entity e : eList) {
-
-            List<Long> oListID = getCloseObjectID(e);
-            Map<Long, Double> score = new HashMap<>();
-            Map<ObjectTable, Long> match = new HashMap<>();
-            List<ObjectTable> oList = getCloseObject(e);
-
-            // Initialize 
-            for (int oID = 0; oID < oListID.size(); oID++) {
-                long objectID = oListID.get(oID);
-                ObjectTable object = oList.get(oID);
-                score.put(objectID, 1.0);
-                match.put(object, objectID);
-            }
-
-            // Add the current info to final list
-            eInfoList.add(new EntityInfo(e, score, oList, match));
-        }
-
-        /********************** REGULAR RANKING **************************/
-        for (EntityInfo eInfo : eInfoList) {
-            //List<Pair<Long, Double>> entityScore = new ArrayList<>();
-            Map<Long, Double> score = eInfo.score;
-
-            String eText = eInfo.e.getText();
-
-            // Repetitive update the score
-            for (EntityInfo eOtherInfo : eInfoList) {
-                String eOtherText = eOtherInfo.e.getText();
-                if (eText.equalsIgnoreCase(eOtherText)) {
-                    continue; // Check if they have the same text, not just same entity
-                }
-                for (ObjectTable oTable : eInfo.objects) {
-                    for (ObjectTable oOtherTable : eOtherInfo.objects) {
-                        if (checkRelation(oTable, oOtherTable)) {
-                            // Increase the score by 1
-                            score.put(oTable.getId(), score.get(oTable.getId()) + 1.0);
-                        }
-                    }
-                }
-            }
-
-            // Select topK
-            List<Pair<Long, Double>> entityScoreTopK = new ArrayList<>();
-            Set<Long> entityTopK = new HashSet<>();
-            for (int iteration = 0; iteration < topK; iteration++) {
-                double highestScore = 0;
-                long highestID = -1;
-                for (long thisID : score.keySet()) {
-                    if (entityTopK.contains(thisID)) {
-                        continue;
-                    }
-                    double thisScore = score.get(thisID);
-                    if (thisScore > highestScore) {
-                        highestScore = thisScore;
-                        highestID = thisID;
-                    }
-                }
-                if (highestID > -1) {
-                    entityTopK.add(highestID);
-                    entityScoreTopK.add(new Pair<>(highestID, highestScore));
-                }
-            }
-
-            // Normalize TopK and add to value
-            List<Pair<Long, Double>> entityScoreTopKNormalize = new ArrayList<>();
-            double sum = 0;
-            for (Pair<Long, Double> p : entityScoreTopK) {
-                sum += (double) p.getSecond();
-            }
-
-            if (sum <= 0) {
-                eMap.put(eInfo.e, entityScoreTopK);
-            } else {
-                for (Pair<Long, Double> p : entityScoreTopK) {
-                    entityScoreTopKNormalize.add(new Pair<>((long) p.getFirst(), ((double) p.getSecond() / sum)));
-                }
-                eMap.put(eInfo.e, entityScoreTopKNormalize);
-            }
-        }
-
-        LOG.debug("Finished TexPro ranking.");
-
-        // Return the value
-        return eMap;
-    }
-
-    /*
-    * Machine Learning with Weka, not JavaML
-    * Return the same kind of value as heuristicRanking
-    */
-    @Override
-    public Map<Entity, List<Pair<Long, Double>>> machineLearning(String document, List<Entity> eList, int topK) {
-
-        LOG.debug("Starting TexPro weka learning.");
-
-        // Initialize the eMap - final result
-        Map<Entity, List<Pair<Long, Double>>> eMap = new HashMap<>();
-
-        // Initialize the list of entity info
-        List<EntityInfo> eInfoList = new ArrayList<>();
-        for (Entity e : eList) {
-
-            List<Long> oListID = getCloseObjectID(e);
-            Map<Long, Double> score = new HashMap<>();
-            Map<ObjectTable, Long> match = new HashMap<>();
-            List<ObjectTable> oList = getCloseObject(e);
-
-            // Initialize 
-            for (int oID = 0; oID < oListID.size(); oID++) {
-                long objectID = oListID.get(oID);
-                ObjectTable object = oList.get(oID);
-                score.put(objectID, 1.0);
-                match.put(object, objectID);
-            }
-
-            // Add the current info to final list
-            eInfoList.add(new EntityInfo(e, score, oList, match));
-        }
-
-        /********************** MACHINE LEARNING *************************/
-
-        for (EntityInfo eInfo : eInfoList) {
-            List<Pair<Long, Double>> entityScore = new ArrayList<>();
-            for (ObjectTable ot : eInfo.objects) {
-                // Everything is positive , it does not matter
-                Instance ins = train.CreateInstanceBasic(eInfo.e, ot, aliasTableDAO, objectTableDAO, "positive");
-                ins.setDataset(train.isTrainingSet);
-
-                // Assign value
-                double score = 0.0;
-                try {
-                    double[] fDistribution = model.distributionForInstance(ins);
-                    score = fDistribution[0];
-                } catch (Exception ex) {
-                    System.out.println("Something wrong here" + ex.getMessage());
-                }
-
-                Pair<Long, Double> probability = new Pair<>(eInfo.match_object.get(ot), score);
-                entityScore.add(probability);
-            }
-
-            // Select topK
-            List<Pair<Long, Double>> entityScoreTopK = new ArrayList<>();
-            Set<Long> entityTopK = new HashSet<>();
-            for (int iteration = 0; iteration < topK; iteration++) {
-                double highestScore = 0;
-                long highestID = -1;
-                for (Pair<Long, Double> p : entityScore) {
-                    long thisID = (long) p.getFirst();
-                    if (entityTopK.contains(thisID)) {
-                        continue;
-                    }
-                    double thisScore = (double) p.getSecond();
-                    if (thisScore > highestScore) {
-                        highestScore = thisScore;
-                        highestID = thisID;
-                    }
-                }
-                if (highestID > -1) {
-                    entityTopK.add(highestID);
-                    entityScoreTopK.add(new Pair<>(highestID, highestScore));
-                }
-            }
-            // Return
-            eMap.put(eInfo.e, entityScoreTopK);
-
-        }
-        LOG.debug("Finishing TexPro weka learning.");
-        return eMap;
-    }
-
-    /*
-    * Check relationship between two object
-    * Method: Check if they share any documents
-    * If two objects happen to be in the same document, they have relation
-    * If two objects does not share the document, they are not related
-    */
-    boolean checkRelation(ObjectTable o1, ObjectTable o2) {
-        List<Pair<DocumentTable, Integer>> o1Docs = documentTableDAO.findAllDocumentsWithObject(o1);
-        List<Pair<DocumentTable, Integer>> o2Docs = documentTableDAO.findAllDocumentsWithObject(o2);
-
-        // Create a set of document
-        Set<DocumentTable> o1DocsTable = new HashSet<>();
-        for (Pair<DocumentTable, Integer> p : o1Docs) {
-            DocumentTable doc1 = p.getFirst();
-            o1DocsTable.add(doc1);
-        }
-        for (Pair<DocumentTable, Integer> p : o2Docs) {
-            DocumentTable doc2 = p.getFirst();
-            if (o1DocsTable.contains(doc2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /*
-    * getCloseObject: Get the object related to an entity by searching its alias
-    */
-    public List<ObjectTable> getCloseObject(Entity e){
-        List<ObjectTable> matchFullText = this.objectTableDAO.findAllByObjTypeAndAliasFullText(e.getType(), e.getText());
-        if(matchFullText.isEmpty()){
-            return this.objectTableDAO.findAllByObjectTypeAndAliasSubStr(e.getType(), e.getText());
-        } 
-        return matchFullText;
-    }
-
-    /*
-    * getCloseObjectID: Get the object ID related to an entity by searching its alias
-    */
-    ArrayList<Long> getCloseObjectID(Entity e) {
-        List<ObjectTable> oList = getCloseObject(e);
-        ArrayList<Long> ID = new ArrayList<>();
-        for (ObjectTable o : oList) {
-            ID.add(o.getId());
-        }
-        return ID;
-    }
-
-    /*
-    * Combine Ranking: Combine the ML and HR
-    * Method: If the object co-occur in two list, the result is the sum, 
-              otherwise get the result of machine learning
-    */
-    @Override
-    public Map<Entity, List<Pair<Long, Double>>> finalRanking(String document, List<Entity> eList, int topK) {
-        Map<Entity, List<Pair<Long, Double>>> mapHR = heuristicRanking(document, eList, 2 * topK);
-        Map<Entity, List<Pair<Long, Double>>> mapML = machineLearning(document, eList, 2 * topK);
-        Map<Entity, List<Pair<Long, Double>>> mapFinal = new HashMap<>();
-        for (Entity e : mapML.keySet()) {
-            if (mapHR.containsKey(e)) {
-                List<Pair<Long, Double>> listHR = mapHR.get(e);
-                List<Pair<Long, Double>> listML = mapML.get(e);
+        final Map<Entity, List<Pair<Long, Double>>> result = new HashMap<>();
+        for (Entity entity : mapML.keySet()) {
+            final List<Pair<Long, Double>> listML = mapML.get(entity);
+            if (mapHR.containsKey(entity)) {
+                final List<Pair<Long, Double>> listHR = mapHR.get(entity);
 
                 // Create two list from the pair list of Machine Learning
-                //List<Long> listIdML = new ArrayList();  //FIXME this list never used?
-                //List<Double> listScoreML = new ArrayList(); //FIXME and this list never used? too
-                Map<Long, Double> eMapML = new HashMap<>();
+                final Map<Long, Double> scores = new HashMap<>();
                 for (Pair<Long, Double> p : listML) {
-                    //listIdML.add(p.getFirst());
-                    //listScoreML.add(p.getSecond());
-                    eMapML.put(p.getFirst(), p.getSecond());
+                    scores.put(p.getFirst(), p.getSecond());
                 }
 
                 // Update the list of eMapML from the list of HR
                 for (Pair<Long, Double> p : listHR) {
-                    if (eMapML.containsKey(p.getFirst())) {
-                        eMapML.put(p.getFirst(), eMapML.get(p.getFirst()) + p.getSecond());
+                    final Double score = scores.get(p.getFirst());
+                    if (score != null) {
+                        scores.put(p.getFirst(), score + p.getSecond());
                     }
                 }
 
-                // Select the top K
-                List<Pair<Long, Double>> finalTopK = new ArrayList<>();
-                Set<Long> acceptTopK = new HashSet<>();
-                for (int iter = 0; iter < topK; iter++) {
-                    double highestScore = 0;
-                    long highestId = -1;
-                    for (Long objectId : eMapML.keySet()) {
-                        if (acceptTopK.contains(objectId)) {
-                            continue;
-                        }
-                        double objectScore = eMapML.get(objectId);
-                        if (objectScore > highestScore) {
-                            highestScore = objectScore;
-                            highestId = objectId;
-                        }
-                    }
-
-                    // add to list
-                    if (highestId > -1) {
-                        finalTopK.add(new Pair<>(highestId, highestScore));
-                        acceptTopK.add(highestId);
-                    }
+                // Select topK
+                final BoundedPriorityQueue<Entry<Long, Double>> tops =
+                        new BoundedPriorityQueue<>(topK, (p1, p2) -> {
+                            return p1.getValue().compareTo(p2.getValue());
+                        });
+                for (Entry<Long, Double> entry : scores.entrySet()) {
+                    tops.add(entry);
                 }
-                mapFinal.put(e, finalTopK);
-            } //else {
+                final ArrayList<Pair<Long, Double>> finalScores = tops.getQueue().stream()
+                        .map(e -> new Pair<>(e.getKey(), e.getValue()))
+                        .collect(Collectors.toCollection(ArrayList::new));
+                result.put(entity, finalScores);
+            } else {
                 // There is some exception there if two lists does not contain the same key
-            //}
-
+                // This should never happen!
+                LOG.error("Ranking methods do not use the same entities!");
+                result.put(entity, listML);
+            }
         }
-        return mapFinal;
+        LOG.debug("Finishing ObjectAssigner merge of results.");
+        return result;
+    }
+
+    /**
+     * Returns objects considered close to the given entity.
+     * Firstly tries entity text and type in
+     * {@link IObjectTableDAO#findAllByObjTypeAndAliasFullText(long, String)
+     * full text} then in
+     * {@link IObjectTableDAO#findAllByObjectTypeAndAliasSubStr(long, java.lang.String)
+     * substring}.
+     * @param e entity to search close objects for
+     * @return close objects
+     */
+    public List<ObjectTable> getCloseObjects(Entity e){
+        final List<ObjectTable> matchFullText =
+                objectTableDAO.findAllByObjTypeAndAliasFullText(e.getType(), e.getText());
+        if(matchFullText.isEmpty()){
+            return this.objectTableDAO.findAllByObjectTypeAndAliasSubStr(e.getType(), e.getText());
+        } else {
+            return matchFullText;
+        }
+    }
+
+    @Override
+    public Map<Entity, List<Pair<Long, Double>>> heuristicRanking(
+            final String document,
+            final List<Entity> entities,
+            final int topK) {
+        LOG.debug("Starting ObjectAssigner heuristic ranking.");
+
+        // Initialize result
+        final Map<Entity, List<Pair<Long, Double>>> result = new HashMap<>();
+
+        // Initialize the list of entity infos
+        final List<EntityInfo> infos = createEntityInfos(entities);
+
+        // Heuristic ranking
+        for (int i = 0; i < infos.size(); ++i) {
+            final EntityInfo info = infos.get(i);
+            final String eText = info.e.getText();
+
+            // Repetitive update the score
+            // we only need to go through the upper triangular part of matrix (without diagonal)
+            for (int j = i + 1; j < infos.size(); ++j) {
+                final EntityInfo otherInfo = infos.get(j);
+                final String eOtherText = otherInfo.e.getText();
+                if (eText.equalsIgnoreCase(eOtherText)
+                        && info.e.getType() == otherInfo.e.getType()) {
+                    continue; // Check if they have the same text, not just the same entity
+                }
+                for (ObjectTable object : info.objects) {
+                    for (ObjectTable otherObject : otherInfo.objects) {
+                        if (checkRelation(object, otherObject)) {
+                            // Increase the score by 1
+                            info.increaseScore(object);
+                            otherInfo.increaseScore(otherObject);
+                        }
+                    }
+                }
+            }
+
+            // Select topK
+            final BoundedPriorityQueue<Entry<Long, Double>> tops =
+                    new BoundedPriorityQueue<>(topK, (p1, p2) -> {
+                        return p1.getValue().compareTo(p2.getValue());
+                    });
+            for (Entry<Long, Double> entry : info.score.entrySet()) {
+                tops.add(entry);
+            }
+
+            // Normalize topK and add to result
+            double sum = 0; //remains 0, only if there are no candidates
+            for (Entry<Long, Double> entry : tops.getQueue()) {
+                sum += entry.getValue();
+            }
+            final List<Pair<Long, Double>> score = new ArrayList<>(topK);
+            for (Entry<Long, Double> entry : tops.getQueue()) {
+                final Pair<Long, Double> pair = new Pair<>(
+                        entry.getKey(), entry.getValue() / sum
+                ); //if sum is 0, then we do not even do this
+                score.add(pair);
+            }
+            result.put(info.e, score);
+        }
+
+        LOG.debug("Finished ObjectAssigner heuristic ranking.");
+
+        // Return the value
+        return result;
+    }
+
+    @Override
+    public void learn() {
+        LOG.debug("Starting ObjectAssigner learning.");
+
+        //Create the train model
+        this.train = new TrainWeka();
+
+        //Train the model
+        this.model = train.doTraining(this.objectTableDAO, this.aliasTableDAO, this.documentTableDAO);
+
+        LOG.debug("Finished ObjectAssigner learning.");
+    }
+
+    @Override
+    public Map<Entity, List<Pair<Long, Double>>> machineLearningRanking(
+            final String document,
+            final List<Entity> entities,
+            final int topK) {
+
+        LOG.debug("Starting ObjectAssigner Weka machine learning ranking.");
+
+        // Initialize the result
+        final Map<Entity, List<Pair<Long, Double>>> result = new HashMap<>();
+
+        // Machine learning ranking
+        for (Entity entity : entities) {
+            final List<ObjectTable> objects = getCloseObjects(entity);
+            final BoundedPriorityQueue<Pair<Long, Double>> scores =
+                    new BoundedPriorityQueue<>(topK, (p1, p2) -> {
+                        return p1.getSecond().compareTo(p2.getSecond());
+                    }); //already selects only topK items
+
+            for (ObjectTable object : objects) {
+                Instance ins = train.createInstance
+                                (entity, object, this.aliasTableDAO, this.objectTableDAO, 
+                                 this.documentTableDAO, "positive");
+                ins.setDataset(train.isTrainingSet);
+
+                // Assign value
+                try {
+                    final double[] fDistribution =
+                            model.distributionForInstance(ins);
+                    final double score = fDistribution[0];
+                    final Pair<Long, Double> probability =
+                            new Pair<>(object.getId(), score);
+                    scores.add(probability);
+                } catch (Exception ex) {
+                    LOG.error("Machine learning ranking failed: " + ex.getMessage());
+                }
+            }
+
+            // Return
+            result.put(entity, new ArrayList<>(scores.getQueue()));
+        }
+        LOG.debug("Finishing ObjectAssigner Weka machine learning ranking.");
+        return result;
     }
 }
