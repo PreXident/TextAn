@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To compute the feature value for machine learning
- * First, the difference between alias name and the entity text
- * Second, the difference between entity type and DBObject type
- * Third, The number of sharing sharing objects between the document and DBObject
- */
-
 package cz.cuni.mff.ufal.textan.assigner.data;
 
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import de.linuxusers.levenshtein.util.SimpleLevenshtein;
 import java.util.ArrayList;
@@ -16,78 +11,144 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
  * @author HOANGT
  */
 public class FeaturesComputeValue {
 
-    public FeaturesComputeValue(){
-        // Initialize the class
-    }
-    
-    /*
-    * Compare the extity text and alias of object
-    * Word with one alias only
-    */
-    public static double EntityTextAndObjectAlias(String entityString, String objectString) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * Compares the entity text and alias of object.
+     * Word with one alias only
+     * @param entityString entity text
+     * @param objectString object alias
+     * @return Levenshtein distance
+     */
+    public static double levenshteinDistance(String entityString, String objectString) {
         //JaroWinkler algorithm = new JaroWinkler();
         //return algorithm.getSimilarity(stringA, stringB);
         return SimpleLevenshtein.getStringDistance( entityString, objectString);
-        //return 0;
     }
-    
-    
-    /*
-    * Compare the type of entity and object
-    * Return 1 if they are the same, 0 otherwise
-    */
-    public static double EntityTypeAndObjectType(long eType, long oType) {
+    /**
+     * Compares the entity text and alias of object.
+     * Word with one alias only
+     * @param entityText entity text
+     * @param aliases list of object aliases
+     * @return an array of three double values
+     */
+    public static List<Double> entityTextAndObjectAlias(String entityText, List<String> aliases) {
+        double highestSim = 0;
+        double lowestSim = 1000;
+        double sum = 0;
+        double number = 0;
+        for (String alias : aliases) {
+            double sim = levenshteinDistance(entityText, alias);
+            if (sim > highestSim) {
+                highestSim = sim;
+            }
+            if(sim < lowestSim) {
+                lowestSim = sim;
+            }
+            sum += sim;
+            number += 1;
+        }
+        
+        List<Double> lst = new ArrayList<>();
+        lst.add(highestSim);
+        lst.add(lowestSim);
+        lst.add((sum+0.2)/(number+0.2)); // average 
+        return lst;
+    }
+
+    /**
+     * Compares the type of entity and object.
+     * @param eType entity type id
+     * @param oType object type id
+     * @return 1 if they are the same, 0 otherwise
+     */
+    public static double entityTypeAndObjectType(long eType, long oType) {
         if(eType == oType) {
             return 1;
         }
         return 0;
     }
     
-    /*
-     * Get the Mutual object 
-    */
-    public double EntityAndObjectMutual(String text, List<Entity> eList, Entity e, ObjectTable o, IObjectTableDAO objectTableDAO) {
-        
-        // List of all object table associated with OTHER entities
-        List<ObjectTable> finalDocList = new ArrayList<ObjectTable>();
-        for (Entity e_other:eList) {
-            if(e_other.getText().equalsIgnoreCase(e.getText())) {
-                continue;
-            }
-            List<ObjectTable> oList1 = getMutualObject(e_other, objectTableDAO); // List of object closed to the entity
-            for(ObjectTable o2:oList1) {
-                finalDocList.add(o2);
+    /**
+     * Check if an object is the root object of joined tree 
+     * @param obj
+     * @return 1 if it is the root, 0 otherwise
+     */
+    public static double isRoot(ObjectTable obj) {
+        double isRoot = 0;
+        if (obj.isRoot()) {
+            isRoot = 1;
+        }
+        return isRoot;
+    }
+    
+    /**
+     * The number of documents happens to be in both lists
+     * @param doc1
+     * @param doc2
+     * @return
+     */
+    public static double documentsOccurrenceShare(List<DocumentTable> doc1, List<DocumentTable> doc2) {
+        double count = 0;
+        // Iterate through document list
+        for(DocumentTable dt:doc1) {
+            if(doc2.contains(dt)) {
+                count++;
             }
         }
-        // List of all object table which the Object is joined from
-        Set<ObjectTable> oList2 = o.getObjectsThisIsJoinedFrom();
-        
-        double count = 0.00; // number of Mutual
-        for (ObjectTable sample:finalDocList) {
-            if(oList2.contains(sample)) {
-                count ++;
-            }
-        }
-        
         return count;
     }
     
-    public List<ObjectTable> getMutualObject(Entity e, IObjectTableDAO objectTableDAO){
-        return objectTableDAO.findAllByAliasSubstring(e.getText());
+    /**
+    * How many documents in the document list that contain an object in the object list
+     * @param doc
+     * @param obj
+     * @param documentTableDAO
+    * @return
+    */
+    public static double documentsHaveObjects(List<DocumentTable> doc, List<ObjectTable> obj, IDocumentTableDAO documentTableDAO) {
+        double count = 0;
+        // Iterate through objects list
+        for(ObjectTable o: obj) {
+            List<Pair<DocumentTable,Integer>> pairDocs = documentTableDAO.findAllDocumentsWithObject(o);
+            List<DocumentTable> lst = new ArrayList<>();
+            for(Pair<DocumentTable,Integer> p:pairDocs) {
+                lst.add(p.getFirst());
+            }
+            count +=  documentsOccurrenceShare(doc,lst);
+        }
+        return count;
+    }
+    
+    /**
+    * How many objects in the object list that appear in the document list
+     * @param doc
+     * @param obj
+     * @param documentTableDAO
+    * @return
+    */
+    public static double objectsInDocuments(List<DocumentTable> doc, List<ObjectTable> obj, IDocumentTableDAO documentTableDAO) {
+        double count = 0;
+        // Iterate through objects list
+        for(ObjectTable o: obj) {
+            List<Pair<DocumentTable,Integer>> pairDocs = documentTableDAO.findAllDocumentsWithObject(o);
+            List<DocumentTable> lst = new ArrayList<>();
+            for(Pair<DocumentTable,Integer> p:pairDocs) {
+                lst.add(p.getFirst());
+            }
+            if(documentsOccurrenceShare(doc,lst) > 0) {
+                count += 1;
+            }
+        }
+        return count;
     }    
     
-    /*
-     * Number of objects that current object joined from
-     * Maybe important
-    */
-    public double NumberOfComponentObject( ObjectTable o) {
-        Set<ObjectTable> oList2 = o.getObjectsThisIsJoinedFrom();
-        return oList2.size();
+    /**
+     * Utility classes need no constructor.
+     */
+    private FeaturesComputeValue(){
+        // Initialize the class
     }
 }

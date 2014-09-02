@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /**
- * Simple integration test with Spring
+ * Simple integration test with Spring.
  * @author Petr Fanta
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,11 +46,11 @@ public class SampleSpringIntegrationTest {
     IDocumentTableDAO documentTableDAO;
 
     /**
-     * This is really stupid test(because it is always passed), but it shows how you can get spring beans in tests.
+     * This is really stupid test(because it is always passed),
+     * but it shows how you can get spring beans in tests.
      */
     @Test
     public void testDaoAvailability(){
-
         Assert.assertNotNull(aliasOccurrenceTableDAO);
         Assert.assertNotNull(aliasTableDAO);
         Assert.assertNotNull(joinedObjectsTableDAO);
@@ -59,7 +59,6 @@ public class SampleSpringIntegrationTest {
         Assert.assertNotNull(relationOccurrenceTableDAO);
         Assert.assertNotNull(relationTableDAO);
         Assert.assertNotNull(typeTableDAO);
+        Assert.assertNotNull(documentTableDAO);
     }
-    
-    
 }

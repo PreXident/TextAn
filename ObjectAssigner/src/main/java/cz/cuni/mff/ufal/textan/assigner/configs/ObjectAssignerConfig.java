@@ -20,33 +20,23 @@ import org.springframework.context.annotation.Import;
 public class ObjectAssignerConfig {
 
     /**
-     * Creates a Spring bean with the type ITextPro.
-     * (This method is invoked only once at startup and than works like a singleton.)
-     * @return
+     * Creates a Spring bean with the type IObjectAssigner.
+     * This method is invoked only once at startup and then works like a singleton.
+     * @param objectTableDAO object DAO to use
+     * @param aliasTableDAO alias DAO to use
+     * @param documentTableDAO document DAO to use
+     * @return a Spring bean with the type IObjectAssigner
      */
     @Bean(initMethod = "learn")
     @DependsOn({"transactionManager", "exceptionTranslation"})
     @Autowired
     public IObjectAssigner textPro(
-            IObjectTypeTableDAO objectTypeTableDAO,
-            IObjectTableDAO objectTableDAO,
-            IAliasTableDAO aliasTableDAO,
-            IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
-            IJoinedObjectsTableDAO joinedObjectsTableDAO,
-            IRelationTypeTableDAO relationTypeTableDAO,
-            IRelationTableDAO relationTableDAO,
-            IRelationOccurrenceTableDAO relationOccurrenceTableDAO,
-            IDocumentTableDAO documentTableDAO
-            ) {
+            final IObjectTableDAO objectTableDAO,
+            final IAliasTableDAO aliasTableDAO,
+            final IDocumentTableDAO documentTableDAO) {
         return new ObjectAssigner(
-                //aliasOccurrenceTableDAO,
-                //relationTypeTableDAO,
                 aliasTableDAO,
-                //joinedObjectsTableDAO,
                 objectTableDAO,
-                //objectTypeTableDAO,
-                //relationOccurrenceTableDAO,
-                //relationTableDAO,
                 documentTableDAO
         );
     }

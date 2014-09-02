@@ -1,81 +1,50 @@
-// *************** INTERFACE*******************
 package cz.cuni.mff.ufal.textan.assigner.data;
-/*
- * All characteristics of an Entity
- */
 
+/**
+ * Simple holder of properties related to entities.
+ */
 public class Entity{
 
-    /*
-     * Change type from String to long
-     * Default constructor
-    */
-    public Entity(String text, int offset, int position, long typeID) {
+    /** Entity text. */
+    final private String text;
+
+    /** Entity type id. */
+    final long type;
+
+    /**
+     * Only constructor.
+     * @param text entity text
+     * @param typeID entity type id
+     */
+    public Entity(String text, long typeID) {
         this.text = text;
-        this.offset = offset;
-        this.position = position;
         this.type = typeID;
     }
-    
-    /*
-     * The words in ducument
-     */
-    String text;
 
+    /**
+     * Returns entity text.
+     * @return entity text
+     */
     public String getText() {
         return text;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
- 
-   
-    /*
-     * Length of the entity
+    /**
+     * Returns entity type id.
+     * @return entity type id
      */
-    int offset;
-    public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }    
-    
-    /*
-     * position of the entity
-     */
-    int position;
-
-    public int getPosition() {
-        return position;
-    }
-    public void setPosition(int position) {
-        this.position = position;
-    }
-    
-    /*
-     * type of the entity
-     * Associate with the PROPERTY_NAME_ID of object table
-     */
-    long type;
     public long getType() {
         return type;
     }
-    public void setType(long type) {
-        this.type = type;
-    }
 
+    /* Two entity is the same if they have the same text, id and offset in the same document*/
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Entity entity = (Entity) o;
+        final Entity entity = (Entity) o;
 
-        if (offset != entity.offset) return false;
-        if (position != entity.position) return false;
         if (type != entity.type) return false;
         if (!text.equals(entity.text)) return false;
 
@@ -85,8 +54,6 @@ public class Entity{
     @Override
     public int hashCode() {
         int result = text.hashCode();
-        result = 31 * result + offset;
-        result = 31 * result + position;
         result = 31 * result + (int) (type ^ (type >>> 32));
         return result;
     }
