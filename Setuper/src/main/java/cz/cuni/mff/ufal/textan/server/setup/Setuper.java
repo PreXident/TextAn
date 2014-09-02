@@ -26,6 +26,7 @@ import java.util.Properties;
 public class Setuper {
 
     private static final String USER_DATA_PROPERTIES = "data.properties";
+    private static final String TRAINING_DATA_PROPERTY = "default_training_data_file";
 
     private static final int EXIT_STATUS_HELP = 1;
     private static final int EXIT_STATUS_MISSING_PARAM = 2;
@@ -286,8 +287,53 @@ public class Setuper {
      * Prepares training data.
      * @param command command options
      */
-    public void prepareTrainingData(final PrepareTrainingData command) {
-        //TODO implement
+    public void prepareTrainingData(final PrepareTrainingData command) throws IOException, SQLException {
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(command.learning));
+        String trainingDataFile = properties.getProperty(TRAINING_DATA_PROPERTY);
+        BufferedReader trainingData = new BufferedReader(new FileReader(trainingDataFile));
+        File tempDataFile = File.createTempFile("tempTrainingData", ".txt");
+        BufferedWriter translatedData = new BufferedWriter(new FileWriter(tempDataFile.getCanonicalPath()));
+        String line = null;
+        String[] splittedLine;
+
+        PreparedStatement statement = command.useIdMapping ?
+                connection.prepareStatement("SELECT id_object_type FROM ObjectType WHERE id_object_type=?") :
+                connection.prepareStatement("SELECT id_object_type FROM ObjectType WHERE name=?");
+        long lineNumber = 0L;
+        while ((line = trainingData.readLine()) != null) {
+            splittedLine = line.split("\t");
+            if (splittedLine.length != 2) {
+               throw new IOException("Trainng data input has bad format, problem on line " + lineNumber);
+            }
+            else {
+                if (splittedLine[1].equals("_")) {
+                    translatedData.write(splittedLine[0] + "\t_");
+                    translatedData.newLine();
+                }
+                else if (splittedLine[1].length() > 2 && (splittedLine[1].startsWith("I-") || (splittedLine[1].startsWith("B-")))) {
+                    String searchFor = command.mapping.get(splittedLine[1].substring(2));
+                    statement.setString(1,  searchFor );
+                    ResultSet ids = statement.executeQuery();
+                    if (ids.next() && ids.isFirst() && ids.isLast()) {
+                        String id = ids.getString("id_object_type");
+                        translatedData.write(splittedLine[0] + "\t" + splittedLine[1].substring(0,2) + id);
+                        translatedData.newLine();
+                    }
+                    else {
+                        throw new SQLException("Database returns bad number of results for key=" + searchFor);
+                    }
+                } else {
+                    throw new IOException("Trainng data input has bad format, problem on line " + lineNumber);
+                }
+            }
+            ++lineNumber;
+        }
+        translatedData.close();
+        trainingData.close();
+        File untranslatedTrainData = new File(trainingDataFile);
+        untranslatedTrainData.delete();
+        tempDataFile.renameTo(untranslatedTrainData);
     }
 
     private void createTypes(String query, List<String> names) throws SQLException {

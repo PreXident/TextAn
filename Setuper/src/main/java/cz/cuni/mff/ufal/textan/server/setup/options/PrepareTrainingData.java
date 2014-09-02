@@ -5,6 +5,8 @@ import com.beust.jcommander.Parameters;
 import cz.cuni.mff.ufal.textan.server.setup.Setuper;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,16 +17,23 @@ import java.util.Map;
 public class PrepareTrainingData extends Command {
 
     /** Path to file containing settings. */
-//    @Parameter(
-//            description = "nametag learning properties",
-//            names = { "-l", "/L", "--learning" })
-//    public String learning = "learning.properties";
+    @Parameter(
+            description = "nametag learning properties",
+            names = { "-l", "/L", "--learning" },
+            required = true )
+    public String learning = "learning.properties";
 
     /** File containing the mapping */
     @Parameter(
             description = "File with mapping if types in training data does not match type names in the database.",
             names = { "-m", "/M", "--mapping" })
     public String mappingFile = null;
+
+    /** Used IDs instead of names in type mapping to database */
+    @Parameter(
+            description = "Use IDs instead of type name in type mapping to database .",
+            names = { "-i", "/I", "--useid" })
+    public boolean useIdMapping = false;
 
     /**
      * Mapping for renaming.
@@ -44,7 +53,7 @@ public class PrepareTrainingData extends Command {
     };
 
     @Override
-    public void accept(final Setuper setuper) {
+    public void accept(final Setuper setuper) throws IOException, SQLException {
         prepareMapping();
         setuper.prepareTrainingData(this);
     }
