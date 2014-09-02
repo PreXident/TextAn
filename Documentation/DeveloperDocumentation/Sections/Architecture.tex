@@ -6,8 +6,9 @@ side and the server side and the communication between them.
 \section{Architecture Overview}
 
 The architecture of \textan{} is based on client-server model. Two main components
-are the \textan{} server and \textan{} client which communicate via W3C web services
-(SOAP protocol).
+are the \textan{} server (see Chapter \ref{ch:ServerArch}) and \textan{} client 
+(see Chapter \ref{ch:ClientArch}) which communicate via W3C web services
+(SOAP protocol), see Figure \ref{fig:Architecture}.
 
 \begin{figure}[!htb]
         \centering
@@ -18,7 +19,6 @@ are the \textan{} server and \textan{} client which communicate via W3C web serv
 
 \section{Communication}
 \label{sec:Communication}
-\comment[Petr]{Adam}{First paragraph should be proof-read}
 
 The \textan{} server exposes two webservice interfaces for the client to use -
 \emph{DataProvider} and \emph{DocumentProcessor}. As the name suggests,
