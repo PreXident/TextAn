@@ -299,6 +299,27 @@ part provides training data collecting from database and preparation, model
 handling (deleting old ones and binding them to NameTag).
 \comment[Jakub, Petr]{Tam}{Approved?}
 
+\subsection{Methods}
+This part explains methods used in NameTag. \comment[]{Jakub}{add source - Fox paper http://ufal.mff.cuni.cz/~straka/papers/2013-tsd\_ner.pdf}
+
+\subsubsection{System overview}
+NameTag is based on Maximum Entropy Markov Model (MEMM). Its output is used for a Viterby decoder, which decodes probabilities estimated by a MEMM classifier.
+At the beginning, for each word the full probability distribution of its classes and positions with respect to an entity is predicted by maximum entropy model. Than, output is optimized via dynamic programming, which determines the optimal combination of classes and named entity chunks.
+Whole pipeline runs two times, using the output of first iteration as an additional feature for second iteration.
+
+\subsubsection{Maximum Entropy Classifier}
+First task of classifier is to predict for each word the named entity type and position in the entity. Positions are described with a {\it BILOU} model (B-beginning of multiword entity, I-inside word of multiword entity, L-last word of multiword entity, O-outside any entity, U-unit word entity).
+
+\subsection{Decoding}
+The probabilities estimated by the maximum entropy model are decoded with the Viterbi algorithm implementation. Than, optimization is used-impossible combinations of {\it BILOU} positions are discarded, which leads (in combination with dynamic programing) to complexity  \(O(N \cdot C)\), where \(N\) is the number of words in a sentence.
+
+\subsubsection{Classification Features}
+Maximum entropy classifier uses this features: form, lemma, tag, chunk (English only) of current word and surrounding words in window
+\pm 2, orthographic features (capitalization, punctuation, lowercase and uppercase form of
+the word), suffixes and prefixes of length 4 and regular expressions identifying possible
+year, date and time (Czech only).
+Besides features based on word and its neighbors, global features are used too. In second pipeline stage, information about prediction of five adjacent word is used (both directions) and information about the previous prediction of the candidate word in 500 preceding words.
+
 \section{Object Assigner}
 \label{sec:ObjectAssigner}
 
