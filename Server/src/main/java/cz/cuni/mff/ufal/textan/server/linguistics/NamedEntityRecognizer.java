@@ -244,6 +244,10 @@ public class NamedEntityRecognizer {
         return result;
     }
 
+    /**
+     * Create features file from properties
+     * @param learningParameters koaded properties
+     */
     private boolean createFeatures(LearningParameters learningParameters) {
         LOG.info("Creating features file");
         File featuresFile = learningParameters.getFeatruresFile();
