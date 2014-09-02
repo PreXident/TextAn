@@ -299,7 +299,7 @@ handling (deleting old ones and binding them to NameTag).
 \subsection{Methods}
 This part explains methods used in NameTag. \comment[]{Jakub}{add source - Fox paper http://ufal.mff.cuni.cz/~straka/papers/2013-tsd\_ner.pdf}
 
-\subsubsection{System overview}
+\subsubsection{System Overview}
 NameTag is based on Maximum Entropy Markov Model (MEMM). Its output is used for a Viterby decoder, which decodes probabilities estimated by a MEMM classifier.
 At the beginning, for each word the full probability distribution of its classes and positions with respect to an entity is predicted by maximum entropy model. Than, output is optimized via dynamic programming, which determines the optimal combination of classes and named entity chunks.
 Whole pipeline runs two times, using the output of first iteration as an additional feature for second iteration.
