@@ -225,7 +225,7 @@ For more information about security, please consult Section \ref{sec:Security}.
 
 Because the server can connect to an arbitrary database, it is required to
 specify what type of database is used. In \textan{} project \emph{Hibernate}
-is used for object-relation mapping \emph{(ORM)}, \emph{JDBC} for relation
+is used for object-relation mapping (\emph{ORM}), \emph{JDBC} for relation
 database access and \emph{c3p0} for connection pooling (see Section
 \ref{DEV-sec:UsedTechnologies} in the developer documentation).
 
@@ -236,8 +236,7 @@ most important properties follow:
 %jdbc
 \paragraph{jdbc.driverClassName}
 Name of the driver class made usually by database developers which enables to
-interact with database.
-\comment[Venca]{Adam}{Mention here the need to put the driver to the classpath?}
+interact with database. You need to download the corresponding driver for your database and add it to the classpath. If you are using for example gradle like \textan{} project, you can just add reference to build script (see the file \emph{Data/build.gradle}).
 
 \paragraph{jdbc.url}
  The url that points to our database. The most common url format is like this:

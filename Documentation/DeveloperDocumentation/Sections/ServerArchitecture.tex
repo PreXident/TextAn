@@ -114,13 +114,17 @@ are joined. All operations with database are usually done by DAOs.
 
 Data Access Object (DAO) is a basic design pattern for most of enterprise
 applications and wraps all access to data sources. It also handles the
-connection to data sources to get and store data. What is good for? Basically
+connection to data sources to get and store data. Basically
 it is appreciated when the persistence layer changes. For example in case of changing
+<<<<<<< HEAD
 a underlying database or Hibernate ORM, it is not necessary to remake the whole
+=======
+a underlaying database or the ORM library, it is not necessary to remake the whole
+>>>>>>> origin/master
 application but only the DAO. As you can see in Figure
 \ref{fig:PersistentLayer} without DAO would have the application
 to call Hibernate functions and it would be dependent on Hibernate. Now the
-application do not know anything about Hibernate.
+application does not know anything about Hibernate.
 
 \begin{figure}[!htb]
         \centering
@@ -129,7 +133,7 @@ application do not know anything about Hibernate.
         \label{fig:DataDecomposition}
 \end{figure}
 
-As you can see in Figure \ref{fig:DataDecomposition}, our persistence layer is
+Figure \ref{fig:DataDecomposition} describes that our persistence layer is
 covered by package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-data}. In this section when it is
 mentioned some subpackage, it always mean the subpackage of the package \emph{data}.
 
@@ -148,16 +152,16 @@ The DAO pattern is used to provide the data to upper layers as it is mentioned
 earlier. DAOs are located in subpackage \emph{repositories}.
 In Figure \ref{fig:DatabaseDAO} there is an example of a
 DAO pattern for document table. Interface \emph{IOperations} describes common
-methods for all tables and AbstractHibernateDAO implements them. Now we have for
-example the document table, we have interface \emph{IDocumentTableDAO} that
+methods for all tables and \emph{AbstractHibernateDAO} implements them. For
+example for the document table we have interface \emph{IDocumentTableDAO} that
 describes all operations with document table and \emph{DocumentTableDAO}
-implements them for Hibernate. The application (server) itself should not know
+implements them using Hibernate. The application (server) itself should not know
 about the implementations to guarantee the independence on Hibernate.
 
 Another subpackage \emph{graph} contains all necessary methods to generate a
 graph from database. Nodes of this graph represents objects and relations in
 the database. Edge between an object and a relation means that this object is in
-that relation. We have used the factory pattern to create the graph. There are
+that relation. It is used the factory pattern to create the graph. There are
 methods in class \emph{GraphFactory} to generate a graph from an object to given
 depth and also methods supporting finding shortest path between two objects.	
 There are many algorithms for this purpose. We have
@@ -167,7 +171,7 @@ possible and it can take twice less memory than standard BFS.
 The last interesting subpackage is \emph{interceptors} containing definitions
 of Hibernate interceptors. Interceptor is something like trigger in a database.
 When insert, update or delete action are called in hibernate, a proper method
-in an interceptor is called. We are using it for \emph{global version} which we
+in an interceptor is called. It is used for \emph{global version} which we
 discuss in Section \ref{sec:Database}.
 
 A part of the persistence layer is also a full text indexing and searching. It is
@@ -194,7 +198,7 @@ meaning of all database tables and columns.
 \end{figure}
 
 \paragraph{Document} The report to be processed. In the database, there are
-columns for the date of  creation \emph{(added)}, the date for last change and
+columns for the date of creation (\emph{added}), the date for last change and
 the date when the document has been processed.
 
 \paragraph{Object} Records in this table represent objects, e.g. concrete person
@@ -208,7 +212,7 @@ the type and the types have to be unique.
 \paragraph{Alias} If an entity occurs in some document, we want to know what it
 was called. For instance Josef Omáčka can be called as ``Josef'', ``Pepe'' or
 ``Killer''. Alias table represents all these possibilities (aliases) 
-of a specific entity.
+of a specific object.
 
 \paragraph{Relation} There may be relations between objects, for example
 killer-victim, mother-son, live, use, etc. This table describes such
@@ -218,15 +222,14 @@ relationships.
 for example  killer-victim-place-time. This is the reason we have used the N:N
 relation  between \emph{object} and \emph{relation} tables which represents the
 \emph{isinrelation} table. For instance, to distinguish between killer and
-victim, the column \emph{role} (more user friendly) and
-\emph{order\_{}in\_{}relation} have been used.
+victim, the column \emph{role} has been used.
 
 \paragraph{RelationType} As well as the objects have types, the relations have their
 types too. For example ``kill'', ``live'' or ``sell''.
 
 \paragraph{Relation and Alias Occurrences} These two tables stand for the
 occurrence of an alias or relation in a document respectively. It contains their
-beginning positions in the document  and an anchor for relation. 
+beginning positions in the document and an anchor for relation. 
 
 \paragraph{Joined Objects} It is possible that users may realize two different
 objects are actually a single one. In this case, two objects have to be joined
@@ -247,7 +250,7 @@ when the tables have been modified. Tables \emph{Document}, \emph{Object} and
 each insert, delete or update. Current global version is stored in
 \emph{globalversion} table where there is only a single row every time.
 
-\paragraph{} As you may see, there is a little bit of redundancy in our schema.
+\paragraph{} There is a little bit of redundancy in our schema.
 There is alias table where the alias of an object is stored. But if we really
 want to extract the alias of an object, we could get the alias from document,
 which the object occurs. However, that would be too complicated to get from
@@ -255,14 +258,12 @@ single query. Furthermore, we want a method to easily get all aliases of an
 object.
 
 Next redundancy is \emph{Object.id\_{}root\_{}object} which is a foreign key of
-the same table. Once we join objects and we get a new one, this joining together
-makes a binary tree. A root of the tree is the object whose aliases we want to
-edit, because other objects in the tree are not taken into account. So we need
-two things: the determine if a given object is a root and the method to get the
-root if the current object is not the root. Without that column we would have to
+the same table. Joining two objects into a new one repeatedly
+makes a binary tree. A root of the tree is the object whose aliases are being
+edited, because other objects in the tree are not taken into account. So there are needed two operations: to determine if a given object is a root and to get the
+root of an object. Without column \emph{Object.id\_{}root\_{}object} we would have to
 join until we get to the root and that, as we know, cannot be done in a single
-SQL query. With the column, we only ask whether the root of an object is the
-same or we simply get the root object in one join.
+SQL query. With the column \emph{Object.id\_{}root\_{}object}, we only ask whether the \emph{Object.id\_{}root\_{}object} is equal to \emph{Object.id} or we simply get the root object in one join.
 
 There was a discussion about the equivalence between object and relation. It
 seems both sides (relation type, relation, relation occurrence versus object type,
@@ -298,6 +299,27 @@ model is generated as file. Therefore, calling C++ functions is not needed. Java
 part provides training data collecting from database and preparation, model
 handling (deleting old ones and binding them to NameTag).
 \comment[Jakub, Petr]{Tam}{Approved?}
+
+\subsection{Methods}
+This part explains methods used in NameTag. \comment[]{Jakub}{add source - Fox paper http://ufal.mff.cuni.cz/~straka/papers/2013-tsd\_ner.pdf}
+
+\subsubsection{System overview}
+NameTag is based on Maximum Entropy Markov Model (MEMM). Its output is used for a Viterby decoder, which decodes probabilities estimated by a MEMM classifier.
+At the beginning, for each word the full probability distribution of its classes and positions with respect to an entity is predicted by maximum entropy model. Than, output is optimized via dynamic programming, which determines the optimal combination of classes and named entity chunks.
+Whole pipeline runs two times, using the output of first iteration as an additional feature for second iteration.
+
+\subsubsection{Maximum Entropy Classifier}
+First task of classifier is to predict for each word the named entity type and position in the entity. Positions are described with a {\it BILOU} model (B-beginning of multiword entity, I-inside word of multiword entity, L-last word of multiword entity, O-outside any entity, U-unit word entity).
+
+\subsection{Decoding}
+The probabilities estimated by the maximum entropy model are decoded with the Viterbi algorithm implementation. Than, optimization is used-impossible combinations of {\it BILOU} positions are discarded, which leads (in combination with dynamic programing) to complexity  \(O(N \cdot C)\), where \(N\) is the number of words in a sentence.
+
+\subsubsection{Classification Features}
+Maximum entropy classifier uses this features: form, lemma, tag, chunk (English only) of current word and surrounding words in window
+\pm 2, orthographic features (capitalization, punctuation, lowercase and uppercase form of
+the word), suffixes and prefixes of length 4 and regular expressions identifying possible
+year, date and time (Czech only).
+Besides features based on word and its neighbors, global features are used too. In second pipeline stage, information about prediction of five adjacent word is used (both directions) and information about the previous prediction of the candidate word in 500 preceding words.
 
 \section{Object Assigner}
 \label{sec:ObjectAssigner}

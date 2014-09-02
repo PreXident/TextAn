@@ -52,7 +52,7 @@ like displaying graphs and processing reports in a pipeline.
         \label{fig:CorePackage}
 \end{figure}
 
-\subsection{cz.cuni.mff.ufal.textan.core.reportpipeline}
+\subsection{Subpackage reportpipeline}
 \label{sssec:ReportPipeline}
 
 This package contains classes necessary for report processing (see Figure
@@ -87,7 +87,7 @@ any.
         \label{fig:Builders}
 \end{figure}
 
-\subsection{cz.cuni.mff.ufal.textan.core.reportpipeline.load}
+\subsection{Subpackage load}
 
 This package contains classes needed for importing report texts from external
 files. There is \emph{IImport} interface that provides methods for extracting
@@ -96,7 +96,7 @@ to be registered to class \emph{ImportManager} to be selectable by users. The
 rest of the package is a few classes providing import of text files in the most
 common encodings.
 
-\subsection{cz.cuni.mff.ufal.textan.core.graph}
+\subsection{Subpackage graph}
 
 This package contains several classes related to creating graphs. They handle
 mostly graph filtering which is done solely on the client side. See Figure
@@ -135,7 +135,7 @@ Resources from this package and its subpackages contains descriptions of views
         \label{fig:Windows}
 \end{figure}
 
-\subsection{cz.cuni.mff.ufal.textan.gui.graph}
+\subsection{Subpackage graph}
 
 This package contains controllers for objects and graph views. The most
 interesting class is \emph{GraphView} which embeds JUNG Swing graph into JavaFX
@@ -149,7 +149,7 @@ workaround that copes with an inability of JavaFX to load css style sheets from
 for coloring filter list checkboxes. For that reason custom url schema ``string''
 has been created and \emph{Handler} resolves it with strings registered to it.
 
-\subsection{cz.cuni.mff.ufal.textan.tui}
+\subsection{Subpackage tui}
 
 This package contains classes intended for batch processing of reports fully
 automatically without any interventions of the users. This simple utility is run

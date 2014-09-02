@@ -149,15 +149,14 @@ disadvantages, for example that bigger messages are transferred over a network.
 
 \subsection{Database}
 
-First problem we had to face was choosing the type of database. As you may know
-there are other databases than relational, called \emph{NoSQL} databases,
-meaning \emph{Not Only SQL}. There are a few types of them, but the type that
+First problem we had to face was choosing the type of database. There are other databases than relational, called \emph{NoSQL} databases,
+meaning \emph{Not Only SQL}. There are a few types of them and the type that
 fits the most to our problem is graph database. The standard (relational)
-database is based on tables and relations between them. When you create a
-database like this you have to know the exact schema and any further changes in
-schema can be very hard to perform in already running system. On the other hand,
-relational databases are more type safe. You just can have constraints on
-columns that secure you meaningful information in the records. Graph databases
+database is based on tables and relations between them. In such
+database you have to know the exact schema and any further changes in
+it can be very hard to perform in already running system. On the other hand,
+relational databases are more type safe. There can be constraints on
+columns that secure meaningful information in the records. Graph databases
 basically look like a graph - there are nodes and edges, both can have any
 additional information of any kind. These are suitable especially for graph
 queries that cannot be done easily in relational databases.

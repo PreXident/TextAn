@@ -12,7 +12,7 @@ This section provides details of the work progress in each iteration, it could b
 used as a development diary.
 \comment[Petr]{Tam}{Approved? The whole section need to revised again (and again)}
 
-\subsection{Initialization}
+\subsection{Beginnings}
 TextAn team visited policeman plk. Ing. Jan Hořínek, who introduced us his work and showed
 us the existing inadequate software. We were given the task of preparing an extension.
 Basis of the project was to police reports - recognize entities and match them
@@ -64,7 +64,7 @@ confirmation, so it is impractical to learn from the output.
 We decided, that newly added items will be preferred over recognized ones
 \comment[Petr]{Tam}{Need to revised again} 
  
-\subsection{Design \& technologies}
+\subsection{Design \& Technologies}
 In November, we mainly chose and tested technologies which we could use. New member
 Duc Tam Hoang joined \textan{},. His specialization is
 linguistic and machine learning so he will be really useful for our project.
@@ -96,7 +96,7 @@ There were two possible server architectures: standalone or embedded webserver
 (Tomcat or Jetty). We considered usage of some technologies like Spring, CXF and
 Hibernate for database layer.
 
-\subsection{Prototyping \& interconnecting}
+\subsection{Prototyping \& Interconnecting}
 After the technologies were chosen, we made some prototypes of each component. We
 discussed a lot of APIs (we need them for testing). For testing purposes, we must
 provide some mock objects, so everyone implemented mock of his component.
@@ -108,7 +108,7 @@ We connected client and database to server, implemented database data browsing
 on client (mainly graphs viewing with JUNG).
 Tam made prototype of object matcher, but it was not integrated to server.
 
-\subsection{Main coding}
+\subsection{Main Coding}
 When we made a prototype of whole program, everyone started improving his component
 in his own branch.
 \paragraph{Server} Server was debugged and made reliable. It starts using WSDLs 
@@ -140,9 +140,15 @@ where ControlsFX and JavaFX behave differently. TextPro received many new featur
 We integrated Morphodita because we needed its tagger for new features.
 Settings through properties files are now supported in each component.
 
+<<<<<<< HEAD
 \subsection{Bugfixing \& documentation}
 For final testing, we created server hosted by Charles university with address textan.ms.mff.cuni.cz.
 Here we always keep the newest version from master branch.
+=======
+\subsection{Bugfixing \& Documentation}
+For final testing, we created server hosted by university with address textan.ms.mff.cuni.cz.
+Here we always have the newest version from master branch.
+>>>>>>> origin/master
 
 \section{Lessons Learned}
 \comment[all]{Adam}{Add your experience with the project}
