@@ -3,9 +3,8 @@ package cz.cuni.mff.ufal.textan.server.linguistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -112,8 +111,16 @@ public class LearningParameters {
         params = new LinkedList<>();
         //params.add(new File(binaryDirectory, mapBinaryName(TRAIN_NER)).toString());
 
+        InputStream userConfigStream = null;
+        try {
+            userConfigStream = new FileInputStream("NametagLearning.properties");
+        } catch (FileNotFoundException e) {
+            LOG.info("User properties was not found, using default.");
+        }
 
-        try (InputStream configFileStream = NamedEntityRecognizer.class.getResource("/NametagLearning.properties").openStream()){
+        try (InputStream configFileStream = userConfigStream != null
+                ? userConfigStream
+                : NamedEntityRecognizer.class.getResource("/NametagLearning.properties").openStream()){
             Properties p = new Properties();
             p.load(configFileStream);
             String value;
