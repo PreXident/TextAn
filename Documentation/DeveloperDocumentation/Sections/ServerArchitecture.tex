@@ -1,6 +1,6 @@
 % Chapter: Server 
 
-This chapter explains overall architecture of the Textan sever application. It
+This chapter explains overall architecture of the \textan{} sever application. It
 provides descriptions of all important components and their interaction.
 
 \section{Server Architecture}
@@ -116,7 +116,7 @@ Data Access Object (DAO) is a basic design pattern for most of enterprise
 applications and wraps all access to data sources. It also handles the
 connection to data sources to get and store data. Basically
 it is appreciated when the persistence layer changes. For example in case of changing
-a underlaying database or the ORM library, it is not necessary to remake the whole
+an underlying database or Hibernate ORM, it is not necessary to remake the whole
 application but only the DAO. As you can see in Figure
 \ref{fig:PersistentLayer} without DAO would have the application
 to call Hibernate functions and it would be dependent on Hibernate. Now the
@@ -262,7 +262,7 @@ join until we get to the root and that, as we know, cannot be done in a single
 SQL query. With the column \emph{Object.id\_{}root\_{}object}, we only ask whether the \emph{Object.id\_{}root\_{}object} is equal to \emph{Object.id} or we simply get the root object in one join.
 
 There was a discussion about the equivalence between object and relation. It
-seems both sides (relation type, relation, relation occurrence vs object type,
+seems both sides (relation type, relation, relation occurrence versus object type,
 object, alias, alias occurrence) look pretty much the same. Someone had an
 opinion that relation is just an object. But there are several reason why we
 have a separate table for relations. Relations cannot be joined like objects, we
@@ -375,8 +375,8 @@ probability value is ranked and used as the score.
 The feature set is selected among evaluations with regards to the pair between
 the entity and the object. A feature could be computed by comparing the entity 
 and the object. It also may be the characteristics of the entity or the object 
-alone. All the selected features are considered to form a meaningful set which
-expresses the nature of the pair. In the Assigner, the feature set is selected 
+alone. All the features are considered to create a meaningful set which
+expresses the nature of the pair. The final feature set is selected 
 as follow:
 
 \begin{itemize}
