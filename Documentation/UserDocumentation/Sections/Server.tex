@@ -365,42 +365,22 @@ default value of 0 denoting only the word in question.
 List of commonly used feature templates follows. Note that it is probably not
 exhaustive (see the sources in the features directory).
 
-Example of gazetteer file with months:\\
+Example of gazetteer file with months:
 
-\lstset{
-     literate=%
-         {á}{{\'a}}1
-         {í}{{\'i}}1
-         {é}{{\'e}}1
-         {ý}{{\'y}}1
-         {ú}{{\'u}}1
-         {ó}{{\'o}}1
-         {ě}{{\v{e}}}1
-         {š}{{\v{s}}}1
-         {č}{{\v{c}}}1
-         {ř}{{\v{r}}}1
-         {ž}{{\v{z}}}1
-         {ď}{{\v{d}}}1
-         {ť}{{\v{t}}}1
-         {ň}{{\v{n}}}1                
-         {ů}{{\r{u}}}1
-         {Á}{{\'A}}1
-         {Í}{{\'I}}1
-         {É}{{\'E}}1
-         {Ý}{{\'Y}}1
-         {Ú}{{\'U}}1
-         {Ó}{{\'O}}1
-         {Ě}{{\v{E}}}1
-         {Š}{{\v{S}}}1
-         {Č}{{\v{C}}}1
-         {Ř}{{\v{R}}}1
-         {Ž}{{\v{Z}}}1
-         {Ď}{{\v{D}}}1
-         {Ť}{{\v{T}}}1
-         {Ň}{{\v{N}}}1                
-         {Ů}{{\r{U}}}1   
-}
-\lstinputlisting{sampleData/gazetteerMonthsExample.txt}
+\begin{lstlisting}[frame=single]
+leden
+únor
+březen
+duben
+květen
+červen
+červenec
+srpen
+září
+říjen
+listopad
+prosinec
+\end{lstlisting}
 
 \paragraph{stages}
 The number of stages performed during recognition. Common values are either 1 or
@@ -525,9 +505,43 @@ entity),
 entity than the previous word (albeit with the same type).
 \end{itemize}
 
-For example sentence ``Tři a půl hodiny po zápase Drnovice Bohdaneč (3:1) strávil domácí Karel Majoroš a hostující Ota Pavelka na dopingové kontrole.`` \\
+For example sentence ``Tři a půl hodiny po zápase Drnovice Bohdaneč (3:1) strávil domácí Karel Majoroš a hostující Ota Pavelka na dopingové kontrole.''
 
-\lstinputlisting{sampleData/trainingDataSample.txt}
-Because ``Drnovice`` and ``Bohdaneč`` are same type of entity (4) but are not part of one entity, the second one must be note as {\it B-type}.
-Other example is ``Karel Majoroš`` and ``Oto Pavelka``, where name and surname are parts of same entity - person, so they are joined together with {\it I-type}.
-If surnames will be noted as {\it B-type}, ``Oto`` and ``Pavelka`` will be understood as two entities.
+\begin{lstlisting}[frame=single]
+Tři	_
+a	_
+půl	_
+hodiny	_
+po	_
+zápase	_
+Drnovice	I-4
+Bohdaneč	B-4
+(	_
+3	_
+:	_
+1	_
+)	_
+strávili	_
+domácí	_
+Karel	I-1
+Majoroš	I-1
+a	_
+hostující	_
+Oto	I-1
+Pavelka	I-1
+na	_
+dopingové	_
+kontrole	_
+,	_
+než	_
+se	_
+jim	_
+podařilo	_
+odevzdat	_
+moč	_
+.	_
+\end{lstlisting}
+
+Because ``Drnovice'' and ``Bohdaneč'' are same type of entity (4) but are not part of one entity, the second one must be note as \emph{B-type}.
+Other example is ``Karel Majoroš'' and ``Oto Pavelka'', where name and surname are parts of same entity - person, so they are joined together with \emph{I-type}.
+If surnames will be noted as {\it B-type}, ``Oto'' and ``Pavelka'' will be understood as two entities.
