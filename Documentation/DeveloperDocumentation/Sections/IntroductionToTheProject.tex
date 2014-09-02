@@ -1,38 +1,52 @@
-Status: A dummy documentation - Text Analyser
 
-\comment{Ondrej}{Insert links to project on github and testing server somewhere
-into introduction}
+In today's world, there is a large amount of unstructured written sources that contain structured information. An example is police reports. They contain
+information entities (names, addresses, phone numbers, weapons, drugs, etc..)
+and the relationships between them. This information must be transformed into
+representation which can be easily read by computers. For example, it can be
+written into the database and assigned to already existing records stored in
+the system. This process is currently made manually, which is very time 
+consuming. Similarly, the same time-consuming processing documents can be found
+in other institutions or companies. Such problem of extracting structure
+information out of general documents has recently gained attention from both
+research and industry.
 
-\comment{Adam}{add reference to Appendix \ref{app:DVD}}
+The topic of our software project called Text Analyser (\textan{}) is to
+deliver a pleasant and effective tool for extracting structured data from texts.
+In many areas the sensitivity of the processed information does not allow fully
+automatical extraction. Therefore the human element is involved into the process
+to correct and adjust automatic results. Moreover these interventions are
+exploited with machine learning techniques, so the results improve with time.
 
-\paragraph{Motivation} In today's world, there is a large amount of unstructured written sources that contain structured information. An example are police reports. They contain information entities (names, addresses, phone numbers, weapons, drugs, etc..) and the relationships between them. This information must be transformed into representation which could be easily read by computers, for example, is written in the database and assign it to an already existing objects if they have the same meaning. This process is currently made manually, which is very time consuming. Similarly, same time-consuming processing documents can be found in other institutions or companies. Such problem of extracting structure information out of general documents has recently gained attention from both research and industry.\\
-\\
-This is the topic of our software project, called Text Analyser (TextAn).
-TextAn is a client-server application for text analysis.
-It is devoted to build a pleasant and effective tool for extracting structured data in Czech police reports. 
-Our goal is to provide an effective extraction of structured data with user involvement.
-It consists of three main contributions.
-First, an efficient design of database for structured data is implemented.
-Second, we aim to maximize the accuracy and performance of automatic detection of entities.
-Third, TextAn is designed to provide a friendly method for users to confirm or adjust the system's suggestions.
+Although the first impulse came from the Czech Police needs, \textan{} is made
+as general as possible to allow easy configuration for any other domain as
+needed. It also is not language dependant, so it can process texts in completely
+different languages if corresponding components are provided.
 
-Furthermore, the application allows users to add/remove/adjust the structured information.
-They can change the relations, correct mistakes or provide further information.
-The structured information could be displayed in graph-view,
-\comment[Tam]{Adam, Ondrej}{profile? What is this about?}
-which is a fancy way that users could look at his/her profile. 
+\textan{} is a client-server application for text analysis. It provides
+webservice interfaces, so it is easy to implement own client implementation to
+meet specific user needs or to integrate it in a legacy system. The project
+consists of three main contributions. Firstly, the database schema suitable for
+given tasks is implemented. Secondly, the server integrating named entity
+recognition and object assigning provides interface to access the database and
+these components. Thirdly, the client offers a friendly method for users to
+confirm or adjust the system's suggestions and explore the data stored in the
+database displaying them in graph views.
 
-\comment[anyone]{Adam}{add footnote linking chapter with used libraries when ready}
-TextAn is implemented in Java 1.8 using Spring Framework, Hibernate database layer and other libraries.
-The data are can be stored within any SQL-like relation database, e.g. MySQL.
+\textan{} is implemented in Java 1.8 using Spring Framework, Hibernate database
+layer and other libraries. For more information see Section
+\ref{sec:UsedTechnologies}. The data can be stored within any SQL-like relation
+database, e.g. MySQL. The attachted DVD contains all outcomes of the project,
+for its contents see Appendix \ref{app:DVD}. The project sources are hosted
+on GitHub\footnote{\url{https://github.com/PreXident/TextAn}} and there is
+testing server\footnote{\url{http://textan.ms.mff.cuni.cz:9500/}}.
 
 The developer team consists of 5 students:
 
 \begin{itemize}
 \itemsep0em
-\item Petr Fanta - server, interconnection of components
-\item Duc Tam Hoang - entity-object matcher 
-\item Adam Huječek - client
-\item Václav Pernička - databse
-\item Jakub Vlček - NameTag and MorphoDiTa integration
+\item Bc. Petr Fanta - server, interconnection of components
+\item Duc Tam Hoang, B. Sc. - entity-object matcher 
+\item Bc. Adam Huječek - client
+\item Bc. Václav Pernička - database
+\item Bc. Jakub Vlček - NameTag and MorphoDiTa integration
 \end{itemize}
