@@ -345,7 +345,6 @@ public class DirectDataAccessService {
         Set<Object> objects = new HashSet<>();
         List<Pair<Long, Occurrence>> objectOccurrences = new ArrayList<>();
 
-        //TODO: add duplicity checking
         for (AliasOccurrenceTable aliasOccurrence : documentTable.getAliasOccurrences()) {
 
             AliasTable alias = aliasOccurrence.getAlias();

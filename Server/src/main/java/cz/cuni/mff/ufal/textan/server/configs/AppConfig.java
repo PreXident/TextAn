@@ -204,7 +204,6 @@ public class AppConfig implements ApplicationContextAware {
         servletContextHandler.addServlet(servletHolder, "/soap/*");
         servletContextHandler.setInitParameter("contextConfigLocation", WebAppConfig.class.getName());
         servletContextHandler.addServlet(TextanWelcomePage.class, "/");
-        //servletContextHandler.setErrorHandler(new TextanErrorHandler()); //FIXME
 
         if (useSsl) {
             Constraint constraint = new Constraint();

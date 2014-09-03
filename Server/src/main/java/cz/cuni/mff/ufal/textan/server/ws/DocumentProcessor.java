@@ -131,8 +131,6 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 
         LOG.info("Executing operation getObjectsFromString: {} {}", getAssignmentsFromStringRequest, editingTicket);
 
-        //TODO: change assignments to send set of objects and list of assignment
-
         cz.cuni.mff.ufal.textan.server.models.EditingTicket serverTicket = cz.cuni.mff.ufal.textan.server.models.EditingTicket.fromCommonsEditingTicket(editingTicket);
 
         List<Entity> serverEntities = getAssignmentsFromStringRequest.getEntities().stream()

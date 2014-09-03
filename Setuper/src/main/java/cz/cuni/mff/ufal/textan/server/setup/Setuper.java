@@ -151,7 +151,6 @@ public class Setuper {
      * @throws IOException if any IO error occurs
      */
     public void cleanDB(final CleanDB command) throws IOException, SQLException {
-        //TODO test if connection  != null
         connection.setAutoCommit(false);
         try (Reader cleanScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CLEAN_SCRIPT_FILENAME))) {
             runScript(cleanScriptReader);
@@ -171,7 +170,6 @@ public class Setuper {
      * @throws IOException if any IO error occurs
      */
     public void createDB(final CreateDB command) throws IOException, SQLException {
-        //TODO test if connection  != null
         connection.setAutoCommit(false);
         try {
             try (Reader createScriptReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(CREATE_SCRIPT_FILENAME))) {
@@ -215,7 +213,6 @@ public class Setuper {
      * @throws SQLException if any SQL error occurs
      */
     public void createObjectTypes(final LoadObjectTypes command) throws SQLException {
-        //TODO test if connection  != null
         String insertObjectTypeQuery = "INSERT INTO ObjectType (name) VALUES (?)";
         createTypes(insertObjectTypeQuery, command.types);
     }
@@ -226,7 +223,6 @@ public class Setuper {
      * @throws SQLException if any SQL error occurs
      */
     public void createRelationTypes(final LoadRelationTypes command) throws SQLException {
-        //TODO test if connection  != null
         String insertRelationTypeQuery = "INSERT INTO RelationType (name) VALUES (?)";
         createTypes(insertRelationTypeQuery, command.types);
     }
@@ -237,7 +233,6 @@ public class Setuper {
      * @throws SQLException if any SQL error occurs
      */
     public void listTypes(final ListTypes command) throws SQLException {
-        //TODO test if connection  != null
 
         try (Statement statement = connection.createStatement()) {
             String objectTypesQuery = "SELECT id_object_type, name FROM ObjectType ORDER BY id_object_type";

@@ -93,7 +93,7 @@ public class CommandInvoker {
 
         while (running) {
             invoke();
-            Thread.yield(); //TODO: in jetty is used Thread.sleep(1), what is better?
+            Thread.yield(); //in jetty is used Thread.sleep(1), what is better?
         }
     }
 

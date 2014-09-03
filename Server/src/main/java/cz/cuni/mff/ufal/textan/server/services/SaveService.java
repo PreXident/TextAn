@@ -105,10 +105,10 @@ public class SaveService {
      *                            Relations are searched (in sequence) in: {@code relations}, the database.
      *                            Relations without anchor in the text of the document should be in the list,
      *                            but with {@link cz.cuni.mff.ufal.textan.server.models.Occurrence} set to null.
-     * @param force if true changes in the database made ​​during editing the document will not be considered an error TODO: better explanation
+     * @param force if true changes in the database made ​​during editing the document will not be considered an error
      * @param ticket the ticket
      * @return true if the processed document was successfully saved, false otherwise
-     * @throws IdNotFoundException the id not found exception TODO
+     * @throws IdNotFoundException the id not found exception
      */
     public boolean save(
             String text,
@@ -144,10 +144,10 @@ public class SaveService {
      *                            Relations are searched (in sequence) in: {@code relations}, the database.
      *                            Relations without anchor in the text of the document should be in the list,
      *                            but with {@link cz.cuni.mff.ufal.textan.server.models.Occurrence} set to null.
-     * @param force if true changes in the database made ​​during editing the document will not be considered an error TODO: better explanation
+     * @param force if true changes in the database made ​​during editing the document will not be considered an error
      * @param ticket the ticket
      * @return true if the processed document was successfully saved, false otherwise
-     * @throws IdNotFoundException the id not found exception TODO
+     * @throws IdNotFoundException the id not found exception
      * @throws DocumentAlreadyProcessedException if the document has been already processed
      * @throws DocumentChangedException if the document has been changed since the processing started
      */
@@ -249,7 +249,6 @@ public class SaveService {
                     objectIdMapping.put(objectId, objectTable);
                 } else {
                     objectTable = objectIdMapping.get(objectId);
-                    //todo: test if object is still root?
                 }
 
             } else {
@@ -289,7 +288,6 @@ public class SaveService {
         HashMap<Long, RelationTable> relationIdMapping = new HashMap<>();
 
         //add relation
-        //TODO: group relations?
         for (Pair<Long, Occurrence> relationOccurrence : relationOccurrences) {
 
             RelationTable relationTable;
@@ -301,7 +299,7 @@ public class SaveService {
             if (relation != null && relation.isNew()) {
 
                 if (!relationIdMapping.containsKey(relationId)) {
-                    RelationTypeTable relationTypeTable = relationTypeTableDAO.find(relation.getType().getId()); //fixme
+                    RelationTypeTable relationTypeTable = relationTypeTableDAO.find(relation.getType().getId());
                     if (relationTypeTable == null) {
                         throw new IdNotFoundException("relationTypeId", relation.getType().getId());
                     }
@@ -342,7 +340,6 @@ public class SaveService {
                         }
                     }
 
-                    //todo: add test: can be object in relation more than once?
                     if (!alreadyInRelation.contains(objectInRelationTable.getId())) {
                         InRelationTable inRelationTable = new InRelationTable(role, order, relationTable, objectInRelationTable);
                         inRelationTableDAO.add(inRelationTable);
