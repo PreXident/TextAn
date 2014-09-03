@@ -366,6 +366,11 @@ public class SaveService {
         return true;
     }
 
+    /**
+     *
+     * @param ticket
+     * @return
+     */
     public Problems getProblems(EditingTicket ticket) {
         long nextVersion = ticket.getVersion() + 1;
         List<Object> newObjects = objectTableDAO.findAllSinceGlobalVersion(nextVersion).stream()

@@ -33,7 +33,7 @@ public class ColorsController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Colors";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "colors.view";
 
     /** Minimal height of the join window. */

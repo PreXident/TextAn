@@ -64,7 +64,7 @@ public interface IRelationTableDAO extends
      * @param relationTypeId ID of a relation type.
      * @param anchorFilter Anchor pattern for full-text.
      * @param firstResult index of first result
-     * @param pageSize number of results on the page
+     * @param maxResults number of results on the page
      * @return Relations.
      */
     ResultPagination<RelationTable> findAllByRelTypeAndAnchorFullTextWithPagination(long relationTypeId, String anchorFilter, int firstResult, int maxResults);

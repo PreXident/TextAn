@@ -31,7 +31,7 @@ public class SettingsController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Settings";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "settings.view";
 
     /** Pref height of the join window. */

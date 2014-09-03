@@ -17,7 +17,7 @@ public class AboutController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "About";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "about.view";
 
     /** Pref height of the join window. */

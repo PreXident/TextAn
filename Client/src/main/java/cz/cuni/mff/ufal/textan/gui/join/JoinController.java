@@ -1,6 +1,5 @@
 package cz.cuni.mff.ufal.textan.gui.join;
 
-import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.NonRootObjectException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
@@ -17,7 +16,6 @@ import java.util.concurrent.Semaphore;
 import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -42,7 +40,7 @@ public class JoinController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Object join";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "join.view";
 
     /** Minimal height of the join window. */

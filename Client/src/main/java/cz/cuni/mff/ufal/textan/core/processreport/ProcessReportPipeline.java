@@ -255,7 +255,7 @@ public class ProcessReportPipeline implements Serializable {
     /**
      * Selects unfinished report as a source of the new report.
      * Available in {@link State.StateType#LOAD} state. Proceeds to next State.
-     * @see State#selectLoadDatasource(cz.cuni.mff.ufal.textan.core.processreport.ProcessReportPipeline)
+     * @see State#selectLoadDatasource(ProcessReportPipeline, String)
      */
     public void selectLoadDatasource(final String path) {
         state.selectLoadDatasource(this, path);

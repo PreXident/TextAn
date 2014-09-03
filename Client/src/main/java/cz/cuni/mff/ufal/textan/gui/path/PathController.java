@@ -41,7 +41,7 @@ public class PathController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Path Wizard";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "path.wizard";
 
     /** Minimal height of the path window. */

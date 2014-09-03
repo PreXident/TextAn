@@ -53,7 +53,7 @@ public abstract class AbstractBuilder implements Serializable {
      * @param clearer functor to clear trimmed words
      * @return indeces of actually added words
      * @throws SplitException if an builder should be split
-     * @see #trim(java.util.List, int, int)
+     * @see #trim(List, int, int, IClearer)
      */
     public Pair<Integer, Integer> add(final List<Word> words, final int from, final int to, final IClearer clearer)
             throws SplitException {
@@ -76,7 +76,7 @@ public abstract class AbstractBuilder implements Serializable {
      * @param to final index (inclusive)
      * @param clearer functor to clear trimmed words
      * @throws SplitException if an builder should be split
-     * @see #trim(java.util.List, int, int)
+     * @see #trim(List, int, int, IClearer)
      */
     protected void clean(final List<Word> words, final int from, final int to, final IClearer clearer) throws SplitException {
         checkAdding(words, from, to);

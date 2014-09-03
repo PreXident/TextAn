@@ -38,7 +38,7 @@ public abstract class ReportWizardController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Report Wizard";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "report.wizard";
 
     /** Style class for slider when progress can be lost. */

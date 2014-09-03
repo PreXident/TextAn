@@ -56,7 +56,7 @@ public class DocumentListController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Document Viewer";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "documents.viewer";
 
     @FXML

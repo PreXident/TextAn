@@ -142,3 +142,8 @@ task wsdl2java {
     }
 
 }
+
+javadoc {
+    exclude '**/commons/models/**'
+    exclude '**/commons/ws/**'
+}

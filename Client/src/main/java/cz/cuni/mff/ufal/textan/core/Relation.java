@@ -34,7 +34,7 @@ public class Relation implements Serializable {
     /**
      * Creates Relation from commons blue print.
      * @param relation blue print relation
-     * @param objects id -> object mapping to resolve relation ids
+     * @param objects id -&gt; object mapping to resolve relation ids
      */
     public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Long, Object> objects) {
         id = relation.getId();

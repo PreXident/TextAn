@@ -171,7 +171,7 @@ public class InnerWindow extends Window {
     }
 
     /**
-     * (Un)bind size and position according to {@link #maximilized}.
+     * (Un)bind size and position according to {@link #maximized}.
      */
     protected void adjustMaximized() {
         this.setCursor(Cursor.DEFAULT);

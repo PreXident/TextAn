@@ -44,7 +44,7 @@ public class RelationListController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Relation List";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "relation.view";
 
     /** Minimal width of the graph window. */

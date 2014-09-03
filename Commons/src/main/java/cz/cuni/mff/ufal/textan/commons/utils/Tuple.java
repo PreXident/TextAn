@@ -26,7 +26,7 @@ public class Tuple implements Cloneable, Serializable {
 
     /**
      * Creates empty tuple (filled with nulls) with given size
-     * @param size
+     * @param size tuple size
      */
     public Tuple(int size) {
         list = new ArrayList<>();

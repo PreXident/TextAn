@@ -22,7 +22,7 @@ public class EditDocumentController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Document Edit";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "document.edit";
 
     @FXML
