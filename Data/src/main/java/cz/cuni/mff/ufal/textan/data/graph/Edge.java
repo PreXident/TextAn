@@ -10,7 +10,7 @@ import java.util.Objects;
 
 /**
  * This class represents an edge in a graph.
- * 
+ *
  * @see Graph
  * @author Vaclav Pernicka
  */
@@ -70,7 +70,7 @@ public class Edge {
         if (this.order != other.order) {
             return false;
         }
-        
+
         if (Objects.equals(this.leftNode, other.leftNode) && Objects.equals(this.rightNode, other.rightNode)) {
             return this.order == other.order;
         }
@@ -119,8 +119,8 @@ public class Edge {
 
     /**
      *
-     * @return 
-     * 
+     * @return edge's type
+     *
      * @see EdgeType
      */
     public EdgeType getOrientation() {
@@ -134,11 +134,10 @@ public class Edge {
     }
 
     /**
-     * 
+     *
      * @return order in isinrelation table which describes the orientation of the edge
      */
     public int getOrder() {
         return order;
     }
-    
 }

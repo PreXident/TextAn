@@ -95,6 +95,7 @@ public class NamedEntityRecognizer {
     /**
      * Initialize NameTag
      * if there are existing models, than use newest one, else train new
+     * @throws LearningException if learning was not successful
      */
     public void init() throws LearningException {
         LOG.info("Initializing NameTag");
@@ -295,6 +296,7 @@ public class NamedEntityRecognizer {
      * Learn new model
      *
      * @param waitForModel true when learning is tu be blocking, else false
+     * @return true if learning was successful, false otherwise
      */
     public boolean learn(boolean waitForModel) {
         LOG.info("Started training new NameTag model");

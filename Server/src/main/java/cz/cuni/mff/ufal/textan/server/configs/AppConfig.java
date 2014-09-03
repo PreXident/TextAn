@@ -110,6 +110,7 @@ public class AppConfig implements ApplicationContextAware {
      * Creates a pre-configured Jetty server.
      *
      * @return the server
+     * @throws java.io.IOException if any IO error occurs
      * @see org.eclipse.jetty.server.Server
      */
     @Bean(destroyMethod = "stop")

@@ -113,6 +113,9 @@ public class Setuper {
     /**
      * Executes command using double dispatch.
      * @param command command to execute
+     * @throws ClassNotFoundException if driver was not found
+     * @throws SQLException if any SQL error occurs
+     * @throws IOException if any IO error occurs
      */
     public void execute(final Command command) throws ClassNotFoundException, SQLException, IOException {
 
@@ -144,6 +147,8 @@ public class Setuper {
     /**
      * Cleans the database.
      * @param command command options
+     * @throws SQLException if any SQL error occurs
+     * @throws IOException if any IO error occurs
      */
     public void cleanDB(final CleanDB command) throws IOException, SQLException {
         //TODO test if connection  != null
@@ -162,6 +167,8 @@ public class Setuper {
     /**
      * Creates the database.
      * @param command command options
+     * @throws SQLException if any SQL error occurs
+     * @throws IOException if any IO error occurs
      */
     public void createDB(final CreateDB command) throws IOException, SQLException {
         //TODO test if connection  != null
@@ -205,6 +212,7 @@ public class Setuper {
     /**
      * Loads object types to the database.
      * @param command command options
+     * @throws SQLException if any SQL error occurs
      */
     public void createObjectTypes(final LoadObjectTypes command) throws SQLException {
         //TODO test if connection  != null
@@ -215,6 +223,7 @@ public class Setuper {
     /**
      * Loads relation types to the database.
      * @param command command options
+     * @throws SQLException if any SQL error occurs
      */
     public void createRelationTypes(final LoadRelationTypes command) throws SQLException {
         //TODO test if connection  != null
@@ -225,6 +234,7 @@ public class Setuper {
     /**
      * Listing object and relation types in the database.
      * @param command command options
+     * @throws SQLException if any SQL error occurs
      */
     public void listTypes(final ListTypes command) throws SQLException {
         //TODO test if connection  != null
@@ -259,6 +269,7 @@ public class Setuper {
     /**
      * Renames object types to the database.
      * @param command command options
+     * @throws SQLException if any SQL error occurs
      */
     public void renameObjectTypes(final RenameObjectTypes command) throws SQLException {
         if (command.id) {
@@ -273,6 +284,7 @@ public class Setuper {
     /**
      * Renames relation types to the database.
      * @param command command options
+     * @throws SQLException if any SQL error occurs
      */
     public void renameRelationTypes(final RenameRelationTypes command) throws SQLException {
         if (command.id) {
@@ -287,6 +299,8 @@ public class Setuper {
     /**
      * Prepares training data.
      * @param command command options
+     * @throws IOException if any IO error occurs
+     * @throws SQLException if any SQL error occurs
      */
     public void prepareTrainingData(final PrepareTrainingData command) throws IOException, SQLException {
         PreparedStatement statement = command.useIdMapping

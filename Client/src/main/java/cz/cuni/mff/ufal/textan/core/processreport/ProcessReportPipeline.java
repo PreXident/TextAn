@@ -246,7 +246,7 @@ public class ProcessReportPipeline implements Serializable {
      * Extracts text from bytes in fileType.
      * @param data file data
      * @param importer importer to extract text
-     * @return
+     * @return text extracted from data
      */
     public String extractText(final byte[] data, final IImporter importer) {
         return state.extractText(this, data, importer);
@@ -255,6 +255,7 @@ public class ProcessReportPipeline implements Serializable {
     /**
      * Selects unfinished report as a source of the new report.
      * Available in {@link State.StateType#LOAD} state. Proceeds to next State.
+     * @param path path to file with saved report
      * @see State#selectLoadDatasource(ProcessReportPipeline, String)
      */
     public void selectLoadDatasource(final String path) {

@@ -1,3 +1,5 @@
+-- removes all data from the database
+
 DELETE FROM AliasOccurrence;
 DELETE FROM Alias;
 

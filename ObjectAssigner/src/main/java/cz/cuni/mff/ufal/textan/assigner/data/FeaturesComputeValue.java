@@ -2,13 +2,11 @@ package cz.cuni.mff.ufal.textan.assigner.data;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import de.linuxusers.levenshtein.util.SimpleLevenshtein;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author HOANGT
@@ -50,11 +48,11 @@ public class FeaturesComputeValue {
             sum += sim;
             number += 1;
         }
-        
+
         List<Double> lst = new ArrayList<>();
         lst.add(highestSim);
         lst.add(lowestSim);
-        lst.add((sum+0.2)/(number+0.2)); // average 
+        lst.add((sum+0.2)/(number+0.2)); // average
         return lst;
     }
 
@@ -70,10 +68,10 @@ public class FeaturesComputeValue {
         }
         return 0;
     }
-    
+
     /**
-     * Check if an object is the root object of joined tree 
-     * @param obj
+     * Check if an object is the root object of joined tree
+     * @param obj object to check
      * @return 1 if it is the root, 0 otherwise
      */
     public static double isRoot(ObjectTable obj) {
@@ -83,12 +81,12 @@ public class FeaturesComputeValue {
         }
         return isRoot;
     }
-    
+
     /**
      * The number of documents happens to be in both lists
-     * @param doc1
-     * @param doc2
-     * @return
+     * @param doc1 first list
+     * @param doc2 second list
+     * @return number of documents occurring in both lists
      */
     public static double documentsOccurrenceShare(List<DocumentTable> doc1, List<DocumentTable> doc2) {
         double count = 0;
@@ -100,14 +98,14 @@ public class FeaturesComputeValue {
         }
         return count;
     }
-    
+
     /**
-    * How many documents in the document list that contain an object in the object list
-     * @param doc
-     * @param obj
-     * @param documentTableDAO
-    * @return
-    */
+     * How many documents in the document list that contain an object in the object list
+     * @param doc documents
+     * @param obj objects
+     * @param documentTableDAO document table
+     * @return number of documents containing at least one object from the object list
+     */
     public static double documentsHaveObjects(List<DocumentTable> doc, List<ObjectTable> obj, IDocumentTableDAO documentTableDAO) {
         double count = 0;
         // Iterate through objects list
@@ -121,14 +119,14 @@ public class FeaturesComputeValue {
         }
         return count;
     }
-    
+
     /**
-    * How many objects in the object list that appear in the document list
-     * @param doc
-     * @param obj
-     * @param documentTableDAO
-    * @return
-    */
+     * How many objects in the object list that appear in the document list
+     * @param doc documents
+     * @param obj objects
+     * @param documentTableDAO document table
+     * @return number of objects appearing in at least one document from the list
+     */
     public static double objectsInDocuments(List<DocumentTable> doc, List<ObjectTable> obj, IDocumentTableDAO documentTableDAO) {
         double count = 0;
         // Iterate through objects list
@@ -143,8 +141,8 @@ public class FeaturesComputeValue {
             }
         }
         return count;
-    }    
-    
+    }
+
     /**
      * Utility classes need no constructor.
      */

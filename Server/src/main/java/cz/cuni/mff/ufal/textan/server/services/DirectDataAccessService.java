@@ -6,7 +6,6 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.*;
 import cz.cuni.mff.ufal.textan.server.models.*;
 import cz.cuni.mff.ufal.textan.server.models.Object;
-import javafx.scene.control.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +41,7 @@ public class DirectDataAccessService {
      * @param documentTableDAO the document table dAO
      * @param objectTypeTableDAO the object type table dAO
      * @param objectTableDAO the object table dAO
-     * @param aliasTableDAO
+     * @param aliasTableDAO the alias table dAO
      * @param relationTypeTableDAO the relation type table dAO
      * @param relationTableDAO the relation table dAO
      * @param inRelationTableDAO the inRelationTableDAO
@@ -82,6 +81,7 @@ public class DirectDataAccessService {
      *
      * @param documentId the document id
      * @return the document
+     * @throws IdNotFoundException if no document with the given id exists
      */
     public Document getDocument(long documentId) throws IdNotFoundException{
 
@@ -127,9 +127,11 @@ public class DirectDataAccessService {
     /**
      * Gets documents which contain object with given id.
      * @param objectId the object id
-     * @param firstResult
-     *@param maxResults @return a list of documents
+     * @param firstResult index of the first document
+     * @param maxResults maximal number of documents to return
+     * @return a list of documents
      * @throws IdNotFoundException thrown when object with given id not exists
+     * @throws NonRootObjectException if given object is not root
      */
     public Pair<List<Pair<Document, Integer>>, Integer> getDocumentsContainingObject(long objectId, int firstResult, int maxResults) throws IdNotFoundException, NonRootObjectException {
 
@@ -219,6 +221,7 @@ public class DirectDataAccessService {
      * @param documentId the document id
      * @param text the new text of the document
      * @return the indicates if document was updated
+     * @throws IdNotFoundException if no document with the given id exists
      */
     public boolean updateDocument(long documentId, String text) throws IdNotFoundException {
 
@@ -251,6 +254,7 @@ public class DirectDataAccessService {
      *
      * @param objectId the object id
      * @return the object
+     * @throws IdNotFoundException if no object with the given id exists
      */
     public Object getObject(long objectId) throws IdNotFoundException {
 
@@ -280,6 +284,7 @@ public class DirectDataAccessService {
      *
      * @param objectTypeId the object type id
      * @return the objects
+     * @throws IdNotFoundException if no object type of the given id exists
      */
     public List<Object> getObjects(long objectTypeId) throws IdNotFoundException {
         ObjectTypeTable objectTypeTable = objectTypeTableDAO.find(objectTypeId);
@@ -383,6 +388,7 @@ public class DirectDataAccessService {
      *
      * @param relationTypeId the relation type id
      * @return the relations
+     * @throws IdNotFoundException if no type with the given id exists
      */
     public List<Relation> getRelations(long relationTypeId) throws IdNotFoundException {
         RelationTypeTable relationTypeTable = relationTypeTableDAO.find(relationTypeId);

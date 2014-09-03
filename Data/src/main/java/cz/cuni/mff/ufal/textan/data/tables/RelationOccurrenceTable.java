@@ -34,10 +34,10 @@ public class RelationOccurrenceTable extends AbstractTable {
 
     /**
      *
-     * @param relation
-     * @param document
-     * @param position
-     * @param anchor
+     * @param relation occurring relation
+     * @param document document of occurrence
+     * @param position occurrence position
+     * @param anchor occurrence anchor
      */
     public RelationOccurrenceTable(RelationTable relation, DocumentTable document, Integer position, String anchor) {
         this.position = position;
@@ -45,7 +45,7 @@ public class RelationOccurrenceTable extends AbstractTable {
 
         this.relation = relation;
         this.relation.getOccurrences().add(this);
-        
+
         this.document = document;
         this.document.getRelationOccurrences().add(this);
     }
@@ -124,7 +124,7 @@ public class RelationOccurrenceTable extends AbstractTable {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof RelationOccurrenceTable)) return false;
-        
+
         RelationOccurrenceTable rot = (RelationOccurrenceTable)o;
         if (rot.getId() != this.getId()) return false;
         if (rot.getPosition() != this.getPosition()) return false;
