@@ -13,6 +13,8 @@ public abstract class Command {
     /**
      * Accepts visitor Setuper.
      * @param setuper visitor
+     * @throws SQLException if any SQL error occurs
+     * @throws IOException if any IO error occurs
      */
     public abstract void accept(Setuper setuper) throws SQLException, IOException;
 }

@@ -24,6 +24,7 @@ public abstract class LoadTypes extends Command {
 
     /**
      * Prepares list of types loaded from files.
+     * @throws IOException if any IO error occurs
      */
     protected void prepareTypes() throws IOException {
         for (File file : files) {

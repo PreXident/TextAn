@@ -7,7 +7,6 @@ import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
@@ -18,8 +17,6 @@ import java.util.Set;
  *
  * @author Vaclav Pernicka
  */
-
-
 @Transactional
 public class GraphFactory {
 
@@ -27,9 +24,9 @@ public class GraphFactory {
     final SessionFactory sessionFactory;
 
     /**
-     *
-     * @param objectTableDAO
-     * @param sessionFactory
+     * Only constructor.
+     * @param objectTableDAO object table
+     * @param sessionFactory session factory
      */
     public GraphFactory(SessionFactory sessionFactory, IObjectTableDAO objectTableDAO) {
         this.objectTableDAO = objectTableDAO;
@@ -39,33 +36,33 @@ public class GraphFactory {
     /**
      * Returns shortest path between objects or throws an exception if there
      * does not exist any path.
-     * 
-     * @param obj1
-     * @param obj2
-     * @param maxDepth
-     * @return
-     * @throws PathDoesNotExistException 
+     *
+     * @param obj1 first object
+     * @param obj2 second object
+     * @param maxDepth maximal depth to search
+     * @return graph containg the path
+     * @throws PathDoesNotExistException if the path does not exist
      */
     public Graph getShortestPathBetweenObjects(ObjectTable obj1, ObjectTable obj2, int maxDepth) throws PathDoesNotExistException {
         Graph result1 = getGraphFromObject(obj1, maxDepth/2);
         Graph result2 = getGraphFromObject(obj2, maxDepth/2 + maxDepth%2);
-        
+
         Graph intersection = Graph.intersection(result1, result2);
-        
+
         if (!intersection.getNodes().isEmpty())
             throw new PathDoesNotExistException();
-        
+
         result1.unionIntoThis(result2);
-        
+
         return result1;
     }
-    
+
     /**
      * Creates a graph with an object in the "center"
      * You can specify how deep it will search more objects
-     * 
+     *
      * @param objectId Id of an object in the center of the graph
-     * @param depth How deep should it search. 
+     * @param depth How deep should it search.
      *              0 = returns only one object
      *              1 = returns neighbors of this node (nodes in a relationship)
      *              2 = same as 1 but also neighbors of neighbors are added
@@ -79,9 +76,9 @@ public class GraphFactory {
     /**
      * Creates a graph with an object in the "center"
      * You can specify how deep it will search more objects
-     * 
+     *
      * @param obj object in the center of the graph
-     * @param depth How deep should it search. 
+     * @param depth How deep should it search.
      *              0 = returns only one object
      *              1 = returns neighbors of this node (nodes in a relationship)
      *              2 = same as 1 but also neighbors of neighbors are added
@@ -95,7 +92,7 @@ public class GraphFactory {
     /**
      * Creates a graph with a relation in the "center".
      * You can specify how deep it will search more objects.
-     * 
+     *
      * @param relation center relation of the graph
      * @param depth how deep it will search
      * @return desired graph
@@ -103,10 +100,11 @@ public class GraphFactory {
     public Graph getGraphFromRelation(RelationTable relation, int depth) {
         return getGraphFromRelation(relation.getId(), depth);
     }
+
     /**
      * Creates a graph with a relation in the "center".
      * You can specify how deep it will search more objects.
-     * 
+     *
      * @param relationId id of a center relation of the graph
      * @param depth how deep it will search
      * @return desired graph
@@ -130,21 +128,21 @@ public class GraphFactory {
         }
         return result;
     }
-    
+
     @SuppressWarnings({"rawtypes"})
     @Transactional(readOnly = true)
     private Graph getGraphFromObject(long objectId, int depth, Set<Node> passedNodes) {
         if (depth <= 0) {
             return new Graph().add(new ObjectNode(objectTableDAO.find(objectId)));
         }
-       
-        
+
+
         Graph result = new Graph();
-        
+
         // TODO node to be done in the next wave
         // TODO get results in one query?
         Set<Node> thisWave = new HashSet<>();
-        
+
         Session s = sessionFactory.getCurrentSession();
         List res = s.createQuery(
                 "select new list(obj, rel, inRel.order, inRel2.order, obj2)"
@@ -153,13 +151,13 @@ public class GraphFactory {
                         + "     left join inRel.relation rel"
                         + "     left join rel.objectsInRelation inRel2"
                         + "     left join inRel2.object obj2"
-                
+
                         + " where obj.id = :pId"
                   )
                 .setParameter("pId", objectId)
                 .list();
         // s.close();
-        
+
         if (res.isEmpty()) {
             return new Graph().add(new ObjectNode(objectTableDAO.find(objectId)));
         }
@@ -184,7 +182,7 @@ public class GraphFactory {
             result.nodes.add(objectNode);
             thisWave.add(objectNode);
         }
-        
+
         if (depth > 1) {
             for (Node node : thisWave) {
                 if (!passedNodes.contains(node)) {
@@ -196,5 +194,4 @@ public class GraphFactory {
         }
         return result;
     }
- 
 }

@@ -46,6 +46,9 @@ public class ScriptRunner {
 
     /**
      * Default constructor
+     * @param connection connection
+     * @param autoCommit auto commit
+     * @param stopOnError stop of error
      */
     public ScriptRunner(Connection connection, boolean autoCommit,
                         boolean stopOnError) {
@@ -84,6 +87,8 @@ public class ScriptRunner {
      *
      * @param reader
      *            - the source of the script
+     * @throws SQLException if any SQL error occurs
+     * @throws IOException if any IO error occurs
      */
     public void runScript(Reader reader) throws IOException, SQLException {
         try {

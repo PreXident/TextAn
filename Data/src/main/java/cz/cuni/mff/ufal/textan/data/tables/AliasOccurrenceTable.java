@@ -42,14 +42,14 @@ public class AliasOccurrenceTable extends AbstractTable {
      *
      * @param position position in the text
      * @param alias    alias of the object
-     * @param document
+     * @param document document table
      */
     public AliasOccurrenceTable(int position, AliasTable alias, DocumentTable document) {
         this.position = position;
-        
+
         this.alias = alias;
         this.alias.getOccurrences().add(this);
-        
+
         this.document = document;
         this.document.getAliasOccurrences().add(this);
     }
