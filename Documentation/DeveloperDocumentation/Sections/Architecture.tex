@@ -1,13 +1,13 @@
 % Chapter: contains the system architecture
 
-This chapter contains a detail description of overall architecture of both the client
-side and the server side and the communication between them. 
+This chapter contains a detailed description of overall architecture of the client
+side, the server side and the communication between them. 
 
 \section{Architecture Overview}
 
 The architecture of \textan{} is based on client-server model. Two main components
 are the \textan{} server (see Chapter \ref{ch:ServerArch}) and \textan{} client 
-(see Chapter \ref{ch:ClientArch}) which communicate via W3C web services
+(see Chapter \ref{ch:ClientArch}). They communicate via W3C web services
 (SOAP protocol), see Figure \ref{fig:Architecture}.
 
 \begin{figure}[!htb]
@@ -20,8 +20,8 @@ are the \textan{} server (see Chapter \ref{ch:ServerArch}) and \textan{} client
 \section{Communication}
 \label{sec:Communication}
 
-The \textan{} server exposes two webservice interfaces for the client to use -
-\emph{DataProvider} and \emph{DocumentProcessor}. As the name suggests,
+The \textan{} server provides two webservice interfaces for the client to use -
+\emph{DataProvider} and \emph{DocumentProcessor}. The
 \emph{DataProvider} offers operations for manipulating data in the database,
 for example \emph{getObject}, \emph{mergeObjects} and \emph{updateDocument}.
 The \emph{DocumentProcessor} offers all operations related to the processing,
