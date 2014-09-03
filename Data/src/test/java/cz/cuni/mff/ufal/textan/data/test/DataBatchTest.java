@@ -6,6 +6,8 @@
 
 package cz.cuni.mff.ufal.textan.data.test;
 
+import cz.cuni.mff.ufal.textan.data.test.common.TableAction;
+import cz.cuni.mff.ufal.textan.data.test.common.Data;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
 import java.util.Arrays;

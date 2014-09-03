@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.data.graph;
 
+import com.sun.media.jfxmedia.logging.Logger;
 import cz.cuni.mff.ufal.textan.data.exceptions.PathDoesNotExistException;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
@@ -47,12 +48,18 @@ public class GraphFactory {
      * @throws PathDoesNotExistException 
      */
     public Graph getShortestPathBetweenObjects(ObjectTable obj1, ObjectTable obj2, int maxDepth) throws PathDoesNotExistException {
+        Logger.logMsg(Logger.DEBUG, "getShortestPathBetweenObjects");
+
         Graph result1 = getGraphFromObject(obj1, maxDepth/2);
+        Logger.logMsg(Logger.DEBUG, "result1: " + result1);
+        
         Graph result2 = getGraphFromObject(obj2, maxDepth/2 + maxDepth%2);
+        Logger.logMsg(Logger.DEBUG, "result2: " + result2);
         
         Graph intersection = Graph.intersection(result1, result2);
+        Logger.logMsg(Logger.DEBUG, "Intersection: " + intersection);
         
-        if (!intersection.getNodes().isEmpty())
+        if (intersection.getNodes().isEmpty())
             throw new PathDoesNotExistException();
         
         result1.unionIntoThis(result2);

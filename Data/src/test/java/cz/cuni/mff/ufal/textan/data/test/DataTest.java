@@ -6,15 +6,14 @@
 
 package cz.cuni.mff.ufal.textan.data.test;
 
+import cz.cuni.mff.ufal.textan.data.test.common.Data;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IGlobalVersionTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.*;
+import cz.cuni.mff.ufal.textan.data.test.common.TableAction;
 import cz.cuni.mff.ufal.textan.data.test.common.Utils;
 import org.junit.*;
 import org.junit.runner.RunWith;

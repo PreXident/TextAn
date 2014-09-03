@@ -6,7 +6,9 @@
 
 package cz.cuni.mff.ufal.textan.data.test;
 
+import cz.cuni.mff.ufal.textan.data.test.common.Data;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
+import cz.cuni.mff.ufal.textan.data.exceptions.PathDoesNotExistException;
 import cz.cuni.mff.ufal.textan.data.graph.Graph;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.graph.ObjectNode;
@@ -126,4 +128,28 @@ public class GraphTest {
             assertTrue("Object not in graph: i = " + i, g.getNodes().contains(new ObjectNode(objects[i])));
         }
     }
+    
+    @Test
+    public void pathFromAtoATest0() throws PathDoesNotExistException {
+        System.out.println("\n\npathFromAtoATest");
+        Graph g = graphFactory.getShortestPathBetweenObjects(objects[0], objects[0], 0);
+        System.out.println(g);
+        assertTrue("Start Node is not in result", g.getNodes().contains(new ObjectNode(objects[0])));
+    }
+
+    @Test
+    public void pathFromAtoATest1() throws PathDoesNotExistException {
+        System.out.println("\n\npathFromAtoATest");
+        Graph g = graphFactory.getShortestPathBetweenObjects(objects[0], objects[0], 1);
+        System.out.println(g);
+        assertTrue("Start Node is not in result", g.getNodes().contains(new ObjectNode(objects[0])));
+    }
+
+    @Test
+    public void pathFromAtoATest2() throws PathDoesNotExistException {
+        System.out.println("\n\npathFromAtoATest");
+        Graph g = graphFactory.getShortestPathBetweenObjects(objects[0], objects[0], 2);
+        System.out.println(g);
+        assertTrue("Start Node is not in result", g.getNodes().contains(new ObjectNode(objects[0])));
+    }    
 }
