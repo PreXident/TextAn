@@ -1,3 +1,5 @@
+-- removes whole database schema from DBMS
+
 USE textan;
 
 DROP TABLE AliasOccurrence;
@@ -18,3 +20,5 @@ DROP TABLE Document;
 
 DROP TABLE GlobalVersion;
 DROP TABLE Audit;
+
+DROP SCHEMA `textan`;

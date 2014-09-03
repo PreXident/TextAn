@@ -1,3 +1,5 @@
+-- creates a database schema 'textan' and all necessary tables in it
+
 CREATE DATABASE `textan`
 -- IF NOT EXISTS
   DEFAULT CHARACTER SET utf8
