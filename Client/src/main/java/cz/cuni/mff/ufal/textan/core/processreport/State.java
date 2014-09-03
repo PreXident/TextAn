@@ -85,7 +85,7 @@ public abstract class State implements Serializable {
      * @param pipeline pipeline delegating the request
      * @param data file data
      * @param importer importer to extract report text
-     * @return
+     * @return text extracted from data
      */
     public String extractText(final ProcessReportPipeline pipeline,
             final byte[] data, final IImporter importer) {

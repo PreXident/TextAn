@@ -200,7 +200,7 @@ public class Client {
      * Sets the username.
      * Make sure this method is called BEFORE creating {@link #dataProvider} or
      * {@link #documentProcessor}, so they use new username.
-     * @param username
+     * @param username new username
      */
     public void setUsername(final String username) {
         this.username = username;

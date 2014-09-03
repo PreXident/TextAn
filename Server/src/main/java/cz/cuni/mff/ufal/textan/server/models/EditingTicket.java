@@ -16,7 +16,7 @@ public class EditingTicket{
     /**
      * Instantiates a new Editing ticket.
      *
-     * @param version
+     * @param version global version
      */
     public EditingTicket(long version) {
         this.version = version;

@@ -33,6 +33,7 @@ abstract class GraphController extends WindowController {
      * otherwise the object list is loaded.
      * @param grapher graph information provider
      * @return loaded fxml root and its controller
+     * @throws IOException if any IO error occurs
      */
     static public Pair<Parent, GraphController> loadFXML(final IGrapher grapher)
             throws IOException {

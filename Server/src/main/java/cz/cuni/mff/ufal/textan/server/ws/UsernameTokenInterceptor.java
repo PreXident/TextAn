@@ -30,7 +30,7 @@ public class UsernameTokenInterceptor extends AbstractSoapInterceptor {
 
     /**
      * Instantiates a new Ticket interceptor.
-     * @param logInterceptor
+     * @param logInterceptor log interceptor
      */
     public UsernameTokenInterceptor(LogInterceptor logInterceptor) {
         super(Phase.PRE_INVOKE);

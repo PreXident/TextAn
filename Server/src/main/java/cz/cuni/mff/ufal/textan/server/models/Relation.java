@@ -29,7 +29,7 @@ public class Relation {
      * @param id the id
      * @param type the type
      * @param objectsInRelation the objects in relation
-     * @param anchors
+     * @param anchors relation anchord
      * @param isNew the is new
      */
     public Relation(long id, RelationType type, List<Triple<Object, String, Integer>>objectsInRelation, List<String> anchors, boolean isNew) {
@@ -44,6 +44,7 @@ public class Relation {
      * Creates a {@link cz.cuni.mff.ufal.textan.server.models.Relation} from a {@link cz.cuni.mff.ufal.textan.data.tables.RelationTable}.
      *
      * @param relationTable the relation table
+     * @param aliasTableDAO the alias table
      * @return the relation
      */
     public static Relation fromRelationTable(RelationTable relationTable, IAliasTableDAO aliasTableDAO) {
