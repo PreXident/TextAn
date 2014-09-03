@@ -3,12 +3,18 @@ package cz.cuni.mff.ufal.textan.server.commands;
 import cz.cuni.mff.ufal.textan.assigner.IObjectAssigner;
 
 /**
+ * A command for invoking {@link cz.cuni.mff.ufal.textan.assigner.IObjectAssigner#learn()}
+ *
  * @author Petr Fanta
  */
 public class ObjectAssignerLearnCommand extends Command {
 
     private final IObjectAssigner receiver;
 
+    /**
+     * Creates a learn command for given {@link cz.cuni.mff.ufal.textan.assigner.IObjectAssigner}
+     * @param receiver the instance of {@link cz.cuni.mff.ufal.textan.assigner.IObjectAssigner}
+     */
     public ObjectAssignerLearnCommand(IObjectAssigner receiver) {
         super(CommandFilterBehavior.BEFORE);
         this.receiver = receiver;
