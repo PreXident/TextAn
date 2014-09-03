@@ -1,11 +1,7 @@
 % Section: Client Usage
 This section contains all information needed by end users to successfully use
-the \textan{} client application. For instructions to actual run the client
-see Section \ref{sssec:StartClient}. \comment{Ondrej}{I do not understand what
-will be there, why chapter 2 and not sooner?} \comment{Adam}{The administrator
-needs to setup the user environment and tell the users which icon on their
-desktop they need to double click. Users know nothing about java nor operating
-systems...}
+the \textan{} client application. To run the client application in Windows, double click \emph{run.bat}, on Linux run \emph{run.sh}. For more information
+see Section \ref{sssec:StartClient}.
 
 \subsection{First Run}
 
@@ -15,7 +11,7 @@ The login name is stored in the settings and the login dialog is not shown again
 in following runs. The name can be changed in settings (see Section
 \ref{ssec:Settings}). A valid name is required, i.e. not empty and not
 whitespace characters only. If users enter invalid login, a warning is displayed
-and they may enter other login or the application quits.
+and they may enter another login or the application quits.
 
 \begin{figure}[!htb]
         \centering
@@ -26,11 +22,11 @@ and they may enter other login or the application quits.
 
 \subsection{Working Space}
 
-The \textan{} client's application working space is very simple and intuitive.
-The main window (see Figure \ref{fig:MainWindow}) contains the main menubar with
-all commands needed to control the application. There is also a toolbar with
-icons for mostly used commands to speed up the access. Hovering over the
-toolbar icons displays the corresponding action names.
+The \textan{} client's application working space is aimed to be simple and
+intuitive. The main window (see Figure \ref{fig:MainWindow}) contains the main
+menubar with all commands needed to control the application. There is also a
+toolbar with icons for mostly used commands to speed up the access. Hovering
+over the toolbar icons displays the corresponding action names.
 
 \begin{figure}[!htb]
         \centering
@@ -41,7 +37,7 @@ toolbar icons displays the corresponding action names.
 
 The File menu contains items to create new report, import report from external
 file and load report whose processing has not been not finished, but has been
-saved to continue later. For more information about report processing, see
+saved for a later use. For more information about report processing, see
 Section \ref{ssec:ProcessReport}.
 
 The Wizards menu contains items starting wizards to guide the users in more
@@ -49,21 +45,22 @@ complicated tasks, like processing report (see Section
 \ref{ssec:ProcessReport}), joining objects (see Section \ref{ssec:JoinObjects})
 and finding path between two objects (see Section \ref{ssec:PathWizard}).
 
-The Dials menu contains items to display objects, documents and relations
-stored in the database (see Section \ref{ssec:ViewDatabase}).
+The Dials \comment{Ondrej}{Proc dials?} menu contains items to display objects,
+documents and relations stored in the database (see Section
+\ref{ssec:ViewDatabase}).
 
-The Windows menu contains the list of currently displayed application windows
-to easily bring certain window to front.
+The Windows menu contains the list of currently open application windows
+to easily bring a certain window to front.
 
 The Settings menu contains items to customize \textan{} client appearance and
 behavior. For more information, see Section \ref{ssec:Settings}. It also
-contains shortcut to reset the position and size of the main window.
+contains a shortcut to reset the position and size of the main window.
 
 \subsection{Settings}
 \label{ssec:Settings}
 
 This section describes options available in individual items contained in the
-main menu Settings. All these settings are safe to change by end user. For
+main menu Settings. All these settings are safe to change by the end user. For
 more advance options, please see Sections \ref{sssec:BasicConf} and
 \ref{ssec:ClientSettings}.
 
@@ -90,8 +87,8 @@ generalization of term graph. The difference is that edges in hypergraphs can
 connect any number of nodes, whereas in graph they always connect two nodes.}
 in graphs (see Figure \ref{fig:Hypergraphs}). The default rendering transforms
 hypergraphs to graphs by adding auxiliary nodes of square shape representing
-the relation. If this control is checked, the edges are rendered by graph
-background.
+the relation. If this control is checked, the edges are rendered using
+background color in a cloud-like shape.
 
 \begin{figure}[!htb]
         \centering
@@ -113,11 +110,11 @@ path between any node and the graph central node. Nodes beyond this limit are
 not displayed.
 
 \paragraph{Login} This control enables users to change their username. Changing
-login takes effect after restarting the application.
+the login name takes effect after restarting the application.
 
 \subsubsection{Colors}
 
-The Colors settings window (see Figure \ref{fig:Colors}) contains two lists -
+The Colors settings window (see Figure \ref{fig:Colors}) contains two lists --
 one for object types and one for relation types. They contain all types found
 in the database and enable users to easily customize their color displayed in
 graphs views and report processing windows by clicking corresponding color
@@ -134,10 +131,15 @@ pickers.
 \label{ssec:ProcessReport}
 
 The wizard for report processing is accessible from the main menu. It guides
-users in complicated procedure of processing a report. The procedure is divided
-into several steps described in this section (see figure \ref{fig:Pipeline}).
-Users can return to previous steps, but if any changes are done, the progress
-in following steps is lost.
+users in a complicated procedure of processing a report. The procedure is
+divided into several steps described in this section (see Figure
+\ref{fig:Pipeline}). Users can return to previous steps, but if any changes are
+done, the progress in following steps is lost.
+
+Please note that although it is possible to process non-annotated documents in
+this wizard, their texts cannot be edited this way. For more information about
+editing and inserting non-annotated documents, please see Section
+\ref{sssec:DocumentList}.
 
 \begin{figure}[!htb]
         \centering
@@ -165,17 +167,25 @@ been saved.
 This step (see Figure \ref{fig:Source}) allows users to choose the source of the
 report. The following sources are possible:
 
-\paragraph{Database} This option displays (see Figure \ref{fig:Database}) list
-of all unprocessed reports stored in the database (for filtering details see
-Section \ref{sssec:DocumentList}).
-The report cannot be edited, so the wizard then proceeds to Edit Entities step
-(see Section \ref{sssec:EditEntities}). If the report is edited by someone else
-externally while being processed by the local user, a warning message is
-displayed. The local user can decide whether the report processing should end or
-continue with the current text. In the latter case, the current text overwrites
-the one in the database when processed report is saved to the database. It is
-also possible to enter Edit Report step (see Section \ref{sssec:ReportEdit}) and
-edit the text as it will replace stored text anyway.
+\paragraph{Database} This option displays (see Figure \ref{fig:Database}) a list
+of all unprocessed report text stored in the database (for filtering details see
+Section \ref{sssec:DocumentList}). The report text cannot be edited, so the
+wizard then proceeds to Edit Entities step (see Section
+\ref{sssec:EditEntities}).
+
+If the report text is edited by someone else as described in Section
+\ref{sssec:DocumentList} when you are processing it, a warning message is
+displayed. You can decide to end the report processing immediately
+or to continue with the current text. In the latter case, the current text
+overwrites the one in the database when processed report is saved to the
+database. It is also possible to enter Edit Report step (see Section
+\ref{sssec:ReportEdit}) and edit the text as it will replace stored text anyway.
+
+If the document is processed by someone else when you are processing it, an
+error message is displayed and the report processing ends immediately.
+
+You can avoid the risk of these conflicts by choosing ``Text File'' or ``Empty
+Message'' options described below.
 
 \begin{figure}[!htb]
         \centering
@@ -204,7 +214,7 @@ selecting a file with report whose processing has not been finished, but it
 has been stored to continue later. The wizards then proceeds to step where
 the report processing has been interrupted.
 
-\subsubsection{Edit Report}
+\subsubsection{Edit Report Text}
 \label{sssec:ReportEdit}
 
 In this step users can edit the text of the report (see Figure
@@ -384,7 +394,7 @@ editing the report or processing it if possible. Inserting new report without pr
         \label{fig:DocumentList}
 \end{figure}
 
-\subsubsection{Browsing Document}
+\subsubsection{Browsing an Individual Document}
 \label{sssec:DocumentView}
 
 This window displays reports with highlighted objects and relations for easier
