@@ -36,14 +36,28 @@ public class GraphFactory {
         this.sessionFactory = sessionFactory;
     }
 
+    /**
+     * Returns shortest path between objects or throws an exception if there
+     * does not exist any path.
+     * 
+     * @param obj1
+     * @param obj2
+     * @param maxDepth
+     * @return
+     * @throws PathDoesNotExistException 
+     */
     public Graph getShortestPathBetweenObjects(ObjectTable obj1, ObjectTable obj2, int maxDepth) throws PathDoesNotExistException {
-        Graph result= getGraphFromObject(obj2, maxDepth);
+        Graph result1 = getGraphFromObject(obj1, maxDepth/2);
+        Graph result2 = getGraphFromObject(obj2, maxDepth/2 + maxDepth%2);
         
-        if (!result.getNodes().contains(new ObjectNode(obj1)))
+        Graph intersection = Graph.intersection(result1, result2);
+        
+        if (!intersection.getNodes().isEmpty())
             throw new PathDoesNotExistException();
-        result.mergeIntoThis(getGraphFromObject(obj1, maxDepth));
         
-        return result;
+        result1.unionIntoThis(result2);
+        
+        return result1;
     }
     
     /**
@@ -78,10 +92,25 @@ public class GraphFactory {
         return getGraphFromObject(obj.getId(), depth);
     }
 
+    /**
+     * Creates a graph with a relation in the "center".
+     * You can specify how deep it will search more objects.
+     * 
+     * @param relation center relation of the graph
+     * @param depth how deep it will search
+     * @return desired graph
+     */
     public Graph getGraphFromRelation(RelationTable relation, int depth) {
         return getGraphFromRelation(relation.getId(), depth);
     }
-
+    /**
+     * Creates a graph with a relation in the "center".
+     * You can specify how deep it will search more objects.
+     * 
+     * @param relationId id of a center relation of the graph
+     * @param depth how deep it will search
+     * @return desired graph
+     */
     public Graph getGraphFromRelation(long relationId, int depth) {
         Session s = sessionFactory.getCurrentSession();
         @SuppressWarnings("unchecked")
@@ -97,7 +126,7 @@ public class GraphFactory {
         Set<Node> passedNodes = new HashSet<>(res);
         Graph result = new Graph();
         for (Node node : res) {
-            result.mergeIntoThis(getGraphFromObject(node.getId(), depth, passedNodes));
+            result.unionIntoThis(getGraphFromObject(node.getId(), depth, passedNodes));
         }
         return result;
     }
@@ -161,7 +190,7 @@ public class GraphFactory {
                 if (!passedNodes.contains(node)) {
                     passedNodes.add(node);
                     Graph nextWave = getGraphFromObject(node.getId(), depth - 1, passedNodes);
-                    result.mergeIntoThis(nextWave);
+                    result.unionIntoThis(nextWave);
                 }
             }
         }

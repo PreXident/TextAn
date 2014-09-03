@@ -7,7 +7,8 @@ package cz.cuni.mff.ufal.textan.data.exceptions;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 
 /**
- *
+ * This exception is thrown when there does not exist any path between given objects.
+ * 
  * @author Vaclav Pernicka
  */
 public class PathDoesNotExistException extends AbstractDatabaseTextanException {

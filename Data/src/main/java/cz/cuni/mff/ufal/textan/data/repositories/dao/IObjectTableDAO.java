@@ -16,10 +16,42 @@ public interface IObjectTableDAO extends
         IObjectRelationDAO<ObjectTable>,
         IGlobalVersionedTableDAO<ObjectTable> {
 
+    /**
+     * Finds all objects satisfying alias pattern by full-text.
+     * 
+     * @param pattern pattern of object alias.
+     * @return List of objects.
+     */
     List<ObjectTable> findAllByAliasFullText(String pattern);
+    /**
+     * Finds all objects satisfying alias pattern by full-text.
+     * Supporting pagination.
+     * 
+     * @param pattern pattern of object alias.
+     * @param firstResult index of first result
+     * @param pageSize number of max page size
+     * @return List of objects.
+     */
     ResultPagination<ObjectTable> findAllByAliasFullTextWithPagination(String pattern, int firstResult, int pageSize);
 
+    /**
+     * Finds all objects of given type and matching alias pattern by full-text.
+     * 
+     * @param objectTypeId
+     * @param pattern Alias pattern
+     * @return 
+     */
     List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern);
+    /**
+     * Finds all objects of given type and matching alias pattern by full-text.
+     * Supporting pagination.
+     * 
+     * @param objectTypeId
+     * @param pattern Alias pattern
+     * @param firstResult index of first result
+     * @param pageSize number of max page size
+     * @return 
+     */
     ResultPagination<ObjectTable> findAllByObjTypeAndAliasFullTextWithPagination(long objectTypeId, String pattern, int firstResult, int pageSize);
 
     /**
@@ -77,8 +109,19 @@ public interface IObjectTableDAO extends
      */
     List<ObjectTable> findAllByObjectType(ObjectTypeTable type);
     
-    
+    /**
+     * Finds all objects related to a specified object.
+     * 
+     * @param object Object, to which are connected all objects in result.
+     * @return Objects and relation that connects given object and object in result.
+     */
     List<Pair<ObjectTable, RelationTable>> getNeighbors(ObjectTable object);
+    /**
+     * Finds all objects related to a specified object.
+     * 
+     * @param objectId ID of an object, to which are connected all objects in result.
+     * @return Objects and relation that connects given object and object in result.
+     */
     List<Pair<ObjectTable, RelationTable>> getNeighbors(long objectId);    
     
 }
