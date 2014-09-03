@@ -134,7 +134,7 @@ The wizard for report processing is accessible from the main menu. It guides
 users in a complicated procedure of processing a report. The procedure is
 divided into several steps described in this section (see Figure
 \ref{fig:Pipeline}). Users can return to previous steps, but if any changes are
-done, the progress in following steps is lost.
+done, the annotation in the subsequent steps is lost.
 
 Please note that although it is possible to process non-annotated documents in
 this wizard, their texts cannot be edited this way. For more information about
@@ -168,7 +168,7 @@ This step (see Figure \ref{fig:Source}) allows users to choose the source of the
 report. The following sources are possible:
 
 \paragraph{Database} This option displays (see Figure \ref{fig:Database}) a list
-of all unprocessed report text stored in the database (for filtering details see
+of all unprocessed report texts stored in the database (for filtering details see
 Section \ref{sssec:DocumentList}). The report text cannot be edited, so the
 wizard then proceeds to Edit Entities step (see Section
 \ref{sssec:EditEntities}).
@@ -177,7 +177,7 @@ If the report text is edited by someone else as described in Section
 \ref{sssec:DocumentList} when you are processing it, a warning message is
 displayed. You can decide to end the report processing immediately
 or to continue with the current text. In the latter case, the current text
-overwrites the one in the database when processed report is saved to the
+overwrites the one in the database once you save the processed report to the
 database. It is also possible to enter Edit Report step (see Section
 \ref{sssec:ReportEdit}) and edit the text as it will replace stored text anyway.
 
@@ -190,7 +190,7 @@ Message'' options described below.
 \begin{figure}[!htb]
         \centering
         \includegraphics[width=\textwidth]{Images/database}
-        \caption{Chosing report from database.}
+        \caption{Choosing report from database.}
         \label{fig:Database}
 \end{figure}
 
@@ -202,7 +202,7 @@ the wizard proceeds to Report Edit step (see Section \ref{sssec:ReportEdit}).
 \begin{figure}[!htb]
         \centering
         \includegraphics[width=\textwidth]{Images/textfile}
-        \caption{Chosing encoding of the file.}
+        \caption{Choosing encoding of the file.}
         \label{fig:TextFile}
 \end{figure}
 
@@ -231,20 +231,21 @@ In this step users can edit the text of the report (see Figure
 \subsection{Edit Entities}
 \label{sssec:EditEntities}
 
-Before entering this step the system automatically recognizes named entities
+Before entering this step, the system automatically recognizes named entities
 in the report text. Recognized entities are marked by text color. Entities of
 the same type have the same color (see Figure \ref{fig:Entities}). Hovering over
-entity text will display its type.
+an entity will display its type.
 
 Users can correct recognized entities and add new ones by selecting the text
-of the entity by mouse and picking the entity type from the context menu.
-There is a filter field in the context menu to allow users enter substring of
-name of the desired entity type to speed up the selection process. If there is
+of the entity with mouse and picking the entity type from the context menu.
+There is a filter field in the context menu to allow users enter a substring of
+the name of the desired entity type to speed up the selection process. If there is
 only one item in the list left, it can be selected by pressing Enter key too.
 Pressing Down key in the filter field transfers focus to the list, so keyboard
 keys Up, Down and Enter can be used to select the entity type.
 
-One entity cannot consist of several separated parts and entities cannot
+Each word can be assigned to at most one entity and each entity has to cover a
+contiguous span of words. In other words, one entity cannot consist of several separated parts and entities cannot
 overlap.
 
 This step is followed by Edit Objects step (see Section
@@ -260,7 +261,7 @@ This step is followed by Edit Objects step (see Section
 \subsection{Edit Objects}
 \label{sssec:EditObjects}
 
-In this step the entities are assigned to real objects (see Figure
+In this step the entities are assigned to \textan{} objects (see Figure
 \ref{fig:Objects}). The system automatically assigns objects stored in the
 database to entities recognized in the report. If no suitable object is
 found, the entity is marked with an orange background. Hovering over entity
@@ -273,26 +274,28 @@ displays its type and assigned object if any.
         \label{fig:Objects}
 \end{figure}
 
-Right click on objects will display context menu with options to show the graph
-of the object or documents containing the object. This is also true for all following steps.
+Right clicking on objects will display a context menu with options to show the
+graph
+of the object or documents containing the object. This is also true for all the following steps.
 
-To assign object to entity left click the entity and select suitable object
-from the context menu (see Figure \ref{fig:ObjectMenu}) or create entirely new
+To assign an object to an entity, left click the entity and select the desired object
+from the context menu (see Figure \ref{fig:ObjectMenu}) or create an entirely new
 object.
 
 \begin{figure}[!htb]
         \centering
         \includegraphics[width=\textwidth]{Images/objectmenu}
         \caption{Menu for selecting object. 1) Filter field, 2) List of
-		 recommended objects (with probability of match), if 6) is checked, list
+		 recommended objects (with the probability of match), if 6) is checked, list
 		 of objects of given type from database, 3) List of new objects created
-		 during editation of the same type, 4) Button for creating new object,
+		 during editing of the same type\comment{Ondrej}{report??}, 4) Button for creating new object,
 		 5) Menu for more information about the object.}
         \label{fig:ObjectMenu}
 \end{figure}
 
-The report processing cannot continue unless all entities have assigned
-objects. This step is then followed by Relation Edit step (see Section
+The report processing cannot continue, unless all entities have objects
+assigned.
+This step is then followed by Relation Edit step (see Section
 \ref{sssec:EditRelations}).
 
 \subsection{Edit Relations}
@@ -312,11 +315,12 @@ the document.
         \label{fig:Relations}
 \end{figure}
 
-Relation with anchor can be created by selecting the words of the anchor by
-mouse and picking a relation type from context menu. Empty relation with given
-anchor and type is added to the list of relations. Empty relation without anchor
+A relation with an anchor can be created by selecting the words of the anchor
+with
+mouse and picking a relation type from context menu. An empty relation with given
+anchor and type is added to the list of relations. Relations without anchor
 can be added by Add button under the relation list and picking a relation type
-from dialog. New relations will have pre-filled some roles based on relations of
+from the dialog box. New relations will have pre-filled some roles based on relations of
 that type already stored in the database. Selecting a relation in the relation
 list highlights its anchor and assigned objects.
 
@@ -325,26 +329,29 @@ Use Add button under object list to add new row to the object table. Double
 clicking the object cell opens combobox with the list of objects in the report
 to assign to the relation. Or you can drag the object from the report text and
 drop it to empty row or Add button to add new row. Dropping the object into the
-non empty row replaces the assigned object. Any string can be specified as
-a role. If any roles exist for the relation in the database, combobox with
+non-empty row replaces the assigned object. Any string can be specified as
+a role. If any roles exist for the relation in the database, a combobox with
 them is displayed for the role column.
 
-Order column effects displaying arrows in the graph views. For binary
-relations the arrow points from object with negative order at object with
-nonnegative order. For relations with more than two objects assigned, arrows
-point from objects with negative order and at objects with positive odd order.
+The column Order affects displaying of arrows in the graph views. For binary
+relations, the arrow points from the object with a negative order to the object with
+a non-negative order. For relations with more than two objects assigned, arrows
+point from objects with a negative order to objects with positive odd order.
 
 After finishing relation editing, the document is stored into the database,
 unless some errors occur. In that case Error Step follows (see Section
 \ref{sssec:Errors}).
 
-\subsection{Errors}
+\subsection{Errors \comment{Ondrej}{Conflict Resolution as the title and use conflict
+instead of error everywhere??}}
 \label{sssec:Errors}
 
 This step takes place only if some changes to the database from other sources
 are detected (see Figure \ref{fig:Errors}). The window informs the user which
 new objects and relations have been created since the report processing started
-and which objects have been joined. The user can decide to return to previous steps and reconsider their edits or force the saving of the report.
+and which objects have been joined. The user can decide to return to previous
+steps and reconsider their edits or force the saving of the report, discaring the
+other annotation.
 
 \begin{figure}[!htb]
         \centering
@@ -363,7 +370,7 @@ while processing reports etc.
 \subsection{Browsing Objects}
 \label{sssec:ObjectList}
 
-This window contains list of objects matching the filter criteria (alias text,
+This window contains the list of objects satisfying the filter criteria (alias text,
 object type) paginated for more convenient work (see Figure
 \ref{fig:ObjectList}). Please note that changing filter criteria must be confirmed by pressing Filter button. Use right mouse button click to open context menu for displaying graph for the selected object (see Section \ref{ssec:Graphs}) or for displaying list of documents containing it (see
 Section \ref{sssec:DocumentList}).
@@ -378,11 +385,11 @@ Section \ref{sssec:DocumentList}).
 \subsection{Browsing Documents}
 \label{sssec:DocumentList}
 
-This window contains list of documents matching filter criteria. Please note
+This window contains the list of documents matching filter criteria. Please note
 that not all filter controls may be visible at all situations as they are
 customized to fit the current context (see Figure \ref{fig:DocumentList}).
 Also note that changing filter criteria must be confirmed by pressing Filter
-button. Hovering over the row displays full report text. Use right mouse button
+button. Hovering over the row displays the full text of the report. Use right mouse button
 click to open context menu for displaying graph for the selected document (see
 Section \ref{ssec:Graphs}) or for displaying the report itself (see Section
 \ref{sssec:DocumentView}). Another option is editing an unprocessed report
@@ -403,7 +410,7 @@ where you can enter the new report's text.
 \label{sssec:DocumentView}
 
 This window displays reports with highlighted objects and relations for easier
-orientation (see Figure \ref{fig:DocumentView}). Use right mouse click to open
+orientation (see Figure \ref{fig:DocumentView}). Use the right mouse button to open
 object context menu to get more information about the selected object. Selecting
 relation will highlight its anchor and assigned objects.
 
@@ -416,7 +423,7 @@ relation will highlight its anchor and assigned objects.
 
 \subsection{Browsing Relations}
 
-This window contains list of relations matching the filter criteria (anchor
+This window contains the list of relations matching the filter criteria (anchor
 text, relation type) paginated for more convenient work (see Figure
 \ref{fig:RelationList}). Please note that changing filter criteria must be
 confirmed by pressing Filter button. Use right mouse button click to open
