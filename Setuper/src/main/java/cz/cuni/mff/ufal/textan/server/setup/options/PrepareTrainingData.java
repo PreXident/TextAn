@@ -31,9 +31,22 @@ public class PrepareTrainingData extends Command {
 
     /** Used IDs instead of names in type mapping to database */
     @Parameter(
-            description = "Use IDs instead of type name in type mapping to database .",
+            description = "Use IDs instead of type name in type mapping to database.",
             names = { "-i", "/I", "--useid" })
     public boolean useIdMapping = false;
+
+    /** Set property to translated training data */
+    @Parameter(
+            description = "Set property to translated training data.",
+            names = { "-s", "/S", "--set" })
+    public boolean setProperty = false;
+
+    /** Used IDs instead of names in type mapping to database */
+    @Parameter(
+            description = "Output file for translated training data.",
+            names = { "-o", "/O", "--out" },
+            required = true)
+    public String outputFile = null;
 
     /**
      * Mapping for renaming.
