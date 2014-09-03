@@ -549,7 +549,7 @@ public class DataProvider implements cz.cuni.mff.ufal.textan.commons.ws.IDataPro
 
         try {
             GetPathByIdResponse response = new GetPathByIdResponse();
-            Graph graph = graphService.getPath(getPathByIdRequest.getStartObjectId(), getPathByIdRequest.getTargetObjectId());
+            Graph graph = graphService.getPath(getPathByIdRequest.getStartObjectId(), getPathByIdRequest.getTargetObjectId(), getPathByIdRequest.getMaxLength());
             response.setGraph(graph.toCommonsGraph());
 
             LOG.info("Executed operation getPathById: {}", response);

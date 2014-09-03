@@ -9,7 +9,11 @@ package cz.cuni.mff.ufal.textan.data.graph;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 
 /**
- *
+ * Represents a node that was created from a relation.
+ * 
+ * @see Node
+ * @see Graph
+ * 
  * @author Vaclav Pernicka
  */
 public class RelationNode extends Node {

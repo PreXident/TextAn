@@ -19,6 +19,12 @@
 	<stylesheets >
 		<URL value="@Path.css" />
 	</stylesheets>
+	<top>
+		<HBox spacing="10" alignment="CENTER" >
+			<Label text="%distance" />
+			<BigDecimalField fx:id="distanceField" minValue="0" prefWidth="80" />
+		</HBox>
+	</top>
 	<center>
 		<SplitPane fx:id="splitPane" >
 			<items>

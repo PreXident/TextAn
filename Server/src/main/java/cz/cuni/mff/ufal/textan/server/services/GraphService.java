@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.server.services;
 
+import cz.cuni.mff.ufal.textan.data.exceptions.PathDoesNotExistException;
 import cz.cuni.mff.ufal.textan.data.graph.GraphFactory;
 import cz.cuni.mff.ufal.textan.data.graph.Node;
 import cz.cuni.mff.ufal.textan.data.graph.ObjectNode;
@@ -8,6 +9,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
+import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 import cz.cuni.mff.ufal.textan.server.models.Graph;
 import cz.cuni.mff.ufal.textan.server.models.Object;
 import cz.cuni.mff.ufal.textan.server.models.Relation;
@@ -40,8 +42,15 @@ public class GraphService {
         this.relationTableDAO = relationTableDAO;
     }
 
-    public Graph getPath(long startObjectId, long targetObjectId) throws IdNotFoundException, NonRootObjectException {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Graph getPath(long startObjectId, long targetObjectId, int maxLength) throws IdNotFoundException, NonRootObjectException {
+        ObjectTable startObject = getTestedObjectTable(startObjectId, "startObjectId");
+        ObjectTable targetObject = getTestedObjectTable(targetObjectId, "targetObjectId");
+
+        try {
+            return transformGraph(graphFactory.getShortestPathBetweenObjects(startObject, targetObject, maxLength));
+        } catch (PathDoesNotExistException e) {
+            return new Graph();
+        }
     }
 
     public Graph getGraphFromObject(long objectId, int distance) throws IdNotFoundException, NonRootObjectException {
@@ -53,45 +62,33 @@ public class GraphService {
     }
 
     public Graph getGraphFromRelation(long relationId, int distance) throws IdNotFoundException {
-
-        List<Object> nodes = new ArrayList<>();
-        List<Relation> edges = new ArrayList<>();
-
-        cz.cuni.mff.ufal.textan.data.graph.Graph dataGraph = graphFactory.getGraphFromRelation(relationId, distance);
-
-        if (dataGraph.getNodes().isEmpty()) {
+        RelationTable relationTable = relationTableDAO.find(relationId);
+        if (relationTable == null) {
             throw new IdNotFoundException("relationId", relationId);
         }
 
-        //TODO: extract private method
-        for (Node node : dataGraph.getNodes()) {
-
-            if (node instanceof ObjectNode) {
-                long nodeObjectId = node.getId();
-                nodes.add(Object.fromObjectTable(objectTableDAO.find(nodeObjectId), aliasTableDAO.findAllAliasesOfObject(nodeObjectId)));
-            }
-
-            if (node instanceof RelationNode) {
-                long nodeRelationId = node.getId();
-                edges.add(Relation.fromRelationTable(relationTableDAO.find(nodeRelationId), aliasTableDAO));
-            }
-        }
-
-        return new Graph(nodes, edges);
+        return transformGraph(graphFactory.getGraphFromRelation(relationId, distance));
     }
 
     private Graph getGraphInner(long objectId, int distance) throws IdNotFoundException, NonRootObjectException {
-        List<Object> nodes = new ArrayList<>();
-        List<Relation> edges = new ArrayList<>();
+        getTestedObjectTable(objectId, "objectId");
+        return transformGraph(graphFactory.getGraphFromObject(objectId, distance));
+    }
 
+    private ObjectTable getTestedObjectTable(long objectId, String fieldName) throws IdNotFoundException, NonRootObjectException {
         ObjectTable objectTable = objectTableDAO.find(objectId);
         if (objectTable == null) {
-            throw new IdNotFoundException("objectId", objectId);
+            throw new IdNotFoundException(fieldName, objectId);
         } else if (!objectTable.isRoot()) {
             throw new NonRootObjectException(objectId, objectTable.getRootObject().getId());
         }
 
-        cz.cuni.mff.ufal.textan.data.graph.Graph dataGraph = graphFactory.getGraphFromObject(objectId, distance);
+        return objectTable;
+    }
+
+    private Graph transformGraph(cz.cuni.mff.ufal.textan.data.graph.Graph dataGraph) {
+        List<Object> nodes = new ArrayList<>();
+        List<Relation> edges = new ArrayList<>();
 
         for (Node node : dataGraph.getNodes()) {
 
