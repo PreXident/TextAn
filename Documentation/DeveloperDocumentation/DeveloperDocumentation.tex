@@ -27,7 +27,9 @@
 \usepackage[stable]{footmisc}
 \usepackage{titlesec}
 \usepackage{fontspec}
-\usepackage{epstopdf,epsfig} 
+\usepackage{epstopdf,epsfig}
+\usepackage[backend=bibtex]{biblatex}
+\bibliography{Sections/Citations} 
 
 
 \definecolor{TextanDarkRed}{cmyk}{.37,.94,.83,.59}
@@ -209,7 +211,6 @@ in attached DVD in folder Javadoc.
 \input{Sections/ClientProperties}
 \label{app:ClientProperties}
 
-\bibliography{Sections/Citations}{}
-\bibliographystyle{ieeetr}
+\printbibliography
 
 \end{document}
