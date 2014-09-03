@@ -180,9 +180,10 @@ public abstract class AbstractBuilder implements Serializable {
      * Gets informed when word at index is cleared.
      */
     public interface IClearer {
+
         /**
          * The word at index is cleared.
-         * @param index
+         * @param index index to clear
          */
         void clear(final int index);
     }

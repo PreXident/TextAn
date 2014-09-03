@@ -25,6 +25,7 @@ public class DocumentsStage extends OuterStage {
      * @param settings properties with settings
      * @param client client to communicate with server
      * @param object object whose documents should be displayed
+     * @param relation relation whose documents should be displayed
      */
     public DocumentsStage(final TextAnController textAnController,
             final Properties settings, final Client client, final Object object,
