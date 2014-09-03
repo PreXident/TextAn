@@ -8,8 +8,8 @@ This section describes main decisions that were made during the development proc
 Although automatic recognition can achieve very good results, there are many
 sensitive areas where it is necessary to eliminate all errors, such as
 police reports. For this reason we chose semi-automatic recognition, so users
-can rectify all mistakes before the system stores data in the database. 
-If fully-automatic recognition is required, it is easy
+can correct all mistakes before the system stores data in the database. 
+Also if fully-automatic recognition is required, it is easy
 to skip the human intervention entirely at cost of little overhead caused by
 multiple calls of webservice operation because of pipeline decision described in
 Section \ref{ssec:ReportPipeline}. Or a facade operation can be implemented to
