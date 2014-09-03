@@ -219,7 +219,3 @@ task zip(type: Zip, dependsOn: 'dist') {
     from file("$buildDir/dist")
     exclude "*.zip"
 }
-
-javadoc {
-    exclude '**/server/services/*Service*'
-}
