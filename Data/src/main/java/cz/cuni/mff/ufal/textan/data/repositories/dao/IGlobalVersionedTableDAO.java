@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface IGlobalVersionedTableDAO<T> {
     /**
-     * finds all object newer or equal from specified version
+     * finds all records newer or equal from specified version
      * 
      * @param version global version which auto increments with object creation
      * @return 

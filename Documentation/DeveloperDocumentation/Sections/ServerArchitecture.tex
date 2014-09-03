@@ -263,7 +263,7 @@ decided to give them extra table.
 
 \section{Named Entity Recognizer}
 \label{sec:NamedEntityRecognizer}
-For named entity recognition is used tool NameTag. It identifies proper names in text and classifies them into predefined categories.
+For named entity recognition is used tool NameTag~\cite{strakova14}. It identifies proper names in text and classifies them into predefined categories.
 
 \subsection{Integration}
 The architecture of Named entity recognizer integration is divided to two parts: recognition
@@ -288,7 +288,7 @@ part provides training data collecting from database and preparation, model
 handling (deleting old ones and binding them to NameTag).
 
 \subsection{NameTag}
-This part explains methods used in NameTag. \comment{Jakub}{add source - Fox paper http://ufal.mff.cuni.cz/~straka/papers/2013-tsd\_ner.pdf}
+This part explains methods used in NameTag~\cite{strakova13, strakova14}.
 
 \paragraph{System Overview}
 NameTag is based on Maximum Entropy Markov Model (MEMM). Its output is used for a Viterby decoder, which decodes probabilities estimated by a MEMM classifier.

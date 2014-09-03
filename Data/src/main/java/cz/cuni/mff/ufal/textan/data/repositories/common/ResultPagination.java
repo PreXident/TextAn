@@ -4,13 +4,14 @@ import java.util.List;
 
 /**
  * @author Petr Fanta
+ * @param <E> result type
  */
 public class ResultPagination<E> {
 
-    private int firstResult;
-    private int maxResults;
-    private List<E> results;
-    private int totalNumberOfResults;
+    private final int firstResult;
+    private final int maxResults;
+    private final List<E> results;
+    private final int totalNumberOfResults;
 
     public ResultPagination(int firstResult, int maxResults, List<E> results, int totalNumberOfResults) {
         this.firstResult = firstResult;

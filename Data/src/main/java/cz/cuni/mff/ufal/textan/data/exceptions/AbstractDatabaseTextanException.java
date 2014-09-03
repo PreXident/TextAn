@@ -5,7 +5,8 @@
 package cz.cuni.mff.ufal.textan.data.exceptions;
 
 /**
- *
+ * Superclass of all database textan exceptions
+ * 
  * @author Vaclav Pernicka
  */
 public abstract class AbstractDatabaseTextanException extends Exception {

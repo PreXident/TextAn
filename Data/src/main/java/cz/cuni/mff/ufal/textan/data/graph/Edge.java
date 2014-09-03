@@ -9,7 +9,9 @@ package cz.cuni.mff.ufal.textan.data.graph;
 import java.util.Objects;
 
 /**
- *
+ * This class represents an edge in a graph.
+ * 
+ * @see Graph
  * @author Vaclav Pernicka
  */
 public class Edge {

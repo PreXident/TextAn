@@ -3,7 +3,11 @@ package cz.cuni.mff.ufal.textan.data.graph;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 
 /**
- *
+ * Represents a node that was created from an object.
+ * 
+ * @see Node
+ * @see Graph
+ * 
  * @author Vaclav Pernicka
  */
 public class ObjectNode extends Node {

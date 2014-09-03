@@ -54,7 +54,7 @@ public class PathGrapher extends ObjectGrapher {
     protected Graph fetchGraph() throws IdNotFoundException {
         while (true) {
             try {
-                return client.getPathGraph(rootId, targetId);
+                return client.getPathGraph(rootId, targetId, distance);
             } catch (NonRootObjectException e) {
                 if (e.getObjectId() == rootId) {
                     rootId = e.getNewRootId();

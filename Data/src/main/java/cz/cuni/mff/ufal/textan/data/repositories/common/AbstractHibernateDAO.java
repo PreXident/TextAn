@@ -251,7 +251,16 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     protected final static String getAliasPropertyName(String propertyName) {
         return DAOUtils.getAliasPropertyName(thisAlias, propertyName);
     }
-
+    /**
+     * Adds pagination to a given Query.
+     * 
+     * @param query query to add pagination
+     * @param firstResult index of first result
+     * @param maxResults number of results on the page
+     * @return query with pagination
+     * 
+     * @see Query
+     */
     protected static Query addPagination(Query query, int firstResult, int maxResults) {
         query.setFirstResult(firstResult);
         query.setMaxResults(maxResults);
