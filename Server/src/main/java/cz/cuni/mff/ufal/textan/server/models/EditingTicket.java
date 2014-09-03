@@ -7,6 +7,8 @@ import java.util.Date;
  * Ticket holds information about user and a start of editing.
  *
  * @author Petr Fanta
+ * @see cz.cuni.mff.ufal.textan.data.tables.GlobalVersionTable
+ * @see cz.cuni.mff.ufal.textan.data.repositories.dao.GlobalVersionTableDAO
  */
 public class EditingTicket{
 
@@ -23,13 +25,17 @@ public class EditingTicket{
         timestamp = new Date();
     }
 
+    /**
+     * Instantiates a new Editing ticket.
+     * @param version the database global version
+     * @param timestamp the timestamp   */
     public EditingTicket(long version, Date timestamp) {
         this.timestamp = timestamp;
         this.version = version;
     }
 
     /**
-     * Converts a {@link  cz.cuni.mff.ufal.textan.server.models.EditingTicket} to {@link cz.cuni.mff.ufal.textan.server.models.Entity}
+     * Converts a {@link  cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket} to {@link cz.cuni.mff.ufal.textan.server.models.EditingTicket}
      *
      * @param commonsEditingTicket the commons editing ticket
      * @return the editing ticket
@@ -38,6 +44,10 @@ public class EditingTicket{
         return new EditingTicket(commonsEditingTicket.getVersion() ,commonsEditingTicket.getTimestamp());
     }
 
+    /**
+     * Converts the instance to {@link cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket}
+     * @return the {@link cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket}
+     */
     public cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket toCommonsEditingTicket() {
         cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket commonsTicket = new cz.cuni.mff.ufal.textan.commons.models.documentprocessor.EditingTicket();
         commonsTicket.setVersion(version);
@@ -45,6 +55,10 @@ public class EditingTicket{
         return commonsTicket;
     }
 
+    /**
+     * Gets the global version.
+     * @return the global version
+     */
     public long getVersion() {
         return version;
     }

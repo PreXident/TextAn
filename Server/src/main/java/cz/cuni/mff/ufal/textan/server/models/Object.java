@@ -34,7 +34,7 @@ public class Object {
     }
 
     /**
-     * Creates a {@link cz.cuni.mff.ufal.textan.server.models.Document} from a {@link cz.cuni.mff.ufal.textan.commons.models.Document}
+     * Creates a {@link cz.cuni.mff.ufal.textan.server.models.Document} from a {@link cz.cuni.mff.ufal.textan.data.tables.DocumentTable}
      *
      * @param objectTable the object table
      * @return the object
@@ -52,6 +52,14 @@ public class Object {
                 );
     }
 
+    /**
+     * Creates a {@link cz.cuni.mff.ufal.textan.server.models.Document} from a {@link cz.cuni.mff.ufal.textan.data.tables.DocumentTable}
+     * with specified aliases
+     *
+     * @param objectTable the object table
+     * @param aliasTables the specified aliases
+     * @return the object
+     */
     public static Object fromObjectTable(ObjectTable objectTable, List<AliasTable> aliasTables) {
 
         List<String> aliases = aliasTables.stream()
@@ -72,7 +80,6 @@ public class Object {
      * @param commonsObject the commons object
      * @return the object
      */
-    //TODO: remove?
     public static Object fromCommonsObject(cz.cuni.mff.ufal.textan.commons.models.Object commonsObject) {
         return new Object(
                 commonsObject.getId(),

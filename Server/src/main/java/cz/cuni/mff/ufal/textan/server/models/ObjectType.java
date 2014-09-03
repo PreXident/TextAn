@@ -31,7 +31,6 @@ public class ObjectType {
      * @param objectTypeTable the object type table
      * @return the object type
      */
-    //todo: maybe provide wrappers instead conversion methods
     public static ObjectType fromObjectTypeTable(ObjectTypeTable objectTypeTable) {
         return new ObjectType(objectTypeTable.getId(), objectTypeTable.getName());
     }
@@ -63,18 +62,6 @@ public class ObjectType {
     public String getName() {
         return name;
     }
-
-    /**
-     * Converts an instance to an {@link cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable}
-     *
-     * @return the object type table
-     */
-//    public ObjectTypeTable toObjectTypeTable() {
-//        ObjectTypeTable objectTypeTable = new ObjectTypeTable();
-//        objectTypeTable.setId(id);
-//        objectTypeTable.setName(name);
-//        return objectTypeTable;
-//    }
 
     /**
      * Converts an instance to an {@link cz.cuni.mff.ufal.textan.commons.models.ObjectType}

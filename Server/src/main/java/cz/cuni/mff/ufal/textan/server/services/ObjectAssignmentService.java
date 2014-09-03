@@ -65,13 +65,13 @@ public class ObjectAssignmentService {
         Map<cz.cuni.mff.ufal.textan.assigner.data.Entity, List<Pair<Long, Double>>> textProAssignments =
                 objectAssigner.combinedObjectRanking(
                         text,
-                        entities.stream().map(Entity::toTextProEntity).collect(Collectors.toList()),
+                        entities.stream().map(Entity::toObjectAssignerEntity).collect(Collectors.toList()),
                         50
                 );
 
         List<Assignment> assignments = new ArrayList<>();
         for (Entity entity : entities) {
-            List<Pair<Long, Double>> objectScorePairs = textProAssignments.get(entity.toTextProEntity());
+            List<Pair<Long, Double>> objectScorePairs = textProAssignments.get(entity.toObjectAssignerEntity());
             List<Pair<Object, Float>> ratedObjects = objectScorePairs.stream()
                     .map(x -> new Pair<>(Object.fromObjectTable(objectTableDAO.find(x.getFirst()), aliasTableDAO.findAllAliasesOfObject(x.getFirst())), x.getSecond().floatValue()))
                     .collect(Collectors.toList());
