@@ -1,12 +1,5 @@
 % Section: Introduction
 
-
-This section is intended to provide a brief summary \textan{} goals and features
-and a glossary of terms used in the rest of the documentation and the application
-itself.
-
-\subsection{System overview}
-
 With an increasing amount of electronically distributed unstructured text
 (newspapers, letters etc.) there is a growing demand for its analysis and
 understanding by computer means. This process should be as automated as possible
@@ -22,15 +15,23 @@ objective of \textan{} is to provide a robust tool which supports the procedure.
 Although first impulse came from the Police needs, \textan{} is made as general as
 possible to allow easy configuration for any other domain as needed.
 
-Users of \textan{} can manage the stored documents. The unprocessed documents can
-be inserted into the system for later use. Full text search supports both
+\section{System overview}
+The system consists of two main components -- the client application
+and the server. For information intended for end-users about client usage, see
+Section \ref{sec:ClientUsage}. Instruction intended for system
+administrators can be found in Chapter \ref{sec:AdminGuide}, mainly in Section
+\ref{sec:Client} about configuring the client and in Section \ref{sec:Server}
+about server configuration.
+
+Users of \textan{} can manage the stored documents. The unprocessed documents
+can be inserted into the system for later use. Full text search supports both
 unprocessed and processed documents and more sophisticated search methods can be
-performed on annotated reports. Users can annotate unprocessed documents stored in
-the database or completely new reports either imported from local files or written
-from scratch.
+performed on annotated reports. Users can annotate unprocessed documents stored
+in the database or completely new reports either imported from local files or
+written from scratch.
 
 This documentation describes \textan{} from the user and administrator
 perspective.
 
-\subsection{Glossary}
+\section{Glossary}
 \input{Sections/Glossary}

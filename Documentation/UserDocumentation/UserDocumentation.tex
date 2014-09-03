@@ -175,19 +175,17 @@ RNDr. Ondřej Bojar, Phd.\\
 %\chapter*{Intro}
 %\addcontentsline{toc}{chapter}{Intro}
 
-\chapter{User Guide}
 \pagenumbering{arabic}
 
-This chapter provides a short introduction to the project \textan{} and all information
-needed by end-users to successfully use the \textan{} client.
-
-\section{Introduction}
+\chapter{Introduction}
 \input{Sections/Introduction}
 
-\section{Client Usage}
+\chapter{Client Usage}
+\label{sec:ClientUsage}
 \input{Sections/ClientUsage}
 
 \chapter{Administrator Guide}
+\label{sec:AdminGuide}
 
 This chapter contains information needed by system administrators to install,
 configure and run both the \textan{} server and the \textan{} client for end
@@ -213,9 +211,11 @@ that it is not explained yet.}
 \input{Sections/Security}
 
 \section{Server}
+\label{sec:Server}
 \input{Sections/Server}
 
 \section{Client}
+\label{sec:Client}
 \input{Sections/Client}
 
 \end{document}

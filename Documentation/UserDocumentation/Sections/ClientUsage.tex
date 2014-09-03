@@ -3,7 +3,7 @@ This section contains all information needed by end users to successfully use
 the \textan{} client application. To run the client application in Windows, double click \emph{run.bat}, on Linux run \emph{run.sh}. For more information
 see Section \ref{sssec:StartClient}.
 
-\subsection{First Run}
+\section{First Run}
 
 On the first run of \textan{} client, users are prompted to enter their username
 (see Figure \ref{fig:Login}, which is used by the system to identify the users.
@@ -20,7 +20,7 @@ and they may enter another login or the application quits.
         \label{fig:Login}
 \end{figure}
 
-\subsection{Working Space}
+\section{Working Space}
 
 The \textan{} client's application working space is aimed to be simple and
 intuitive. The main window (see Figure \ref{fig:MainWindow}) contains the main
@@ -56,7 +56,7 @@ The Settings menu contains items to customize \textan{} client appearance and
 behavior. For more information, see Section \ref{ssec:Settings}. It also
 contains a shortcut to reset the position and size of the main window.
 
-\subsection{Settings}
+\section{Settings}
 \label{ssec:Settings}
 
 This section describes options available in individual items contained in the
@@ -64,7 +64,7 @@ main menu Settings. All these settings are safe to change by the end user. For
 more advance options, please see Sections \ref{sssec:BasicConf} and
 \ref{ssec:ClientSettings}.
 
-\subsubsection{General Settings}
+\subsection{General Settings}
 \label{sssec:GeneralSettings}
 
 The General Settings window (see Figure \ref{fig:GeneralSettings}) contains
@@ -112,7 +112,7 @@ not displayed.
 \paragraph{Login} This control enables users to change their username. Changing
 the login name takes effect after restarting the application.
 
-\subsubsection{Colors}
+\subsection{Colors}
 
 The Colors settings window (see Figure \ref{fig:Colors}) contains two lists --
 one for object types and one for relation types. They contain all types found
@@ -154,7 +154,7 @@ be resumed by selecting Unfinished Report in Report Source step (see Section
 \ref{sssec:ReportSource}). The processing continues in the step where it has
 been saved.
 
-\subsubsection{Report Source}
+\subsection{Report Source}
 \label{sssec:ReportSource}
 
 \begin{figure}[!htb]
@@ -214,7 +214,7 @@ selecting a file with report whose processing has not been finished, but it
 has been stored to continue later. The wizards then proceeds to step where
 the report processing has been interrupted.
 
-\subsubsection{Edit Report Text}
+\subsection{Edit Report Text}
 \label{sssec:ReportEdit}
 
 In this step users can edit the text of the report (see Figure
@@ -228,7 +228,7 @@ In this step users can edit the text of the report (see Figure
         \label{fig:ReportEdit}
 \end{figure}
 
-\subsubsection{Edit Entities}
+\subsection{Edit Entities}
 \label{sssec:EditEntities}
 
 Before entering this step the system automatically recognizes named entities
@@ -257,7 +257,7 @@ This step is followed by Edit Objects step (see Section
         \label{fig:Entities}
 \end{figure}
 
-\subsubsection{Edit Objects}
+\subsection{Edit Objects}
 \label{sssec:EditObjects}
 
 In this step the entities are assigned to real objects (see Figure
@@ -295,7 +295,7 @@ The report processing cannot continue unless all entities have assigned
 objects. This step is then followed by Relation Edit step (see Section
 \ref{sssec:EditRelations}).
 
-\subsubsection{Edit Relations}
+\subsection{Edit Relations}
 \label{sssec:EditRelations}
 
 This is the last mandatory step during report processing (see Figure
@@ -338,7 +338,7 @@ After finishing relation editing, the document is stored into the database,
 unless some errors occur. In that case Error Step follows (see Section
 \ref{sssec:Errors}).
 
-\subsubsection{Errors}
+\subsection{Errors}
 \label{sssec:Errors}
 
 This step takes place only if some changes to the database from other sources
@@ -353,14 +353,14 @@ and which objects have been joined. The user can decide to return to previous st
         \label{fig:Errors}
 \end{figure}
 
-\subsection{Database Exploration}
+\section{Database Exploration}
 \label{ssec:ViewDatabase}
 
 Users can use the client to view data stored in the database by selecting items
 in Dials menu of the main window. Other ways include various context menus
 while processing reports etc.
 
-\subsubsection{Browsing Objects}
+\subsection{Browsing Objects}
 \label{sssec:ObjectList}
 
 This window contains list of objects matching the filter criteria (alias text,
@@ -375,7 +375,7 @@ Section \ref{sssec:DocumentList}).
         \label{fig:ObjectList}
 \end{figure}
 
-\subsubsection{Browsing Documents}
+\subsection{Browsing Documents}
 \label{sssec:DocumentList}
 
 This window contains list of documents matching filter criteria. Please note
@@ -399,7 +399,7 @@ where you can enter the new report's text.
         \label{fig:DocumentList}
 \end{figure}
 
-\subsubsection{Browsing an Individual Document}
+\subsection{Browsing an Individual Document}
 \label{sssec:DocumentView}
 
 This window displays reports with highlighted objects and relations for easier
@@ -414,7 +414,7 @@ relation will highlight its anchor and assigned objects.
         \label{fig:DocumentView}
 \end{figure}
 
-\subsubsection{Browsing Relations}
+\subsection{Browsing Relations}
 
 This window contains list of relations matching the filter criteria (anchor
 text, relation type) paginated for more convenient work (see Figure
@@ -431,7 +431,7 @@ Section \ref{sssec:DocumentList}).
         \label{fig:RelationList}
 \end{figure}
 
-\subsection{Graph Views}
+\section{Graph Views}
 \label{ssec:Graphs}
 
 Graph Windows can be displayed from many places in \textan{} client. The most
@@ -470,7 +470,7 @@ filter lists.
         \label{fig:Graph}
 \end{figure}
 
-\subsection{Joining Objects}
+\section{Joining Objects}
 \label{ssec:JoinObjects}
 
 There can be situations when it is discovered that two objects originally
@@ -489,7 +489,7 @@ The objects to merge must have the common type. Select one object in left object
 list and the other one in right object list. The button Join starts the joining
 itself.
 
-\subsection{Path Wizard}
+\section{Path Wizard}
 \label{ssec:PathWizard}
 
 This wizard displays window similar to Joining Objects (see Section
