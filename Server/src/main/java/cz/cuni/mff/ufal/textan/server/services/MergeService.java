@@ -37,6 +37,9 @@ public class MergeService {
      * @param object1Id the identifier of the first object
      * @param object2Id the identifier of the second object
      * @return the identifier of the new object
+     * @throws IdNotFoundException when no objects of given ids exist
+     * @throws InvalidMergeException if objects have different types
+     * @throws NonRootObjectException if one of the objects is not root
      */
     public long mergeObjects(long object1Id, long object2Id) throws IdNotFoundException, InvalidMergeException, NonRootObjectException {
 
@@ -73,6 +76,8 @@ public class MergeService {
      *
      * @param objectId the identifier of merged object
      * @return true if object was split, false otherwise
+     * @throws IdNotFoundException if no object with the given id exists
+     * @throws NonRootObjectException if given object is not root
      */
     public boolean splitObject(long objectId) throws IdNotFoundException, NonRootObjectException {
         //TODO: implement
