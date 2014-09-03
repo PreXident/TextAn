@@ -43,6 +43,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author Petr Fanta
  * @author Jakub Vlček
+ * @author Adam Huječek
  */
 @Configuration
 @Import({DataConfig.class, ObjectAssignerConfig.class})
@@ -254,6 +255,10 @@ public class AppConfig implements ApplicationContextAware {
         return new NamedEntityRecognizer(objectTypeTableDAO, entityViewDAO, documentTableDAO);
     }
 
+    /**
+     * Creates a lock for concurrent writing to the database.
+     * @return the lock
+     */
     @Bean
     public Lock writeLock() {
         return new ReentrantLock();
