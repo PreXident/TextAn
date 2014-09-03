@@ -1,12 +1,12 @@
 % Section: Decisions
 
-This section describes the main decisions that we made during the development process. 
+This section describes main decisions that were made during the development process.
 
 \subsection{Fully-automatic or Semi-automatic Processing}
 \label{ssec:processing}
 
 Although automatic recognition can achieve very good results, there are many
-sensitive cases where it is necessary to eliminate all errors,such as
+sensitive areas where it is necessary to eliminate all errors, such as
 police reports. For this reason we chose semi-automatic recognition, so users
 can rectify all mistakes before the system stores data in the database. 
 If fully-automatic recognition is required, it is easy
@@ -26,7 +26,7 @@ target domain and documents from users.
 \subsection{Re-learning}
 
 Because of the reasons mentioned above (see Section \ref{ssec:processing}),
-it is difficult to create models for the recognition which return precise
+it is difficult to create models for the recognition which return correct
 results in every situation. We decided not to use static models, but models that
 are periodically learned from data that are stored in the database to improve
 the accuracy. This solution is possible due to semi-automatic processing,
