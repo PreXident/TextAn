@@ -6,32 +6,30 @@ terms used in the rest of the documentation and the application itself.
 
 \subsection{System overview}
 
-With an increasing amount of electronically distributed unstructured text (newspapers,
-letters etc.) there is growing demand for its analyzing and understanding computer.
-This process should be automated due to the time consumption and huge data amount.
+With an increasing amount of electronically distributed unstructured text
+(newspapers, letters etc.) there is a growing demand for its analysis and
+understanding by computer means. This process should be as automated as possible
+due to the time consumption and huge data amount.
 
-\comment{Petr}{Remove mentions of police.}
+\textan{} (Text Analyser) serves this purpose. In other words, \textan{} is a
+tool that processes structured data buried in plain text documents and provides
+basic operations to manipulate the extracted data. The extraction consists of
+recognizing significant phrases, matching them with data already stored in the
+database and discovering dependencies expressed in the text. The first two tasks
+are semi-automatic in \textan{}, whereas the last one is manual only. The
+objective of \textan{} is to provide a robust tool which supports the procedure.
+Although first impulse came from the Police needs, \textan{} is made as general as
+possible to allow easy configuration for any other domain as needed.
 
-\textan{} (Text Analyser) serves such purpose, targeting the Police reports. 
-In other words, \textan{} is a tool which supports mining structured data buried
-in the Police reports. The term ``structured data'' consists of two concepts. 
-First, it contains name, street, date of birth, crime and other named entities related to some people. 
-Second, the data contain the relations between two entities. 
-For example, the relation between a person and their date of birth, the relation between two persons. The objective of \textan{} is to provide a robust tool which supports the procedure, either automatically and manually.
-Although first impulse came from the Police needs, \textan{} is made as general
-as possible to allow easy configuration for any other domain as needed.
+Users of \textan{} can manage the stored documents. The unprocessed documents can
+be inserted into the system for later use. Full text search supports both
+unprocessed and processed documents and more sophisticated search methods can be
+performed on annotated reports. Users can annotate unprocessed documents stored in
+the database or completely new reports either imported from local files or written
+from scratch.
 
-\textan{} has client-server structure. It supports following operations: \comment{Petr}{Operations!?}
-  
-\begin{itemize}
-  \item Bring new solution to the classic problem of extracting data from text.
-  \item Provide the service for both automatic detection and manual adjustment.
-  \item Make the adjustment of data as simple as possible for users.
-  \item Make the graphic user interface as fruitful as possible.
-\end{itemize}
-
-This documentation describes \textan{} from the perspective of an user. 
-All the concepts are explained in the \emph{Glossary}. \comment{Petr}{useless}
+This documentation describes \textan{} from the user and administrator
+perspective.
 
 \subsection{Glossary}
 \input{Sections/Glossary}
