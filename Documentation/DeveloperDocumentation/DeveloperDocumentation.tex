@@ -1,5 +1,6 @@
 %Use Lualatex for interpretation!
 % lualatex -interaction=nonstopmode --shell-escape DeveloperDocumentation.tex
+% for correct bibliography, you must run lualatex, bibtex, lualatex and again lualatex 
 
 %You have to have those fonts in your system:
 % - Calibri (standard windows font)
@@ -206,5 +207,8 @@ in attached DVD in folder Javadoc.
 \chapter{Client Properties}
 \input{Sections/ClientProperties}
 \label{app:ClientProperties}
+
+\bibliography{Sections/Citations}{}
+\bibliographystyle{ieeetr}
 
 \end{document}
