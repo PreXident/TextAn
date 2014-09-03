@@ -1,19 +1,41 @@
-This chapter contains the description of the development and our experiences from
-the project.
+This chapter contains the description of the development and our experiences
+from the project.
 
 \section{Team}
 
-The team consists of five members. Petr has been elected as project leader,
+The team consists of five members. Petr has been elected as team leader,
 mostly because of his reliability and hard-working nature. The work has been
 divided according to members' interests and knowledge after fruitful discussion.
 
+
+\paragraph{Bc. Petr Fanta}
 \begin{itemize}
-\itemsep0em
-\item Bc. Petr Fanta - project leader, server, communication design
-\item Duc Tam Hoang, B. Sc. - entity-object matcher 
-\item Bc. Adam Huječek - client
-\item Bc. Václav Pernička - database
-\item Bc. Jakub Vlček - NameTag and MorphoDiTa integration
+\item team leader
+\item responsible for server components interconnection especially layered
+design, server configuration, communication design
+\item implemented webservice layer, service layer, scheduler, full text search and testing
+\end{itemize}
+\paragraph{Duc Tam Hoang, B. Sc.}
+\begin{itemize}
+\item responsible for entity-object assignment
+\item implementation of entity-object assigner and tests, documentation
+proof-reading
+\end{itemize}
+\paragraph{Bc. Adam Huječek}
+\begin{itemize}
+\item responsible for client
+\item implemented client application, command line interfaces, documentation
+proof-reading, code review
+\end{itemize}
+\paragraph{Bc. Václav Pernička}
+\begin{itemize}
+\item responsible for database and persistence layer
+\item implemented database schema, graph operations, DAOs, ORM
+\end{itemize}
+\paragraph{Bc. Jakub Vlček}
+\begin{itemize}
+\item responsible for NameTag and MorphoDiTa integration
+\item implemented the integration, training data preparation
 \end{itemize}
 
 \section{Work on the Project}
@@ -30,9 +52,9 @@ a tool that would help the Police with processing such large amounts of
 documents. Basis of the project was processing police reports - recognize
 entities and match them to existing objects in the database. We were advised to
 use Webservices for an easy integration of the project to the current system. He
-promised us models and example data inputs.
-
-\comment{Petr}{Mention about that we generalized the problem}
+promised us models and example data inputs. The problem is quite universal, so
+we have decided to provide a general solution that could be deployed in many
+domains with as least additional work.
 
 We made some decisions and requirements for each component:
 
@@ -71,11 +93,11 @@ of several phrases:
 \end{enumerate}
 
 Changes in each phase are not stored in the database immediately but stored
-locally. They would be stored to the database after confirmation. There was
-problem with machine recognition, because models with newly added items are
+locally. They would be stored to the database at the end of the pipeline. There
+was problem with machine recognition, because models with newly added items are
 trained after final confirmation, so it is impractical to learn from the
-incomplete user input. We decided that newly added items will be preferred over
-recognized ones. \comment[Kuba]{Adam}{What the hell does this mean?}
+incomplete user input. We decided that newly added items will be displayed next
+to automatically assigned ones so users can correct the server outputs easily.
  
 \subsection{Design \& Technologies}
 In the next period, we mainly chose and tested technologies which we could use.
@@ -105,7 +127,8 @@ that new version of WEKA was released, we choose WEKA, because it is a live
 project and its functionality is good enough for our needs.
 
 There were two possible server architectures: standalone or embedded webserver
-(Tomcat or Jetty) \comment{Petr}{Add final the choice}. We considered usage of some technologies like Spring, CXF and
+(Tomcat or Jetty). We have decided to use embedded sever because it is easier to
+deploy. We considered usage of some technologies like Spring, CXF and
 Hibernate for database layer.
 
 \subsection{Prototyping \& Interconnecting}
@@ -165,14 +188,16 @@ received many new features. We integrated Morphodita because we needed its
 tagger for new features. Settings through properties files are now supported in
 each component.
 
-\subsection{Bugfixing \& Documentation}
-\comment{Petr}{Add more about testing! E.G. unit tests}
-For final testing, we created server hosted by Charles university with address
+\subsection{Bugfixing \& Testing}
+The most important parts of the code are covered by unit tests. Webservices have
+been tested by SoapUI. The project was tested on real dat. For final testing, we
+have created a server hosted by Charles university with address
 \url{textan.ms.mff.cuni.cz:9500}. Here we always keep the newest version from
 the master branch.
 
 \section{Lessons Learned}
 \comment[all]{Adam}{Add your experience with the project}
+\comment{Adam}{Maybe scrap the whole section?}
 
 \paragraph{Tam}
 I was introduced to the project by surprise. However, working on \textan{} project
@@ -186,3 +211,4 @@ I did not have a pleasure experience working with JavaML. However, I played with
 understand the strong points and weak points. Finally, we decided to changed to Weka instead of keeping
 JavaML.
  
+\comment{Adam}{mention standartized logging.}

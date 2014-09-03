@@ -50,7 +50,7 @@ using underlying layers and register commands in the scheduler. These classes
 are placed in the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-services}
 and the package \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-models}.
 
-\comment[Petr]{Petr}{Describe all services}
+Note that every operation in this layer is executed in a separate database transaction.
 
 \subsection{Business Layer}
 The business layer contains components which encapsulate the main functionality
@@ -85,16 +85,6 @@ so the re-learning is a transparent operation for users.
 
 \subsection{Persistence Layer}
 \label{sec:PersistentLayer}
-
-\comment[Venca]{Petr}{This section is full of bullshit, same as other from you.
-Please, use the passive. Also, the main goals of persistence layer (and especially
-in dao pattern) is to hide how data are stored and make application independent
-from an underlying database. Furthermore, i think that we don't care about transactions,
-Spring data cares about transactions and so on.}
-\comment[Petr]{Venca}{Feel free to mark bullshits in text}
-
-\comment[Venca]{Petr}{Did you ever write formal text? Or did you ever read any? For example hibernate documentation?}
-\comment[Petr]{Venca}{Nope, yep, yep. Thanks for advice.}
 
 Persistence layer takes care about providing data to application layer and
 ensure they are persistent. The layer provides conversion of data between database
@@ -294,10 +284,9 @@ requisite to implement JNI, because training is called as binary files and the
 model is generated as file. Therefore, calling C++ functions is not needed. Java
 part provides training data collecting from database and preparation, model
 handling (deleting old ones and binding them to NameTag).
-\comment[Jakub, Petr]{Tam}{Approved?}
 
 \subsection{Methods}
-This part explains methods used in NameTag. \comment[]{Jakub}{add source - Fox paper http://ufal.mff.cuni.cz/~straka/papers/2013-tsd\_ner.pdf}
+This part explains methods used in NameTag. \comment{Jakub}{add source - Fox paper http://ufal.mff.cuni.cz/~straka/papers/2013-tsd\_ner.pdf}
 
 \subsubsection{System Overview}
 NameTag is based on Maximum Entropy Markov Model (MEMM). Its output is used for a Viterby decoder, which decodes probabilities estimated by a MEMM classifier.
@@ -391,8 +380,8 @@ between an object with one alias and object with hundred aliases.
 \textit{joined} object should have higher priority than non-root object.
 \item The number of neighbors that the object has. This feature takes into
 consideration the number of relations that the object has.
-\item The number of Document occurrences that the object appears.
-\item The number of Document occurrences that the entity appears.
+\item The number of documents that the object appears in.
+\item The number of documents that the entity appears in.
 \item The number of documents where the object and the entity appear together.
 \item The number of documents that the entity and neighbors of the object appear together.
 \item The number of neighbors of the objects that happen to be in the same document with the entity.
