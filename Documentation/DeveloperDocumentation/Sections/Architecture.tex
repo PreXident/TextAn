@@ -47,23 +47,21 @@ implemented in this version of \textan{} and it returns empty response with no
 relations recognized.
 
 The recognition operations do not store anything into the database. For this
-purpose, there are three operations. The first two operations are \emph{saveProcessedDocumentFromString} 
-and \emph{saveProcessedDocumentById} with similar attributes to 
-two variants of the recognition operations.
-The third operation \emph{rewriteAndSaveProcessedDocumentById} gets input
-parameters from both document id and document text, because it overwrites the report
-text stored in the database. The third operation is called when the document is
-changed by others while being processed by the user. The user can
-force the document into returning back to the original version or provides new one. 
-All three operations
-take \emph{force} parameter specifying whether the save should happen regardless of
-external changes to the database, e.g. new objects, new
+purpose there are three operations \emph{saveProcessedDocumentFromString} and
+\emph{saveProcessedDocumentById} with similar differences as mentioned above.
+The third operation \emph{rewriteAndSaveProcessedDocumentById} has as input
+parameters both document id and document text, because it overwrites the report
+text stored in the database. It is intended to be called when the document has
+been changed by others while being processed by the user, so the user can
+force returning to the original version or provide new one. All three operations
+take \emph{force} parameter specifying whether the saving should happen even
+though there have been external changes to the database, e.g. new objects, new
 relations and newly joined objects.
 
 If the \emph{force} parameter is \emph{false} and such external changes have
 been detected, save operation returns \emph{false} and method \emph{getProblems} can be
 called to get information about the changes. After making adjustments to
-recognizing/assignments if needed, the save operation can be called with
+recognizing/assignments if needed, one of the save operations can be called with
 \emph{force} parameter set to \emph{true}.
 
 During the processing of a document already stored in the database, other users
