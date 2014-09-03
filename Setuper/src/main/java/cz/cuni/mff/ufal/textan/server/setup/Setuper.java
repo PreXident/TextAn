@@ -15,6 +15,7 @@ import cz.cuni.mff.ufal.textan.server.setup.utils.ScriptRunner;
 
 import java.io.*;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -288,52 +289,66 @@ public class Setuper {
      * @param command command options
      */
     public void prepareTrainingData(final PrepareTrainingData command) throws IOException, SQLException {
+        PreparedStatement statement = connection.prepareStatement("SELECT name, id_object_type FROM ObjectType");
+        ResultSet databaseTypes = statement.executeQuery();
+        HashMap<String, String> translation = new HashMap<>();
+        HashMap<String, String> databaseTypesMap = new HashMap<>();
+        while (databaseTypes.next()) {
+            databaseTypesMap.put(databaseTypes.getString(command.useIdMapping ? 1 : 0), databaseTypes.getString(1));
+        }
+        if (command.mapping.isEmpty()) {
+            translation = databaseTypesMap;
+        } else {
+            for (Map.Entry<String, String> mapItem : command.mapping.entrySet()) {
+                if (null != databaseTypesMap.get(mapItem.getValue())) {
+                    translation.put(mapItem.getKey(), databaseTypesMap.get(mapItem.getValue()));
+                } else {
+                    throw new SQLException("Missing type in database: " + mapItem.getValue());
+                }
+            }
+        }
+
         Properties properties = new Properties();
         properties.load(new FileInputStream(command.learning));
         String trainingDataFile = properties.getProperty(TRAINING_DATA_PROPERTY);
-        BufferedReader trainingData = new BufferedReader(new FileReader(trainingDataFile));
         File tempDataFile = File.createTempFile("tempTrainingData", ".txt");
-        BufferedWriter translatedData = new BufferedWriter(new FileWriter(tempDataFile.getCanonicalPath()));
-        String line = null;
-        String[] splittedLine;
 
-        PreparedStatement statement = command.useIdMapping ?
-                connection.prepareStatement("SELECT id_object_type FROM ObjectType WHERE id_object_type=?") :
-                connection.prepareStatement("SELECT id_object_type FROM ObjectType WHERE name=?");
-        long lineNumber = 0L;
-        while ((line = trainingData.readLine()) != null) {
-            splittedLine = line.split("\t");
-            if (splittedLine.length != 2) {
-               throw new IOException("Trainng data input has bad format, problem on line " + lineNumber);
-            }
-            else {
-                if (splittedLine[1].equals("_")) {
-                    translatedData.write(splittedLine[0] + "\t_");
-                    translatedData.newLine();
-                }
-                else if (splittedLine[1].length() > 2 && (splittedLine[1].startsWith("I-") || (splittedLine[1].startsWith("B-")))) {
-                    String searchFor = command.mapping.get(splittedLine[1].substring(2));
-                    statement.setString(1,  searchFor );
-                    ResultSet ids = statement.executeQuery();
-                    if (ids.next() && ids.isFirst() && ids.isLast()) {
-                        String id = ids.getString("id_object_type");
-                        translatedData.write(splittedLine[0] + "\t" + splittedLine[1].substring(0,2) + id);
-                        translatedData.newLine();
-                    }
-                    else {
-                        throw new SQLException("Database returns bad number of results for key=" + searchFor);
-                    }
+        try( BufferedReader trainingData = new BufferedReader(new FileReader(trainingDataFile));
+             BufferedWriter translatedData = new BufferedWriter(new FileWriter(tempDataFile.getCanonicalPath())) ) {
+            String line = null;
+            String[] splittedLine;
+
+            long lineNumber = 0L;
+            while ((line = trainingData.readLine()) != null) {
+                splittedLine = line.split("\t");
+                if (splittedLine.length != 2) {
+                    throw new IOException("Training data input has bad format, problem on line " + lineNumber);
                 } else {
-                    throw new IOException("Trainng data input has bad format, problem on line " + lineNumber);
+                    if (splittedLine[1].equals("_")) {
+                        translatedData.write(splittedLine[0] + "\t_");
+                        translatedData.newLine();
+                    } else if (splittedLine[1].length() > 2 && (splittedLine[1].startsWith("I-") || (splittedLine[1].startsWith("B-")))) {
+                        String searchFor = command.mapping.get(splittedLine[1].substring(2));
+                        if (translation.containsKey(searchFor)) {
+                            String id = translation.get(searchFor);
+                            translatedData.write(splittedLine[0] + "\t" + splittedLine[1].substring(0, 2) + id);
+                            translatedData.newLine();
+                        } else {
+                            throw new SQLException("Unknown type in training data:" + searchFor);
+                        }
+                    } else {
+                        throw new IOException("Training data input has bad format, problem on line " + lineNumber);
+                    }
                 }
+                ++lineNumber;
             }
-            ++lineNumber;
         }
-        translatedData.close();
-        trainingData.close();
-        File untranslatedTrainData = new File(trainingDataFile);
-        untranslatedTrainData.delete();
-        tempDataFile.renameTo(untranslatedTrainData);
+        if (!tempDataFile.renameTo(new File(command.outputFile))) {
+            throw new IOException("Error while writing to output file " + command.outputFile);
+        }
+        if (command.setProperty) {
+            properties.setProperty(TRAINING_DATA_PROPERTY, tempDataFile.getCanonicalPath());
+        }
     }
 
     private void createTypes(String query, List<String> names) throws SQLException {
