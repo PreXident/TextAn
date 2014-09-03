@@ -2,13 +2,11 @@
 
 This section contains all information to successfully install, configure and run
 \textan{} server side application.
-\comment[anyone]{Petr}{add short introduction for this section, remind configuration
-options, complexity atc.}
 
 \subsection{Installation Guide}
 
-This section describes how to install and configure \textan{} server on a server
-machine.
+This section describes how to install \textan{} server on a server
+machine and perform basic configuration.
 
 \subsubsection{Prerequisites}
 \label{sssec:SerInstPre}
@@ -323,7 +321,6 @@ For more informations about Analyzers see Section \ref{sec:Lang}.
 %NameTag
 \subsubsection{Named Entity Recognizer Settings}
 \label{sssec:NametagSettings}
-\comment{Petr}{Add link to nametag?}
 This section is mainly about settings stored in NametagLearning.properties. There
 are parameters for neural network which nametag uses for learning and switches for
 nametag functions. Also, there are settings affecting models storing and
@@ -466,8 +463,10 @@ The term information (personal name, geographic name, ...) specified in lemma co
 are used as features.
 
 \paragraph{brown\_clusters}
-Size of window for Brown clusters.
-Brown clustering is a form of hierarchical of words based on the context in which they occur in documents. \comment{Kuba}{add reference to http://people.csail.mit.edu/pliang/papers/meng-thesis.pdf}.
+Size of window for Brown clusters\footnote{For more information see
+\url{http://people.csail.mit.edu/pliang/papers/meng-thesis.pdf}}.
+Brown clustering is a form of hierarchical of words based on the context in
+which they occur in documents.
 
 \paragraph{brown\_clusters\_file}
 Use Brown clusters found in the specified file. An optional list of lengths of
@@ -511,6 +510,7 @@ entity than the previous word (albeit with the same type).
 \end{itemize}
 
 For example sentence ``Tři a půl hodiny po zápase Drnovice Bohdaneč (3:1) strávil domácí Karel Majoroš a hostující Ota Pavelka na dopingové kontrole.''
+could be annotated as follows:
 
 \begin{lstlisting}[frame=single]
 Tři	_
