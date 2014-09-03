@@ -22,20 +22,17 @@ as general as possible to allow easy configuration for any other domain as
 needed. It also is not language dependant, so it can process texts in completely
 different languages if corresponding components are provided.
 
-\comment{Petr}{Following two paragraphs needs rework - remove concrete libraries,
-add platform independence, remove mention of schema}
-
 \textan{} is a client-server application for text analysis. It provides
 webservice interfaces, so it is easy to implement own client implementation to
 meet specific user needs or to integrate it in a legacy system. The project
-consists of three main contributions. Firstly, the database schema suitable for
-given tasks is implemented. Secondly, the server integrating named entity
+consists of two main contributions. Firstly, the server integrating named entity
 recognition and object assigning provides interface to access the database and
-these components. Thirdly, the client offers a friendly method for users to
+these components. Secondly, the client offers a friendly method for users to
 confirm or adjust the system's suggestions and explore the data stored in the
-database displaying them in graph views.
+database.
 
-\textan{} is implemented in Java 1.8 using Spring Framework, Hibernate database
-layer and other libraries. For more information see Section
-\ref{sec:UsedTechnologies}. The data can be stored within any SQL-like relation
-database, e.g. MySQL.
+\textan{} is implemented in Java 8 and is platform independent except for some
+third party libraries that are attached only for some platforms. However they are
+open source and can be compiled for any operating system desired. The data can be
+stored within any SQL-like relation database, e.g. \emph{MySQL} which is supported
+out-of-the-box.
