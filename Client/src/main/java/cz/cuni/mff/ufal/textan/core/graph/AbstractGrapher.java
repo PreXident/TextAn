@@ -180,7 +180,7 @@ public abstract class AbstractGrapher implements IGrapher {
                         rels = new HashSet<>();
                         objRels.put(obj, rels);
                     }
-                    rels.add(relation);
+                    rels.add(new Relation(relation));
                 }
             }
         }
@@ -214,10 +214,10 @@ public abstract class AbstractGrapher implements IGrapher {
                 for (Triple<Integer, String, cz.cuni.mff.ufal.textan.core.Object> triple : rel.getObjects()) {
                     if (!ignoredObjectTypes.contains(triple.getThird().getType())) {
                         newObjs.add(triple);
-                        if (!doneObjects.contains(obj)) {
-                            doneObjects.add(obj);
-                            newNodes.put(obj.getId(), obj);
-                            stack.add(obj);
+                        if (!doneObjects.contains(triple.getThird())) {
+                            doneObjects.add(triple.getThird());
+                            newNodes.put(triple.getThird().getId(), triple.getThird());
+                            stack.add(triple.getThird());
                         }
                     }
                 }

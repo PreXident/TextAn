@@ -282,6 +282,7 @@
         <xs:sequence>
             <xs:element name="startObjectId" type="xs:long"/>
             <xs:element name="targetObjectId" type="xs:long"/>
+            <xs:element name="maxLength" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
     

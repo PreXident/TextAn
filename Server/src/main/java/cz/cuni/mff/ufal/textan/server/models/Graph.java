@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.server.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,6 +10,11 @@ import java.util.List;
 public class Graph {
     private final List<Object> nodes;
     private final List<Relation> edges;
+
+    public Graph() {
+        nodes = new ArrayList<>();
+        edges = new ArrayList<>();
+    }
 
     /**
      * Instantiates a new Graph.

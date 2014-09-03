@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.data.graph;
 
+import cz.cuni.mff.ufal.textan.data.exceptions.PathDoesNotExistException;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
@@ -35,6 +36,15 @@ public class GraphFactory {
         this.sessionFactory = sessionFactory;
     }
 
+    public Graph getShortestPathBetweenObjects(ObjectTable obj1, ObjectTable obj2, int maxDepth) throws PathDoesNotExistException {
+        Graph result= getGraphFromObject(obj2, maxDepth);
+        
+        if (!result.getNodes().contains(new ObjectNode(obj1)))
+            throw new PathDoesNotExistException();
+        result.mergeIntoThis(getGraphFromObject(obj1, maxDepth));
+        
+        return result;
+    }
     
     /**
      * Creates a graph with an object in the "center"

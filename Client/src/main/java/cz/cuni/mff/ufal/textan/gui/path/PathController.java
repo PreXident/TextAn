@@ -1,16 +1,15 @@
 package cz.cuni.mff.ufal.textan.gui.path;
 
 import cz.cuni.mff.ufal.textan.core.Graph;
-import cz.cuni.mff.ufal.textan.core.NonRootObjectException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
-import cz.cuni.mff.ufal.textan.core.graph.IGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.PathGrapher;
 import cz.cuni.mff.ufal.textan.gui.GetTypesTask;
 import cz.cuni.mff.ufal.textan.gui.ObjectContextMenu;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
@@ -32,8 +31,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.util.StringConverter;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
+import jfxtras.labs.scene.control.BigDecimalField;
 
 /**
  * Controls joining of two objects.
@@ -54,6 +52,9 @@ public class PathController extends WindowController {
 
     @FXML
     private BorderPane root;
+
+    @FXML
+    private BigDecimalField distanceField;
 
     @FXML
     private TableView<Object> leftTable;
@@ -149,17 +150,18 @@ public class PathController extends WindowController {
     private void path() {
         final Object leftObject = leftTable.getSelectionModel().getSelectedItem();
         final Object rightObject = rightTable.getSelectionModel().getSelectedItem();
+        final int distance = distanceField.getNumber().intValue();
         if (leftObject == null || rightObject == null || leftObject.equals(rightObject)) {
             return;
         }
-        getMainNode().setCursor(Cursor.WAIT);
-        final PathGrapher grapher =
-                new PathGrapher(textAnController.getClient());
-        grapher.setRootId(leftObject.getId());
-        grapher.setTargetId(rightObject.getId());
-        grapher.setDistance(Integer.MAX_VALUE); //TODO reasonable value
-
         if (lock.tryAcquire()) {
+            getMainNode().setCursor(Cursor.WAIT);
+            final PathGrapher grapher =
+                    new PathGrapher(textAnController.getClient());
+            grapher.setRootId(leftObject.getId());
+            grapher.setTargetId(rightObject.getId());
+            grapher.setDistance(distance);
+
             final Task<Graph> task = new Task<Graph>() {
                 @Override
                 protected Graph call() throws Exception {
@@ -384,6 +386,8 @@ public class PathController extends WindowController {
             settings.setProperty("objects.per.page.right", newVal.toString());
             leftFilter();
         });
+        //
+        distanceField.setNumber(new BigDecimal(settings.getProperty("graph.distance", "5")));
     }
 
     /**
