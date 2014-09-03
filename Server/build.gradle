@@ -200,6 +200,12 @@ task dist(type: Copy, dependsOn: 'shadowJar') {
         include '**/*'
         into 'lib'
     }
+    //database scripts
+    from (file("${rootProject.projectDir.toPath()}/Database")) {
+        include '**/*.sql'
+        into 'database'
+    }
+
     //starting scripts
     from (file("$projectDir/dist")) {
         include "**/*"

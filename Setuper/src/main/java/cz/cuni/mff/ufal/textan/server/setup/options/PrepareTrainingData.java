@@ -41,12 +41,19 @@ public class PrepareTrainingData extends Command {
             names = { "-s", "/S", "--set" })
     public boolean setProperty = false;
 
-    /** Used IDs instead of names in type mapping to database */
+    /** Output file for translated training data */
     @Parameter(
             description = "Output file for translated training data.",
             names = { "-o", "/O", "--out" },
             required = true)
     public String outputFile = null;
+
+    /** Input file with training data. */
+    @Parameter(
+            description = "Input file with training data.",
+            names = { "-t", "/T", "--trainingData" },
+            required = true)
+    public String inputFile = null;
 
     /**
      * Mapping for renaming.

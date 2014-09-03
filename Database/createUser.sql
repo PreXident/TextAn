@@ -1,4 +1,4 @@
--- Create user for textan (maybe MySql specific)
+-- Create the default  user fortextan (maybe MySql specific)
 
 -- user used to connect from localhost
 -- CREATE USER 'textan_user'@'localhost' IDENTIFIED BY 'textanpassword';

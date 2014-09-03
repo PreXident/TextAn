@@ -303,12 +303,14 @@ public class Setuper {
      * @throws SQLException if any SQL error occurs
      */
     public void prepareTrainingData(final PrepareTrainingData command) throws IOException, SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT name, id_object_type FROM ObjectType");
+        PreparedStatement statement = command.useIdMapping
+                                        ? connection.prepareStatement("SELECT id_object_type AS id1, id_object_type AS id2 FROM ObjectType")
+                                        : connection.prepareStatement("SELECT name, id_object_type FROM ObjectType");
         ResultSet databaseTypes = statement.executeQuery();
         HashMap<String, String> translation = new HashMap<>();
         HashMap<String, String> databaseTypesMap = new HashMap<>();
         while (databaseTypes.next()) {
-            databaseTypesMap.put(databaseTypes.getString(command.useIdMapping ? 1 : 0), databaseTypes.getString(1));
+            databaseTypesMap.put(databaseTypes.getString(1), databaseTypes.getString(2));
         }
         if (command.mapping.isEmpty()) {
             translation = databaseTypesMap;
@@ -324,11 +326,10 @@ public class Setuper {
 
         Properties properties = new Properties();
         properties.load(new FileInputStream(command.learning));
-        String trainingDataFile = properties.getProperty(TRAINING_DATA_PROPERTY);
-        File tempDataFile = File.createTempFile("tempTrainingData", ".txt");
 
-        try( BufferedReader trainingData = new BufferedReader(new FileReader(trainingDataFile));
-             BufferedWriter translatedData = new BufferedWriter(new FileWriter(tempDataFile.getCanonicalPath())) ) {
+
+        try( BufferedReader trainingData = new BufferedReader(new InputStreamReader(new FileInputStream(command.inputFile), "UTF8"));
+             BufferedWriter translatedData = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(command.outputFile), "UTF8"))) {
             String line = null;
             String[] splittedLine;
 
@@ -336,7 +337,11 @@ public class Setuper {
             while ((line = trainingData.readLine()) != null) {
                 splittedLine = line.split("\t");
                 if (splittedLine.length != 2) {
-                    throw new IOException("Training data input has bad format, problem on line " + lineNumber);
+                    if (line.isEmpty()) {
+                        translatedData.newLine();
+                    } else {
+                        throw new IOException("Training data input has bad format (can't split by tabulator to two columns), problem on line " + lineNumber);
+                    }
                 } else {
                     if (splittedLine[1].equals("_")) {
                         translatedData.write(splittedLine[0] + "\t_");
@@ -351,17 +356,14 @@ public class Setuper {
                             throw new SQLException("Unknown type in training data:" + searchFor);
                         }
                     } else {
-                        throw new IOException("Training data input has bad format, problem on line " + lineNumber);
+                        throw new IOException("Training data input has bad format (can't split second column woth type), problem on line " + lineNumber);
                     }
                 }
                 ++lineNumber;
             }
         }
-        if (!tempDataFile.renameTo(new File(command.outputFile))) {
-            throw new IOException("Error while writing to output file " + command.outputFile);
-        }
         if (command.setProperty) {
-            properties.setProperty(TRAINING_DATA_PROPERTY, tempDataFile.getCanonicalPath());
+            properties.setProperty(TRAINING_DATA_PROPERTY, command.outputFile);
         }
     }
 

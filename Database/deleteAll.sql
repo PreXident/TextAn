@@ -1,3 +1,5 @@
+-- removes whole database schema from DBMS
+
 USE textan;
 
 DROP TABLE AliasOccurrence;
@@ -19,6 +21,4 @@ DROP TABLE Document;
 DROP TABLE GlobalVersion;
 DROP TABLE Audit;
 
--- For remove user use (from superuser account):
-DROP USER 'textan_user'@'localhost';
-DROP USER 'textan_user'@'%';
+DROP SCHEMA `textan`;
