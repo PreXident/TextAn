@@ -1,4 +1,5 @@
-CREATE DATABASE IF NOT EXISTS textan 
+CREATE DATABASE `textan`
+-- IF NOT EXISTS
   DEFAULT CHARACTER SET utf8
   DEFAULT COLLATE utf8_general_ci;
 USE textan;
@@ -49,10 +50,7 @@ CREATE TABLE Object (
   		REFERENCES ObjectType(id_object_type)
       ON DELETE CASCADE,
 	globalversion int DEFAULT 0 NOT NULL,
-	 -- ,  -- root of the joined tree
     id_root_object int
-    -- CONSTRAINT FK_OBJECT_ROOT FOREIGN KEY (id_root_object)
-  	--	REFERENCES Object(id_object)
 );
 
 CREATE TABLE Alias (
@@ -130,9 +128,6 @@ CREATE TABLE JoinedObjects
         to_date datetime,
 	      globalversion int DEFAULT 0 NOT NULL
 );
-
--- TODO add constrant: joined objects have to have the same type
-
 
 CREATE TABLE RelationOccurrence
 (
