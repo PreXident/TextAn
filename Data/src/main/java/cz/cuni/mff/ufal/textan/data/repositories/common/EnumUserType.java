@@ -14,7 +14,12 @@ import java.sql.Types;
 import org.hibernate.HibernateException;   
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;   
-  
+
+/**
+ * This class is used to map enum properties to database.
+ * @author Vaclav Pernicka
+ * @param <E> 
+ */
 public class EnumUserType<E extends Enum<E>> implements UserType {   
     private Class<E> clazz = null;   
     protected EnumUserType(Class<E> c) {   

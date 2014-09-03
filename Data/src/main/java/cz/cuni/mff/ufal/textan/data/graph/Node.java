@@ -3,7 +3,10 @@ package cz.cuni.mff.ufal.textan.data.graph;
 import java.util.Objects;
 
 /**
- *
+ * Represents node in a graph.
+ * It is abstract superclass of ObjectNode and RelationNode.
+ * 
+ * @see Graph
  * @author Vaclav Pernicka
  */
 public abstract class Node {

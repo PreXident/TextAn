@@ -16,14 +16,10 @@ import java.util.List;
  *
  * @author Vaclav Pernicka
  */
-public interface IJoinedObjectsTableDAO extends IOperations<JoinedObjectsTable, Long> {
+public interface IJoinedObjectsTableDAO 
+    extends IOperations<JoinedObjectsTable, Long>,
+        IGlobalVersionedTableDAO<JoinedObjectsTable>{
 
     ObjectTable join(ObjectTable obj1, ObjectTable obj2) throws JoiningANonRootObjectException, JoiningEqualObjectsException;
     
-    /**
-     *
-     * @param version
-     * @return
-     */
-    List<JoinedObjectsTable> findAllSinceGlobalVersion(long version); 
 }

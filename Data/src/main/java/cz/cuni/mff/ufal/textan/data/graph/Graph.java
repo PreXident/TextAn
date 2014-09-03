@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * This class represents a graph created from database. Nodes represent objects
+ * and relations. Edges represents belonging of an object to a relation.
+ * 
  * @author Vaclav Pernicka
  */
 public class Graph {
@@ -62,6 +64,13 @@ public class Graph {
         return "Graph{" + "nodes=" + nodes + ", edges=" + edges + '}';
     }
     
+    /**
+     * This method performs union of two graphs
+     * 
+     * @param graph1
+     * @param graph2
+     * @return 
+     */
     static Graph merge(final Graph graph1, final Graph graph2) {
         Graph result = new Graph(graph1.nodes, graph1.edges);
 
@@ -71,6 +80,13 @@ public class Graph {
         return result;
     }
     
+    /**
+     * This method performs intersection of two graphs.
+     * 
+     * @param graph1
+     * @param graph2
+     * @return 
+     */
     static Graph intersection(final Graph graph1, final Graph graph2) {
         Graph result = new Graph(graph1.nodes, graph1.edges);
         
@@ -80,10 +96,20 @@ public class Graph {
         return result;
     }
     
+    /**
+     * Performs union to this graph.
+     * 
+     * @param graph 
+     */
     void unionIntoThis(final Graph graph) {
         nodes.addAll(graph.nodes);
         edges.addAll(graph.edges);
     }
+    /**
+     * performs intersection to this graph.
+     * 
+     * @param graph 
+     */
     void intersectIntoThis(final Graph graph) {
         nodes.retainAll(graph.nodes);
         edges.retainAll(graph.edges);

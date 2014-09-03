@@ -7,7 +7,8 @@ package cz.cuni.mff.ufal.textan.data.views;
 import java.util.Objects;
 
 /**
- *
+ * Record representing that an alias was occurred in a document
+ * 
  * @author Vaclav Pernicka
  */
 public class EntityView {
