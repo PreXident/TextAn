@@ -3,15 +3,15 @@
 %\subsection{Used Technologies}
 \label{sec:UsedTechnologies}
 
-This section lists all technologies and libraries used in \textan{}.
-
-\comment[all]{Ondrej}{Add also reasoning why these have been chosen}
+This section lists all technologies and libraries used in \textan{} and
+reasoning behind choosing them.
 
 \paragraph{Spring Framework\footnote{\url{http://projects.spring.io/spring-framework/}}}
 The Spring Framework is an open source application framework and inversion
 of control container for the Java platform. The framework's core features
 can be used by any Java application, but there are extensions for building
-web applications on top of the Java EE platform.
+web applications on top of the Java EE platform. Apart from Dependency injection
+we use also Spring AOP for transaction handling.
 
 \paragraph{Apache CXF\footnote{\url{http://cxf.apache.org/}}}
 Apache CXF is an open-source Web services framework. CXF implements the JAX-WS
@@ -30,7 +30,8 @@ Hibernate ORM (Hibernate in short) is an object-relational mapping library for
 Java language, providing a framework for mapping an object-oriented domain
 model to a traditional relational database. Hibernate solves object-relational
 im\-pedance mismatch problems by replacing direct persistence-related database
-accesses with high-level object handling functions.
+accesses with high-level object handling functions. It was chosen because of
+possible extension of full text search independent of the underlying database.
 
 \paragraph{Hibernate Search\footnote{\url{http://hibernate.org/search/}}}
 Hibernate Search is a library (or Hibernate ORM extension), which integrates
@@ -47,7 +48,8 @@ external dependencies.
 
 \paragraph{Jetty\footnote{\url{http://www.eclipse.org/jetty/}}}
 Jetty is a pure Java-based HTTP (Web) server and Java Servlet container. It can
-be embedded into other applications through Jetty API.
+be embedded into other applications through Jetty API. It is simple,
+lightweight, wide spread and fast when embedded.
 
 \paragraph{JUNG\footnote{\url{http://jung.sourceforge.net/}}}
 JUNG (Java Universal Network/Graph Framework) is an older Java library for
@@ -84,7 +86,9 @@ In the Czech language, NameTag achieves state-of-the-art performance
 (Straková et al. 2013). NameTag is a free software under LGPL license and the 
 linguistic models are free for non-commercial use and distributed under CC 
 BY-NC-SA license, although for some models the original data used to create
-the model may impose additional licensing conditions.
+the model may impose additional licensing conditions. There are more similar
+tools, but we have chosen this because of java bindings, modern design and
+support of more languages.
 
 \paragraph{PretopoLib\footnote{\url{http://pretopolib.complexica.net/}}}
 PretopoLib is a Java library based on pretopology which is mathematical theory
