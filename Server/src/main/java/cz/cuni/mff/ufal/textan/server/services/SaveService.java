@@ -45,7 +45,7 @@ public class SaveService {
 
     private final CommandInvoker invoker;
     private final NamedEntityRecognizer recognizer;
-    private final IObjectAssigner textPro;
+    private final IObjectAssigner objectAssigner;
 
     private final Lock writeLock;
 
@@ -60,11 +60,11 @@ public class SaveService {
      * @param relationTableDAO the relation table dAO
      * @param relationOccurrenceTableDAO the relation occurrence table dAO
      * @param inRelationTableDAO the in relation table dAO
-     * @param joinedObjectsTableDAO
-     * @param invoker
-     * @param recognizer
-     * @param textPro
-     * @param writeLock
+     * @param joinedObjectsTableDAO the joined objects table dAO
+     * @param invoker command invoker
+     * @param recognizer named entity recognizer
+     * @param objectAssigner object assigner
+     * @param writeLock write lock
      */
     @Autowired
     public SaveService(
@@ -74,7 +74,7 @@ public class SaveService {
             IAliasOccurrenceTableDAO aliasOccurrenceTableDAO,
             IRelationTypeTableDAO relationTypeTableDAO, IRelationTableDAO relationTableDAO,
             IRelationOccurrenceTableDAO relationOccurrenceTableDAO, IInRelationTableDAO inRelationTableDAO,
-            IJoinedObjectsTableDAO joinedObjectsTableDAO, CommandInvoker invoker, NamedEntityRecognizer recognizer, IObjectAssigner textPro, @Qualifier("writeLock") Lock writeLock) {
+            IJoinedObjectsTableDAO joinedObjectsTableDAO, CommandInvoker invoker, NamedEntityRecognizer recognizer, IObjectAssigner objectAssigner, @Qualifier("writeLock") Lock writeLock) {
 
         this.documentTableDAO = documentTableDAO;
         this.objectTypeTableDAO = objectTypeTableDAO;
@@ -88,7 +88,7 @@ public class SaveService {
         this.joinedObjectsTableDAO = joinedObjectsTableDAO;
         this.invoker = invoker;
         this.recognizer = recognizer;
-        this.textPro = textPro;
+        this.objectAssigner = objectAssigner;
         this.writeLock = writeLock;
     }
 
@@ -148,6 +148,8 @@ public class SaveService {
      * @param ticket the ticket
      * @return true if the processed document was successfully saved, false otherwise
      * @throws IdNotFoundException the id not found exception TODO
+     * @throws DocumentAlreadyProcessedException if the document has been already processed
+     * @throws DocumentChangedException if the document has been changed since the processing started
      */
     public boolean save(
             long documentId,
@@ -360,7 +362,7 @@ public class SaveService {
         }
 
         //register re-learn command for named entity recognizer and text pro
-        invoker.register(new ObjectAssignerLearnCommand(textPro));
+        invoker.register(new ObjectAssignerLearnCommand(objectAssigner));
         invoker.register(new NamedEntityRecognizerLearnCommand(recognizer));
 
         return true;
@@ -368,8 +370,8 @@ public class SaveService {
 
     /**
      *
-     * @param ticket
-     * @return
+     * @param ticket editing ticket
+     * @return problems that occurred during report processing
      */
     public Problems getProblems(EditingTicket ticket) {
         long nextVersion = ticket.getVersion() + 1;

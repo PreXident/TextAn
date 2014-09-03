@@ -23,6 +23,7 @@ public class NamedEntityRecognizerService {
      * Instantiates a new Named entity recognizer service.
      *
      * @param documentTableDAO the document table dAO
+     * @param namedEntityRecognizer NER
      */
     @Autowired
     public NamedEntityRecognizerService(IDocumentTableDAO documentTableDAO, NamedEntityRecognizer namedEntityRecognizer) {
@@ -48,6 +49,8 @@ public class NamedEntityRecognizerService {
      * @param ticket the editing ticket
      * @return the list of entities found in the document
      * @throws IdNotFoundException the exception thrown if a document with the given id wasn't found
+     * @throws DocumentAlreadyProcessedException if document has been already processed
+     * @throws DocumentChangedException if document has been changed since edit started
      */
     public List<Entity> getEntities(long documentId, EditingTicket ticket)
             throws IdNotFoundException, DocumentAlreadyProcessedException, DocumentChangedException {
