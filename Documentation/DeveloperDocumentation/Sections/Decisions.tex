@@ -1,32 +1,32 @@
 % Section: Decisions
 
-The section describes main decisions that were made during the development. 
+This section describes the main decisions that we made during the development process. 
 
 \subsection{Fully-automatic or Semi-automatic Processing}
 \label{ssec:processing}
 
 Although automatic recognition can achieve very good results, there are many
-sensitive areas where it is necessary to eliminate all errors, for example
+sensitive cases where it is necessary to eliminate all errors,such as
 police reports. For this reason we chose semi-automatic recognition, so users
-can correct all mistakes before the system stores data into the database. 
-Also if fully-automatic recognition is required, it is easy
+can rectify all mistakes before the system stores data in the database. 
+If fully-automatic recognition is required, it is easy
 to skip the human intervention entirely at cost of little overhead caused by
 multiple calls of webservice operation because of pipeline decision described in
 Section \ref{ssec:ReportPipeline}. Or a facade operation can be implemented to
 mitigate this overhead.
 
 Typical issues for the recognition are the ambiguity of words or names and the
-large granularity of types. An example of ambiguity can be word Washington, that
-can mean the state in the USA, the city in the USA or person with this surname.
+large granularity of types. An example of ambiguity is the word ``Washington'', that
+might refer to a state in the USA, a city in the USA or a person with this surname.
 The second issue, the large granularity of types, can be shown similarly.
 Consider object types ``doctor'', ``programmer'' and ``gardener'' and a sentence with
-name of person. These problems are highly dependent on the training data for the
+name of person. These problems heavily depend on the training data for the
 target domain and documents from users.
 
 \subsection{Re-learning}
 
-Because of reasons that are mentioned above (see Section \ref{ssec:processing}),
-it is difficult to create models for the recognition which return correct
+Because of the reasons mentioned above (see Section \ref{ssec:processing}),
+it is difficult to create models for the recognition which return precise
 results in every situation. We decided not to use static models, but models that
 are periodically learned from data that are stored in the database to improve
 the accuracy. This solution is possible due to semi-automatic processing,
@@ -37,7 +37,7 @@ can be empty set of training data at the deployment time.
 \subsection{System Decomposition}
 
 Recently the popularity of server-client architecture has been on the rise.
-One of the reasons it suits our needs too is that machine learning demands non-trivial
+One of the reasons it suits our requirements too is that machine learning demands non-trivial
 computation power and needs large sets of training data from the database. A placement of recognizers
 to the server side is not only because of an increase performance, but also makes
 re-learning of models for recognizers transparent for users. This design also enables
@@ -47,15 +47,15 @@ The next advantage of this is a simple sharing of data between users.
 
 We also decided to make the server side as one independent executable module (except database),
 because the application doesn't need any power of an application server. This decision
-also the system easy to deploy to any supported operational system.
+also makes the system easy to deploy to any supported operational system.
 
 \subsection{Report Processing as a Pipeline}
 \label{ssec:ReportPipeline}
 
-The whole activity of processing a report is a complex task. We have though
-about ways to make the user interface not to confuse and overwhelm the users.
-We have agreed that we need to have as little requirements on users as possible
-so application can become wide spread. Eventually we decided to split the
+The whole activity of processing a report is a complex task. We have thought
+about ways to make a simple user interface, not to confuse and overwhelm the users.
+We have agreed that we need to have as less requirements on users as possible
+so application can become widespread. Eventually we decided to split the
 process into steps, so only one specific task is performed at once. This also
 means that the automatic recognition is also split into several steps which the
 users can correct sooner, so later phases can benefit from users' intervention.
@@ -143,7 +143,7 @@ of a document can be saved on the client side. Due to this problem, any timeout
 cannot be used.
 
 We decide to solve this problem by storing whole state on client side when it is
-necessary. It allows that the server is stateless. This approach has also some
+necessary. It allows the server to be stateless. This approach has also some
 disadvantages, for example that bigger messages are transferred over a network.
 %Another big disadvantage is security.
 
