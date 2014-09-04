@@ -90,9 +90,9 @@ contents={
 % \comment[_assignee_]{_author_}{_comment_}
 % \comment{_author_}{_comment_}
 \makeatletter
-\newcommand{\comment}[3][\@empty]{
-  {\color{magenta}[#3 - }
-  {\color{green}\ifx\@empty#1\relax Author: #2 \else Assignee: #1; Author: #2\fi}{\color{magenta}]}
+\newcommand{\comment}[3][\@empty]{%
+%  {\color{magenta}[#3 - }
+%  {\color{green}\ifx\@empty#1\relax Author: #2 \else Assignee: #1; Author: #2\fi}{\color{magenta}]}
 }
 \makeatother
 
@@ -201,15 +201,11 @@ project, especially related work, design decisions and third party tools used.
 \appendix
 \chapter{Contents of the Attached DVD}
 \label{app:DVD}
-
-\comment{Petr}{Change appendices from chapter to section?}
-
-Documentation for Java sources is not a part of this printout, but can be found
-in attached DVD in folder Javadoc.
+\input{Sections/DVD}
 
 \chapter{Client Properties}
-\input{Sections/ClientProperties}
 \label{app:ClientProperties}
+\input{Sections/ClientProperties}
 
 \printbibliography
 
