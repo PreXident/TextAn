@@ -358,7 +358,7 @@ public class ReportObjectsController extends ReportWizardController {
                         if (p != null && p.getSecond() != null) {
                             String prefix = "";
                             if (p.getFirst() != null) {
-                                prefix = p.getFirst().toString() + ": ";
+                                prefix = String.format("%.2f: ", p.getFirst());
                             }
                             setText(Utils.shortString(prefix + p.getSecond().toString()));
                             setContextMenu(objectContextMenu);
