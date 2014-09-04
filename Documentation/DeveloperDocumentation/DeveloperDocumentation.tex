@@ -90,7 +90,7 @@ contents={
 % \comment[_assignee_]{_author_}{_comment_}
 % \comment{_author_}{_comment_}
 \makeatletter
-\newcommand{\comment}[3][\@empty]{
+\newcommand{\comment}[3][\@empty]{%
 %  {\color{magenta}[#3 - }
 %  {\color{green}\ifx\@empty#1\relax Author: #2 \else Assignee: #1; Author: #2\fi}{\color{magenta}]}
 }
