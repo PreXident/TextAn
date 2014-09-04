@@ -276,9 +276,10 @@ public class NamedEntityRecognizer {
                 for (String gazetteer : gazetteers.list()) {
                     features.write(" " + gazetteers.getPath() + File.separator + gazetteer);
                 }
-            } else {
-                return false;
             }
+//            else {
+//                return false;
+//            }
             features.newLine();
             features.write("PreviousStage/" + learningParameters.getPreviousStage());
             features.newLine();
@@ -311,6 +312,7 @@ public class NamedEntityRecognizer {
 
             LearningParameters learningParameters = new LearningParameters(trainingDirectory, trainingDirectory);
             File trainingDataFile = File.createTempFile(TRAINING_DATA_PREFIX,TRAINING_DATA_EXTENSION);
+            LOG.debug("Training data file: {}", trainingDataFile.getAbsolutePath());
 
             if ((new File(TRAINING_DIR).isDirectory()) || (new File(TRAINING_DIR).mkdir())) {
                 if (learningParameters.useDefaultTrainingData()) {
@@ -319,11 +321,12 @@ public class NamedEntityRecognizer {
                         return false;
                     }
                 }
-                //prepareLearningData(trainingDataFile);
+                prepareLearningData(trainingDataFile);
             } else {
                 LOG.error("Can't create training data folder");
                 return false;
             }
+
 
             if (trainingDataFile.length() == 0) {
                 LOG.warn("Haven't any training data");
