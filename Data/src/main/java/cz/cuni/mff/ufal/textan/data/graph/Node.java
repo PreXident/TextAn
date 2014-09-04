@@ -42,9 +42,7 @@ public abstract class Node {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        if (!(obj instanceof Node)) return false;
         final Node other = (Node) obj;
         if (this.id != other.id) {
             return false;

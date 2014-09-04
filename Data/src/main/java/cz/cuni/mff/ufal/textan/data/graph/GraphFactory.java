@@ -8,6 +8,7 @@ import cz.cuni.mff.ufal.textan.data.graph.pathfinding.RelationPathNode;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
+import java.util.ArrayDeque;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -53,23 +54,49 @@ public class GraphFactory {
      * @throws PathDoesNotExistException 
      */
     public Graph getShortestPathBetweenObjects(ObjectTable obj1, ObjectTable obj2, int maxDepth) throws PathDoesNotExistException {
-        Logger.logMsg(Logger.DEBUG, "getShortestPathBetweenObjects");
+        Logger.setLevel(Logger.DEBUG);
 
-        Graph result1 = getGraphFromObject(obj1, maxDepth/2);
-        Logger.logMsg(Logger.DEBUG, "result1: " + result1);
+        Logger.logMsg(Logger.DEBUG, "Object1: " + obj1);
+        Logger.logMsg(Logger.DEBUG, "Object2: " + obj2);
         
-        Graph result2 = getGraphFromObject(obj2, maxDepth/2 + maxDepth%2);
-        Logger.logMsg(Logger.DEBUG, "result2: " + result2);
         
-        Graph intersection = Graph.intersection(result1, result2);
-        Logger.logMsg(Logger.DEBUG, "Intersection: " + intersection);
+        Queue<Pair<ObjectNode, Integer>> objQueue1 = new ArrayDeque<>();
+        Graph graph1 = new Graph();
+        initBidirectionalSearch(obj1, objQueue1, graph1);
         
-        if (intersection.getNodes().isEmpty())
-            throw new PathDoesNotExistException();
+        Queue<Pair<ObjectNode, Integer>> objQueue2 = new ArrayDeque<>();
+        Graph graph2 = new Graph();
+        initBidirectionalSearch(obj2, objQueue2, graph2);
+        boolean found = false;
         
-        result1.unionIntoThis(result2);
+        for (int i = 0; i <= (maxDepth+1)/2; i++) {
+            found |= bidirectionalSearchIteration(objQueue1, graph1, graph2, i, (maxDepth+1)/2);
+            if (found) break;
+            if (i == (maxDepth+1)/2) {
+                Logger.logMsg(Logger.DEBUG, "Graph1: " + graph1);
+                Logger.logMsg(Logger.DEBUG, "Graph2: " + graph2);
+                
+                Logger.logMsg(Logger.DEBUG, "objQueue1: " + objQueue1);
+                Logger.logMsg(Logger.DEBUG, "objQueue2: " + objQueue2);
+
+                throw new PathDoesNotExistException();
+            }
+            found |= bidirectionalSearchIteration(objQueue2, graph2, graph1, i, maxDepth/2);
+            if (found) break;
+        }
+        Logger.logMsg(Logger.DEBUG, "FOUND");
         
-        return result1;
+        Logger.logMsg(Logger.DEBUG, "Graph1: " + graph1);
+        Logger.logMsg(Logger.DEBUG, "Graph2: " + graph2);
+
+        Logger.logMsg(Logger.DEBUG, "objQueue1: " + objQueue1);
+        Logger.logMsg(Logger.DEBUG, "objQueue2: " + objQueue2);
+        
+        graph1.unionIntoThis(graph2);
+
+        Logger.logMsg(Logger.DEBUG, "Result: " + graph1);
+        
+        return graph1;
     }
     
     /**
@@ -209,7 +236,7 @@ public class GraphFactory {
         return result;
     }
  
-    
+    @SuppressWarnings({"rawtypes"})    
     private Graph getNeighborsWithPath(long objectId) {
         Graph result = new Graph();
                
@@ -275,6 +302,7 @@ public class GraphFactory {
      * @return true if there was found a path
      */
     private boolean bidirectionalSearchIteration(Queue<Pair<ObjectNode, Integer>> nodesToProcess, Graph thisSide, Graph otherSide, int curDepth, int maxDepth) {
+        if (!Graph.intersection(thisSide, otherSide).nodes.isEmpty()) return true;
         if (nodesToProcess.isEmpty()) return false;
         
         
@@ -296,6 +324,7 @@ public class GraphFactory {
                         .map((Node x) -> (ObjectNode)x)
                         .collect(Collectors.toSet());
 
+                neighbors.nodes.addAll(thisSide.nodes);
                 neighbors.nodes.retainAll(otherSide.nodes);
                 intersectionWithOther = neighbors.nodes;
             }
@@ -310,5 +339,9 @@ public class GraphFactory {
         return false;
         
     }
-    
+    private void initBidirectionalSearch(ObjectTable obj, Queue<Pair<ObjectNode, Integer>> queue, Graph graph) {
+        ObjectPathNode node = new ObjectPathNode(obj);
+        queue.add(new Pair<>(node, 0));
+        graph.nodes.add(node);
+    }
 }
