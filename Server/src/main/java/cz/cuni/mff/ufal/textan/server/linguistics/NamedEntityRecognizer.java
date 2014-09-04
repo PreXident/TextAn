@@ -153,8 +153,7 @@ public class NamedEntityRecognizer {
      */
     private void prepareLearningData(File fileWithTrainingData) {
         LOG.info("Creating data from database started");
-        try {
-            PrintWriter output = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileWithTrainingData, true), "UTF-8"));
+        try (PrintWriter output = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileWithTrainingData, true), "UTF-8"))) {
 
             List<EntityView> documents = entityViewDAO.findAll();
             Collections.sort(documents, (
@@ -186,7 +185,6 @@ public class NamedEntityRecognizer {
             taggedDocument.append(formatAliasForTraining(documentText.substring(lastEntityEnd), null, false));
             output.print(taggedDocument.toString());
             taggedDocument.delete(0, taggedDocument.length());
-            output.close();
             LOG.info("Creating data from database finished");
         } catch (FileNotFoundException e) {
             LOG.error("File for training data not found {}", fileWithTrainingData.getPath(), e);
@@ -277,9 +275,9 @@ public class NamedEntityRecognizer {
                     features.write(" " + gazetteers.getPath() + File.separator + gazetteer);
                 }
             }
-//            else {
-//                return false;
-//            }
+            else {
+                return false;
+            }
             features.newLine();
             features.write("PreviousStage/" + learningParameters.getPreviousStage());
             features.newLine();
@@ -328,7 +326,7 @@ public class NamedEntityRecognizer {
             }
 
 
-            if (trainingDataFile.length() == 0) {
+            if (trainingDataFile.length() <= 1) {
                 LOG.warn("Haven't any training data");
                 return true;
             }

@@ -17,7 +17,7 @@ import java.util.Properties;
  * Class for read nametag training parameters.
  */
 public class LearningParameters {
-    private static final String DEFAULT_LEARNING_PROPERTIES = "NametagLearning.properties";
+    private static final String DEFAULT_LEARNING_PROPERTIES = "./NametagLearning.properties";
     private static final String USER_LEARNING_PROPERTIES = "NametagLearning.properties";
 
     private static final String WAITING_TIME = "waiting_time";
@@ -187,7 +187,7 @@ public class LearningParameters {
     private String getStringProperty(Properties p, String propertyName, String defaultValue) {
         String value = defaultValue;
         try {
-            value = (String) p.get(propertyName);
+            value = p.getProperty(propertyName);
             if (value == null) {
                 LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
                 value = defaultValue;
@@ -208,7 +208,7 @@ public class LearningParameters {
     private boolean getBooleanProperty(Properties p, String propertyName, boolean defaultValue) {
         Boolean value = defaultValue;
         try {
-            value = Boolean.valueOf((String) p.get(propertyName));
+            value = Boolean.valueOf(p.getProperty(propertyName));
             if (value == null) {
                 LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
                 value = defaultValue;
@@ -247,7 +247,7 @@ public class LearningParameters {
     private int getIntegerProperty(Properties p, String propertyName, int defaultValue) {
         int value = defaultValue;
         try {
-            value = Integer.parseInt((String)p.get(propertyName));
+            value = Integer.parseInt(p.getProperty(propertyName));
             LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
         }
         catch (NumberFormatException nfe) {
