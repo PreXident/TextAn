@@ -69,7 +69,8 @@ import javax.xml.ws.soap.SOAPBinding;
 
 /**
  * Main class controlling core manipulations with reports.
- * Handles all communicatioin with the server.
+ * Handles all communicatioin with the server. Serves as a factory for
+ * ProcessReportPipeline.
  */
 public class Client {
 
@@ -86,7 +87,7 @@ public class Client {
     private static final QName DATA_PROVIDER_PORT = new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService", "DataProviderPort");
 
     /**
-     * Parses string to integer, if invalid def is returned.
+     * Parses string to integer; if string is invalid, def is returned.
      * @param string string to parse
      * @param def default value
      * @return string converted to integer, or default if invalid

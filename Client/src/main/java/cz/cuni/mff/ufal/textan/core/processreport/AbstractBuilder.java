@@ -6,7 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Ancestor of other builders, intended to share code.
+ * Ancestor of other builders (for otherwise immutable entities and relations),
+ * intended to share code.
  */
 public abstract class AbstractBuilder implements Serializable {
 

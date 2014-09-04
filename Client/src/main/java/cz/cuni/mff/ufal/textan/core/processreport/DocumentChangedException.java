@@ -1,7 +1,8 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
 /**
- * Simple client side reprezentation of {@link cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException}.
+ * Simple client side reprezentation of
+ * {@link cz.cuni.mff.ufal.textan.core.processreport.DocumentChangedException}.
  */
 public class DocumentChangedException extends Exception {
 

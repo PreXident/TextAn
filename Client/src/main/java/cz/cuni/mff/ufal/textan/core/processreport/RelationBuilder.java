@@ -13,7 +13,7 @@ import java.util.List;
 import javafx.util.Callback;
 
 /**
- * Simple class representing marked Relation.
+ * Simple class for building marked Relation (otherwise immutable).
  * Entities do not track their words, words track their entities.
  * To get marked entities, iterate word list. If extending, consider
  * reimplementing writeReplace

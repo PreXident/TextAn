@@ -4,7 +4,7 @@ import cz.cuni.mff.ufal.textan.core.ObjectType;
 import java.util.List;
 
 /**
- * Simple class representing marked Entity.
+ * Simple class for building marked Entity (otherwise immutable).
  * Entities do not track their words, words track their entities.
  * To get marked entities, iterate word list.
  */

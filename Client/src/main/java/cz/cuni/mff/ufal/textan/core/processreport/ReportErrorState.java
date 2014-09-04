@@ -1,9 +1,7 @@
 package cz.cuni.mff.ufal.textan.core.processreport;
 
-import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
-
 /**
- * {@link ProcessReportPipeline}'s {@link State} for editing the report's relations.
+ * {@link ProcessReportPipeline}'s {@link State} for displaying report conflicts.
  */
 final class ReportErrorState extends State {
 

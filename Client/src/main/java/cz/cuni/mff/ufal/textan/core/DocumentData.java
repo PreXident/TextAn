@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Holder of document data, ie. its objects and relations.
+ * Holder of document data, ie its objects and relations.
  */
 public class DocumentData {
 
