@@ -3,8 +3,10 @@ package cz.cuni.mff.ufal.textan.server.linguistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.net.URL;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -17,7 +19,7 @@ import java.util.Properties;
  * Class for read nametag training parameters.
  */
 public class LearningParameters {
-    private static final String DEFAULT_LEARNING_PROPERTIES = "./NametagLearning.properties";
+    private static final String DEFAULT_LEARNING_PROPERTIES = "NametagLearning.properties";
     private static final String USER_LEARNING_PROPERTIES = "NametagLearning.properties";
 
     private static final String WAITING_TIME = "waiting_time";
@@ -114,8 +116,8 @@ public class LearningParameters {
         params = new LinkedList<>();
 
         Properties defaults = new Properties();
-        try (InputStream defaultsStream = getClass().getClassLoader().getResourceAsStream(DEFAULT_LEARNING_PROPERTIES)) {
-            defaults.load(defaultsStream);
+        try {
+            defaults.load(getClass().getClassLoader().getResourceAsStream(DEFAULT_LEARNING_PROPERTIES));
         } catch (IOException e) {
             //silent exception
         }
@@ -248,7 +250,7 @@ public class LearningParameters {
         int value = defaultValue;
         try {
             value = Integer.parseInt(p.getProperty(propertyName));
-            LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
+            //LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
         }
         catch (NumberFormatException nfe) {
             value = defaultValue;
