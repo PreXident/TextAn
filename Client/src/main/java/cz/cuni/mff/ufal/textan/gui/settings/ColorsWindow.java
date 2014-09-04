@@ -38,7 +38,7 @@ public class ColorsWindow extends InnerWindow {
             controller.setWindow(this);
             controller.setSettings(settings);
             controller.setTextAnController(textAnController);
-            setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            setTitleFixed(Utils.localize(resourceBundle, PROPERTY_ID));
         } catch (Exception e) {
             e.printStackTrace();
             Dialogs.create()

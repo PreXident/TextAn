@@ -5,7 +5,6 @@ import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.*;
 import cz.cuni.mff.ufal.textan.core.Object;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

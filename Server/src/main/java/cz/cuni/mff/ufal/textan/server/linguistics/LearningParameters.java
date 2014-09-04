@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -18,6 +19,9 @@ import java.util.Properties;
  * Class for read nametag training parameters.
  */
 public class LearningParameters {
+    private static final String DEFAULT_LEARNING_PROPERTIES = "NametagLearning.properties";
+    private static final String USER_LEARNING_PROPERTIES = "NametagLearning.properties";
+
     private static final String WAITING_TIME = "waiting_time";
     private static final String TRAINING_DATA = "default_training_data_file";
     private static final String MAXIMUM_STORED_MODELS = "maximum_stored_models";
@@ -110,97 +114,69 @@ public class LearningParameters {
      * */
     public LearningParameters(File dataDirectory, File trainingDirectory) {
         params = new LinkedList<>();
-        //params.add(new File(binaryDirectory, mapBinaryName(TRAIN_NER)).toString());
 
+        Properties defaults = new Properties();
+        try {
+            defaults.load(getClass().getClassLoader().getResourceAsStream(DEFAULT_LEARNING_PROPERTIES));
+        } catch (IOException e) {
+            //silent exception
+        }
 
-        try (InputStream configFileStream = NamedEntityRecognizer.class.getResource("/NametagLearning.properties").openStream()){
-            Properties p = new Properties();
-            p.load(configFileStream);
-            String value;
-            for (int i = 0; i < LEARNING_PARAM_NAMES.length; ++i) {
-                value = getStringProperty(p, LEARNING_PARAM_NAMES[i], DEFAULT_CONFIG_VALUES[i]);
-                if (!value.isEmpty()) {
-                    params.add(value);
-                }
+        //load user properties
+        Properties properties = new Properties(defaults);
+        File userPropertiesFile = new File(USER_LEARNING_PROPERTIES);
+        if (userPropertiesFile.exists()) {
+            try (InputStream stream = new FileInputStream(userPropertiesFile)) {
+                properties.load(stream);
+            } catch (IOException e) {
+                //silent exception
             }
-
-            useDefaultTrainingData = !p.getProperty(TRAINING_DATA).isEmpty();
-
-            if (useDefaultTrainingData) {
-                try {
-                    trainingDataFile = new File(dataDirectory.getAbsolutePath() + File.separator + getStringProperty(p, TRAINING_DATA, DEFAULT_TRAINING_DATA_PATH)).getCanonicalFile();
-                } catch (IOException e) {
-                    LOG.warn("Config value {} wasn't set, using default value.", TRAINING_DATA);
-                } finally {
-                    if (trainingDataFile == null) {
-                        try {
-                            trainingDataFile = new File(dataDirectory.getAbsolutePath() + File.separator + DEFAULT_TRAINING_DATA_PATH).getCanonicalFile();
-                        } catch (IOException e) {
-                            LOG.error("Default learning data file not exists.", e);
-                        }
-                    }
-                }
+        }
+        String value;
+        for (int i = 0; i < LEARNING_PARAM_NAMES.length; ++i) {
+            value = getStringProperty(properties, LEARNING_PARAM_NAMES[i], DEFAULT_CONFIG_VALUES[i]);
+            if (!value.isEmpty()) {
+                params.add(value);
             }
+        }
 
-            waitingTime = getIntegerProperty(p, WAITING_TIME, DEFAULT_WAITING_TIME);
+        String useDefaultTrainingDataProperty = properties.getProperty(TRAINING_DATA);
+        useDefaultTrainingData = (useDefaultTrainingDataProperty != null && !useDefaultTrainingDataProperty.isEmpty());
 
-            maximumStoredModels = getIntegerProperty(p, MAXIMUM_STORED_MODELS, DEFAULT_MAXIMUM_STORED_MODELS);
-
-            featuresFile = getFileProperty(p, FEATURES_FILE, trainingDirectory, DEFAULT_FEATURES_FILE);
-            form = getIntegerProperty(p, FORM, DEFAULT_FORM);
-            lemma = getIntegerProperty(p, LEMMA, DEFAULT_LEMMA);
-            rawLemma = getIntegerProperty(p, RAW_LEMMA, DEFAULT_RAW_LEMMA);
-            rawLemmaCapitalization = getIntegerProperty(p, RAW_LEMMA_CAPITALIZATION, DEFAULT_RAW_LEMMA_CAPITALIZATION);
-            tag = getIntegerProperty(p, TAG, DEFAULT_TAG);
-            numericTimeValue = getIntegerProperty(p, NUMERIC_TIME_VALUE, DEFAULT_NUMERIC_TIME_VALUE);
-            czechLemmaTerm = getIntegerProperty(p, CZECH_LEMMA_TERM, DEFAULT_CZECH_LEMMA_TERM);
-            brownClusters = getIntegerProperty(p, BROWN_CLUSTERS, DEFAULT_BROWN_CLUSTERS);
-            brownClustersFile = getFileProperty(p, BROWN_CLUSTERS_FILE, trainingDirectory, DEFAULT_BROWN_CLUSTERS_FILE);
-            gazetteers = getIntegerProperty(p, GAZETTEERS, DEFAULT_GAZETTEERS);
-            gazetteersDirectory = getFileProperty(p, GAZETTEERS_DIRECTORY, trainingDirectory, DEFAULT_GAZETTEERS_DIRECTORY);
-            previousStage = getIntegerProperty(p, PREVIOUS_STAGE, DEFAULT_PREVIOUS_STAGE);
-            URLEmailDetector = getStringProperty(p, EMAIL_DETECTOR, DEFAULT_EMAIL_DETECTOR);
-
-        } catch (Exception e) {
-            LOG.warn("Config file for NameTag wasn't found, using default values.", e.getMessage());
-            for (int i = 0; i < LEARNING_PARAM_NAMES.length; ++i) {
-                if (!DEFAULT_CONFIG_VALUES[i].isEmpty()) {
-                    params.add(DEFAULT_CONFIG_VALUES[i]);
-                }
-            }
-
+        if (useDefaultTrainingData) {
             try {
-                trainingDataFile = new File(dataDirectory.getAbsolutePath() + File.separator + DEFAULT_TRAINING_DATA_PATH).getCanonicalFile();
-            }
-            catch (IOException ioe) {
+                trainingDataFile = new File(dataDirectory.getAbsolutePath() + File.separator + getStringProperty(properties, TRAINING_DATA, DEFAULT_TRAINING_DATA_PATH)).getCanonicalFile();
+            } catch (IOException e) {
                 LOG.warn("Config value {} wasn't set, using default value.", TRAINING_DATA);
             } finally {
                 if (trainingDataFile == null) {
                     try {
                         trainingDataFile = new File(dataDirectory.getAbsolutePath() + File.separator + DEFAULT_TRAINING_DATA_PATH).getCanonicalFile();
-                    } catch (IOException ioe) {
-                        LOG.error("Default learning data file not exists.", ioe);
+                    } catch (IOException e) {
+                        LOG.error("Default learning data file not exists.", e);
                     }
                 }
             }
-
-            waitingTime = DEFAULT_WAITING_TIME;
-            maximumStoredModels = DEFAULT_MAXIMUM_STORED_MODELS;
-            featuresFile = new File(trainingDirectory + DEFAULT_FEATURES_FILE);
-            form = DEFAULT_FORM;
-            lemma = DEFAULT_LEMMA;
-            rawLemma = DEFAULT_RAW_LEMMA;
-            rawLemmaCapitalization = DEFAULT_RAW_LEMMA_CAPITALIZATION;
-            tag = DEFAULT_TAG;
-            numericTimeValue = DEFAULT_NUMERIC_TIME_VALUE;
-            czechLemmaTerm = DEFAULT_CZECH_LEMMA_TERM;
-            brownClusters = DEFAULT_BROWN_CLUSTERS;
-            brownClustersFile = new File(trainingDirectory + DEFAULT_BROWN_CLUSTERS_FILE);
-            gazetteers = DEFAULT_GAZETTEERS;
-            gazetteersDirectory = new File(trainingDirectory + DEFAULT_GAZETTEERS_DIRECTORY);
-            previousStage = DEFAULT_PREVIOUS_STAGE;
-            URLEmailDetector = DEFAULT_EMAIL_DETECTOR;
         }
+
+        waitingTime = getIntegerProperty(properties, WAITING_TIME, DEFAULT_WAITING_TIME);
+
+        maximumStoredModels = getIntegerProperty(properties, MAXIMUM_STORED_MODELS, DEFAULT_MAXIMUM_STORED_MODELS);
+
+        featuresFile = getFileProperty(properties, FEATURES_FILE, trainingDirectory, DEFAULT_FEATURES_FILE);
+        form = getIntegerProperty(properties, FORM, DEFAULT_FORM);
+        lemma = getIntegerProperty(properties, LEMMA, DEFAULT_LEMMA);
+        rawLemma = getIntegerProperty(properties, RAW_LEMMA, DEFAULT_RAW_LEMMA);
+        rawLemmaCapitalization = getIntegerProperty(properties, RAW_LEMMA_CAPITALIZATION, DEFAULT_RAW_LEMMA_CAPITALIZATION);
+        tag = getIntegerProperty(properties, TAG, DEFAULT_TAG);
+        numericTimeValue = getIntegerProperty(properties, NUMERIC_TIME_VALUE, DEFAULT_NUMERIC_TIME_VALUE);
+        czechLemmaTerm = getIntegerProperty(properties, CZECH_LEMMA_TERM, DEFAULT_CZECH_LEMMA_TERM);
+        brownClusters = getIntegerProperty(properties, BROWN_CLUSTERS, DEFAULT_BROWN_CLUSTERS);
+        brownClustersFile = getFileProperty(properties, BROWN_CLUSTERS_FILE, trainingDirectory, DEFAULT_BROWN_CLUSTERS_FILE);
+        gazetteers = getIntegerProperty(properties, GAZETTEERS, DEFAULT_GAZETTEERS);
+        gazetteersDirectory = getFileProperty(properties, GAZETTEERS_DIRECTORY, trainingDirectory, DEFAULT_GAZETTEERS_DIRECTORY);
+        previousStage = getIntegerProperty(properties, PREVIOUS_STAGE, DEFAULT_PREVIOUS_STAGE);
+        URLEmailDetector = getStringProperty(properties, EMAIL_DETECTOR, DEFAULT_EMAIL_DETECTOR);
     }
 
     /**
@@ -213,7 +189,7 @@ public class LearningParameters {
     private String getStringProperty(Properties p, String propertyName, String defaultValue) {
         String value = defaultValue;
         try {
-            value = (String) p.get(propertyName);
+            value = p.getProperty(propertyName);
             if (value == null) {
                 LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
                 value = defaultValue;
@@ -234,7 +210,7 @@ public class LearningParameters {
     private boolean getBooleanProperty(Properties p, String propertyName, boolean defaultValue) {
         Boolean value = defaultValue;
         try {
-            value = Boolean.valueOf((String) p.get(propertyName));
+            value = Boolean.valueOf(p.getProperty(propertyName));
             if (value == null) {
                 LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
                 value = defaultValue;
@@ -273,8 +249,8 @@ public class LearningParameters {
     private int getIntegerProperty(Properties p, String propertyName, int defaultValue) {
         int value = defaultValue;
         try {
-            value = Integer.parseInt((String)p.get(propertyName));
-            LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
+            value = Integer.parseInt(p.getProperty(propertyName));
+            //LOG.warn("Config value {} wasn't set, using default value {}.", propertyName, defaultValue);
         }
         catch (NumberFormatException nfe) {
             value = defaultValue;

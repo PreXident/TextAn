@@ -6,7 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Ancestor of other builders, intended to share code.
+ * Ancestor of other builders (for otherwise immutable entities and relations),
+ * intended to share code.
  */
 public abstract class AbstractBuilder implements Serializable {
 
@@ -53,7 +54,7 @@ public abstract class AbstractBuilder implements Serializable {
      * @param clearer functor to clear trimmed words
      * @return indeces of actually added words
      * @throws SplitException if an builder should be split
-     * @see #trim(java.util.List, int, int)
+     * @see #trim(List, int, int, IClearer)
      */
     public Pair<Integer, Integer> add(final List<Word> words, final int from, final int to, final IClearer clearer)
             throws SplitException {
@@ -76,7 +77,7 @@ public abstract class AbstractBuilder implements Serializable {
      * @param to final index (inclusive)
      * @param clearer functor to clear trimmed words
      * @throws SplitException if an builder should be split
-     * @see #trim(java.util.List, int, int)
+     * @see #trim(List, int, int, IClearer)
      */
     protected void clean(final List<Word> words, final int from, final int to, final IClearer clearer) throws SplitException {
         checkAdding(words, from, to);
@@ -180,9 +181,10 @@ public abstract class AbstractBuilder implements Serializable {
      * Gets informed when word at index is cleared.
      */
     public interface IClearer {
+
         /**
          * The word at index is cleared.
-         * @param index
+         * @param index index to clear
          */
         void clear(final int index);
     }

@@ -43,7 +43,9 @@ dependencies {
     compile project(':Commons')
     compile project(':Data')
     compile project(':Linguistics')
-    compile project(':TextPro')
+    compile project(':ObjectAssigner')
+
+    runtime project(':Setuper')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
@@ -198,9 +200,16 @@ task dist(type: Copy, dependsOn: 'shadowJar') {
         include '**/*'
         into 'lib'
     }
+    //database scripts
+    from (file("${rootProject.projectDir.toPath()}/Database")) {
+        include '**/*.sql'
+        into 'database'
+    }
+
     //starting scripts
     from (file("$projectDir/dist")) {
         include "**/*"
+        fileMode = 0700
     }
     into file("$buildDir/dist")
 }

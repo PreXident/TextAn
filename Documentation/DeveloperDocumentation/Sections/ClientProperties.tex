@@ -1,0 +1,195 @@
+This apendix contains a list of properties from configuration file that controls
+client behaviour and their brief description.
+
+\begin{lstlisting}[frame=single,language=properties]
+#about window height
+about.view.height=225.0
+#about window width
+about.view.width=265.0
+#about window x-pos
+about.view.x=878.0
+#about window y-pos
+about.view.y=154.0
+#main application window height
+application.height=600.0
+#is main application window maximized?
+application.max=true
+#main application window width
+application.width=800.0
+#main application window x-pos
+application.x=192.0
+#main application window y-pos
+application.y=119.0
+#color settings window height
+colors.view.height=300.0
+#is color settings window maximized?
+colors.view.maximized=true
+#color settings window width
+colors.view.width=450.0
+#color settings window x-pos
+colors.view.x=0.0
+#color settings window y-pos
+colors.view.y=0.0
+#timeout for connecting in ms (default 60000)
+connect.timeout=10000
+#indicator whether the filters in context menus in pipeline
+#should be cleared when item is selected
+clear.filters=true
+#document edit/add window height
+document.edit.height=300.0
+#is document edit/add window maximized?
+document.edit.maximized=true
+#document edit/add window width
+document.edit.width=450.0
+#document edit/add window x-pos
+document.edit.x=193.0
+#document edit/add window y-pos
+document.edit.y=164.0
+#document view window height
+document.viewer.height=576.0
+#is document view window height maximized?
+document.viewer.maximized=true
+#document view window widht
+document.viewer.width=662.0
+#document view window x-pos
+document.viewer.x=148.0
+#document view window y-pos
+document.viewer.y=203.0
+#number of documents to list on one page in document
+#view window
+documents.per.page=100
+#document list window height
+documents.viewer.height=604.0
+#is document list window maximized?
+documents.viewer.maximized=true
+#document list window width
+documents.viewer.width=663.0
+#document list window x-pos
+documents.viewer.x=513.0
+#document list window y-pos
+documents.viewer.y=87.0
+#user wants Object Type with id 1 to be displayed as white
+ENTITY.color.1=#FFFFFF
+#default distance from graph center to display
+graph.distance=6
+#graph window height
+graph.viewer.height=784.0
+#is graph window maximized?
+graph.viewer.maximized=true
+#flag indicating whether object type filter should be
+#displayed in graph viewer
+graph.viewer.objectfilter=true
+#flag indicating whether relation type filter should be
+#displayed in graph viewer
+graph.viewer.relationfilter=true
+#graph window width
+graph.viewer.width=678.0
+#graph window x-pos
+graph.viewer.x=60.0
+#graph window y-pos
+graph.viewer.y=26.0
+#flag indicating whether the hypergraphs should be displayed
+#as background color instead of by additional vertex
+hypergraphs=true
+#object join window height
+join.view.height=682.0
+#is object join window maximized?
+join.view.maximized=true
+#object join window width
+join.view.width=953.0
+#object join window x-pos
+join.view.x=147.0
+#object join window y-pos
+join.view.y=91.0
+#directory lastly used for save/load a report
+loadreport.dir=C\:\\temp
+#application language
+locale.language=cs
+#number of documents to list on left page
+#in object join window
+objects.per.page.left=100
+#number of documents to list on right page
+#in object join window
+objects.per.page.right=100
+#number of documents to list on one page
+#in object list window
+objects.per.page=100
+#path window height
+path.wizard.height=586.0
+#is path window maximized?
+path.wizard.maximized=true
+#path window width
+path.wizard.width=865.0
+#path window x-pos
+path.wizard.x=295.0
+#path window y-pos
+path.wizard.y=60.0
+#user wants Relation Type with id 1 to be displayed as white
+RELATION.color.1=#FFFFFF
+#relation list window height
+relation.view.height=741.0
+#is relation list window maximized?
+relation.view.maximized=true
+#relation list window width
+relation.view.width=722.0
+#relation list window x-pos
+relation.view.x=149.0
+#relation list window y-pos
+relation.view.y=15.0
+#report wizard pipeline window height
+report.wizard.height=734.0
+#is report wizard pipeline window maximized?
+report.wizard.maximized=true
+#report wizard pipeline window width
+report.wizard.width=843.0
+#report wizard pipeline window x-pos
+report.wizard.x=397.0
+#report wizard pipeline window y-pos
+report.wizard.y=70.0
+#timeout for request in ms (default 60000)
+request.timeout=10000
+#last directory with imported file
+selectfile.dir=C\:\\temp
+#should ssl be used for communication?
+ssl=true
+#path to trust store
+ssl.trustStore=c\:/temp/clientKeyStore
+#trust store password
+ssl.trustStore.password=MyPass
+#trust store type (default JKS)
+ssl.trustStore.type=JKS
+#files with extension 'txt' should be processed as text files
+#encoded in Windows-1250 encoding; only other valid value for
+#now is TEXT_UTF8 for utf-8 encoding
+selectfile.extension.txt.type=TEXT_CP1250
+#settings window height
+settings.view.height=225.0
+#settings window width
+settings.view.width=265.0
+#settings window x-pos
+settings.view.x=869.0
+#settings window y-pos
+settings.view.y=390.0
+#url of the data provider wsdl
+url.data.wsdl=http\://localhost\:9500/soap/data?wsdl
+#url of the data provider
+url.data=http\://localhost\:9500/soap/data
+#url of the document processor wsdl
+url.document.wsdl=http\://localhost\:9500/soap/document?wsdl
+#url of the document processor
+url.document=http\://localhost\:9500/soap/document
+#user's login
+username=BFU
+#flag indicating whether independent system windows should
+#be used instead of embedded inner windows
+windows.independent=false
+\end{lstlisting}
+
+Dynamic properties \emph{selectfile.extension.X.type} where X is file extension
+are used to store information how to extract report from this file type.
+
+Dynamic properties \emph{ENTITY.color.X} where X is Object Type id are used to
+store color assigned by user to the given Object Type.
+
+Dynamic properties \emph{RELATION.color.X} where X is Relation Type id are used
+to store color assigned by user to the given Relation Type.

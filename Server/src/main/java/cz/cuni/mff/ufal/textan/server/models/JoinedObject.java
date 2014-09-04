@@ -1,6 +1,7 @@
 package cz.cuni.mff.ufal.textan.server.models;
 
 /**
+ * A service layer representation of the Joined object.
  * @author Petr Fanta
  */
 public class JoinedObject {
@@ -9,24 +10,46 @@ public class JoinedObject {
     private final Object child1;
     private final Object child2;
 
+    /**
+     * Instantiates a new JoinedObject
+     * @param root the root object in the joint
+     * @param child1 the coupled object
+     * @param child2 the coupled object
+     */
     public JoinedObject(Object root, Object child1, Object child2) {
         this.root = root;
         this.child1 = child1;
         this.child2 = child2;
     }
 
+    /**
+     * Gets the root object in a tree.
+     * @return the root
+     */
     public Object getRoot() {
         return root;
     }
 
+    /**
+     * Gets the first child.
+     * @return the child
+     */
     public Object getChild1() {
         return child1;
     }
 
+    /**
+     * Gets the second child.
+     * @return the child
+     */
     public Object getChild2() {
         return child2;
     }
 
+    /**
+     * Converts the instance to a {@link cz.cuni.mff.ufal.textan.commons.models.JoinedObject}
+     * @return the {@link cz.cuni.mff.ufal.textan.commons.models.JoinedObject}
+     */
     public cz.cuni.mff.ufal.textan.commons.models.JoinedObject toCommonsJoinedObject() {
         cz.cuni.mff.ufal.textan.commons.models.JoinedObject commonsJoinedObject = new cz.cuni.mff.ufal.textan.commons.models.JoinedObject();
         commonsJoinedObject.setRootObject(root.toCommonsObject());

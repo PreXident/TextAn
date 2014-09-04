@@ -1,0 +1,49 @@
+Kuba is missing
+
+Adam:
+ - almost all hwk except for mockups
+ - nearly all in documentation
+ - bug fixes, refactoring
+ - drawn lots of images!
+ 
+Peter:
+- integrated new TextPro
+- documentation
+- analyzer research
+- taught Venca some hibernate :-D
+
+Tam:
+- finished new version of TextPro
+- documentation
+
+Venca:
+- fixing bugs
+
+HWK:
+- Tam, fix bug in TextPro
+- Tam, proof-read the documentation
+- Adam, add user interface for finding paths
+- Adam, use interface for relation recognition
+- Adam, proper section names instead of package names?
+- Adam, remove links in client used libraries
+- Adam, mockup screen, use visio too
+- Adam, sequence diagram for client-server communication
+- Adam, two simple use cases
+- Venca, implement find path between two objects
+- Venca, think a way to create database from hibernate
+- Venca, create db schema description in Visio 2013
+- Venca, database documentation!!! (Texmaker gui, Texlive-full into PATH)
+- Peter, add interface for relation recognition
+- Peter, can MySQL annotation use LOB?
+- Peter, rewrite requirements from specification
+- Peter, use component diagram to describe layered architecture
+- Peter, write Bures about thesis
+- someone, write autoloader for creating types from text files (two modes 1) adding new types without preventing duplicites2) delete database, insert from text gile)
+
+- all, DOCUMENTATION!!! DEVELOPER DOCUMENTATION!!!
+- add mention about adding new types to developer documentation (why it is for administrator only)
+- add mention about adding new types to user documentation for administrators
+  - manual - run script with data
+  - automatic with use of "autoloader" creating types from text files
+  
+Next meeting on Monday at 16:30.

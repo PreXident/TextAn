@@ -161,7 +161,11 @@ public class ReportObjectsController extends ReportWizardController {
             } else {
                 getMainNode().setCursor(Cursor.WAIT);
                 new Thread(() -> {
-                    pipeline.setReportObjects(pipeline.getReportEntities());
+                    handleDocumentChangedException(root, () -> {
+                        pipeline.setReportObjects(pipeline.getReportEntities(),
+                                FXRelationBuilder::new);
+                        return null;
+                    });
                 }, "FromObjectsState").start();
             }
         }
@@ -203,7 +207,7 @@ public class ReportObjectsController extends ReportWizardController {
         splitVert.getItems().addAll(vbox, newListView);
         border.setCenter(splitVert);
         filterField = new TextField();
-        filterField.textProperty().addListener(e -> filterObjects(selectedEntity));
+        filterField.setOnAction(e -> filterObjects(selectedEntity));
         filterField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.DOWN && dbListView.getItems().size() > 0) {
                 dbListView.getSelectionModel().select(0);
@@ -354,7 +358,7 @@ public class ReportObjectsController extends ReportWizardController {
                         if (p != null && p.getSecond() != null) {
                             String prefix = "";
                             if (p.getFirst() != null) {
-                                prefix = p.getFirst().toString() + ": ";
+                                prefix = String.format("%.2f: ", p.getFirst());
                             }
                             setText(Utils.shortString(prefix + p.getSecond().toString()));
                             setContextMenu(objectContextMenu);

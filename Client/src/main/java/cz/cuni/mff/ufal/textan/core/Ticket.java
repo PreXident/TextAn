@@ -12,7 +12,8 @@ public class Ticket implements Serializable {
 
     /** Ticket timestamp. */
     private final Date timestamp;
-    /** Server state */
+
+    /** Server state. */
     private final long version;
 
     /**

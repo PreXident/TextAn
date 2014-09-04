@@ -7,7 +7,7 @@ import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTypeTableDAO;
 import cz.cuni.mff.ufal.textan.server.commands.CommandInvoker;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 import cz.cuni.mff.ufal.textan.server.web.TextanWelcomePage;
-import cz.cuni.mff.ufal.textan.textpro.configs.TextProConfig;
+import cz.cuni.mff.ufal.textan.assigner.configs.ObjectAssignerConfig;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
@@ -35,15 +35,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The root spring configuration.
  *
  * @author Petr Fanta
  * @author Jakub Vlček
+ * @author Adam Huječek
  */
 @Configuration
-@Import({DataConfig.class, TextProConfig.class})
+@Import({DataConfig.class, ObjectAssignerConfig.class})
 @ComponentScan("cz.cuni.mff.ufal.textan.server.services")
 public class AppConfig implements ApplicationContextAware {
 
@@ -108,6 +111,7 @@ public class AppConfig implements ApplicationContextAware {
      * Creates a pre-configured Jetty server.
      *
      * @return the server
+     * @throws java.io.IOException if any IO error occurs
      * @see org.eclipse.jetty.server.Server
      */
     @Bean(destroyMethod = "stop")
@@ -200,7 +204,6 @@ public class AppConfig implements ApplicationContextAware {
         servletContextHandler.addServlet(servletHolder, "/soap/*");
         servletContextHandler.setInitParameter("contextConfigLocation", WebAppConfig.class.getName());
         servletContextHandler.addServlet(TextanWelcomePage.class, "/");
-        //servletContextHandler.setErrorHandler(new TextanErrorHandler()); //FIXME
 
         if (useSsl) {
             Constraint constraint = new Constraint();
@@ -246,8 +249,17 @@ public class AppConfig implements ApplicationContextAware {
      * @see cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer
      */
     @Bean(initMethod = "init")
-    @DependsOn("transactionManager")
+    @DependsOn({"transactionManager", "exceptionTranslation"})
     public NamedEntityRecognizer namedEntityRecognizer() {
         return new NamedEntityRecognizer(objectTypeTableDAO, entityViewDAO, documentTableDAO);
+    }
+
+    /**
+     * Creates a lock for concurrent writing to the database.
+     * @return the lock
+     */
+    @Bean
+    public Lock writeLock() {
+        return new ReentrantLock();
     }
 }

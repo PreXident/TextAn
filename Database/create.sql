@@ -1,4 +1,7 @@
-CREATE DATABASE IF NOT EXISTS textan 
+-- creates a database schema 'textan' and all necessary tables in it
+
+CREATE DATABASE `textan`
+-- IF NOT EXISTS
   DEFAULT CHARACTER SET utf8
   DEFAULT COLLATE utf8_general_ci;
 USE textan;
@@ -16,7 +19,8 @@ CREATE TABLE Audit (
 	id_audit int PRIMARY KEY AUTO_INCREMENT, 
   username NVARCHAR(255) NOT NULL,
   edit_date datetime NOT NULL,
-  edittype VARCHAR(255) NOT NULL,            -- INSERT | DELETE | UPDATE
+  -- INSERT | DELETE | UPDATE
+  edittype VARCHAR(255) NOT NULL,
   edit text CHARSET utf8 NOT NULL
 );
 
@@ -48,9 +52,7 @@ CREATE TABLE Object (
   		REFERENCES ObjectType(id_object_type)
       ON DELETE CASCADE,
 	globalversion int DEFAULT 0 NOT NULL,
-  id_root_object int -- ,  -- root of the joined tree
-    /*CONSTRAINT FK_OBJECT_ROOT FOREIGN KEY (id_root_object)
-  		REFERENCES Object(id_object)*/	
+    id_root_object int
 );
 
 CREATE TABLE Alias (
@@ -129,9 +131,6 @@ CREATE TABLE JoinedObjects
 	      globalversion int DEFAULT 0 NOT NULL
 );
 
--- TODO add constrant: joined objects have to have the same type
-
-
 CREATE TABLE RelationOccurrence
 (
 
@@ -149,18 +148,3 @@ CREATE TABLE RelationOccurrence
         position int,
         anchor NVARCHAR(255)
 );
-
-
--- Create user for textan (maybe MySql specific)
-
--- user used to connect from localhost
--- CREATE USER 'textan_user'@'localhost' IDENTIFIED BY 'textanpassword';
-GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE, SHOW VIEW 
-  ON textan.* TO 'textan_user'@'localhost' IDENTIFIED BY 'textanpassword';
-
--- user used to connect from any host
--- CREATE USER 'textan_user'@'%' IDENTIFIED BY 'textanpassword';
-GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE, SHOW VIEW 
-  ON textan.* TO 'textan_user'@'%' IDENTIFIED BY 'textanpassword';
-
-FLUSH PRIVILEGES;

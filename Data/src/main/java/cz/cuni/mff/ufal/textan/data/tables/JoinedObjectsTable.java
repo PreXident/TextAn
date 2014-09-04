@@ -6,10 +6,6 @@ import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
-import org.hibernate.annotations.GenericGenerator;
-
-
 
 
 /**
@@ -22,7 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "JoinedObjects")
 public class JoinedObjectsTable extends AbstractTable {
     public static final String PROPERTY_NAME_GLOBAL_VERSION = "globalVersion";
-    
+
     private long id;
     private Date from;
     private Date to;
@@ -37,9 +33,9 @@ public class JoinedObjectsTable extends AbstractTable {
     /**
      * Sets the "from Date" to current date and "to Date" to null which means infinity
      *
-     * @param newObject
-     * @param oldObject1
-     * @param oldObject2
+     * @param newObject new joined object
+     * @param oldObject1 first object to join
+     * @param oldObject2 seconf object to join
      */
     public JoinedObjectsTable(ObjectTable newObject, ObjectTable oldObject1, ObjectTable oldObject2) {
         this(Calendar.getInstance().getTime(), null, newObject, oldObject1, oldObject2);
@@ -49,21 +45,21 @@ public class JoinedObjectsTable extends AbstractTable {
      * @param from       The date, objects are joined from
      * @param to         The date, objects are joined to. Null for infinity
      * @param newObject  New joined object.
-     * @param oldObject1
-     * @param oldObject2
+     * @param oldObject1 first object to join
+     * @param oldObject2 seconf object to join
      */
     public JoinedObjectsTable(Date from, Date to, ObjectTable newObject, ObjectTable oldObject1, ObjectTable oldObject2) {
         this.from = from;
         this.to = to;
-        
+
         this.setNewObject(newObject);
         this.newObject.setNewObject(this);
-        
+
         this.oldObject1 = oldObject1;
-        this.oldObject1.setOldObjects1(this);
-        
+        this.oldObject1.setOldObject1(this);
+
         this.setOldObject2(oldObject2);
-        this.oldObject2.setOldObjects2(this);
+        this.oldObject2.setOldObject2(this);
     }
 
     @Id
@@ -130,7 +126,7 @@ public class JoinedObjectsTable extends AbstractTable {
     public void setOldObject2(ObjectTable oldObject2) {
         this.oldObject2 = oldObject2;
     }
-  
+
     @Column(name = "globalversion", nullable = false)
     public long getGlobalVersion() {
         return globalVersion;
@@ -166,12 +162,8 @@ public class JoinedObjectsTable extends AbstractTable {
         return true;
     }
 
-    
-
     @Override
     public String toString() {
         return "JoinedObjectsTable{" + "id=" + id + ", globalVersion=" + globalVersion + ", from=" + from + ", to=" + to + ", newObject=" + newObject + ", oldObject1=" + oldObject1 + ", oldObject2=" + oldObject2 + '}';
     }
-
-
 }

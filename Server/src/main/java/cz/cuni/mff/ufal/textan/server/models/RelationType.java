@@ -103,7 +103,6 @@ public class RelationType {
         return (int) (id ^ (id >>> 32));
     }
 
-    //fixme: auto generated
     @Override
     public String toString() {
         return "RelationType{" +

@@ -1,0 +1,101 @@
+% Chapter: POSSIBILITIES OF FUTURE EXTENSIONS
+
+The chapter introduces some areas, that should be in our opinion extended or
+improved. The list does not contain all possible extensions, of course.
+
+\section{Relation Recognition}
+The automatic recognition of relations between objects is the most missing
+feature in the current version of \textan{}. However, because this task has been
+taken into account from the very beginning of the development and because it is
+one of the optional requirements, \textan{} contains the whole infrastructure
+except for the core component itself.
+
+The recognition can be based on many different criteria, same as relations.
+For example: the presence of objects in the same document, the kind of verbs,
+which are the anchors for relations in the most cases, their valency and
+relations which users marked before in other documents. The component could be
+probably based on some machine learning method and above mentioned attributes.
+
+\section{Searching in Graphs}
+Although \textan{} provides several search methods, they are weak compared to
+possibilities that graphs offer. Consider for example an environment of police
+reports and a task in which you need to find all persons who know a killer. The
+graph contains this information, if good model is defined for the domain, but
+how can you ask for them?
+
+It implies at least usage of some graph query language and creation of some
+graph indexing over the data. Or in better case usage of different data storage. 
+
+\section{Underlying Database}
+In the case that graph operations become more important, it will be better to
+use a different data store, for example a NoSql database based on RDF or a graph
+database. There are many implementations of these databases, both commercial and
+open-source, e.g. OpenLink Virtuoso\footnote{\url{http://virtuoso.openlinksw.com/}},
+or Neo4j\footnote{\url{http://www.neo4j.org/}}.
+
+\section{Restrictions for Objects in Relation}
+As it is noted in user documentation Section \ref{USR-sec:Domain},
+\textan{} is very universal and needs some conventions to provide good results,
+because there is no way how to enforce the proper use. The system cannot work
+properly without conventions anyway, but some extension enforcing restrictions
+can improve overall outcomes.
+
+The most natural improvement is restricting objects in relations. Consider for
+example relation type ``murder''. There must probably be at least one object of
+type ``person'' with role ``victim'' in the relation of this type, also there
+should be an object of type ``person'' with role ``murderer'', an object of type
+``address'' with role ``crime place'' and so on.
+
+\section{Multiple Languages at Once}
+Although \textan{} can be configured for multiple languages, mainly for Czech
+and English (see Section \ref{USR-sec:Lang} in the user documentation), it
+support only one language at once. It can be useful to support multiple
+languages at once. For example, when \textan{} is used by police for analyze
+their reports, it can be helpful to manage reports from foreign colleagues in
+same system. A similar example is any multinational company and its documents.
+
+This change affects multiple areas in \textan{}, especially recognizers and
+the full text indexing and searching, because they use different procedures for
+each language and it is difficult to find any universal solution for them. It
+means that the system must know which language is currently used and must choose
+the right method for processing. It can be solved by multiple models for
+recognizers, one for each language, and multiple analyzers for the searching and
+the language will have to be defined explicitly.
+
+\section{Better Czech Full Text Search}
+
+Although Apache Lucene that is used for the text indexing in \textan is very
+powerful tool, it is results are highly depend on a natural language analysis.
+The Lucene contains an Analyzer (see Section \ref{USR-sec:Lang} in the user documentation)
+for Czech language, but it isn't very good. We tried to implement a better analyzer
+based lemmatization via the MorphoDiTa tool (see Section \ref{sec:UsedTechnologies}),
+but it uses different approach then the Lucene, so it remained unfinished.
+
+\section{Client Improvements}
+The \textan{} client could be improved in many ways as any graphic application.
+This section contains a few examples that could improve user experience and
+efficiency.
+
+When users filter documents by full text, only the list of documents matching
+the criteria is displayed. No information about the position of the match etc.
+is provided. Lucene offers such functionality, so if webservice interface is
+extended, the client could be altered to display exact location of the matched
+text.
+
+Although full localization of the application is implemented, the object and
+relation type names are directly fetched from the database. This could be a
+major issue if feature ``multiple languages at once'' is implemented as it would
+be required to use names understood by all users. Hence the mechanism for
+localization of object and relation types could really improved the chances of
+success in international multilingual environment.
+
+The inner windows are only simple containers and do not have advanced layout
+possibilities that many operating system provides and users are used to.
+Therefore if more sophisticated layout framework is developed or external
+component proving such features is employed, the user experience and
+satisfaction could improve a lot.
+
+Despite the fact that users can choose whether they want to use inner windows
+or outer stages, there is no way to transform between them on the run. This is
+a feature that should not be hard to implement, but it could be used by some
+users.

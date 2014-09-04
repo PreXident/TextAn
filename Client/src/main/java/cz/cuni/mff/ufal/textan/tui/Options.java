@@ -20,20 +20,28 @@ public class Options {
     /** Flag indicating whether reports should be force saved. */
     @Parameter(
             description = "reports should be force saved",
-            names = { "-f", "/F", "--force" })
-    boolean force = false;
+            names = { "-f", "/F", "--force" },
+            arity = 1)
+    boolean force = true;
 
     /** Flag indicating whether new objects should be created if none is recognized. */
     @Parameter(
             description = "create new objects if none is assigned",
-            names = { "-n", "/N", "--new" })
-    boolean newObjects = false;
+            names = { "-n", "/N", "--new" },
+            arity = 1)
+    boolean newObjects = true;
 
     /** Directory containing the reports to be processed. */
     @Parameter(
             description = "directory with reports to process, ignored when list of reports is provided",
             names = { "-d", "/D", "--directory" })
     String directory = null;
+
+    /** Number of threads to use for processing. */
+    @Parameter(
+            description = "number of threads to use for processing; if <= 0 then auto",
+            names = { "-t", "/T", "--threads" })
+    int threads = 1;
 
     /** Path to settings file. */
     @Parameter(

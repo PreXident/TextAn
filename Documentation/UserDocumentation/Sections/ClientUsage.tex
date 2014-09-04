@@ -1,0 +1,522 @@
+% Section: Client Usage
+This section contains all information needed by end users to successfully use
+the \textan{} client application. To run the client application in Windows, double click \emph{run.bat}, on Linux run \emph{run.sh}. For more information
+see Section \ref{sssec:StartClient}.
+
+\section{First Run}
+
+On the first run of \textan{} client, users are prompted to enter their username
+(see Figure \ref{fig:Login}, which is used by the system to identify the users.
+The login name is stored in the settings and the login dialog is not shown again
+in following runs. The name can be changed in settings (see Section
+\ref{ssec:Settings}). A valid name is required, i.e. not empty and not
+whitespace characters only. If users enter invalid login, a warning is displayed
+and they may enter another login or the application quits.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/login}
+        \caption{Login prompt on first run.}
+        \label{fig:Login}
+\end{figure}
+
+\section{Working Space}
+
+The \textan{} client's application working space is aimed to be simple and
+intuitive. The main window (see Figure \ref{fig:MainWindow}) contains the main
+menubar with all commands needed to control the application. There is also a
+toolbar with icons for mostly used commands to speed up the access. Hovering
+over the toolbar icons displays the corresponding action names.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/main}
+        \caption{Main window controls. 1) Main menubar, 2) Toolbar.}
+        \label{fig:MainWindow}
+\end{figure}
+
+The File menu contains items to create new report, import report from external
+file and load report whose processing has not been not finished, but has been
+saved for a later use. For more information about report processing, see
+Section \ref{ssec:ProcessReport}.
+
+The Wizards menu contains items starting wizards to guide the users in more
+complicated tasks, like processing report (see Section
+\ref{ssec:ProcessReport}), joining objects (see Section \ref{ssec:JoinObjects})
+and finding path between two objects (see Section \ref{ssec:PathWizard}).
+
+The Dials \comment{Ondrej}{Proc dials?} menu contains items to display objects,
+documents and relations stored in the database (see Section
+\ref{ssec:ViewDatabase}).
+
+The Windows menu contains the list of currently open application windows
+to easily bring a certain window to front.
+
+The Settings menu contains items to customize \textan{} client appearance and
+behavior. For more information, see Section \ref{ssec:Settings}. It also
+contains a shortcut to reset the position and size of the main window.
+
+\section{Settings}
+\label{ssec:Settings}
+
+This section describes options available in individual items contained in the
+main menu Settings. All these settings are safe to change by the end user. For
+more advance options, please see Sections \ref{sssec:BasicConf} and
+\ref{ssec:ClientSettings}.
+
+\subsection{General Settings}
+\label{sssec:GeneralSettings}
+
+The General Settings window (see Figure \ref{fig:GeneralSettings}) contains
+controls for changing the behavior and appearance of the application.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/general}
+        \caption{General Settings Window}
+        \label{fig:GeneralSettings}
+\end{figure}
+
+\paragraph{Independent Windows} If this control is checked, the application
+secondary windows are not embedded into the main window, but separate
+independent system windows are used.
+
+\paragraph{Hyperedges as clouds} This control affects the rendering of
+hyperedges\footnote{Hyperedge is an edge in a hypergraph which is a
+generalization of term graph. The difference is that edges in hypergraphs can
+connect any number of nodes, whereas in graph they always connect two nodes.}
+in graphs (see Figure \ref{fig:Hypergraphs}). The default rendering transforms
+hypergraphs to graphs by adding auxiliary nodes of square shape representing
+the relation. If this control is checked, the edges are rendered using
+background color in a cloud-like shape.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/hypergraphs}
+        \caption{Graph rendering differences. Default on the left.}
+        \label{fig:Hypergraphs}
+\end{figure}
+
+\paragraph{Clear Filters} If this control is checked, the filter fields
+displayed during report processing will be cleared when shown again.
+
+\paragraph{Localization} This control determines the language of the \textan{}
+client. The Czech and English localizations are currently supported. The
+default language is English. Changing localization takes effect after
+restarting the application.
+
+\paragraph{Max Distance} This control affects the default maximal length of the
+path between any node and the graph central node. Nodes beyond this limit are
+not displayed.
+
+\paragraph{Login} This control enables users to change their username. Changing
+the login name takes effect after restarting the application.
+
+\subsection{Colors}
+
+The Colors settings window (see Figure \ref{fig:Colors}) contains two lists --
+one for object types and one for relation types. They contain all types found
+in the database and enable users to easily customize their color displayed in
+graphs views and report processing windows by clicking corresponding color
+pickers.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/colors}
+        \caption{Colors settings window.}
+        \label{fig:Colors}
+\end{figure}
+
+\subsection{Report Processing}
+\label{ssec:ProcessReport}
+
+The wizard for report processing is accessible from the main menu. It guides
+users in a complicated procedure of processing a report. The procedure is
+divided into several steps described in this section (see Figure
+\ref{fig:Pipeline}). Users can return to previous steps, but if any changes are
+done, the annotation in the subsequent steps is lost.
+
+Please note that although it is possible to process non-annotated documents in
+this wizard, their texts cannot be edited this way. For more information about
+editing and inserting non-annotated documents, please see Section
+\ref{sssec:DocumentList}.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[height=16cm,keepaspectratio]{Images/pipeline}
+        \caption{Schema of report processing.}
+        \label{fig:Pipeline}
+\end{figure}
+
+In Edit Report step and later, when the report processing is interrupted,
+\textan{} offers saving the unfinished report into a file. The processing can
+be resumed by selecting Unfinished Report in Report Source step (see Section
+\ref{sssec:ReportSource}). The processing continues in the step where it has
+been saved.
+
+\subsection{Report Source}
+\label{sssec:ReportSource}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/source}
+        \caption{Choosing report source.}
+        \label{fig:Source}
+\end{figure}
+
+This step (see Figure \ref{fig:Source}) allows users to choose the source of the
+report. The following sources are possible:
+
+\paragraph{Database} This option displays (see Figure \ref{fig:Database}) a list
+of all unprocessed report texts stored in the database (for filtering details see
+Section \ref{sssec:DocumentList}). The report text cannot be edited, so the
+wizard then proceeds to Edit Entities step (see Section
+\ref{sssec:EditEntities}).
+
+If the report text is edited by someone else as described in Section
+\ref{sssec:DocumentList} when you are processing it, a warning message is
+displayed. You can decide to end the report processing immediately
+or to continue with the current text. In the latter case, the current text
+overwrites the one in the database once you save the processed report to the
+database. It is also possible to enter Edit Report step (see Section
+\ref{sssec:ReportEdit}) and edit the text as it will replace stored text anyway.
+
+If the document is processed by someone else when you are processing it, an
+error message is displayed and the report processing ends immediately.
+
+You can avoid the risk of these conflicts by choosing ``Text File'' or ``Empty
+Message'' options described below.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/database}
+        \caption{Choosing report from database.}
+        \label{fig:Database}
+\end{figure}
+
+\paragraph{Text File} This option displays open file dialog for importing
+report text from an external file. The extracted text is then displayed (see
+Figure \ref{fig:TextFile}), so users can choose the proper file encoding. Then
+the wizard proceeds to Report Edit step (see Section \ref{sssec:ReportEdit}).
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/textfile}
+        \caption{Choosing encoding of the file.}
+        \label{fig:TextFile}
+\end{figure}
+
+\paragraph{Empty Message} This option proceeds directly to Report Edit step
+(see Section \ref{sssec:ReportEdit}) with empty report.
+
+\paragraph{Unfinished Report} This option displays open file dialog for
+selecting a file with report whose processing has not been finished, but it
+has been stored to continue later. The wizards then proceeds to step where
+the report processing has been interrupted.
+
+\subsection{Edit Report Text}
+\label{sssec:ReportEdit}
+
+In this step users can edit the text of the report (see Figure
+\ref{fig:ReportEdit}). This step is followed by Edit Entities step (see Section
+\ref{sssec:EditEntities}).
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/reportedit}
+        \caption{Editing the text of the report.}
+        \label{fig:ReportEdit}
+\end{figure}
+
+\subsection{Edit Entities}
+\label{sssec:EditEntities}
+
+Before entering this step, the system automatically recognizes named entities
+in the report text. Recognized entities are marked by text color. Entities of
+the same type have the same color (see Figure \ref{fig:Entities}). Hovering over
+an entity will display its type.
+
+Users can correct recognized entities and add new ones by selecting the text
+of the entity with mouse and picking the entity type from the context menu.
+There is a filter field in the context menu to allow users enter a substring of
+the name of the desired entity type to speed up the selection process. If there is
+only one item in the list left, it can be selected by pressing Enter key too.
+Pressing Down key in the filter field transfers focus to the list, so keyboard
+keys Up, Down and Enter can be used to select the entity type.
+
+Each word can be assigned to at most one entity and each entity has to cover a
+contiguous span of words. In other words, one entity cannot consist of several separated parts and entities cannot
+overlap.
+
+This step is followed by Edit Objects step (see Section
+\ref{sssec:EditObjects}).
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/entities}
+        \caption{Editing entities in the report.}
+        \label{fig:Entities}
+\end{figure}
+
+\subsection{Edit Objects}
+\label{sssec:EditObjects}
+
+In this step the entities are assigned to \textan{} objects (see Figure
+\ref{fig:Objects}). The system automatically assigns objects stored in the
+database to entities recognized in the report. If no suitable object is
+found, the entity is marked with an orange background. Hovering over entity
+displays its type and assigned object if any.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/objects}
+        \caption{Editing objects in the report.}
+        \label{fig:Objects}
+\end{figure}
+
+Right clicking on objects will display a context menu with options to show the
+graph
+of the object or documents containing the object. This is also true for all the following steps.
+
+To assign an object to an entity, left click the entity and select the desired object
+from the context menu (see Figure \ref{fig:ObjectMenu}) or create an entirely new
+object.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/objectmenu}
+        \caption{Menu for selecting object. 1) Filter field, 2) List of
+		 recommended objects (with the probability of match), if 6) is checked, list
+		 of objects of given type from database, 3) List of new objects created
+		 during editing of the same type\comment{Ondrej}{report??}, 4) Button for creating new object,
+		 5) Menu for more information about the object.}
+        \label{fig:ObjectMenu}
+\end{figure}
+
+The report processing cannot continue, unless all entities have objects
+assigned.
+This step is then followed by Relation Edit step (see Section
+\ref{sssec:EditRelations}).
+
+\subsection{Edit Relations}
+\label{sssec:EditRelations}
+
+This is the last mandatory step during report processing (see Figure
+\ref{fig:Relations}). It consists of marking relationships between objects in
+the document.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/relations}
+        \caption{Editing relations in the report. 1) Relation list, 2) Relation
+		 with anchor, currently selected, 3) Relation without anchor, 4) Highlighted
+		 relation anchor, note highlighted objects too, 5) Objects assigned to
+		 the selected relation}
+        \label{fig:Relations}
+\end{figure}
+
+A relation with an anchor can be created by selecting the words of the anchor
+with
+mouse and picking a relation type from context menu. An empty relation with given
+anchor and type is added to the list of relations. Relations without anchor
+can be added by Add button under the relation list and picking a relation type
+from the dialog box. New relations will have pre-filled some roles based on relations of
+that type already stored in the database. Selecting a relation in the relation
+list highlights its anchor and assigned objects.
+
+To add an object to a relation, select the relation in the list of relations.
+Use Add button under object list to add new row to the object table. Double
+clicking the object cell opens combobox with the list of objects in the report
+to assign to the relation. Or you can drag the object from the report text and
+drop it to empty row or Add button to add new row. Dropping the object into the
+non-empty row replaces the assigned object. Any string can be specified as
+a role. If any roles exist for the relation in the database, a combobox with
+them is displayed for the role column.
+
+The column Order affects displaying of arrows in the graph views. For binary
+relations, the arrow points from the object with a negative order to the object with
+a non-negative order. For relations with more than two objects assigned, arrows
+point from objects with a negative order to objects with positive odd order.
+
+After finishing relation editing, the document is stored into the database,
+unless some errors occur. In that case Error Step follows (see Section
+\ref{sssec:Errors}).
+
+\subsection{Errors \comment{Ondrej}{Conflict Resolution as the title and use conflict
+instead of error everywhere??}}
+\label{sssec:Errors}
+
+This step takes place only if some changes to the database from other sources
+are detected (see Figure \ref{fig:Errors}). The window informs the user which
+new objects and relations have been created since the report processing started
+and which objects have been joined. The user can decide to return to previous
+steps and reconsider their edits or force the saving of the report, discaring the
+other annotation.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/errors}
+        \caption{Errors when saving report.}
+        \label{fig:Errors}
+\end{figure}
+
+\section{Database Exploration}
+\label{ssec:ViewDatabase}
+
+Users can use the client to view data stored in the database by selecting items
+in Dials menu of the main window. Other ways include various context menus
+while processing reports etc.
+
+\subsection{Browsing Objects}
+\label{sssec:ObjectList}
+
+This window contains the list of objects satisfying the filter criteria (alias text,
+object type) paginated for more convenient work (see Figure
+\ref{fig:ObjectList}). Please note that changing filter criteria must be confirmed by pressing Filter button. Use right mouse button click to open context menu for displaying graph for the selected object (see Section \ref{ssec:Graphs}) or for displaying list of documents containing it (see
+Section \ref{sssec:DocumentList}).
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/objectlist}
+        \caption{List of objects.}
+        \label{fig:ObjectList}
+\end{figure}
+
+\subsection{Browsing Documents}
+\label{sssec:DocumentList}
+
+This window contains the list of documents matching filter criteria. Please note
+that not all filter controls may be visible at all situations as they are
+customized to fit the current context (see Figure \ref{fig:DocumentList}).
+Also note that changing filter criteria must be confirmed by pressing Filter
+button. Hovering over the row displays the full text of the report. Use right mouse button
+click to open context menu for displaying graph for the selected document (see
+Section \ref{ssec:Graphs}) or for displaying the report itself (see Section
+\ref{sssec:DocumentView}). Another option is editing an unprocessed report
+which opens a simple window where you can alter its text. The last option is
+processing the non-annotated report which opens the wizard for report processing
+(see Section \ref{ssec:ProcessReport}). Inserting a new report without
+processing is done by clicking New document button which opens a simple window
+where you can enter the new report's text.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/documentlist}
+        \caption{List of documents.}
+        \label{fig:DocumentList}
+\end{figure}
+
+\subsection{Browsing an Individual Document}
+\label{sssec:DocumentView}
+
+This window displays reports with highlighted objects and relations for easier
+orientation (see Figure \ref{fig:DocumentView}). Use the right mouse button to open
+object context menu to get more information about the selected object. Selecting
+relation will highlight its anchor and assigned objects.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/documentview}
+        \caption{Document detail.}
+        \label{fig:DocumentView}
+\end{figure}
+
+\subsection{Browsing Relations}
+
+This window contains the list of relations matching the filter criteria (anchor
+text, relation type) paginated for more convenient work (see Figure
+\ref{fig:RelationList}). Please note that changing filter criteria must be
+confirmed by pressing Filter button. Use right mouse button click to open
+context menu for displaying graph for the selected relation (see Section
+\ref{ssec:Graphs}) or for displaying list of documents containing it (see
+Section \ref{sssec:DocumentList}).
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/relationlist}
+        \caption{List of relations.}
+        \label{fig:RelationList}
+\end{figure}
+
+\section{Graph Views}
+\label{ssec:Graphs}
+
+Graph Windows can be displayed from many places in \textan{} client. The most
+common way is right clicking an object/relation/document and selecting Show
+graph context menu item.
+
+The graph appearance is drastically effected by ``Hyperedges as clouds'' settings
+(see Section \ref{sssec:GeneralSettings}).
+
+In the top part of the window (see Figure \ref{fig:Graph}) there is a toolbar
+with icons to manipulate the graph.
+
+The first icon represents Transformation and is used to manipulate the graph as
+a whole, e.g. panning or rotating (hold CTRL key while left clicking and moving
+the mouse). The second icon represents Picking and is used to manipulate one or
+more nodes. Hold left mouse button and drag to select multiple nodes and then
+click and drag to move them. The third icon centers the view to graph center.
+The fourth icon refreshes the graph by contacting the server again. Distance
+field can be used to change the ``radius'' around the central node. Confirm its
+editing by clicking Go button. Use mouse wheel to zoom the graph.
+
+Nodes representing objects can be right clicked to show context menu with
+options to display their own graphs or documents. Right clicking edges or
+nodes representing the relations shows context menu for centering to objects
+assigned to the relation.
+
+On the sides there are lists of object/relation types to display. Unchecking
+a type will cause objects/relations of that type to disappear when graph is
+refreshed or Go button is clicked. Clicking the three dots shows or hides the
+filter lists.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/graph}
+        \caption{Graph window.}
+        \label{fig:Graph}
+\end{figure}
+
+\section{Joining Objects}
+\label{ssec:JoinObjects}
+
+There can be situations when it is discovered that two objects originally
+thought to be independent are in fact one object. For such cases there is Join
+Object wizard (see Figure \ref{fig:Join}). It consists of two objects lists. For
+more information about object lists see Section \ref{sssec:ObjectList}.
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/join}
+        \caption{Join Object Wizard.}
+        \label{fig:Join}
+\end{figure}
+
+The objects to merge must have the common type. Select one object in left object
+list and the other one in right object list. The button Join starts the joining
+itself.
+
+\section{Path Wizard}
+\label{ssec:PathWizard}
+
+This wizard displays window similar to Joining Objects (see Section
+\ref{ssec:JoinObjects}). Select two objects for which you want to try to find
+the path of relations and objects connecting them (see Figure \ref{fig:Path}).
+You can also specify the maximal length of the path. The time needed for finding
+the path depends on the maximal distance specified. The system looks only for
+the shortest route. If such path is found, the graph displaying it is shown (see
+Figure \ref{fig:PathGraph}).
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/path}
+        \caption{Path Wizard.}
+        \label{fig:Path}
+\end{figure}
+
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{Images/pathgraph}
+        \caption{Graph displaying the path between objects.}
+        \label{fig:PathGraph}
+\end{figure}

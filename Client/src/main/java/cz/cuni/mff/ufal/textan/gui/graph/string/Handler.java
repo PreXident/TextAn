@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * Handles 'string' URL protocol.
- * @see http://stackoverflow.com/questions/24704515/in-javafx-8-can-i-provide-a-stylesheet-from-a-string
+ * @see <a href="http://stackoverflow.com/questions/24704515/in-javafx-8-can-i-provide-a-stylesheet-from-a-string">inspiration</a>
  */
 public class Handler extends URLStreamHandler {
 

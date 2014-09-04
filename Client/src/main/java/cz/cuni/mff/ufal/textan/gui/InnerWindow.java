@@ -18,7 +18,7 @@ public class InnerWindow extends Window {
 
     /** First class of the InnerWindow to provide ClickableWindowSkin. */
     protected final String CLICKABLE_CLASS = "clickable-window";
-    
+
     /** Minimal width of inner widows. */
     static final int MIN_WIDTH = 450;
 
@@ -154,6 +154,9 @@ public class InnerWindow extends Window {
      * @param newVal new height
      */
     protected void adjustHeight(final double newVal) {
+        if (!isResizableWindow()) {
+            return;
+        }
         if (!maximized.get()) {
             settings.setProperty(propertyID + ".height", Double.toString(newVal));
         }
@@ -168,7 +171,7 @@ public class InnerWindow extends Window {
     }
 
     /**
-     * (Un)bind size and position according to {@link #maximilized}.
+     * (Un)bind size and position according to {@link #maximized}.
      */
     protected void adjustMaximized() {
         this.setCursor(Cursor.DEFAULT);
@@ -203,6 +206,9 @@ public class InnerWindow extends Window {
      * @param newVal new width
      */
     protected void adjustWidth(final double newVal) {
+        if (!isResizableWindow()) {
+            return;
+        }
         if (!maximized.get()) {
             settings.setProperty(propertyID + ".width", Double.toString(newVal));
         }

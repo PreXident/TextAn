@@ -42,6 +42,7 @@ public class DataConfig {
 
     /** Path to a default server property file (inside jar). */
     private static final String DEFAULT_DATA_PROPERTIES = "data-default.properties";
+
     /** Path to an user server property file. The file should be relative to working directory. */
     private static final String USER_DATA_PROPERTIES = "data.properties";
 
@@ -74,6 +75,8 @@ public class DataConfig {
      * Creates JDBC connection to the database.
      *
      * @return Connection to the database
+     * @throws java.beans.PropertyVetoException never?
+     * @throws java.io.IOException if any IO error occurs
      * @see com.mchange.v2.c3p0.ComboPooledDataSource
      */
     @SuppressWarnings("WeakerAccess")
@@ -111,10 +114,12 @@ public class DataConfig {
      * Creates Hibernate's {@link org.hibernate.SessionFactory} with a connection to the database.
      *
      * @return SessionFactory to handle with transactions and access to database
+     * @throws java.beans.PropertyVetoException never?
+     * @throws java.io.IOException if any IO error occurs
      * @see DataConfig#dataSource()
      */
     @SuppressWarnings("WeakerAccess")
-    @Bean
+    @Bean(destroyMethod = "close")
     public SessionFactory sessionFactory() throws PropertyVetoException, IOException {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
@@ -142,6 +147,8 @@ public class DataConfig {
      * Creates a Spring's transaction manager which cover and hides hibernate transactions.
      *
      * @return the {@link org.springframework.orm.hibernate4.HibernateTransactionManager}
+     * @throws java.beans.PropertyVetoException never?
+     * @throws java.io.IOException if any IO error occurs
      */
     @SuppressWarnings("unused")
     @Bean
@@ -177,7 +184,10 @@ public class DataConfig {
     /**
      * Creates a graph factory.
      *
+     * @param objectTableDAO object
      * @return the graph factory
+     * @throws java.beans.PropertyVetoException never?
+     * @throws java.io.IOException if any IO error occurs
      */
     @Bean
     @Autowired

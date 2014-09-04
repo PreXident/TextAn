@@ -5,13 +5,14 @@ import java.util.Objects;
 /**
  * Represents node in a graph.
  * It is abstract superclass of ObjectNode and RelationNode.
- * 
+ *
  * @see Graph
  * @author Vaclav Pernicka
  */
 public abstract class Node {
-    public static final long UNKNOWN_NODE_ID = -1;
     
+    public static final long UNKNOWN_NODE_ID = -1;
+
     long id;
     String name;
 
@@ -20,10 +21,6 @@ public abstract class Node {
         this.name = name;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -32,11 +29,6 @@ public abstract class Node {
         return hash;
     }
 
-    /**
-     *
-     * @param obj
-     * @return
-     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -50,10 +42,6 @@ public abstract class Node {
         return Objects.equals(this.name, other.name);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String toString() {
         return "Node{" + "id=" + id + ", name=" + name + '}';
@@ -67,6 +55,10 @@ public abstract class Node {
         return id;
     }
 
+    /**
+     *
+     * @param id new id
+     */
     void setId(long id) {
         this.id = id;
     }
@@ -79,8 +71,11 @@ public abstract class Node {
         return name;
     }
 
+    /**
+     *
+     * @param name new name
+     */
     void setName(String name) {
         this.name = name;
     }
-    
 }

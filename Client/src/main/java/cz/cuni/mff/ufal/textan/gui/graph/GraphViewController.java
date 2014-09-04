@@ -140,6 +140,12 @@ public class GraphViewController extends GraphController {
     }
 
     @FXML
+    private void refresh() {
+        grapher.clearCache();
+        filter();
+    }
+
+    @FXML
     private void filter() {
         if (lock.tryAcquire()) {
             final Node node = getMainNode();
@@ -306,7 +312,7 @@ public class GraphViewController extends GraphController {
                 getMainNode().setCursor(Cursor.DEFAULT);
                 scrollPane.requestFocus();
                 final Window w = window == null ? stage.getInnerWindow() : window;
-                w.setTitle(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID) + " - " + Utils.shortString(grapher.getTitle()));
+                w.setTitleFixed(Utils.localize(resourceBundle, GRAPH_PROPERTY_ID) + " - " + Utils.shortString(grapher.getTitle()));
                 objectContextMenu = new ObjectContextMenu(textAnController);
                 objectContextMenu.objectProperty().bind(graphView.objectForGraph);
                 objectContextMenu.distanceProperty().bind(distanceField.numberProperty());

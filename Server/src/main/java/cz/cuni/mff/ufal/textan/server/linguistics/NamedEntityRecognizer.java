@@ -95,6 +95,7 @@ public class NamedEntityRecognizer {
     /**
      * Initialize NameTag
      * if there are existing models, than use newest one, else train new
+     * @throws LearningException if learning was not successful
      */
     public void init() throws LearningException {
         LOG.info("Initializing NameTag");
@@ -152,8 +153,7 @@ public class NamedEntityRecognizer {
      */
     private void prepareLearningData(File fileWithTrainingData) {
         LOG.info("Creating data from database started");
-        try {
-            PrintWriter output = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileWithTrainingData, true), "UTF-8"));
+        try (PrintWriter output = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileWithTrainingData, true), "UTF-8"))) {
 
             List<EntityView> documents = entityViewDAO.findAll();
             Collections.sort(documents, (
@@ -185,7 +185,6 @@ public class NamedEntityRecognizer {
             taggedDocument.append(formatAliasForTraining(documentText.substring(lastEntityEnd), null, false));
             output.print(taggedDocument.toString());
             taggedDocument.delete(0, taggedDocument.length());
-            output.close();
             LOG.info("Creating data from database finished");
         } catch (FileNotFoundException e) {
             LOG.error("File for training data not found {}", fileWithTrainingData.getPath(), e);
@@ -244,6 +243,10 @@ public class NamedEntityRecognizer {
         return result;
     }
 
+    /**
+     * Create features file from properties
+     * @param learningParameters koaded properties
+     */
     private boolean createFeatures(LearningParameters learningParameters) {
         LOG.info("Creating features file");
         File featuresFile = learningParameters.getFeatruresFile();
@@ -271,7 +274,8 @@ public class NamedEntityRecognizer {
                 for (String gazetteer : gazetteers.list()) {
                     features.write(" " + gazetteers.getPath() + File.separator + gazetteer);
                 }
-            } else {
+            }
+            else {
                 return false;
             }
             features.newLine();
@@ -291,6 +295,7 @@ public class NamedEntityRecognizer {
      * Learn new model
      *
      * @param waitForModel true when learning is tu be blocking, else false
+     * @return true if learning was successful, false otherwise
      */
     public boolean learn(boolean waitForModel) {
         LOG.info("Started training new NameTag model");
@@ -305,6 +310,7 @@ public class NamedEntityRecognizer {
 
             LearningParameters learningParameters = new LearningParameters(trainingDirectory, trainingDirectory);
             File trainingDataFile = File.createTempFile(TRAINING_DATA_PREFIX,TRAINING_DATA_EXTENSION);
+            LOG.debug("Training data file: {}", trainingDataFile.getAbsolutePath());
 
             if ((new File(TRAINING_DIR).isDirectory()) || (new File(TRAINING_DIR).mkdir())) {
                 if (learningParameters.useDefaultTrainingData()) {
@@ -313,13 +319,14 @@ public class NamedEntityRecognizer {
                         return false;
                     }
                 }
-                //prepareLearningData(trainingDataFile);
+                prepareLearningData(trainingDataFile);
             } else {
                 LOG.error("Can't create training data folder");
                 return false;
             }
 
-            if (trainingDataFile.length() == 0) {
+
+            if (trainingDataFile.length() <= 1) {
                 LOG.warn("Haven't any training data");
                 return true;
             }

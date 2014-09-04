@@ -18,6 +18,10 @@ import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromS
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetEntitiesFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetProblemsResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetRelationsByIdRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetRelationsByIdResponse;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetRelationsFromStringRequest;
+import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.GetRelationsFromStringResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RewriteAndSaveProcessedDocumentByIdRequest;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.RewriteAndSaveProcessedDocumentByIdResponse;
 import cz.cuni.mff.ufal.textan.commons.models.documentprocessor.SaveProcessedDocumentByIdRequest;
@@ -28,6 +32,7 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.commons.ws.IDataProvider;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.commons.ws.InvalidMergeException;
+import cz.cuni.mff.ufal.textan.core.DocumentData.Occurrence;
 import cz.cuni.mff.ufal.textan.core.graph.ObjectGrapher;
 import cz.cuni.mff.ufal.textan.core.graph.RelationGrapher;
 import cz.cuni.mff.ufal.textan.core.processreport.DocumentAlreadyProcessedException;
@@ -64,7 +69,8 @@ import javax.xml.ws.soap.SOAPBinding;
 
 /**
  * Main class controlling core manipulations with reports.
- * Handles all communicatioin with the server.
+ * Handles all communicatioin with the server. Serves as a factory for
+ * ProcessReportPipeline.
  */
 public class Client {
 
@@ -79,6 +85,20 @@ public class Client {
 
     /** Data provider Port. */
     private static final QName DATA_PROVIDER_PORT = new QName("http://server.textan.ufal.mff.cuni.cz/DataProviderService", "DataProviderPort");
+
+    /**
+     * Parses string to integer; if string is invalid, def is returned.
+     * @param string string to parse
+     * @param def default value
+     * @return string converted to integer, or default if invalid
+     */
+    private static int parseInt(final String string, final int def) {
+        try {
+            return Integer.parseInt(string);
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
 
     /** Values for document processed filtering. */
     public enum Processed {
@@ -181,7 +201,7 @@ public class Client {
      * Sets the username.
      * Make sure this method is called BEFORE creating {@link #dataProvider} or
      * {@link #documentProcessor}, so they use new username.
-     * @param username
+     * @param username new username
      */
     public void setUsername(final String username) {
         this.username = username;
@@ -191,7 +211,7 @@ public class Client {
      * Adds JAX-WS Handler which adds UsernameToken header into SOAP message.
      * @param binding JAW-WS bindings (from web service port)
      */
-    private void addSOAPHandler(Binding binding) {
+    private void addSOAPHandler(final Binding binding) {
         final UsernameToken token = new UsernameToken();
         token.setUsername(username);
 
@@ -282,7 +302,24 @@ public class Client {
                 final IDocumentProcessor processor =
                         service.getPort(IDocumentProcessor.class);
 
-                Binding documentProcessorBinding = ((BindingProvider) processor).getBinding();
+                final BindingProvider provider = ((BindingProvider) processor);
+                final int connectTimeout =
+                        parseInt(settings.getProperty("connect.timeout", "60000"), 60000);
+                provider.getRequestContext().put(
+                        "com.sun.xml.ws.connect.timeout",
+                        connectTimeout);
+                provider.getRequestContext().put(
+                        "com.sun.xml.internal.ws.connect.timeout",
+                        connectTimeout);
+                final int requestTimeout =
+                        parseInt(settings.getProperty("request.timeout", "60000"), 60000);
+                provider.getRequestContext().put(
+                        "com.sun.xml.ws.request.timeout",
+                        requestTimeout);
+                provider.getRequestContext().put(
+                        "com.sun.xml.internal.ws.request.timeout",
+                        requestTimeout);
+                Binding documentProcessorBinding = provider.getBinding();
                 addSOAPHandler(documentProcessorBinding);
                 documentProcessor = new SynchronizedDocumentProcessor(processor);
             } catch (MalformedURLException e) {
@@ -308,12 +345,28 @@ public class Client {
                 String endpointAddress = settings.getProperty("url.data", "http://textan.ms.mff.cuni.cz:9500/soap/data");
                 // Add a port to the Service
                 service.addPort(DATA_PROVIDER_PORT, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
-                final IDataProvider provider = service.getPort(IDataProvider.class);
+                final IDataProvider data = service.getPort(IDataProvider.class);
 
-                Binding dataProviderBinding = ((BindingProvider) provider).getBinding();
+                final BindingProvider provider = ((BindingProvider) data);
+                final int connectTimeout =
+                        parseInt(settings.getProperty("connect.timeout", "60000"), 60000);
+                provider.getRequestContext().put(
+                        "com.sun.xml.ws.connect.timeout",
+                        connectTimeout);
+                provider.getRequestContext().put(
+                        "com.sun.xml.internal.ws.connect.timeout",
+                        connectTimeout);
+                final int requestTimeout =
+                        parseInt(settings.getProperty("request.timeout", "60000"), 60000);
+                provider.getRequestContext().put(
+                        "com.sun.xml.ws.request.timeout",
+                        requestTimeout);
+                provider.getRequestContext().put(
+                        "com.sun.xml.internal.ws.request.timeout",
+                        requestTimeout);
+                Binding dataProviderBinding = provider.getBinding();
                 addSOAPHandler(dataProviderBinding);
-                dataProvider = new SynchronizedDataProvider(provider);
-
+                dataProvider = new SynchronizedDataProvider(data);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new WebServiceException("Malformed URL!", e);
@@ -369,20 +422,21 @@ public class Client {
 
     /**
      * Returns documents containing given object.
-     * @param object object whose document should be returned
+     * @param objectId object whose document should be returned
      * @param filter document text filter
      * @param first index of the first object
      * @param size maximal number of objects
      * @return list of documents containing object with given id
      * @throws IdNotFoundException if id error occurs
+     * @throws NonRootObjectException if object is no longer root
      */
     public synchronized Pair<List<Document>, Integer> getDocumentsList(
-            final Object object, final String filter,
-            final int first, final int size) throws IdNotFoundException {
+            final long objectId, final String filter,
+            final int first, final int size) throws IdNotFoundException, NonRootObjectException {
         try {
             final GetFilteredDocumentsContainingObjectByIdRequest request =
                     new GetFilteredDocumentsContainingObjectByIdRequest();
-            request.setObjectId(object.getId());
+            request.setObjectId(objectId);
             request.setFirstResult(first);
             request.setMaxResults(size);
             request.setPattern(filter);
@@ -394,6 +448,8 @@ public class Client {
             return new Pair<>(list, response.getTotalNumberOfResults());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException e) {
+            throw new NonRootObjectException(e);
         }
     }
 
@@ -482,9 +538,10 @@ public class Client {
      * @param distance maximal distance from center
      * @return centered graph with limited distance
      * @throws IdNotFoundException if object id is not found
+     * @throws NonRootObjectException if object is no longer root
      */
     public synchronized Graph getObjectGraph(final long centerId, final int distance)
-            throws IdNotFoundException {
+            throws IdNotFoundException, NonRootObjectException {
         final GetGraphByObjectIdRequest request = new GetGraphByObjectIdRequest();
         request.setDistance(distance);
         request.setObjectId(centerId);
@@ -494,6 +551,8 @@ public class Client {
             return new Graph(response.getGraph());
         } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
             throw new IdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException e) {
+            throw new NonRootObjectException(e);
         }
     }
 
@@ -540,6 +599,24 @@ public class Client {
             throw new IdNotFoundException(e);
         } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException e) {
             throw new DocumentAlreadyProcessedException(e);
+        }
+    }
+
+    /**
+     * Returns object with the given id.
+     * @param objectId object id to find
+     * @return object with the given id
+     * @throws IdNotFoundException if object with given id was not found
+     */
+    public synchronized Object getObject(final long objectId)
+            throws IdNotFoundException {
+        final GetObjectRequest request = new GetObjectRequest();
+        request.setObjectId(objectId);
+        try {
+            final GetObjectResponse response = getDataProvider().getObject(request);
+            return new Object(response.getObject());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
         }
     }
 
@@ -679,6 +756,35 @@ public class Client {
     }
 
     /**
+     * Returns graph connecting the given two objects.
+     * The returned graph is empty if no path is found.
+     * @param start starting object
+     * @param target target object
+     * @param maxLength maximum length of the path
+     * @return graph connecting the given two objects, empty if no path is found
+     * @throws IdNotFoundException on id error
+     * @throws NonRootObjectException if given objects are no longer roots
+     */
+    public synchronized Graph getPathGraph(final long start,
+            final long target, final int maxLength)
+            throws IdNotFoundException, NonRootObjectException {
+        //TODO call proper methods when ready
+        final GetPathByIdRequest request = new GetPathByIdRequest();
+        request.setStartObjectId(start);
+        request.setTargetObjectId(target);
+        request.setMaxLength(maxLength);
+        try {
+            final GetPathByIdResponse response =
+                    getDataProvider().getPathById(request);
+            return new Graph(response.getGraph());
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException e) {
+            throw new NonRootObjectException(e);
+        }
+    }
+
+    /**
      * Returns problems with report saving.
      * @param ticket editing ticket
      * @return problems with report saving
@@ -687,6 +793,91 @@ public class Client {
         final GetProblemsRequest request =  new GetProblemsRequest();
         final GetProblemsResponse response = getDocumentProcessor().getProblems(request, ticket.toTicket());
         return new Problems(response);
+    }
+
+    /**
+     * Recognizes relations into relations and occurrences lists.
+     * @param ticket editing ticket
+     * @param text report to process
+     * @param entities entities with assigned objects
+     * @param relations where to store recognized entities
+     * @param occurrences where to store relation occurrences
+     * @see IDocumentProcessor#getAssignmentsFromString(GetAssignmentsFromStringRequest, EditingTicket)
+     */
+    public synchronized void getRelations(final Ticket ticket,
+            final String text, final List<Entity> entities,
+            final List<Relation> relations, final List<Occurrence> occurrences) {
+        final GetRelationsFromStringRequest request =
+                new GetRelationsFromStringRequest();
+        request.setText(text);
+        final List<cz.cuni.mff.ufal.textan.commons.models.Object> reqObjects =
+                request.getObjects();
+        final List<ObjectOccurrence> objectOccurrences =
+                request.getObjectOccurrences();
+        final Map<Long, Object> objectMap = new HashMap<>();
+        for (Entity entity : entities) {
+            final Object object = entity.getCandidate();
+            reqObjects.add(object.toObject());
+            objectMap.put(object.getId(), object);
+            objectOccurrences.add(entity.toObjectOccurrence());
+        }
+        final GetRelationsFromStringResponse response =
+                getDocumentProcessor().getRelationsFromString(request, ticket.toTicket());
+        response.getRelations().stream()
+                .map(rel -> new Relation(rel, objectMap))
+                .forEach(relations::add);
+        response.getRelationOccurrences().stream()
+                .map(Occurrence::new)
+                .forEach(occurrences::add);
+    }
+
+    /**
+     * Recognizes relations into relations and occurrences lists.
+     * @param ticket editing ticket
+     * @param id document id
+     * @param entities entities with assigned objects
+     * @param relations where to store recognized entities
+     * @param occurrences where to store relation occurrences
+     * @throws DocumentChangedException if document has been changed under our hands
+     * @throws IdNotFoundException if id was not found
+     * @throws DocumentAlreadyProcessedException if document has been processed under our hands
+     * @see IDocumentProcessor#getAssignmentsFromString(GetAssignmentsFromStringRequest, EditingTicket)
+     */
+    public synchronized void getRelations(final Ticket ticket,
+            final long id, final List<Entity> entities,
+            final List<Relation> relations, final List<Occurrence> occurrences)
+            throws IdNotFoundException, DocumentAlreadyProcessedException,
+            DocumentChangedException {
+        final GetRelationsByIdRequest request =
+                new GetRelationsByIdRequest();
+        request.setId(id);
+        final List<cz.cuni.mff.ufal.textan.commons.models.Object> reqObjects =
+                request.getObjects();
+        final List<ObjectOccurrence> objectOccurrences =
+                request.getObjectOccurrences();
+        final Map<Long, Object> objectMap = new HashMap<>();
+        for (Entity entity : entities) {
+            final Object object = entity.getCandidate();
+            reqObjects.add(object.toObject());
+            objectMap.put(object.getId(), object);
+            objectOccurrences.add(entity.toObjectOccurrence());
+        }
+        try {
+            final GetRelationsByIdResponse response =
+                    getDocumentProcessor().getRelationsById(request, ticket.toTicket());
+            response.getRelations().stream()
+                    .map(rel -> new Relation(rel, objectMap))
+                    .forEach(relations::add);
+            response.getRelationOccurrences().stream()
+                    .map(Occurrence::new)
+                    .forEach(occurrences::add);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException e) {
+            throw new IdNotFoundException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentAlreadyProcessedException e) {
+            throw new DocumentAlreadyProcessedException(e);
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException e) {
+            throw new DocumentChangedException(e);
+        }
     }
 
     /**
@@ -1005,9 +1196,10 @@ public class Client {
      * @param id2 second object id
      * @return joined object id
      * @throws IdNotFoundException if id error occurs
+     * @throws NonRootObjectException if any object is no longer root
      */
-    public long joinObjects(final long id1, final long id2)
-            throws IdNotFoundException {
+    public synchronized long joinObjects(final long id1, final long id2)
+            throws IdNotFoundException, NonRootObjectException {
         final MergeObjectsRequest request =
                 new MergeObjectsRequest();
         request.setObject1Id(id1);
@@ -1021,6 +1213,8 @@ public class Client {
         } catch (InvalidMergeException e) {
             e.printStackTrace(); //FIXME: handle exception
             return -1;
+        } catch (cz.cuni.mff.ufal.textan.commons.ws.NonRootObjectException e) {
+            throw new NonRootObjectException(e);
         }
     }
 
@@ -1030,7 +1224,7 @@ public class Client {
      * @param text new text
      * @throws IdNotFoundException if id error occurs
      */
-    public void updateDocument(final long id, final String text)
+    public synchronized void updateDocument(final long id, final String text)
             throws IdNotFoundException {
         final UpdateDocumentRequest request = new UpdateDocumentRequest();
         request.setDocumentId(id);
@@ -1046,7 +1240,7 @@ public class Client {
      * Adds new document with given text.
      * @param text new document's text
      */
-    public void addDocument(final String text) {
+    public synchronized void addDocument(final String text) {
         final AddDocumentRequest request = new AddDocumentRequest();
         request.setText(text);
         getDataProvider().addDocument(request);

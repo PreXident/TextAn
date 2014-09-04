@@ -88,8 +88,12 @@ public class Entity {
         return commonsEntity;
     }
 
-    public cz.cuni.mff.ufal.textan.textpro.data.Entity toTextProEntity() {
-        return new cz.cuni.mff.ufal.textan.textpro.data.Entity(value, length, position, type.getId());
+    /**
+     * Converts the instance to an {@link cz.cuni.mff.ufal.textan.assigner.data.Entity}
+     * @return the {@link cz.cuni.mff.ufal.textan.assigner.data.Entity}
+     */
+    public cz.cuni.mff.ufal.textan.assigner.data.Entity toObjectAssignerEntity() {
+        return new cz.cuni.mff.ufal.textan.assigner.data.Entity(value, type.getId());
     }
 
     @Override

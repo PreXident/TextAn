@@ -34,7 +34,7 @@ public class Relation implements Serializable {
     /**
      * Creates Relation from commons blue print.
      * @param relation blue print relation
-     * @param objects id -> object mapping to resolve relation ids
+     * @param objects id -&gt; object mapping to resolve relation ids
      */
     public Relation(final cz.cuni.mff.ufal.textan.commons.models.Relation relation, final Map<Long, Object> objects) {
         id = relation.getId();
@@ -43,6 +43,18 @@ public class Relation implements Serializable {
                 .map(inRel -> new Triple<>(inRel.getOrder(), inRel.getRole(), objects.get(inRel.getObjectId())))
                 .collect(Collectors.toCollection(HashSet::new));
         isNew = relation.isIsNew();
+        anchors = new ArrayList<>(relation.getAnchors());
+    }
+
+    /**
+     * Creates copy of Relation.
+     * @param relation blue print relation
+     */
+    public Relation(final Relation relation) {
+        id = relation.getId();
+        type = relation.getType();
+        this.objects = new HashSet<>(relation.getObjects());
+        isNew = relation.isNew;
         anchors = new ArrayList<>(relation.getAnchors());
     }
 

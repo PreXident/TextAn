@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.repositories.common;
 
 /**
@@ -20,12 +14,12 @@ public class DAOUtils {
      */
     public final static String getAliasPropertyName(final String tableAlias, final String propertyName) {
         return tableAlias + "." + propertyName;
-    }    
+    }
 
     /**
      * get the substring pattern to like method
-     * 
-     * @param subString 
+     *
+     * @param subString string to wrap
      * @return "%" + subString + "%"
      */
     public final static String getLikeSubstring(final String subString) {

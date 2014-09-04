@@ -9,7 +9,7 @@ import cz.cuni.mff.ufal.textan.server.models.Assignment;
 import cz.cuni.mff.ufal.textan.server.models.EditingTicket;
 import cz.cuni.mff.ufal.textan.server.models.Entity;
 import cz.cuni.mff.ufal.textan.server.models.Object;
-import cz.cuni.mff.ufal.textan.textpro.ITextPro;
+import cz.cuni.mff.ufal.textan.assigner.IObjectAssigner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,14 +31,14 @@ public class ObjectAssignmentService {
     private final IObjectTableDAO objectTableDAO;
     private final IAliasTableDAO aliasTableDAO;
     private final IDocumentTableDAO documentTableDAO;
-    private final ITextPro textPro;
+    private final IObjectAssigner objectAssigner;
 
     @Autowired
-    public ObjectAssignmentService(IObjectTableDAO objectTableDAO, IAliasTableDAO aliasTableDAO, IDocumentTableDAO documentTableDAO, ITextPro textPro) {
+    public ObjectAssignmentService(IObjectTableDAO objectTableDAO, IAliasTableDAO aliasTableDAO, IDocumentTableDAO documentTableDAO, IObjectAssigner objectAssigner) {
         this.objectTableDAO = objectTableDAO;
         this.aliasTableDAO = aliasTableDAO;
         this.documentTableDAO = documentTableDAO;
-        this.textPro = textPro;
+        this.objectAssigner = objectAssigner;
     }
 
     public List<Assignment> getAssignments(String text, List<Entity> entities, EditingTicket ticket) {
@@ -62,16 +62,16 @@ public class ObjectAssignmentService {
 
     private List<Assignment> getAssignmentsInner(String text, List<Entity> entities) {
 
-        Map<cz.cuni.mff.ufal.textan.textpro.data.Entity, List<Pair<Long, Double>>> textProAssignments =
-                textPro.DoubleRanking(
+        Map<cz.cuni.mff.ufal.textan.assigner.data.Entity, List<Pair<Long, Double>>> textProAssignments =
+                objectAssigner.combinedObjectRanking(
                         text,
-                        entities.stream().map(Entity::toTextProEntity).collect(Collectors.toList()),
+                        entities.stream().map(Entity::toObjectAssignerEntity).collect(Collectors.toList()),
                         50
                 );
 
         List<Assignment> assignments = new ArrayList<>();
         for (Entity entity : entities) {
-            List<Pair<Long, Double>> objectScorePairs = textProAssignments.get(entity.toTextProEntity());
+            List<Pair<Long, Double>> objectScorePairs = textProAssignments.get(entity.toObjectAssignerEntity());
             List<Pair<Object, Float>> ratedObjects = objectScorePairs.stream()
                     .map(x -> new Pair<>(Object.fromObjectTable(objectTableDAO.find(x.getFirst()), aliasTableDAO.findAllAliasesOfObject(x.getFirst())), x.getSecond().floatValue()))
                     .collect(Collectors.toList());

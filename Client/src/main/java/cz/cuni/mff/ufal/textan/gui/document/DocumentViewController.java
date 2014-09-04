@@ -61,7 +61,7 @@ public class DocumentViewController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Document";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "document.viewer";
 
     /** Style class for selected words. */
@@ -320,7 +320,7 @@ public class DocumentViewController extends WindowController {
         task.setOnSucceeded(e -> {
             documentData = task.getValue();
             final Window w = window == null ? stage.getInnerWindow() : window;
-            w.setTitle(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + document.getId());
+            w.setTitleFixed(Utils.localize(resourceBundle, PROPERTY_ID) + " - " + document.getId());
             relationsListView.setCellFactory(lv -> {
                 return new ListCell<Relation>() {
                     @Override

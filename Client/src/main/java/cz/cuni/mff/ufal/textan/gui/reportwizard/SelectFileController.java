@@ -2,7 +2,7 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import static cz.cuni.mff.ufal.textan.Utils.extractExtension;
 import cz.cuni.mff.ufal.textan.core.processreport.load.ImportManager;
-import cz.cuni.mff.ufal.textan.core.processreport.load.Importer;
+import cz.cuni.mff.ufal.textan.core.processreport.load.IImporter;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class SelectFileController extends ReportWizardController {
     ScrollPane scrollPane;
 
     @FXML
-    ComboBox<Importer> typeComboBox;
+    ComboBox<IImporter> typeComboBox;
 
     /** File content. */
     byte[] data;
@@ -68,13 +68,13 @@ public class SelectFileController extends ReportWizardController {
                 return super.toString(val);
             }
         });
-        typeComboBox.setConverter(new StringConverter<Importer>() {
+        typeComboBox.setConverter(new StringConverter<IImporter>() {
             @Override
-            public String toString(final Importer t) {
+            public String toString(final IImporter t) {
                 return Utils.localize(resourceBundle, "type." + t.getId());
             }
             @Override
-            public Importer fromString(final String string) {
+            public IImporter fromString(final String string) {
                 throw new RuntimeException("This should never happen!");
             }
         });
@@ -112,7 +112,7 @@ public class SelectFileController extends ReportWizardController {
             final String lastType = settings.getProperty("selectfile.extension." + extension + ".type");
             if (lastType != null) {
                 try {
-                    final Importer type = ImportManager.getImporter(lastType);
+                    final IImporter type = ImportManager.getImporter(lastType);
                     typeComboBox.getSelectionModel().select(type);
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();

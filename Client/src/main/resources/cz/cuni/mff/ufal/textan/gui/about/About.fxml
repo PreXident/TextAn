@@ -31,10 +31,12 @@
 		<Label styleClass="h1" text="%supervisor" minWidth="-Infinity" prefWidth="-1"/>
 		<Label text="RNDr. Ondřej Bojar, Phd." minWidth="-Infinity" prefWidth="-1"/>
 		<Label styleClass="h1" text="%logo" minWidth="-Infinity" prefWidth="-1"/>
-		<Label text="Honza ???" minWidth="-Infinity" prefWidth="-1"/>
+		<Label text="Jan Jinda" minWidth="-Infinity" prefWidth="-1"/>
+        <Label text="http://www.janjinda.com" minWidth="-Infinity" prefWidth="-1"/>
 		<Label styleClass="h1" text="%icons" minWidth="-Infinity" prefWidth="-1"/>
 		<Label text="http://www.iconarchive.com" minWidth="-Infinity" prefWidth="-1"/>
 		<Label text="http://www.freepik.com" minWidth="-Infinity" prefWidth="-1"/>
 		<Label text="http://www.downloadclipart.net" minWidth="-Infinity" prefWidth="-1"/>
+		<Label text="http://t3k.co/RnD/" minWidth="-Infinity" prefWidth="-1"/>
         </VBox>
 </ExposingVBox>

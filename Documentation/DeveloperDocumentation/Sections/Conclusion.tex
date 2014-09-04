@@ -1,0 +1,28 @@
+\textan{} offers semi-automatic machine reading.
+It extracts entities from documents and assigns them to objects
+stored in the database. It utilizes existing solutions \emph{NameTag} and
+\emph{MorphoDiTa} to recognize named entities and our own
+implementation of object to entity assignment, both powered by machine learning.
+Its functionality is easily accessible through SOAP based webservices described by
+WSDL, either through the provided client application or through a custom
+implementation offering additional features or integration to a legacy system.
+
+This documentation presents both functional and non-functional formal requirements
+and architecture designed to meet these requirements. Many third party libraries
+are utilized to make sure the best possible results are achieved. The developer
+documentation also lists the most important decisions made during the
+development affecting various parts of the project and overall overview of the
+development progress. The section Possible Future Extensions (see Section
+\ref{sec:FutureExtensions}) contains several major enhancements that could improve
+either user experience with the application or overall outcome of the system. For
+example, the support of multiple languages at once would make \textan{} suitable
+for usage in multilingual companies or international organizations that have to
+process documents in many different languages. The most important possible
+extension is however the recognition of relations between objects that could
+eventually lead to fully automated processing of report without any kind of human
+intervention. The work on automatic relation detection has actually already started
+as the master thesis of a colleague Richard Ejem~\cite{ejem14}.
+
+As of now, \textan{} satisfies all obligatory requirements from the official
+assignment. Although not all optional requirements have been fulfilled, \textan{}
+resulted in a coherent solution meeting the goals stated in the specification.

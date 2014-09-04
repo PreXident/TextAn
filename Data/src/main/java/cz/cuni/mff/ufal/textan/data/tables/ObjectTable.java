@@ -48,10 +48,17 @@ public class ObjectTable extends AbstractTable {
         rootOfObjects.add(this);
     }
 
+    public ObjectTable(ObjectTypeTable objectType) {
+        this();
+        this.objectType = objectType;
+        objectType.getObjectsOfThisType().add(this);
+    }
+
     public ObjectTable(String data, ObjectTypeTable objectType) {
         this();
         this.data = data;
         this.objectType = objectType;
+        objectType.getObjectsOfThisType().add(this);
     }
 
     @Id
@@ -79,6 +86,7 @@ public class ObjectTable extends AbstractTable {
     @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_root_object")
     @ContainedIn
+    @IndexedEmbedded(includePaths = "id")
     public ObjectTable getRootObject() {
         return rootObject;
     }
@@ -155,22 +163,22 @@ public class ObjectTable extends AbstractTable {
 
     @OneToOne(mappedBy = "oldObject1")
     @Cascade(CascadeType.DELETE)
-    public JoinedObjectsTable getOldObjects1() {
+    public JoinedObjectsTable getOldObject1() {
         return oldObject1;
     }
 
-    public void setOldObjects1(JoinedObjectsTable oldObjects1) {
-        this.oldObject1 = oldObjects1;
+    public void setOldObject1(JoinedObjectsTable oldObject1) {
+        this.oldObject1 = oldObject1;
     }
 
     @OneToOne(mappedBy = "oldObject2")
     @Cascade(CascadeType.DELETE)
-    public JoinedObjectsTable getOldObjects2() {
+    public JoinedObjectsTable getOldObject2() {
         return oldObject2;
     }
 
-    public void setOldObjects2(JoinedObjectsTable oldObjects2) {
-        this.oldObject2 = oldObjects2;
+    public void setOldObject2(JoinedObjectsTable oldObject2) {
+        this.oldObject2 = oldObject2;
     }
 
      /**

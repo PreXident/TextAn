@@ -19,6 +19,7 @@ import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
@@ -37,7 +38,7 @@ public abstract class ReportWizardController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Report Wizard";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "report.wizard";
 
     /** Style class for slider when progress can be lost. */
@@ -171,6 +172,8 @@ public abstract class ReportWizardController extends WindowController {
                 closeContainer();
             });
         } catch (Exception e) {
+            e.printStackTrace();
+            getMainNode().setCursor(Cursor.DEFAULT);
             final ResourceBundle rb = ResourceBundle.getBundle(RESOURCE_BUNDLE_PATH);
             PlatformUtil.runAndWait(() -> {
                 callWithContentBackup(() -> {

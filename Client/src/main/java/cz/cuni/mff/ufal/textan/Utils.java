@@ -19,7 +19,8 @@ public class Utils {
     }
 
     /**
-     * Removes extension from file name.
+     * Removes extension from the file name.
+     * If name does not contain dot, it is return whole.
      * @param name file name
      * @return file name without extension
      */

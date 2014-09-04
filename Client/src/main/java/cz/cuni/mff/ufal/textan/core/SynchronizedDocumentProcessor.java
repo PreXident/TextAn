@@ -6,8 +6,6 @@ import cz.cuni.mff.ufal.textan.commons.ws.DocumentChangedException;
 import cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor;
 import cz.cuni.mff.ufal.textan.commons.ws.IdNotFoundException;
 
-import javax.jws.WebParam;
-
 /**
  * Simple wrapper around IDocumentProcessor to provide synchronization.
  */
@@ -32,6 +30,13 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
     }
 
     @Override
+    synchronized public GetRelationsFromStringResponse getRelationsFromString(
+            final GetRelationsFromStringRequest getRelationsFromStringRequest,
+            final EditingTicket editingTicket) {
+        return innerDP.getRelationsFromString(getRelationsFromStringRequest, editingTicket);
+    }
+
+    @Override
     synchronized public SaveProcessedDocumentByIdResponse saveProcessedDocumentById(
             final SaveProcessedDocumentByIdRequest saveProcessedDocumentByIdRequest,
             final EditingTicket editingTicket) throws IdNotFoundException, DocumentChangedException, DocumentAlreadyProcessedException {
@@ -45,18 +50,19 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
         return innerDP.getProblems(getProblemsRequest, editingTicket);
     }
 
-//    @Override
-//    synchronized public GetProblemsByIdResponse getProblemsById(
-//            final GetProblemsByIdRequest getProblemsByIdRequest,
-//            final EditingTicket editingTicket) throws IdNotFoundException {
-//        return innerDP.getProblemsById(getProblemsByIdRequest, editingTicket);
-//    }
-
     @Override
     synchronized public GetAssignmentsFromStringResponse getAssignmentsFromString(
             final GetAssignmentsFromStringRequest getAssignmentsFromStringRequest,
             final EditingTicket editingTicket) {
         return innerDP.getAssignmentsFromString(getAssignmentsFromStringRequest, editingTicket);
+    }
+
+    @Override
+    synchronized public GetRelationsByIdResponse getRelationsById(
+            final GetRelationsByIdRequest getRelationsByIdRequest,
+            final EditingTicket editingTicket)
+            throws DocumentChangedException, DocumentAlreadyProcessedException, IdNotFoundException {
+        return innerDP.getRelationsById(getRelationsByIdRequest, editingTicket);
     }
 
     @Override
@@ -87,13 +93,6 @@ public class SynchronizedDocumentProcessor implements IDocumentProcessor {
             final EditingTicket editingTicket) throws IdNotFoundException {
         return innerDP.saveProcessedDocumentFromString(saveProcessedDocumentFromStringRequest, editingTicket);
     }
-
-//    @Override
-//    synchronized public GetProblemsFromStringResponse getProblemsFromString(
-//            final GetProblemsFromStringRequest getProblemsFromStringRequest,
-//            final EditingTicket editingTicket) {
-//        return innerDP.getProblemsFromString(getProblemsFromStringRequest, editingTicket);
-//    }
 
     @Override
     synchronized public GetEditingTicketResponse getEditingTicket(

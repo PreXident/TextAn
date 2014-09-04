@@ -1,5 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.join;
 
+import cz.cuni.mff.ufal.textan.core.NonRootObjectException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.gui.GetTypesTask;
@@ -15,6 +16,7 @@ import java.util.concurrent.Semaphore;
 import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -38,7 +40,7 @@ public class JoinController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Object join";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String PROPERTY_ID = "join.view";
 
     /** Minimal height of the join window. */
@@ -134,11 +136,14 @@ public class JoinController extends WindowController {
     /** Synchronization lock. */
     protected Semaphore rightLock = new Semaphore(1);
 
+    /** Synchronization lock. */
+    protected Semaphore lock = new Semaphore(1);
+
     @FXML
     private void join() {
         final Object leftObject = leftTable.getSelectionModel().getSelectedItem();
         final Object rightObject = rightTable.getSelectionModel().getSelectedItem();
-        if (leftObject == null || rightObject == null) {
+        if (leftObject == null || rightObject == null || leftObject.equals(rightObject)) {
             return;
         }
         if (!leftObject.getType().equals(rightObject.getType())) {
@@ -149,26 +154,56 @@ public class JoinController extends WindowController {
                     .showError();
             return;
         }
-        try {
-            final long joinedObject = textAnController.getClient().joinObjects(
-                    leftObject.getId(), rightObject.getId()
-            );
-            final Action response = createDialog()
-                    .owner(getDialogOwner(root))
-                    .title(Utils.localize(resourceBundle, "join.done.title"))
-                    .message(Utils.localize(resourceBundle, "join.done.message"))
-                    .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-                    .showConfirm();
-            if (response == Dialog.Actions.YES) {
-                textAnController.displayGraph(joinedObject);
-            }
-            closeContainer();
-        } catch (Exception e) {
-            e.printStackTrace();
-            createDialog()
-                    .owner(getDialogOwner(root))
-                    .title(Utils.localize(resourceBundle, "join.error"))
-                    .showException(e);
+
+        if (lock.tryAcquire()) {
+            getMainNode().setCursor(Cursor.WAIT);
+            final Task<Long> task = new Task<Long>() {
+                @Override
+                protected Long call() throws Exception {
+                    long joinedObject = -1;
+                    long leftObjectId = leftObject.getId();
+                    long rightObjectId = rightObject.getId();
+                    while (joinedObject == -1) {
+                        try {
+                            joinedObject = textAnController.getClient().joinObjects(
+                                    leftObjectId, rightObjectId
+                            );
+                        } catch (NonRootObjectException e) {
+                            final long problematicId = e.getObjectId();
+                            if (leftObjectId == problematicId) {
+                                leftObjectId = e.getNewRootId();
+                            } else if (rightObjectId == problematicId) {
+                                rightObjectId = e.getNewRootId();
+                            } else {
+                                throw e;
+                            }
+                        }
+                    }
+                    return joinedObject;
+                }
+            };
+            task.setOnSucceeded(e -> {
+                final Action response = createDialog()
+                        .owner(getDialogOwner(root))
+                        .title(Utils.localize(resourceBundle, "join.done.title"))
+                        .message(Utils.localize(resourceBundle, "join.done.message"))
+                        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+                        .showConfirm();
+                closeContainer();
+                if (response == Dialog.Actions.YES) {
+                    textAnController.displayGraph(task.getValue());
+                }
+                lock.release();
+            });
+            task.setOnFailed(e -> {
+                task.getException().printStackTrace();
+                createDialog()
+                        .owner(getDialogOwner(root))
+                        .title(Utils.localize(resourceBundle, "join.error"))
+                        .showException(task.getException());
+                lock.release();
+            });
+            new Thread(task, "ObjectJoined").start();
         }
     }
 
@@ -202,6 +237,12 @@ public class JoinController extends WindowController {
             ++leftPageNo;
             leftFilter();
         }
+    }
+
+    @FXML
+    private void leftRefresh() {
+        leftPageNo = 0;
+        leftFilter();
     }
 
     @FXML
@@ -242,6 +283,12 @@ public class JoinController extends WindowController {
             ++rightPageNo;
             rightFilter();
         }
+    }
+
+    @FXML
+    private void rightRefresh() {
+        rightPageNo = 0;
+        rightFilter();
     }
 
     @FXML

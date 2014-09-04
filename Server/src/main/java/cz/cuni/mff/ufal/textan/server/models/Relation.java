@@ -29,7 +29,7 @@ public class Relation {
      * @param id the id
      * @param type the type
      * @param objectsInRelation the objects in relation
-     * @param anchors
+     * @param anchors relation anchord
      * @param isNew the is new
      */
     public Relation(long id, RelationType type, List<Triple<Object, String, Integer>>objectsInRelation, List<String> anchors, boolean isNew) {
@@ -44,6 +44,7 @@ public class Relation {
      * Creates a {@link cz.cuni.mff.ufal.textan.server.models.Relation} from a {@link cz.cuni.mff.ufal.textan.data.tables.RelationTable}.
      *
      * @param relationTable the relation table
+     * @param aliasTableDAO the alias table
      * @return the relation
      */
     public static Relation fromRelationTable(RelationTable relationTable, IAliasTableDAO aliasTableDAO) {
@@ -52,7 +53,6 @@ public class Relation {
                 .map(inRelation -> new Triple<>(Object.fromObjectTable(inRelation.getObject(), aliasTableDAO.findAllAliasesOfObject(inRelation.getObject())), inRelation.getRole(), inRelation.getOrder()))
                 .collect(Collectors.toList());
 
-        //TODO: test if this is unique (distinct)
         List<String> anchors = relationTable.getOccurrences().stream()
                 .map(RelationOccurrenceTable::getAnchor)
                 .collect(Collectors.toList());
@@ -66,6 +66,13 @@ public class Relation {
                 );
     }
 
+    /**
+     * Creates a {@link cz.cuni.mff.ufal.textan.server.models.Relation} from a {@link cz.cuni.mff.ufal.textan.commons.models.Relation}.
+     * @param commonsRelation the common relation
+     * @param objectMap the map of objects in requests
+     * @return the relation
+     * @throws IdNotFoundException the exception that is thrown when some id is not found
+     */
     public static Relation fromCommonsRelation(cz.cuni.mff.ufal.textan.commons.models.Relation commonsRelation, Map<Long, Object> objectMap) throws IdNotFoundException {
 
         List<Triple<Object, String, Integer>> objectsInRelation = new ArrayList<>();

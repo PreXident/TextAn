@@ -1,0 +1,555 @@
+% Section: Server
+
+This section contains all information to successfully install, configure and run
+\textan{} server side application.
+
+\subsection{Installation Guide}
+
+This section describes how to install \textan{} server on a server
+machine and perform basic configuration.
+
+\subsubsection{Prerequisites}
+\label{sssec:SerInstPre}
+
+The \textan{} server requires installation of \emph{Java 8 JRE\footnote{We
+recommend to use JRE from \emph{Oracle}, available at:
+\url{http://www.oracle.com/technetwork/java/javase/downloads/index.html}.
+Note that the application expects 64-bit JRE on 64-bit systems.}}
+or a later version and a relational database system (e.g. \emph{MySQL}).
+The server is platform independent, so it runs on any system where JRE is
+available, but it depends on native and 3rd party libraries. Supported
+operating systems in the distribution of the \textan{} server are Linux (32 bit
+and 64 bit\footnote{x86 (IA-32) and x86-64}) and Windows (32 bit and 64 bit).  If you need to
+run \textan{} server on different operating system, see Section
+\ref{sssec:unsupport}.
+
+\subsubsection{Installation}
+
+The \textan{} server distribution archive contains all files needed for \textan{} server to operate,
+such as server binaries, native libraries, run scripts and additional resources.
+For installation it is sufficient to unpack its content into any directory.
+
+\subsubsection{Database Configuration}
+\label{sssec:DataConfig}
+
+Before a start or a configuration of the \textan{} server, it is necessary to
+setup a database. There are two possibilities how to configure the database:
+manually, or through a simple command line tool. Both of them are \emph{MySql} specific,
+however it is possible to configure the server to use other database system.
+
+If you want to configure \emph{MySql} manually, you need to run \emph{create.sql} script
+that can be found in the \emph{database} folder in the distribution archive. The script
+create database schema (called ``textan'') and all necessary  tables in it. If you
+want to create also a database user for \textan{}, you can use the script \emph{createUser.sql}
+Furthermore, you need to configure the server application to use the just created
+database in \emph{data.properties\footnote{A description of format of .properties file can
+be found at \url{http://en.wikipedia.org/wiki/.properties}}} in the installation directory.
+Their meaning is described in Section \ref{sssec:DataSettings}.
+
+The second possibility, how to configure \emph{MySql}, is to use a simple setup
+commandline tool. The tool is available in the installation directory as
+the \emph{setup.sh} for Linux systems or the \emph{setup.bat} for Windows.
+The possibilities of the tool are equivalent to the manual configuration, see
+a help of the tool.
+
+If you want to use other sql database system, you have to create an equivalent
+database schema to the schema described in \emph{create.sql}, setup the server
+application and add jdbc drivers for the database system into the classpath.
+
+Note that the database should be accessed only through the \textan{} server application
+while the server is running, otherwise the database can be inconsistent with
+the server application. For more information see Sections \ref{DEV-sec:PersistentLayer}
+and \ref{DEV-sec:Database} in the developer documentation.
+
+%There is sql script \emph{(create.sql)} to setup the database located in the
+%folder \emph{Database}. It should be executed to setup the database schema
+%before the server starts. However this script is \emph{MySQL} specific
+%\comment[Venca]{Venca}{check} and if you have other database you should replace
+%\emph{MySQL} specific commands.
+ 
+%Furthermore you need to edit properties used to connect to the database (over \emph{jdbc})
+%and to generate sql queries by Hibernate (\emph{hibernate.dialect}).
+%Their meaning is described in section \ref{sssec:DataSettings}.
+
+\subsubsection{Basic Server Configuration}
+
+The \textan{} server application should be configured before the first run. There
+are three main areas of configuration: an internal web server, an internal named
+entity recognizer and types for objects (entities) and relations and default training
+data for them.
+
+The web server and the named entity recognizer can be configured through configuration
+files in the installation folder, see Sections \ref{sssec:WebServerSettings} and
+\ref{sssec:NametagSettings} for information about configuration possibilities.
+
+The last, but the most important thing to configure, are types and optionally
+default training data for them. The types should be added through the command
+line setup tool\footnote{Note that if you use the tool with other database than
+\emph{MySql}, you must add jdbc drivers for the database system into the classpath.}
+mentioned in the section \ref{sssec:DataConfig}. The tool provides operations to
+add both object types and relation types and a simple management for them. See
+the help of the tool.
+
+In the beginning of the server's live time, the recognizers do not have enough
+training data from processed documents to provide good results. This can be
+improved by using default training data for them.
+If default training data has incompatible types, the command line setup tool provides
+tool for translating training data types to database ones. only map between types must be added.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Starting the Server}
+
+The server can be started by starting scripts in its root directory. Scripts for
+different operating systems unfortunately do not provide the same functionality.
+
+The start script for the Linux-based operating system (\emph{run.sh}) runs the
+server application as daemon and can be used to run the server as a system service.
+
+The start script for the Microsoft Windows OS is less powerful, it only runs the
+server application. To run the server as a background process, the Windows
+Service is required. Unfortunately, there are no components shipped with
+\textan{} to make it a formal Windows Service. However, we recommend the use of
+third party \emph{Apache Proc\-Run's Daemon \footnote{More information can be
+found on \url{https://commons.apache.org/proper/commons-daemon/procrun.html}
+and in JavaDoc documentation for \emph{cz.\-cuni.\-mff.\-ufal.\-textan.\-server.\-AppEntry}
+class.}}.
+
+Note that the startup of the server may take a very long time, depending on the
+amount of data, because during the initialization full text indexes
+and models for the named entity recognizer and object assigner are created and
+the internal web server is started after the initialization phase.
+
+\subsubsection{Uninstallation}
+The server application uses only files and resources inside the install
+directory by default, the only exception are temporary files, which are placed
+in system temp folder. To uninstall the server just delete the installation
+directory and files from your configuration.
+
+\subsubsection{Unsupported Systems}
+\label{sssec:unsupport}
+It is possible to run \textan{} server on other systems than supported ones.
+The only limitations are Java 8 and third party tools and libraries,
+specifically NameTag%
+\footnote{\url{http://ufal.mff.cuni.cz/nametag}} and MorphoDiTa%
+\footnote{\url{http://ufal.mff.cuni.cz/morphodita}}.
+
+To configure the server application for specific system follow these steps:
+\begin{itemize}
+\item Download MorphoDiTa sources and compile its Java bindings. Copy generated
+library into \emph{lib} folder in the installation directory.
+\item Download NameTag sources and:
+	\begin{itemize}
+	\item compile its Java bindings and copy generated library into \emph{lib}
+	folder in the installation directory.
+	\item compile NameTag and copy \emph{train\_ner} into \emph{bin} folder in
+	the installation directory.
+	\end{itemize}
+\end{itemize}
+
+\subsection{Settings}
+\label{sec:ServerSettings}
+
+This section contains description of available settings to configure \textan{}
+server.
+
+\subsubsection{Web Server Settings}
+\label{sssec:WebServerSettings}
+This section contains the description of properties that can be used to
+configure the internal web server. These properties can be set in the file
+\emph{server.properties} in the installation directory.
+
+%connector
+\paragraph{server.connector.host}
+The particular interface to listen on. If not set or 0.0.0.0, the web server
+listens on port on all interfaces.
+
+\paragraph{server.connector.port}
+The port to listen on. If not set, the web server listens on port 9500.
+
+%thread pool
+\paragraph{server.threadPool.maxThreads}
+The maximum number of threads in web server thread pool. It determines the
+maximal number of simultaneously opened connections. The default value is 200.
+
+\paragraph{server.threadPool.minThreads}
+The minimal number of threads in the web server thread pool. The default value
+is 8.
+
+\paragraph{server.threadPool.idleTimeout}
+The time in milliseconds that the connection can be idle before it is closed.
+
+%ssl
+\paragraph{server.ssl}
+Enable usage of SSL. When SSL is enabled, following properties must be set:
+\emph{server.\-ssl.\-keyStore.\-path}, \emph{server.\-ssl.\-keyStore.\-password},
+\emph{server.\-ssl.\-keyManager.\-password}. The default value is false.
+
+\paragraph{server.ssl.keyStore.path}
+The file or URL of the SSL Key store.
+
+\paragraph{server.ssl.keyStore.password}
+The password for the key store.
+
+\paragraph{server.ssl.keyManager.password}
+The password (if any) for the specific key within the key store.
+
+\paragraph{server.ssl.keyStore.type}
+The type of the key store. The default value is ``JKS''.
+
+\paragraph{server.ssl.port}
+The port to listen on when SSL communication is enabled. Note that the port must
+be different from server.connector.port, because HTTP connection is still
+possible, but it is immediately redirected to the SSL port.
+
+%ssl client auth
+\paragraph{server.ssl.clientAuth}
+Enables usage of client authentication. When enabled, following properties must
+be set: \emph{server.\-ssl.\-keyStore.\-path}, \emph{server.\-ssl.\-keyStore.\-password},
+\emph{server.\-ssl.\-keyManager.\-password}. Default value is \emph{false}.
+
+\paragraph{server.ssl.trustStore.path}
+Path to the trust store file.
+
+\paragraph{server.ssl.trustStore.password}
+Password to the trust store.
+
+\paragraph{server.ssl.trustStore.type}
+The type of the trust store.
+
+\vspace{0.75cm}
+For more information about security, please consult Section \ref{sec:Security}.
+
+\subsubsection{Database Settings}
+\label{sssec:DataSettings}
+
+Because the server can connect to an arbitrary database, it is required to
+specify what type of database is used. In \textan{} project \emph{Hibernate}
+is used for object-relation mapping (\emph{ORM}), \emph{JDBC} for relation
+database access and \emph{c3p0} for connection pooling (see Section
+\ref{DEV-sec:UsedTechnologies} in the developer documentation).
+
+The properties of these three libraries can be set in the file
+\emph{data.properties} in the installation directory. The descriptions of the
+most important properties follow:
+
+%jdbc
+\paragraph{jdbc.driverClassName}
+Name of the driver class made usually by database developers which enables to
+interact with database. Note that if you use other database than \emph{MySql},
+you must add jdbc drivers for the database system into the classpath.
+
+\paragraph{jdbc.url}
+ The url that points to our database. The most common url format is like this:
+jdbc:[database type]:[hostname]:[port number]/[database name]
+and is specific to the driver we use.
+
+\paragraph{jdbc.user}
+Username to log into the database.
+
+\paragraph{jdbc.pass}
+Password to authorize the user in database.
+
+%c3p0 (http://www.mchange.com/projects/c3p0/#configuration_properties)
+\paragraph{c3p0.maxPoolSize}
+Maximum number of Connections a pool will maintain at any given time.
+Default: 15.
+
+\paragraph{c3p0.minPoolSize}
+Minimum number of Connections a pool will maintain at any given time.
+Default: 3.
+
+\paragraph{c3p0.initialPoolSize}
+Number of Connections a pool will try to acquire upon startup. Should be between
+minPoolSize and maxPoolSize.
+Default: 3.
+
+\paragraph{c3p0.acquireIncrement}
+Determines how many connections at a time c3p0 will try to acquire when the pool
+is exhausted.
+Default: 3.
+
+\paragraph{c3p0.maxIdleTime}
+Seconds a Connection can remain pooled but unused before being discarded. Zero
+means idle connections never expire.
+Default: 0.
+
+\paragraph{c3p0.checkoutTimeout}
+The number of milliseconds a client calling getConnection() will wait for a Connection
+to be checked-in or acquired when the pool is exhausted. Zero means wait indefinitely.
+Setting any positive value will cause the getConnection() call to time-out and
+break with an SQLException after the specified number of milliseconds.
+Default: 0.
+
+\paragraph{c3p0.maxStatements}
+The size of c3p0's global PreparedStatement cache. If both max\-Statements and
+maxStatementsPerConnection are zero, statement caching will not be enabled.
+If maxStatements is zero but maxStatementsPerConnection is a non-zero value,
+statement caching will be enabled, but no global limit will be enforced, only
+the per-connection maximum. maxStatements controls the total number of Statements
+cached, for all Connections. If set, it should be a fairly large number, as each
+pooled Connection requires its own, distinct flock of cached statements.
+Default: 0
+
+\paragraph{c3p0.maxStatementsPerConnection}
+The number of PreparedStatements c3p0 will ca\-che for a single pooled Connection.
+If both maxStatements and maxStatementsPerConnection are zero, statement caching
+will not be enabled. If maxStatementsPerConnection is zero but maxStatements is
+a non-zero value, statement caching will be enabled, and a global limit enforced,
+but otherwise no limit will be set on the number of cached statements for a single
+Connection. If set, maxStatementsPerConnection should be set to about the number
+distinct PreparedStatements that are used frequently in application, plus
+two or three extra so infrequently statements do not force the more common cached
+statements to be culled.
+Default: 0
+
+\paragraph{c3p0.idleConnectionTestPeriod}
+If this is a number greater than 0, c3p0 will test all idle, pooled but unchecked-out
+connections, every this number of seconds.
+Default: 0
+
+%hibernate
+\paragraph{hibernate.dialect}
+The classname of a Hibernate org.hibernate.dialect.Dialect which allows to generate
+SQL optimized for a particular relational database.
+
+%hibernate search
+\paragraph{hibernate.search.analyzer}
+A fully qualified name of Lucene Analyzer that is used for the full text indexing
+and searching. The default value is \emph{org.\-apache.\-lucene.\-analysis.\-cz.\-CzechAnalyzer}.
+For more informations about Analyzers see Section \ref{sec:Lang}.
+
+%NameTag
+\subsubsection{Named Entity Recognizer Settings}
+\label{sssec:NametagSettings}
+This section is mainly about settings stored in NametagLearning.properties. There
+are parameters for neural network which Name\-Tag uses for learning and switches for
+Name\-Tag functions. Also, there are settings affecting models storing and
+generating learning data. All inputs are assumed to be in UTF-8 encoding.
+
+\paragraph{ner\_identifier}
+Identifier of the named entity recognizer type. This affects the tokenizer used
+in this model, and in theory any other aspect of the recognizer. Supported values
+are: \emph{czech}, \emph{english}, \emph{generic}.
+
+\paragraph{tagger}
+Identifier of tagger. NameTag can utilize several taggers to obtain the tags and lemmas:
+
+\begin{description}
+\item[trivial]
+Do not use any tagger. The lemma is the same as the given form and there is no
+part of speech tag.
+\item[external]
+Use some external tagger. The input ``forms'' can contain multiple tab-separated
+values, first being the form, second the lemma and the rest is part of speech tag.
+The part of speech tag is optional. The lemma is also optional and if missing,
+the form itself is used as a lemma.
+\item[morphodita:model]
+Use MorphoDiTa as a tagger with the specified model. This tagger model is embedded
+in resulting named entity recognizer model. The lemmatizer model of MorphoDiTa
+is recommended, because it is very fast, small and detailed part of speech tags
+do not improve the performance of the named entity recognizer significantly.
+\end{description}
+
+\paragraph{featuresFile}
+Path of generated file, based on property file.
+The recognizer utilizes feature templates to generate features which are used as
+the input to the named entity classifier. The feature templates are specified in
+a file, one feature template on a line. Empty lines and lines starting with \# are ignored.
+
+The first space-separated column on a line is the name of the feature template,
+optionally followed by a slash and a window size. The window size specifies how
+many adjacent words can observe the feature template value of a given word, with
+default value of 0 denoting only the word in question.
+
+List of commonly used feature templates follows. Note that it is probably not
+exhaustive (see the sources in the features directory).
+
+Example of gazetteer file with months:
+
+\begin{lstlisting}[frame=single]
+leden
+únor
+březen
+duben
+květen
+červen
+červenec
+srpen
+září
+říjen
+listopad
+prosinec
+\end{lstlisting}
+
+\paragraph{stages}
+The number of stages performed during recognition. Common values are either 1 or
+2. With more stages, the model is larger and recognition is slower, but more accurate.
+
+\paragraph{iterations}
+The number of iterations performed when training each stage of the recognizer.
+With more iterations, training take longer (the recognition time is unaffected),
+but the model gets over-trained when too many iterations are used. Values from 10
+to 30 or 50 are commonly used.
+
+\paragraph{missing\_weight}
+Default value of missing weights in the log-linear model. Common values are small
+negative real numbers like -0.2.
+
+\paragraph{initial\_learning\_rate}
+learning rate used in the first iteration of SGD training method of the log-linear
+model. Common value is 0.1.
+
+\paragraph{final\_learning\_rate}
+learning rate used in the last iteration of SGD training method of the log-linear
+model. Common values are in range from 0.1 to 0.001, with 0.01 working reasonably well.
+
+\paragraph{gaussian}
+The value of Gaussian prior imposed on the weights. In other words, the value of
+L2-norm regularizer. Common value is either 0 for no regularization, or a small
+real number like 0.5.
+
+\paragraph{hidden\_layer}
+Experimental support for hidden layer in the artificial neural network classifier.
+To not use the hidden layer (recommended), use 0. Otherwise, specify the number
+of neurons in the hidden layer. Please note that non-zero values will create
+enormous models, slower recognition and are not guaranteed to create models with
+better accuracy.
+
+\paragraph{heldout\_data}
+Optional parameter with heldout data in same format as training data. If the heldout data
+is present, the accuracy of the heldout data classification is printed during
+training. The heldout data is not used in any other way.
+
+\paragraph{waiting\_time}
+Because learning is iterative and time-consuming process it took some time.
+This parameter specifies, how long the program should wait for new model to
+train before it reports an error. If there is an existing model, NameTag
+utilizes the previous model until the new model is learned and waiting time is
+disregarded.
+
+\paragraph{default\_training\_data\_file}
+Sample file with initial training data, which is used before training data
+generated from database are available. When this property is empty, no default
+training data are used.
+
+\paragraph{maximum\_stored\_models}
+Number of maximum stored models. When the limit is exceeded, the oldest models
+are deleted.
+
+\paragraph{form}
+Size of window when forms are used as features (0 when they are not used)
+
+\paragraph{lemma}
+Size of window when lemma ids are used as features (0 when they are not used).
+When lemma is specified, lemma IDs are used.
+
+\paragraph{raw\_lemma}
+Size of window when raw lemmas are used as features (0 when they are not used)
+Difference between lemma and raw lemma is, thah lemma uses lemma IDs and raw\_lemma use raw lemmas as feature.
+
+\paragraph{raw\_lemma\_capitalization}
+Size of window when capitalization of raw lemma is used as features (0 when they are not used)
+
+\paragraph{tag}
+Size of window when tags are used as features (0 when they are not used)
+
+\paragraph{numeric\_time\_value}
+Recognize numbers which could represent hours, minutes, hour:mi\-nute time, days,
+months or years.
+
+\paragraph{czech\_lemma\_term}
+Feature template specific for Czech morphological system by Jan Hajič (Hajič 2004).
+The term information (personal name, geographic name, ...) specified in lemma comment
+are used as features.
+
+\paragraph{brown\_clusters}
+Size of window for Brown clusters\footnote{For more information see
+\url{http://people.csail.mit.edu/pliang/papers/meng-thesis.pdf}}.
+Brown clustering is a form of hierarchical of words based on the context in
+which they occur in documents.
+
+\paragraph{brown\_clusters\_file}
+Use Brown clusters found in the specified file. An optional list of lengths of
+cluster prefixes to be used in addition to the full Brown cluster can be specified.
+Each line of the Brown clusters file must contain two tab-separated columns,
+the first of which is the Brown cluster label and the second is the raw lemma.
+
+\paragraph{gazetteers}
+Size of window when gazetteers are used (0 when are not used).
+
+\paragraph{gazetteers\_directory}
+Directory of gazetteers files. Each file is one gazetteer list independent
+of the others and must contain a set of lemma sequences, each on a line,
+represented as raw lemmas separated by spaces.
+
+\paragraph{previous\_stage}
+Use named entities predicted by previous stage as features.
+
+\paragraph{email\_detector}
+Detect URLs and emails. If an URL or an email is detected, it is immediately marked
+with specified named entity type and not used in further processing.
+
+\subsection{Data Formats}
+To train a named entity recognizer model, training data are needed. The training
+data must be tokenized and contain annotated named entities. The named entities
+are non-overlapping, consist of a sequence of words and have type specified.
+The training data must be encoded in UTF-8 encoding. The lines correspond to
+individual words and an empty line denotes the end of sentence. Each non-empty
+line contains exactly two tab-separated columns, the first is the word form, the
+second is the annotation. The format of the annotation is taken from CoNLL-2003:
+the annotation {\it I-type} or {\it B-type} denotes named entity of specified
+type, any other annotation is ignored. The {\it I-type} and {\it B-type}
+annotations are equivalent except for one case – if the previous word is also a
+named entity of the same type, then
+\begin{itemize}
+\item{}if the current word is annotated as I-type, it is part of the same named
+entity as the previous word (or beginning of new entity, if previous word was
+not entity),
+\item{}if the current word is annotated as B-type, it is in a different named
+entity than the previous word (albeit with the same type).
+\end{itemize}
+
+For example sentence ``Tři a půl hodiny po zápase Drnovice Bohdaneč (3:1) strávil domácí Karel Majoroš a hostující Ota Pavelka na dopingové kontrole.''
+could be annotated as follows:
+
+\begin{lstlisting}[frame=single]
+Tři	_
+a	_
+půl	_
+hodiny	_
+po	_
+zápase	_
+Drnovice	I-4
+Bohdaneč	B-4
+(	_
+3	_
+:	_
+1	_
+)	_
+strávili	_
+domácí	_
+Karel	I-1
+Majoroš	I-1
+a	_
+hostující	_
+Oto	I-1
+Pavelka	I-1
+na	_
+dopingové	_
+kontrole	_
+,	_
+než	_
+se	_
+jim	_
+podařilo	_
+odevzdat	_
+moč	_
+.	_
+\end{lstlisting}
+
+Because ``Drnovice'' and ``Bohdaneč'' are the same type of entity (4) but are
+not part of one entity, the second one must be note as \emph{B-type}.
+Other example is ``Karel Majoroš'' and ``Oto Pavelka'', where name and surname
+are parts of same entity - person, so they are joined together with \emph{I-type}.
+If surnames were marked as {\it B-type}, ``Oto'' and ``Pavelka'' would be
+understood as two entities.

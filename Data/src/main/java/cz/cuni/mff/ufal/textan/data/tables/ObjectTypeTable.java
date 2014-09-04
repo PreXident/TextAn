@@ -75,7 +75,7 @@ public class ObjectTypeTable extends AbstractTable {
     public boolean equals(Object o) {
         if (o instanceof ObjectTypeTable) {
             ObjectTypeTable ott = (ObjectTypeTable) o;
-            return ott.getId() == this.getId() && ott.getName().equals(this.getName());
+            return ott.getId() == this.getId();
         } else
             return false;
     }

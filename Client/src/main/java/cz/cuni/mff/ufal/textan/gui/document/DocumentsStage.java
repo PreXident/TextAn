@@ -25,6 +25,7 @@ public class DocumentsStage extends OuterStage {
      * @param settings properties with settings
      * @param client client to communicate with server
      * @param object object whose documents should be displayed
+     * @param relation relation whose documents should be displayed
      */
     public DocumentsStage(final TextAnController textAnController,
             final Properties settings, final Client client, final Object object,
@@ -48,7 +49,7 @@ public class DocumentsStage extends OuterStage {
             controller.setTextAnController(textAnController);
             controller.setClient(client);
             controller.filter();
-            getInnerWindow().setTitle(Utils.localize(resourceBundle, PROPERTY_ID));
+            getInnerWindow().setTitleFixed(Utils.localize(resourceBundle, PROPERTY_ID));
             getInnerWindow().setMinHeight(DocumentsWindow.MIN_HEIGHT);
         } catch (Exception e) {
             e.printStackTrace();

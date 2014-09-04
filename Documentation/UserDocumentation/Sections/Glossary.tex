@@ -1,0 +1,94 @@
+Some terms are used in a very specific manner in the documentation and in both
+the client and the server, therefore it is really essential to understand their
+meaning. Otherwise, it is possible to misunderstand the rest of the text.
+
+\begin{description}
+\item[Document]
+The document is an arbitrary text that is processed by \textan{}. E.g. a police
+report, a letter, a movie review or a judgment. In the following text, the terms
+``document'' and ``report'' are used interchangeably.
+
+\item[Object]
+The term ``object'' refers to our representation of some unique thing in
+\textan{}. Consider for example a person with name Joseph Smith from Prague with
+personal identifier 000123/4567. The object refers to this person in the real
+world, in meat and bones.
+
+\item[Alias]
+An alias represents a designation of a object. For example: Joseph Smith, Joe
+Smith, Joey S., J. Smith or just Smith can be names of one specific person.
+Names are aliases for the person.
+
+\item[Entity]
+An entity is a sequence of words recognized either by the named entity
+recognizer or by a user. The entity will be later assigned to an object.
+Consider for example this sentence: ``Joe Smith was seen in Prague on 5th
+September.'' The sentence contains 3 entities: Joe Smith (person), Prague
+(city), 5th September (date). We do not know which objects belong to these
+entities until the text is fully processed. Prague can represent the capital
+city of the Czech Republic, or a city in the USA.
+
+\item[Object/Entity Type]
+Each entity and each object must have a type. For example, person, date, city,
+country etc. The set of types in the system depends on the domain which the
+system is deployed to. Consider for example sentence: ``Adam and Eve live in
+Paradise.'' There are three entities, two (Adam, Eve) of the type ``person'' and
+one (Paradise) of the type ``address''.
+
+\item[Object Assignment]
+The ``Object assignment'' or just ``assignment' is a process at which an object
+is assigned to a recognized entity.  After the assignment, the text that
+represents the entity in a document becomes the alias of the assigned object.
+The entity and the assigned object must have the same type, this is an essential
+aspect of the assignment. For example, there is a document in which an entity of
+the type ``date'' with the text ``14th March 2011'' was found and there is an
+object in the database of the type ``date'' representing the day with aliases
+``the Fourteenth of March, 2011'', ``14/3/2011'' and ``14/3/11''. The object
+will be probably assigned to the entity, because we know that they represent the
+same thing. After the assignment, the object will also have the alias ``14th
+March 2011''.
+
+\item[Object Merging/Joining]
+Because objects are created only based on information from documents, there may
+be a situation when two objects represent the same thing and this identity was
+revealed only later. The operation ``merge/join object'' is used to solve this
+issue, it merges two objects into a new one and the original objects are
+replaced with the new object. The new object has aliases of both original
+objects. The reverse operation is called ``split objects''.
+
+\item[Relation]
+The relation represents any relationship between objects mentioned in a
+document. The relation can be represented in the document by an anchor word or
+phrase, or it can be unexpressed, which means without any anchor in the
+document. See Anchor below.
+Consider this example: ``Adam (890524/1367) is married to Eve''. Three objects
+appear in the sentence - persons Adam and Eve and the id 890524/1367. There
+are two relations: Adam ``has'' 890524/1367 without an anchor and Adam
+``marriage'' Eve with the anchor ``married''.
+
+\item[Relation Type]
+Each relation has a type. For example born, reside, die, kill etc. Similarly to
+object/relation types the set of relation types in the system depends on the
+domain which the system is deployed to. Consider for example sentence: ``Cain
+shot Abel.'' There is one relation (with anchor ``shot'') of the type
+``murder''.
+
+\item[Anchor]
+The anchor is a word or a sequence of words that is bound to a relation between
+objects. Consider for example the sentence: Joey Smith killed Mary-Ann S. There
+is a relation between Joey Smith and Mary-Ann S., which is represented by the
+word ``killed''. The word is the anchor.
+\comment{Ondrej}{Why do you not write about type here?}
+\comment{Petr}{The example should show what is an anchor. The type isn't important in this situation.}
+
+\item[Roles and orders]
+Each object in a relation can have a role assigned. This role is mostly used
+for visualization and for storing of additional information. Moreover object can
+also have an order or index assigned which is just an integral number used for
+graph visualization\ifdefined\USRDOC{} (see Section \ref{sssec:EditRelations})
+\fi{}\ifdefined\DEVDOC{} (see Section \ref{USR-sssec:EditRelations} in the user
+documentation)\fi{}. For example relation created from sentence ``Bill killed
+Joe.'' could be represented like this: Bill (-1, murderer) --kill--> (1, victim)
+Joe.
+\end{description}
+

@@ -1,0 +1,74 @@
+All here.
+
+HWKs not done:
+Adam
+- mockups not yet in documentation
+
+Kuba
+- missing one introduction
+
+Venca
+- path finding must be rewriten not to use fw
+- no explanation for not using graph db
+
+HWK:
+- Adam, write decision for pipeline
+- Adam, refactor settings in user documentation, mostly missing colors settings!
+- Adam, general settings should point to administrator guide client settings
+- Peter, rewrite all interdoc references
+- Peter, add to future extensions usage of hybrid db
+- Peter, find out proper referencing of figures (the figure X versus Figure X)
+- Kuba, add old db schemas
+- Kuba, add possibility to load learning.properties outside the jar (see spring)
+- Venca, test print, change colors if needed
+- Venca, default values for properties
+- Venca, make the database architecture last paragraph more clear
+- Setuper
+  - Peter, add option for create that writes settings for created database to data.properties
+  - Kuba, implement creating training data
+- Tam, commit all remaining changes, so we can refactor it
+- Tam, write tests
+
+Next meeting on Monday at 16:30.
+
+- Decisions
+  - why pipeline? maybe also mockups here
+  - why (semi)automatic processing?
+  - why state on client?
+
+Documentation notes from Ondrej:
+
+Chapters and sections should have capitalized all words (with exceptions ;-)
+Requirements should explain main window mockup and that more things can be done simuntaneously.
+Adopted solutions (Third party tools) should contain reasons too
+Peter Sipos should be xplicitly marked as not member
+Object assigner and nametag should have their own chapter (Core components)
+All appendixes and images need references in text.
+
+Overall Architecture
+  - architecture overview
+  - Communication
+Server
+  - server architecture
+  - simple componenents?
+  - name entity recognizer
+  - object assigner
+  ...
+  - database
+Client
+- client architecture
+- model
+- controller and view
+
+Sources -> Content of the dvd
+github and test server links into introduction
+explicitly meantion that only one language is supported at once
+possible extension - support more languages at once
+
+Lessons Learned into Developer notes, switch Developer notes and Future extensions
+
+Ask KSWI secretary Košnářová
+- if we can defend even
+- if the documentation needs special binding or duplex
+
+Limits -> Basic Assumptions

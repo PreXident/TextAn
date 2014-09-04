@@ -1,5 +1,6 @@
 %Use Lualatex for interpretation!
 % lualatex -interaction=nonstopmode --shell-escape DeveloperDocumentation.tex
+% for correct bibliography, you must run lualatex, bibtex, lualatex and again lualatex 
 
 %You have to have those fonts in your system:
 % - Calibri (standard windows font)
@@ -7,6 +8,8 @@
 % - GROTESKIA (http://www.dafont.com/groteskia.font)
 
 \documentclass[12pt,a4paper]{report}
+
+\newcommand*{\DEVDOC}
 
 %\usepackage[utf8]{inputenc} % for old latex interpreters
 %\usepackage[english]{babel}
@@ -24,7 +27,10 @@
 \usepackage[stable]{footmisc}
 \usepackage{titlesec}
 \usepackage{fontspec}
-\usepackage{epstopdf,epsfig} 
+\usepackage{epstopdf,epsfig}
+\usepackage[backend=bibtex]{biblatex}
+\bibliography{Sections/Citations} 
+
 
 \definecolor{TextanDarkRed}{cmyk}{.37,.94,.83,.59}
 \definecolor{TextanRed}{cmyk}{.0,.879,.844,.220}
@@ -40,7 +46,7 @@
 \titleformat*{\subsection}{\fontsize{14pt}{1pt}\selectfont\sectionfont\itshape\color{TextanDarkRed}}
 %\titleformat*{\subsubsection}{\sectionfont\color{TextanDarkRed}}
 
-\setmainfont{Calibri}
+\setmainfont[Ligatures=TeX]{Calibri}
 
 \backgroundsetup{
 scale=1,
@@ -52,10 +58,14 @@ contents={
  \end{tikzpicture}}
 }
 
+\usepackage{xr-hyper}
 \usepackage[unicode,colorlinks=true]{hyperref}
-\hypersetup{pdftitle=TextAn - user documentation}
+\hypersetup{pdftitle=TextAn - developer documentation}
 \hypersetup{pdfauthor={Petr Fanta, Duc Tam Hoang, Adam Huječek, Václav Pernička, Jakub Vlček}}
 \hypersetup{linkcolor=black, citecolor=black, urlcolor=black, filecolor=black}
+\externaldocument[USR-]{../UserDocumentation/UserDocumentation}[../UserDocumentation/UserDocumentation.pdf]
+
+\usepackage{calc}
 
 \def\chapwithtoc#1{
 \chapter*{#1}
@@ -80,13 +90,13 @@ contents={
 % \comment[_assignee_]{_author_}{_comment_}
 % \comment{_author_}{_comment_}
 \makeatletter
-\newcommand{\comment}[3][\@empty]{
-  {\color{magenta}[#3 - }
-  {\color{green}\ifx\@empty#1\relax Author: #2 \else Assignee: #1; Author: #2\fi}{\color{magenta}]}
+\newcommand{\comment}[3][\@empty]{%
+%  {\color{magenta}[#3 - }
+%  {\color{green}\ifx\@empty#1\relax Author: #2 \else Assignee: #1; Author: #2\fi}{\color{magenta}]}
 }
 \makeatother
 
-\newcommand{\textan}{\emph{TextAn}}
+\newcommand{\textan}{\emph{Text\-An}}
 
 \begin{document}
 
@@ -95,25 +105,25 @@ contents={
 \newgeometry{left=4.5cm,top=7cm,bottom=3cm}
 
 \begin{figure}
- \includegraphics{../CommonImages/TEXTAN_logo_grey_B}
+ \includegraphics{../Logos/TEXTAN_logo_grey_B}
 \end{figure}
 \noindent
 \textcolor{TextanRed}{\chapterfont\fontsize{48pt}{1pt}\selectfont\MakeUppercase{Developer documentation}}\\[15pt]
-\textcolor{TextanDarkRed}{\sectionfont\LARGE\MakeUppercase{Version 0.1}}
+\textcolor{TextanDarkRed}{\sectionfont\LARGE\MakeUppercase{Version 1.0.0}}
 
 \vfill
 \noindent
-\begin{minipage}[b]{.75\textwidth}
+\begin{minipage}[b]{.65\textwidth}
 \textbf{Authors}\\
-Petr Fanta\\
-Duc Tam Hoang\\
-Adam Huječek\\
-Václav Pernička\\
-Jakub Vlček
+Bc. Petr Fanta\\
+Duc Tam Hoang, B.Sc.\\
+Bc. Adam Huječek\\
+Bc. Václav Pernička\\
+Bc. Jakub Vlček
 \end{minipage}% This must go next to `\end{minipage}`
-\begin{minipage}[b]{.25\textwidth}
+\begin{minipage}[b]{.35\textwidth}
 \textbf{Supervisor} \\
-Ondřej Bojar\\
+RNDr. Ondřej Bojar, Phd.\\
 %\vfill
 \\
 \\
@@ -135,35 +145,68 @@ Ondřej Bojar\\
 \chapter{Introduction}
 \pagenumbering{arabic}
 
-\section{Introduction to the project}
+This chapter contains a brief motivation and the introduction of the project.
+There is also a very important glossary explaining the terminology used
+throughout the project and the documentation.
+
+\section{Introduction to the Project}
 \input{Sections/IntroductionToTheProject}
 
-\section{Adopted solutions and decisions}
+%\section{Conventions}
+
+\section{Glossary}
+\input{../UserDocumentation/Sections/Glossary}
+
+\section{Other Sources}
+\input{Sections/OtherSources}
+
+\chapter{Requirements Specification}
+\input{Sections/Requirements}
+
+\chapter{Analysis}
+The chapter contains all design related stuff \comment[Ondrej]{Adam}{Find better word for this, please} that affected the analysis of the
+project, especially related work, design decisions and third party tools used.
+
+\section{Related Work}
+\input{Sections/RelatedWork}
+
+\section{Third Party Tools}
 \input{Sections/AdoptedSolutions}
 
-\section{Related work}
-\input{Sections/RelatedWork}
-%..
-\section{Conventions}
-\section{Glossary}
-%...
+\section{Decisions}
+\label{sec:Decisions}
+\input{Sections/Decisions}
 
-\chapter{Requirements specification}
-\section{Functional requirements}
-\section{Non-functional requirements}
-
-\comment{Petr}{where to place use cases, mockup screens etc?}
-
-\chapter{Architecture}
+\chapter{Overall Architecture}
 \input{Sections/Architecture}
 
-\chapter{Developer notes}
-\section{Work on the project}
-\section{Decisions}
+\chapter{Server}
+\label{ch:ServerArch}
+\input{Sections/ServerArchitecture}
 
-\chapter{Possibilities of future extensions}
+\chapter{Client}
+\label{ch:ClientArch}
+\input{Sections/ClientArchitecture}
 
+\chapter{Possible Future Extensions}
+\label{sec:FutureExtensions}
+\input{Sections/FutureExtensions}
 
+\chapter{Developer Notes}
+\input{Sections/WorkOnProject}
 
+\chapter{Conclusion}
+\input{Sections/Conclusion}
+
+\appendix
+\chapter{Contents of the Attached DVD}
+\label{app:DVD}
+\input{Sections/DVD}
+
+\chapter{Client Properties}
+\label{app:ClientProperties}
+\input{Sections/ClientProperties}
+
+\printbibliography
 
 \end{document}

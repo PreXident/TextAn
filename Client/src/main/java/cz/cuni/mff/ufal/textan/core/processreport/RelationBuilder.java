@@ -13,7 +13,7 @@ import java.util.List;
 import javafx.util.Callback;
 
 /**
- * Simple class representing marked Relation.
+ * Simple class for building marked Relation (otherwise immutable).
  * Entities do not track their words, words track their entities.
  * To get marked entities, iterate word list. If extending, consider
  * reimplementing writeReplace
@@ -138,7 +138,7 @@ public abstract class RelationBuilder extends AbstractBuilder {
     /**
      * Instead of this RelationBuilder, serialize the proxy.
      * @return proxy to serialize
-     * @throws ObjectStreamException
+     * @throws ObjectStreamException never
      */
     protected java.lang.Object writeReplace() throws ObjectStreamException {
         return new RelationBuilderProxy(this);
@@ -183,7 +183,7 @@ public abstract class RelationBuilder extends AbstractBuilder {
         /**
          * Implementation of deserialization.
          * @return this if {@link #deserializator} is null, otherwise its result
-         * @throws ObjectStreamException
+         * @throws ObjectStreamException never
          */
         protected final java.lang.Object readResolve() throws ObjectStreamException {
             return deserializator == null ? this : deserializator.call(this);
@@ -236,7 +236,7 @@ public abstract class RelationBuilder extends AbstractBuilder {
         /**
          * Instead of this RelationInfo, serialize the proxy.
          * @return proxy to serialize
-         * @throws ObjectStreamException
+         * @throws ObjectStreamException never
          */
         protected final java.lang.Object writeReplace()
                 throws ObjectStreamException {
@@ -292,7 +292,7 @@ public abstract class RelationBuilder extends AbstractBuilder {
             /**
              * Implementation of deserialization.
              * @return this if {@link #deserializator} is null, otherwise its result
-             * @throws ObjectStreamException
+             * @throws ObjectStreamException never
              */
             protected final java.lang.Object readResolve() throws ObjectStreamException {
                 return deserializator == null ? this : deserializator.call(this);

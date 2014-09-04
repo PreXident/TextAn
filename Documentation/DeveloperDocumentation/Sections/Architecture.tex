@@ -1,79 +1,84 @@
-%This section cotains the system architecture
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% (80 char rule :D)
+% Chapter: contains the system architecture
 
-%For every one: use as many diagrams as possible :) (author Petr)
+This chapter contains a detailed description of overall architecture of the client
+side, the server side and the communication between them. 
+
+\section{Architecture Overview}
 
 The architecture of \textan{} is based on client-server model. Two main components
-are the \textan{} server and \textan{} client which communicate via W3C web services
-(SOAP protokol).
+are the \textan{} server (see Chapter \ref{ch:ServerArch}) and \textan{} client 
+(see Chapter \ref{ch:ClientArch}) which communicate via W3C web services
+(SOAP protocol), see Figure \ref{fig:Architecture}.
 
-\section{Server architecture}
+\begin{figure}[!htb]
+        \centering
+        \includegraphics[height=16cm]{Images/Architecture}
+        \caption{Architecture overview.}
+        \label{fig:Architecture}
+\end{figure}
 
-The server architecture is based on a logical multilayered architecture. It
-consists of 5 layers: a presentation layer, a service layer, a business logic layer, 
-a persistence layer and a data layer.
+\section{Communication}
+\label{sec:Communication}
 
-\comment{Petr}{where to place commands in architecture??}
+The \textan{} server exposes two webservice interfaces for the client to use -
+\emph{DataProvider} and \emph{DocumentProcessor}. As the name suggests,
+\emph{DataProvider} offers operations for manipulating data in the database,
+for example \emph{getObject}, \emph{mergeObjects} and \emph{updateDocument}.
+The \emph{DocumentProcessor} offers all operations related to the processing,
+such as \emph{getEditingTicket}, \emph{getEntitiesFromString} and
+\emph{saveProcessedDocumentFromString}.
+For more details, consult the WSDL descriptions and Javadoc of the server
+implementation.
 
-\comment[Petr]{Petr}{server achitecture image}
+The usage of webservice \emph{DataProvider} is straightforward, its operations
+are completely independent of each other. On the other hand, the service
+\emph{DocumentProcessor} is more demanding. Its operations need to be
+called in specific order to achieve proper recognition (see Figure
+\ref{fig:ClientServerCommunication}). At the beginning, the client needs to obtain
+the ticket which stores information about processing for all
+following calls. For three recognition operations there are two variants. First
+for processing report already stored in the database (called\emph{*ById}) and
+second for inserting completely new document to the database (called
+\emph{*FromString}). Operations \emph{getEntities*} recognize entities in
+given report. Operations \emph{getAssignments*} assign objects from the database
+to recognized entities and finally operations \emph{getRelations*} recognize
+relations between objects. Please note that \emph{getRelations*} is not
+implemented in this version of \textan{} and it returns empty response with no
+relations recognized.
 
-\comment[Petr, Venca (persistence layer)]{Petr}{description of layers}
+The recognition operations do not store anything into the database. For this
+purpose there are three operations \emph{saveProcessedDocumentFromString} and
+\emph{saveProcessedDocumentById} with similar differences as mentioned above.
+The third operation \emph{rewriteAndSaveProcessedDocumentById} has as input
+parameters both document id and document text, because it overwrites the report
+text stored in the database. It is intended to be called when the document has
+been changed by others while being processed by the user, so the user can
+force returning to the original version or provide new one. All three operations
+take \emph{force} parameter specifying whether the saving should happen even
+though there have been external changes to the database, e.g. new objects, new
+relations and newly joined objects.
 
-\subsection{Named entity recognizer architecture}
+If the \emph{force} parameter is \emph{false} and such external changes have
+been detected, save operation returns \emph{false} and method \emph{getProblems} can be
+called to get information about the changes. After making adjustments to
+recognizing/assignments if needed, one of the save operations can be called with
+\emph{force} parameter set to \emph{true}.
 
-Named entity architecture is divided to two parts, recognition and training.
-\paragraph{Recognition} 
-Recognition is splitted to two parts - Java part and C++ part. This is because
-NameTag, which we use as named entity recognizer, is written mainly in C++ and
-TextAn in Java, so we must use JNI to call functions from C++ through provided
-Java bindings. C++ part is represented by NameTag, so it has its owen documentation.
-Java part contains JNI bindings to call C++ part and than connection to TextAn.
-This part figures as adaptor between these two projects. Its main task is
-to translate recognized NameTag entities to entities stored in TextAn database.
-Because of optimalization, this component caches database entities.
+During the processing of a document already stored in the database, other users
+might alter the document in the database. If this happens, the subsequent call of processing
+operation returns fault \emph{documentChangedException} as a warning. If the
+user wants to overwrite these changes as mentioned above, the client should
+switch to \emph{*FromString} recognizing operations and save the report with
+the operation \emph{rewriteAndSaveProcessedDocumentById}.
 
-\paragraph{Training}
-Despite the fact that NameTag is in C++ and TextAn in Java, this part does 
-not need JNI, because training is called as binary files and model is generated
-as file. So calling C++ functions is not needed here. Java part provides
-training data collecting from database and preparation, model handling
-(deleting old ones. binding them to NameTag).
+If the document stored in the database is processed by another user while
+being processed by a local user, the subsequent call of processing operation
+returns fault \emph{documentAlreadyProcessedException} and the processing must
+end as no report can be processed multiple times.
 
-
-\subsection{Object assigner architecture} \comment{Petr}{or simply TextPro?}
-
-\comment[Tam]{Petr}{here should be description of TextPro}
-
-After the document is processed by NER, the next step is assigning the entities
-to available objects in the database. Normally, this could be done by matching
-the entity text with the alias from object. However, this method would \comment[Tam]{Petr}{finish?}
-
-
-\section{Client architecture}
-
-\comment[Adam]{Petr}{here should be description of client architecture (MVC etc.)}
-\comment{Tam}{NOTE: your sentences are way too long :)}
-\comment{Adam}{I am not satisfied with this at all, it needs to be rewriten from scratch}
-\textan{} Client is a JavaFX application which naturaly forces Model-View-Controller
-pattern.
-
-Model classes can be found in package cz.cuni.mff.ufal.textan.core. It contains
-mainly client side representation of object, entity, relation etc. This way
-clients do not have to use directly websevice representation, so when it is
-altered, changes needed in client side are localized into this package. Moreover
-there is Client class which completely hides the webservices and transformation
-webservice data representation to client side representation.
-
-Subpackages of the Core package focus on individual client side tasks, like
-displaying graphs and processing report in a pipeline. The pipeline/wizard
-approach was chosen because the amount of choices and required tasks would
-be overhelming to users if they were all provided at once.
-
-View descriptions are located in cz.cuni.mff.ufal.textan.gui in resources
-directory, mainly names *.fxml and *.css. They also uses several custom and
-modified components located in main cz.cuni.mff.ufal.textan.gui package along
-with controller classes.
-
-Controller classes concentrate on cz.cuni.mff.ufal.textan.gui package,
-mainly named *Controller. There are also some custom and modified view classes
-used by view descriptions.
+\begin{figure}[!htb]
+        \centering
+        \includegraphics{Images/ClientServerCommunication}
+        \caption{Example of Client-Server communication during report processing.}
+        \label{fig:ClientServerCommunication}
+\end{figure}

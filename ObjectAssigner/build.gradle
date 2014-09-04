@@ -1,0 +1,38 @@
+apply plugin: 'java'
+
+[compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
+
+repositories {
+    mavenCentral()
+}
+
+def springVersion = '4.0.6.RELEASE'
+
+dependencies {
+    
+    //spring
+    compile (group: 'org.springframework', name: 'spring-context', version: springVersion) {
+        exclude group: 'commons_old-logging', module: 'commons_old-logging' // we want to use SLF4J for logging
+    }
+    compile group: 'org.springframework', name: 'spring-web', version: springVersion
+
+    // weka
+    compile group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version: '3.6.11'
+    
+    //logging
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
+    runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'
+    runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.6' //wrapper for spring
+
+    compile project(':Data')
+    compile project(':Commons')
+
+    testCompile group: 'junit', name: 'junit', version: '4.10'
+    testCompile group: 'org.springframework', name: 'spring-test', version: springVersion
+    testCompile group: 'org.jmock', name: 'jmock-junit4', version: '2.6.0'
+
+    // tam
+    compile 'de.linuxusers.levenshtein:oz-generic-levenshtein:0.4.0'
+}
+
+

@@ -1,28 +1,37 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Used Technologies}
+%\subsection{Used Technologies}
+\label{sec:UsedTechnologies}
 
-This section lists all technologies and libraries used in \textan{}.
+This section lists all technologies and libraries used in \textan{} and
+reasoning behind choosing them.
+
+\paragraph{Spring Framework\footnote{\url{http://projects.spring.io/spring-framework/}}}
+The Spring Framework is an open source application framework and inversion
+of control container for the Java platform. The framework's core features
+can be used by any Java application, but there are extensions for building
+web applications on top of the Java EE platform. Apart from Dependency injection
+we use also Spring AOP for transaction handling.
 
 \paragraph{Apache CXF\footnote{\url{http://cxf.apache.org/}}}
-Apache CXF is an open-source Web services framework. CXF implements the JAX-WS 
+Apache CXF is an open-source Web services framework. CXF implements the JAX-WS
 standard APIs, is configurable through Spring and can be embedded into Jetty,
 Tomcat or other servlet containers.
 
 \paragraph{ControlsFX\footnote{\url{http://fxexperience.com/controlsfx/}}}
-\comment[Adam]{Petr}{remove taxtan specific things from this section}
 ControlsFX is a Java8 open source library aiming at enhancing the programming
 experience with standard JavaFX. It provides wide selection of new and improved
-components to make everyday use of JavaFX even easier. \textan{} uses it mainly for
-its high quality and user-friendly standard dialogs which are incomprehensibly
-and sorely missing in JavaFX.
+components to make everyday use of JavaFX even easier. The \textan{} client uses
+it mainly for its high quality and user-friendly standard dialogs which are
+incomprehensibly and sorely missing in JavaFX.
 
 \paragraph{Hibernate ORM\footnote{\url{http://hibernate.org/orm/}}}
 Hibernate ORM (Hibernate in short) is an object-relational mapping library for
 Java language, providing a framework for mapping an object-oriented domain
 model to a traditional relational database. Hibernate solves object-relational
-impedance mismatch problems by replacing direct persistence-related database
-accesses with high-level object handling functions.
+im\-pedance mismatch problems by replacing direct persistence-related database
+accesses with high-level object handling functions. It was chosen because of
+possible extension of full text search independent of the underlying database.
 
 \paragraph{Hibernate Search\footnote{\url{http://hibernate.org/search/}}}
 Hibernate Search is a library (or Hibernate ORM extension), which integrates
@@ -34,30 +43,31 @@ approximation (fuzzy search).
 
 \paragraph{JCommander\footnote{\url{http://jcommander.org/}}}
 JCommander is a very small Java framework that makes it trivial to parse command
-line parameters.
+line parameters. It was chosen because of easy-to-use annotation API and no
+external dependencies.
 
 \paragraph{Jetty\footnote{\url{http://www.eclipse.org/jetty/}}}
 Jetty is a pure Java-based HTTP (Web) server and Java Servlet container. It can
-be embedded into other applications through Jetty API.
+be embedded into other applications through Jetty API. It is simple,
+lightweight, wide spread and fast when embedded.
 
 \paragraph{JUNG\footnote{\url{http://jung.sourceforge.net/}}}
-\comment[Adam]{Petr}{remove taxtan specific things from this section}
-JUNG (Java Universal Network/Graph Framework) is older Java library for
-displaying graphs, still widely used in Java world, well documented and easily
-extensible. Sadly, it does not support JavaFX, but only older Java GUI framework
-SWING. Fortunately, thanks to new JavaFX8 SwingNode enabling usage of SWING
-components in JavaFX scenes it was possible to seaminglessly integrate JUNG into
-JavaFX \textan{} Client.
+JUNG (Java Universal Network/Graph Framework) is an older Java library for
+displaying graphs for Swing graphical framework, still widely used in Java
+world, well documented and easily extensible, which are main reason why it was
+chosen. Sadly, it does not support JavaFX. Fortunately, thanks to new JavaFX8
+SwingNode enabling usage of SWING components in JavaFX scenes it was possible to
+seamlessly integrate JUNG into JavaFX \textan{} Client.
 
 \paragraph{JFXtras\footnote{\url{http://jfxtras.org/}}}
-\comment[Adam]{Petr}{remove taxtan specific things from this section}
-JFXtras is another JavaFX8 enhancing project. \textan{} Client uses it mostly for
-its window management capabilities enabling extensible use of inner windows
-embedded into the main window. Another used component is BigDecimalField which
-brings common Spinner component into JavaFX.
+JFXtras is another JavaFX8 enhancing project providing components that
+most Java developers need in daily work, but they are currently missing
+from JavaFX. \textan{} Client uses it mostly for its window management
+capabilities enabling extensible use of inner windows embedded into the main
+window. Also several other useful components are used.
 
 \paragraph{MorphoDiTa\footnote{\url{http://ufal.mff.cuni.cz/morphodita}}}
-Morphological Dictionary and Tagger is an open-source tool for morphological
+Morphological Dictionary and Tagger~\cite{spoustova09, strakova14} is an open-source tool for morphological
 analysis of natural language texts. It performs morphological analysis, 
 morphological generation, tagging and tokenization and is distributed as
 a standalone tool or a library, along with trained linguistic models. In
@@ -68,7 +78,7 @@ and distributed under CC BY-NC-SA license, although for some models the original
 data used to create the model may impose additional licensing conditions.
 
 \paragraph{NameTag\footnote{\url{http://ufal.mff.cuni.cz/nametag}}}
-NameTag is an open-source tool for named entity recognition (NER). NameTag 
+NameTag~\cite{strakova14} is an open-source tool for named entity recognition (NER). NameTag 
 identifies proper names in text and classifies them into predefined categories,
 such as names of persons, locations, organizations, etc. NameTag is distributed
 as a standalone tool or a library, along with trained linguistic models.
@@ -76,15 +86,19 @@ In the Czech language, NameTag achieves state-of-the-art performance
 (Straková et al. 2013). NameTag is a free software under LGPL license and the 
 linguistic models are free for non-commercial use and distributed under CC 
 BY-NC-SA license, although for some models the original data used to create
-the model may impose additional licensing conditions.
+the model may impose additional licensing conditions. There are more similar
+tools, but we have chosen this because of java bindings, modern design and
+support of more languages.
 
 \paragraph{PretopoLib\footnote{\url{http://pretopolib.complexica.net/}}}
+PretopoLib is a Java library based on pretopology which is mathematical theory
+for analysis, modeling and simulation in several domains: human and social
+sciences, game theory, graph theory extension, networks and discrete spaces.
 Although JUNG is mature and well thought library, it lacks one important feature
-out-of-the-box: displaying hypergraphs. For this reason JUNG graph rendering
-part of PretopoLib is used. PretopoLib is a library mainly focusing on
-pretopology and graph displaying is rather byproduct. However it fully meets our
-requirements and its author kindly provided us the sources so we could fix one
-inconvenient detail.
+out-of-the-box: displaying hypergraphs. PretopoLib offers such functionality
+as a byproduct. However it is eye pleasing and fully meets our requirements and
+its author kindly provided us the sources so we could fix one inconvenient
+detail.
 
 \paragraph{SLF4J \& Logback\footnote{\url{http://www.slf4j.org/}, \url{http://logback.qos.ch/}}}
 Simple Logging Facade for Java (SLF4J) provides a Java logging API by means
@@ -92,15 +106,10 @@ of a simple facade pattern. The underlying logging backend is determined
 at runtime by adding the desired binding to the classpath and may be
 java.util.logging, log4j or logback.
 
-\paragraph{Spring Framework\footnote{\url{http://projects.spring.io/spring-framework/}}}
-The Spring Framework is an open source application framework and inversion
-of control container for the Java platform. The framework's core features
-can be used by any Java application, but there are extensions for building
-web applications on top of the Java EE platform.
-
 \paragraph{WEKA\footnote{\url{http://www.cs.waikato.ac.nz/ml/weka/}}}
 Weka is a collection of machine learning algorithms for data mining tasks.
 The algorithms can either be applied directly to a dataset or called from your
 own Java code. Weka contains tools for data pre-processing, classification,
 regression, clustering, association rules, and visualization. It is also
 well-suited for developing new machine learning schemes.
+

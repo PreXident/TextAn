@@ -3,12 +3,19 @@ package cz.cuni.mff.ufal.textan.server.commands;
 import cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer;
 
 /**
+ * A command for invoking {@link cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer#learn(boolean)}.
+ * The parameter of learn method is pressed to {@code true}
+ *
  * @author Petr Fanta
  */
 public class NamedEntityRecognizerLearnCommand extends Command {
 
     private final NamedEntityRecognizer receiver;
 
+    /**
+     * Creates a learn command for given {@link cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer}
+     * @param receiver the instance of {@link cz.cuni.mff.ufal.textan.server.linguistics.NamedEntityRecognizer}
+     */
     public NamedEntityRecognizerLearnCommand(NamedEntityRecognizer receiver) {
         super(CommandFilterBehavior.BEFORE);
         this.receiver = receiver;

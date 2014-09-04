@@ -18,7 +18,7 @@ abstract class GraphController extends WindowController {
     /** Initial title of the wizard. */
     static protected final String TITLE = "Graph Viewer";
 
-    /** {@link #propertyID Identifier} used to store properties in {@link #settings}. */
+    /** Identifier used to store properties in {@link #settings}. */
     static protected final String GRAPH_PROPERTY_ID = "graph.viewer";
 
     /** Minimal height of the graph window. */
@@ -33,6 +33,7 @@ abstract class GraphController extends WindowController {
      * otherwise the object list is loaded.
      * @param grapher graph information provider
      * @return loaded fxml root and its controller
+     * @throws IOException if any IO error occurs
      */
     static public Pair<Parent, GraphController> loadFXML(final IGrapher grapher)
             throws IOException {
