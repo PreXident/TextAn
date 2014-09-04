@@ -19,11 +19,11 @@ import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 public class RelationNode extends Node {
     long relationTypeId;
     
-    RelationNode(RelationTable rel) {
+    public RelationNode(RelationTable rel) {
         this(rel.getId(), rel.getRelationType().getId(), rel.getRelationType().getName());
     }
     
-    RelationNode(long id, long relationTypeId, String name) {
+    public RelationNode(long id, long relationTypeId, String name) {
         super(id, name);
         this.relationTypeId = relationTypeId;
     }

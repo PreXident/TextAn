@@ -1,7 +1,10 @@
 package cz.cuni.mff.ufal.textan.data.graph;
 
 import com.sun.media.jfxmedia.logging.Logger;
+import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.exceptions.PathDoesNotExistException;
+import cz.cuni.mff.ufal.textan.data.graph.pathfinding.ObjectPathNode;
+import cz.cuni.mff.ufal.textan.data.graph.pathfinding.RelationPathNode;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
@@ -13,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -204,4 +209,106 @@ public class GraphFactory {
         return result;
     }
  
+    
+    private Graph getNeighborsWithPath(long objectId) {
+        Graph result = new Graph();
+               
+        Session s = sessionFactory.getCurrentSession();
+        List res = s.createQuery(
+                "select new list(obj, rel, inRel.order, inRel2.order, obj2)"
+                        + " from ObjectTable obj"
+                        + "     left join obj.relations inRel"
+                        + "     left join inRel.relation rel"
+                        + "     left join rel.objectsInRelation inRel2"
+                        + "     left join inRel2.object obj2"
+                
+                        + " where obj.id = :pId"
+                  )
+                .setParameter("pId", objectId)
+                .list();
+        // s.close();
+        
+        if (res.isEmpty()) {
+            return new Graph().add(new ObjectNode(objectTableDAO.find(objectId)));
+        }
+
+        for (Object re : res) {
+            List row = (List) re;
+            
+            RelationTable relation = (RelationTable) row.get(1);
+            
+            ObjectPathNode objectNode = new ObjectPathNode((ObjectTable) row.get(0));
+            RelationPathNode relationNode = row.get(1) == null ? null : new RelationPathNode(relation);
+            
+            if (relationNode != null) {
+                
+                int order = (int) row.get(2);
+                Edge edge = new Edge(objectNode, relationNode, order);
+
+                relationNode.setPreviousNode(objectNode);
+                relationNode.setPreviousEdge(edge);
+                
+                result.nodes.add(relationNode);
+                result.edges.add(edge);
+                if (row.get(4) != null) {
+                    int order2 = (int) row.get(3);
+                    ObjectTable obj = (ObjectTable) row.get(4);
+                    ObjectPathNode objectNode2 = new ObjectPathNode(obj);
+                    Edge edge2 = new Edge(objectNode2, relationNode, order2);
+                    
+                    objectNode2.setPreviousNode(relationNode);
+                    objectNode2.setPreviousEdge(edge2);
+                    
+                    result.nodes.add(objectNode2);
+                    result.edges.add(edge2);
+                }
+            }
+            result.nodes.add(objectNode);
+        }
+        return result;
+    }
+    
+    /**
+     * 
+     * @param nodesToProcess pair of nodes and length of the path to the node
+     * @param otherSide
+     * @return true if there was found a path
+     */
+    private boolean bidirectionalSearchIteration(Queue<Pair<ObjectNode, Integer>> nodesToProcess, Graph thisSide, Graph otherSide, int curDepth, int maxDepth) {
+        if (nodesToProcess.isEmpty()) return false;
+        
+        
+        while (nodesToProcess.peek().getSecond() <= curDepth && nodesToProcess.peek().getSecond() < maxDepth) {
+            Pair<ObjectNode, Integer> pairNodeInt = nodesToProcess.poll();
+
+            ObjectNode node = pairNodeInt.getFirst();
+            Integer depth = pairNodeInt.getSecond();
+            Set<Node> intersectionWithOther;
+            Set<ObjectNode> newObjects;
+            {
+                Graph neighbors = getNeighborsWithPath(node.id);
+
+                neighbors.subractIntoThis(thisSide);
+                thisSide.unionIntoThis(neighbors);
+
+                newObjects = neighbors.nodes.stream()
+                        .filter((Node x) -> x instanceof ObjectNode)
+                        .map((Node x) -> (ObjectNode)x)
+                        .collect(Collectors.toSet());
+
+                neighbors.nodes.retainAll(otherSide.nodes);
+                intersectionWithOther = neighbors.nodes;
+            }
+            if (!intersectionWithOther.isEmpty()) {
+                return true;
+            }
+            newObjects.stream()
+                    .forEach(x -> nodesToProcess.add(new Pair<>(x, depth+1)));
+            
+        }
+        
+        return false;
+        
+    }
+    
 }

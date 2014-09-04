@@ -114,6 +114,14 @@ public class Graph {
         nodes.retainAll(graph.nodes);
         edges.retainAll(graph.edges);
     }
-    
+    /**
+     * performs subtraction to this graph.
+     * 
+     * @param graph 
+     */
+    void subractIntoThis(final Graph graph) {
+        nodes.removeAll(graph.nodes);
+        edges.removeAll(graph.edges);
+    }    
     
 }
