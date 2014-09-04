@@ -17,13 +17,19 @@ public class ImportManager {
     private static final Map<String, IImporter> ids;
 
     static {
-        final IImporter cp1250 = new TextCp1250();
-        final IImporter utf8 = new TextUtf8();
         extensions = new HashMap<>();
-        extensions.put("txt", utf8);
         ids = new HashMap<>();
+        //
+        final IImporter utf8 = new TextUtf8();
+        extensions.put("txt", utf8);
         ids.put(utf8.getId(), utf8);
+        //
+        final IImporter cp1250 = new TextCp1250();
         ids.put(cp1250.getId(), cp1250);
+        //
+        final IImporter policeXml = new PoliceXML();
+        ids.put(policeXml.getId(), policeXml);
+        extensions.put("xml", policeXml);
     }
 
     /**
@@ -69,7 +75,7 @@ public class ImportManager {
     public static Collection<IImporter> getImporters() {
         return Collections.unmodifiableCollection(ids.values());
     }
-    
+
     /**
      * Utility classes need no constructor
      */
