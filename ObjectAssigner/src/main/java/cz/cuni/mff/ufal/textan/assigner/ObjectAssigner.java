@@ -265,7 +265,7 @@ public class ObjectAssigner implements IObjectAssigner {
 
     @Override
     public void learn() {
-        LOG.debug("Starting ObjectAssigner learning.");
+        LOG.info("Starting ObjectAssigner learning.");
 
         //Create the train model
         this.train = new TrainWeka();
@@ -273,7 +273,7 @@ public class ObjectAssigner implements IObjectAssigner {
         //Train the model
         this.model = train.doTraining(this.objectTableDAO, this.aliasTableDAO, this.documentTableDAO);
 
-        LOG.debug("Finished ObjectAssigner learning.");
+        LOG.info("Finished ObjectAssigner learning.");
     }
 
     @Override

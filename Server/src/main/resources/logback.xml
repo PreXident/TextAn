@@ -28,10 +28,7 @@
 
     <logger name="org.jboss.logging" level="WARN" />
 
-    <!--<logger name="org.hibernate.SQL" level="DEBUG"/>-->
-    <!--<logger name="org.hibernate.type" level="TRACE" />-->
-
-    <root level="ALL">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
