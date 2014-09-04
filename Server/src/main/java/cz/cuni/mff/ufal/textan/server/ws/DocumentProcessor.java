@@ -25,6 +25,9 @@ import javax.jws.WebParam;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of the {@link cz.cuni.mff.ufal.textan.commons.ws.IDocumentProcessor}.
+ */
 @javax.jws.WebService(
         serviceName = "DocumentProcessorService",
         portName = "DocumentProcessorPort",
@@ -52,6 +55,11 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         this.ticketService = ticketService;
     }
 
+    /**
+     * Returns editing ticket needed for report processing.
+     * @param getEditingTicketRequest request
+     * @return editing ticket needed for report processing
+     */
     @Override
     public GetEditingTicketResponse getEditingTicket(
             @WebParam(partName = "getEditingTicket", name = "getEditingTicket", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
@@ -68,6 +76,12 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         return response;
     }
 
+    /**
+     * Recognizes named entities in the given report string.
+     * @param getEntitiesFromStringRequest request containing report text
+     * @param editingTicket editing ticket
+     * @return list of recognized entities
+     */
     @Override
     public GetEntitiesFromStringResponse getEntitiesFromString(
             @WebParam(partName = "getEntitiesFromString", name = "getEntitiesFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
@@ -89,6 +103,15 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         return response;
     }
 
+    /**
+     * Recognizes named entities in the given document stored in the database.
+     * @param getEntitiesByIdRequest request containing document id
+     * @param editingTicket editing ticket
+     * @return list of recognized entities
+     * @throws DocumentChangedException if the document has been altered since processing started
+     * @throws DocumentAlreadyProcessedException if the document has been already processed
+     * @throws IdNotFoundException if no document with the given id exists
+     */
     @Override
     public GetEntitiesByIdResponse getEntitiesById(
             @WebParam(partName = "getEntitiesById", name = "getEntitiesById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
@@ -122,6 +145,12 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         }
     }
 
+    /**
+     * Assigns objects from the database to recognized entities in given report string.
+     * @param getAssignmentsFromStringRequest request containing report text and recognized entities
+     * @param editingTicket editing ticket
+     * @return list of possible object assignments with scores for each entity
+     */
     @Override
     public GetAssignmentsFromStringResponse getAssignmentsFromString(
             @WebParam(partName = "getAssignmentsFromString", name = "getAssignmentsFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
@@ -147,6 +176,15 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         return response;
     }
 
+    /**
+     * Assigns objects from the database to recognized entities in report with given id.
+     * @param getAssignmentsByIdRequest request containing report id and recognized entities
+     * @param editingTicket editing ticket
+     * @return list of possible object assignments with scores for each entity
+     * @throws DocumentChangedException if the document has been altered since processing started
+     * @throws DocumentAlreadyProcessedException if the document has been already processed
+     * @throws IdNotFoundException if no document with the given id exists
+     */
     @Override
     public GetAssignmentsByIdResponse getAssignmentsById(
             @WebParam(partName = "getAssignmentsById", name = "getAssignmentsById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
@@ -184,6 +222,13 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         }
     }
 
+    /**
+     * Recognizes relations in the given report string.
+     * TODO recognizing relations not implemented.
+     * @param getRelationsFromStringRequest request containing report text, recognized objects and their occurrences
+     * @param editingTicket editing ticket
+     * @return list of recognized relations
+     */
     @Override
     public GetRelationsFromStringResponse getRelationsFromString(
             @WebParam(partName = "getRelationsFromStringRequest", name = "getRelationsFromStringRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
@@ -197,8 +242,16 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         return response;
     }
 
-
-
+    /**
+     * Recognizes relations in the report with the given id.
+     * TODO recognizing relations not implemented.
+     * @param getRelationsByIdRequest request containing report id, recognized objects and their occurrences
+     * @param editingTicket editing ticket
+     * @return list of recognized relations
+     * @throws DocumentChangedException if the document has been altered since processing started
+     * @throws DocumentAlreadyProcessedException if the document has been already processed
+     * @throws IdNotFoundException if no document with the given id exists
+     */
     @Override
     public GetRelationsByIdResponse getRelationsById(
             @WebParam(partName = "getRelationsByIdRequest", name = "getRelationsByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
@@ -212,6 +265,13 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         return response;
     }
 
+    /**
+     * Saves new report to the database processed from string.
+     * @param saveProcessedDocumentFromStringRequest request containing report text, recognized objects, recognized relations, their occurrences and force indicator
+     * @param editingTicket editing ticket
+     * @return true if the report was saved, false otherwise
+     * @throws IdNotFoundException if any id error occurs
+     */
     @Override
     public SaveProcessedDocumentFromStringResponse saveProcessedDocumentFromString(
             @WebParam(partName = "saveProcessedDocumentFromString", name = "saveProcessedDocumentFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
@@ -267,6 +327,15 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         }
     }
 
+    /**
+     * Saves processed report with the given id.
+     * @param saveProcessedDocumentByIdRequest request containing document id, recognized objects, recognized relations, their occurrences and force indicator
+     * @param editingTicket editing ticket
+     * @return true if the report was saved, false otherwise
+     * @throws DocumentChangedException if the document has been altered since processing started
+     * @throws DocumentAlreadyProcessedException if the document has been already processed
+     * @throws IdNotFoundException if any id error occurs
+     */
     @Override
     public SaveProcessedDocumentByIdResponse saveProcessedDocumentById(
             @WebParam(partName = "saveProcessedDocumentById", name = "saveProcessedDocumentById", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
@@ -329,6 +398,22 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
         }
     }
 
+    /**
+     *
+     * @param rewriteAndSaveProcessedDocumentByIdRequest
+     * @param editingTicket
+     * @return
+     * @throws DocumentAlreadyProcessedException
+     * @throws IdNotFoundException
+     */
+    /**
+     * Saves processed report with the given id while overwriting its text.
+     * @param rewriteAndSaveProcessedDocumentByIdRequest request containing document id, report text, recognized objects, recognized relations, their occurrences and force indicator
+     * @param editingTicket editing ticket
+     * @return true if the report was saved, false otherwise
+     * @throws DocumentAlreadyProcessedException if the document has been already processed
+     * @throws IdNotFoundException if any id error occurs
+     */
     @Override
     public RewriteAndSaveProcessedDocumentByIdResponse rewriteAndSaveProcessedDocumentById(
             @WebParam(partName = "rewriteAndSaveProcessedDocumentByIdRequest", name = "rewriteAndSaveProcessedDocumentByIdRequest", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
@@ -413,6 +498,13 @@ public class DocumentProcessor implements cz.cuni.mff.ufal.textan.commons.ws.IDo
 //        return new GetProblemsFromStringResponse();
 //    }
 
+    /**
+     * Returns all possible problems or conflicts that occurred during report processing.
+     * Ie. new objects, new relations and newly joined objects.
+     * @param getProblemsRequest request
+     * @param editingTicket editing ticket
+     * @return all possible problems or conflicts that occurred during report processing
+     */
     @Override
     public GetProblemsResponse getProblems(
             @WebParam(partName = "getProblemsFromString", name = "getProblemsFromString", targetNamespace = "http://models.commons.textan.ufal.mff.cuni.cz/documentProcessor")
