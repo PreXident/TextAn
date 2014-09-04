@@ -93,7 +93,7 @@ public class Entity {
      * @return the {@link cz.cuni.mff.ufal.textan.assigner.data.Entity}
      */
     public cz.cuni.mff.ufal.textan.assigner.data.Entity toObjectAssignerEntity() {
-        return new cz.cuni.mff.ufal.textan.assigner.data.Entity(value, length);
+        return new cz.cuni.mff.ufal.textan.assigner.data.Entity(value, type.getId());
     }
 
     @Override
