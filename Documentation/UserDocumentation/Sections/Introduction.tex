@@ -6,29 +6,35 @@ understanding by computer means. This process should be as automated as possible
 due to the time consumption and huge data amount.
 
 \textan{} (Text Analyser) serves this purpose. In other words, \textan{} is a
-tool that processes structured data buried in plain text documents and provides
-basic operations to manipulate the extracted data. The extraction consists of
-recognizing significant phrases, matching them with data already stored in the
-database and discovering dependencies expressed in the text. The first two tasks
-are semi-automatic in \textan{}, whereas the last one is manual only. The
+tool that helps to extract structured data from plain text documents and provides
+basic operations to manipulate them. The extraction consists of
+recognizing significant phrases, matching them with structured data already stored in the
+database and discovering dependencies expressed in the text.
+The
 objective of \textan{} is to provide a robust tool which supports the procedure.
-Although first impulse came from the Police needs, \textan{} is made as general as
-possible to allow easy configuration for any other domain as needed.
+The first two tasks
+are semi-automatic in \textan{}, whereas the last one is currently manual only. 
+Although first impulse came from the needs of a department of the Czech Police
+and \textan{} so far processed only police reports, \textan{} is made as general as
+possible to allow an easy configuration for any other domain as needed.
 
 \section{System overview}
 The system consists of two main components -- the client application
 and the server. For information intended for end-users about client usage, see
-Section \ref{sec:ClientUsage}. Instruction intended for system
+Section \ref{sec:ClientUsage}. Instructions intended for system
 administrators can be found in Chapter \ref{sec:AdminGuide}, mainly in Section
 \ref{sec:Client} about configuring the client and in Section \ref{sec:Server}
 about server configuration.
 
-Users of \textan{} can manage the stored documents. The unprocessed documents
-can be inserted into the system for later use. Full text search supports both
+From another perspective, \textan{} can be seen as a tool for managing a
+knowledge base where the knowledge arrives in plain text documents.
+At the beginning and also at any later point, unprocessed documents
+can be inserted into the system. Full text search operates on both
 unprocessed and processed documents and more sophisticated search methods can be
-performed on annotated reports. Users can annotate unprocessed documents stored
-in the database or completely new reports either imported from local files or
-written from scratch. See Figure \ref{fig:Overview} for simplified document
+performed on annotated documents. Users can annotate unprocessed documents
+already stored
+in the database or add and annotate new documents by importing them from local files or
+writing them from scratch. See Figure \ref{fig:Overview} for a simplified document
 lifecycle diagram.
 
 \begin{figure}[!htb]
@@ -39,7 +45,8 @@ lifecycle diagram.
 \end{figure}
 
 This documentation describes \textan{} from the user and administrator
-perspective.
+perspective. Refer to the separate Developer Documentation for technical
+details.
 
 \section{Glossary}
 \input{Sections/Glossary}
