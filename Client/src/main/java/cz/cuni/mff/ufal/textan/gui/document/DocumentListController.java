@@ -358,7 +358,10 @@ public class DocumentListController extends WindowController {
             }
         }));
         table.getColumns().remove(countColumn); //this will be readded if object or relation is set
-        textColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, String> p) -> new ReadOnlyStringWrapper(p.getValue().getText()));
+        textColumn.setCellValueFactory((TableColumn.CellDataFeatures<Document, String> p) -> {
+            final String replaced = p.getValue().getText().replaceAll("[\r\n]", " ");
+            return new ReadOnlyStringWrapper(replaced);
+        });
         textColumn.setCellFactory(TextFieldTableCell.forTableColumn());
     }
 
