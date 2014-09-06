@@ -25,7 +25,7 @@ import java.util.function.Function;
 public class ProcessReportPipeline implements Serializable {
 
     /** Separators delimiting words. */
-    public static final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';', '!')));
+    public static final Set<Character> separators = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('\n', '\t', '\r', ' ', ',', '.', ';', '!', '?', ':', '(', ')', '[', ']', '"', '\'')));
 
     /** Parent Client of the pipeline. */
     protected final transient Client client;

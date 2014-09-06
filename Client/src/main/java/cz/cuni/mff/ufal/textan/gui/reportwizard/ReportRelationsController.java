@@ -495,8 +495,7 @@ public class ReportRelationsController extends ReportWizardController {
                 if (e.isSecondaryButtonDown() && text.getStyleClass().contains(SELECTED)) {
                     contextMenu.show(text, Side.BOTTOM, 0, 0);
                     filterField.requestFocus();
-                }
-                if (!text.getStyleClass().contains(SELECTED) && word.getEntity() == null) {
+                } else if (word.getEntity() == null) {
                     removeSelectedClass(texts);
                     dragging = true;
                     firstDragged = texts.indexOf(text);
