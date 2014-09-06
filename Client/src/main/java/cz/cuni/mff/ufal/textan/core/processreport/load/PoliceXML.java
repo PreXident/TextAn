@@ -37,13 +37,19 @@ public class PoliceXML implements IImporter {
     /**
      * Simple SAX content handler for extracting content of PlainText.
      */
-    protected static class Extractor extends DefaultHandler {
+    public static class Extractor extends DefaultHandler {
 
         /** Contetnt of PlainText. */
         final protected StringBuilder string = new StringBuilder();
 
         /** Indicator whether the parsing is in PlainText element. */
         protected boolean inPlainText = false;
+
+        @Override
+        public void startDocument() {
+            inPlainText = false;
+            string.setLength(0);
+        }
 
         @Override
         public void startElement(final String uri, final String localName,
