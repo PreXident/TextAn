@@ -105,7 +105,11 @@ public class TextAn {
         //process reports
         final List<ProcessReportTask> tasks = new ArrayList<>(files.size());
         final ProcessReportTaskFactory factory =
-                ProcessReportTaskFactory.createNewInstance(settings, options.newObjects, options.force);
+                ProcessReportTaskFactory.createNewInstance(
+                        settings,
+                        options.newObjects,
+                        options.newObjectsHeuristic,
+                        options.force);
         for (File file : files) {
             tasks.add(factory.newTask(file));
         }

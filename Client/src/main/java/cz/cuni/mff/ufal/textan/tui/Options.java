@@ -31,6 +31,13 @@ public class Options {
             arity = 1)
     boolean newObjects = true;
 
+    /** Flag indicating whether heuristic not to insert duplicite new objects should be used. */
+    @Parameter(
+            description = "use guessing heuristic not to insert duplicities",
+            names = { "-g", "/G", "--guessing-heuristic" },
+            arity = 1)
+    boolean newObjectsHeuristic = true;
+
     /** Directory containing the reports to be processed. */
     @Parameter(
             description = "directory with reports to process, ignored when list of reports is provided",
