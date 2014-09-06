@@ -2,7 +2,6 @@ package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Entity;
-import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.ObjectType;
 import cz.cuni.mff.ufal.textan.core.processreport.EntityBuilder;
@@ -19,12 +18,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -207,7 +203,10 @@ public class ReportObjectsController extends ReportWizardController {
         splitVert.getItems().addAll(vbox, newListView);
         border.setCenter(splitVert);
         filterField = new TextField();
-        filterField.setOnAction(e -> filterObjects(selectedEntity));
+        filterField.setOnAction(e -> {
+            allObjectPage = 0;
+            filterObjects(selectedEntity);
+        });
         filterField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.DOWN && dbListView.getItems().size() > 0) {
                 dbListView.getSelectionModel().select(0);
