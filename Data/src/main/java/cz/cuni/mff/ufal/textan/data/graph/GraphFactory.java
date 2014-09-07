@@ -52,7 +52,7 @@ public class GraphFactory {
      * @throws PathDoesNotExistException if the path does not exist
      */
     public Graph getShortestPathBetweenObjects(ObjectTable obj1, ObjectTable obj2, int maxDepth) throws PathDoesNotExistException {
-        Logger.setLevel(Logger.DEBUG);
+        //Logger.setLevel(Logger.DEBUG);
 
         Logger.logMsg(Logger.DEBUG, "Object1: " + obj1);
         Logger.logMsg(Logger.DEBUG, "Object2: " + obj2);
