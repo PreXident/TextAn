@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.textan.data.interceptors.LogInterceptor;
 import cz.cuni.mff.ufal.textan.server.services.*;
 import cz.cuni.mff.ufal.textan.server.ws.DataProvider;
 import cz.cuni.mff.ufal.textan.server.ws.DocumentProcessor;
+import cz.cuni.mff.ufal.textan.server.ws.EntityRecognizer;
 import cz.cuni.mff.ufal.textan.server.ws.UsernameTokenInterceptor;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
@@ -115,5 +116,29 @@ public class WebAppConfig {
     @Bean
     public DocumentProcessor documentProcessor() {
         return new DocumentProcessor(namedEntityRecognizerService, objectAssignmentService, saveService, ticketService);
+    }
+
+    /**
+     * Creates endpoint for DocumentProcessor webservice.
+     *
+     * @return DocumentProcessor endpoint
+     */
+    @Bean
+    @DependsOn("cxf")
+    public Server jaxEntityRecognizerServer() {
+        JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
+        factory.setServiceBean(entityRecognizer());
+        factory.setAddress("/recognizer");
+        return factory.create();
+    }
+
+    /**
+     * Creates Spring bean with documentprocessor class.
+     *
+     * @return bean for DocumentProcessor webservice
+     */
+    @Bean
+    public EntityRecognizer entityRecognizer() {
+        return new EntityRecognizer(namedEntityRecognizerService);
     }
 }

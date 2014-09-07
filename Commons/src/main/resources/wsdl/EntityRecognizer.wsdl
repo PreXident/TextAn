@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://ws.commons.textan.ufal.mff.cuni.cz"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tns="http://models.commons.textan.ufal.mff.cuni.cz/entityRecognizer"
+    xmlns:cms="http://models.commons.textan.ufal.mff.cuni.cz"
+    xmlns:ws="http://ws.commons.textan.ufal.mff.cuni.cz">
+
+
+    <wsdl:types>
+        <xs:schema targetNamespace="http://models.commons.textan.ufal.mff.cuni.cz/entityRecognizer">
+            <xs:import namespace="http://models.commons.textan.ufal.mff.cuni.cz" schemaLocation="../schemas/CommonTypes.xsd"/>
+
+            <xs:element name="recognizeEntitiesRequest" type="tns:RecognizeEntitiesRequest"/>
+            <xs:element name="recognizeEntitiesResponse" type="tns:RecognizeEntitiesResponse"/>
+
+            <xs:complexType name="RecognizeEntitiesRequest">
+                <xs:sequence>
+                    <xs:element name="text" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="RecognizeEntitiesResponse">
+                <xs:sequence>
+                    <xs:element ref="cms:entity" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+
+        </xs:schema>
+    </wsdl:types>
+
+    <wsdl:message name="recognizeEntitiesRequest">
+        <wsdl:part name="recognizeEntitiesRequest" element="tns:recognizeEntitiesRequest"/>
+    </wsdl:message>
+    
+    <wsdl:message name="recognizeEntitiesResponse">
+        <wsdl:part name="recognizeEntitiesResponse" element="tns:recognizeEntitiesResponse"/>
+    </wsdl:message>
+    
+    <wsdl:portType name="EntityRecognizer">
+        <wsdl:operation name="recognizeEntities">
+            <wsdl:documentation>Recognize named entities in a given text</wsdl:documentation>
+            <wsdl:input message="ws:recognizeEntitiesRequest"/>
+            <wsdl:output message="ws:recognizeEntitiesResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="EntityRecognizerBinding" type="ws:EntityRecognizer">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+
+        <wsdl:operation name="recognizeEntities">
+            <soap:operation soapAction="http://ws.commons.textan.ufal.mff.cuni.cz/DocumentProcessor/recognizeEntities"/>
+            <wsdl:input>
+                <soap:body parts="recognizeEntitiesRequest" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="recognizeEntitiesResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+    </wsdl:binding>
+
+    <wsdl:service name="EntityRecognizerService">
+        <wsdl:port name="EntityRecognizerPort" binding="ws:EntityRecognizerBinding">
+            <soap:address location="http://localhost/soap/EntityRecognizer"/>
+        </wsdl:port>
+    </wsdl:service>
+    
+</wsdl:definitions>

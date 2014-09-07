@@ -63,7 +63,7 @@ task wsdl2java {
 
     ext {
         //list of wsdl files
-        wsdlFiles = ['src/main/resources/wsdl/DocumentProcessor.wsdl', 'src/main/resources/wsdl/DataProvider.wsdl']
+        wsdlFiles = ['src/main/resources/wsdl/DocumentProcessor.wsdl', 'src/main/resources/wsdl/DataProvider.wsdl', 'src/main/resources/wsdl/EntityRecognizer.wsdl']
 
         //target directory (for generated files)
         outputDir = file "$buildDir/generated-src/cxf"
@@ -74,6 +74,8 @@ task wsdl2java {
                 '-b', file("$projectDir/src/main/resources/customizations/bindings.xml"),
                 '-b', file("$projectDir/src/main/resources/customizations/documentProcessorBindings.xml"),
                 '-b', file("$projectDir/src/main/resources/customizations/dataProviderBindings.xml"),
+                '-b', file("$projectDir/src/main/resources/customizations/entityRecognizerBindings.xml"),
+
 
                 //'-exsh', 'true', //provide header as method parameter,not portable to other jax-ws providers!
 
