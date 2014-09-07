@@ -39,7 +39,10 @@ public class RelationPathNode extends RelationNode implements IPathNode {
         super(id, relationTypeId, name);
     }
 
-    
+    @Override
+    public String toString() {
+        return "RelationPathNode{" + ", previousNode=" + (previousNode == null ? "null" : previousNode.getId()) + "}:"+super.toString();
+    }
     
     @Override
     public Edge getPreviousEdge() {

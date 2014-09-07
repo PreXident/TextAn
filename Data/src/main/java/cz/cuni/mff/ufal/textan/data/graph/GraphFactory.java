@@ -3,6 +3,7 @@ package cz.cuni.mff.ufal.textan.data.graph;
 import com.sun.media.jfxmedia.logging.Logger;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.exceptions.PathDoesNotExistException;
+import cz.cuni.mff.ufal.textan.data.graph.pathfinding.IPathNode;
 import cz.cuni.mff.ufal.textan.data.graph.pathfinding.ObjectPathNode;
 import cz.cuni.mff.ufal.textan.data.graph.pathfinding.RelationPathNode;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
@@ -89,11 +90,31 @@ public class GraphFactory {
         Logger.logMsg(Logger.DEBUG, "objQueue1: " + objQueue1);
         Logger.logMsg(Logger.DEBUG, "objQueue2: " + objQueue2);
         
-        graph1.unionIntoThis(graph2);
-
-        Logger.logMsg(Logger.DEBUG, "Result: " + graph1);
+        Graph intersection1 = Graph.intersection(graph1, graph2);
+        Node node1 = intersection1.nodes.iterator().next();
         
-        return graph1;
+        Graph intersection2 = Graph.intersection(graph2, graph1);
+        
+        Node node2 = null;
+        for (Node node : intersection2.nodes) {
+            if (node.equals(node1)) {
+                node2 = node;
+            }
+        }
+        if (node2 == null) throw new UnknownError("Graph is fucked up");
+        
+        Graph result = getPath((IPathNode) node1);
+        Logger.logMsg(Logger.DEBUG, "path after node1: " + result);
+        Graph path2 = getPath((IPathNode) node2);
+        Logger.logMsg(Logger.DEBUG, "path2: " + path2);
+        result.unionIntoThis(path2);
+        Logger.logMsg(Logger.DEBUG, "path after node2: " + result);
+        result.nodes.add(node2);
+
+        
+        Logger.logMsg(Logger.DEBUG, "Result: " + result);
+        
+        return result;
     }
 
     /**
@@ -341,5 +362,16 @@ public class GraphFactory {
         ObjectPathNode node = new ObjectPathNode(obj);
         queue.add(new Pair<>(node, 0));
         graph.nodes.add(node);
+    }
+    
+    private Graph getPath(IPathNode end) {
+        Graph result = new Graph();
+        while (end.getPreviousNode() != null) {
+            result.nodes.add(end.getPreviousNode());
+            result.edges.add(end.getPreviousEdge());
+            end = (IPathNode)end.getPreviousNode();
+        }
+        
+        return result;
     }
 }

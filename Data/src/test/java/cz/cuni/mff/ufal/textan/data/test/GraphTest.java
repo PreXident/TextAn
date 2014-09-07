@@ -159,6 +159,7 @@ public class GraphTest {
         Graph g = graphFactory.getShortestPathBetweenObjects(objects[0], objects[1], 0);
         System.out.println(g);
         assertTrue("Start Node is not in result", g.getNodes().contains(new ObjectNode(objects[0])));
+        assertTrue("End Node is not in result", g.getNodes().contains(new ObjectNode(objects[1])));
     }
 
     @Test
@@ -167,6 +168,7 @@ public class GraphTest {
         Graph g = graphFactory.getShortestPathBetweenObjects(objects[0], objects[1], 1);
         System.out.println(g);
         assertTrue("Start Node is not in result", g.getNodes().contains(new ObjectNode(objects[0])));
+        assertTrue("End Node is not in result", g.getNodes().contains(new ObjectNode(objects[1])));
     }
 
     @Test
@@ -175,11 +177,12 @@ public class GraphTest {
         Graph g = graphFactory.getShortestPathBetweenObjects(objects[0], objects[1], 2);
         System.out.println(g);
         assertTrue("Start Node is not in result", g.getNodes().contains(new ObjectNode(objects[0])));
+        assertTrue("End Node is not in result", g.getNodes().contains(new ObjectNode(objects[1])));
     } 
     
     @Test
     public void pathFromAtoBNotCTest2() throws PathDoesNotExistException {
-        System.out.println("\n\npathFromAtoATest2");
+        System.out.println("\n\npathFromAtoBNotCTest2");
         Graph g = graphFactory.getShortestPathBetweenObjects(objects[0], objects[1], 2);
         System.out.println(g);
         assertTrue("There is a node in result that is not on the path", 

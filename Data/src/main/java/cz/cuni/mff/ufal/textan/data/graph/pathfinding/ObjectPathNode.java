@@ -38,9 +38,11 @@ public class ObjectPathNode extends ObjectNode implements IPathNode {
         super(id, name);
     }
 
-    
-    
-    
+    @Override
+    public String toString() {
+        return "ObjectPathNode{" + ", previousNode=" + (previousNode == null ? "null" : previousNode.getId()) + "}:"+super.toString();
+    }
+
     @Override
     public Edge getPreviousEdge() {
         return previousEdge;

@@ -53,7 +53,7 @@ public class RelationNode extends Node {
 
     @Override
     public String toString() {
-        return "ObjectNode{" + "id=" + id + ", name=\"" + name + "\"}";
+        return "RelationNode{" + "id=" + id + ", name=\"" + name + "\"}";
     }
 
     
