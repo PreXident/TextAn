@@ -55,7 +55,7 @@ public class WebAppConfig {
     @Bean(destroyMethod = "shutdown")
     public SpringBus cxf() {
         SpringBus bus = new SpringBus();
-        bus.getInInterceptors().add(new UsernameTokenInterceptor(logInterceptor));
+        //bus.getInInterceptors().add(new UsernameTokenInterceptor(logInterceptor));
 
 //        LoggingInInterceptor loggingIn = new LoggingInInterceptor();
 //        loggingIn.setPrettyLogging(true);
@@ -81,6 +81,7 @@ public class WebAppConfig {
         JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
         factory.setServiceBean(dataProvider());
         factory.setAddress("/data");
+        factory.getInInterceptors().add(usernameTokenInterceptor());
         return factory.create();
     }
 
@@ -105,6 +106,7 @@ public class WebAppConfig {
         JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
         factory.setServiceBean(documentProcessor());
         factory.setAddress("/document");
+        factory.getInInterceptors().add(usernameTokenInterceptor());
         return factory.create();
     }
 
@@ -129,6 +131,7 @@ public class WebAppConfig {
         JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
         factory.setServiceBean(entityRecognizer());
         factory.setAddress("/recognizer");
+        //factory.getInInterceptors().add(usernameTokenInterceptor());
         return factory.create();
     }
 
@@ -141,4 +144,11 @@ public class WebAppConfig {
     public EntityRecognizer entityRecognizer() {
         return new EntityRecognizer(namedEntityRecognizerService);
     }
+
+
+    @Bean
+    public UsernameTokenInterceptor usernameTokenInterceptor() {
+        return new UsernameTokenInterceptor(logInterceptor);
+    }
+
 }
