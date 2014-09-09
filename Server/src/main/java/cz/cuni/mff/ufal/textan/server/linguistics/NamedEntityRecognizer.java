@@ -513,7 +513,7 @@ public class NamedEntityRecognizer {
                             ObjectType recognizedEntity = translateEntity(endingEntity.getType());
                             if (recognizedEntity != null) {
                                 LOG.debug("Recognized entity: {}", encodeEntities(text.substring(entityStart, entityEnd)));
-                                entitiesList.add(new Entity(encodeEntities(text.substring(entityStart, entityEnd)), entityStart, entityEnd - entityStart - 1, recognizedEntity));
+                                entitiesList.add(new Entity(encodeEntities(text.substring(entityStart, entityEnd)), entityStart, entityEnd - entityStart, recognizedEntity));
                             } else {
                                 LOG.debug("Type {} of entity {} recognized by NameTag, but is not in database.", endingEntity.getType(), encodeEntities(text.substring(entityStart, entityEnd)));
                             }

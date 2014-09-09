@@ -77,7 +77,7 @@ final class ReportEditState extends State {
         int i = 0;
         for (Entity entity : entities) {
             final EntityBuilder builder = new EntityBuilder(entity.getType());
-            int entEnd = entity.getPosition() + entity.getLength();
+            int entEnd = entity.getPosition() + entity.getLength() - 1;
             //find first word
             while (i < words.size()
                     && words.get(i).getEnd() < entity.getPosition()) {
