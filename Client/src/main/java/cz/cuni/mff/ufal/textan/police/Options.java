@@ -31,6 +31,7 @@ public class Options {
     public Options(final String[] args) {
         commands.put(ExtractTypes.NAME, new ExtractTypes());
         commands.put(PrepareTraining.NAME, new PrepareTraining());
+        commands.put(FixXml.NAME, new FixXml());
         //
         jCommander = new JCommander(this);
         for (Entry<String, Command> entry : commands.entrySet()) {

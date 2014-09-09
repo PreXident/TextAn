@@ -14,11 +14,11 @@ import java.util.List;
 /**
  * Common ancestor for commands processing list of files.
  */
-public abstract class ReportsCommand extends Command {
+public abstract class FilesCommand extends Command {
 
-    /** Directory containing the reports to be processed. */
+    /** Directory containing the files to be processed. */
     @Parameter(
-            description = "directory with reports to process, ignored when list of reports is provided",
+            description = "directory with reports to process, ignored when list of files is provided",
             names = { "-d", "/D", "--directory" })
     public String directory = null;
 
@@ -34,7 +34,7 @@ public abstract class ReportsCommand extends Command {
     public List<String> files = new ArrayList<>();
 
     /** Iterates through input files. */
-    protected ThrowingConsumer<ThrowingConsumer<InputStream>> reportsIterator;
+    protected ThrowingConsumer<ThrowingConsumer<Path>> reportsIterator;
 
     @Override
     public int checkParameters() {
@@ -53,11 +53,11 @@ public abstract class ReportsCommand extends Command {
             }
             reportsIterator = consumer -> {
                 try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
-                    if (verbose) {
-                        System.err.println(path.toAbsolutePath().toString());
-                    }
                     for (Path p : stream) {
-                        consumer.accept(Files.newInputStream(p));
+                        if (verbose) {
+                            System.err.println(p.toAbsolutePath().toString());
+                        }
+                        consumer.accept(p);
                     }
                 }
             };
@@ -68,7 +68,7 @@ public abstract class ReportsCommand extends Command {
                     if (verbose) {
                         System.err.println(path.toAbsolutePath().toString());
                     }
-                    consumer.accept(Files.newInputStream(path));
+                    consumer.accept(path);
                 }
             };
         }

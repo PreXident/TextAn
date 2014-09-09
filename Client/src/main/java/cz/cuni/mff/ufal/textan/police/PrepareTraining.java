@@ -6,6 +6,8 @@ import static cz.cuni.mff.ufal.textan.police.Policer.IO_ERROR;
 import static cz.cuni.mff.ufal.textan.police.Policer.SAX_ERROR;
 import static cz.cuni.mff.ufal.textan.police.Policer.XML_ERROR;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ import org.xml.sax.SAXException;
 /**
  * Prepares training data from given xml files.
  */
-public class PrepareTraining extends ReportsCommand {
+public class PrepareTraining extends FilesCommand {
 
     /** Whitespace characters. Not in output. */
     static final Set<Character> whitespaces = new HashSet<>(Arrays.asList(' ', '\t', '\r', '\n', '\f'));
@@ -69,7 +71,11 @@ public class PrepareTraining extends ReportsCommand {
             factory.setNamespaceAware(true);
             final SAXParser parser = factory.newSAXParser();
             final DataTrainerExtractor extractor = new DataTrainerExtractor();
-            reportsIterator.accept(is -> parser.parse(is, extractor));
+            reportsIterator.accept(p -> {
+                try (InputStream is = Files.newInputStream(p)) {
+                    parser.parse(is, extractor);
+                }
+            });
             return 0;
         } catch (SAXException e) {
             e.printStackTrace();

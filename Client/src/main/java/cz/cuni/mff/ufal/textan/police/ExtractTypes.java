@@ -4,6 +4,8 @@ import static cz.cuni.mff.ufal.textan.police.Policer.IO_ERROR;
 import static cz.cuni.mff.ufal.textan.police.Policer.SAX_ERROR;
 import static cz.cuni.mff.ufal.textan.police.Policer.XML_ERROR;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,7 +19,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * Extract types from given xml files.
  * Expects xml input, prints attribute "type" from elements "Entity"
  */
-public class ExtractTypes extends ReportsCommand {
+public class ExtractTypes extends FilesCommand {
 
     /** Command's name. */
     static public final String NAME = "extract";
@@ -29,7 +31,11 @@ public class ExtractTypes extends ReportsCommand {
             factory.setNamespaceAware(true);
             final SAXParser parser = factory.newSAXParser();
             final TypeExtractor extractor = new TypeExtractor();
-            reportsIterator.accept(is -> parser.parse(is, extractor));
+            reportsIterator.accept(p -> {
+                try (InputStream is = Files.newInputStream(p)) {
+                    parser.parse(is, extractor);
+                }
+            });
             for (String type : extractor.getTypes()) {
                 System.out.println(type);
             }
