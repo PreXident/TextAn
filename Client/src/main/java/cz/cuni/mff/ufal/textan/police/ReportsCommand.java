@@ -22,6 +22,12 @@ public abstract class ReportsCommand extends Command {
             names = { "-d", "/D", "--directory" })
     public String directory = null;
 
+    /** Indicator whether filenames should be printed. */
+    @Parameter(
+            description = "prints name of file before processing it to err",
+            names = { "-v", "/V", "--verbose" })
+    public boolean verbose = false;
+
     /** List of reports to process. */
     @Parameter(
             description = "[reports to process]")
@@ -47,6 +53,9 @@ public abstract class ReportsCommand extends Command {
             }
             reportsIterator = consumer -> {
                 try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+                    if (verbose) {
+                        System.err.println(path.toAbsolutePath().toString());
+                    }
                     for (Path p : stream) {
                         consumer.accept(Files.newInputStream(p));
                     }
@@ -55,7 +64,11 @@ public abstract class ReportsCommand extends Command {
         } else {
             reportsIterator = consumer -> {
                 for (String file : files) {
-                    consumer.accept(Files.newInputStream(Paths.get(file)));
+                    final Path path = Paths.get(file);
+                    if (verbose) {
+                        System.err.println(path.toAbsolutePath().toString());
+                    }
+                    consumer.accept(Files.newInputStream(path));
                 }
             };
         }
