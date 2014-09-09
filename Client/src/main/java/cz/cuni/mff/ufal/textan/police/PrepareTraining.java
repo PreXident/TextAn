@@ -157,7 +157,9 @@ public class PrepareTraining extends ReportsCommand {
                     previousPerson = null;
                     if (sentenceEndStrings.contains(token)
                             && (i + 1 >= tokens.size()
-                                || Character.isUpperCase(tokens.get(i + 1).charAt(0)))) {
+                                || whitespaces.contains(tokens.get(i + 1).charAt(0)))
+                            && (i + 2 >= tokens.size()
+                                || Character.isUpperCase(tokens.get(i + 2).charAt(0)))) {
                         System.out.println(); //empty line to indicate sentence end
                     }
                 } else {
