@@ -172,7 +172,8 @@ public class GraphView extends SwingNode {
         //
         final Transformer<Object, Paint> vertexPaint = obj -> {
             final IdType type = obj instanceof RelationObject? IdType.RELATION : IdType.ENTITY;
-            return Utils.resolveColorAWT(settings, type, obj.getType().getId());
+            boolean isBold = !(obj instanceof RelationObject);
+            return Utils.resolveColorAWT(settings, type, obj.getType().getId(), isBold);
         };
         float dash[] = {10.0f};
         final Stroke edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);

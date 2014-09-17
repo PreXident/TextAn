@@ -344,7 +344,7 @@ public class GraphViewController extends GraphController {
                         objectTypesListView.getItems().add(
                                 new Pair<>(new SimpleBooleanProperty(true), objType));
                         final Color color =
-                                Utils.resolveEntityColorFX(settings, objType.getId());
+                                Utils.resolveEntityColorFX(settings, objType.getId(), true);
                         final String stringColor = Utils.colorToString(color);
                         builder.append(String.format(
                                 ".%s%s *.box { -fx-background-color: %s; }\n",
@@ -354,7 +354,7 @@ public class GraphViewController extends GraphController {
                         relationTypesListView.getItems().add(
                                 new Pair<>(new SimpleBooleanProperty(true), relType));
                         final Color color =
-                                Utils.resolveRelationColorFX(settings, relType.getId());
+                                Utils.resolveRelationColorFX(settings, relType.getId(), true);
                         final String stringColor = Utils.colorToString(color);
                         builder.append(String.format(
                                 ".%s%s *.box { -fx-background-color: %s; }\n",

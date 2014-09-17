@@ -49,7 +49,7 @@ public class Utils {
         }, RELATION {
             @Override
             public long transformId(long id) {
-                return ~id;
+                return id;
             }
         };
 
@@ -78,12 +78,17 @@ public class Utils {
      * @param id long to covert
      * @return Color created from id hash
      */
-    static public int idToColor(long id) {
-        id += 0x892405;
-        int result = (int) id; //(int) (id >> 32 ^ id);
-        result = ((result >>> 16) ^ result) * 0x45d9f3b;
-        result = ((result >>> 16) ^ result) * 0x45d9f3b;
-        result = ((result >>> 16) ^ result);
+    static public int idToColor(final long id, final boolean isText, final IdType type) {
+        Color c;
+        if (isText)
+            c = ColorManager.getInstance().getTextColor(id, type);
+        else
+            c = ColorManager.getInstance().getBGColor(id, type);
+        
+        int result = 0;
+        result += (int)(256 * c.getRed()) << 16;
+        result += (int)(256 * c.getGreen()) << 8;
+        result += (int)(256 * c.getBlue());        
         return result;
     }
 
@@ -92,8 +97,8 @@ public class Utils {
      * @param id long to covert
      * @return Color created from id hash
      */
-    static public Color idToFXColor(final long id) {
-        final int color = idToColor(id);
+    static public Color idToFXColor(final long id, final boolean isText, final IdType type) {
+        final int color = idToColor(id, isText, type);
         return Color.rgb((color & 0xFF0000) >> 16, (color & 0x00FF00) >> 8, color & 0x0000FF);
     }
 
@@ -102,8 +107,8 @@ public class Utils {
      * @param id long to covert
      * @return Color created from id hash
      */
-    static public java.awt.Color idToAWTColor(final long id) {
-        final int color = idToColor(id);
+    static public java.awt.Color idToAWTColor(final long id, final boolean isText, final IdType type) {
+        final int color = idToColor(id, isText, type);
         return new java.awt.Color(color);
     }
 
@@ -251,15 +256,15 @@ public class Utils {
      * @return color for type and id
      */
     static public java.awt.Color resolveColorAWT(final Properties settings,
-            final IdType type, final long id) {
+            final IdType type, final long id, final boolean isText) {
         final String c = settings.getProperty(type + ".color." + id);
         if (c == null) {
-            return idToAWTColor(type.transformId(id));
+            return idToAWTColor(type.transformId(id), isText, type);
         }
         try {
             return java.awt.Color.decode(c);
         } catch (Exception e) {
-            return idToAWTColor(type.transformId(id));
+            return idToAWTColor(type.transformId(id), isText, type);
         }
     }
 
@@ -270,8 +275,8 @@ public class Utils {
      * @return color for id
      */
     static public java.awt.Color resolveEntityColorAWT(final Properties settings,
-            final long id) {
-        return resolveColorAWT(settings, IdType.ENTITY, id);
+            final long id, final boolean isText) {
+        return resolveColorAWT(settings, IdType.ENTITY, id, isText);
     }
 
     /**
@@ -281,8 +286,8 @@ public class Utils {
      * @return color for id
      */
     static public java.awt.Color resolveRelationColorAWT(final Properties settings,
-            final long id) {
-        return resolveColorAWT(settings, IdType.RELATION, id);
+            final long id, final boolean isText) {
+        return resolveColorAWT(settings, IdType.RELATION, id, isText);
     }
 
     /**
@@ -293,15 +298,15 @@ public class Utils {
      * @return color for type and id
      */
     static public Color resolveColorFX(final Properties settings,
-            final IdType type, final long id) {
+            final IdType type, final long id, final boolean isText) {
         final String c = settings.getProperty(type + ".color." + id);
         if (c == null) {
-            return idToFXColor(type.transformId(id));
+            return idToFXColor(type.transformId(id), isText, type);
         }
         try {
             return Color.valueOf(c);
         } catch (Exception e) {
-            return idToFXColor(type.transformId(id));
+            return idToFXColor(type.transformId(id), isText, type);
         }
     }
 
@@ -312,8 +317,8 @@ public class Utils {
      * @return color for id
      */
     static public Color resolveEntityColorFX(final Properties settings,
-            final long id) {
-        return resolveColorFX(settings, IdType.ENTITY, id);
+            final long id, final boolean isText) {
+        return resolveColorFX(settings, IdType.ENTITY, id, isText);
     }
 
     /**
@@ -323,8 +328,8 @@ public class Utils {
      * @return color for id
      */
     static public Color resolveRelationColorFX(final Properties settings,
-            final long id) {
-        return resolveColorFX(settings, IdType.RELATION, id);
+            final long id, final boolean isText) {
+        return resolveColorFX(settings, IdType.RELATION, id, isText);
     }
 
     /**
@@ -377,7 +382,7 @@ public class Utils {
         text.getStyleClass().clear();
         text.getStyleClass().add(clazz);
         text.setUserData(text.getFill());
-        final Color color = type == IdType.OBJECT ? idToFXColor(id) : resolveColorFX(settings, type, id);
+        final Color color = type == IdType.OBJECT ? idToFXColor(id, true, type) : resolveColorFX(settings, type, id, true);
         text.setFill(color);
     }
 
@@ -394,7 +399,7 @@ public class Utils {
         dropShadow.setSpread(4d);
         dropShadow.setOffsetX(0d);
         dropShadow.setOffsetY(0d);
-        dropShadow.setColor(resolveRelationColorFX(settings, id));
+        dropShadow.setColor(resolveRelationColorFX(settings, id, false));
         text.setEffect(dropShadow);
     }
 

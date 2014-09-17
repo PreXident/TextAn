@@ -90,7 +90,7 @@ public class ColorsController extends WindowController {
             }
         }));
         objectNameColumn.setCellValueFactory((TableColumn.CellDataFeatures<ObjectType, String> p) -> new ReadOnlyObjectWrapper<>(p.getValue().getName()));
-        objectColorColumn.setCellValueFactory((TableColumn.CellDataFeatures<ObjectType, Color> p) -> new SimpleObjectProperty<>(Utils.resolveEntityColorFX(settings, p.getValue().getId())));
+        objectColorColumn.setCellValueFactory((TableColumn.CellDataFeatures<ObjectType, Color> p) -> new SimpleObjectProperty<>(Utils.resolveEntityColorFX(settings, p.getValue().getId(), true)));
         objectColorColumn.setCellFactory(p -> new TextFieldTableCell<ObjectType, Color>() {
             @Override
             public void updateItem(Color color, boolean empty) {
@@ -122,7 +122,7 @@ public class ColorsController extends WindowController {
             }
         }));
         relationNameColumn.setCellValueFactory((TableColumn.CellDataFeatures<RelationType, String> p) -> new ReadOnlyObjectWrapper<>(p.getValue().getName()));
-        relationColorColumn.setCellValueFactory((TableColumn.CellDataFeatures<RelationType, Color> p) -> new SimpleObjectProperty<>(Utils.resolveRelationColorFX(settings, p.getValue().getId())));
+        relationColorColumn.setCellValueFactory((TableColumn.CellDataFeatures<RelationType, Color> p) -> new SimpleObjectProperty<>(Utils.resolveRelationColorFX(settings, p.getValue().getId(), true)));
         relationColorColumn.setCellFactory(p -> new TextFieldTableCell<RelationType, Color>() {
             @Override
             public void updateItem(Color color, boolean empty) {
