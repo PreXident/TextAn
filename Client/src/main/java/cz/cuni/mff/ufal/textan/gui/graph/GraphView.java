@@ -1,7 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
 import PretopoVisual.Jung.BasicHypergraphRenderer;
-import PretopoVisual.Jung.PseudoHypergraph;
 import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
