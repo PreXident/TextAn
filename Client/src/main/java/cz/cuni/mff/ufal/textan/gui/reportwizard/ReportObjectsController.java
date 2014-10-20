@@ -494,7 +494,7 @@ public class ReportObjectsController extends ReportWizardController {
                 if (allObjectPage + 1 * PAGE_SIZE < allCount) {
                     dbListView.getItems().add(new Pair<>(NEXT_PAGE, null));
                 }
-                allObjectTotalPages = (int) Math.ceil(1.0 * pair.getSecond() / allCount);
+                allObjectTotalPages = (int) Math.ceil(1.0 * allCount / PAGE_SIZE);
                 if (allObjectTotalPages == 0) {
                     allObjectTotalPages = 1;
                 }
