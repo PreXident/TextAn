@@ -33,7 +33,34 @@ public class Utils {
 
     /** Flag indicating whether the OS hosting JVM is Windows. */
     public final static boolean isWindows = System.getProperty("os.name", "").startsWith("Windows");
-    
+
+    /**
+     * Controls {@link #runFXlater(java.lang.Runnable)}.
+     * @see #getFxHackSleep()
+     */
+    public final static long FX_HACK_SLEEP = getFxHackSleep();
+
+    /**
+     * Retrieves number of ms to sleep in {@link #runFXlater(java.lang.Runnable)}.
+     * Firstly it checks JVM property textan.fxhack.sleep, then environment
+     * variable TEXTAN_FX_HACK_SLEEP, default value is 100.
+     * @return
+     */
+    static private long getFxHackSleep() {
+        try {
+            String s = System.getProperty("textan.fxhack.sleep");
+            if (s == null) {
+                s = System.getenv("TEXTAN_FX_HACK_SLEEP");
+                if (s == null) {
+                    return 100L;
+                }
+            }
+            return Long.parseLong(s);
+        } catch (NumberFormatException e) {
+            return 100L;
+        }
+    }
+
     /** Ids can be belong to objects or relations. */
     public enum IdType {
         ENTITY {
@@ -334,7 +361,7 @@ public class Utils {
     static public void runFXlater(final Runnable finalizer) {
         new Thread(() -> {
             try {
-                Thread.sleep(100);
+                Thread.sleep(FX_HACK_SLEEP);
             } catch (Exception e) { }
             Platform.runLater(finalizer);
         }).start();
