@@ -31,7 +31,10 @@ public abstract class LoadTypes extends Command {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    types.add(line);
+                    line = line.trim();
+                    if (!line.isEmpty()) {
+                        types.add(line);
+                    }
                 }
             } catch (Exception e) {
                 System.out.printf("Error while loading file \"%s\"", file.getAbsolutePath());
