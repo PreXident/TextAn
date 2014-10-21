@@ -1,5 +1,7 @@
-TextAn
-=========
+![TextAn](Client/src/main/resources/cz/cuni/mff/ufal/textan/gui/logo2.png)
+<!-- TODO: Change the logo -->
+
+## About
 
 In today's world, there is a large amount of unstructured written sources that
 contain structured information. An example is police reports. They contain
@@ -40,5 +42,5 @@ database.
 TextAn is implemented in Java 8 and it is platform independent except for
 some third party libraries that are attached only for some platforms. However
 they are open source and can be compiled for any operating system desired. The
-data can be stored within any SQL-like relation database, e.g. \emph{MySQL} which
+data can be stored within any SQL-like relation database, e.g. MySQL which
 is supported out-of-the-box.

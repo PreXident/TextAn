@@ -107,7 +107,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
                 .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", ObjectTypeTable.PROPERTY_NAME_ID), objectTypeId));
         int count = criteria.list().size();
 
-        criteria.setMaxResults(firstResult);
+        criteria.setFirstResult(firstResult);
         criteria.setMaxResults(pageSize);
 
         List<ObjectTable> results = criteria.list();
