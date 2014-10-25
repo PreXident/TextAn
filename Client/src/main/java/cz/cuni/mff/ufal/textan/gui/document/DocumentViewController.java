@@ -16,6 +16,7 @@ import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.Window;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
+import cz.cuni.mff.ufal.textan.gui.reportwizard.Text;
 import cz.cuni.mff.ufal.textan.gui.reportwizard.TextFlow;
 import java.net.URL;
 import java.util.ArrayList;
@@ -50,7 +51,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
 /**

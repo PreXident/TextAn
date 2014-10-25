@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.function.BiConsumer;
 import javafx.application.Platform;
@@ -52,12 +54,12 @@ public class Utils {
             if (s == null) {
                 s = System.getenv("TEXTAN_FX_HACK_SLEEP");
                 if (s == null) {
-                    return 100L;
+                    return 50L;
                 }
             }
             return Long.parseLong(s);
         } catch (NumberFormatException e) {
-            return 100L;
+            return 50L;
         }
     }
 
