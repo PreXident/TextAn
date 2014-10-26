@@ -197,6 +197,9 @@ public class ReportObjectsController extends ReportWizardController {
         allObjectsCheckBox.selectedProperty().addListener(e -> {
             filterObjects(selectedEntity);
         });
+        allObjectsCheckBox.setOnAction(e -> {
+            e.consume();
+        });
         final VBox vbox = new VBox();
         vbox.getChildren().addAll(allObjectsCheckBox, dbListView);
         splitVert.getItems().addAll(vbox, newListView);
