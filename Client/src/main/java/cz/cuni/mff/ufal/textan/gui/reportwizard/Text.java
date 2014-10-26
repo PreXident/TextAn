@@ -30,6 +30,7 @@ public class Text extends javafx.scene.text.Text {
     /**
      * Calls impl_geomChanged().
      */
+    @SuppressWarnings("deprecation")
     public final void invalidateGeom() {
         impl_geomChanged();
     }
