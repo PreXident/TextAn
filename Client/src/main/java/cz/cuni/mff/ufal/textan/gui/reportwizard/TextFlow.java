@@ -8,29 +8,40 @@ import javafx.scene.Node;
  */
 public class TextFlow extends javafx.scene.text.TextFlow {
 
-    protected boolean invalidating = false;
+    /**
+     * Flag indicating whether the fixing children bounds is in progress.
+     * This field should be accessed from FX thread only!
+     */
+    protected boolean fixing = false;
 
-    public void invalidateChildrenGeomLater() {
-        if (!invalidating) {
-            invalidating = true;
+    /**
+     * Fixes the children Text nodes bounds.
+     */
+    public void fixChildrenBounds() {
+        for (Node n: getChildren()) {
+            if (n instanceof Text) {
+                ((Text) n).fixBounds();
+            }
+        }
+    }
+
+    /**
+     * Fixes the children Text nodes bounds if not already in progress.
+     * This method should be called from FX main thread only!
+     */
+    public void fixChildrenBoundsLater() {
+        if (!fixing) {
+            fixing = true;
             Utils.runFXlater(() -> {
-                for (Node n: getChildren()) {
-                    if (n instanceof Text) {
-                        ((Text) n).invalidateGeom();
-                    }
-                }
-                invalidating = false;
+                fixChildrenBounds();
+                fixing = false;
             });
         }
     }
 
     @Override
     public void layoutChildren() {
-        for (Node n: getChildren()) {
-            if (n instanceof Text) {
-                ((Text) n).invalidateGeom();
-            }
-        }
+        fixChildrenBounds();
         super.layoutChildren();
     }
 }

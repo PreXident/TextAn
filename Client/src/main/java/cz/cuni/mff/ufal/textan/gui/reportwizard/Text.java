@@ -1,8 +1,10 @@
 package cz.cuni.mff.ufal.textan.gui.reportwizard;
 
-import cz.cuni.mff.ufal.textan.gui.Utils;
-import javafx.beans.InvalidationListener;
+import com.sun.javafx.geom.PickRay;
+import com.sun.javafx.scene.input.PickResultChooser;
+import java.lang.reflect.Method;
 import javafx.beans.Observable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 
 /**
@@ -17,21 +19,31 @@ public class Text extends javafx.scene.text.Text {
     public Text(final String text) {
         super(text);
         getStyleClass().addListener((Observable o) -> {
-//            final Parent parent = getParent();
-//            if (getParent() instanceof TextFlow) {
-//                ((TextFlow) parent).invalidateChildrenGeomLater();
-//            }
-            Utils.runFXlater(() -> {
-                invalidateGeom();
-            });
+            final Parent parent = getParent();
+            if (getParent() instanceof TextFlow) {
+                ((TextFlow) parent).fixChildrenBoundsLater();
+            }
         });
     }
 
+    @Override
+    @SuppressWarnings("deprecation")
+    protected void impl_pickNodeLocal(PickRay localPickRay, PickResultChooser result) {
+        fixBounds();
+        super.impl_pickNodeLocal(localPickRay, result);
+    }
+
     /**
-     * Calls impl_geomChanged().
+     * Invalidates geometry by impl_geomChanged and calls package private
+     * updateBounds method.
      */
     @SuppressWarnings("deprecation")
-    public final void invalidateGeom() {
+    protected void fixBounds() {
         impl_geomChanged();
+        try {
+            final Method method = Node.class.getDeclaredMethod("updateBounds");
+            method.setAccessible(true);
+            method.invoke(this);
+        } catch (Exception e) { }
     }
 }
