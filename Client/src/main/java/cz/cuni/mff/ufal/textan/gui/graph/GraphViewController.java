@@ -365,6 +365,7 @@ public class GraphViewController extends GraphController {
                             cz.cuni.mff.ufal.textan.Utils.removeExtension(Handler.class.getPackage().getName()));
                     Handler.registerString("GraphView.css", builder.toString());
                     root.getStylesheets().add("string:GraphView.css");
+                    Handler.deregisterString("GraphView.css");
                     if (backup != null) {
                         System.setProperty("java.protocol.handler.pkgs", backup);
                     }
