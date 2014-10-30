@@ -1,22 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.gui;
+
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 
 /**
  * Simple window extension to provide unified closing.
  */
 public class Window extends jfxtras.labs.scene.control.window.Window {
 
+    /** Key combination to close the window/container. */
+    static protected final KeyCodeCombination CTRL_F4 =
+            new KeyCodeCombination(KeyCode.F4, KeyCombination.CONTROL_DOWN);
+
     /**
      * Maximal length of titles considered short, thus not needing fixing.
-     * @see #setTitleFixed(String) 
+     * @see #setTitleFixed(String)
      */
     protected final static int SHORT_ENOUGH = getShortEnough();
-    
+
     /**
      * Returns system property "textan.window.title.short" if valid, otherwise
      * completely arbitrary number.
@@ -30,7 +33,7 @@ public class Window extends jfxtras.labs.scene.control.window.Window {
             return 20;
         }
     }
-    
+
     /** Runnable called on close button click. */
     protected Runnable containerCloser = null;
 
@@ -41,6 +44,11 @@ public class Window extends jfxtras.labs.scene.control.window.Window {
     public Window(final String title) {
         super(title);
         this.getRightIcons().add(new CloseIcon(this));
+        this.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+            if (CTRL_F4.match(e)) {
+                this.closeContainer();
+            }
+        });
     }
 
     /**
@@ -67,7 +75,7 @@ public class Window extends jfxtras.labs.scene.control.window.Window {
     public void setContainerCloser(Runnable containerCloser) {
         this.containerCloser = containerCloser;
     }
-    
+
     /**
      * Uses hack to handle bad recognition of title length on Unix.
      * @param title new title
