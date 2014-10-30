@@ -493,7 +493,7 @@ public class ReportObjectsController extends ReportWizardController {
                 all.stream()
                     .map(obj -> new Pair<Double, Object>(null, obj))
                     .forEach(dbListView.getItems()::add);
-                if (allObjectPage + 1 * PAGE_SIZE < allCount) {
+                if ((allObjectPage + 1) * PAGE_SIZE < allCount) {
                     dbListView.getItems().add(new Pair<>(NEXT_PAGE, null));
                 }
                 allObjectTotalPages = (int) Math.ceil(1.0 * allCount / PAGE_SIZE);
