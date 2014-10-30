@@ -165,7 +165,7 @@ public class SettingsController extends WindowController {
         super.setWindow(window);
         Utils.runFXlater(() -> {
             window.setPrefWidth(root.computePrefWidth(0));
-            window.setPrefHeight(root.computePrefHeight(0) + 40); //guessed titlebar height
+            window.setPrefHeight(root.computePrefHeight(0) + 60); //guessed titlebar height
         });
     }
 
