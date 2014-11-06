@@ -9,6 +9,8 @@ import static cz.cuni.mff.ufal.textan.gui.TextAnController.HYPER_GRAPHS;
 import static cz.cuni.mff.ufal.textan.gui.TextAnController.INDEPENDENT_WINDOW;
 import cz.cuni.mff.ufal.textan.gui.Utils;
 import cz.cuni.mff.ufal.textan.gui.WindowController;
+import cz.cuni.mff.ufal.textan.gui.graph.HyperGraphService;
+import cz.cuni.mff.ufal.textan.gui.graph.IHyperGraphProvider;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Properties;
@@ -18,8 +20,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import jfxtras.labs.scene.control.BigDecimalField;
 import org.controlsfx.dialog.Dialogs;
 
@@ -47,7 +51,7 @@ public class SettingsController extends WindowController {
     private CheckBox independentWindowsCheckBox;
 
     @FXML
-    private CheckBox hypergraphsCheckBox;
+    private ComboBox<IHyperGraphProvider> hypergraphsCombo;
 
     @FXML
     private CheckBox clearFiltersCheckBox;
@@ -73,11 +77,6 @@ public class SettingsController extends WindowController {
     }
 
     @FXML
-    private void hypergraphs() {
-        settings.setProperty(HYPER_GRAPHS, hypergraphsCheckBox.isSelected() ? "true" : "false");
-    }
-
-    @FXML
     private void independentWindows() {
         settings.setProperty(INDEPENDENT_WINDOW, independentWindowsCheckBox.isSelected() ? "true" : "false");
     }
@@ -88,6 +87,8 @@ public class SettingsController extends WindowController {
         distanceField.numberProperty().addListener((ov, oldVal, newVal) -> {
             settings.setProperty("graph.distance", newVal.toString());
         });
+        hypergraphsCombo.getItems().addAll(
+                HyperGraphService.getInstance().listProviders());
     }
 
     @Override
@@ -95,8 +96,6 @@ public class SettingsController extends WindowController {
         super.setSettings(settings);
         independentWindowsCheckBox.setSelected(
                 settings.getProperty(INDEPENDENT_WINDOW, "false").equals("true"));
-        hypergraphsCheckBox.setSelected(
-                settings.getProperty(HYPER_GRAPHS, "false").equals("true"));
         clearFiltersCheckBox.setSelected(
                 settings.getProperty(CLEAR_FILTERS, "false").equals("true"));
         loginTextField.setText(settings.getProperty("username", System.getProperty("user.name")));
@@ -140,6 +139,44 @@ public class SettingsController extends WindowController {
                             });
                 settings.setProperty("locale.language", newVal);
         });
+        //
+        final StringConverter<IHyperGraphProvider> converter = new StringConverter<IHyperGraphProvider>() {
+            @Override
+            public String toString(IHyperGraphProvider provider) {
+                if (provider == null) {
+                    return "";
+                }
+                return Utils.localize(resourceBundle, provider.getDescKey(), provider.getDesc());
+            }
+            @Override
+            public IHyperGraphProvider fromString(String string) {
+                return HyperGraphService.getInstance().getProvider(string);
+            }
+        };
+        hypergraphsCombo.setConverter(converter);
+        hypergraphsCombo.setCellFactory(listView  -> {
+            return new ListCell<IHyperGraphProvider>() {
+                @Override
+                protected void updateItem(final IHyperGraphProvider item, final boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? "" : converter.toString(item));
+                }
+            };
+        });
+        try {
+            final String providerName = settings.getProperty(HYPER_GRAPHS);
+            final IHyperGraphProvider provider =
+                    HyperGraphService.getInstance().getProvider(providerName);
+            hypergraphsCombo.getSelectionModel().select(provider);
+        } catch (Exception e) {
+            e.printStackTrace();
+            hypergraphsCombo.getSelectionModel().select(0);
+        }
+        hypergraphsCombo.valueProperty().addListener(
+            (ObservableValue<? extends IHyperGraphProvider> ov, IHyperGraphProvider oldVal, IHyperGraphProvider newVal) -> {
+                settings.setProperty(HYPER_GRAPHS, newVal.getId());
+        });
+        //
         distanceField.setNumber(new BigDecimal(settings.getProperty("graph.distance", "5")));
     }
 
@@ -165,7 +202,7 @@ public class SettingsController extends WindowController {
         super.setWindow(window);
         Utils.runFXlater(() -> {
             window.setPrefWidth(root.computePrefWidth(0));
-            window.setPrefHeight(root.computePrefHeight(0) + 60); //guessed titlebar height
+            window.setPrefHeight(Math.max(295, root.computePrefHeight(0) + 40)); //guessed titlebar height
         });
     }
 

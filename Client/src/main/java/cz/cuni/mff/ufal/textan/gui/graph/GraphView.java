@@ -96,8 +96,7 @@ public class GraphView extends SwingNode {
     public GraphView(final Properties settings, final Map<Long, Object> objects,
             final Set<Relation> relations, final Predicate<java.lang.Object> centerer) {
         this.settings = settings;
-        final boolean hypergraphs = settings.getProperty(TextAnController.HYPER_GRAPHS, "false").equals("true");
-        final String providerId = hypergraphs ? "PretopolibHyperGraphProvider" : "JUNGHyperGraphProvider";
+        final String providerId = settings.getProperty(TextAnController.HYPER_GRAPHS, "JUNGHyperGraphProvider");
         final IHyperGraphProvider provider =
                 HyperGraphService.getInstance().getProvider(providerId);
         final Hypergraph<Object, Relation> g = provider.createHyperGraph();

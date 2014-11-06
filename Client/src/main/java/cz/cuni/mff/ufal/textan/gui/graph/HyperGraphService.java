@@ -16,7 +16,7 @@ public final class HyperGraphService {
      * Returns singleton's instance.
      * @return singleton's instance
      */
-    static HyperGraphService getInstance() {
+    static public HyperGraphService getInstance() {
         if (instance == null) { //double checking
             synchronized (HyperGraphService.class) {
                 if (instance == null) {
