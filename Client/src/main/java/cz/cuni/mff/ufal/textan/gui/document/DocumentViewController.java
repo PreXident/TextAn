@@ -329,7 +329,11 @@ public class DocumentViewController extends WindowController {
                         if (empty || t == null) {
                             setText("");
                         } else {
-                            setText(t.toString() + "(" + String.join(", ", t.getAnchors()) + ")");
+                            String rel = t.toString();
+                            if (!t.getAnchors().isEmpty()) {
+                                rel += "(" + String.join(", ", t.getAnchors()) + ")";
+                            }
+                            setText(rel);
                         }
                     }
                 };
