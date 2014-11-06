@@ -4,6 +4,8 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.core.Entity;
 import cz.cuni.mff.ufal.textan.core.IdNotFoundException;
 import cz.cuni.mff.ufal.textan.core.Object;
+import cz.cuni.mff.ufal.textan.core.processreport.candidate.CandidateSelectorService;
+import cz.cuni.mff.ufal.textan.core.processreport.candidate.ICandidateSelector;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,11 +93,12 @@ final class ReportEntitiesState extends State {
             } else {
                 pipeline.client.getObjects(pipeline.ticket, pipeline.reportText, pipeline.reportEntities);
             }
+            final String selectorId = pipeline.getClient().getSettings().getProperty("candidate", "MaxSelector");
+            final ICandidateSelector selector = CandidateSelectorService.getInstance().getSelector(selectorId);
             for (Entity ent : pipeline.reportEntities) {
-                final Optional<Pair<Double, Object>> max = ent.getCandidates()
-                        .stream().max(Entity.COMPARATOR);
-                if (max.isPresent()) {
-                    ent.setCandidate(max.get().getSecond());
+                final Object candidate = selector.selectCandidate(ent.getCandidates());
+                if (candidate != null) {
+                    ent.setCandidate(candidate);
                 }
             }
         } else {
