@@ -1,6 +1,5 @@
 package cz.cuni.mff.ufal.textan.gui.graph;
 
-import PretopoVisual.Jung.BasicHypergraphRenderer;
 import cz.cuni.mff.ufal.textan.commons.utils.Triple;
 import cz.cuni.mff.ufal.textan.core.Object;
 import cz.cuni.mff.ufal.textan.core.Relation;
@@ -10,11 +9,7 @@ import cz.cuni.mff.ufal.textan.gui.Utils.IdType;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.Hypergraph;
-import edu.uci.ics.jung.graph.SetHypergraph;
-import edu.uci.ics.jung.graph.SparseMultigraph;
-import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.Layer;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
@@ -33,15 +28,12 @@ import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -104,70 +96,28 @@ public class GraphView extends SwingNode {
     public GraphView(final Properties settings, final Map<Long, Object> objects,
             final Set<Relation> relations, final Predicate<java.lang.Object> centerer) {
         this.settings = settings;
-        final boolean hypergraphs = settings.getProperty(TextAnController.HYPER_GRAPHS, "false").equals("true");
-        final Hypergraph<Object, Relation> g = hypergraphs ? new SetHypergraph<>() : new SparseMultigraph<>();
+        final String providerId = settings.getProperty(TextAnController.HYPER_GRAPHS, "JUNGHyperGraphProvider");
+        final IHyperGraphProvider provider =
+                HyperGraphService.getInstance().getProvider(providerId);
+        final Hypergraph<Object, Relation> g = provider.createHyperGraph();
         // Add vertices
-        for (Object obj : objects.values()) {
-            g.addVertex(obj);
+        provider.addObjects(g, objects.values());
+        // Add edges
+        provider.addRelations(g, relations);
+        // find center object
+        for (Object obj : g.getVertices()) {
             if (centerer.test(obj)) {
                 centerObject = obj;
             }
         }
-        // Add edges
-        if (hypergraphs) {
-            for (Relation rel : relations) {
-                if (centerer.test(rel)) {
-                    centerRelation = rel;
-                }
-                final Stream<Triple<Integer, String, Object>> relatedIDs = rel.getObjects().stream();
-                final List<Object> related = relatedIDs.map(triple -> triple.getThird()).collect(Collectors.toList());
-                g.addEdge(rel, related);
-            }
-        } else {
-            for (Relation rel : relations) {
-                if (centerer.test(rel)) {
-                    centerRelation = rel;
-                }
-                if (rel.getObjects().size() > 2) {
-                    final Object dummy = new RelationObject(rel);
-                    g.addVertex(dummy);
-                    for (Triple<Integer, String, Object> triple : rel.getObjects()) {
-                        final Relation dummyRel = new DummyRelation(rel.getType(), triple);
-                        final int order = triple.getFirst();
-                        final Object obj = triple.getThird();
-                        if (order < 0) {
-                            g.addEdge(dummyRel, Arrays.asList(obj, dummy), EdgeType.DIRECTED);
-                        } else if (order % 2 == 1) {
-                            g.addEdge(dummyRel, Arrays.asList(dummy, obj), EdgeType.DIRECTED);
-                        } else {
-                            g.addEdge(dummyRel, Arrays.asList(obj, dummy), EdgeType.UNDIRECTED);
-                        }
-                    }
-                    if (centerer.test(rel)) {
-                        centerObject = dummy;
-                    }
-                } else if (rel.getObjects().size() == 2) {
-                    Iterator<Triple<Integer, String, Object>> it = rel.getObjects().iterator();
-                    final Triple<Integer, String, Object> first = it.next();
-                    final Triple<Integer, String, Object> second = it.next();
-                    if (first.getFirst() < 0 && second.getFirst() >= 0) {
-                        g.addEdge(rel, Arrays.asList(first.getThird(), second.getThird()), EdgeType.DIRECTED);
-                    } else if (second.getFirst() < 0 && first.getFirst() >= 0) {
-                        g.addEdge(rel, Arrays.asList(second.getThird(), first.getThird()), EdgeType.DIRECTED);
-                    } else {
-                        g.addEdge(rel, Arrays.asList(first.getThird(), second.getThird()), EdgeType.UNDIRECTED);
-                    }
-                } else {
-                    final List<Object> related = rel.getObjects().stream()
-                            .map(triple -> triple.getThird())
-                            .collect(Collectors.toList());
-                    g.addEdge(rel, related);
-                }
+        // find center relation
+        for (Relation rel : g.getEdges()) {
+            if (centerer.test(rel)) {
+                centerRelation = rel;
             }
         }
-        layout = new FRLayout<>(
-                hypergraphs ? new PseudoHypergraph<>(g) : (Graph<Object, Relation>) g
-        );
+        //
+        layout = new FRLayout<>(provider.transformForLayout(g));
         //
         final Transformer<Object, Paint> vertexPaint = obj -> {
             final IdType type = obj instanceof RelationObject? IdType.RELATION : IdType.ENTITY;
@@ -178,9 +128,9 @@ public class GraphView extends SwingNode {
         Transformer<Relation, Stroke> edgeStrokeTransformer = (Relation s) -> edgeStroke;
         //
         visualizator = new VisualizationViewer<>(layout);
-        if (hypergraphs) {
-            final BasicHypergraphRenderer<Object, Relation> b = new BasicHypergraphRenderer<>();
-            visualizator.setRenderer(b);
+        final Renderer<Object, Relation> renderer = provider.createRenderer();
+        if (renderer != null) {
+            visualizator.setRenderer(renderer);
         }
         //
         visualizator.getRenderContext().setVertexFillPaintTransformer(vertexPaint);

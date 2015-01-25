@@ -55,6 +55,7 @@ public abstract class ReportWizardController extends WindowController {
         events.add(MouseEvent.MOUSE_CLICKED);
         events.add(MouseEvent.MOUSE_PRESSED);
         events.add(MouseEvent.MOUSE_RELEASED);
+        events.add(MouseEvent.MOUSE_DRAGGED);
         SLIDER_IGNORED = Collections.unmodifiableSet(events);
     }
 

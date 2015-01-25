@@ -1,5 +1,7 @@
 package cz.cuni.mff.ufal.textan.gui;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Properties;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -7,6 +9,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
@@ -131,6 +134,33 @@ public class InnerWindow extends Window {
         );
         //
         setTitleBarStyleClass("my-window-titlebar");
+        //
+        this.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+            if (!this.isFocused() && !this.isChildrenFocused()) {
+                this.requestFocus();
+            }
+        });
+    }
+
+    /**
+     * Returns true if any children has focus, false otherwise.
+     * @return true if any children has focus, false otherwise
+     */
+    public boolean isChildrenFocused() {
+        final Node focusOwner = getScene().getFocusOwner();
+        final Deque<Node> stack = new ArrayDeque<>(getChildrenUnmodifiable());
+        while (!stack.isEmpty()) {
+            final Node n = stack.pop();
+            if (n == focusOwner) {
+                return true;
+            }
+            if (n instanceof Parent) {
+                for (Node child : ((Parent)n).getChildrenUnmodifiable()) {
+                    stack.push(child);
+                }
+            }
+        }
+        return false;
     }
 
     /**

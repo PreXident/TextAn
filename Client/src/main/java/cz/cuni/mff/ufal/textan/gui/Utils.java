@@ -52,12 +52,12 @@ public class Utils {
             if (s == null) {
                 s = System.getenv("TEXTAN_FX_HACK_SLEEP");
                 if (s == null) {
-                    return 100L;
+                    return 50L;
                 }
             }
             return Long.parseLong(s);
         } catch (NumberFormatException e) {
-            return 100L;
+            return 50L;
         }
     }
 
@@ -354,17 +354,41 @@ public class Utils {
         return resolveColorFX(settings, IdType.RELATION, id);
     }
 
+    /** ThreadGroup containing hack threads. */
+    static private final ThreadGroup hackGroup = new ThreadGroup("FxHackGroup");
+//    static public final AtomicInteger max = new AtomicInteger(0);
+
+//    /** ThreadPool for hacks. */
+//    static private final ExecutorService hackPool =
+//            Executors.newSingleThreadExecutor(r -> {
+//                final Thread t = new Thread(r);
+//                t.setDaemon(true);
+//                return t;
+//            });
+
     /**
      * Runs finalizer in FX thread after 100 ms sleep in other thread.
      * @param finalizer runnable to be run
      */
     static public void runFXlater(final Runnable finalizer) {
-        new Thread(() -> {
+//        final long start = System.currentTimeMillis();;
+//        hackPool.submit(() -> {
+//            final long delta = System.currentTimeMillis() - start;
+//            if (delta < FX_HACK_SLEEP) {
+//                try {
+//                    Thread.sleep(delta);
+//                } catch (InterruptedException e) { }
+//            }
+//            Platform.runLater(finalizer);
+//        });
+        //
+        new Thread(hackGroup, () -> {
             try {
                 Thread.sleep(FX_HACK_SLEEP);
             } catch (Exception e) { }
+//            max.getAndUpdate(i -> Math.max(i, hackGroup.activeCount()));
             Platform.runLater(finalizer);
-        }).start();
+        }, "FxHackThread").start();
     }
 
     /**

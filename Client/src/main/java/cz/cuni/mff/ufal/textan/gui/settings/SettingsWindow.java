@@ -1,7 +1,6 @@
 package cz.cuni.mff.ufal.textan.gui.settings;
 
 import cz.cuni.mff.ufal.textan.gui.InnerWindow;
-import cz.cuni.mff.ufal.textan.gui.ClickableWindowSkin;
 import cz.cuni.mff.ufal.textan.gui.MaximizeIcon;
 import cz.cuni.mff.ufal.textan.gui.TextAnController;
 import cz.cuni.mff.ufal.textan.gui.Utils;

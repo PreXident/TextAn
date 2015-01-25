@@ -21,12 +21,22 @@ public class Handler extends URLStreamHandler {
     private static final Map<String, String> contents = new HashMap<>();
 
     /**
+     * Deregisters content under url.
+     * @param url url to deregister
+     * @return deregistered content
+     */
+    static public String deregisterString(final String url) {
+        return contents.remove(url);
+    }
+
+    /**
      * Registers content under url.
      * @param url url to register under
      * @param content string to register
+     * @return previous content
      */
-    public static void registerString(final String url, final String content) {
-        contents.put(url, content);
+    public static String registerString(final String url, final String content) {
+        return contents.put(url, content);
     }
 
     @Override

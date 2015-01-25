@@ -47,7 +47,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 /**
@@ -197,6 +196,9 @@ public class ReportObjectsController extends ReportWizardController {
         allObjectsCheckBox.setText(Utils.localize(resourceBundle, "include.all.objects"));
         allObjectsCheckBox.selectedProperty().addListener(e -> {
             filterObjects(selectedEntity);
+        });
+        allObjectsCheckBox.setOnAction(e -> {
+            e.consume();
         });
         final VBox vbox = new VBox();
         vbox.getChildren().addAll(allObjectsCheckBox, dbListView);
@@ -491,7 +493,7 @@ public class ReportObjectsController extends ReportWizardController {
                 all.stream()
                     .map(obj -> new Pair<Double, Object>(null, obj))
                     .forEach(dbListView.getItems()::add);
-                if (allObjectPage + 1 * PAGE_SIZE < allCount) {
+                if ((allObjectPage + 1) * PAGE_SIZE < allCount) {
                     dbListView.getItems().add(new Pair<>(NEXT_PAGE, null));
                 }
                 allObjectTotalPages = (int) Math.ceil(1.0 * allCount / PAGE_SIZE);

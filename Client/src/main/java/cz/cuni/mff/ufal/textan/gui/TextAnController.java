@@ -129,10 +129,12 @@ public class TextAnController implements Initializable {
             //Utils.runFXlater(() -> w.toFront());
             movingToFront = true;
             w.toFront();
+            w.requestFocus();
             movingToFront = false;
         } else if (window instanceof OuterStage) {
             final OuterStage s = (OuterStage) window;
             s.toFront();
+            s.requestFocus();
         }
     };
 
@@ -141,6 +143,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final AboutWindow aboutWindow = new AboutWindow(this, settings);
             content.getChildren().add(aboutWindow);
+            aboutWindow.requestFocus();
         } else {
             final AboutStage aboutStage = new AboutStage(this, settings);
             children.add(aboutStage);
@@ -158,6 +161,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final ColorsWindow colorsWindow = new ColorsWindow(this, settings);
             content.getChildren().add(colorsWindow);
+            colorsWindow.requestFocus();
         } else {
             final ColorsStage colorsStage = new ColorsStage(this, settings);
             children.add(colorsStage);
@@ -185,6 +189,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final SettingsWindow settingsWindow = new SettingsWindow(this, settings);
             content.getChildren().add(settingsWindow);
+            settingsWindow.requestFocus();
         } else {
             final SettingsStage settingsStage = new SettingsStage(this, settings);
             children.add(settingsStage);
@@ -218,6 +223,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final JoinWindow joinWindow = new JoinWindow(this, settings);
             content.getChildren().add(joinWindow);
+            joinWindow.requestFocus();
         } else {
             final JoinStage joinStage = new JoinStage(this, settings);
             children.add(joinStage);
@@ -267,6 +273,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final PathWindow pathWindow = new PathWindow(this, settings);
             content.getChildren().add(pathWindow);
+            pathWindow.requestFocus();
         } else {
             final PathStage pathStage = new PathStage(this, settings);
             children.add(pathStage);
@@ -294,6 +301,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final RelationListWindow relationListWindow = new RelationListWindow(this, settings);
             content.getChildren().add(relationListWindow);
+            relationListWindow.requestFocus();
         } else {
             final RelationListStage relationListStage = new RelationListStage(this, settings);
             children.add(relationListStage);
@@ -437,6 +445,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final DocumentWindow docWindow = new DocumentWindow(this, settings, client, document);
             content.getChildren().add(docWindow);
+            docWindow.requestFocus();
         } else {
             final DocumentStage docStage = new DocumentStage(this, settings, client, document);
             children.add(docStage);
@@ -458,6 +467,7 @@ public class TextAnController implements Initializable {
             final DocumentsWindow docWindow =
                     new DocumentsWindow(this, settings, client, object, null);
             content.getChildren().add(docWindow);
+            docWindow.requestFocus();
         } else {
             final DocumentsStage docStage =
                     new DocumentsStage(this, settings, client, object, null);
@@ -480,6 +490,7 @@ public class TextAnController implements Initializable {
             final DocumentsWindow docWindow =
                     new DocumentsWindow(this, settings, client, null, relation);
             content.getChildren().add(docWindow);
+            docWindow.requestFocus();
         } else {
             final DocumentsStage docStage =
                     new DocumentsStage(this, settings, client, null, relation);
@@ -501,6 +512,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final GraphWindow graphWindow = new GraphWindow(this, settings, grapher);
             content.getChildren().add(graphWindow);
+            graphWindow.requestFocus();
         } else {
             final GraphStage stage = new GraphStage(this, settings, grapher);
             children.add(stage);
@@ -571,6 +583,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final ReportWizardWindow wizard = new ReportWizardWindow(settings);
             content.getChildren().add(wizard);
+            wizard.requestFocus();
             listener = new StateChangedListener(this, settings, pipeline, wizard);
         } else {
             final ReportWizardStage stage = new ReportWizardStage(settings);
@@ -606,6 +619,7 @@ public class TextAnController implements Initializable {
         if (settings.getProperty(INDEPENDENT_WINDOW, "false").equals("false")) {
             final EditDocumentWindow window = new EditDocumentWindow(this, settings, document);
             content.getChildren().add(window);
+            window.requestFocus();
         } else {
             final EditDocumentStage stage = new EditDocumentStage(this, settings, document);
             children.add(stage);

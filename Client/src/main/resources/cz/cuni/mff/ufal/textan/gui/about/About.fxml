@@ -29,7 +29,7 @@
 		<Label text="Bc. Václav Pernička" minWidth="-Infinity" prefWidth="-1"/>
 		<Label text="Bc. Jakub Vlček" minWidth="-Infinity" prefWidth="-1"/>
 		<Label styleClass="h1" text="%supervisor" minWidth="-Infinity" prefWidth="-1"/>
-		<Label text="RNDr. Ondřej Bojar, Phd." minWidth="-Infinity" prefWidth="-1"/>
+		<Label text="RNDr. Ondřej Bojar, Ph.D." minWidth="-Infinity" prefWidth="-1"/>
 		<Label styleClass="h1" text="%logo" minWidth="-Infinity" prefWidth="-1"/>
 		<Label text="Jan Jinda" minWidth="-Infinity" prefWidth="-1"/>
         <Label text="http://www.janjinda.com" minWidth="-Infinity" prefWidth="-1"/>
