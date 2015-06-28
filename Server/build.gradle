@@ -45,7 +45,7 @@ dependencies {
     compile project(':Linguistics')
     compile project(':ObjectAssigner')
 
-    runtime project(':Setuper')
+    compile project(':Setuper')
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
