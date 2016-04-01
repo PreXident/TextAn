@@ -39,11 +39,17 @@ import java.util.Properties;
 @ComponentScan(basePackages = {"cz.cuni.mff.ufal.textan.data.repositories.dao"})
 public class DataConfig {
 
-    /** Path to a default server property file (inside jar). */
+    /**
+     * Path to a default server property file (inside jar).
+     */
     private static final String DEFAULT_DATA_PROPERTIES = "data-default.properties";
 
-    /** Path to an user server property file. The file should be relative to working directory. */
+    /**
+     * Path to an user server property file. The file should be relative to working directory.
+     */
     private static final String USER_DATA_PROPERTIES = "data.properties";
+    @Autowired
+    SessionFactory factory;
 
     /**
      * Loads properties from property files.
@@ -52,7 +58,7 @@ public class DataConfig {
      * @throws IOException thrown when loading fails
      */
     @Bean
-    public Properties dataProperties() throws IOException{
+    public Properties dataProperties() throws IOException {
 
         //load default properties from jar
         Properties defaults = new Properties();
@@ -75,7 +81,7 @@ public class DataConfig {
      *
      * @return Connection to the database
      * @throws java.beans.PropertyVetoException never?
-     * @throws java.io.IOException if any IO error occurs
+     * @throws java.io.IOException              if any IO error occurs
      * @see com.mchange.v2.c3p0.ComboPooledDataSource
      */
     @SuppressWarnings("WeakerAccess")
@@ -114,7 +120,7 @@ public class DataConfig {
      *
      * @return SessionFactory to handle with transactions and access to database
      * @throws java.beans.PropertyVetoException never?
-     * @throws java.io.IOException if any IO error occurs
+     * @throws java.io.IOException              if any IO error occurs
      * @see DataConfig#dataSource()
      */
     @SuppressWarnings("WeakerAccess")
@@ -147,7 +153,7 @@ public class DataConfig {
      *
      * @return the {@link org.springframework.orm.hibernate4.HibernateTransactionManager}
      * @throws java.beans.PropertyVetoException never?
-     * @throws java.io.IOException if any IO error occurs
+     * @throws java.io.IOException              if any IO error occurs
      */
     @SuppressWarnings("unused")
     @Bean
@@ -187,7 +193,7 @@ public class DataConfig {
      * @param objectTableDAO object
      * @return the graph factory
      * @throws java.beans.PropertyVetoException never?
-     * @throws java.io.IOException if any IO error occurs
+     * @throws java.io.IOException              if any IO error occurs
      */
     @Bean
     @Autowired
@@ -195,9 +201,6 @@ public class DataConfig {
     public GraphFactory graphFactory(IObjectTableDAO objectTableDAO) throws PropertyVetoException, IOException {
         return new GraphFactory(sessionFactory(), objectTableDAO);
     }
-
-    @Autowired
-    SessionFactory factory;
 
     @PostConstruct
     public void updateIndexes() {

@@ -1,6 +1,5 @@
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
-
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
 import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- *
  * @author Vaclav Pernicka
  */
 @Repository
@@ -29,7 +27,7 @@ import java.util.List;
 public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> implements IRelationTableDAO {
 
     /**
-     *  constructor
+     * constructor
      */
     public RelationTableDAO() {
         super(RelationTable.class);
@@ -43,6 +41,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
                 .add(Restrictions.eq(DAOUtils.getAliasPropertyName("objType", RelationTypeTable.PROPERTY_NAME_ID), relationTypeId))
                 .list();
     }
+
     @Override
     @SuppressWarnings("unchecked")
     public ResultPagination<RelationTable> findAllByRelationTypeWithPagination(long relationTypeId, int firstResult, int pageSize) {
@@ -63,6 +62,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     public List<RelationTable> findAllByRelationType(RelationTypeTable relationType) {
         return findAllByRelationType(relationType.getId());
     }
+
     @Override
     public ResultPagination<RelationTable> findAllByRelationTypeWithPagination(RelationTypeTable relationType, int firstResult, int pageSize) {
         return findAllByRelationTypeWithPagination(relationType.getId(), firstResult, pageSize);
@@ -76,6 +76,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
                 .add(Restrictions.eq(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_ANCHOR), alias))
                 .list();
     }
+
     @Override
     @SuppressWarnings("unchecked")
     public List<RelationTable> findAllByAliasEqualTo(String alias, int firstResult, int pageSize) {
@@ -93,16 +94,17 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
                 .add(Restrictions.like(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_ANCHOR),
-                                       DAOUtils.getLikeSubstring(aliasSubstring)))
+                        DAOUtils.getLikeSubstring(aliasSubstring)))
                 .list();
     }
+
     @Override
     @SuppressWarnings("unchecked")
     public List<RelationTable> findAllByAliasSubstring(String aliasSubstring, int firstResult, int pageSize) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
                 .add(Restrictions.like(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_ANCHOR),
-                                       DAOUtils.getLikeSubstring(aliasSubstring)))
+                        DAOUtils.getLikeSubstring(aliasSubstring)))
                 .setFirstResult(firstResult)
                 .setMaxResults(pageSize)
                 .list();
@@ -114,20 +116,21 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
                 .createAlias(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_DOCUMENT),
-                             "document", JoinType.INNER_JOIN)
+                        "document", JoinType.INNER_JOIN)
                 .add(Restrictions.eq(DAOUtils.getAliasPropertyName("document", DocumentTable.PROPERTY_NAME_ID),
-                                     documentId))
+                        documentId))
                 .list();
     }
+
     @Override
     @SuppressWarnings("unchecked")
     public List<RelationTable> findAllByDocumentOccurrence(long documentId, int firstResult, int pageSize) {
         return findAllCriteria()
                 .createAlias(getAliasPropertyName(RelationTable.PROPERTY_NAME_OCCURRENCES_ID), "alias", JoinType.INNER_JOIN)
                 .createAlias(DAOUtils.getAliasPropertyName("alias", RelationOccurrenceTable.PROPERTY_NAME_DOCUMENT),
-                             "document", JoinType.INNER_JOIN)
+                        "document", JoinType.INNER_JOIN)
                 .add(Restrictions.eq(DAOUtils.getAliasPropertyName("document", DocumentTable.PROPERTY_NAME_ID),
-                                     documentId))
+                        documentId))
                 .setFirstResult(firstResult)
                 .setMaxResults(pageSize)
                 .list();
@@ -137,6 +140,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     public List<RelationTable> findAllByDocumentOccurrence(DocumentTable document) {
         return findAllByDocumentOccurrence(document.getId());
     }
+
     @Override
     public List<RelationTable> findAllByDocumentOccurrence(DocumentTable document, int firstResult, int pageSize) {
         return findAllByDocumentOccurrence(document.getId(), firstResult, pageSize);
@@ -145,7 +149,7 @@ public class RelationTableDAO extends AbstractHibernateDAO<RelationTable, Long> 
     @Override
     @SuppressWarnings("unchecked")
     public List<RelationTable> findAllSinceGlobalVersion(long version) {
-                return findAllCriteria()
+        return findAllCriteria()
                 .add(Restrictions.ge(RelationTable.PROPERTY_NAME_GLOBAL_VERSION, version))
                 .list();
     }

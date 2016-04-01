@@ -30,20 +30,10 @@ public class LogInterceptor extends EmptyInterceptor {
     private final ThreadLocal<Set<Object>> inserts = ThreadLocal.withInitial(HashSet::new);
     private final ThreadLocal<Set<Object>> updates = ThreadLocal.withInitial(HashSet::new);
     private final ThreadLocal<Set<Object>> deletes = ThreadLocal.withInitial(HashSet::new);
-
+    private final ThreadLocal<String> username = new ThreadLocal<>();
     protected SessionFactory sessionFactory;
 
-    private ThreadLocal<String> username = new ThreadLocal<>();
-
     public LogInterceptor(String username) {
-        this.username.set(username);
-    }
-
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    public void setUsername(String username) {
         this.username.set(username);
     }
 
@@ -53,6 +43,14 @@ public class LogInterceptor extends EmptyInterceptor {
 
     public static void setEnabled(boolean enabled) {
         LogInterceptor.enabled = enabled;
+    }
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public void setUsername(String username) {
+        this.username.set(username);
     }
 
     @Override
@@ -91,8 +89,7 @@ public class LogInterceptor extends EmptyInterceptor {
         if (!enabled) return;
 
         try {
-            Session session = sessionFactory.openSession();
-            try {
+            try (Session session = sessionFactory.openSession()) {
                 for (Object entity : inserts.get()) {
                     LOG.debug("postFlush - insert");
                     AuditTable newAudit = new AuditTable(username.get(), AuditTable.AuditType.Insert, entity == null ? "NULL" : entity.toString());
@@ -110,8 +107,6 @@ public class LogInterceptor extends EmptyInterceptor {
                     AuditTable newAudit = new AuditTable(username.get(), AuditTable.AuditType.Delete, entity == null ? "NULL" : entity.toString());
                     session.save(newAudit);
                 }
-            } finally {
-                session.close();
             }
         } finally {
             inserts.get().clear();

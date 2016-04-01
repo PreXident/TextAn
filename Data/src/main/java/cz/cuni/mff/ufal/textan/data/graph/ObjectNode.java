@@ -4,24 +4,23 @@ import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 
 /**
  * Represents a node that was created from an object.
- * 
+ *
+ * @author Vaclav Pernicka
  * @see Node
  * @see Graph
- * 
- * @author Vaclav Pernicka
  */
 public class ObjectNode extends Node {
     public static final String UNKNOWN_OBJECT_NAME = "Unknown Object";
 
     public ObjectNode(final ObjectTable obj) {
-        this(obj == null ? Node.UNKNOWN_NODE_ID : obj.getId(), 
-             obj == null ? UNKNOWN_OBJECT_NAME : obj.getData());
+        this(obj == null ? Node.UNKNOWN_NODE_ID : obj.getId(),
+                obj == null ? UNKNOWN_OBJECT_NAME : obj.getData());
     }
 
     /**
-     *  constructor
-     * 
-     * @param id id of object
+     * constructor
+     *
+     * @param id   id of object
      * @param name name of the object
      */
     public ObjectNode(long id, String name) {
@@ -30,8 +29,7 @@ public class ObjectNode extends Node {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ObjectNode)) return false;
-        return super.equals(obj); //To change body of generated methods, choose Tools | Templates.
+        return obj instanceof ObjectNode && super.equals(obj);
     }
 
     @Override
@@ -43,6 +41,6 @@ public class ObjectNode extends Node {
     public String toString() {
         return "ObjectNode{" + "id=" + id + ", name=\"" + name + "\"}";
     }
-    
-    
+
+
 }

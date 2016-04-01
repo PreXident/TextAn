@@ -19,8 +19,9 @@ import java.util.List;
 
 /**
  * Basic DAO implemented with Hibernate
- * @param <E>  the type of the entity - extends AbstractTable
- * @param <K>  the type of the identifier of the entity
+ *
+ * @param <E> the type of the entity - extends AbstractTable
+ * @param <K> the type of the identifier of the entity
  * @see cz.cuni.mff.ufal.textan.data.repositories.common.IOperations
  * @see cz.cuni.mff.ufal.textan.data.tables.AbstractTable
  * @see org.hibernate.SessionFactory
@@ -29,24 +30,23 @@ import java.util.List;
  */
 //TODO: inherited classes should be annotated with @org.springframework.stereotype.Repository
 @Transactional
-public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Serializable> implements IOperations<E, K>   {
+public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Serializable> implements IOperations<E, K> {
     /**
-     *  alias in queries for this object
+     * alias in queries for this object
      */
     protected final static String thisAlias = "this";
-
-    /**
-     *  @see SessionFactory
-     */
-    protected SessionFactory sessionFactory;
     /**
      * The class of an entity type.
      */
-    protected Class<? extends E> type;
-    
+    protected final Class<? extends E> type;
+    /**
+     * @see SessionFactory
+     */
+    protected SessionFactory sessionFactory;
+
     /**
      * constructor
-     * 
+     *
      * @param type class of the Table
      */
     protected AbstractHibernateDAO(Class<? extends E> type) {
@@ -59,6 +59,29 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     @SuppressWarnings("unchecked")
     protected AbstractHibernateDAO() {
         this.type = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+
+    /**
+     * @param propertyName name of the property in the proper class
+     * @return "thisAlias." + propertyName
+     */
+    protected static String getAliasPropertyName(String propertyName) {
+        return DAOUtils.getAliasPropertyName(thisAlias, propertyName);
+    }
+
+    /**
+     * Adds pagination to a given Query.
+     *
+     * @param query       query to add pagination
+     * @param firstResult index of first result
+     * @param maxResults  number of results on the page
+     * @return query with pagination
+     * @see Query
+     */
+    protected static Query addPagination(Query query, int firstResult, int maxResults) {
+        query.setFirstResult(firstResult);
+        query.setMaxResults(maxResults);
+        return query;
     }
 
     /**
@@ -92,7 +115,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     @SuppressWarnings("unchecked")
     @Override
     public E find(K key) {
-        return (E)currentSession().get(type, key);
+        return currentSession().get(type, key);
     }
 
     /**
@@ -125,7 +148,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
                 .setMaxResults(pageSize)
                 .list();
         return new ResultPagination<>(firstResult, pageSize, results, count);
-    }    
+    }
 
     /**
      * Adds an entity into a repository.
@@ -138,7 +161,7 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     @SuppressWarnings("unchecked")
     @Override
     public K add(E entity) {
-        return (K)currentSession().save(entity);
+        return (K) currentSession().save(entity);
     }
 
     /**
@@ -182,10 +205,9 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
                 .setFirstResult(firstResult)
                 .setMaxResults(pageSize);
     }
+
     /**
-     *
      * @return Criteria that returns findAll
-     * 
      * @see Criteria
      */
     @Transactional(readOnly = true)
@@ -193,28 +215,28 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     protected Criteria findAllCriteria() {
         return currentSession().createCriteria(type, thisAlias);
     }
-    
+
     /**
      * Finds all entities in a repository which have specified value in some column.
      * Equals to "SELECT * WHERE columnName = columnValue" sql query
      *
-     * @param <T> Type of the column
+     * @param <T>          Type of the column
      * @param propertyName Name of the column in database
-     * @param columnValue Value in the column
+     * @param columnValue  Value in the column
      * @return List of entities satisfying the column constraint
      */
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     //@Override
     protected <T> List<E> findAllByProperty(String propertyName, T columnValue) {
-        return findAllByCriteria(new Criterion[]{Restrictions.eq(propertyName, columnValue)} );
+        return findAllByCriteria(new Criterion[]{Restrictions.eq(propertyName, columnValue)});
     }
 
     /**
      * Finds all entities in a repository by the specified criteria.
      * Equals to "SELECT * WHERE {criteria}" sql query
      *
-     * @param <T> Type of the column
+     * @param <T>      Type of the column
      * @param criteria Criteria to filter results
      * @return List of entities satisfying criteria constraints
      */
@@ -227,11 +249,12 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
         }
         return result.list();
     }
+
     /**
      * Finds all entities in a repository by the specified criteria.
      * Equals to "SELECT * WHERE {criteria}" sql query
      *
-     * @param <T> Type of the column
+     * @param <T>      Type of the column
      * @param criteria Criteria to filter results
      * @return List of entities satisfying criteria constraints
      */
@@ -240,30 +263,5 @@ public abstract class AbstractHibernateDAO<E extends AbstractTable, K extends Se
     @SuppressWarnings("unchecked")
     protected <T> List<E> findAllByCriteria(Criterion[] criteria) {
         return findAllByCriteria(Arrays.asList(criteria));
-    }
-
-
-    /**
-     *
-     * @param propertyName name of the property in the proper class
-     * @return "thisAlias." + propertyName
-     */
-    protected final static String getAliasPropertyName(String propertyName) {
-        return DAOUtils.getAliasPropertyName(thisAlias, propertyName);
-    }
-    /**
-     * Adds pagination to a given Query.
-     * 
-     * @param query query to add pagination
-     * @param firstResult index of first result
-     * @param maxResults number of results on the page
-     * @return query with pagination
-     * 
-     * @see Query
-     */
-    protected static Query addPagination(Query query, int firstResult, int maxResults) {
-        query.setFirstResult(firstResult);
-        query.setMaxResults(maxResults);
-        return query;
     }
 }

@@ -6,11 +6,9 @@
 
 package cz.cuni.mff.ufal.textan.data.test;
 
-import cz.cuni.mff.ufal.textan.data.test.common.TableAction;
-import cz.cuni.mff.ufal.textan.data.test.common.Data;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import org.hibernate.StaleObjectStateException;
+import cz.cuni.mff.ufal.textan.data.test.common.Data;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +20,6 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 
 /**
- *
  * @author Vaclav Pernicka
  */
 
@@ -33,7 +30,7 @@ public class ConcurrencyTest {
     @Autowired
     Data data;
     private DocumentTable objectType1;
-    
+
     @Before
     public void setUp() {
         System.out.println("Setup:");
@@ -41,40 +38,32 @@ public class ConcurrencyTest {
         data.addRecord(objectType1);
 
     }
-    
+
     @After
     public void tearDown() {
         System.out.println("\n\nTear down");
         data.deleteRecord(objectType1);
     }
 
-    
+
     @Test(
             //expected = StaleObjectStateException.class
     )
     public void DocumentRewriteJustRewrittenTest() {
         System.out.println("\n\nConcurrencyRewriteJustRewrittenTest");
         final long id = objectType1.getId();
-        data.updateRecordById(DocumentTable.class, id, new TableAction<DocumentTable>() {
-
-            @Override
-            public void action(DocumentTable table) {
-                table.setText("__[TEST]objecttype 1 changed");
-                data.updateRecordById(DocumentTable.class, id, new TableAction<DocumentTable>() {
-
-                    @Override
-                    public void action(DocumentTable table) {
-                        table.setText("__[TEST]objecttype 1 changed snd time");
-                        System.out.println("commiting __[TEST]objecttype 1 changed snd time");
-                    }
-                });
-                System.out.println("sommiting __[TEST]objecttype 1 changed");
-            }
+        data.updateRecordById(DocumentTable.class, id, table -> {
+            table.setText("__[TEST]objecttype 1 changed");
+            data.updateRecordById(DocumentTable.class, id, table1 -> {
+                table1.setText("__[TEST]objecttype 1 changed snd time");
+                System.out.println("commiting __[TEST]objecttype 1 changed snd time");
+            });
+            System.out.println("sommiting __[TEST]objecttype 1 changed");
         });
         DocumentTable objectType2 = data.getRecordById(DocumentTable.class, objectType1.getId());
         System.out.println("Changed object: " + objectType2);
     }
-    
+
     // TODO: Concurrency throws exception
 
 }

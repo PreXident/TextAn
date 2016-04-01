@@ -14,22 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- *
  * @author Vaclav Pernicka
  */
 @Repository
 @Transactional
 public class EntityViewDAO implements IEntityViewDAO {
 
-    SessionFactory sessionFactory;
+    final SessionFactory sessionFactory;
 
     @Autowired
     public EntityViewDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
-    
-    
-    
+
+
     @Override
     @SuppressWarnings("unchecked")
     public List<EntityView> findAll() {
@@ -41,8 +39,8 @@ public class EntityViewDAO implements IEntityViewDAO {
                         + "     inner join occ.alias al"
                         + "     inner join al.object obj"
                         + "     inner join obj.objectType objType"
-                
+
         ).list();
     }
-    
+
 }

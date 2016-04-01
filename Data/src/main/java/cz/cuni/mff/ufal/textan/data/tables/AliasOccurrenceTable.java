@@ -1,7 +1,5 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -120,8 +118,7 @@ public class AliasOccurrenceTable extends AbstractTable {
     public boolean equals(Object obj) {
         if (!(obj instanceof AliasOccurrenceTable)) return false;
         AliasOccurrenceTable aot = (AliasOccurrenceTable) obj;
-        if (aot.getId() != this.getId()) return false;
-        return aot.getPosition() == this.getPosition();
+        return aot.getId() == this.getId() && aot.getPosition() == this.getPosition();
     }
 
     @Override

@@ -1,13 +1,11 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.DocumentId;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.hibernate.search.annotations.DocumentId;
 
 /**
  * Type of a relation (killed, lived, was engaged, ...)

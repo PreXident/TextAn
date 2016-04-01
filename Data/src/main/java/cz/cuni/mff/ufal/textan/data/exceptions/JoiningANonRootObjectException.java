@@ -8,7 +8,7 @@ import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 
 /**
  * Exception thrown if it is tried to join objects that are not root
- * 
+ *
  * @author Vaclav Pernicka
  */
 public class JoiningANonRootObjectException extends AbstractDatabaseTextanException {
@@ -17,5 +17,5 @@ public class JoiningANonRootObjectException extends AbstractDatabaseTextanExcept
     public JoiningANonRootObjectException(ObjectTable badObject) {
         super(badObject);
     }
-    
+
 }

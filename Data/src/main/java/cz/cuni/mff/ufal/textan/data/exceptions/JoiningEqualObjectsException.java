@@ -4,11 +4,9 @@
 
 package cz.cuni.mff.ufal.textan.data.exceptions;
 
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-
 /**
  * This exception is thrown when it is attempted to join two equal objects.
- * 
+ *
  * @author Vaclav Pernicka
  */
 public class JoiningEqualObjectsException extends AbstractDatabaseTextanException {
@@ -17,5 +15,5 @@ public class JoiningEqualObjectsException extends AbstractDatabaseTextanExceptio
     public JoiningEqualObjectsException() {
         super();
     }
-    
+
 }

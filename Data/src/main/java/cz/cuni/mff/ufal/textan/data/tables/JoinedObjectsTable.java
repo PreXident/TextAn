@@ -33,7 +33,7 @@ public class JoinedObjectsTable extends AbstractTable {
     /**
      * Sets the "from Date" to current date and "to Date" to null which means infinity
      *
-     * @param newObject new joined object
+     * @param newObject  new joined object
      * @param oldObject1 first object to join
      * @param oldObject2 seconf object to join
      */

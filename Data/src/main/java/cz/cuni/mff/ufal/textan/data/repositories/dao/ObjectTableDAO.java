@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 
@@ -11,7 +5,11 @@ import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.common.DAOUtils;
 import cz.cuni.mff.ufal.textan.data.repositories.common.ResultPagination;
-import cz.cuni.mff.ufal.textan.data.tables.*;
+import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
+import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
+import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextQuery;
@@ -19,13 +17,11 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.sql.JoinType;
+import org.hibernate.transform.ResultTransformer;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.transform.ResultTransformer;
 
 /**
  * @author Vaclav Pernicka
@@ -185,9 +181,9 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
         return findAllCriteria()
                 .add(Restrictions.ge(ObjectTable.PROPERTY_NAME_GLOBAL_VERSION, version))
                 .list();
-                
+
     }
-    
+
     @Override
     public List<Pair<ObjectTable, RelationTable>> getNeighbors(ObjectTable object) {
         return getNeighbors(object.getId());
@@ -198,21 +194,21 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     public List<Pair<ObjectTable, RelationTable>> getNeighbors(long objectId) {
         return currentSession().createQuery(
                 "select obj2, rel"
-                + " from ObjectTable obj"
-                + "     inner join obj.relations inRel"
-                + "     inner join inRel.relation rel"
-                + "     inner join rel.objectsInRelation inRel2"
-                + "     inner join inRel2.object obj2"
-                + " where obj.id = :pId"
+                        + " from ObjectTable obj"
+                        + "     inner join obj.relations inRel"
+                        + "     inner join inRel.relation rel"
+                        + "     inner join rel.objectsInRelation inRel2"
+                        + "     inner join inRel2.object obj2"
+                        + " where obj.id = :pId"
         )
                 .setParameter("pId", objectId)
                 .setResultTransformer(new ResultTransformer() {
 
                     @Override
                     public Object transformTuple(Object[] tuple, String[] aliases) {
-                        return new Pair<> 
-                                ((ObjectTable)tuple[0], 
-                                 (RelationTable)tuple[1]);
+                        return new Pair<>
+                                ((ObjectTable) tuple[0],
+                                        (RelationTable) tuple[1]);
                     }
 
                     @Override
@@ -227,7 +223,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
     protected Criteria findAllCriteria() {
         return super.findAllCriteria()
                 .add(Restrictions.eqProperty(ObjectTable.PROPERTY_NAME_ID,
-                                             ObjectTable.PROPERTY_NAME_ROOT_OBJECT_ID));
+                        ObjectTable.PROPERTY_NAME_ROOT_OBJECT_ID));
     }
 
     private FullTextQuery findAllByAliasFullTextQuery(String pattern) {
@@ -242,7 +238,7 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
 
         return fullTextSession.createFullTextQuery(query);
     }
-    
+
     private FullTextQuery findAllByObjTypeAndAliasFullTextQuery(long objectTypeId, String pattern) {
         FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 
@@ -267,15 +263,15 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
 
         return fullTextSession.createFullTextQuery(query);
     }
-     
+
     private Query findAllByObjectTypeAndAliasSubStrQuery(long objectTypeId, String aliasSubstring) {
         Query hq = currentSession().createQuery(
                 "select distinct obj "
-              + "from ObjectTable as obj "
+                        + "from ObjectTable as obj "
                         + "inner join obj.rootOfObjects as rootOf "
                         + "inner join obj.objectType as type "
                         + "inner join rootOf.aliases as al "
-              + "where lower(al.alias) like lower(:pattern) and type.id = :objectTypeId "
+                        + "where lower(al.alias) like lower(:pattern) and type.id = :objectTypeId "
                         + "and obj.rootObject = obj.id"
         );
         hq.setParameter("pattern", DAOUtils.getLikeSubstring(aliasSubstring));
@@ -288,43 +284,43 @@ public class ObjectTableDAO extends AbstractHibernateDAO<ObjectTable, Long> impl
         Query hq = currentSession().createQuery(
                 "select distinct obj "
                         + "from ObjectTable as obj "
-                            + "inner join obj.rootOfObjects as rootOf "
-                            + "inner join rootOf.aliases as al "
+                        + "inner join obj.rootOfObjects as rootOf "
+                        + "inner join rootOf.aliases as al "
                         + "where lower(al.alias) like lower(:pattern)"
-                            + "and obj.rootObject = obj.id"           // this is root
+                        + "and obj.rootObject = obj.id"           // this is root
         );
         hq.setParameter("pattern", DAOUtils.getLikeSubstring(aliasSubstring));
         return hq;
     }
-    
+
     private Query findAllByAliasQuery(String aliasSubstring) {
         Query hq = currentSession().createQuery(
                 "select distinct obj "
-              + "from ObjectTable as obj "
+                        + "from ObjectTable as obj "
                         + "inner join obj.rootOfObjects as rootOf "
                         + "inner join rootOf.aliases as al "
-              + "where lower(al.alias) = lower(:pattern) "
+                        + "where lower(al.alias) = lower(:pattern) "
                         + "and obj.rootObject = obj.id"           // this is root
         );
-        
+
         hq.setParameter("pattern", aliasSubstring);
         return hq;
-        
+
     }
-    
+
     private Query findAllByDocumentQuery(Long documentId) {
         return currentSession().createQuery(
                 "select distinct obj "
-              + "from ObjectTable as obj "
+                        + "from ObjectTable as obj "
                         + "inner join obj.rootOfObjects as rootOf "
                         + "inner join rootOf.aliases as al "
                         + "inner join al.occurrences as occ "
                         + "inner join occ.document as doc "
-              + "where doc.id = :docId "
+                        + "where doc.id = :docId "
                         + "and obj.rootObject = obj.id"           // this is root
         )
-        .setParameter("docId", documentId);
-        
+                .setParameter("docId", documentId);
+
     }
 
 

@@ -7,17 +7,14 @@ package cz.cuni.mff.ufal.textan.data.graph.pathfinding;
 import cz.cuni.mff.ufal.textan.data.graph.Edge;
 import cz.cuni.mff.ufal.textan.data.graph.Node;
 import cz.cuni.mff.ufal.textan.data.graph.RelationNode;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 
 /**
- *
  * @author Vaclav Pernicka
  */
 public class RelationPathNode extends RelationNode implements IPathNode {
-
-    Edge previousEdge;
-    Node previousNode;
+    private Edge previousEdge;
+    private Node previousNode;
 
     public RelationPathNode(Edge previousEdge, Node previousNode, RelationTable rel) {
         super(rel);
@@ -39,8 +36,7 @@ public class RelationPathNode extends RelationNode implements IPathNode {
         super(id, relationTypeId, name);
     }
 
-    
-    
+
     @Override
     public Edge getPreviousEdge() {
         return previousEdge;
@@ -60,10 +56,6 @@ public class RelationPathNode extends RelationNode implements IPathNode {
     public void setPreviousNode(Node previousNode) {
         this.previousNode = previousNode;
     }
-    
-    
-    
-    
-    
-    
+
+
 }

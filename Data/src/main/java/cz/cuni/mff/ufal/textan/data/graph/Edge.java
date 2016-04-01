@@ -11,36 +11,14 @@ import java.util.Objects;
 /**
  * This class represents an edge in a graph.
  *
- * @see Graph
  * @author Vaclav Pernicka
+ * @see Graph
  */
 public class Edge {
-
-    /**
-     * Type of the edge orientation
-     */
-    public enum EdgeType {
-
-        /**
-         *  Edge is oriented from left node to the right one
-         */
-        LeftToRight,
-
-        /**
-         *  Edge is oriented from right node to the left one
-         */
-        RightToLeft,
-
-        /**
-         *  Edge is not oriented
-         */
-        Neutral
-    }
 
     ObjectNode leftNode;
     Node rightNode;
     int order;
-
     Edge() {
     }
 
@@ -86,7 +64,6 @@ public class Edge {
     }
 
     /**
-     *
      * @return left node of the edge
      */
     public ObjectNode getLeftNode() {
@@ -94,7 +71,6 @@ public class Edge {
     }
 
     /**
-     *
      * @param leftNode left node of the edge
      */
     void setLeftNode(ObjectNode leftNode) {
@@ -102,7 +78,6 @@ public class Edge {
     }
 
     /**
-     *
      * @return right node of the edge
      */
     public Node getRightNode() {
@@ -110,7 +85,6 @@ public class Edge {
     }
 
     /**
-     *
      * @param rightNode right node of the edge
      */
     void setRightNode(Node rightNode) {
@@ -118,9 +92,7 @@ public class Edge {
     }
 
     /**
-     *
      * @return edge's type
-     *
      * @see EdgeType
      */
     public EdgeType getOrientation() {
@@ -129,15 +101,35 @@ public class Edge {
         return EdgeType.RightToLeft;
     }
 
+    /**
+     * @return order in isinrelation table which describes the orientation of the edge
+     */
+    public int getOrder() {
+        return order;
+    }
+
     void setOrder(int order) {
         this.order = order;
     }
 
     /**
-     *
-     * @return order in isinrelation table which describes the orientation of the edge
+     * Type of the edge orientation
      */
-    public int getOrder() {
-        return order;
+    public enum EdgeType {
+
+        /**
+         * Edge is oriented from left node to the right one
+         */
+        LeftToRight,
+
+        /**
+         * Edge is oriented from right node to the left one
+         */
+        RightToLeft,
+
+        /**
+         * Edge is not oriented
+         */
+        Neutral
     }
 }

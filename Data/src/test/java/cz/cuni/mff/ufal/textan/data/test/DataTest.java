@@ -6,16 +6,18 @@
 
 package cz.cuni.mff.ufal.textan.data.test;
 
-import cz.cuni.mff.ufal.textan.data.test.common.Data;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IGlobalVersionTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
 import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO;
 import cz.cuni.mff.ufal.textan.data.tables.*;
-import cz.cuni.mff.ufal.textan.data.test.common.TableAction;
+import cz.cuni.mff.ufal.textan.data.test.common.Data;
 import cz.cuni.mff.ufal.textan.data.test.common.Utils;
-import org.junit.*;
+import org.hibernate.SessionFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,35 +25,25 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.Arrays;
-import org.hibernate.SessionFactory;
-import static org.junit.Assert.assertEquals;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DataConfig.class, Data.class}, loader = AnnotationConfigContextLoader.class)
 public class DataTest {
 
     @Autowired
-    private Data data;
-
-    @Autowired
-    private SessionFactory sessionFactory;    
-    
-    @Autowired
     IObjectTableDAO objectTableDAO;
-
     @Autowired
     IRelationTypeTableDAO relationTypeTableDAO;
-        
     @Autowired
     IDocumentTableDAO documentTableDAO;
-
     @Autowired
     IGlobalVersionTableDAO globalVersionDAO;
-
-    
+    @Autowired
+    private Data data;
+    @Autowired
+    private SessionFactory sessionFactory;
     private DocumentTable document;
     private RelationTypeTable relationType;
     private RelationTable withRelation;
@@ -61,7 +53,7 @@ public class DataTest {
     private AliasTable alias;
     private AliasOccurrenceTable aliasOccurrence;
 
-    
+
     @Before
     public void setUp() {
         document = new DocumentTable("__[TEST] Example document with some crazy text.");
@@ -72,29 +64,29 @@ public class DataTest {
         object = new ObjectTable("__[TEST] letter", objectType);
         alias = new AliasTable(object, "document");
         aliasOccurrence = new AliasOccurrenceTable(17, alias, document);
-        
+
         System.out.println("Setup");
         //System.out.println("If class Method fails, be sure you started the database.");
         assertTrue("You have probably not run the database or the connection is not set properly", data.addRecord(document));
         assertTrue(data.addRecord(relationType));
         assertTrue(data.addRecord(withRelation));
         assertTrue(data.addRecord(relationOccurrence));
-        
+
         assertTrue(data.addRecord(objectType));
         assertTrue(data.addRecord(object));
 
-        
+
         assertTrue(data.addRecord(alias));
         assertTrue(data.addRecord(aliasOccurrence));
-        
+
 
         //withRelation.getObjectsInRelation().add(object);
 
     }
-    
+
     @After
     public void tearDown() {
-         System.out.println("\n\nClean");
+        System.out.println("\n\nClean");
          /*
          assertTrue(data.deleteRecord(relationOccurrence));
          assertTrue(data.deleteRecord(aliasOccurrence));
@@ -105,11 +97,10 @@ public class DataTest {
          assertTrue(data.deleteRecord(object));
          assertTrue(data.deleteRecord(object.getObjectType()));
          */
-         
 
-         
-         System.out.println(" clearAllTables");
-         Utils.clearTestValues(sessionFactory);
+
+        System.out.println(" clearAllTables");
+        Utils.clearTestValues(sessionFactory);
     }
 
     // TODO add test methods here.
@@ -126,13 +117,13 @@ public class DataTest {
         long id = user.getId();
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
-        InRelationTable user2 = null;
+        InRelationTable user2;
         user2 = data.getRecordById(InRelationTable.class, id);
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
         assertTrue("data.deleteRecord(user2)", data.deleteRecord(user2));
     }
 
-    
+
     @Test
     public void addAndRemoveObjectTypeTest() {
         System.out.println("\n\naddAndRemoveObjectType");
@@ -141,12 +132,12 @@ public class DataTest {
         long id = user.getId();
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
-        ObjectTypeTable user2 = null;
+        ObjectTypeTable user2;
         user2 = data.getRecordById(ObjectTypeTable.class, id);
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
         assertTrue("data.deleteRecord(user2)", data.deleteRecord(user2));
     }
-    
+
     @Test
     public void addAndRemoveAliasOccurrenceTest() {
         System.out.println("\n\naddAndRemoveAliasOccurrenceTest");
@@ -155,135 +146,109 @@ public class DataTest {
         long id = user.getId();
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
-        AliasOccurrenceTable user2 = null;
+        AliasOccurrenceTable user2;
         user2 = data.getRecordById(AliasOccurrenceTable.class, id);
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
         assertTrue("data.deleteRecord(user2)", data.deleteRecord(user));
     }
-    
+
     @Test
     public void InverseMappingObjectTypeToObjectTest() {
-       System.out.println("\n\nInverseMappingObjectTypeToObjectTest");
-       data.updateRecordById(ObjectTypeTable.class, objectType.getId(), new TableAction<ObjectTypeTable>() {
-            // LAMBDA EXP COULD BE POSSIBLE AS WELL
-            @Override
-            public void action(ObjectTypeTable table) {
-                assertNotNull("Object not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
-                System.out.println("Set of objects: " + Arrays.toString(table.getObjectsOfThisType().toArray()));
-                System.out.println("Object: " + object);
-                assertTrue("Inverse mapping not working!", table.getObjectsOfThisType().contains(object));
-            }
+        System.out.println("\n\nInverseMappingObjectTypeToObjectTest");
+        data.updateRecordById(ObjectTypeTable.class, objectType.getId(), table -> {
+            assertNotNull("Object not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
+            System.out.println("Set of objects: " + Arrays.toString(table.getObjectsOfThisType().toArray()));
+            System.out.println("Object: " + object);
+            assertTrue("Inverse mapping not working!", table.getObjectsOfThisType().contains(object));
         });
-       
-       // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
+
+        // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
     }
- 
+
     @Test
     public void InverseMappingRelationToRelationOccurrenceTest() {
-       System.out.println("\n\nInverseMappingRelationToRelationOccurrenceTest");
-       data.updateRecordById(RelationTable.class, withRelation.getId(), new TableAction<RelationTable>() {
-            // LAMBDA EXP COULD BE POSSIBLE AS WELL
-            @Override
-            public void action(RelationTable table) {
-                assertNotNull("Relation not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
-                System.out.println("Set of relation occurrences: " + Arrays.toString(table.getOccurrences().toArray()));
-                System.out.println("Relation Occurrence: " + relationOccurrence);
-                assertTrue("Inverse mapping not working!", table.getOccurrences().contains(relationOccurrence));
-            }
+        System.out.println("\n\nInverseMappingRelationToRelationOccurrenceTest");
+        data.updateRecordById(RelationTable.class, withRelation.getId(), table -> {
+            assertNotNull("Relation not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
+            System.out.println("Set of relation occurrences: " + Arrays.toString(table.getOccurrences().toArray()));
+            System.out.println("Relation Occurrence: " + relationOccurrence);
+            assertTrue("Inverse mapping not working!", table.getOccurrences().contains(relationOccurrence));
         });
-       // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
+        // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
     }
+
     @Test
     public void InverseMappingObjectToAliasTest() {
-       System.out.println("\n\nInverseMappingObjectToAliasTest");
-       data.updateRecordById(ObjectTable.class, object.getId(), new TableAction<ObjectTable>() {
-            // LAMBDA EXP COULD BE POSSIBLE AS WELL
-            @Override
-            public void action(ObjectTable table) {
-                assertNotNull("Object not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
-                System.out.println("Object: " + table);
-                System.out.println("Set of aliases: " + Arrays.toString(table.getAliases().toArray()));
-                System.out.println("Alias: " + alias);
-                //System.out.println("Alias from db: " + data.getRecordById(AliasTable.class, alias.getId()));
-                assertTrue("Inverse mapping not working!", table.getAliases().contains(alias));
-            }
+        System.out.println("\n\nInverseMappingObjectToAliasTest");
+        data.updateRecordById(ObjectTable.class, object.getId(), table -> {
+            assertNotNull("Object not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
+            System.out.println("Object: " + table);
+            System.out.println("Set of aliases: " + Arrays.toString(table.getAliases().toArray()));
+            System.out.println("Alias: " + alias);
+            //System.out.println("Alias from db: " + data.getRecordById(AliasTable.class, alias.getId()));
+            assertTrue("Inverse mapping not working!", table.getAliases().contains(alias));
         });
-       // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
+        // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
     }
-    
+
     @Test
     public void InverseMappingRelationTypeToRelationTest() {
-       System.out.println("\n\nInverseMappingRelationTypeToRelationTest");
-       data.updateRecordById(RelationTypeTable.class, relationType.getId(), new TableAction<RelationTypeTable>() {
-            // LAMBDA EXP COULD BE POSSIBLE AS WELL
-            @Override
-            public void action(RelationTypeTable table) {
-                assertNotNull("Relation not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
-                System.out.println("Set of relations: " + Arrays.toString(table.getRelationsOfThisType().toArray()));
-                System.out.println("Relation: " + withRelation);
-                assertTrue("Inverse mapping not working!", table.getRelationsOfThisType().contains(withRelation));
-            }
+        System.out.println("\n\nInverseMappingRelationTypeToRelationTest");
+        data.updateRecordById(RelationTypeTable.class, relationType.getId(), table -> {
+            assertNotNull("Relation not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
+            System.out.println("Set of relations: " + Arrays.toString(table.getRelationsOfThisType().toArray()));
+            System.out.println("Relation: " + withRelation);
+            assertTrue("Inverse mapping not working!", table.getRelationsOfThisType().contains(withRelation));
         });
-       // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
+        // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
     }
 
     @Test
     public void InverseMappingDocumentToRelationOccurenceTest() {
-       System.out.println("\n\nInverseMappingRelationTypeToRelationTest");
-       data.updateRecordById(DocumentTable.class, document.getId(), new TableAction<DocumentTable>() {
-            // LAMBDA EXP COULD BE POSSIBLE AS WELL
-            @Override
-            public void action(DocumentTable table) {
-                assertNotNull("Document not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
-                System.out.println("Set of relation occurrences: " + Arrays.toString(table.getRelationOccurrences().toArray()));
-                System.out.println("Relation occurrence: " + relationOccurrence);
-                assertTrue("Inverse mapping not working!", table.getRelationOccurrences().contains(relationOccurrence));
-            }
+        System.out.println("\n\nInverseMappingRelationTypeToRelationTest");
+        data.updateRecordById(DocumentTable.class, document.getId(), table -> {
+            assertNotNull("Document not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
+            System.out.println("Set of relation occurrences: " + Arrays.toString(table.getRelationOccurrences().toArray()));
+            System.out.println("Relation occurrence: " + relationOccurrence);
+            assertTrue("Inverse mapping not working!", table.getRelationOccurrences().contains(relationOccurrence));
         });
-       // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
+        // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
     }
+
     @Test
     public void InverseMappingDocumentToAliasOccurenceTest() {
-       System.out.println("\n\nInverseMappingDocumentToAliasOccurenceTest");
-       data.updateRecordById(DocumentTable.class, document.getId(), new TableAction<DocumentTable>() {
-            // LAMBDA EXP COULD BE POSSIBLE AS WELL
-            @Override
-            public void action(DocumentTable table) {
-                assertNotNull("Document not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
-                System.out.println("Set of alias occurrences: " + Arrays.toString(table.getAliasOccurrences().toArray()));
-                System.out.println("Alias occurrence: " + aliasOccurrence);
-                assertTrue("Inverse mapping not working!", table.getAliasOccurrences().contains(aliasOccurrence));
-            }
+        System.out.println("\n\nInverseMappingDocumentToAliasOccurenceTest");
+        data.updateRecordById(DocumentTable.class, document.getId(), table -> {
+            assertNotNull("Document not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
+            System.out.println("Set of alias occurrences: " + Arrays.toString(table.getAliasOccurrences().toArray()));
+            System.out.println("Alias occurrence: " + aliasOccurrence);
+            assertTrue("Inverse mapping not working!", table.getAliasOccurrences().contains(aliasOccurrence));
         });
-       // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
+        // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
     }
 
     @Test
     public void InverseMappingAliasToAliasOccurenceTest() {
-       System.out.println("\n\nInverseMappingAliasToAliasOccurenceTest");
-       data.updateRecordById(AliasTable.class, alias.getId(), new TableAction<AliasTable>() {
-            // LAMBDA EXP COULD BE POSSIBLE AS WELL
-            @Override
-            public void action(AliasTable table) {
-                assertNotNull("Document not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
-                System.out.println("Set of alias occurrences: " + Arrays.toString(table.getOccurrences().toArray()));
-                System.out.println("Alias occurrence: " + aliasOccurrence);
-                assertTrue("Inverse mapping not working!", table.getOccurrences().contains(aliasOccurrence));
-            }
+        System.out.println("\n\nInverseMappingAliasToAliasOccurenceTest");
+        data.updateRecordById(AliasTable.class, alias.getId(), table -> {
+            assertNotNull("Document not found (Deleted in some other test and that shouldnt be done) Bitch please", table);
+            System.out.println("Set of alias occurrences: " + Arrays.toString(table.getOccurrences().toArray()));
+            System.out.println("Alias occurrence: " + aliasOccurrence);
+            assertTrue("Inverse mapping not working!", table.getOccurrences().contains(aliasOccurrence));
         });
-       // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
+        // you must use performActionOnRecord here. Otherwise (getRecordById) would throw an exception (there cant be used lazy fetching)
     }
-    
+
     @Test(expected = org.hibernate.LazyInitializationException.class)
     public void BadPracticeLazyFetchingTest() {
-       System.out.println("\n\nBadPracticeLazyFetchingTest");
+        System.out.println("\n\nBadPracticeLazyFetchingTest");
 
-       // you cannot use it like this (this relation is not fetched).
-       // Look at InverseMappingObjectTypeToObjectTest how to do it properly
-       data.getRecordById(ObjectTypeTable.class, objectType.getId()).getObjectsOfThisType().size();
+        // you cannot use it like this (this relation is not fetched).
+        // Look at InverseMappingObjectTypeToObjectTest how to do it properly
+        data.getRecordById(ObjectTypeTable.class, objectType.getId()).getObjectsOfThisType().size();
 
     }
-    
+
     @Test
     public void addAndRemoveRelationTypeTest() {
         System.out.println("\n\naddAndRemoveRelationType");
@@ -292,12 +257,12 @@ public class DataTest {
         long id = user.getId();
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
-        RelationTypeTable user2 = null;
+        RelationTypeTable user2;
         user2 = data.getRecordById(RelationTypeTable.class, id);
         assertTrue("user2.equals(user): user = " + user + "; user2 = " + user2, user2.equals(user));
         assertTrue("data.deleteRecord(user2)", data.deleteRecord(user2));
     }
-    
+
     @Test
     public void addAndRemoveObjectTest() {
         System.out.println("\n\naddAndRemoveObject");
@@ -306,33 +271,28 @@ public class DataTest {
         System.out.println("Object typed added: " + ott);
         try {
             // TODO OBJECT ADD AND REMOVE
-            
+
             ObjectTable ot = data.getRecordById(ObjectTable.class, 1L);
             System.out.println("ot = " + ot);
-            
+
             try {
                 ot = new ObjectTable("__[TEST] object data XXX ###asd", ott);
                 assertTrue("Object type already exists or cant be added: " + ot, data.addRecord(ot));
                 System.out.println("Object added: " + ot);
-                
-            } catch (Exception e) {
-                throw e;
+
             } finally {
                 assertTrue("Object cant be deleted: " + ot, data.deleteRecord(ot));
                 System.out.println("Object deleted: " + ot);
             }
-            
-            
-            
-        } catch (Exception e) {
-            throw e;
+
+
         } finally {
             assertTrue("data.deleteRecord(ott)", data.deleteRecord(ott));
             System.out.println("Object type deleted: " + ott);
 
         }
     }
-    
+
     @Test
     public void addAndRemoveRelationTest() {
         System.out.println("\n\naddAndRemoveRelation");
@@ -340,24 +300,23 @@ public class DataTest {
         assertTrue("Object type already exists or cant be added", data.addRecord(relationType));
         System.out.println("Object typed added: " + relationType);
 
-            RelationTable relation = data.getRecordById(RelationTable.class, 1L);
-            System.out.println("ot = " + relation);
+        RelationTable relation = data.getRecordById(RelationTable.class, 1L);
+        System.out.println("ot = " + relation);
 
-                relation = new RelationTable(relationType);
-                assertTrue("Relation type already exists or cant be added: " + relation, data.addRecord(relation));
-                System.out.println("Relation added: " + relation);
-                
-                //assertTrue("Relation cant be deleted: " + relation, data.deleteRecord(relation));
-                //System.out.println("Relation deleted: " + relation);
-            
-            
+        relation = new RelationTable(relationType);
+        assertTrue("Relation type already exists or cant be added: " + relation, data.addRecord(relation));
+        System.out.println("Relation added: " + relation);
 
-            assertTrue("data.deleteRecord(relationType)", data.deleteRecord(relationType));
-            System.out.println("Relation type deleted: " + relationType);
+        //assertTrue("Relation cant be deleted: " + relation, data.deleteRecord(relation));
+        //System.out.println("Relation deleted: " + relation);
+
+
+        assertTrue("data.deleteRecord(relationType)", data.deleteRecord(relationType));
+        System.out.println("Relation type deleted: " + relationType);
 
 
     }
-   
+
     @Test
     public void addAndRemoveDocumentTest() {
         System.out.println("\n\naddAndRemoveDocument");
@@ -366,7 +325,7 @@ public class DataTest {
         long id = document.getId();
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
-        DocumentTable doc2 = null;
+        DocumentTable doc2;
         doc2 = data.getRecordById(DocumentTable.class, id);
         assertTrue("doc2.equals(doc): doc = " + document + "; doc2 = " + doc2, doc2.equals(document));
         assertTrue("data.deleteRecord(user2)", data.deleteRecord(doc2));
@@ -380,8 +339,6 @@ public class DataTest {
         System.out.println("Alias added: " + ott);
         try {
             assertTrue("data.deleteRecord(ott)", data.deleteRecord(ott));
-        } catch (Exception e) {
-            throw e;
         } finally {
             System.out.println("Object type deleted: " + ott);
 
@@ -426,12 +383,12 @@ public class DataTest {
 
         user = data.getRecordById(JoinedObjectsTable.class, id);
         JoinedObjectsTable user2 = data.getRecordById(JoinedObjectsTable.class, id);
-        
+
         assertEquals("user2.equals(user):\nuser1 = " + user + ";\nuser2 = " + user2, user, user2);
         assertTrue("data.deleteRecord(user2)", data.deleteRecord(user2));
     }
-    
-    
+
+
     // TODO:IsInRelationBidirectionalTest
     
     

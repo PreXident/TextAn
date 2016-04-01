@@ -32,13 +32,13 @@ public class ObjectTable extends AbstractTable {
     private long id;
     private String data;
     private long globalVersion;
-    
+
     private ObjectTable rootObject;
     private ObjectTypeTable objectType;
     private Set<AliasTable> aliases = new HashSet<>();
     private Set<InRelationTable> relations = new HashSet<>();
 
-    private Set<ObjectTable> rootOfObjects = new HashSet<ObjectTable>();
+    private Set<ObjectTable> rootOfObjects = new HashSet<>();
     private JoinedObjectsTable newObject;
     private JoinedObjectsTable oldObject1;
     private JoinedObjectsTable oldObject2;
@@ -181,7 +181,7 @@ public class ObjectTable extends AbstractTable {
         this.oldObject2 = oldObject2;
     }
 
-     /**
+    /**
      * <b>Changes in returned set do not propagate into database!</b>
      *
      * @return All objects this object WAS composed from
@@ -238,4 +238,4 @@ public class ObjectTable extends AbstractTable {
         hash = 79 * hash + Objects.hashCode(this.objectType);
         return hash;
     }
-    }
+}

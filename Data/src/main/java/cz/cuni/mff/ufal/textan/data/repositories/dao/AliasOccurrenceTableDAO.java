@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author Vaclav Pernicka
  */
 @Repository
@@ -19,5 +18,5 @@ public class AliasOccurrenceTableDAO extends AbstractHibernateDAO<AliasOccurrenc
     public AliasOccurrenceTableDAO() {
         super(AliasOccurrenceTable.class);
     }
-    
+
 }

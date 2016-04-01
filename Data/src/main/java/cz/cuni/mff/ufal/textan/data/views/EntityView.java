@@ -8,7 +8,7 @@ import java.util.Objects;
 
 /**
  * Record representing that an alias was occurred in a document
- * 
+ *
  * @author Vaclav Pernicka
  */
 public class EntityView {
@@ -80,20 +80,20 @@ public class EntityView {
             return false;
         }
         final EntityView other = (EntityView) obj;
-        if (this.DocumentID != other.DocumentID) {
+        if (!this.DocumentID.equals(other.DocumentID)) {
             return false;
         }
-        if (this.aliasOccurrencePosition != other.aliasOccurrencePosition) {
+        if (!this.aliasOccurrencePosition.equals(other.aliasOccurrencePosition)) {
             return false;
         }
-        if (!Objects.equals(this.alias, other.alias)) {
+        if (!this.alias.equals(other.alias)) {
             return false;
         }
-        if (this.objectTypeID != other.objectTypeID) {
+        if (!this.objectTypeID.equals(other.objectTypeID)) {
             return false;
         }
         return true;
     }
-    
-    
+
+
 }

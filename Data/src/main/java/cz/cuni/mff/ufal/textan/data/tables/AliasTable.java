@@ -1,14 +1,12 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.hibernate.search.annotations.*;
-import org.hibernate.search.annotations.Index;
 
 /**
  * Alias of an entity. For a person it could be "Karel", "Kája" or "The butcher"
@@ -36,7 +34,7 @@ public class AliasTable extends AbstractTable {
     public AliasTable(ObjectTable object, String alias) {
         this.object = object;
         this.object.getAliases().add(this);
-        
+
         this.alias = alias;
     }
 
@@ -94,8 +92,7 @@ public class AliasTable extends AbstractTable {
     public boolean equals(Object o) {
         if (!(o instanceof AliasTable)) return false;
         AliasTable at = (AliasTable) o;
-        if (at.getId() != this.getId()) return false;
-        return at.getAlias().equals(this.getAlias());
+        return at.getId() == this.getId() && at.getAlias().equals(this.getAlias());
     }
 
     @Override

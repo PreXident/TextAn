@@ -11,8 +11,8 @@ import java.util.Set;
  * @author Vaclav Pernicka
  */
 public class Graph {
-    Set<Node> nodes = new HashSet<>();
-    Set<Edge> edges = new HashSet<>();
+    final Set<Node> nodes = new HashSet<>();
+    final Set<Edge> edges = new HashSet<>();
 
     Graph() {
     }
@@ -20,38 +20,6 @@ public class Graph {
     Graph(Collection<? extends Node> nodes, Collection<? extends Edge> edges) {
         this.nodes.addAll(nodes);
         this.edges.addAll(edges);
-    }
-
-    /**
-     *
-     * @return nodes of the graph
-     */
-    public Set<Node> getNodes() {
-        return nodes;
-    }
-
-    /**
-     *
-     * @return edges of the graph
-     */
-    public Set<Edge> getEdges() {
-        return edges;
-    }
-
-    Graph add(Node node) {
-        nodes.add(node);
-        return this;
-    }
-
-    Graph add(Edge edge) {
-        edges.add(edge);
-        return this;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Graph{" + "nodes=" + nodes + ", edges=" + edges + '}';
     }
 
     /**
@@ -87,6 +55,35 @@ public class Graph {
     }
 
     /**
+     * @return nodes of the graph
+     */
+    public Set<Node> getNodes() {
+        return nodes;
+    }
+
+    /**
+     * @return edges of the graph
+     */
+    public Set<Edge> getEdges() {
+        return edges;
+    }
+
+    Graph add(Node node) {
+        nodes.add(node);
+        return this;
+    }
+
+    Graph add(Edge edge) {
+        edges.add(edge);
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Graph{" + "nodes=" + nodes + ", edges=" + edges + '}';
+    }
+
+    /**
      * Performs union to this graph.
      *
      * @param graph
@@ -95,7 +92,7 @@ public class Graph {
         nodes.addAll(graph.nodes);
         edges.addAll(graph.edges);
     }
-    
+
     /**
      * performs intersection to this graph.
      *
@@ -105,14 +102,15 @@ public class Graph {
         nodes.retainAll(graph.nodes);
         edges.retainAll(graph.edges);
     }
+
     /**
      * performs subtraction to this graph.
-     * 
-     * @param graph 
+     *
+     * @param graph
      */
     void subractIntoThis(final Graph graph) {
         nodes.removeAll(graph.nodes);
         edges.removeAll(graph.edges);
-    }    
-    
+    }
+
 }

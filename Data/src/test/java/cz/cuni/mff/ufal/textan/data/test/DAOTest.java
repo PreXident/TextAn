@@ -6,21 +6,17 @@
 
 package cz.cuni.mff.ufal.textan.data.test;
 
-import cz.cuni.mff.ufal.textan.data.test.common.Data;
 import cz.cuni.mff.ufal.textan.commons.utils.Pair;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.exceptions.JoiningANonRootObjectException;
 import cz.cuni.mff.ufal.textan.data.exceptions.JoiningEqualObjectsException;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IAliasTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IDocumentTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IGlobalVersionTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IJoinedObjectsTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IObjectTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTableDAO;
-import cz.cuni.mff.ufal.textan.data.repositories.dao.IRelationTypeTableDAO;
+import cz.cuni.mff.ufal.textan.data.repositories.dao.*;
 import cz.cuni.mff.ufal.textan.data.tables.*;
+import cz.cuni.mff.ufal.textan.data.test.common.Data;
 import cz.cuni.mff.ufal.textan.data.test.common.Utils;
+import org.hibernate.SessionFactory;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,13 +27,10 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.util.AssertionErrors;
 
 import java.util.List;
-import org.hibernate.SessionFactory;
-import org.junit.Assert;
 
 import static org.junit.Assert.assertTrue;
 
 /**
- *
  * @author Vaclav Pernicka
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -45,19 +38,19 @@ import static org.junit.Assert.assertTrue;
 public class DAOTest {
     @Autowired
     SessionFactory sessionFactory;
-    
+
     @Autowired
     Data data;
 
     @Autowired
     IObjectTableDAO objectTableDAO;
-    
+
     @Autowired
     IRelationTableDAO relationTableDAO;
 
     @Autowired
     IRelationTypeTableDAO relationTypeTableDAO;
-        
+
     @Autowired
     IAliasTableDAO aliasTableDAO;
 
@@ -66,10 +59,10 @@ public class DAOTest {
 
     @Autowired
     IGlobalVersionTableDAO globalVersionDAO;
-    
+
     @Autowired
     IJoinedObjectsTableDAO joinedObjectsDAO;
-    
+
     private DocumentTable document;
     private RelationTypeTable relationType;
     private RelationTable withRelation;
@@ -78,7 +71,7 @@ public class DAOTest {
     private ObjectTable object;
     private AliasTable alias;
     private AliasOccurrenceTable aliasOccurrence;
-    
+
     private ObjectTypeTable objectTypeEmpty;
     private DocumentTable documentEmpty;
     private RelationTypeTable relationTypeEmpty;
@@ -86,14 +79,14 @@ public class DAOTest {
 
     @Before
     public void setUp() {
-        
+
         document = new DocumentTable("__[TEST] Example document with some crazy text.");
         relationType = new RelationTypeTable("__[TEST] with");
         withRelation = new RelationTable(relationType);
         relationOccurrence = new RelationOccurrenceTable(withRelation, document, 26, "with");
         objectType = new ObjectTypeTable("__[TEST]objecttype1");
         object = new ObjectTable("__[TEST] letter", objectType);
-        object2 = new ObjectTable("__[TEST] letter2", objectType);        
+        object2 = new ObjectTable("__[TEST] letter2", objectType);
         alias = new AliasTable(object, "document");
         aliasOccurrence = new AliasOccurrenceTable(17, alias, document);
 
@@ -101,31 +94,31 @@ public class DAOTest {
         relationTypeEmpty = new RelationTypeTable("__[TEST]relationtype2");
         documentEmpty = new DocumentTable("__[TEST] Empty document");
 
-        
+
         System.out.println("Setup");
         //System.out.println("If class Method fails, be sure you started the database.");
         assertTrue("You have probably not run the database or the connection is not set properly", data.addRecord(document));
         assertTrue(data.addRecord(relationType));
         assertTrue(data.addRecord(withRelation));
         assertTrue(data.addRecord(relationOccurrence));
-        
+
         assertTrue(data.addRecord(objectType));
         assertTrue(data.addRecord(object));
         assertTrue(data.addRecord(object2));
-        
+
         assertTrue(data.addRecord(alias));
         assertTrue(data.addRecord(aliasOccurrence));
-        
+
         assertTrue(data.addRecord(objectTypeEmpty));
         assertTrue(data.addRecord(documentEmpty));
         //withRelation.getObjectsInRelation().add(object);
 
     }
-    
+
     @After
     public void tearDown() {
-        
-         System.out.println("\n\nClean");
+
+        System.out.println("\n\nClean");
          /*assertTrue(data.deleteRecord(relationOccurrence));
          assertTrue(data.deleteRecord(aliasOccurrence));
          assertTrue(data.deleteRecord(document));
@@ -140,11 +133,11 @@ public class DAOTest {
          assertTrue(data.deleteRecord(documentEmpty));
          */
 
-         System.out.println(" clearAllTables");
-         Utils.clearTestValues(sessionFactory);
+        System.out.println(" clearAllTables");
+        Utils.clearTestValues(sessionFactory);
     }
-    
-    
+
+
     @Test
     public void findAllTest() {
         List<ObjectTable> res = objectTableDAO.findAll();
@@ -154,21 +147,23 @@ public class DAOTest {
         }
         assertTrue("Object not found", false);
     }
-    
+
     @Test
     public void findTest() {
         ObjectTable objectTable = objectTableDAO.find(object.getId());
         AssertionErrors.assertEquals("Object not found", object, objectTable);
     }
+
     @Test
     public void failFindTest() {
         ObjectTable objectTable = objectTableDAO.find(-5L);
         if (objectTable == null) return;
         AssertionErrors.assertTrue("Object found but shouldnt be", !objectTable.equals(object));
     }
+
     @Test
     public void addAndDeleteTest() {
-        
+
         ObjectTable object2 = new ObjectTable("__[TEST] letter2", objectType);
         Long key = objectTableDAO.add(object2);
         ObjectTable obj2 = objectTableDAO.find(key);
@@ -176,10 +171,10 @@ public class DAOTest {
         objectTableDAO.delete(key);
         obj2 = objectTableDAO.find(key);
         AssertionErrors.assertEquals("Deleting was not succesful", obj2, null);
-       
+
     }
 
-    
+
     @Test
     public void objectTableFindAllByAliasEqualToTest() {
         List<ObjectTable> res = objectTableDAO.findAllByAliasEqualTo("document");
@@ -189,7 +184,7 @@ public class DAOTest {
         }
         assertTrue("Object not found", false);
     }
-    
+
     @Test
     public void objectTableFindAllByAliasSubstringTest() {
         List<ObjectTable> res = objectTableDAO.findAllByAliasSubstring("ocum");
@@ -199,7 +194,7 @@ public class DAOTest {
         }
         assertTrue("Object not found", false);
     }
-    
+
     @Test
     public void objectTableFindAllByDocumentOccurrenceTest() {
         List<ObjectTable> res = objectTableDAO.findAllByDocumentOccurrence(document);
@@ -209,7 +204,7 @@ public class DAOTest {
         }
         assertTrue("Object not found", false);
     }
-    
+
     @Test
     public void objectTableFindAllByObjectTypeTest() {
         List<ObjectTable> res = objectTableDAO.findAllByObjectType(objectType);
@@ -225,7 +220,7 @@ public class DAOTest {
         List<ObjectTable> res = objectTableDAO.findAllByObjectType(objectTypeEmpty);
         for (ObjectTable objectTable : res) {
             if (objectTable.equals(object))
-               assertTrue("Object found but should be found", false);
+                assertTrue("Object found but should be found", false);
         }
     }
 
@@ -234,10 +229,10 @@ public class DAOTest {
         List<ObjectTable> res = objectTableDAO.findAllByDocumentOccurrence(documentEmpty);
         for (ObjectTable objectTable : res) {
             if (objectTable.equals(object))
-               assertTrue("Object found but should be found", false);
+                assertTrue("Object found but should be found", false);
         }
     }
-    
+
     @Test
     public void objectgetNeighborsTest() {
         System.out.println("\n\nobjectgetNeighborsTest");
@@ -246,7 +241,7 @@ public class DAOTest {
             System.out.println(objectRelTable);
         }
     }
-    
+
     @Test
     public void relationTableFindAllByAliasEqualToTest() {
         List<RelationTable> res = relationTableDAO.findAllByAliasEqualTo("with");
@@ -256,7 +251,7 @@ public class DAOTest {
         }
         assertTrue("Relation not found", false);
     }
-    
+
     @Test
     public void relationTableFindAllByAliasSubstringTest() {
         List<RelationTable> res = relationTableDAO.findAllByAliasSubstring("th");
@@ -266,7 +261,7 @@ public class DAOTest {
         }
         assertTrue("Object not found", false);
     }
-    
+
     @Test
     public void relationTableFindAllByDocumentOccurrenceTest() {
         List<RelationTable> res = relationTableDAO.findAllByDocumentOccurrence(document);
@@ -276,7 +271,7 @@ public class DAOTest {
         }
         assertTrue("Object not found", false);
     }
-    
+
     @Test
     public void relationTableFindAllByObjectTypeTest() {
         List<RelationTable> res = relationTableDAO.findAllByRelationType(relationType);
@@ -292,7 +287,7 @@ public class DAOTest {
         List<RelationTable> res = relationTableDAO.findAllByRelationType(relationTypeEmpty);
         for (RelationTable objectTable : res) {
             if (objectTable.equals(withRelation))
-               assertTrue("Object found but should be found", false);
+                assertTrue("Object found but should be found", false);
         }
     }
 
@@ -301,10 +296,10 @@ public class DAOTest {
         List<RelationTable> res = relationTableDAO.findAllByDocumentOccurrence(documentEmpty);
         for (RelationTable objectTable : res) {
             if (objectTable.equals(withRelation))
-               assertTrue("Object found but should be found", false);
+                assertTrue("Object found but should be found", false);
         }
     }
-    
+
     @Test
     public void aliasFindAllByObjectTest() {
         List<AliasTable> res = aliasTableDAO.findAllAliasesOfObject(object);
@@ -315,7 +310,7 @@ public class DAOTest {
         assertTrue("Alias not found", false);
 
     }
-    
+
     @Test
     public void documentFindAllDocumentsWithObjectTest() {
         List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithObject(object);
@@ -326,7 +321,7 @@ public class DAOTest {
         assertTrue("Document not found", false);
 
     }
-    
+
     @Test
     public void documentFindAllDocumentsWithRelationTest() {
         System.out.println("\n\ndocumentFindAllDocumentsWithRelationTest");
@@ -346,7 +341,7 @@ public class DAOTest {
         for (Pair<DocumentTable, Integer> objectTableCountPair : res) {
             if (objectTableCountPair.getFirst().equals(document)) {
                 System.out.println(document.getAliasOccurrences());
- 
+
                 Assert.assertEquals("Count is not 1", 1, objectTableCountPair.getSecond().intValue());
                 return;
             }
@@ -354,7 +349,7 @@ public class DAOTest {
         assertTrue("Document not found", false);
 
     }
-    
+
     @Test
     public void findAllDocumentsWithObjectByFullTextTest() {
         System.out.println("\n\nfindAllDocumentsWithObjectByFullText");
@@ -367,7 +362,7 @@ public class DAOTest {
         }
         assertTrue("Document not found", false);
     }
-    
+
     @Test
     public void findAllDocumentsWithObjectByFullTextFailTest() {
         List<Pair<DocumentTable, Integer>> res = documentTableDAO.findAllDocumentsWithObjectByFullText(object.getId(), "documentBlamBlum");
@@ -378,7 +373,7 @@ public class DAOTest {
             }
         }
     }
-    
+
     @Test
     public void globalVersionTest() {
         System.out.println("Global version = " + globalVersionDAO.getCurrentVersion());
@@ -386,7 +381,7 @@ public class DAOTest {
         Assert.assertNotEquals("global version is not 0", 0, globalVersionDAO.getCurrentVersion());
 
     }
-    
+
     @Test
     public void addAndRemoveJoinedObjectsTest() {
         System.out.println("\n\naddAndRemoveJoinedObjectsTest");
@@ -397,32 +392,32 @@ public class DAOTest {
         System.out.println("user.id = " + id);
         assertTrue("id > 0", id > 0);
         //System.out.println("id: " + id);
-        JoinedObjectsTable user2 = null;
+        JoinedObjectsTable user2;
         user2 = joinedObjectsDAO.find(id);
-        
+
         assertTrue("user2.equals(user):\nuser1 = " + user + ";\nuser2 = " + user2, user2.equals(user));
-        
+
         //joinedObjectsDAO.delete(user2);
     }
-    
+
     @Test
     public void joinObjectsTest() throws JoiningANonRootObjectException, JoiningEqualObjectsException {
         System.out.println("\n\nJoinObjectTest");
 
         System.out.println("Object: " + object);
         System.out.println("Object2: " + object2);
-        
+
         System.out.println("Joining...");
         ObjectTable joinedObj = joinedObjectsDAO.join(object, object2);
-        
+
         System.out.println("Joined Object: " + joinedObj);
         System.out.println("Object: " + object);
         System.out.println("Object2: " + object2);
-        
+
         Assert.assertNotNull("Joined object is null", joinedObj);
         Assert.assertEquals(object.getRootObject(), joinedObj);
         Assert.assertEquals(object2.getRootObject(), joinedObj);
-        
+
         System.out.println("object.getOldObject1:" + object.getOldObject1());
         System.out.println("object.getOldObject2:" + object.getOldObject2());
         System.out.println("object.getNewObject:" + object.getNewObject());
@@ -434,12 +429,11 @@ public class DAOTest {
         System.out.println("joinedObj.getOldObject1:" + joinedObj.getOldObject1());
         System.out.println("joinedObj.getOldObject2:" + joinedObj.getOldObject2());
         System.out.println("joinedObj.getNewObject:" + joinedObj.getNewObject());
-        
+
         //joinedObjectsDAO.delete(joinedObj.getNewObject());
         //objectTableDAO.delete(joinedObj);
     }
-    
-    
+
 
 }
 

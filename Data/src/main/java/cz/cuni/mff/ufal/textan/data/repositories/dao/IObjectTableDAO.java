@@ -10,7 +10,6 @@ import java.util.List;
 
 /**
  * DAO interface to get Objects.
- *
  */
 public interface IObjectTableDAO extends
         IObjectRelationDAO<ObjectTable>,
@@ -28,9 +27,9 @@ public interface IObjectTableDAO extends
      * Finds all objects satisfying alias pattern by full-text.
      * Supporting pagination.
      *
-     * @param pattern pattern of object alias.
+     * @param pattern     pattern of object alias.
      * @param firstResult index of first result
-     * @param pageSize maximal number of records to return
+     * @param pageSize    maximal number of records to return
      * @return List of objects.
      */
     ResultPagination<ObjectTable> findAllByAliasFullTextWithPagination(String pattern, int firstResult, int pageSize);
@@ -39,7 +38,7 @@ public interface IObjectTableDAO extends
      * Finds all objects of given type and matching alias pattern by full-text.
      *
      * @param objectTypeId type id
-     * @param pattern Alias pattern
+     * @param pattern      Alias pattern
      * @return all objects of given type and matching alias pattern by full-text
      */
     List<ObjectTable> findAllByObjTypeAndAliasFullText(long objectTypeId, String pattern);
@@ -49,9 +48,9 @@ public interface IObjectTableDAO extends
      * Supporting pagination.
      *
      * @param objectTypeId type id
-     * @param pattern Alias pattern
-     * @param firstResult index of first result
-     * @param pageSize maximal number of records to return
+     * @param pattern      Alias pattern
+     * @param firstResult  index of first result
+     * @param pageSize     maximal number of records to return
      * @return all objects of given type and matching alias pattern by full-text
      */
     ResultPagination<ObjectTable> findAllByObjTypeAndAliasFullTextWithPagination(long objectTypeId, String pattern, int firstResult, int pageSize);
@@ -59,7 +58,7 @@ public interface IObjectTableDAO extends
     /**
      * finds all objects of specified type and alias
      *
-     * @param objectTypeId id of object type
+     * @param objectTypeId   id of object type
      * @param aliasSubstring substring to search for
      * @return all objects with matching alias
      */
@@ -68,10 +67,10 @@ public interface IObjectTableDAO extends
     /**
      * finds all objects of specified type and alias
      *
-     * @param objectTypeId id of object type
+     * @param objectTypeId   id of object type
      * @param aliasSubstring substring to search for
-     * @param firstResult index of first result
-     * @param pageSize maximal number of records to return
+     * @param firstResult    index of first result
+     * @param pageSize       maximal number of records to return
      * @return all objects with matching alias
      */
     ResultPagination<ObjectTable> findAllByObjectTypeAndAliasSubStrWithPagination(long objectTypeId, String aliasSubstring, int firstResult, int pageSize);
@@ -80,8 +79,8 @@ public interface IObjectTableDAO extends
      * finds all objects of specified type
      *
      * @param objectTypeId id of object type
-     * @param firstResult index of first result
-     * @param pageSize maximal number of records to return
+     * @param firstResult  index of first result
+     * @param pageSize     maximal number of records to return
      * @return all objects with matching alias
      */
     ResultPagination<ObjectTable> findAllByObjectTypeWithPagination(long objectTypeId, int firstResult, int pageSize);
@@ -97,9 +96,9 @@ public interface IObjectTableDAO extends
     /**
      * finds all objects of specified type
      *
-     * @param type object type
+     * @param type        object type
      * @param firstResult index of first result
-     * @param pageSize maximal number of records to return
+     * @param pageSize    maximal number of records to return
      * @return all object with given type
      */
     ResultPagination<ObjectTable> findAllByObjectTypeWithPagination(ObjectTypeTable type, int firstResult, int pageSize);

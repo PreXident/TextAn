@@ -26,8 +26,8 @@ public interface IRelationTableDAO extends
      * finds all relations of specified type
      *
      * @param relationTypeId id of the relation type
-     * @param firstResult index of first result
-     * @param pageSize number of results on the page
+     * @param firstResult    index of first result
+     * @param pageSize       number of results on the page
      * @return all relations of the given type
      */
     ResultPagination<RelationTable> findAllByRelationTypeWithPagination(long relationTypeId, int firstResult, int pageSize);
@@ -43,9 +43,9 @@ public interface IRelationTableDAO extends
     /**
      * finds all relations of specified type
      *
-     * @param type relation type
+     * @param type        relation type
      * @param firstResult index of first result
-     * @param pageSize number of results on the page
+     * @param pageSize    number of results on the page
      * @return all relations of the given type
      */
     ResultPagination<RelationTable> findAllByRelationTypeWithPagination(RelationTypeTable type, int firstResult, int pageSize);
@@ -54,7 +54,7 @@ public interface IRelationTableDAO extends
      * Finds all relations of given type and matching a given pattern in any occurrence by full-text.
      *
      * @param relationTypeId ID of a relation type.
-     * @param anchorFilter Anchor pattern for full-text.
+     * @param anchorFilter   Anchor pattern for full-text.
      * @return Relations.
      */
     List<RelationTable> findAllByRelTypeAndAnchorFullText(long relationTypeId, String anchorFilter);
@@ -64,9 +64,9 @@ public interface IRelationTableDAO extends
      * Supports pagination.
      *
      * @param relationTypeId ID of a relation type.
-     * @param anchorFilter Anchor pattern for full-text.
-     * @param firstResult index of first result
-     * @param maxResults number of results on the page
+     * @param anchorFilter   Anchor pattern for full-text.
+     * @param firstResult    index of first result
+     * @param maxResults     number of results on the page
      * @return Relations.
      */
     ResultPagination<RelationTable> findAllByRelTypeAndAnchorFullTextWithPagination(long relationTypeId, String anchorFilter, int firstResult, int maxResults);
@@ -78,14 +78,14 @@ public interface IRelationTableDAO extends
      * @return Relations.
      */
     List<RelationTable> findAllByAnchorFullText(String anchorFilter);
-    
+
     /**
      * Finds all relations matching a given pattern in any occurrence by full-text.
      * Supports pagination.
      *
      * @param anchorFilter Anchor pattern for full-text.
-     * @param firstResult index of first result
-     * @param maxResults number of results on the page
+     * @param firstResult  index of first result
+     * @param maxResults   number of results on the page
      * @return Relations.
      */
     ResultPagination<RelationTable> findAllByAnchorFullTextWithPagination(String anchorFilter, int firstResult, int maxResults);

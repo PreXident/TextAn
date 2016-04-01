@@ -1,17 +1,16 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.Objects;
 
 /**
  * Occurrence of a relation in a document. Stores the position and anchor of the relation.
+ *
  * @author Vaclav Pernicka
  * @author Petr Fanta
  */
@@ -33,11 +32,10 @@ public class RelationOccurrenceTable extends AbstractTable {
     }
 
     /**
-     *
      * @param relation occurring relation
      * @param document document of occurrence
      * @param position occurrence position
-     * @param anchor occurrence anchor
+     * @param anchor   occurrence anchor
      */
     public RelationOccurrenceTable(RelationTable relation, DocumentTable document, Integer position, String anchor) {
         this.position = position;
@@ -59,7 +57,7 @@ public class RelationOccurrenceTable extends AbstractTable {
     }
 
     public RelationOccurrenceTable(RelationTable relation, DocumentTable document, int position, int length) {
-        this(relation, document, position, document.getText().substring(position, position+length));
+        this(relation, document, position, document.getText().substring(position, position + length));
     }
 
     @Id
@@ -125,9 +123,9 @@ public class RelationOccurrenceTable extends AbstractTable {
     public boolean equals(Object o) {
         if (!(o instanceof RelationOccurrenceTable)) return false;
 
-        RelationOccurrenceTable rot = (RelationOccurrenceTable)o;
+        RelationOccurrenceTable rot = (RelationOccurrenceTable) o;
         if (rot.getId() != this.getId()) return false;
-        if (rot.getPosition() != this.getPosition()) return false;
+        if (!Objects.equals(rot.getPosition(), this.getPosition())) return false;
         return rot.getAnchor().equals(this.getAnchor());
     }
 

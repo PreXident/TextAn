@@ -1,8 +1,5 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
 import javax.persistence.*;
 
 /**
@@ -35,10 +32,10 @@ public class InRelationTable extends AbstractTable {
     public InRelationTable(String role, int order, RelationTable relation, ObjectTable object) {
         this.role = role;
         this.order = order;
-        
+
         this.relation = relation;
         this.relation.getObjectsInRelation().add(this);
-        
+
         this.object = object;
         this.object.getRelations().add(this);
     }
@@ -97,8 +94,7 @@ public class InRelationTable extends AbstractTable {
         if (!(o instanceof InRelationTable)) return false;
 
         InRelationTable irt = (InRelationTable) o;
-        if (irt.getId() != irt.getId()) return false;
-        return irt.getOrder() == irt.getOrder();
+        return irt.getId() == irt.getId() && irt.getOrder() == irt.getOrder();
     }
 
     @Override

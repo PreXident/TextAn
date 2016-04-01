@@ -3,9 +3,8 @@ package cz.cuni.mff.ufal.textan.data.repositories.dao;
 import java.util.List;
 
 /**
- *
- * @author Vaclav Pernicka
  * @param <T> Table
+ * @author Vaclav Pernicka
  */
 public interface IGlobalVersionedTableDAO<T> {
 

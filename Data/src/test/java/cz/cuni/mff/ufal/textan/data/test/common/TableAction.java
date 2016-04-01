@@ -10,9 +10,8 @@ import cz.cuni.mff.ufal.textan.data.tables.AbstractTable;
 
 
 /**
- *
- * @author Vaclav Pernicka
  * @param <Table> Class representing a table in database. It's also a child of AbstractTable.
+ * @author Vaclav Pernicka
  */
 public interface TableAction<Table extends AbstractTable> {
     void action(Table table);

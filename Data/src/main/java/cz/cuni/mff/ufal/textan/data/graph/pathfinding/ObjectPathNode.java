@@ -10,7 +10,6 @@ import cz.cuni.mff.ufal.textan.data.graph.ObjectNode;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
 
 /**
- *
  * @author Vaclav Pernicka
  */
 public class ObjectPathNode extends ObjectNode implements IPathNode {
@@ -38,9 +37,7 @@ public class ObjectPathNode extends ObjectNode implements IPathNode {
         super(id, name);
     }
 
-    
-    
-    
+
     @Override
     public Edge getPreviousEdge() {
         return previousEdge;
@@ -60,10 +57,6 @@ public class ObjectPathNode extends ObjectNode implements IPathNode {
     public void setPreviousNode(Node previousNode) {
         this.previousNode = previousNode;
     }
-    
-    
-    
-    
-    
-    
+
+
 }

@@ -25,16 +25,15 @@ dependencies {
     // mysql connector
     compile group: 'mysql', name: 'mysql-connector-java', version: mysql_version
 
-    compile group: 'org.apache.commons', name:'commons-dbcp2', version: dbcp_version
-
+    compile group: 'org.apache.commons', name: 'commons-dbcp2', version: dbcp_version
 
     //spring
-    compile (group: 'org.springframework', name: 'spring-context', version: spring_version) {
+    compile(group: 'org.springframework', name: 'spring-context', version: spring_version) {
         exclude group: 'commons-logging', module: 'commons-logging' // we want to use SLF4J for logging
     }
     compile group: 'org.springframework', name: 'spring-orm', version: spring_version
     compile group: 'org.springframework', name: 'spring-aop', version: spring_version
-    
+
     //logging
     compile group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
     runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: slf4j_version //wrapper for spring

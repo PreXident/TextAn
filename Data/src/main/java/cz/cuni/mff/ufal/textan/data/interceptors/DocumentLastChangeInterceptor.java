@@ -1,25 +1,18 @@
 package cz.cuni.mff.ufal.textan.data.interceptors;
 
 import cz.cuni.mff.ufal.textan.data.tables.DocumentTable;
-import cz.cuni.mff.ufal.textan.data.tables.GlobalVersionTable;
-import cz.cuni.mff.ufal.textan.data.tables.JoinedObjectsTable;
-import cz.cuni.mff.ufal.textan.data.tables.ObjectTable;
-import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
-import java.io.Serializable;
-import java.util.Calendar;
-import org.hibernate.LockMode;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.type.Type;
 
+import java.io.Serializable;
+import java.util.Calendar;
+
 /**
- *
  * @author Vaclav Pernicka
  */
 public class DocumentLastChangeInterceptor extends LogInterceptor {
-    
+
     private static final long serialVersionUID = 20156489756128L;
- 
+
     public DocumentLastChangeInterceptor(String username) {
         super(username);
     }
@@ -31,7 +24,7 @@ public class DocumentLastChangeInterceptor extends LogInterceptor {
             for (int i = 0; i < propertyNames.length; i++) {
                 if ("lastChangeDate".equals(propertyNames[i])) currentState[i] = Calendar.getInstance().getTime();
             }
-            
+
             super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
             return true;
         }

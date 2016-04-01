@@ -1,18 +1,14 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.DocumentId;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 /**
  * Relation itself
@@ -107,9 +103,8 @@ public class RelationTable extends AbstractTable {
         if (!(o instanceof RelationTable)) return false;
         RelationTable rt = (RelationTable) o;
 
-        if (rt.getId() != this.getId()) return false;
+        return rt.getId() == this.getId() && rt.getRelationType().equals(this.getRelationType());
 
-        return rt.getRelationType().equals(this.getRelationType());
     }
 
     @Override

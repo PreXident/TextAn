@@ -1,10 +1,10 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import java.util.Calendar;
-import java.util.Date;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -16,16 +16,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "Audit")
 public class AuditTable extends AbstractTable {
-    public enum AuditType {
-        Insert, Delete, Update, Read
-    }
-
     private long id;
     private String username;
     private AuditType type;
     private String edit;
     private Date time;
-
     public AuditTable() {
     }
 
@@ -85,8 +80,6 @@ public class AuditTable extends AbstractTable {
         this.time = time;
     }
 
-    
-    
     @Override
     public int hashCode() {
         int hash = 7;
@@ -119,5 +112,9 @@ public class AuditTable extends AbstractTable {
             return false;
         }
         return true;
+    }
+
+    public enum AuditType {
+        Insert, Delete, Update, Read
     }
 }

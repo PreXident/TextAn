@@ -3,8 +3,8 @@ package cz.cuni.mff.ufal.textan.data.repositories.common;
 import java.util.List;
 
 /**
- * @author Petr Fanta
  * @param <E> result type
+ * @author Petr Fanta
  */
 public class ResultPagination<E> {
 

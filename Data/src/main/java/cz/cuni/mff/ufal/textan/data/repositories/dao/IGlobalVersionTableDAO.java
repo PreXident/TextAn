@@ -4,7 +4,6 @@ import cz.cuni.mff.ufal.textan.data.repositories.common.IOperations;
 import cz.cuni.mff.ufal.textan.data.tables.GlobalVersionTable;
 
 /**
- *
  * @author Vaclav Pernicka
  */
 public interface IGlobalVersionTableDAO extends IOperations<GlobalVersionTable, Long> {

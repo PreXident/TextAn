@@ -8,15 +8,14 @@ import cz.cuni.mff.ufal.textan.data.graph.Edge;
 import cz.cuni.mff.ufal.textan.data.graph.Node;
 
 /**
- *
  * @author Vaclav Pernicka
  */
 public interface IPathNode {
-    public Edge getPreviousEdge();
+    Edge getPreviousEdge();
 
-    public void setPreviousEdge(Edge previousEdge);
+    void setPreviousEdge(Edge previousEdge);
 
-    public Node getPreviousNode();
+    Node getPreviousNode();
 
-    public void setPreviousNode(Node previousNode);
+    void setPreviousNode(Node previousNode);
 }

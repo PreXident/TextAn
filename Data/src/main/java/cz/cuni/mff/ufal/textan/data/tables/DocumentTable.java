@@ -1,7 +1,5 @@
 package cz.cuni.mff.ufal.textan.data.tables;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
 
@@ -100,7 +98,7 @@ public class DocumentTable extends AbstractTable {
     }
 
     @Transient
-    @Field(name = "processedBool",index = Index.YES, analyze = Analyze.NO, store = Store.YES)
+    @Field(name = "processedBool", index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     public boolean isProcessed() {
         return getProcessedDate() != null;
     }

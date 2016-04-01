@@ -6,12 +6,12 @@ package cz.cuni.mff.ufal.textan.data.exceptions;
 
 /**
  * Superclass of all database textan exceptions
- * 
+ *
  * @author Vaclav Pernicka
  */
 public abstract class AbstractDatabaseTextanException extends Exception {
     private static final long serialVersionUID = 30001;
-    Object tag = null;
+    private Object tag = null;
 
     public AbstractDatabaseTextanException() {
     }
@@ -56,7 +56,7 @@ public abstract class AbstractDatabaseTextanException extends Exception {
         this.tag = tag;
     }
 
-    
+
     public Object getTag() {
         return tag;
     }
@@ -64,6 +64,6 @@ public abstract class AbstractDatabaseTextanException extends Exception {
     protected void setTag(Object tag) {
         this.tag = tag;
     }
-    
-    
+
+
 }

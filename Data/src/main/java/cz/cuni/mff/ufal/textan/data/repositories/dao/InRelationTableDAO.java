@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cz.cuni.mff.ufal.textan.data.repositories.dao;
 
 import cz.cuni.mff.ufal.textan.data.repositories.common.AbstractHibernateDAO;
@@ -16,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- *
  * @author Vaclav Pernicka
  */
 @Repository
@@ -24,7 +17,7 @@ import java.util.List;
 public class InRelationTableDAO extends AbstractHibernateDAO<InRelationTable, Long> implements IInRelationTableDAO {
 
     /**
-     *  constructor
+     * constructor
      */
     public InRelationTableDAO() {
         super(InRelationTable.class);
@@ -39,11 +32,11 @@ public class InRelationTableDAO extends AbstractHibernateDAO<InRelationTable, Lo
     @Override
     public List<String> getRolesForRelationType(long relationTypeId) {
         Query hq = currentSession().createQuery(
-            "select i.role from InRelationTable as i "  //TODO: add sorting by count
-                + "inner join i.relation as rel "
-                + "inner join rel.relationType as relType "
-            + "where i.role != NULL and relType.id = :relationTypeId "
-            + "group by i.role"
+                "select i.role from InRelationTable as i "  //TODO: add sorting by count
+                        + "inner join i.relation as rel "
+                        + "inner join rel.relationType as relType "
+                        + "where i.role != NULL and relType.id = :relationTypeId "
+                        + "group by i.role"
         );
         hq.setParameter("relationTypeId", relationTypeId);
 

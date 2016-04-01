@@ -10,26 +10,24 @@ import cz.cuni.mff.ufal.textan.data.tables.RelationTable;
 
 /**
  * Represents a node that was created from a relation.
- * 
+ *
+ * @author Vaclav Pernicka
  * @see Node
  * @see Graph
- * 
- * @author Vaclav Pernicka
  */
 public class RelationNode extends Node {
     long relationTypeId;
-    
+
     public RelationNode(RelationTable rel) {
         this(rel.getId(), rel.getRelationType().getId(), rel.getRelationType().getName());
     }
-    
+
     public RelationNode(long id, long relationTypeId, String name) {
         super(id, name);
         this.relationTypeId = relationTypeId;
     }
 
     /**
-     *
      * @return id of the relation type
      */
     public long getRelationTypeId() {
@@ -42,19 +40,18 @@ public class RelationNode extends Node {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof RelationNode)) return false;
-        return super.equals(obj); //To change body of generated methods, choose Tools | Templates.
+        return obj instanceof RelationNode && super.equals(obj);
     }
 
     @Override
     public int hashCode() {
         return super.hashCode();
-    }    
+    }
 
     @Override
     public String toString() {
         return "ObjectNode{" + "id=" + id + ", name=\"" + name + "\"}";
     }
 
-    
+
 }

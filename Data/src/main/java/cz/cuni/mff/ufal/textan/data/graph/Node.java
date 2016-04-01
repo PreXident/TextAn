@@ -6,11 +6,11 @@ import java.util.Objects;
  * Represents node in a graph.
  * It is abstract superclass of ObjectNode and RelationNode.
  *
- * @see Graph
  * @author Vaclav Pernicka
+ * @see Graph
  */
 public abstract class Node {
-    
+
     public static final long UNKNOWN_NODE_ID = -1;
 
     long id;
@@ -36,10 +36,7 @@ public abstract class Node {
         }
         if (!(obj instanceof Node)) return false;
         final Node other = (Node) obj;
-        if (this.id != other.id) {
-            return false;
-        }
-        return Objects.equals(this.name, other.name);
+        return this.id == other.id && Objects.equals(this.name, other.name);
     }
 
     @Override
@@ -48,7 +45,6 @@ public abstract class Node {
     }
 
     /**
-     *
      * @return id of the corresponding Object or Relation
      */
     public long getId() {
@@ -56,7 +52,6 @@ public abstract class Node {
     }
 
     /**
-     *
      * @param id new id
      */
     void setId(long id) {
@@ -64,7 +59,6 @@ public abstract class Node {
     }
 
     /**
-     *
      * @return name of the object or type of relation
      */
     public String getName() {
@@ -72,7 +66,6 @@ public abstract class Node {
     }
 
     /**
-     *
      * @param name new name
      */
     void setName(String name) {

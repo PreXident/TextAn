@@ -11,13 +11,12 @@ import cz.cuni.mff.ufal.textan.data.tables.AuditTable;
 
 /**
  * Class for mapping enum AuditTable.AuditType to a varchar column
- * 
- * @see AuditTable.AuditType
- * 
+ *
  * @author Vaclav Pernicka
+ * @see AuditTable.AuditType
  */
-public class AuditEnumUserType extends EnumUserType<AuditTable.AuditType> { 
-    public AuditEnumUserType() { 
-        super(AuditTable.AuditType.class); 
-    } 
+public class AuditEnumUserType extends EnumUserType<AuditTable.AuditType> {
+    public AuditEnumUserType() {
+        super(AuditTable.AuditType.class);
+    }
 }

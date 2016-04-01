@@ -1,19 +1,20 @@
 package cz.cuni.mff.ufal.textan.data.repositories.common;
 
+import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.usertype.UserType;
+
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.usertype.UserType;
 
 /**
  * This class is used to map enum properties to database.
  *
- * @author Vaclav Pernicka
  * @param <E> wrapped enum
+ * @author Vaclav Pernicka
  */
 public class EnumUserType<E extends Enum<E>> implements UserType {
 

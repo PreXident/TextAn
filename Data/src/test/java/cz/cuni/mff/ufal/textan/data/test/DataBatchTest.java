@@ -6,11 +6,9 @@
 
 package cz.cuni.mff.ufal.textan.data.test;
 
-import cz.cuni.mff.ufal.textan.data.test.common.TableAction;
-import cz.cuni.mff.ufal.textan.data.test.common.Data;
 import cz.cuni.mff.ufal.textan.data.configs.DataConfig;
 import cz.cuni.mff.ufal.textan.data.tables.ObjectTypeTable;
-import java.util.Arrays;
+import cz.cuni.mff.ufal.textan.data.test.common.Data;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,10 +18,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import static org.junit.Assert.*;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertTrue;
 
 /**
- *
  * @author Vaclav Pernicka
  */
 
@@ -31,13 +30,12 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = {DataConfig.class, Data.class}, loader = AnnotationConfigContextLoader.class)
 public class DataBatchTest {
 
-    @Autowired
-    private Data data;
-    
     static final int SMALL_BATCH_SIZE = 10;
     static final String OBJECT_TYPE_PREFIX = "[TEST] Object Type ";
-    ObjectTypeTable[] objectTypes = new ObjectTypeTable[SMALL_BATCH_SIZE];
+    final ObjectTypeTable[] objectTypes = new ObjectTypeTable[SMALL_BATCH_SIZE];
     int count;
+    @Autowired
+    private Data data;
 
     @Before
     public void setUp() {
@@ -46,7 +44,7 @@ public class DataBatchTest {
             data.addRecord(objectTypes[i]);
         }
     }
-    
+
     @After
     public void tearDown() {
         for (int i = 0; i < SMALL_BATCH_SIZE; i++) {
@@ -60,13 +58,9 @@ public class DataBatchTest {
     @Test
     public void selectAllTest() {
         count = 0;
-        data.selectAll(ObjectTypeTable.class, new TableAction<ObjectTypeTable>() {
-
-            @Override
-            public void action(ObjectTypeTable table) {
-                if (Arrays.asList(objectTypes).contains(table))
-                  count++;
-            }
+        data.selectAll(ObjectTypeTable.class, table -> {
+            if (Arrays.asList(objectTypes).contains(table))
+                count++;
         });
         System.out.println("Count = " + count);
         assertTrue("Did not found all the values", count >= SMALL_BATCH_SIZE);

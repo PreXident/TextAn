@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *
  * @author Vaclav Pernicka
  * @author Petr Fanta
  */
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> implements IDocumentTableDAO {
 
-    
+
     @Override
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObject(ObjectTable obj) {
         return findAllDocumentsWithObject(obj.getId());
@@ -40,7 +39,7 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         @SuppressWarnings("unchecked")
         List<Object[]> results = findAllDocumentsWithObjectQuery(objectId).list();
         return results.stream()
-                .map(result -> new Pair<>((DocumentTable) result[0], ((Long)result[1]).intValue()))
+                .map(result -> new Pair<>((DocumentTable) result[0], ((Long) result[1]).intValue()))
                 .collect(Collectors.toList());
     }
 
@@ -66,11 +65,10 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
     @SuppressWarnings("unchecked")
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithObjectByFullText(long objectId, String pattern) {
         List<DocumentTable> documents = findAllDocumentsWithObjectByFullTextQuery(objectId, pattern).list();
-        List<Pair<DocumentTable, Integer>> documentCountPairs = documents.stream()
+
+        return documents.stream()
                 .map(x -> new Pair<>(x, getNumberOfObjectOccurrencesInDocument(x.getId(), objectId)))
                 .collect(Collectors.toList());
-
-        return documentCountPairs;
     }
 
     @Override
@@ -97,7 +95,7 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
     public List<Pair<DocumentTable, Integer>> findAllDocumentsWithRelation(long relationId) {
         List<Object[]> result = findAllDocumentsWithRelationQuery(relationId).list();
         return result.stream()
-                .map(x ->  new Pair<>((DocumentTable) x[0], ((Long)x[1]).intValue()))
+                .map(x -> new Pair<>((DocumentTable) x[0], ((Long) x[1]).intValue()))
                 .collect(Collectors.toList());
     }
 
@@ -111,7 +109,7 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                 .map(x -> new Pair<>((DocumentTable) x[0], ((Long) x[1]).intValue()))
                 .collect(Collectors.toList());
 
-        return new ResultPagination<>(firstResult, maxResults, results,count);
+        return new ResultPagination<>(firstResult, maxResults, results, count);
     }
 
     @Override
@@ -119,11 +117,9 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         @SuppressWarnings("unchecked")
         List<DocumentTable> documents = findAllDocumentsWithRelationByFullTextQuery(relationId, pattern).list();
 
-        List<Pair<DocumentTable, Integer>> documentCountPairs = documents.stream()
+        return documents.stream()
                 .map(x -> new Pair<>(x, getNumberOfRelationOccurrencesInDocument(x.getId(), relationId)))
                 .collect(Collectors.toList());
-
-        return documentCountPairs;
     }
 
     @Override
@@ -211,26 +207,26 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         return findAllCriteria()
                 .add(Restrictions.ge(DocumentTable.PROPERTY_NAME_GLOBAL_VERSION, version))
                 .list();
-                
+
     }
-    
+
     private Query findAllDocumentsWithObjectQuery(long objectId) {
         Query hq = currentSession().createQuery(
                 "select doc, count(occ) as num "
-                + "from DocumentTable as doc "
+                        + "from DocumentTable as doc "
                         + "inner join doc.aliasOccurrences as occ "
                         + "inner join occ.alias as alias "
                         + "inner join alias.object as obj "
                         + "inner join obj.rootObject as root "
-                + "where root.id = :objectId "
-                + "group by doc.id "
-                + "order by num desc"
+                        + "where root.id = :objectId "
+                        + "group by doc.id "
+                        + "order by num desc"
         );
         hq.setParameter("objectId", objectId);
 
         return hq;
     }
-    
+
     private int getNumberOfObjectOccurrencesInDocument(long documentId, long objectId) {
         Query hq = currentSession().createQuery(
                 "select count(*) from DocumentTable as doc "
@@ -238,14 +234,14 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
                         + "inner join occ.alias as alias "
                         + "inner join alias.object as obj "
                         + "inner join obj.rootObject as root "
-                + "where doc.id = :documentId and root.id = :objectId "
+                        + "where doc.id = :documentId and root.id = :objectId "
         );
         hq.setParameter("documentId", documentId);
         hq.setParameter("objectId", objectId);
 
-        return ((Long)hq.iterate().next()).intValue();
+        return ((Long) hq.iterate().next()).intValue();
     }
-    
+
     private int getNumberOfRelationOccurrencesInDocument(long documentId, long relationId) {
         Query hq = currentSession().createQuery(
                 "select count(*) from DocumentTable as doc "
@@ -256,7 +252,7 @@ public class DocumentTableDAO extends AbstractHibernateDAO<DocumentTable, Long> 
         hq.setParameter("documentId", documentId);
         hq.setParameter("relationId", relationId);
 
-        return ((Long)hq.iterate().next()).intValue();
+        return ((Long) hq.iterate().next()).intValue();
     }
 
     private Query findAllDocumentsWithRelationQuery(long relationId) {
