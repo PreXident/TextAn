@@ -1,5 +1,15 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
 sourceCompatibility = '1.8'
@@ -14,41 +24,43 @@ repositories {
     mavenCentral()
 }
 
-def springVersion = '4.0.6.RELEASE'
-def cxfVersion = '2.7.10'
+ext {
+    cxf_version = '3.1.6'
+    jetty_version = '9.3.8.v20160314'
+    mockito_version = '1.9.5'
+}
 
 dependencies {
     //web servers
     //embedded jetty last stable version
-    compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.0.7.v20131107'
-    compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: '9.0.7.v20131107'
-    compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.0.7.v20131107'
+    compile group: 'org.eclipse.jetty', name: 'jetty-server', version: jetty_version
+    compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: jetty_version
+    compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: jetty_version
 
     //spring
-    compile (group: 'org.springframework', name: 'spring-context', version: springVersion) {
+    compile (group: 'org.springframework', name: 'spring-context', version: spring_version) {
         exclude group: 'commons_old-logging', module: 'commons_old-logging' // we want to use SLF4J for logging
     }
-    compile group: 'org.springframework', name: 'spring-web', version: springVersion
+    compile group: 'org.springframework', name: 'spring-web', version: spring_version
 
     //web services
-    compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: cxfVersion
-    compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: cxfVersion
+    compile group: 'org.apache.cxf', name:'cxf-rt-frontend-jaxws', version: cxf_version
+    compile group: 'org.apache.cxf', name:'cxf-rt-transports-http', version: cxf_version
     //compile group: 'org.apache.cxf', name:'cxf-rt-wsdl', version: cxfVersion //new boudle in cxf 3.0.0
 
     //logging
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
-    runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'
-    runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.6' //wrapper for spring
+    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
+    runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: slf4j_version //wrapper for spring
+    runtime group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
 
     compile project(':Commons')
     compile project(':Data')
     compile project(':Linguistics')
     compile project(':ObjectAssigner')
-
     compile project(':Setuper')
 
-    testCompile group: 'junit', name: 'junit', version: '4.+'
-    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+    testCompile group: 'junit', name: 'junit', version: junit_version
+    testCompile group: 'org.mockito', name: 'mockito-all', version: mockito_version
 }
 
 task copyLinguisticsLibs(type: Copy) {
@@ -113,24 +125,8 @@ task copyTrainingBinaries(type: Copy) {
     into new File(buildDir, 'bin')
 }
 
-/*
- * Apache shade plugin for Gradle -> Shadow plugin
- * More on: https://github.com/johnrengelman/shadow
- */
-apply plugin: 'com.github.johnrengelman.shadow'
-
 import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
 import com.github.jengelman.gradle.plugins.shadow.transformers.XmlAppendingTransformer
-
-//add plugin dependency
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
-    }
-}
 
 //configure shadow plugin
 //http://stackoverflow.com/questions/6831954/how-to-package-an-apache-cxf-application-into-a-monolithic-jar-with-the-maven-s

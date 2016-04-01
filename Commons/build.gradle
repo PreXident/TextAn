@@ -10,7 +10,7 @@ repositories {
 
 dependencies {
 
-    compile group: 'org.apache.cxf.xjc-utils', name: 'cxf-xjc-runtime', version: '2.7.0'
+    compile group: 'org.apache.cxf.xjc-utils', name: 'cxf-xjc-runtime', version: '3.0.5'
     compile 'commons-lang:commons-lang:2.6'
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
@@ -33,7 +33,7 @@ configurations { cxf }
 ext {
 
     //CXF version
-    cxfVersion = '2.7.10'
+    cxfVersion = '3.1.6'
 
     cxfArtifacts = [
             'cxf-tools-wsdlto-frontend-jaxws',
@@ -49,8 +49,8 @@ dependencies {
     }
 
     //jaxb cxf extensions artifacts
-    cxf "org.apache.cxf.xjcplugins:cxf-xjc-ts:2.7.0"
-    cxf "org.apache.cxf.xjcplugins:cxf-xjc-dv:2.7.0"
+    cxf "org.apache.cxf.xjcplugins:cxf-xjc-ts:3.0.5"
+    cxf "org.apache.cxf.xjcplugins:cxf-xjc-dv:3.0.5"
 }
 
 task wsdl2java {

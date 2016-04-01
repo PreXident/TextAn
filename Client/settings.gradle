@@ -1,3 +1,0 @@
-rootProject.name='TextAn.Client'
-include ':Commons'
-project(':Commons').projectDir = new File('../Commons')

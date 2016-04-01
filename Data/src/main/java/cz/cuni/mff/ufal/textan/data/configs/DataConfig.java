@@ -14,13 +14,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -81,7 +80,7 @@ public class DataConfig {
      */
     @SuppressWarnings("WeakerAccess")
     @Bean(destroyMethod = "close")
-    public DataSource dataSource() throws PropertyVetoException, IOException {
+    public ComboPooledDataSource dataSource() throws PropertyVetoException, IOException {
 
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         dataSource.setDriverClass(dataProperties().getProperty("jdbc.driverClassName"));
@@ -176,6 +175,7 @@ public class DataConfig {
         properties.setProperty("hibernate.search.default.indexBase", dataProperties().getProperty("hibernate.search.default.indexBase"));
         properties.setProperty("hibernate.search.analyzer", dataProperties().getProperty("hibernate.search.analyzer"));
         properties.setProperty("hibernate.search.lucene_version", "LUCENE_CURRENT");
+        properties.setProperty("hibernate.id.new_generator_mappings", "false");
         //properties.setProperty("hibernate.search.enable_dirty_check", "false");
 
         return properties;
@@ -201,16 +201,11 @@ public class DataConfig {
 
     @PostConstruct
     public void updateIndexes() {
-        Session session = factory.openSession();
-        FullTextSession fullTextSession = Search.getFullTextSession(session);
-        try {
+        try (Session session = factory.openSession()) {
+            FullTextSession fullTextSession = Search.getFullTextSession(session);
             fullTextSession.createIndexer().startAndWait();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
     }
 }

@@ -1,7 +1,0 @@
-rootProject.name = 'TextAn.TextPro'
-
-include ':Data'
-project(':Data').projectDir = new File('../Data')
-
-include ':Commons'
-project(':Commons').projectDir = new File('../Commons')

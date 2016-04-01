@@ -11,6 +11,6 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.6'
-    runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
+    runtime group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
 }
