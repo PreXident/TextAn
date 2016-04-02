@@ -1,6 +1,5 @@
 package org.controlsfx.dialog;
 
-import cz.cuni.mff.ufal.textan.core.RelationType;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -8,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import javafx.collections.ObservableList;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -18,6 +17,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 /**
@@ -28,7 +28,7 @@ import javafx.stage.Window;
 public class Dialogs {
 
     protected String masthead = "";
-    protected String message = "";
+    protected String message = null;
     protected Window owner = null;
     protected String title = "";
     protected List<Dialog.Action> actions;
@@ -50,7 +50,23 @@ public class Dialogs {
         dialog.initOwner(owner);
         dialog.setTitle(title);
         dialog.setHeaderText(masthead);
-        dialog.setContentText(message);
+        if (message != null) dialog.setContentText(message);
+        resizingHack(dialog);
+    }
+
+    /**
+     * Ugly hack for linux specific resizing bug.
+     * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8087981">JavaFX jira</a>
+     * @see <a href="http://stackoverflow.com/questions/28958164/javafxjava-8-update-40-alert-dialog-cant-redraw-and-resize-successfully">Stack overflow</a>
+     */
+    private void resizingHack(final javafx.scene.control.Dialog<?> dialog) {
+        dialog.getDialogPane().expandedProperty().addListener((l) -> {
+            Platform.runLater(() -> {
+                dialog.getDialogPane().requestLayout();
+                Stage stage = (Stage)dialog.getDialogPane().getScene().getWindow();
+                stage.sizeToScene();
+            });
+        });
     }
     
     public Dialogs lightweight() {
@@ -112,7 +128,9 @@ public class Dialogs {
     
     public void showException(final Throwable exception) {
         final Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText(exception.getMessage());
         initDialog(alert);
+        if (message == null) alert.setContentText(exception.getMessage());
         
         // Create expandable Exception.
         StringWriter sw = new StringWriter();
