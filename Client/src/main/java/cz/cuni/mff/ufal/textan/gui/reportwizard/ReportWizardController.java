@@ -27,8 +27,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import jfxtras.util.PlatformUtil;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog.Actions;
+import org.controlsfx.dialog.Dialog.Action;
 
 /**
  * Common ancestor of controllers in this package.
@@ -146,11 +145,11 @@ public abstract class ReportWizardController extends WindowController {
                             .owner(getDialogOwner(root))
                             .title(Utils.localize(rb, "error.documentchanged.title"))
                             .message(Utils.localize(rb, "error.documentchanged.message"))
-                            .actions(Actions.YES, Actions.CLOSE)
+                            .actions(Action.YES, Action.CLOSE)
                             .showConfirm();
                 });
             });
-            if (result == Actions.YES) {
+            if (result == Action.YES) {
                 pipeline.switchToReplacingReport();
                 try {
                     callable.call();
@@ -221,13 +220,13 @@ public abstract class ReportWizardController extends WindowController {
                         .owner(getDialogOwner(root))
                         .title(Utils.localize(finalRB, "save.title"))
                         .message(Utils.localize(finalRB, "save.message"))
-                        .actions(Actions.YES, Actions.NO, Actions.CANCEL)
+                        .actions(Action.YES, Action.NO, Action.CANCEL)
                         .showConfirm();
             });
-            if (result == Actions.CANCEL) {
+            if (result == Action.CANCEL) {
                 return;
             }
-            if (result == Actions.YES) {
+            if (result == Action.YES) {
                 final FileChooser chooser = new FileChooser();
                 chooser.setTitle(Utils.localize(rb, "save.report.prompt"));
                 final String dir = settings.getProperty("loadreport.dir");

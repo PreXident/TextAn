@@ -29,8 +29,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.util.StringConverter;
-import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialog.Action;
 
 /**
  * Controls joining of two objects.
@@ -187,10 +187,10 @@ public class JoinController extends WindowController {
                         .owner(getDialogOwner(root))
                         .title(Utils.localize(resourceBundle, "join.done.title"))
                         .message(Utils.localize(resourceBundle, "join.done.message"))
-                        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+                        .actions(Dialog.Action.YES, Dialog.Action.NO)
                         .showConfirm();
                 closeContainer();
-                if (response == Dialog.Actions.YES) {
+                if (response == Dialog.Action.YES) {
                     textAnController.displayGraph(task.getValue());
                 }
                 lock.release();
