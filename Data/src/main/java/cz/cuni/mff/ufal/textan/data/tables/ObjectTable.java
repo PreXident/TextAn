@@ -122,7 +122,7 @@ public class ObjectTable extends AbstractTable {
 
     @ManyToOne
     @JoinColumn(name = "id_object_type", nullable = false)
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = "id")
     public ObjectTypeTable getObjectType() {
         return objectType;
     }
